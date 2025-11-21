@@ -33,14 +33,17 @@ This application automates the testing of FundraisingBox donation forms across m
   - [x] Zustand state management for forms
   - [x] Modal dialog for form creation/editing
   - [x] Dashboard integration with real form statistics
-- [ ] **Step 2.2**: Implement Payment Methods Management UI
-  - [ ] Payment method CRUD operations
-  - [ ] Secure credential input forms (encrypted storage)
-  - [ ] Support for PayPal, SEPA, Credit Card, EPS
-- [ ] **Step 2.3**: Implement Settings Management UI
-  - [ ] Global settings configuration
-  - [ ] Default amounts, intervals, test parameters
-  - [ ] Test data generation settings
+- [x] **Step 2.2**: Implement Payment Methods Management UI ✅
+  - [x] Payment method CRUD operations
+  - [x] Secure credential input forms with validation
+  - [x] Support for PayPal, SEPA, Credit Card, EPS
+  - [x] Active/inactive status management
+  - [x] Data masking for sensitive information
+- [x] **Step 2.3**: Implement Settings Management UI ✅
+  - [x] Global settings configuration
+  - [x] Default amounts, intervals, test parameters
+  - [x] Inline editing with proper validation
+  - [x] User-friendly display with formatted values
 - [ ] **Step 2.4**: Implement Dashboard with Statistics
   - [ ] Real-time stats from database
   - [ ] Quick action buttons
@@ -204,6 +207,37 @@ npm run rebuild:sqlite
 2. **Add Payment Methods Management** - Secure credential storage (CURRENT)
 3. **Build Settings Interface** - Global configuration options
 4. **Integrate Playwright** - Form automation engine
+   1. The form is inside a `<iframe>` of the main website, has the id `#fbIframe`
+   2. The form has the following fields (looks into "blueprint/form-example.html"):
+      1. Betrag, 3 radios and a number filed for custom amount
+      2. Rythmus, Dropwdown with 4 options: Einmalig, Monatlich, Quartal (§monate), Jährliche Zahlung
+      3. Projekt: Dropwdown ith projects for donations
+      4. Anrede, Dropdown, M, F, D
+      5. Titel
+      6. Vorname
+      7. Nachname
+      8. "Als unternehmen spenden", Toggle / Checkbox
+      9. Mail
+      10. Geburtstag (OPtinal)
+      11. Wohnhaft (Land, AT)
+      12. E-Mail
+      13. Anmerkungen
+      14. Zahlungsweise (Paymentmethods)
+          1.  EPS:
+              1.  Bank: Dropwdown
+          2.  SEPA
+              1.  Konotoinhaber
+              2.  IBAN
+          3.  PayPal
+          4.  Visa/Mastercard/AmEx
+              1.  Karteninhaber: Text
+              2.  Kartennummer: Zahlen
+              3.  Prüfziffern/CVV: Zahlen
+              4.  Ablaufdatum: Monat/Jahr
+      15. Datenschutz: Radio (Ja/Nein)
+      16. Newsletter: Checkbox optional
+      
+      
 5. **Create Test Results Viewer** - Results analysis and reporting
 
 ## 📄 License

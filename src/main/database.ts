@@ -235,24 +235,6 @@ export const paymentMethodQueries = {
     } as PaymentMethod
   },
   create: (method: Omit<PaymentMethod, 'id' | 'createdAt' | 'updatedAt'>) => {
-    console.log('Database: Creating payment method with raw data:', JSON.stringify(method, null, 2))
-    console.log('Database: Payment method data types:', {
-      name: typeof method.name,
-      type: typeof method.type,
-      isActive: typeof method.isActive,
-      details: typeof method.details
-    })
-    
-    // Debug: Check if table exists
-    try {
-      const tableInfo = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='payment_methods'").get()
-      console.log('Database: payment_methods table exists:', !!tableInfo)
-      
-      const tableSchema = db.prepare("PRAGMA table_info(payment_methods)").all()
-      console.log('Database: payment_methods table schema:', tableSchema)
-    } catch (debugError) {
-      console.error('Database: Error checking table:', debugError)
-    }
     
     // Ultra-robust data sanitization
     let name: string = ''
@@ -297,33 +279,8 @@ export const paymentMethodQueries = {
         }
       }
       
-      console.log('Database: Final sanitized payment method values:', { name, type, isActive, details })
-      console.log('Database: Final payment method value types:', {
-        name: typeof name,
-        type: typeof type,
-        isActive: typeof isActive,
-        details: typeof details
-      })
-      
-      // Debug: Test with simple values first
-      console.log('Database: Testing simple insert...')
-      try {
-        const testStmt = db.prepare('INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)')
-        console.log('Database: Prepared statement created successfully')
-        
-        // Test with the most basic values
-        console.log('Database: About to run with values:', [name, type, isActive, details])
-        const result = testStmt.run(name, type, isActive, details)
-        console.log('Database: Payment method insert result:', result)
-        return result
-      } catch (insertError) {
-        console.error('Database: Insert error details:', insertError)
-        if (insertError instanceof Error) {
-          console.error('Database: Insert error message:', insertError.message)
-          console.error('Database: Insert error stack:', insertError.stack)
-        }
-        throw insertError
-      }
+      const stmt = db.prepare('INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)')
+      return stmt.run(name, type, isActive, details)
       
     } catch (error) {
       console.error('Database: Error in payment method create method:', error)

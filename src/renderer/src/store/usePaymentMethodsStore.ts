@@ -39,63 +39,7 @@ export const usePaymentMethodsStore = create<PaymentMethodsState>((set, get) => 
       if (!window.api) {
         throw new Error('API not available - make sure you are running in Electron')
       }
-      console.log('Creating payment method:', methodData)
-      console.log('Store: Method data types:', {
-        name: typeof methodData.name,
-        type: typeof methodData.type,
-        isActive: typeof methodData.isActive,
-        details: typeof methodData.details
-      })
-      console.log('Store: Details content:', methodData.details)
-      console.log('Store: JSON.stringify test:', JSON.stringify(methodData))
-      
-      // Test if the data can be serialized
-      try {
-        const serialized = JSON.stringify(methodData)
-        const deserialized = JSON.parse(serialized)
-        console.log('Store: Serialization test passed:', deserialized)
-      } catch (serError) {
-        console.error('Store: Serialization test failed:', serError)
-        const errorMessage = serError instanceof Error ? serError.message : String(serError)
-        throw new Error('Data cannot be serialized for IPC: ' + errorMessage)
-      }
-      
-      console.log('Store: About to call window.api.paymentMethods.create')
-      
-      // Try with the most minimal possible data first
-      const ultraMinimalData = {
-        name: 'test',
-        type: 'paypal',
-        isActive: true,
-        details: '{}'  // Send as string instead of object
-      }
-      
-      console.log('Store: Testing with ultra-minimal string data:', ultraMinimalData)
-      try {
-        await window.api.paymentMethods.create(ultraMinimalData as any)
-        console.log('Store: Ultra-minimal test with string details succeeded')
-      } catch (testError) {
-        console.error('Store: Ultra-minimal test failed:', testError)
-        
-        // Try even simpler - without details
-        const superMinimalData = {
-          name: 'test',
-          type: 'paypal',
-          isActive: true
-        }
-        
-        console.log('Store: Testing without details field:', superMinimalData)
-        try {
-          await window.api.paymentMethods.create(superMinimalData as any)
-          console.log('Store: Test without details succeeded - the issue is with the details object!')
-        } catch (superError) {
-          console.error('Store: Even test without details failed:', superError)
-          throw new Error('IPC call failed with simplest possible data: ' + (superError instanceof Error ? superError.message : String(superError)))
-        }
-      }
-      
       await window.api.paymentMethods.create(methodData)
-      console.log('Store: IPC call completed successfully')
       await get().loadPaymentMethods() // Reload payment methods after adding
     } catch (error) {
       console.error('Failed to add payment method:', error)

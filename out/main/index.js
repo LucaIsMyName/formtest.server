@@ -208,21 +208,6 @@ const paymentMethodQueries = {
     };
   },
   create: (method) => {
-    console.log("Database: Creating payment method with raw data:", JSON.stringify(method, null, 2));
-    console.log("Database: Payment method data types:", {
-      name: typeof method.name,
-      type: typeof method.type,
-      isActive: typeof method.isActive,
-      details: typeof method.details
-    });
-    try {
-      const tableInfo = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='payment_methods'").get();
-      console.log("Database: payment_methods table exists:", !!tableInfo);
-      const tableSchema = db.prepare("PRAGMA table_info(payment_methods)").all();
-      console.log("Database: payment_methods table schema:", tableSchema);
-    } catch (debugError) {
-      console.error("Database: Error checking table:", debugError);
-    }
     let name = "";
     let type = "paypal";
     let isActive = 0;
