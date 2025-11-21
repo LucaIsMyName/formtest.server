@@ -1,0 +1,3150 @@
+<html lang="de">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="msapplication-config" content="none">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="title" content="Formular - Diakonie">
+  <title>Spendenformular - Diakonie</title>
+
+  <link rel="stylesheet" media="screen" type="text/css" href="/paymentAddOn/style8.css?1763723491">
+  <style nonce="Pb26KKGGoOHIL0YI5PUb8A">
+    :root {
+      --fb-primary: #162e65;
+    }
+  </style>
+  <style nonce="tTdJDtybxcW8vc9weoTBQ">
+    /*
+TO DO Luca
+
+Am ende des formulares sind nochmal "hidden" formularfelder wo bei einem DropDown noch der Pfeil angeziegt wird ohne dass das DropDown sichtbar ist
+*/
+
+
+    /*
+Diese CSS Regeln kann man aukommentieren, dann werden die 3 felder (amount, zweck und interval) eingeblendet
+*/
+    /*:is(#amountChoice, #intervalChoice, #projectChoice, fieldset#amountBox legend) {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal !important;
+}*/
+
+    :root {
+      --text: #000;
+      --bg: transparent;
+      --grey-transparent: rgba(234, 234, 234, 0.5);
+      --text-transparent: rgba(0, 0, 0, .075);
+      --grey: #ccc;
+      --gold: rgba(255, 198, 90, .25);
+      --accent-dark: #162e65;
+      --accent-light-transparent: rgba(102, 175, 233, 0.6);
+      --submit-button-bg: #d3185d;
+      --submit-button-text: white;
+      --border: 1px solid var(--grey);
+      --font-size: 1rem;
+      --gap: 1rem;
+      --payment-option-columns: 2;
+      --fb-font-family: neue-haas-grotesk-display, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+        --fb-payment-method-border-width: 1.5px;
+      --fb-input-border-radius: 0;
+      --fb-amount-choice-border-radius: .5rem;
+    }
+
+    #amountBox {
+      background: var(--gold)
+    }
+
+    :where(#creditCardForm) {
+      display: none
+    }
+
+    #amountBox legend {
+      background: white;
+      padding-inline: 0.33em;
+    }
+
+    .select-wrapper::after {
+      pointer-events: none;
+    }
+
+    /* "Öffentliche Angabe" Headline weg  */
+    fieldset#publicData {
+      margin-block: 0;
+      padding-block: 0;
+    }
+
+    fieldset#publicData legend {
+      display: none;
+    }
+
+    /* Maximalbreite für das Formular  */
+    #fbPaymentForm {
+      max-width: 660px !important;
+      margin-inline: auto;
+    }
+
+    @media (max-width: 1279px) {
+      #fbPaymentForm {
+        width: 100%;
+        padding: 0 30px;
+      }
+    }
+
+    #fbPaymentForm fieldset>legend {
+      font-size: 34px;
+      line-height: calc(44 / 34);
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    @media (max-width: 767px) {
+      #fbPaymentForm fieldset>legend {
+        font-size: 23px;
+        line-height: calc(23 / 16);
+      }
+    }
+
+    legend p {
+      font-size: 1rem;
+      display: block;
+    }
+
+    p.text-enabled {
+      margin-top: 1em;
+      font-weight: 400;
+    }
+
+    #fbPaymentForm {
+      font-family: neue-haas-grotesk, sans-serif !important;
+    }
+
+    label,
+    .label {
+      font-weight: 700;
+      color: var(--accent-dark);
+    }
+
+    .input:not([type="checkbox"]):not([type="radio"]) {
+      border: var(--border);
+      font-size: var(--font-size);
+      background: white;
+      box-shadow: inset 0 0 2px var(--grey);
+
+    }
+
+    .input:not([type="checkbox"]):not([type="radio"]):focus {
+      outline: var(--accent-light-transparent) !important;
+      outline-width: 2px;
+      outline-offset: -1.5px !important;
+      box-shadow: inset 0 1px 1px var(--text-transparent), 0 0 12px var(--accent-light-transparent)
+    }
+
+    select.input {
+      /* background-color: var(--grey-transparent) !important;*/
+      color: var(--accent-dark);
+    }
+
+    .input-donation_custom_field_8543>div {
+      display: flex;
+      gap: var(--gap);
+    }
+
+    input#submitForm {
+      border-radius: 9999px;
+      background-color: var(--submit-button-bg);
+      color: var(--submit-button-text);
+      text-transform: none;
+      padding-inline: 3em;
+      font-weight: 600;
+      margin-bottom: calc(var(--gap) * 1.5);
+    }
+
+    input#submitForm:is(:hover, :focus) {
+      background-color: var(--accent-dark);
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper::after {
+      position: absolute;
+      right: calc(1em);
+      top: calc(50% - 1em / 2);
+      content: "\25BC";
+      /*background-image: url("data:image/svg+xml; utf8, ");*/
+
+      background-size: contain;
+      width: 0.8em;
+      height: 0.8em;
+      font-size: 0.8em;
+      line-height: 1;
+      color: var(--text);
+    }
+
+    #paymentmethods {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 767px) {
+      --payment-option-columns--mobile: round(calc(var(--payment-option-columns)), 1);
+
+      #paymentmethods {
+        grid-template-columns: repeat(var(--payment-option-columns--mobile, 1), minmax(0, 1fr));
+      }
+
+      .choices-grid {
+
+        grid-auto-rows: minmax(0, auto);
+      }
+    }
+
+    .select-wrapper:has(select[name="payment[payment_method]"])::after {
+      content: none !important;
+    }
+
+
+
+    .choices-grid .choice,
+    .choice.checked::before {
+      border-radius: 0 !important
+    }
+
+
+    @media screen and (min-width: 768px) {
+      .choices-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: minmax(0, auto);
+      }
+
+      .choice-custom {
+        grid-column: span 3;
+      }
+
+
+    }
+
+    @media (max-width: 768px) {
+      #paymentmethods {
+        grid-template-columns: repeat(1, auto);
+      }
+    }
+
+
+    #payment_customAmount {
+      width: 100%
+    }
+
+    #paymentmethods label.paymentmethod:has(> input[type="radio"]:checked) {
+      border: 1px solid var(--accent-dark) !important;
+      /* optional niceties */
+      transition: background-color .15s ease;
+      cursor: pointer;
+    }
+
+    @media (max-width: 769px) {
+      #fbPaymentForm {
+        width: 100%;
+        padding: 0 0px;
+      }
+    }
+
+
+    /*
+.donation.container {
+display:none;
+}*/
+  </style>
+
+  <script src="/addons/js/jquery.min.js" nonce="dHgqSFnxVTQS4AcEl5HsA"></script>
+</head>
+
+<body data-fb-template-id="8" class="jsFbReady">
+  <noscript>
+    <p>Bitte Javascript aktivieren</p>
+    <a href="https://www.fundraisingbox.com/?utm_source=donation_form" target="_blank">
+      <img width="140" height="35" src="/images/FundraisingBox-Logo-ein-sicherer-Service.svg"
+        alt="Ein sicherer Service der Fundraisingbox">
+    </a>
+  </noscript>
+  <div id="wrapper" class="wrapper" style="">
+
+    <div role="heading" aria-level="1" id="organisation-logo" class="header" style="display: none;">
+      <img src="https://secure.fundraisingbox.com/app/showImageFilePublic/id/2143052/width/0/Diakonie+Logo.png"
+        alt="Diakonie">
+    </div>
+
+
+
+    <form id="fbPaymentForm" method="post" novalidate="">
+
+
+
+      <p class="sr-only">Pflichtfelder sind mit * gekennzeichnet</p>
+
+      <fieldset id="amountBox">
+
+        <legend>Meine Spende</legend>
+
+
+
+        <div id="amountChoice">
+          <fieldset class="flex flex-col mb-6 space-y-1 form-group input-amount-choices " id="amountChoices"
+            aria-labelledby="amountChoicesLabel">
+            <span class="label" id="amountChoicesLabel">Betrag *</span>
+            <div class="choices-grid">
+              <label class="choice lottie-animation-wrapper" for="payment_amount_suggestion-0">
+                <input id="payment_amount_suggestion-0" type="radio" class="relative" name="amountChoice" value="50"
+                  aria-label="50 € ">
+                <span class="relative" aria-hidden="true">
+                  <span class="amount">
+                    50 € </span>
+                </span>
+                <div data-animation-type="flying-hearts" data-animation-trigger-id="payment_amount_suggestion-0"
+                  data-animation-threshold="1" class="hidden lottie-animation lottie-animation-flying-hearts"
+                  aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 1000 1000" width="1000" height="1000"
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
+                    preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <clipPath id="__lottie_element_6">
+                        <rect width="1000" height="1000" x="0" y="0"></rect>
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#__lottie_element_6)">
+                      <g style="display: block;" transform="matrix(1,0,0,1,0,0)" opacity="1">
+                        <rect width="1000" height="1000" fill="transparent"></rect>
+                      </g>
+                      <g style="display: block;"
+                        transform="matrix(0.29737070202827454,-0.16483527421951294,0.16483527421951294,0.29737070202827454,390.9456787109375,779.5791625976562)"
+                        opacity="0.02">
+                        <g opacity="1" transform="matrix(1,0,0,1,253.86300659179688,205.89599609375)">
+                          <path fill="rgb(232,66,101)" fill-opacity="1"
+                            d=" M200.80299377441406,14.99899959564209 C149.13800048828125,98.15899658203125 0.39100000262260437,205.64599609375 0.39100000262260437,205.64599609375 C0.39100000262260437,205.64599609375 -153.36300659179688,87.06300354003906 -200.80499267578125,10.699000358581543 C-253.61399841308594,-74.31999969482422 -239.11599731445312,-167.06900024414062 -145.41299438476562,-185.10400390625 C-38.696998596191406,-205.64599609375 -5.010000228881836,-91.58300018310547 0.5569999814033508,-69.09600067138672 C6.275000095367432,-90.9729995727539 44.31999969482422,-200.26100158691406 145.41000366210938,-180.80499267578125 C239.10499572753906,-162.77000427246094 253.61300659179688,-70.02100372314453 200.80299377441406,14.99899959564209z">
+                          </path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+              </label>
+              <label class="choice lottie-animation-wrapper" for="payment_amount_suggestion-1">
+                <input id="payment_amount_suggestion-1" type="radio" class="relative" name="amountChoice" value="100"
+                  aria-label="100 € ">
+                <span class="relative" aria-hidden="true">
+                  <span class="amount">
+                    100 € </span>
+                </span>
+                <div data-animation-type="flying-hearts" data-animation-trigger-id="payment_amount_suggestion-1"
+                  data-animation-threshold="1" class="hidden lottie-animation lottie-animation-flying-hearts"
+                  aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 1000 1000" width="1000" height="1000"
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
+                    preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <clipPath id="__lottie_element_25">
+                        <rect width="1000" height="1000" x="0" y="0"></rect>
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#__lottie_element_25)">
+                      <g style="display: block;" transform="matrix(1,0,0,1,0,0)" opacity="1">
+                        <rect width="1000" height="1000" fill="transparent"></rect>
+                      </g>
+                      <g style="display: block;"
+                        transform="matrix(0.29737070202827454,-0.16483527421951294,0.16483527421951294,0.29737070202827454,390.9456787109375,779.5791625976562)"
+                        opacity="0.02">
+                        <g opacity="1" transform="matrix(1,0,0,1,253.86300659179688,205.89599609375)">
+                          <path fill="rgb(232,66,101)" fill-opacity="1"
+                            d=" M200.80299377441406,14.99899959564209 C149.13800048828125,98.15899658203125 0.39100000262260437,205.64599609375 0.39100000262260437,205.64599609375 C0.39100000262260437,205.64599609375 -153.36300659179688,87.06300354003906 -200.80499267578125,10.699000358581543 C-253.61399841308594,-74.31999969482422 -239.11599731445312,-167.06900024414062 -145.41299438476562,-185.10400390625 C-38.696998596191406,-205.64599609375 -5.010000228881836,-91.58300018310547 0.5569999814033508,-69.09600067138672 C6.275000095367432,-90.9729995727539 44.31999969482422,-200.26100158691406 145.41000366210938,-180.80499267578125 C239.10499572753906,-162.77000427246094 253.61300659179688,-70.02100372314453 200.80299377441406,14.99899959564209z">
+                          </path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+              </label>
+              <label class="choice lottie-animation-wrapper" for="payment_amount_suggestion-2">
+                <input id="payment_amount_suggestion-2" type="radio" class="relative" name="amountChoice" value="200"
+                  aria-label="200 € ">
+                <span class="relative" aria-hidden="true">
+                  <span class="amount">
+                    200 € </span>
+                </span>
+                <div data-animation-type="flying-hearts" data-animation-trigger-id="payment_amount_suggestion-2"
+                  data-animation-threshold="1" class="hidden lottie-animation lottie-animation-flying-hearts"
+                  aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 1000 1000" width="1000" height="1000"
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
+                    preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <clipPath id="__lottie_element_63">
+                        <rect width="1000" height="1000" x="0" y="0"></rect>
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#__lottie_element_63)">
+                      <g style="display: block;" transform="matrix(1,0,0,1,0,0)" opacity="1">
+                        <rect width="1000" height="1000" fill="transparent"></rect>
+                      </g>
+                      <g style="display: block;"
+                        transform="matrix(0.29737070202827454,-0.16483527421951294,0.16483527421951294,0.29737070202827454,390.9456787109375,779.5791625976562)"
+                        opacity="0.02">
+                        <g opacity="1" transform="matrix(1,0,0,1,253.86300659179688,205.89599609375)">
+                          <path fill="rgb(232,66,101)" fill-opacity="1"
+                            d=" M200.80299377441406,14.99899959564209 C149.13800048828125,98.15899658203125 0.39100000262260437,205.64599609375 0.39100000262260437,205.64599609375 C0.39100000262260437,205.64599609375 -153.36300659179688,87.06300354003906 -200.80499267578125,10.699000358581543 C-253.61399841308594,-74.31999969482422 -239.11599731445312,-167.06900024414062 -145.41299438476562,-185.10400390625 C-38.696998596191406,-205.64599609375 -5.010000228881836,-91.58300018310547 0.5569999814033508,-69.09600067138672 C6.275000095367432,-90.9729995727539 44.31999969482422,-200.26100158691406 145.41000366210938,-180.80499267578125 C239.10499572753906,-162.77000427246094 253.61300659179688,-70.02100372314453 200.80299377441406,14.99899959564209z">
+                          </path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+                </div>
+              </label>
+              <label class="choice choice-custom lottie-animation-wrapper" for="payment_customAmount">
+                <span class="input-custom-amount flex items-center justify-center relative mb-4">
+                  <span class="sr-only">Freier Betrag €</span>
+                  <input id="payment_customAmount" type="text" autocomplete="off" inputmode="decimal"
+                    pattern="[\d,.\s]*" value="">
+                  <span aria-hidden="true">€</span>
+                </span>
+                <span class="relative description" aria-hidden="true">Freier Betrag</span>
+                <span data-animation-type="flying-hearts" data-animation-trigger-id="payment_customAmount"
+                  data-animation-threshold="50" class="hidden lottie-animation lottie-animation-flying-hearts"
+                  aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 1000 1000" width="1000" height="1000"
+                    style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
+                    preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                      <clipPath id="__lottie_element_44">
+                        <rect width="1000" height="1000" x="0" y="0"></rect>
+                      </clipPath>
+                    </defs>
+                    <g clip-path="url(#__lottie_element_44)">
+                      <g style="display: block;" transform="matrix(1,0,0,1,0,0)" opacity="1">
+                        <rect width="1000" height="1000" fill="transparent"></rect>
+                      </g>
+                      <g style="display: block;"
+                        transform="matrix(0.29737070202827454,-0.16483527421951294,0.16483527421951294,0.29737070202827454,390.9456787109375,779.5791625976562)"
+                        opacity="0.02">
+                        <g opacity="1" transform="matrix(1,0,0,1,253.86300659179688,205.89599609375)">
+                          <path fill="rgb(232,66,101)" fill-opacity="1"
+                            d=" M200.80299377441406,14.99899959564209 C149.13800048828125,98.15899658203125 0.39100000262260437,205.64599609375 0.39100000262260437,205.64599609375 C0.39100000262260437,205.64599609375 -153.36300659179688,87.06300354003906 -200.80499267578125,10.699000358581543 C-253.61399841308594,-74.31999969482422 -239.11599731445312,-167.06900024414062 -145.41299438476562,-185.10400390625 C-38.696998596191406,-205.64599609375 -5.010000228881836,-91.58300018310547 0.5569999814033508,-69.09600067138672 C6.275000095367432,-90.9729995727539 44.31999969482422,-200.26100158691406 145.41000366210938,-180.80499267578125 C239.10499572753906,-162.77000427246094 253.61300659179688,-70.02100372314453 200.80299377441406,14.99899959564209z">
+                          </path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                      <g style="display: none;">
+                        <g>
+                          <path></path>
+                        </g>
+                      </g>
+                    </g>
+                  </svg></span>
+              </label>
+            </div>
+          </fieldset>
+        </div><!-- #amountChoice -->
+
+
+        <div id="srAmountMessageBanner" role="region" aria-live="polite" class="sr-only">Information über Spendenbetrag
+        </div>
+
+        <div id="intervalChoice" class="lottie-animation-wrapper">
+
+          <div class="mb-6 form-group input-interval ">
+            <label for="payment_interval" class="flex flex-col space-y-1">
+              <span class="label">Rhythmus</span>
+              <div class="select-wrapper"><select name="payment[interval]" class="input" autocomplete="off"
+                  required="required" id="payment_interval">
+                  <option value="0">einmalig</option>
+                  <option value="1">monatlich</option>
+                  <option value="3">vierteljährlich</option>
+                  <option value="6">halbjährlich</option>
+                  <option value="12">jährlich</option>
+                </select></div>
+            </label>
+          </div>
+
+          <div data-animation-type="confetti" data-animation-trigger-id="payment_interval" data-animation-threshold="1"
+            class="hidden lottie-animation lottie-animation-confetti" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 800"
+              width="800" height="800"
+              style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
+              preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <clipPath id="__lottie_element_82">
+                  <rect width="800" height="800" x="0" y="0"></rect>
+                </clipPath>
+              </defs>
+              <g clip-path="url(#__lottie_element_82)">
+                <g style="display: none;">
+                  <rect width="800" height="800" fill=""></rect>
+                </g>
+                <g style="display: block;" transform="matrix(1,0,0,1,182.1529998779297,220.44802856445312)" opacity="1">
+                  <g opacity="1"
+                    transform="matrix(0.8480480909347534,-0.5299192667007446,0.5299192667007446,0.8480480909347534,219.08099365234375,240.18600463867188)">
+                    <path fill="rgb(102,102,102)" fill-opacity="1"
+                      d=" M11.888999938964844,12.65999984741211 C11.888999938964844,12.65999984741211 -8.562000274658203,10.515999794006348 -8.562000274658203,10.515999794006348 C-8.562000274658203,10.515999794006348 -11.888999938964844,-12.65999984741211 -11.888999938964844,-12.65999984741211 C-11.888999938964844,-12.65999984741211 8.562000274658203,-10.515000343322754 8.562000274658203,-10.515000343322754 C8.562000274658203,-10.515000343322754 11.888999938964844,12.65999984741211 11.888999938964844,12.65999984741211z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(0.45399048924446106,0.8910065293312073,-0.8910065293312073,0.45399048924446106,219.2760009765625,237.66799926757812)">
+                    <path fill="rgb(102,102,102)" fill-opacity="1"
+                      d=" M11.888999938964844,12.659000396728516 C11.888999938964844,12.659000396728516 -8.562999725341797,10.515000343322754 -8.562999725341797,10.515000343322754 C-8.562999725341797,10.515000343322754 -11.888999938964844,-12.659000396728516 -11.888999938964844,-12.659000396728516 C-11.888999938964844,-12.659000396728516 8.562000274658203,-10.515999794006348 8.562000274658203,-10.515999794006348 C8.562000274658203,-10.515999794006348 11.888999938964844,12.659000396728516 11.888999938964844,12.659000396728516z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(-0.9975640773773193,-0.06975647062063217,0.06975647062063217,-0.9975640773773193,216.86199951171875,239.00399780273438)">
+                    <path fill="rgb(102,102,102)" fill-opacity="1"
+                      d=" M7.210000038146973,-15.798999786376953 C7.210000038146973,-15.798999786376953 12.97599983215332,3.937999963760376 12.97599983215332,3.937999963760376 C12.97599983215332,3.937999963760376 -7.209000110626221,15.798999786376953 -7.209000110626221,15.798999786376953 C-7.209000110626221,15.798999786376953 -12.97599983215332,-3.937999963760376 -12.97599983215332,-3.937999963760376 C-12.97599983215332,-3.937999963760376 7.210000038146973,-15.798999786376953 7.210000038146973,-15.798999786376953z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(0.9961947202682495,0.08715574443340302,-0.08715574443340302,0.9961947202682495,220.33700561523438,243.0959930419922)">
+                    <path fill="rgb(102,102,102)" fill-opacity="1"
+                      d=" M16.461999893188477,-5.5289998054504395 C16.461999893188477,-5.5289998054504395 5.98799991607666,12.166000366210938 5.98799991607666,12.166000366210938 C5.98799991607666,12.166000366210938 -16.461999893188477,5.5289998054504395 -16.461999893188477,5.5289998054504395 C-16.461999893188477,5.5289998054504395 -5.989999771118164,-12.166000366210938 -5.989999771118164,-12.166000366210938 C-5.989999771118164,-12.166000366210938 16.461999893188477,-5.5289998054504395 16.461999893188477,-5.5289998054504395z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(-0.017452405765652657,0.9998477101325989,-0.9998477101325989,-0.017452405765652657,216.8070068359375,247.35899353027344)">
+                    <path fill="rgb(255,166,58)" fill-opacity="1"
+                      d=" M12.71399974822998,-4.269999980926514 C12.71399974822998,-4.269999980926514 4.625,9.395999908447266 4.625,9.395999908447266 C4.625,9.395999908447266 -12.71399974822998,4.269999980926514 -12.71399974822998,4.269999980926514 C-12.71399974822998,4.269999980926514 -4.625,-9.395999908447266 -4.625,-9.395999908447266 C-4.625,-9.395999908447266 12.71399974822998,-4.269999980926514 12.71399974822998,-4.269999980926514z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(0.32556816935539246,0.9455185532569885,-0.9455185532569885,0.32556816935539246,216.97799682617188,239.57400512695312)">
+                    <path fill="rgb(62,128,255)" fill-opacity="1"
+                      d=" M5.635000228881836,-8.958000183105469 C5.635000228881836,-8.958000183105469 7.51800012588501,3.430000066757202 7.51800012588501,3.430000066757202 C7.51800012588501,3.430000066757202 -5.635000228881836,8.958000183105469 -5.635000228881836,8.958000183105469 C-5.635000228881836,8.958000183105469 -7.51800012588501,-3.430999994277954 -7.51800012588501,-3.430999994277954 C-7.51800012588501,-3.430999994277954 5.635000228881836,-8.958000183105469 5.635000228881836,-8.958000183105469z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(-0.9612616896629333,0.27563735842704773,-0.27563735842704773,-0.9612616896629333,220.8520050048828,243.39300537109375)">
+                    <path fill="rgb(255,51,153)" fill-opacity="1"
+                      d=" M10.031999588012695,-3.36899995803833 C10.031999588012695,-3.36899995803833 3.6489999294281006,7.414000034332275 3.6489999294281006,7.414000034332275 C3.6489999294281006,7.414000034332275 -10.031999588012695,3.369999885559082 -10.031999588012695,3.369999885559082 C-10.031999588012695,3.369999885559082 -3.6500000953674316,-7.414000034332275 -3.6500000953674316,-7.414000034332275 C-3.6500000953674316,-7.414000034332275 10.031999588012695,-3.36899995803833 10.031999588012695,-3.36899995803833z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(0.9993908405303955,-0.03489949554204941,0.03489949554204941,0.9993908405303955,216.41900634765625,243.70700073242188)">
+                    <path fill="rgb(255,51,153)" fill-opacity="1"
+                      d=" M5.439000129699707,-9.079000473022461 C5.439000129699707,-9.079000473022461 7.591000080108643,3.2660000324249268 7.591000080108643,3.2660000324249268 C7.591000080108643,3.2660000324249268 -5.438000202178955,9.079000473022461 -5.438000202178955,9.079000473022461 C-5.438000202178955,9.079000473022461 -7.591000080108643,-3.265000104904175 -7.591000080108643,-3.265000104904175 C-7.591000080108643,-3.265000104904175 5.439000129699707,-9.079000473022461 5.439000129699707,-9.079000473022461z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(-0.32556816935539246,0.9455185532569885,-0.9455185532569885,-0.32556816935539246,217.822998046875,241.68699645996094)">
+                    <path fill="rgb(255,166,58)" fill-opacity="1"
+                      d=" M10.031999588012695,-3.36899995803833 C10.031999588012695,-3.36899995803833 3.6500000953674316,7.414000034332275 3.6500000953674316,7.414000034332275 C3.6500000953674316,7.414000034332275 -10.031999588012695,3.369999885559082 -10.031999588012695,3.369999885559082 C-10.031999588012695,3.369999885559082 -3.6500000953674316,-7.414000034332275 -3.6500000953674316,-7.414000034332275 C-3.6500000953674316,-7.414000034332275 10.031999588012695,-3.36899995803833 10.031999588012695,-3.36899995803833z">
+                    </path>
+                  </g>
+                  <g opacity="1"
+                    transform="matrix(-0.9612616896629333,0.27563735842704773,-0.27563735842704773,-0.9612616896629333,218.9510040283203,244.77499389648438)">
+                    <path fill="rgb(62,128,255)" fill-opacity="1"
+                      d=" M1.090999960899353,10.526000022888184 C1.090999960899353,10.526000022888184 -8.034000396728516,1.937999963760376 -8.034000396728516,1.937999963760376 C-8.034000396728516,1.937999963760376 -1.090999960899353,-10.526000022888184 -1.090999960899353,-10.526000022888184 C-1.090999960899353,-10.526000022888184 8.034000396728516,-1.937999963760376 8.034000396728516,-1.937999963760376 C8.034000396728516,-1.937999963760376 1.090999960899353,10.526000022888184 1.090999960899353,10.526000022888184z">
+                    </path>
+                  </g>
+                </g>
+                <g style="display: block;" transform="matrix(1,0,0,1,46.5,158.60400390625)" opacity="1">
+                  <g opacity="1" transform="matrix(1,0,0,1,312.0780029296875,177.18499755859375)">
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"
+                      stroke="rgb(255,166,58)" stroke-opacity="1" stroke-width="4.829" d="M0 0"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path stroke-linecap="butt" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="round" fill-opacity="0"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="round" fill-opacity="0"></path>
+                  </g>
+                </g>
+                <g style="display: none;">
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="miter" fill-opacity="0" stroke-miterlimit="10"></path>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path></path>
+                  </g>
+                  <g>
+                    <path stroke-linecap="round" stroke-linejoin="round" fill-opacity="0"></path>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+
+        <div id="projectChoice">
+
+          <div class="mb-6 form-group input-project ">
+            <label for="payment_project" class="flex flex-col space-y-1">
+              <span class="label">Projekt</span>
+              <div class="select-wrapper"><select name="payment[project]" class="input" autocomplete="off"
+                  required="required" id="payment_project">
+                  <option value="88436">Hoffnungsträger:in werden: Wo es am dringendsten gebraucht wird</option>
+                  <option value="88440">Menschen in Not</option>
+                  <option value="88438">Hilfe für Kinder und Jugendliche</option>
+                  <option value="88437">Hilfe für Flüchtlinge</option>
+                  <option value="88439">Katastrophenhilfe: rasch helfen</option>
+                  <option value="88444">Hunger und Dürre</option>
+                  <option value="88449">Nothilfe Gaza</option>
+                  <option value="89531">Nothilfe Karibik</option>
+                  <option value="89886">Nothilfe Ukraine</option>
+                </select></div>
+            </label>
+          </div>
+
+        </div><!-- #projectChoice -->
+
+        <div id="donationCustomFields" class="form-row">
+
+
+
+
+
+
+        </div>
+      </fieldset><!-- #amountBox -->
+
+
+
+      <fieldset id="donorData">
+        <legend>Meine Kontaktdaten</legend>
+
+        <div>
+          <div id="donorSalutation" class="form-row grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div class="mb-6 form-group input-salutation ">
+              <label for="payment_salutation" class="flex flex-col space-y-1">
+                <span class="label">Anrede&nbsp;*</span>
+                <div class="select-wrapper"><select name="payment[salutation]" class="input"
+                    autocomplete="honorific-prefix" required="required" id="payment_salutation">
+                    <option value="" selected="selected">Bitte wählen</option>
+                    <option value="Mr.">Herr</option>
+                    <option value="Mrs.">Frau</option>
+                    <option value="diverse">Divers</option>
+                  </select></div>
+              </label>
+            </div>
+
+
+            <div class="mb-6 form-group input-title ">
+              <label for="payment_title" class="flex flex-col space-y-1">
+                <span class="label">Titel</span>
+                <input maxlength="50" autocomplete="off" type="text" name="payment[title]" class="input"
+                  id="payment_title">
+                <div
+                  style="position: relative !important; height: 0px !important; width: 0px !important; display: initial !important; float: left !important;"
+                  data-lastpass-icon-root=""></div>
+              </label>
+            </div>
+
+          </div><!-- #donorSalutation -->
+
+          <div id="donorFirstLastName" class="form-row grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div class="mb-6 form-group input-first_name ">
+              <label for="payment_first_name" class="flex flex-col space-y-1">
+                <span class="label">Vorname&nbsp;*</span>
+                <input maxlength="100" type="text" name="payment[first_name]" class="input" autocomplete="given-name"
+                  required="required" id="payment_first_name"> </label>
+            </div>
+
+
+            <div class="mb-6 form-group input-last_name ">
+              <label for="payment_last_name" class="flex flex-col space-y-1">
+                <span class="label">Nachname&nbsp;*</span>
+                <input maxlength="100" type="text" name="payment[last_name]" class="input" autocomplete="family-name"
+                  required="required" id="payment_last_name"> </label>
+            </div>
+
+          </div><!-- #donorFirstLastName -->
+
+          <label for="payment_company_is_donor" class="toggle" id="toggleCompanyName">
+            <input type="checkbox" name="payment[company_is_donor]" class="sr-only" id="payment_company_is_donor"> <span
+              class="toggle-ui"></span>
+            <span class="ml-3 label">
+              Als Unternehmen spenden </span>
+          </label>
+          <div id="companyNameRow" aria-labelledby="toggleCompanyName" style="display: none;">
+
+            <div class="mb-6 form-group input-company_name ">
+              <label for="payment_company_name" class="flex flex-col space-y-1">
+                <span class="label">Name des Unternehmens&nbsp;*</span>
+                <input maxlength="1000" type="text" name="payment[company_name]" class="input"
+                  autocomplete="organization" id="payment_company_name"> </label>
+            </div>
+
+          </div>
+
+
+          <div class="mb-6 form-group input-email ">
+            <label for="payment_email" class="flex flex-col space-y-1">
+              <span class="label">E-Mail-Adresse&nbsp;*</span>
+              <input maxlength="100" type="text" name="payment[email]" class="input" autocomplete="email"
+                placeholder="email@beispiel.de" required="required" inputmode="email" id="payment_email"> </label>
+          </div>
+
+
+
+
+          <div class="mb-6 form-group input-birthday date ">
+            <label for="payment_birthday" class="flex flex-col space-y-1">
+              <span class="label">Geburtstag</span>
+              <span class="flex flex-col sm:flex-row hide-text-nodes">
+                <input type="text" name="payment[birthday]" value="" autocomplete="off" inputmode="numeric"
+                  data-mask="date" data-placeholder-day="T" data-placeholder-month="M" data-placeholder-year="J"
+                  data-description-day="Tag (zweistellig)" data-description-month="Monat (zweistellig)"
+                  data-description-year="Jahr (vierstellig)" data-date-format="dd.MM.yyyy"
+                  data-invalid-message="Bitte in folgendem Format angeben:" class="input" data-min="1900-01-01"
+                  data-max="2025-11-21" id="payment_birthday" placeholder="TT.MM.JJJJ"
+                  title="Tag (zweistellig), Monat (zweistellig), Jahr (vierstellig)"> </span>
+            </label>
+          </div>
+
+
+
+
+
+
+        </div>
+        <div class="mb-6 form-group input-donation_custom_field_8542 ">
+          <label for="payment_donation_custom_field_8542" class="flex flex-col space-y-1">
+            <span class="label">Wohnhaft in&nbsp;*</span>
+            <div class="select-wrapper"><select data-hide-mobile="0" name="payment[donation_custom_field_8542]"
+                class="input" required="required" id="payment_donation_custom_field_8542">
+                <option value="" selected="selected"></option>
+                <option value="AF">Afghanistan</option>
+                <option value="EG">Ägypten</option>
+                <option value="AX">Alandinseln</option>
+                <option value="AL">Albanien</option>
+                <option value="DZ">Algerien</option>
+                <option value="VI">Amerikanische Jungferninseln</option>
+                <option value="UM">Amerikanisch-Ozeanien</option>
+                <option value="AS">Amerikanisch-Samoa</option>
+                <option value="AD">Andorra</option>
+                <option value="AO">Angola</option>
+                <option value="AI">Anguilla</option>
+                <option value="AQ">Antarktis</option>
+                <option value="AG">Antigua und Barbuda</option>
+                <option value="GQ">Äquatorialguinea</option>
+                <option value="AR">Argentinien</option>
+                <option value="AM">Armenien</option>
+                <option value="AW">Aruba</option>
+                <option value="AZ">Aserbaidschan</option>
+                <option value="ET">Äthiopien</option>
+                <option value="QO">Äußeres Ozeanien</option>
+                <option value="AU">Australien</option>
+                <option value="BS">Bahamas</option>
+                <option value="BH">Bahrain</option>
+                <option value="BD">Bangladesch</option>
+                <option value="BB">Barbados</option>
+                <option value="BY">Belarus</option>
+                <option value="BE">Belgien</option>
+                <option value="BZ">Belize</option>
+                <option value="BJ">Benin</option>
+                <option value="BM">Bermuda</option>
+                <option value="BT">Bhutan</option>
+                <option value="BO">Bolivien</option>
+                <option value="BA">Bosnien und Herzegowina</option>
+                <option value="BW">Botsuana</option>
+                <option value="BV">Bouvetinsel</option>
+                <option value="BR">Brasilien</option>
+                <option value="VG">Britische Jungferninseln</option>
+                <option value="IO">Britisches Territorium im Indischen Ozean</option>
+                <option value="BN">Brunei Darussalam</option>
+                <option value="BG">Bulgarien</option>
+                <option value="BF">Burkina Faso</option>
+                <option value="BI">Burundi</option>
+                <option value="CL">Chile</option>
+                <option value="CN">China</option>
+                <option value="CK">Cookinseln</option>
+                <option value="CR">Costa Rica</option>
+                <option value="CI">Côte d’Ivoire</option>
+                <option value="DK">Dänemark</option>
+                <option value="CD">Demokratische Republik Kongo</option>
+                <option value="KP">Demokratische Volksrepublik Korea</option>
+                <option value="DE">Deutschland</option>
+                <option value="DM">Dominica</option>
+                <option value="DO">Dominikanische Republik</option>
+                <option value="DJ">Dschibuti</option>
+                <option value="EC">Ecuador</option>
+                <option value="SV">El Salvador</option>
+                <option value="ER">Eritrea</option>
+                <option value="EE">Estland</option>
+                <option value="FK">Falklandinseln</option>
+                <option value="FO">Färöer</option>
+                <option value="FJ">Fidschi</option>
+                <option value="FI">Finnland</option>
+                <option value="FR">Frankreich</option>
+                <option value="TF">Französische Süd- und Antarktisgebiete</option>
+                <option value="GF">Französisch-Guayana</option>
+                <option value="PF">Französisch-Polynesien</option>
+                <option value="GA">Gabun</option>
+                <option value="GM">Gambia</option>
+                <option value="GE">Georgien</option>
+                <option value="GH">Ghana</option>
+                <option value="GI">Gibraltar</option>
+                <option value="GD">Grenada</option>
+                <option value="GR">Griechenland</option>
+                <option value="GL">Grönland</option>
+                <option value="GP">Guadeloupe</option>
+                <option value="GU">Guam</option>
+                <option value="GT">Guatemala</option>
+                <option value="GG">Guernsey</option>
+                <option value="GN">Guinea</option>
+                <option value="GW">Guinea-Bissau</option>
+                <option value="GY">Guyana</option>
+                <option value="HT">Haiti</option>
+                <option value="HM">Heard- und McDonald-Inseln</option>
+                <option value="HN">Honduras</option>
+                <option value="IN">Indien</option>
+                <option value="ID">Indonesien</option>
+                <option value="IQ">Irak</option>
+                <option value="IR">Iran</option>
+                <option value="IE">Irland</option>
+                <option value="IS">Island</option>
+                <option value="IM">Isle of Man</option>
+                <option value="IL">Israel</option>
+                <option value="IT">Italien</option>
+                <option value="JM">Jamaika</option>
+                <option value="JP">Japan</option>
+                <option value="YE">Jemen</option>
+                <option value="JE">Jersey</option>
+                <option value="JO">Jordanien</option>
+                <option value="KY">Kaimaninseln</option>
+                <option value="KH">Kambodscha</option>
+                <option value="CM">Kamerun</option>
+                <option value="CA">Kanada</option>
+                <option value="CV">Kap Verde</option>
+                <option value="KZ">Kasachstan</option>
+                <option value="QA">Katar</option>
+                <option value="KE">Kenia</option>
+                <option value="KG">Kirgisistan</option>
+                <option value="KI">Kiribati</option>
+                <option value="CC">Kokosinseln</option>
+                <option value="CO">Kolumbien</option>
+                <option value="KM">Komoren</option>
+                <option value="CG">Kongo</option>
+                <option value="HR">Kroatien</option>
+                <option value="CU">Kuba</option>
+                <option value="KW">Kuwait</option>
+                <option value="LA">Laos</option>
+                <option value="LS">Lesotho</option>
+                <option value="LV">Lettland</option>
+                <option value="LB">Libanon</option>
+                <option value="LR">Liberia</option>
+                <option value="LY">Libyen</option>
+                <option value="LI">Liechtenstein</option>
+                <option value="LT">Litauen</option>
+                <option value="LU">Luxemburg</option>
+                <option value="MG">Madagaskar</option>
+                <option value="MW">Malawi</option>
+                <option value="MY">Malaysia</option>
+                <option value="MV">Malediven</option>
+                <option value="ML">Mali</option>
+                <option value="MT">Malta</option>
+                <option value="MA">Marokko</option>
+                <option value="MH">Marshallinseln</option>
+                <option value="MQ">Martinique</option>
+                <option value="MR">Mauretanien</option>
+                <option value="MU">Mauritius</option>
+                <option value="YT">Mayotte</option>
+                <option value="MK">Mazedonien</option>
+                <option value="MX">Mexiko</option>
+                <option value="FM">Mikronesien</option>
+                <option value="MC">Monaco</option>
+                <option value="MN">Mongolei</option>
+                <option value="ME">Montenegro</option>
+                <option value="MS">Montserrat</option>
+                <option value="MZ">Mosambik</option>
+                <option value="MM">Myanmar</option>
+                <option value="NA">Namibia</option>
+                <option value="NR">Nauru</option>
+                <option value="NP">Nepal</option>
+                <option value="NC">Neukaledonien</option>
+                <option value="NZ">Neuseeland</option>
+                <option value="NI">Nicaragua</option>
+                <option value="NL">Niederlande</option>
+                <option value="AN">Niederländische Antillen</option>
+                <option value="NE">Niger</option>
+                <option value="NG">Nigeria</option>
+                <option value="NU">Niue</option>
+                <option value="MP">Nördliche Marianen</option>
+                <option value="NF">Norfolkinsel</option>
+                <option value="NO">Norwegen</option>
+                <option value="OM">Oman</option>
+                <option value="AT">Österreich</option>
+                <option value="TL">Osttimor</option>
+                <option value="PK">Pakistan</option>
+                <option value="PS">Palästinensische Gebiete</option>
+                <option value="PW">Palau</option>
+                <option value="PA">Panama</option>
+                <option value="PG">Papua-Neuguinea</option>
+                <option value="PY">Paraguay</option>
+                <option value="PE">Peru</option>
+                <option value="PH">Philippinen</option>
+                <option value="PN">Pitcairn</option>
+                <option value="PL">Polen</option>
+                <option value="PT">Portugal</option>
+                <option value="PR">Puerto Rico</option>
+                <option value="KR">Republik Korea</option>
+                <option value="MD">Republik Moldau</option>
+                <option value="RE">Réunion</option>
+                <option value="RW">Ruanda</option>
+                <option value="RO">Rumänien</option>
+                <option value="RU">Russische Föderation</option>
+                <option value="SB">Salomonen</option>
+                <option value="ZM">Sambia</option>
+                <option value="WS">Samoa</option>
+                <option value="SM">San Marino</option>
+                <option value="ST">São Tomé und Príncipe</option>
+                <option value="SA">Saudi-Arabien</option>
+                <option value="SE">Schweden</option>
+                <option value="CH">Schweiz</option>
+                <option value="SN">Senegal</option>
+                <option value="RS">Serbien</option>
+                <option value="CS">Serbien und Montenegro</option>
+                <option value="SC">Seychellen</option>
+                <option value="SL">Sierra Leone</option>
+                <option value="ZW">Simbabwe</option>
+                <option value="SG">Singapur</option>
+                <option value="SK">Slowakei</option>
+                <option value="SI">Slowenien</option>
+                <option value="SO">Somalia</option>
+                <option value="HK">Sonderverwaltungszone Hongkong</option>
+                <option value="MO">Sonderverwaltungszone Macao</option>
+                <option value="ES">Spanien</option>
+                <option value="LK">Sri Lanka</option>
+                <option value="BL">St. Barthélemy</option>
+                <option value="SH">St. Helena</option>
+                <option value="KN">St. Kitts und Nevis</option>
+                <option value="LC">St. Lucia</option>
+                <option value="MF">St. Martin</option>
+                <option value="PM">St. Pierre und Miquelon</option>
+                <option value="VC">St. Vincent und die Grenadinen</option>
+                <option value="ZA">Südafrika</option>
+                <option value="SD">Sudan</option>
+                <option value="GS">Südgeorgien und die Südlichen Sandwichinseln</option>
+                <option value="SR">Suriname</option>
+                <option value="SJ">Svalbard und Jan Mayen</option>
+                <option value="SZ">Swasiland</option>
+                <option value="SY">Syrien</option>
+                <option value="TJ">Tadschikistan</option>
+                <option value="TW">Taiwan</option>
+                <option value="TZ">Tansania</option>
+                <option value="TH">Thailand</option>
+                <option value="TG">Togo</option>
+                <option value="TK">Tokelau</option>
+                <option value="TO">Tonga</option>
+                <option value="TT">Trinidad und Tobago</option>
+                <option value="TD">Tschad</option>
+                <option value="CZ">Tschechische Republik</option>
+                <option value="TN">Tunesien</option>
+                <option value="TR">Türkei</option>
+                <option value="TM">Turkmenistan</option>
+                <option value="TC">Turks- und Caicosinseln</option>
+                <option value="TV">Tuvalu</option>
+                <option value="UG">Uganda</option>
+                <option value="UA">Ukraine</option>
+                <option value="ZZ">Unbekannte oder ungültige Region</option>
+                <option value="HU">Ungarn</option>
+                <option value="UY">Uruguay</option>
+                <option value="UZ">Usbekistan</option>
+                <option value="VU">Vanuatu</option>
+                <option value="VA">Vatikanstadt</option>
+                <option value="VE">Venezuela</option>
+                <option value="AE">Vereinigte Arabische Emirate</option>
+                <option value="GB">Vereinigtes Königreich</option>
+                <option value="US">Vereinigte Staaten</option>
+                <option value="VN">Vietnam</option>
+                <option value="WF">Wallis und Futuna</option>
+                <option value="CX">Weihnachtsinsel</option>
+                <option value="EH">Westsahara</option>
+                <option value="CF">Zentralafrikanische Republik</option>
+                <option value="CY">Zypern</option>
+              </select></div>
+          </label>
+        </div>
+      </fieldset><!-- donorData -->
+
+      <fieldset id="publicData">
+        <legend>Öffentliche Angaben</legend>
+
+        <div>
+
+          <div class="mb-6 form-group input-public_message ">
+            <label for="payment_public_message" class="flex flex-col space-y-1">
+              <span class="label">Anmerkung zur Spende (optional)</span>
+              <textarea rows="4" cols="30" maxlength="1000" name="payment[public_message]" class="input"
+                autocomplete="off" id="payment_public_message"></textarea> </label>
+          </div>
+
+        </div>
+      </fieldset>
+
+      <fieldset id="paymentMethodBox">
+        <legend>Zahlungsweise<p class="text-disabled"></p>
+        </legend>
+
+        <div>
+
+          <p id="noPaymentMethod" style="display: none;">Für Ihre Auswahl steht leider keine Zahlungsweise zur
+            Verfügung. Bitte ändern Sie den Rhythmus oder das Land.</p>
+          <div role="region" class="sr-only" aria-live="polite" id="payment_method_aria_live"></div>
+
+          <div id="paymentmethods" class="de">
+            <label for="eps" class="paymentmethod" countries="AT" data-available="true">
+              <input type="radio" name="paymentmethods" id="eps" rel="eps">
+              <span class="paymentmethod-visual">
+                <span role="img" aria-label="Mit EPS-Überweisung spenden" title="EPS-Überweisung"
+                  class="paymentmethod-logo eps"></span>
+                <span aria-hidden="true" class="paymentmethod-label">
+                  EPS-Überweisung </span>
+              </span>
+            </label>
+            <label for="sepa_direct_debit" class="paymentmethod"
+              countries="BE BG DK DE EE FI FR GR IE IT HR LV LT LU MT NL AT PL PT RO SE SK SI ES CZ HU CY IS LI NO"
+              data-available="true">
+              <input type="radio" name="paymentmethods" id="sepa_direct_debit" rel="sepa_direct_debit">
+              <span class="paymentmethod-visual">
+                <span role="img" aria-label="Mit SEPA Lastschrift spenden" title="SEPA Lastschrift"
+                  class="paymentmethod-logo direct_debit"></span>
+                <span aria-hidden="true" class="paymentmethod-label">
+                  SEPA Lastschrift </span>
+              </span>
+            </label>
+            <label for="paypal" class="paymentmethod" countries="" data-available="true">
+              <input type="radio" name="paymentmethods" id="paypal" rel="paypal">
+              <span class="paymentmethod-visual">
+                <span role="img" aria-label="Mit PayPal spenden" title="PayPal"
+                  class="paymentmethod-logo paypal"></span>
+                <span aria-hidden="true" class="paymentmethod-label">
+                  PayPal </span>
+              </span>
+            </label>
+            <label for="stripe_credit_card" class="paymentmethod creditcard-switch" countries="" data-available="true">
+              <input type="radio" name="paymentmethods" id="stripe_credit_card" rel="stripe_credit_card">
+              <span class="paymentmethod-visual">
+                <span role="img" aria-label="Mit Kreditkarte spenden" title="Kreditkarte"
+                  class="paymentmethod-logo creditcard amex"></span>
+                <span aria-hidden="true" class="paymentmethod-label">
+                  Kreditkarte </span>
+              </span>
+            </label>
+          </div><!-- #paymentmethods -->
+
+          <div id="bankAccountForm" style="display: none">
+            <p class="mt-6 mb-4">Bankverbindung:</p>
+
+            <div class="mb-6 form-group input-bank_account_owner ">
+              <label for="payment_bank_account_owner" class="flex flex-col space-y-1">
+                <span class="label">Kontoinhaber/-in&nbsp;*</span>
+                <input maxlength="150" type="text" name="payment[bank_account_owner]" class="input" autocomplete="off"
+                  id="payment_bank_account_owner"> </label>
+            </div>
+
+            <div id="bankIbanRow">
+              <div class="mb-6 form-group input-bank_iban ">
+                <label for="payment_bank_iban" class="flex flex-col space-y-1">
+                  <span class="label">IBAN&nbsp;*</span>
+                  <input type="text" name="payment[bank_iban]" class="input" autocomplete="off" data-mask="iban"
+                    id="payment_bank_iban"> </label>
+              </div>
+
+            </div>
+            <p class="footnote">Hiermit stimme ich der Abbuchung der Spende zu und bestätige, dass ich Kontoinhaber/-in
+              bin.</p>
+          </div><!-- bankAccountForm -->
+
+          <div id="epsBankForm" style="display: block;">
+            <p class="mt-6 mb-4">EPS-Bankauswahl:</p>
+
+            <div class="mb-6 form-group input-eps_bank ">
+              <label for="payment_eps_bank" class="flex flex-col space-y-1">
+                <span class="label">Ihre Bank *</span>
+                <div class="select-wrapper"><select name="payment[eps_bank]" class="input" autocomplete="off"
+                    id="payment_eps_bank">
+                    <option value="" selected="selected">Bitte wählen</option>
+                    <option value="HAABAT2KXXX">Austrian Anadi Bank AG</option>
+                    <option value="BKAUATWWXXX">Bank Austria</option>
+                    <option value="SPBAATWWXXX">bank99 AG</option>
+                    <option value="SPAEAT2SXXX">Bankhaus Carl Spängler &amp; Co.AG</option>
+                    <option value="BAWAATWWXXX">BAWAG AG</option>
+                    <option value="BFKKAT2KXXX">BKS Bank AG</option>
+                    <option value="BTVAAT22XXX">BTV VIER LÄNDER BANK</option>
+                    <option value="OVLIAT21XXX">Dolomitenbank</option>
+                    <option value="EASYATW1XXX">easybank</option>
+                    <option value="ASPKAT2LXXX">Erste Bank und Sparkassen</option>
+                    <option value="HYPNATWWXXX">HYPO NOE LB für Niederösterreich u. Wien</option>
+                    <option value="OBLAAT2LXXX">HYPO Oberösterreich,Salzburg</option>
+                    <option value="HYPTAT22XXX">Hypo Tirol Bank AG</option>
+                    <option value="HYPVAT2BXXX">Hypo Vorarlberg Bank AG</option>
+                    <option value="EHBBAT2EXXX">HYPO-BANK BURGENLAND Aktiengesellschaft</option>
+                    <option value="MVOGAT22XXX">Marchfelder Bank</option>
+                    <option value="OBKLAT2LXXX">Oberbank AG</option>
+                    <option value="VSGKAT2KXXX">Posojilnica Bank eGen</option>
+                    <option value="ALPEAT22XXX">Raiffeisen Bankengruppe Österreich</option>
+                    <option value="BSSWATWWXXX">Schelhammer Capital Bank AG</option>
+                    <option value="SCHOATWWXXX">Schoellerbank AG</option>
+                    <option value="SPADATW1XXX">Sparda Bank Wien</option>
+                    <option value="VBOEATWWGRA">Volksbanken</option>
+                    <option value="VKBLAT2LXXX">Volkskreditbank AG</option>
+                    <option value="BWFBATW1XXX">Österreichische Ärzte- und Apothekerbank</option>
+                  </select></div>
+              </label>
+            </div>
+
+          </div>
+
+          <div id="creditCardForm" style="display: none">
+            <p class="mt-6 mb-4">Kreditkarten Details:</p>
+
+
+            <div class="mb-6 form-group input-credit_card_owner ">
+              <label for="payment_credit_card_owner" class="flex flex-col space-y-1">
+                <span class="label">Karteninhaber/-in&nbsp;*</span>
+                <input autocomplete="off" type="text" name="payment[credit_card_owner]" class="input"
+                  id="payment_credit_card_owner"> </label>
+            </div>
+
+
+            <div class="form-group mb-6">
+              <label for="payment_credit_card_number" class="control-label">Kartennummer&nbsp;*</label>
+              <div id="payment_credit_card_number" class="StripeElement StripeElement--empty">
+                <div class="__PrivateStripeElement"
+                  style="margin: 0px !important; padding: 0px !important; border: medium !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
+                  <iframe name="__privateStripeFrame9073" frameborder="0" allowtransparency="true" scrolling="no"
+                    role="presentation"
+                    src="https://js.stripe.com/v3/elements-inner-card-03bd565e0ed67626d2e88aadf2dac312.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardNumber-91ae5388-4970-4094-87c2-ce1d522d0fe7&amp;showIcon=true&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;rtl=false&amp;componentName=cardNumber&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+                    title="Sicherer Eingaberahmen für Kartennummer"
+                    style="border: 0px !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; user-select: none !important; transform: translate(0px) !important; color-scheme: light only !important; height: 24px;"></iframe><input
+                    class="__PrivateStripeElement-input" aria-hidden="true" aria-label=" " autocomplete="false"
+                    maxlength="1"
+                    style="border: medium !important; display: block !important; position: absolute !important; height: 1px !important; top: -1px !important; left: 0px !important; padding: 0px !important; margin: 0px !important; width: 100% !important; opacity: 0 !important; background: transparent !important; pointer-events: none !important; font-size: 16px !important;">
+                </div>
+              </div>
+              <input readonly="readonly" type="text" name="payment[credit_card_number_hidden]" class="readonly disabled"
+                id="payment_credit_card_number_hidden" style="display: none;">
+            </div>
+
+            <div class="form-row grid grid-cols-1 sm:grid-cols-2 sm:gap-4">
+              <div class="form-group mb-6 sm:mb-0">
+                <label for="payment_credit_card_secure_id" class="control-label">Prüfnummer&nbsp;*</label>
+                <div id="payment_credit_card_secure_id" class="creditCardSecureId StripeElement StripeElement--empty">
+                  <div class="__PrivateStripeElement"
+                    style="margin: 0px !important; padding: 0px !important; border: medium !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
+                    <iframe name="__privateStripeFrame9074" frameborder="0" allowtransparency="true" scrolling="no"
+                      role="presentation"
+                      src="https://js.stripe.com/v3/elements-inner-card-03bd565e0ed67626d2e88aadf2dac312.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardCvc-0c883f61-ded5-435c-a076-6346a9ffb12b&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;rtl=false&amp;componentName=cardCvc&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+                      title="Sicherer Eingaberahmen für CVC-Prüfziffer"
+                      style="border: 0px !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; user-select: none !important; transform: translate(0px) !important; color-scheme: light only !important; height: 24px;"></iframe><input
+                      class="__PrivateStripeElement-input" aria-hidden="true" aria-label=" " autocomplete="false"
+                      maxlength="1"
+                      style="border: medium !important; display: block !important; position: absolute !important; height: 1px !important; top: -1px !important; left: 0px !important; padding: 0px !important; margin: 0px !important; width: 100% !important; opacity: 0 !important; background: transparent !important; pointer-events: none !important; font-size: 16px !important;">
+                  </div>
+                </div>
+                <input readonly="readonly" type="text" name="payment[credit_card_secure_id_hidden]"
+                  class="readonly disabled creditCardSecureId" id="payment_credit_card_secure_id_hidden"
+                  style="display: none;"> <span class="footnote">
+                  Die Prüfnummer ist die dreistellige Zahl auf der Rückseite Ihrer Kreditkarte. </span>
+              </div>
+              <div class="form-group">
+                <label for="payment_credit_card_expiry" class="control-label">Gültig bis&nbsp;*</label>
+                <div>
+                  <div id="payment_credit_card_expiry" class="creditCardExpiry StripeElement StripeElement--empty">
+                    <div class="__PrivateStripeElement"
+                      style="margin: 0px !important; padding: 0px !important; border: medium !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
+                      <iframe name="__privateStripeFrame9075" frameborder="0" allowtransparency="true" scrolling="no"
+                        role="presentation"
+                        src="https://js.stripe.com/v3/elements-inner-card-03bd565e0ed67626d2e88aadf2dac312.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardExpiry-ae23a15e-18b2-46b2-9eaf-b59db96f06a0&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;rtl=false&amp;componentName=cardExpiry&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+                        title="Sicherer Eingaberahmen für Ablaufdatum"
+                        style="border: 0px !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; user-select: none !important; transform: translate(0px) !important; color-scheme: light only !important; height: 24px;"></iframe><input
+                        class="__PrivateStripeElement-input" aria-hidden="true" aria-label=" " autocomplete="false"
+                        maxlength="1"
+                        style="border: medium !important; display: block !important; position: absolute !important; height: 1px !important; top: -1px !important; left: 0px !important; padding: 0px !important; margin: 0px !important; width: 100% !important; opacity: 0 !important; background: transparent !important; pointer-events: none !important; font-size: 16px !important;">
+                    </div>
+                  </div>
+                  <input readonly="readonly" type="text" name="payment[credit_card_expiry_hidden]"
+                    class="readonly disabled creditCardExpiry" id="payment_credit_card_expiry_hidden"
+                    style="display: none;">
+                </div>
+              </div>
+            </div>
+
+            <p style="display:none;">
+              <a href="#" id="resetCreditCardFieldsLink">
+                Möchten Sie die Kreditkarte ändern?»
+              </a>
+            </p>
+          </div><!-- creditCardForm -->
+
+        </div>
+      </fieldset><!-- #paymentMethodBox -->
+
+      <fieldset id="additionalSettings">
+        <fieldset class="mb-2 flex flex-col space-y-1 form-group input-donation_custom_field_8543 newsletter"
+          aria-labelledby="label-fieldset-donation_custom_field_8543">
+          <span id="label-fieldset-donation_custom_field_8543" class="label">Möchten Sie mit dem Newsletter informiert
+            bleiben?&nbsp;*</span>
+          <div data-hide-mobile="0" class="radio_list">
+            <div data-hide-mobile="0" class="radio"><input data-hide-mobile="0"
+                name="payment[donation_custom_field_8543]" type="radio" value="Ja"
+                id="payment_donation_custom_field_8543_Ja" class="input-radio" required="required"><label
+                data-hide-mobile="0" for="payment_donation_custom_field_8543_Ja">Ja<span class="icon"
+                  aria-hidden="true"></span></label></div>
+            <div data-hide-mobile="0" class="radio"><input data-hide-mobile="0"
+                name="payment[donation_custom_field_8543]" type="radio" value="Nein"
+                id="payment_donation_custom_field_8543_Nein" class="input-radio" required="required"><label
+                data-hide-mobile="0" for="payment_donation_custom_field_8543_Nein">Nein<span class="icon"
+                  aria-hidden="true"></span></label></div>
+          </div>
+        </fieldset>
+        <legend>Weitere Angaben</legend>
+        <div>
+
+          <div class="mb-2 form-group input-is_privacy_accepted ">
+            <div class="flex">
+              <label for="payment_is_privacy_accepted" class="flex items-start space-x-2 pr-2">
+                <input class="input-checkbox" type="checkbox" name="payment[is_privacy_accepted]" required="required"
+                  id="payment_is_privacy_accepted"> <span class="label">
+                  Ich nehme die <a href="https://www.diakonie.at/datenschutzerklaerung"
+                    target="_blank">Datenschutzerklärung</a> zur Kenntnis. * </span>
+              </label>
+
+            </div>
+
+
+          </div>
+
+        </div>
+      </fieldset><!-- additionalSettings -->
+
+      <div id="securityBox" class="my-4 p-4">
+        <div class="relative rounded-md p-4 md:pl-28">
+
+          <div class="flex items-center space-x-4 md:space-x-0 mb-4">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24"
+              aria-hidden="true"
+              class="shrink-0 md:absolute md:left-14 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 w-10 h-10 md:w-20 md:h-20">
+              <title>lock_outline</title>
+              <path fill="currentColor"
+                d="M18 20.016v-10.031h-12v10.031h12zM8.906 6v2.016h6.188v-2.016q0-1.266-0.914-2.18t-2.18-0.914-2.18 0.914-0.914 2.18zM18 8.016q0.797 0 1.406 0.586t0.609 1.383v10.031q0 0.797-0.609 1.383t-1.406 0.586h-12q-0.797 0-1.406-0.586t-0.609-1.383v-10.031q0-0.797 0.609-1.383t1.406-0.586h0.984v-2.016q0-2.063 1.477-3.539t3.539-1.477 3.539 1.477 1.477 3.539v2.016h0.984zM12 17.016q-0.797 0-1.406-0.609t-0.609-1.406 0.609-1.406 1.406-0.609 1.406 0.609 0.609 1.406-0.609 1.406-1.406 0.609z">
+              </path>
+            </svg>
+            <p class="text-xl">
+              Steuerliche Absetzbarkeit: <br>
+            </p>
+          </div>
+          <p>
+            Bitte geben Sie Ihr Geburtsdatum an, damit Ihre Spende für Sie steuerlich absetzbar ist. </p>
+
+        </div>
+      </div>
+
+      <div class="my-6 p-4">
+
+        <input type="hidden" name="payment[amount]" id="payment_amount" placeholder="Eigener Betrag"><input
+          type="hidden" name="payment[credit_card_token]" id="payment_credit_card_token" value=""><input type="hidden"
+          name="payment[credit_card_network]" id="payment_credit_card_network"><input type="hidden"
+          name="payment[token]" id="payment_token"
+          value="s85hkigup9ml6y94uk7vth8tg6829wrwngi3bzo1cgpksozomrrh17m2ez2fgdtp"><input type="hidden"
+          name="payment[parent_url]" id="payment_parent_url" value="https://www.diakonie.at/spenden/meine-spende"><input
+          type="hidden" name="payment[success_redirect_url]" id="payment_success_redirect_url"><input type="hidden"
+          name="payment[failure_redirect_url]" id="payment_failure_redirect_url"><input type="hidden"
+          name="payment[fb_sci]" id="payment_fb_sci"><input type="hidden" name="payment[element_hash]"
+          id="payment_element_hash">
+        <div class="select-wrapper"><select name="payment[payment_method]" style="display: none;"
+            id="payment_payment_method">
+            <option value="eps">EPS-Überweisung</option>
+            <option value="sepa_direct_debit">SEPA Lastschrift</option>
+            <option value="paypal">PayPal</option>
+            <option value="stripe_credit_card">Kreditkarte</option>
+          </select></div>
+        <input class="button" type="submit" id="submitForm" value="Jetzt spenden!">
+
+        <div class="footnote my-4">* Pflichtfeld</div>
+
+        <div class="form-error-message error-banner alert my-6" role="alert" aria-live="polite" style="display: none;">
+          Es sind Fehler aufgetreten. Bitte überprüfen Sie das Formular.<br>
+        </div>
+      </div>
+
+    </form>
+
+    <p id="imprintLink" class="p-4" style="display: none;">
+      <a target="_blank" href="https://www.diakonie.at/impressum">Impressum</a>
+    </p>
+
+    <div role="contentinfo" id="footer" class="p-4" style="display: none;">
+      <a id="fundraisingBoxLogo" href="https://www.fundraisingbox.com/?utm_source=donation_form" target="_blank"
+        class="inline-block w-40" title="Zur FundraisingBox Webseite.">
+        <img width="140" height="35" src="/images/FundraisingBox-Logo-ein-sicherer-Service.svg"
+          style="border: 0; display: block" alt="Fundraisingbox Logo">
+      </a>
+    </div>
+  </div><!-- #wrapper -->
+  <div id="loading" style="display: none;">
+    <div class="fb-loading-spinner"></div>
+  </div>
+
+  <script type="text/javascript" nonce="wFCZbAYwtt7UiNgoDycEg">
+    var fbDebugTimer = Date.now();
+
+    /* Show donation form when javascript is enabled */
+    document.getElementById('wrapper').style.removeProperty('display');
+  </script>
+
+
+
+  <script src="https://js.stripe.com/v3/" nonce="cOXedMsLlcyoQL6fmBSJg"></script>
+
+
+
+  <script type="text/javascript" nonce="y5U5MPekwZiMElrEBaI3uQ">
+    window.addEventListener('error', logUncaughtError);
+    $(function () {
+      var $submitForm = $("#submitForm");
+      var $loading = $("#loading");
+      var $fbPaymentForm = $("#fbPaymentForm");
+
+
+      if (window.self === window.top) {
+        $("#organisation-logo, #imprintLink, #footer").show();
+        $("div#wrapper").addClass("mobileView");
+      }
+
+      $(window).resize(function () { setHeight(); });
+
+      var $amountField = $("#payment_amount");
+      var $intervalField = $("#payment_interval");
+      var $projectField = $("#payment_project");
+      var $firstNameField = $("#payment_first_name");
+      var $lastNameField = $("#payment_last_name");
+      var $companyNameField = $("#payment_company_name");
+      var $countryField = $("#payment_country");
+      var $paymentMethodField = $("#payment_payment_method");
+      var $paymentMethods = $("#paymentmethods");
+      var $bankAccountOwnerField = $("#payment_bank_account_owner");
+      var $ibanField = $("#payment_bank_iban");
+      var $bankIbanRow = $("#bankIbanRow");
+      var $bankBicRow = $("#bankBicRow");
+      var $creditCardOwnerField = $("#payment_credit_card_owner");
+      var $creditCardForm = $("#creditCardForm");
+      var $paypalCreditCardForm = $("#paypal-credit-card-fields");
+      var $paypalCreditCardFormError = $("#paypal-credit-card-fields_error");
+      var $bankAccountForm = $("#bankAccountForm");
+      var $generalErrorMsg = $(".form-error-message"); // general error message on top and bottom of form
+      const $coveredFeeCheckbox = $("#payment_donor_covers_the_fee");
+      const $coveredFeeLabel = $("#coveredFee .label, #coveredFee .control-label");
+      const $coveredFeeChecksumAmount = $("#payment_covered_fee_checksum_amount");
+
+      // Set random payment token on first request to prevent multiple submit
+      var $paymentTokenField = $("#payment_token");
+      if ($paymentTokenField.val().length === 0) {
+        $paymentTokenField.val(generateNewPaymentToken());
+      }
+      var formHash = 's85hkigup9ml6y94';
+      var successUrl;
+
+      var walletPaymentMethods = {
+        applePay: {
+          active: false,
+          element: $('#stripe_apple_pay').closest('.paymentmethod')
+        },
+        googlePay: {
+          active: false,
+          element: $('#stripe_google_pay').closest('.paymentmethod')
+        }
+      };
+
+      var errorMsgs = {
+        required: "Dies ist ein Pflichtfeld.",
+        invalid: "Ungültig",
+        system: "Systemfehler"
+      };
+
+      /**
+       * @param {string} redirectUrl
+       */
+      function showSuccessPageRedirectError(redirectUrl) {
+        const redirectError = '<div>Zahlung erfolgreich - Die automatische Weiterleitung wurde blockiert.<br><a href="' + redirectUrl + '" target="_top">Weiterleitung öffnen</a></div>';
+        $generalErrorMsg.html(redirectError).show();
+        $loading.hide();
+        setHeight();
+      }
+
+
+      /**
+       * Format a number as a currency amount
+       * @param {number} amount
+       * @return {string}
+       */
+      let formatCurrency;
+
+      try {
+        const currencyFormatter = new Intl.NumberFormat(
+          'de',
+          {
+            style: 'currency',
+            currency: 'EUR',
+          }
+        )
+
+        formatCurrency = function (amount) {
+          return currencyFormatter.format(amount);
+        }
+      } catch (error) {
+        handleJsError(error);
+
+        const currencySymbol = '€';
+        formatCurrency = function (amount) {
+          return Number(amount).toLocaleString() + ' ' + currencySymbol;
+        };
+      }
+
+      const CALCULATION_NONE = 'none';
+      const CALCULATION_PER_YEAR = 'per_year';
+      const amountCalculation = 'none';
+
+      /**
+       * Represents covered fee configuration for the UI
+       * @typedef {Object} CoveredFeeUiConfiguration
+       * @property {number} percentage - The percentage for covered fees (e.g., 2.8).
+       * @property {number} fix - The fixed fee amount for covered fees (e.g., 0.36).
+       * @property {Object.<string, string>} wordings - A dictionary of wordings with string keys and string values.
+       */
+
+      /**
+       * Configuration for covered fee
+       * @type {CoveredFeeUiConfiguration}
+       */
+      const coveredFeeConfig = null;
+      const canUseCoveredFee = !!coveredFeeConfig;
+
+      /**
+       * Hook into HTMLInputElement's setter and getter to detect programmatic change of payment amount field
+       */
+      if (canUseCoveredFee) {
+        const paymentAmountInput = $amountField[0];
+        const desc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value");
+        Object.defineProperty(paymentAmountInput, "value", {
+          get: desc.get,
+          set: function (v) {
+            desc.set.call(this, v);
+            updateCoveredFeeCheckboxWording();
+            updateCoveredFeeChecksumAmount();
+          }
+        });
+      }
+
+      /**
+       * Update the wording of the covered fee checkbox according to current form values
+       */
+      function updateCoveredFeeCheckboxWording() {
+        const interval = Number($intervalField.val()) || 0;
+        const amount = getDonationAmountForInterval(interval);
+        const coveredFeeResult = calculateCoveredFee(amount);
+
+        $coveredFeeLabel.text(getCoveredFeeCheckboxWording(interval, coveredFeeResult));
+
+        setHeight();
+      }
+
+      if (canUseCoveredFee) {
+        window.addEventListener('load', function () {
+          updateCoveredFeeCheckboxWording();
+        });
+        $amountField.on('input', function () {
+          updateCoveredFeeCheckboxWording();
+        });
+        $amountField.on('change', function () {
+          updateCoveredFeeCheckboxWording();
+        });
+        $intervalField.on('change', function () {
+          updateCoveredFeeCheckboxWording();
+        });
+        $coveredFeeCheckbox.on('change', function () {
+          updateIntervalAmounts();
+        });
+      }
+
+      /**
+       * Get checkbox wording
+       *
+       * @param {number} interval the payment interval setting
+       * @param {CoveredFeeResult} coveredFeeResult
+       * @return {string}
+       */
+      function getCoveredFeeCheckboxWording(interval, coveredFeeResult) {
+        const WORDING_PLACEHOLDER_REGEX = /{{([^}]+)}}/g;
+
+        /**
+         * Render wording with given id
+         * @param {string} id
+         * @param {Object.<string, string>} [values] - Optional replacement values
+         * @return {string}
+         */
+        function renderWording(id, values) {
+          const wording = coveredFeeConfig.wordings[id] || 'missing wording: [' + id + ']';
+
+          if (!values) {
+            return wording;
+          }
+
+          return wording.replace(WORDING_PLACEHOLDER_REGEX, function (match, replacementKey) {
+            if (replacementKey in values) {
+              return values[replacementKey];
+            }
+            return match;
+          });
+        }
+
+        if (!coveredFeeResult.amount) {
+          return renderWording('covered_fee_checkbox_text_until_amount_is_chosen')
+        }
+
+        const wordingValues = {
+          amount: formatCurrency(coveredFeeResult.totalAmount),
+          covered_fee_amount: formatCurrency(coveredFeeResult.totalFee),
+        };
+
+        if (!interval) {
+          return renderWording('covered_fee_checkbox_text_amount_chosen', wordingValues)
+        }
+
+        wordingValues.interval = renderWording('interval_' + interval);
+
+        return renderWording('covered_fee_checkbox_text_recurring_payment_chosen', wordingValues);
+      }
+
+      /**
+       * Result of a covered fee calculation
+       * @typedef {Object} CoveredFeeResult
+       * @property {number} amount - The amount before covered fee (e.g. 100).
+       * @property {number} percentage - The percentage for covered fee (e.g. 2.8).
+       * @property {number} percentageAmount - The percentage amount for covered fee (e.g. 2.8).
+       * @property {number} fixedAmount - The fixed amount for covered fee (e.g. 0.36).
+       * @property {number} totalFee - The total fee for covered fee (e.g. 3.16).
+       * @property {number} totalAmount - The total amount after covered fee (e.g. 103.16).
+       */
+
+      /**
+       * Calculate covered fee for given amount
+       * @param {Number} amountEUR
+       * @return {CoveredFeeResult}
+       */
+      function calculateCoveredFee(amountEUR) {
+        const percentage = coveredFeeConfig.percentage;
+
+        if (!amountEUR) {
+          return {
+            amount: NaN,
+            percentage: percentage,
+            percentageAmount: NaN,
+            fixedAmount: NaN,
+            totalFee: NaN,
+            totalAmount: NaN,
+          }
+        }
+
+        // convert amount to minor unit for calculation
+        const amountCENTS = amountEUR * 100;
+
+        // calculation of fixed, percentage and total fee amounts
+        const fixedFeeCENTS = coveredFeeConfig.fix * 100;
+        const percentageFeeCENTS = Math.round(amountCENTS * percentage / 100);
+        const totalFeeCENTS = fixedFeeCENTS + percentageFeeCENTS;
+
+        // convert results to major unit for return
+        const fixedFeeEUR = fixedFeeCENTS / 100;
+        const percentageFeeEUR = percentageFeeCENTS / 100;
+        const totalFeeEUR = totalFeeCENTS / 100;
+        const totalAmountEUR = roundCurrency(amountEUR + totalFeeEUR);
+
+        return {
+          amount: amountEUR,
+          percentage: percentage,
+          percentageAmount: percentageFeeEUR,
+          fixedAmount: fixedFeeEUR,
+          totalFee: totalFeeEUR,
+          totalAmount: totalAmountEUR,
+        };
+      }
+
+      /**
+       * Return if covered fee is currently activated
+       * @return {boolean}
+       */
+      function getCoveredFeeActive() {
+        return canUseCoveredFee && $coveredFeeCheckbox.is(':checked');
+      }
+
+      /**
+       * Return the total amount that will be deducted from the donors account based on current form fields
+       * @return {number}
+       */
+      function getTotalAmount() {
+        const interval = Number($intervalField.val()) || 0;
+        let totalAmount = getDonationAmountForInterval(interval);
+
+        if (getCoveredFeeActive()) {
+          totalAmount = calculateCoveredFee(totalAmount).totalAmount;
+        }
+
+        return totalAmount;
+      }
+
+      /**
+       * Update the covered_fee_checksum_amount field from current form fields
+       */
+      function updateCoveredFeeChecksumAmount() {
+        const totalAmount = getTotalAmount();
+        $coveredFeeChecksumAmount.val(isNaN(totalAmount) ? '' : totalAmount);
+        $coveredFeeChecksumAmount.trigger('change');
+      }
+
+      if (canUseCoveredFee) {
+        window.addEventListener('load', function () {
+          updateCoveredFeeChecksumAmount();
+        });
+        $amountField.on('input', function () {
+          updateCoveredFeeChecksumAmount();
+        });
+        $amountField.on('change', function () {
+          updateCoveredFeeChecksumAmount();
+        });
+        $intervalField.on('change', function () {
+          updateCoveredFeeChecksumAmount();
+        })
+        $coveredFeeCheckbox.on('change', function () {
+          updateCoveredFeeChecksumAmount();
+        });
+      }
+
+      function removeFieldsOnMobileForTailwind() {
+        if (!isMobile()) {
+          return;
+        }
+
+        [].slice.call(document.querySelectorAll('[data-hide-mobile="1"]')).forEach(function (field) {
+          var parentFormRow = field.closest('.form-row');
+          var parentFieldset = field.closest('fieldset');
+
+          field.closest('.form-group').remove();
+
+          if (parentFormRow && parentFormRow.querySelectorAll('.form-group').length === 0) parentFormRow.remove();
+          if (parentFieldset && parentFieldset.querySelectorAll('.form-group').length === 0) parentFieldset.remove();
+        });
+      }
+
+      function removeFieldsOnMobile() {
+        if (!isMobile()) {
+          return;
+        }
+
+        var $mobileSwitchFields = $fbPaymentForm.find('[data-hide-mobile="1"]');
+        $.each($mobileSwitchFields, function () {
+          var $this = $(this);
+          var $parentFormGroup;
+
+          // Special case salutation: remove col and divide free space to first_name and last_name
+          // Salutation can only be hidden on bootstrap template
+          if ($this.attr("id") === "payment_salutation") {
+            // If title field is active, salutation is part of donorSalutation, otherwise donorName
+            if ($this.parents("#donorSalutation").length === 1) {
+              $parentFormGroup = $this.closest("div.col-sm-6");
+              $("#donorSalutation .col-sm-6").addClass("col-sm-12").removeClass("col-sm-6");
+            } else {
+              $parentFormGroup = $this.closest("div.col-md-2");
+              $("#donorName .col-md-5").addClass("col-md-6").removeClass("col-md-5");
+            }
+          } else {
+            $parentFormGroup = $this.closest("div.form-group");
+          }
+
+          if ($parentFormGroup.length > 0) {
+            $parentFormGroup.remove();
+          }
+        });
+      }
+
+      function addFieldError(fieldname, errorMsg) {
+        var errorFormField = $("#" + fieldname);
+        var generalErrorMsgContent = $generalErrorMsg.html();
+        $generalErrorMsg.html('');
+        var errorHtml = $('<p class="text-sm error field-error" role="alert" id="error-msg-' + fieldname + '"><span>' + errorMsg + '</span></p>');
+        var parentRow = errorFormField.closest('.form-group');
+        parentRow.addClass("has-error");
+
+        var ariaInvalidExcludeFieldnames = ['payment_credit_card_number', 'payment_credit_card_secure_id', 'payment_credit_card_expiry', 'payment_credit_card_expire_date_month', 'payment_credit_card_expire_date_year'];
+        if (!ariaInvalidExcludeFieldnames.includes(fieldname)) {
+          errorFormField.attr("aria-invalid", "true");
+        }
+        errorFormField.attr("aria-describedby", "error-msg-" + fieldname);
+        if (fieldname === "payment_credit_card_expire_date_month") {
+          return; //prevent multiple invalid error
+        }
+        var errorWrapper = $("#" + fieldname + "_error");
+        if (errorWrapper.length) {
+          errorWrapper.append(errorHtml);
+        }
+        else {
+          parentRow.append(errorHtml);
+        }
+        $generalErrorMsg.html(generalErrorMsgContent);
+        $generalErrorMsg.show();
+        setHeight();
+      }
+
+
+      try {
+        var $creditCardNumberHiddenField = $("#payment_credit_card_number_hidden");
+        var $creditCardCvcHiddenField = $("#payment_credit_card_secure_id_hidden");
+        var $creditCardTokenField = $("#payment_credit_card_token");
+        var $resetCreditCardFieldsLink = $("#resetCreditCardFieldsLink");
+
+        function toggleCreditCardInputs() {
+          var iFrameDivs = $("#payment_credit_card_number, #payment_credit_card_secure_id, #payment_credit_card_expiry");
+          var readonlyInputs = $("#" + $creditCardNumberHiddenField.attr("id") + ", #" + $creditCardCvcHiddenField.attr("id") + ", #payment_credit_card_expiry_hidden");
+          if ($creditCardTokenField.val()) {
+            iFrameDivs.hide();
+            readonlyInputs.show();
+            $resetCreditCardFieldsLink.parent().show();
+          }
+          else {
+            iFrameDivs.show();
+            readonlyInputs.hide();
+            $resetCreditCardFieldsLink.parent().hide();
+          }
+          setHeight();
+        }
+        toggleCreditCardInputs();
+
+        $(".focusIframe").click(function () {
+          try {
+            $("#" + $(this).attr("for")).find("iframe").focus();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+        });
+
+        $resetCreditCardFieldsLink.click(function () {
+          try {
+            $creditCardTokenField.val("");
+            cardNumber.clear();
+            cardCvc.clear();
+            cardExpiry.clear();
+            toggleCreditCardInputs();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+          return false;
+        });
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+
+      if (typeof Stripe !== 'undefined') {
+        try {
+          var stripeElementOptions = {
+            classes: { focus: "focus" },
+            style: {
+              base: {
+                color: $creditCardOwnerField.css("color"),
+                fontFamily: $creditCardOwnerField.css("font-family"),
+                fontSize: $creditCardOwnerField.css("font-size"),
+                fontStyle: $creditCardOwnerField.css("font-style"),
+                lineHeight: $creditCardOwnerField.css("line-height")
+              },
+              invalid: {
+                color: $creditCardOwnerField.css("color")
+              }
+            }
+          };
+          var cardNumberOptions = $.extend(true, {}, stripeElementOptions);
+          cardNumberOptions["showIcon"] = true;
+          var stripe = Stripe("pk_live_a9FYPQU5rCYUFVAV5117uxNa", { stripeAccount: "acct_1JkoaCBYyZ3QYNjy" });
+          var elements = stripe.elements({ locale: "de" });
+          var cardNumber = elements.create("cardNumber", cardNumberOptions);
+          var cardCvc = elements.create("cardCvc", stripeElementOptions);
+          var cardExpiry = elements.create("cardExpiry", stripeElementOptions);
+          cardNumber.mount("#payment_credit_card_number");
+          cardCvc.mount("#payment_credit_card_secure_id");
+          cardExpiry.mount("#payment_credit_card_expiry");
+
+          $(window).resize(function () {
+            try {
+              var stripeElementOptions = {
+                style: {
+                  base: {
+                    color: $creditCardOwnerField.css("color"),
+                    fontFamily: $creditCardOwnerField.css("font-family"),
+                    fontSize: $creditCardOwnerField.css("font-size"),
+                    fontStyle: $creditCardOwnerField.css("font-style"),
+                    lineHeight: $creditCardOwnerField.css("line-height")
+                  },
+                  invalid: {
+                    color: $creditCardOwnerField.css("color")
+                  }
+                }
+              };
+              cardNumber.update(stripeElementOptions);
+              cardCvc.update(stripeElementOptions);
+              cardExpiry.update(stripeElementOptions);
+            }
+            catch (error) {
+              handleJsError(error);
+            }
+          });
+        }
+        catch (error) {
+          handleJsError(error);
+        }
+      } else { // Stripe not defined - most probably blocked by a client policy
+        $('#stripe_credit_card').closest('.paymentmethod').remove();
+        showAvailablePaymentMethods();
+
+        logPaymentMethodMissing('Stripe');
+      }
+
+
+
+      try {
+        var intervalDefaults = {};
+        $intervalField.find("option").each(function () {
+          try {
+            intervalDefaults[$(this).val()] = $(this).text();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+        });
+
+        $intervalField.change(showAvailablePaymentMethods);
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+
+
+      function toggleBic() {
+      }
+      toggleBic();
+
+      function setPaymentMethod() {
+        var $epsBankForm = $("#epsBankForm");
+        $epsBankForm.hide();
+        $bankAccountForm.hide();
+        $creditCardForm.hide();
+        $paypalCreditCardForm.hide();
+        $paymentMethodField.val("");
+
+        var paymentType = $paymentMethods.find("input:checked").attr("rel");
+        $paymentMethodField.val(paymentType);
+
+        if ($.inArray(paymentType, ["direct_debit", "sepa_direct_debit", "bfs_direct_debit", "micropayment_direct_debit", "wikando_direct_debit"]) !== -1) {
+          $bankAccountForm.show();
+          toggleBic();
+        }
+
+        try {
+          if (paymentType === "micropayment_credit_card" || paymentType === "stripe_credit_card") {
+            $creditCardForm.show();
+          }
+          else if (paymentType !== undefined) {
+            $creditCardTokenField.val("");
+            toggleCreditCardInputs();
+          }
+        }
+        catch (error) {
+          handleJsError(error);
+        }
+
+
+        if (paymentType === "eps") {
+          $epsBankForm.show();
+        }
+        setHeight();
+      }
+      $paymentMethods.find("input").click(setPaymentMethod);
+
+      $paymentMethods.find("input[rel='" + $paymentMethodField.val() + "']").prop("checked", true).click();
+
+
+      try {
+        var $projectChoiceRadios = $("#projectChoice input[type=radio]");
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+
+      try {
+        $("#amountChoices input[type=radio]").click(function () {
+          try {
+            setAmountFieldValue($(this).val());
+            updateIntervalAmounts();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+        });
+        $("#customAmount").keyup(function (e) {
+          var keyCode = e.keyCode || e.which;
+
+          // avoid activating the custom amount radio when tabbing through
+          // the custom amount field when keyCode 9 is tab key
+          if (keyCode === 9) return;
+
+          try {
+            $("#customAmountRadio").val($(this).val()).click();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+        });
+        $("#amountChoices span").click(function () {
+          try {
+            $(this).parent("div").find("[type=radio]").click();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+        });
+        $("#payment_customAmount").keyup(function () {
+          updateIntervalAmounts();
+        });
+        $amountField.keyup(function () {
+          updateIntervalAmounts();
+        });
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+
+      function setAmountFieldValue(value) {
+        $amountField
+          .val(value)
+          .each(function (_index, element) {
+            element.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+      }
+
+      /**
+       * Round the given currency amount to two decimals
+       * @param {number} amount
+       * @return {number}
+       */
+      function roundCurrency(amount) {
+        return Math.round(amount * 100) / 100;
+      }
+
+      /**
+       * Get the current donation amount as number
+       * @return {number}
+       */
+      function getDonationAmount() {
+        return roundCurrency(Number($amountField.val().replace(/,/g, '.')));
+      }
+
+      /**
+       * Get the current donation amount for the given interval
+       * @param {number} interval the interval value in months
+       * @return {number}
+       */
+      function getDonationAmountForInterval(interval) {
+        const amountValue = getDonationAmount();
+
+        if (amountCalculation === CALCULATION_NONE || interval === 0 || !amountValue) {
+          return amountValue;
+        }
+
+        let intervalAmountValue = amountValue * interval;
+
+        if (amountCalculation === CALCULATION_PER_YEAR) {
+          intervalAmountValue /= 12;
+        }
+
+        return roundCurrency(intervalAmountValue);
+      }
+
+      function updateIntervalAmounts() {
+        try {
+        }
+        catch (error) {
+          handleJsError(error);
+        }
+      }
+      updateIntervalAmounts();
+
+
+      function showAvailableWalletPaymentMethod(name) {
+        if (!walletPaymentMethods.hasOwnProperty(name) || walletPaymentMethods[name].active) {
+          return;
+        }
+        walletPaymentMethods[name].element.hide().attr("data-available", "false");
+      }
+
+      var selectedDefaultPaymentMethod = false;
+
+      function showAvailablePaymentMethods() {
+        $(".paymentmethod").show().attr("data-available", "true");
+
+        Object.keys(walletPaymentMethods).forEach(function (name) {
+          showAvailableWalletPaymentMethod(name);
+        });
+
+        try {
+          if ($intervalField.val() !== "0") {
+            var $notRecurringPaymentMethods = $paymentMethods.find("input").not("[rel='direct_debit'],[rel='sepa_direct_debit'],[rel='wikando_direct_debit'],[rel='micropayment_direct_debit'],[rel='micropayment_credit_card'],[rel='micropayment_prepay'],[rel='stripe_credit_card'],[rel='bank_transfer'],[rel='amazon_pay'],[rel='paypal'],[rel='paypal_credit_card']");
+            $notRecurringPaymentMethods.parents(".paymentmethod").hide().attr("data-available", "false");
+            $notRecurringPaymentMethods.prop("checked", false);
+          }
+        }
+        catch (error) {
+          handleJsError(error);
+        }
+        var $availablePaymentMethods = $(".paymentmethod[data-available=true]");
+        const $paymentMethodAriaLive = $('#payment_method_aria_live');
+        if ($availablePaymentMethods.length === 0) {
+          $("#noPaymentMethod").show();
+          $bankAccountForm.hide();
+          $creditCardForm.hide();
+
+          if ($paymentMethodAriaLive.length > 0) {
+            const noPaymentMethodMessage = $("#noPaymentMethod").text();
+            $paymentMethodAriaLive.text(noPaymentMethodMessage);
+          }
+        }
+        else {
+          $("#noPaymentMethod").hide();
+        }
+
+        if (selectedDefaultPaymentMethod === true || $availablePaymentMethods.find("input:checked").length === 0) {
+          var $paymentMethodInputs = $("#paymentmethods").find("input");
+          $paymentMethodInputs.off('.detectChangeDefault');
+          $availablePaymentMethods.first().find("input").prop("checked", true).click();
+          $paymentMethodInputs.on('change.detectChangeDefault', function () {
+            selectedDefaultPaymentMethod = false;
+            $("#paymentmethods").find("input").off('.detectChangeDefault');
+          });
+          selectedDefaultPaymentMethod = true;
+
+          const paymentMethodMessageTranslation = "Zahlungsweise auf %_payment_method% geändert";
+          if ($paymentMethodAriaLive.length > 0 && $availablePaymentMethods.length > 0) {
+            const paymentLabel = $('.paymentmethod:has(input:checked) .paymentmethod-label').text();
+            const paymentMethodMessage = paymentMethodMessageTranslation.replace('%_payment_method%', paymentLabel);
+
+            $paymentMethodAriaLive.text(paymentMethodMessage);
+          }
+        }
+        setPaymentMethod();
+      }
+      showAvailablePaymentMethods();
+
+      try {
+        var bankAccountOwnerInitial = $bankAccountOwnerField.val() ? $bankAccountOwnerField.val().trim() : "";
+        var creditCardOwnerInitial = $creditCardOwnerField.val() ? $creditCardOwnerField.val().trim() : "";
+        function fillOwnerFields() {
+          if (bankAccountOwnerInitial === "") {
+            $bankAccountOwnerField.val($companyNameField.val() ? $companyNameField.val() : ($firstNameField.val() ? $firstNameField.val() + " " + $lastNameField.val() : ""));
+          }
+          if (creditCardOwnerInitial === "") {
+            $creditCardOwnerField.val($firstNameField.val() ? $firstNameField.val() + " " + $lastNameField.val() : "");
+          }
+        }
+        fillOwnerFields();
+        $firstNameField.blur(fillOwnerFields);
+        $lastNameField.blur(fillOwnerFields);
+        $companyNameField.blur(fillOwnerFields);
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+
+      try {
+        var $companyNameRow = $("#companyNameRow");
+        var $showCompanyNameRow = $("#showCompanyNameRow");
+        var $hideCompanyNameRow = $("#hideCompanyNameRow");
+        var $companyIsDonorField = $("#payment_company_is_donor");
+        $showCompanyNameRow.find("a").click(function () {
+          try {
+            $companyNameRow.show();
+            $hideCompanyNameRow.show();
+            $showCompanyNameRow.hide();
+            $companyIsDonorField.prop("checked", true);
+            showCompanyNameRow.setAttribute('aria-expanded', true);
+            hideCompanyNameRow.setAttribute('aria-expanded', true);
+            setHeight();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+          return false;
+        });
+        $hideCompanyNameRow.find("a").click(function () {
+          try {
+            $companyNameRow.hide();
+            $hideCompanyNameRow.hide();
+            $showCompanyNameRow.show();
+            $companyNameField.val("").blur();
+            $companyIsDonorField.prop("checked", false);
+            hideCompanyNameRow.setAttribute('aria-expanded', false);
+            showCompanyNameRow.setAttribute('aria-expanded', false);
+            setHeight();
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+          return false;
+        });
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+
+
+      // pre-check amount for SCA
+      function checkAmount() {
+        var amountVal = getDonationAmount();
+        if (isNaN(amountVal)) {
+          addFieldError($amountField.attr("id"), errorMsgs.invalid);
+          return false;
+        }
+        else if (!amountVal) {
+          addFieldError($amountField.attr("id"), errorMsgs.required);
+          return false;
+        }
+        return true;
+      }
+
+      var resubmit = false;
+      $submitForm.click(function (event) {
+        try {
+          $loading.show();
+
+          if (-1 !== ['stripe_google_pay', 'stripe_apple_pay'].indexOf($paymentMethodField.val()) && resubmit === false) {
+            event.preventDefault();
+            $.post(window.location.href, $fbPaymentForm.serialize(), function (response) {
+              successUrl = response.success_url;
+              window.parent.postMessage({
+                type: 'paymentIntentCreated',
+                paymentIntent: response.payment_intent
+              }, '*');
+            }).fail(function () {
+              resubmit = true;
+              $submitForm.trigger('click');
+            });
+            return false;
+          }
+
+          // remove all errors on submit
+          $generalErrorMsg.hide();
+          $fbPaymentForm.find(".form-group").removeClass("has-error");
+          $fbPaymentForm.find(".field-error").remove();
+          $fbPaymentForm.find("[aria-invalid='true']").removeAttr('aria-invalid').removeAttr('aria-describedby');
+
+
+
+          try {
+            if ($paymentMethodField.val() === "stripe_credit_card" && $creditCardTokenField.val() === "") {
+              event.preventDefault();
+
+              if ($creditCardOwnerField.val().replace(" ", "") === "") {
+                addFieldError($creditCardOwnerField.attr("id"), errorMsgs.required);
+                $loading.hide();
+                return false;
+              }
+
+              stripe.createPaymentMethod("card", cardNumber, { billing_details: { name: $creditCardOwnerField.val() } }).then(function (createPaymentMethodResult) {
+                if (createPaymentMethodResult.error) {
+                  var errorMsg = errorMsgs.invalid;
+                  var errorField = "payment_credit_card_number";
+                  if (createPaymentMethodResult.error.type === "validation_error") {
+                    if (createPaymentMethodResult.error.code.indexOf("cvc") !== -1) {
+                      errorField = "payment_credit_card_secure_id";
+                    }
+                    else if (createPaymentMethodResult.error.code.indexOf("expiry") !== -1) {
+                      errorField = "payment_credit_card_expiry";
+                    }
+                  }
+                  else if (createPaymentMethodResult.error.type !== "card_error") {
+                    errorMsg = errorMsgs.system;
+                  }
+                  addFieldError(errorField, errorMsg);
+                  $loading.hide();
+                }
+                else {
+                  var stripePaymentMethod = createPaymentMethodResult.paymentMethod;
+                  $creditCardTokenField.val(stripePaymentMethod.id);
+                  $creditCardNumberHiddenField.val("************" + stripePaymentMethod.card.last4);
+                  $creditCardCvcHiddenField.val("***");
+                  $("#payment_credit_card_expiry_hidden").val(stripePaymentMethod.card.exp_month + "/" + stripePaymentMethod.card.exp_year);
+                  if (stripePaymentMethod.card.networks.available.length > 1) {
+                    $("#payment_credit_card_network").val(stripePaymentMethod.card.networks.preferred);
+                  }
+                  toggleCreditCardInputs();
+                  $fbPaymentForm.submit();
+                }
+              });
+            }
+          }
+          catch (error) {
+            handleJsError(error);
+          }
+
+        }
+        catch (error) {
+          handleJsError(error);
+        }
+      });
+
+      try {
+        removeFieldsOnMobileForTailwind();
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+
+
+
+
+      setHeight();
+
+      dispatchFbReady();
+
+    });
+
+
+    $(window).load(function () {
+      setHeight();
+    });
+
+    var parent_url = "";
+    if (document.location.href.indexOf("#") !== -1) {
+      parent_url = decodeURIComponent(document.location.href.substr(document.location.href.indexOf("#") + 1));
+      $("#payment_parent_url").val(parent_url);
+    }
+    else {
+      parent_url = decodeURIComponent("https://www.diakonie.at/spenden/meine-spende");
+    }
+
+    var parentHost = parent_url.replace(/([^:]+:\/\/[^\/]+).*/, '$1');
+    if (typeof inIframe === 'function' && false === inIframe()) {
+      parentHost = window.location.protocol + '//' + window.location.hostname;
+    }
+
+    /* DOMAIN VALIDATION START
+     * Validate parent_url matches allowed embedURL domain
+     * Uses DomainNameService in PHP to extract registrable domain (e.g., "domain.de")
+     * */
+
+    let $allowPostMessageForRedirect = false;
+
+    try {
+      $formConfigEmbedUrlDomain = 'diakonie.at';
+      $allowPostMessageForRedirect = parent_url.indexOf($formConfigEmbedUrlDomain) !== -1;
+    } catch (error) {
+      handleJsError(error);
+    }
+    /* DOMAIN VALIDATION END */
+
+    /**
+     * @param {string} type
+     * @return Event
+     */
+    function createEvent(type) {
+      // Regular browser
+      if (typeof window.Event === 'function') {
+        return new Event(type)
+      }
+      //IE
+      var event = document.createEvent('Event');
+      event.initEvent(type, true, true);
+      return event;
+    }
+
+    function dispatchFbReady() {
+      // Fire fbready event at last - custom client code should listen for this event to ensure it is executed afterwards
+      document.body.classList.add('jsFbReady');
+      document.dispatchEvent(createEvent('fbready'));
+    }
+
+    function isMobile() {
+      return /mobi/.test(window.navigator.userAgent.toLowerCase());
+    }
+
+    function setHeight() {
+      try {
+        window.parent.postMessage({
+          type: 'fb:resize',
+          height: document.body.offsetHeight
+        }, '*');
+      }
+      catch (error) {
+        handleJsError(error);
+      }
+    }
+
+    /** @param {ErrorEvent} event */
+    function logUncaughtError(event) {
+      handleJsError(event.error, 'Uncaught Error:');
+    }
+
+    /**
+     * @param {Error} error
+     * @param {string} msg
+     */
+    function handleJsError(error, msg) {
+      console.error("Caught error: ", error);
+      try {
+        var errorData = {
+          name: (msg !== undefined ? msg + " " : "") + error.name,
+          message: error.message,
+          url: document.location.href,
+          parent_url: parent_url,
+          user_agent: navigator.userAgent,
+          time: Date.now() - fbDebugTimer
+        };
+        if (error.stack !== undefined) {
+          errorData.stack = error.stack;
+        }
+        $.post("/app/ajaxLogJsError", {
+          formhash: "s85hkigup9ml6y94",
+          data: errorData
+        });
+      }
+      catch (error) {
+        //console.log("error in handleJsError");
+        console.error(error);
+      }
+    }
+
+    /** @param {string} paymentMethod */
+    function logPaymentMethodMissing(paymentMethod) {
+      var logData = {
+        message: 'Missing payment method library',
+        url: document.location.href,
+        parent_url: parent_url,
+        user_agent: navigator.userAgent,
+        payment_method: paymentMethod
+      };
+      $.post("/app/ajaxLogPaymentMethodMissing", {
+        formhash: "s85hkigup9ml6y94",
+        data: logData
+      });
+    }
+
+    function generateNewPaymentToken() {
+      var token = "s85hkigup9ml6y94";
+      var allowed = "abcdefghijklmnopqrstuvwxyz1234567890".split("");
+      while (token.length < 64) {
+        token += allowed[Math.round(Math.random() * (allowed.length - 1))];
+      }
+      return token;
+    }
+    // pause error event listener for custom js (client)
+    window.removeEventListener('error', logUncaughtError);
+  </script>
+
+  <script nonce="4uTKh7z0CJggiuoJWc7dLA">
+
+    document.addEventListener('DOMContentLoaded', function () {
+      /**
+       * ========================================
+       *  HELPERS
+       * ========================================
+       */
+
+      /**
+       * Wrap an element in a new wrapper div.
+       * @param {HTMLElement} el - Element to wrap.
+       * @param {string} className - CSS class to add to wrapper.
+       */
+      function wrapElement(el, className) {
+        if (!el || !el.parentNode) return;
+        var wrapper = document.createElement('div');
+        wrapper.className = className;
+        el.parentNode.insertBefore(wrapper, el);
+        wrapper.appendChild(el);
+      }
+
+      /**
+       * Update the URL parameter without reloading the page.
+       * @param {string} key 
+       * @param {string} value 
+       */
+      function updateUrlParameter(key, value) {
+        var url = new URL(window.location.href);
+        url.searchParams.set(key, value);
+        window.history.pushState({}, '', url);
+      }
+
+      /**
+       * Toggle credit card & PayPal options depending on donation interval.
+       * @param {string} interval - Value of "interval" URL param.
+       */
+      /*function updateCreditcardSwitchDisplay(interval) {
+          var toggleDivs = document.querySelectorAll('.creditcard-switch, .paymentmethod[for="paypal"]');
+          toggleDivs.forEach(function (div) {
+              if (interval !== '0') {
+                  div.style.display = 'none';
+                  console.log('disable creditcard switch buttons', div);
+              } else {
+                  div.setAttribute('style', ''); // reset inline style
+                  console.log('enable creditcard switch buttons', div);
+              }
+          });
+      }*/
+
+      /** NEU 13-11-25 */
+      function updateCreditcardSwitchDisplay(interval) {
+        // toggle buttons visibility
+        var toggleDivs = document.querySelectorAll('.creditcard-switch, .paymentmethod[for="paypal"]');
+        toggleDivs.forEach(function (div) {
+          if (interval !== '0') {
+            div.style.display = 'none';
+          } else {
+            div.setAttribute('style', '');
+          }
+        });
+
+        // Payment forms
+        var creditCardForm = document.getElementById('creditCardForm');
+        var sepaForm = document.getElementById('bankAccountForm');
+        var epsForm = document.getElementById('epsBankForm');
+
+        // Hide all forms initially
+        if (creditCardForm) creditCardForm.style.display = 'none';
+        if (sepaForm) sepaForm.style.display = 'none';
+        if (epsForm) epsForm.style.display = 'none';
+
+        if (interval !== '0') {
+          // clear all payment methods for now === false
+          document.querySelectorAll('input[name="paymentmethods"]').forEach(function (r) {
+            r.checked = false;
+          });
+
+          // recurring donations → auto-select SEPA
+          var sepaRadio = document.getElementById('sepa_direct_debit');
+          if (sepaRadio) {
+            sepaRadio.checked = true;
+            sepaRadio.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+          if (sepaForm) sepaForm.style.display = '';
+        } else {
+          // one-time donations → show currently selected payment method
+          var creditCardRadio = document.getElementById('stripe_credit_card');
+          var epsRadio = document.getElementById('eps');
+          var sepaRadio = document.getElementById('sepa_direct_debit');
+
+          if (creditCardRadio && creditCardRadio.checked && creditCardForm) creditCardForm.style.display = '';
+          if (epsRadio && epsRadio.checked && epsForm) epsForm.style.display = '';
+          if (sepaRadio && sepaRadio.checked && sepaForm) sepaForm.style.display = '';
+        }
+      }
+
+
+      /**
+       * Insert an info text below "Zahlungsweise" legend during a given date range.
+       * @param {string} start - Start date YYYY-MM-DD
+       * @param {string} end - End date YYYY-MM-DD
+       * @param {string} text - Text to display
+       */
+      function insertInfoTextBetweenDates(start, end, text) {
+        var startDate = new Date(start);
+        var endDate = new Date(end);
+        var currentDate = new Date();
+        var legendElement = document.querySelector('#paymentMethodBox > Legend');
+        if (!legendElement) return;
+
+        var p = document.createElement('p');
+        if (currentDate >= startDate && currentDate <= endDate) {
+          p.textContent = text;
+          p.className = 'text-enabled';
+        } else {
+          p.textContent = '';
+          p.className = 'text-disabled';
+        }
+        legendElement.appendChild(p);
+      }
+
+      /**
+       * ========================================
+       *  FORM CUSTOMIZATION
+       * ========================================
+       */
+
+      // Move first donation custom field (country select) into .text-muted section
+      var firstCustomField = document.querySelector('#donationCustomFields div.form-group:first-child');
+      if (firstCustomField) {
+        firstCustomField.classList.add('country-select');
+        firstCustomField.parentNode.removeChild(firstCustomField);
+        var donorDataMuted = document.querySelector('#donorData .text-muted');
+        if (donorDataMuted) donorDataMuted.prepend(firstCustomField);
+      }
+
+      // Preselect custom country field with "AT"
+      var customCountrySelect = document.getElementById('payment_donation_custom_field_8542');
+      if (customCountrySelect) {
+        customCountrySelect.value = 'AT';
+      }
+
+      // Insert info text below legend if within date range
+      insertInfoTextBetweenDates('2024-12-23', '2024-12-31', 'Infotextbox ist aktiv');
+
+      // Add span.icon to all choice labels
+      document.querySelectorAll('.choice label, .radio label, .well label')
+        .forEach(function (label) {
+          var span = document.createElement('span');
+          span.className = 'icon';
+          span.setAttribute('aria-hidden', 'true');
+          label.appendChild(span);
+        });
+
+      // Add placeholder to "Betrag" field
+      var customAmountInput = document.getElementById('payment_amount');
+      if (customAmountInput) {
+        customAmountInput.placeholder = 'Eigener Betrag';
+      }
+
+      // Wrap all select boxes in .select-wrapper divs
+      document.querySelectorAll('select').forEach(function (select) {
+        wrapElement(select, 'select-wrapper');
+      });
+
+      // Add <span class="checkmark"> to checkbox labels
+      document.querySelectorAll('.checkbox .control-label').forEach(function (label) {
+        var span = document.createElement('span');
+        span.className = 'checkmark';
+        label.appendChild(span);
+      });
+
+      // Setup birthday input
+      var paymentBirthdayInput = document.getElementById('payment_birthday');
+      if (paymentBirthdayInput) {
+        paymentBirthdayInput.placeholder = 'TT.MM.JJJJ';
+        paymentBirthdayInput.readOnly = false;
+      }
+
+      // Add .creditcard-switch class to last paymentmethod div
+      var paymentMethodsDiv = document.querySelector('#paymentmethods .paymentmethod:last-child');
+      if (paymentMethodsDiv) {
+        paymentMethodsDiv.classList.add('creditcard-switch');
+      }
+
+      // Handle credit card switch display on page load
+      var urlParams = new URLSearchParams(window.location.search);
+      var interval = urlParams.get('interval');
+      if (interval !== null) {
+        updateCreditcardSwitchDisplay(interval);
+      }
+
+      // Handle interval select change
+      var intervalSelectBox = document.querySelector('.input-interval select');
+      if (intervalSelectBox) {
+        intervalSelectBox.addEventListener('change', function (event) {
+          var selectedValue = event.target.value;
+          updateCreditcardSwitchDisplay(selectedValue);
+          updateUrlParameter('interval', selectedValue);
+        });
+      }
+
+      // Hide the standard country selection field
+      var defaultCountryField = document.querySelector('#address > .input-country');
+      if (defaultCountryField) {
+        defaultCountryField.classList.add('country-select-hidden');
+        defaultCountryField.style.display = 'none';
+      }
+
+      // Move newsletter field into #additionalSettings
+      var newsletterField = document.querySelector('#donationCustomFields .form-group:first-child');
+      if (newsletterField) {
+        newsletterField.classList.add('newsletter');
+        newsletterField.parentNode.removeChild(newsletterField);
+        var additionalSettingsDiv = document.querySelector('#additionalSettings');
+        if (additionalSettingsDiv) {
+          additionalSettingsDiv.insertBefore(newsletterField, additionalSettingsDiv.firstChild);
+        }
+      }
+
+      // Hide the default newsletter checkbox, sync with custom radio buttons
+      var newsletterCheckbox = document.querySelector('#additionalSettings .input-wants_newsletter');
+      if (newsletterCheckbox) {
+        newsletterCheckbox.classList.add('newsletter-checkbox');
+        newsletterCheckbox.style.display = 'none';
+        document.querySelectorAll('input[name="payment[donation_custom_field_8543]"]')
+          .forEach(function (radio) {
+            radio.addEventListener('change', function () {
+              var wantsNewsletterCheckbox = document.getElementById('payment_wants_newsletter');
+              if (wantsNewsletterCheckbox) {
+                wantsNewsletterCheckbox.checked = (this.value === 'Ja');
+              }
+            });
+          });
+      }
+
+      // Move custom country field into #address and sync with default select
+      var donationCountryField = document.querySelector('#donationCustomFields div.form-group.input-donation_custom_field_8542');
+      if (donationCountryField) {
+        donationCountryField.classList.add('country-select');
+        donationCountryField.parentNode.removeChild(donationCountryField);
+
+        var addressDiv = document.querySelector('#address');
+        if (addressDiv) addressDiv.appendChild(donationCountryField);
+
+        var select1 = document.getElementById('payment_donation_custom_field_8542');
+        var select2 = document.getElementById('payment_country');
+
+        if (select1 && select2) {
+          select1.addEventListener('change', function () {
+            select2.value = select1.value;
+          });
+          // Default to AT
+          select1.value = 'AT';
+          select2.value = 'AT';
+        }
+      }
+    });
+
+    /**
+     * ========================================
+     *  OUTSIDE DOMContentLoaded: 
+     *  Company toggle hides/shows birthday field
+     * ========================================
+     */
+    var companyCheckbox = document.getElementById('payment_company_is_donor');
+    var birthdayInput = document.getElementById('payment_birthday');
+    var userBirthdayValue = '';
+    if (companyCheckbox && birthdayInput) {
+      var birthdayParent = birthdayInput.parentNode;
+      companyCheckbox.addEventListener('change', function () {
+        if (companyCheckbox.checked) {
+          // Store value, hide field
+          userBirthdayValue = birthdayInput.value;
+          birthdayParent.removeChild(birthdayInput);
+          document.querySelector('.input-birthday').style.display = 'none';
+        } else {
+          // Show field again and restore value
+          document.querySelector('.input-birthday').style.display = '';
+          birthdayParent.appendChild(birthdayInput);
+          birthdayInput.value = userBirthdayValue || '';
+        }
+      });
+    }
+
+    /* validator-fixed.js
+       - Use this instead of the previous script.
+       - Behavior:
+         * validate only fields inside the form (on blur / focusout)
+         * if a blacklisted substring is found: remove the input, focus the SAME field again,
+           and display an inline German error message right after that field only.
+         * error clears as soon as the user types something that no longer contains the blacklist.
+    */
+
+    (function () {
+      'use strict';
+
+      const config = {
+        formSelector: '#fbPaymentForm', // your form selector
+        blacklist: ['https://'],        // substring, case-insensitive
+        fieldSelectors: [
+          '#payment_first_name',
+          '#payment_last_name'
+        ],
+        invalidBorderStyle: '2px solid #d9534f',
+        // German message — direct and clear
+        errorMessage: 'Ungültige Eingabe: Keine Links (z. B. "https://...") in diesem Feld erlaubt. Bitte geben Sie hier keinen Link ein.'
+      };
+
+      // helper: case-insensitive substring check
+      function containsBlacklisted(value) {
+        if (!value) return false;
+        const v = String(value).toLowerCase();
+        return config.blacklist.some(term => v.includes(String(term).toLowerCase()));
+      }
+
+      // gather fields that are INSIDE the form (avoid matching unrelated fields)
+      function getValidatedFields(form) {
+        const list = [];
+        config.fieldSelectors.forEach(sel => {
+          form.querySelectorAll(sel).forEach(el => list.push(el));
+        });
+        return Array.from(new Set(list));
+      }
+
+      // create the inline error element
+      function createErrorElement(message) {
+        const msg = document.createElement('div');
+        msg.className = 'validator-error';
+        msg.style.color = '#d9534f';
+        msg.style.fontSize = '0.9em';
+        msg.style.marginTop = '4px';
+        msg.textContent = message;
+        return msg;
+      }
+
+      // mark a single element invalid — only affects that element
+      function markInvalid(el) {
+        if (!el) return;
+
+        // save inline border to restore later
+        if (el.dataset._validator_prev_border === undefined) {
+          el.dataset._validator_prev_border = el.style.border || '';
+        }
+        el.style.border = config.invalidBorderStyle;
+        el.setAttribute('aria-invalid', 'true');
+
+        // remove any existing error that belongs to THIS element only
+        if (el._validatorErrorElement) {
+          el._validatorErrorElement.remove();
+          el._validatorErrorElement = null;
+        }
+
+        // insert new error immediately AFTER the field
+        const msgEl = createErrorElement(config.errorMessage);
+        if (el.nextSibling) el.parentNode.insertBefore(msgEl, el.nextSibling);
+        else el.parentNode.appendChild(msgEl);
+        el._validatorErrorElement = msgEl;
+
+        // clear the user's input and re-focus the same field
+        el.value = '';
+        setTimeout(() => {
+          try { el.focus(); } catch (err) { /* ignore */ }
+        }, 0);
+      }
+
+      // clear invalid state for a single element
+      function clearInvalid(el) {
+        if (!el) return;
+        if (el.dataset._validator_prev_border !== undefined) {
+          el.style.border = el.dataset._validator_prev_border;
+          delete el.dataset._validator_prev_border;
+        } else {
+          el.style.border = '';
+        }
+        el.removeAttribute('aria-invalid');
+
+        if (el._validatorErrorElement) {
+          el._validatorErrorElement.remove();
+          el._validatorErrorElement = null;
+        }
+      }
+
+      // DOM ready
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector(config.formSelector);
+        if (!form) {
+          console.warn('Validator: form not found for selector', config.formSelector);
+          return;
+        }
+
+        const fields = getValidatedFields(form);
+        if (fields.length === 0) {
+          console.warn('Validator: no fields matched selectors (inside the form).', config.fieldSelectors);
+        }
+
+        // quick membership check
+        const validatedSet = new Set(fields);
+
+        // validate only the element that just lost focus
+        // use focusout because blur does not bubble
+        form.addEventListener('focusout', (e) => {
+          const el = e.target;
+          if (!validatedSet.has(el)) return;
+
+          // if the (trimmed) value contains a blacklisted term => mark invalid
+          if (containsBlacklisted(el.value.trim())) {
+            markInvalid(el);
+          }
+          // otherwise do nothing
+        });
+
+        // on input: clear the error for that element as soon as it no longer contains blacklist
+        form.addEventListener('input', (e) => {
+          const el = e.target;
+          if (!validatedSet.has(el)) return;
+          if (!containsBlacklisted(el.value)) {
+            clearInvalid(el);
+          }
+        });
+
+        // prevent submit if any fields are still invalid
+        form.addEventListener('submit', (e) => {
+          let hasInvalid = false;
+          fields.forEach(f => {
+            if (containsBlacklisted(f.value.trim())) {
+              markInvalid(f);
+              hasInvalid = true;
+            }
+          });
+          if (hasInvalid) e.preventDefault();
+        });
+      });
+    })();
+
+
+
+    // MOVE COUNTRY FIELD
+    // Move custom country field to the end of #donorData and default to AT
+    var customCountryField = document.getElementById('payment_donation_custom_field_8542');
+    var donorData = document.getElementById('donorData');
+
+    if (customCountryField && donorData) {
+      // Move the entire parent .form-group container, if it exists
+      var formGroup = customCountryField.closest('.form-group') || customCountryField;
+      donorData.appendChild(formGroup);
+
+      // Set default value to AT
+      customCountryField.value = 'AT';
+    }
+
+  </script>
+  <script nonce="5NnSSY4Xi0Wvxi0c8mqOCA">
+    window.addEventListener('error', logUncaughtError);
+  </script>
+
+
+  <script src="/js/polaris.min.js" nonce="cKv7ZjME7bkd4DOfy09SwA"></script>
+
+  <script nonce="LuAdnHwn4l8kRnj3tLhVmw">
+    (function () {
+      const amountChoiceContainer = document.getElementById('amountChoice');
+      const customAmountInput = document.getElementById('payment_customAmount');
+      const amountInput = document.getElementById('payment_amount');
+
+      if (!amountChoiceContainer) return;
+
+      const amountChoices = Array.from(amountChoiceContainer.querySelectorAll('[name="amountChoice"]'));
+      const customChoice = amountChoiceContainer.querySelector('.choice-custom');
+
+      if (!amountChoices.length) return;
+
+      updateCustomAmountChoice(amountInput.value);
+      updateAmountChoicesSelection(amountInput.value);
+      updateAmountChoicesClasses();
+
+      if (customAmountInput) {
+        customAmountInput.addEventListener('change', function () {
+          updateAmountInputValue(customAmountInput.value);
+        });
+
+        customAmountInput.addEventListener('input', function () {
+          updateAmountInputValue(customAmountInput.value);
+        });
+      }
+
+      amountInput.addEventListener('change', function () {
+        const currentAmount = amountInput.value;
+
+        updateCustomAmountChoice(currentAmount);
+        updateAmountChoicesSelection(currentAmount);
+        updateAmountChoicesClasses();
+      });
+
+      function updateAmountChoicesSelection(currentAmount) {
+        if (customAmountInput && currentAmount === customAmountInput.value) {
+          amountChoices.forEach(function (choice) {
+            choice.checked = null;
+          });
+        } else {
+          amountChoices.forEach(function (choice) {
+            choice.checked = choice.value === currentAmount ? 'checked' : null;
+          });
+        }
+      }
+
+      function updateAmountChoicesClasses() {
+        amountChoices.forEach(function (choice) {
+          if (choice.checked) choice.parentElement.classList.add('checked');
+          else choice.parentElement.classList.remove('checked');
+        });
+      }
+
+      function updateCustomAmountChoice(currentAmount) {
+        if (!customAmountInput || !customChoice) return;
+        if (currentAmount && currentAmount === customAmountInput.value) {
+          customChoice.classList.add('checked');
+        } else {
+          customAmountInput.value = '';
+          customChoice.classList.remove('checked');
+        }
+      }
+
+      function updateAmountInputValue(amount) {
+        amountInput.value = amount;
+        amountInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+    })();
+  </script>
+
+  <script nonce="zor6puIsFOxbTp9m1GUQ">
+    (function () {
+      let toggleCompanyName = document.querySelector('#toggleCompanyName input');
+      let companyName = document.getElementById('companyNameRow');
+      let companyInput = document.getElementById(('payment_company_name'));
+      if (toggleCompanyName && companyName) {
+        toggleCompanyName.addEventListener('change', () => {
+          if (toggleCompanyName.checked) {
+            companyName.style.display = null;
+          } else {
+            companyName.style.display = 'none';
+          }
+          setHeight();
+        });
+        if (companyInput.value) {
+          toggleCompanyName.checked = true;
+          companyName.style.display = null;
+          setHeight();
+        }
+      }
+    })();
+  </script>
+
+  <script nonce="N6wFVA8mi6MrkW2wwnq8Xg">
+    (function () {
+      const $amountField = $('#payment_amount');
+      const $coveredFeeChecksumAmountField = $('#payment_covered_fee_checksum_amount');
+      const $coveredFeeCheckbox = $('#payment_donor_covers_the_fee');
+
+      const $amountMessageBanner = $('#srAmountMessageBanner');
+      const amountMessageTranslation = "Spendenbetrag auf %_amount% geändert";
+      const amountMessageTranslationCoveredFee = "Spendenbetrag inklusive Gebühr auf %_amount% geändert";
+
+      const currency = "EUR";
+      const locale = "de";
+      const fallbackCurrencySymbol = "€";
+
+      function formatAmount(amount) {
+        try {
+          return new Intl.NumberFormat(locale, {
+            style: 'currency',
+            currency: currency,
+          }).format(amount);
+        } catch (error) {
+          handleJsError(error);
+          return Number(amount).toLocaleString() + ' ' + fallbackCurrencySymbol;
+        }
+      }
+
+      function updateAmountMessage() {
+        const amountNumber = Number($amountField.val().replace(/,/g, '.'));
+        const donationAmount = $coveredFeeChecksumAmountField.length > 0 ? $coveredFeeChecksumAmountField.val() : amountNumber;
+        const formattedAmount = formatAmount(donationAmount);
+
+        const messageTemplate = $coveredFeeCheckbox.is(':checked') ? amountMessageTranslationCoveredFee : amountMessageTranslation;
+        const amountMessage = messageTemplate.replace('%_amount%', formattedAmount);
+        $amountMessageBanner.text(amountMessage);
+      }
+
+      if ($coveredFeeChecksumAmountField.length > 0) {
+        $coveredFeeChecksumAmountField.on('change', updateAmountMessage);
+      } else {
+        $amountField.on('change', updateAmountMessage);
+      }
+    })();
+  </script>
+
+  <script nonce="WesRl6LGd1cGrylUxCtNQ">
+    (function () {
+      [].slice.call(document.querySelectorAll('textarea')).forEach(function (textarea) {
+        const width = textarea.clientWidth;
+        const height = textarea.clientHeight;
+        textarea.addEventListener('mouseup', function (e) {
+          if (textarea.clientHeight !== height || textarea.clientWidth !== width) {
+            setHeight();
+          }
+        });
+      });
+    })();
+  </script>
+
+
+
+  <iframe name="__privateStripeController9071" frameborder="0" allowtransparency="true" scrolling="no"
+    role="presentation"
+    src="https://js.stripe.com/v3/controller-with-preconnect-281eafafd795d98dc1645e7105c86a77.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;stripeAccount=acct_1JkoaCBYyZ3QYNjy&amp;stripeJsId=274b97af-6291-4ad4-8ae1-050395602ffb&amp;stripeObjId=sobj-c900f9b0-0b7f-469c-987e-288e15291ee0&amp;firstStripeInstanceCreatedLatency=21&amp;topOriginForCrossOriginFrame=https%3A%2F%2Fwww.diakonie.at&amp;controllerCount=1&amp;isCheckout=false&amp;stripeJsLoadTime=1763741302496&amp;manualBrowserDeprecationRollout=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+    aria-hidden="true" tabindex="-1"
+    style="border: medium !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; visibility: hidden !important; position: fixed !important; height: 1px !important; pointer-events: none !important; user-select: none !important;"></iframe>
+  <div style="display: none;"><iframe name="__privateStripeFrame9076" frameborder="0" allowtransparency="true"
+      scrolling="no" role="presentation" allow="publickey-credentials-get *"
+      src="https://js.stripe.com/v3/universal-link-modal-inner-ac8b376781284962d51222a741ffb399.html#apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;stripeJsId=274b97af-6291-4ad4-8ae1-050395602ffb&amp;stripeAccount=acct_1JkoaCBYyZ3QYNjy&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;locale=de&amp;loggerMetadata[surface]=web_split_card_element&amp;openerFrameId=__privateStripeFrame9073&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"></iframe>
+  </div><iframe name="__privateStripeMetricsController9070" frameborder="0" allowtransparency="true" scrolling="no"
+    role="presentation"
+    src="https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html#url=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;title=Spendenformular%20-%20Diakonie&amp;referrer=https%3A%2F%2Fwww.diakonie.at%2F&amp;muid=NA&amp;sid=NA&amp;version=6&amp;preview=false&amp;__shared_params__[version]=v3"
+    aria-hidden="true" tabindex="-1"
+    style="border: medium !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; visibility: hidden !important; position: fixed !important; height: 1px !important; pointer-events: none !important; user-select: none !important;"></iframe><iframe
+    frameborder="0" allowtransparency="true" scrolling="no" name="hcaptcha-invisible" referrerpolicy="no-referrer"
+    aria-hidden="true" tabindex="-1"
+    src="https://js.stripe.com/v3/hcaptcha-invisible-4629d846b57343334f1b41b117be7cfa.html#debugMode=false&amp;parentOrigin=https%3A%2F%2Fsecure.fundraisingbox.com"
+    style="border: medium !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; visibility: hidden !important; position: fixed !important; height: 1px !important; pointer-events: none !important; user-select: none !important;"
+    data-initialized="true"></iframe>
+</body>
+
+</html>
