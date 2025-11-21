@@ -8,12 +8,33 @@ export interface Form {
   updatedAt: Date;
 }
 
+export interface PaymentMethodDetails {
+  // PayPal
+  email?: string;
+  
+  // SEPA
+  iban?: string;
+  bic?: string;
+  
+  // Credit Card
+  cardNumber?: string;
+  expiryDate?: string;
+  cvv?: string;
+  cardholderName?: string;
+  
+  // EPS
+  bankCode?: string;
+  
+  // Common
+  [key: string]: any;
+}
+
 export interface PaymentMethod {
   id: number;
   name: string;
   type: 'paypal' | 'sepa' | 'creditcard' | 'eps';
   isActive: boolean;
-  details: Record<string, any>; // Encrypted payment credentials
+  details: PaymentMethodDetails; // Encrypted JSON data
   createdAt: Date;
   updatedAt: Date;
 }

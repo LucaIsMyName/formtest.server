@@ -6,8 +6,17 @@ import type { Form, PaymentMethod, GlobalSetting, TestRun } from '../common/type
 let db: Database.Database
 
 export function initDatabase(): void {
+  console.log('=== INITIALIZING DATABASE ===')
   const dbPath = join(app.getPath('userData'), 'formtest.db')
-  db = new Database(dbPath)
+  console.log('Database: Path:', dbPath)
+  
+  try {
+    db = new Database(dbPath)
+    console.log('Database: SQLite connection established')
+  } catch (dbError) {
+    console.error('Database: Failed to create SQLite connection:', dbError)
+    throw dbError
+  }
 
   // Create tables
   db.exec(`
@@ -72,6 +81,9 @@ export function initDatabase(): void {
   for (const setting of defaultSettings) {
     insertSetting.run(setting.key, setting.value, setting.description)
   }
+  
+  console.log('Database: Tables created and default settings inserted')
+  console.log('Database: Initialization complete')
 }
 
 export function getDatabase(): Database.Database {
@@ -199,14 +211,156 @@ export const formQueries = {
 }
 
 // Payment method operations
+console.log('Database: Initializing paymentMethodQueries...')
 export const paymentMethodQueries = {
-  getAll: () => db.prepare('SELECT * FROM payment_methods ORDER BY name').all() as PaymentMethod[],
-  getById: (id: number) => db.prepare('SELECT * FROM payment_methods WHERE id = ?').get(id) as PaymentMethod | undefined,
-  create: (method: Omit<PaymentMethod, 'id' | 'createdAt' | 'updatedAt'>) => 
-    db.prepare('INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)').run(method.name, method.type, method.isActive, JSON.stringify(method.details)),
-  update: (id: number, method: Partial<PaymentMethod>) => 
-    db.prepare('UPDATE payment_methods SET name = ?, type = ?, isActive = ?, details = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?')
-      .run(method.name, method.type, method.isActive, JSON.stringify(method.details), id),
+  getAll: () => {
+    const methods = db.prepare('SELECT * FROM payment_methods ORDER BY name').all() as any[]
+    return methods.map(method => ({
+      ...method,
+      isActive: Boolean(method.isActive),
+      details: JSON.parse(method.details),
+      createdAt: new Date(method.createdAt),
+      updatedAt: new Date(method.updatedAt)
+    })) as PaymentMethod[]
+  },
+  getById: (id: number) => {
+    const method = db.prepare('SELECT * FROM payment_methods WHERE id = ?').get(id) as any
+    if (!method) return undefined
+    return {
+      ...method,
+      isActive: Boolean(method.isActive),
+      details: JSON.parse(method.details),
+      createdAt: new Date(method.createdAt),
+      updatedAt: new Date(method.updatedAt)
+    } as PaymentMethod
+  },
+  create: (method: Omit<PaymentMethod, 'id' | 'createdAt' | 'updatedAt'>) => {
+    console.log('Database: Creating payment method with raw data:', JSON.stringify(method, null, 2))
+    console.log('Database: Payment method data types:', {
+      name: typeof method.name,
+      type: typeof method.type,
+      isActive: typeof method.isActive,
+      details: typeof method.details
+    })
+    
+    // Debug: Check if table exists
+    try {
+      const tableInfo = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='payment_methods'").get()
+      console.log('Database: payment_methods table exists:', !!tableInfo)
+      
+      const tableSchema = db.prepare("PRAGMA table_info(payment_methods)").all()
+      console.log('Database: payment_methods table schema:', tableSchema)
+    } catch (debugError) {
+      console.error('Database: Error checking table:', debugError)
+    }
+    
+    // Ultra-robust data sanitization
+    let name: string = ''
+    let type: string = 'paypal'
+    let isActive: number = 0
+    let details: string = '{}'
+    
+    try {
+      // Handle name
+      if (method.name === null || method.name === undefined) {
+        name = ''
+      } else {
+        name = String(method.name).trim()
+      }
+      
+      // Handle type
+      if (method.type === null || method.type === undefined) {
+        type = 'paypal'
+      } else {
+        const validTypes = ['paypal', 'sepa', 'creditcard', 'eps']
+        const typeStr = String(method.type).toLowerCase()
+        type = validTypes.includes(typeStr) ? typeStr : 'paypal'
+      }
+      
+      // Handle isActive - be very explicit about boolean conversion
+      const isActiveValue = method.isActive as any
+      if (isActiveValue === true || isActiveValue === 1 || isActiveValue === '1' || isActiveValue === 'true') {
+        isActive = 1
+      } else {
+        isActive = 0
+      }
+      
+      // Handle details - ensure it's valid JSON
+      if (method.details === null || method.details === undefined) {
+        details = '{}'
+      } else {
+        try {
+          details = JSON.stringify(method.details)
+        } catch (jsonError) {
+          console.error('Database: Failed to stringify details:', jsonError)
+          details = '{}'
+        }
+      }
+      
+      console.log('Database: Final sanitized payment method values:', { name, type, isActive, details })
+      console.log('Database: Final payment method value types:', {
+        name: typeof name,
+        type: typeof type,
+        isActive: typeof isActive,
+        details: typeof details
+      })
+      
+      // Debug: Test with simple values first
+      console.log('Database: Testing simple insert...')
+      try {
+        const testStmt = db.prepare('INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)')
+        console.log('Database: Prepared statement created successfully')
+        
+        // Test with the most basic values
+        console.log('Database: About to run with values:', [name, type, isActive, details])
+        const result = testStmt.run(name, type, isActive, details)
+        console.log('Database: Payment method insert result:', result)
+        return result
+      } catch (insertError) {
+        console.error('Database: Insert error details:', insertError)
+        if (insertError instanceof Error) {
+          console.error('Database: Insert error message:', insertError.message)
+          console.error('Database: Insert error stack:', insertError.stack)
+        }
+        throw insertError
+      }
+      
+    } catch (error) {
+      console.error('Database: Error in payment method create method:', error)
+      console.error('Database: Payment method error details:', {
+        originalMethod: method,
+        sanitizedValues: { name, type, isActive, details }
+      })
+      throw error
+    }
+  },
+  update: (id: number, method: Partial<PaymentMethod>) => {
+    console.log('Database: Updating payment method with data:', { id, method })
+    
+    // Ensure all values are proper SQLite types
+    const name = method.name !== undefined ? String(method.name) : undefined
+    const type = method.type !== undefined ? String(method.type) : undefined
+    const isActive = method.isActive !== undefined ? (method.isActive === true ? 1 : 0) : undefined
+    const details = method.details !== undefined ? JSON.stringify(method.details) : undefined
+    
+    // Only update fields that are provided
+    const updates = []
+    const values = []
+    
+    if (name !== undefined) { updates.push('name = ?'); values.push(name) }
+    if (type !== undefined) { updates.push('type = ?'); values.push(type) }
+    if (isActive !== undefined) { updates.push('isActive = ?'); values.push(isActive) }
+    if (details !== undefined) { updates.push('details = ?'); values.push(details) }
+    
+    updates.push('updatedAt = CURRENT_TIMESTAMP')
+    values.push(id)
+    
+    const sql = `UPDATE payment_methods SET ${updates.join(', ')} WHERE id = ?`
+    console.log('Database: Payment method update SQL:', sql, 'Values:', values)
+    
+    const stmt = db.prepare(sql)
+    return stmt.run(...values)
+  },
   delete: (id: number) => db.prepare('DELETE FROM payment_methods WHERE id = ?').run(id)
 }
 

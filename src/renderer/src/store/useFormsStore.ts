@@ -76,21 +76,4 @@ export const useFormsStore = create<FormsState>((set, get) => ({
   }
 }))
 
-// Type declaration for window.api
-declare global {
-  interface Window {
-    api: {
-      forms: {
-        getAll: () => Promise<Form[]>
-        getById: (id: number) => Promise<Form | undefined>
-        create: (form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => Promise<any>
-        update: (id: number, form: Partial<Form>) => Promise<any>
-        delete: (id: number) => Promise<any>
-      }
-      paymentMethods: any
-      settings: any
-      testRuns: any
-      tests: any
-    }
-  }
-}
+// Window API types are defined in ../types/window.d.ts

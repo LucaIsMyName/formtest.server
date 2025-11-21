@@ -5,8 +5,16 @@ const utils = require("@electron-toolkit/utils");
 const Database = require("better-sqlite3");
 let db;
 function initDatabase() {
+  console.log("=== INITIALIZING DATABASE ===");
   const dbPath = path.join(electron.app.getPath("userData"), "formtest.db");
-  db = new Database(dbPath);
+  console.log("Database: Path:", dbPath);
+  try {
+    db = new Database(dbPath);
+    console.log("Database: SQLite connection established");
+  } catch (dbError) {
+    console.error("Database: Failed to create SQLite connection:", dbError);
+    throw dbError;
+  }
   db.exec(`
     CREATE TABLE IF NOT EXISTS forms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,6 +73,8 @@ function initDatabase() {
   for (const setting of defaultSettings) {
     insertSetting.run(setting.key, setting.value, setting.description);
   }
+  console.log("Database: Tables created and default settings inserted");
+  console.log("Database: Initialization complete");
 }
 const formQueries = {
   getAll: () => {
@@ -174,11 +184,141 @@ const formQueries = {
   },
   delete: (id) => db.prepare("DELETE FROM forms WHERE id = ?").run(id)
 };
+console.log("Database: Initializing paymentMethodQueries...");
 const paymentMethodQueries = {
-  getAll: () => db.prepare("SELECT * FROM payment_methods ORDER BY name").all(),
-  getById: (id) => db.prepare("SELECT * FROM payment_methods WHERE id = ?").get(id),
-  create: (method) => db.prepare("INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)").run(method.name, method.type, method.isActive, JSON.stringify(method.details)),
-  update: (id, method) => db.prepare("UPDATE payment_methods SET name = ?, type = ?, isActive = ?, details = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?").run(method.name, method.type, method.isActive, JSON.stringify(method.details), id),
+  getAll: () => {
+    const methods = db.prepare("SELECT * FROM payment_methods ORDER BY name").all();
+    return methods.map((method) => ({
+      ...method,
+      isActive: Boolean(method.isActive),
+      details: JSON.parse(method.details),
+      createdAt: new Date(method.createdAt),
+      updatedAt: new Date(method.updatedAt)
+    }));
+  },
+  getById: (id) => {
+    const method = db.prepare("SELECT * FROM payment_methods WHERE id = ?").get(id);
+    if (!method) return void 0;
+    return {
+      ...method,
+      isActive: Boolean(method.isActive),
+      details: JSON.parse(method.details),
+      createdAt: new Date(method.createdAt),
+      updatedAt: new Date(method.updatedAt)
+    };
+  },
+  create: (method) => {
+    console.log("Database: Creating payment method with raw data:", JSON.stringify(method, null, 2));
+    console.log("Database: Payment method data types:", {
+      name: typeof method.name,
+      type: typeof method.type,
+      isActive: typeof method.isActive,
+      details: typeof method.details
+    });
+    try {
+      const tableInfo = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='payment_methods'").get();
+      console.log("Database: payment_methods table exists:", !!tableInfo);
+      const tableSchema = db.prepare("PRAGMA table_info(payment_methods)").all();
+      console.log("Database: payment_methods table schema:", tableSchema);
+    } catch (debugError) {
+      console.error("Database: Error checking table:", debugError);
+    }
+    let name = "";
+    let type = "paypal";
+    let isActive = 0;
+    let details = "{}";
+    try {
+      if (method.name === null || method.name === void 0) {
+        name = "";
+      } else {
+        name = String(method.name).trim();
+      }
+      if (method.type === null || method.type === void 0) {
+        type = "paypal";
+      } else {
+        const validTypes = ["paypal", "sepa", "creditcard", "eps"];
+        const typeStr = String(method.type).toLowerCase();
+        type = validTypes.includes(typeStr) ? typeStr : "paypal";
+      }
+      const isActiveValue = method.isActive;
+      if (isActiveValue === true || isActiveValue === 1 || isActiveValue === "1" || isActiveValue === "true") {
+        isActive = 1;
+      } else {
+        isActive = 0;
+      }
+      if (method.details === null || method.details === void 0) {
+        details = "{}";
+      } else {
+        try {
+          details = JSON.stringify(method.details);
+        } catch (jsonError) {
+          console.error("Database: Failed to stringify details:", jsonError);
+          details = "{}";
+        }
+      }
+      console.log("Database: Final sanitized payment method values:", { name, type, isActive, details });
+      console.log("Database: Final payment method value types:", {
+        name: typeof name,
+        type: typeof type,
+        isActive: typeof isActive,
+        details: typeof details
+      });
+      console.log("Database: Testing simple insert...");
+      try {
+        const testStmt = db.prepare("INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)");
+        console.log("Database: Prepared statement created successfully");
+        console.log("Database: About to run with values:", [name, type, isActive, details]);
+        const result = testStmt.run(name, type, isActive, details);
+        console.log("Database: Payment method insert result:", result);
+        return result;
+      } catch (insertError) {
+        console.error("Database: Insert error details:", insertError);
+        if (insertError instanceof Error) {
+          console.error("Database: Insert error message:", insertError.message);
+          console.error("Database: Insert error stack:", insertError.stack);
+        }
+        throw insertError;
+      }
+    } catch (error) {
+      console.error("Database: Error in payment method create method:", error);
+      console.error("Database: Payment method error details:", {
+        originalMethod: method,
+        sanitizedValues: { name, type, isActive, details }
+      });
+      throw error;
+    }
+  },
+  update: (id, method) => {
+    console.log("Database: Updating payment method with data:", { id, method });
+    const name = method.name !== void 0 ? String(method.name) : void 0;
+    const type = method.type !== void 0 ? String(method.type) : void 0;
+    const isActive = method.isActive !== void 0 ? method.isActive === true ? 1 : 0 : void 0;
+    const details = method.details !== void 0 ? JSON.stringify(method.details) : void 0;
+    const updates = [];
+    const values = [];
+    if (name !== void 0) {
+      updates.push("name = ?");
+      values.push(name);
+    }
+    if (type !== void 0) {
+      updates.push("type = ?");
+      values.push(type);
+    }
+    if (isActive !== void 0) {
+      updates.push("isActive = ?");
+      values.push(isActive);
+    }
+    if (details !== void 0) {
+      updates.push("details = ?");
+      values.push(details);
+    }
+    updates.push("updatedAt = CURRENT_TIMESTAMP");
+    values.push(id);
+    const sql = `UPDATE payment_methods SET ${updates.join(", ")} WHERE id = ?`;
+    console.log("Database: Payment method update SQL:", sql, "Values:", values);
+    const stmt = db.prepare(sql);
+    return stmt.run(...values);
+  },
   delete: (id) => db.prepare("DELETE FROM payment_methods WHERE id = ?").run(id)
 };
 const settingsQueries = {
@@ -202,6 +342,17 @@ const testRunQueries = {
   updateStatus: (id, status, errorMessage, durationMs) => db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?").run(status, errorMessage, durationMs, id)
 };
 function setupIpcHandlers() {
+  console.log("=== SETTING UP IPC HANDLERS ===");
+  console.log("IPC Setup: formQueries available:", !!formQueries);
+  console.log("IPC Setup: paymentMethodQueries available:", !!paymentMethodQueries);
+  console.log("IPC Setup: paymentMethodQueries.create available:", !!paymentMethodQueries?.create);
+  try {
+    console.log("IPC Setup: Testing paymentMethodQueries object...");
+    console.log("IPC Setup: paymentMethodQueries keys:", Object.keys(paymentMethodQueries || {}));
+    console.log("IPC Setup: Registering paymentMethods:create handler...");
+  } catch (testError) {
+    console.error("IPC Setup: Error accessing paymentMethodQueries:", testError);
+  }
   electron.ipcMain.handle("forms:getAll", async () => {
     try {
       return formQueries.getAll();
@@ -245,11 +396,61 @@ function setupIpcHandlers() {
       throw error;
     }
   });
-  electron.ipcMain.handle("paymentMethods:getAll", () => paymentMethodQueries.getAll());
-  electron.ipcMain.handle("paymentMethods:getById", (_, id) => paymentMethodQueries.getById(id));
-  electron.ipcMain.handle("paymentMethods:create", (_, method) => paymentMethodQueries.create(method));
-  electron.ipcMain.handle("paymentMethods:update", (_, id, method) => paymentMethodQueries.update(id, method));
-  electron.ipcMain.handle("paymentMethods:delete", (_, id) => paymentMethodQueries.delete(id));
+  electron.ipcMain.handle("paymentMethods:getAll", async () => {
+    try {
+      return paymentMethodQueries.getAll();
+    } catch (error) {
+      console.error("IPC Error - paymentMethods:getAll:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("paymentMethods:getById", async (_, id) => {
+    try {
+      return paymentMethodQueries.getById(id);
+    } catch (error) {
+      console.error("IPC Error - paymentMethods:getById:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("paymentMethods:create", async (_, method) => {
+    console.log("=== IPC HANDLER START ===");
+    console.log("IPC Handler - paymentMethods:create ENTRY POINT reached");
+    console.log("IPC Handler - paymentMethods:create received:", JSON.stringify(method, null, 2));
+    console.log("IPC Handler - paymentMethodQueries available:", !!paymentMethodQueries);
+    console.log("IPC Handler - paymentMethodQueries.create available:", !!paymentMethodQueries?.create);
+    try {
+      console.log("IPC Handler - About to call paymentMethodQueries.create");
+      const result = paymentMethodQueries.create(method);
+      console.log("IPC Handler - paymentMethods:create result:", result);
+      console.log("=== IPC HANDLER SUCCESS ===");
+      return result;
+    } catch (error) {
+      console.error("=== IPC HANDLER ERROR ===");
+      console.error("IPC Error - paymentMethods:create:", error);
+      if (error instanceof Error) {
+        console.error("IPC Error - message:", error.message);
+        console.error("IPC Error - stack:", error.stack);
+      }
+      console.error("=== IPC HANDLER ERROR END ===");
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("paymentMethods:update", async (_, id, method) => {
+    try {
+      return paymentMethodQueries.update(id, method);
+    } catch (error) {
+      console.error("IPC Error - paymentMethods:update:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("paymentMethods:delete", async (_, id) => {
+    try {
+      return paymentMethodQueries.delete(id);
+    } catch (error) {
+      console.error("IPC Error - paymentMethods:delete:", error);
+      throw error;
+    }
+  });
   electron.ipcMain.handle("settings:getAll", () => settingsQueries.getAll());
   electron.ipcMain.handle("settings:get", (_, key) => settingsQueries.get(key));
   electron.ipcMain.handle("settings:set", (_, key, value, description) => settingsQueries.set(key, value, description));
