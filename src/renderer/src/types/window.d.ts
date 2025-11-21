@@ -18,16 +18,17 @@ declare global {
         delete: (id: number) => Promise<any>
       }
       settings: {
-        getAll: () => Promise<any[]>
-        get: (key: string) => Promise<any>
-        set: (key: string, value: string, description?: string) => Promise<any>
+        getAll: () => Promise<GlobalSetting[]>
+        get: (key: string) => Promise<GlobalSetting | undefined>
+        set: (key: string, value: string, description?: string) => Promise<void>
       }
       testRuns: {
         getAll: () => Promise<TestRun[]>
         getById: (id: number) => Promise<TestRun | undefined>
         getByForm: (formId: number) => Promise<TestRun[]>
-        create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => Promise<any>
-        updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => Promise<any>
+        create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => Promise<TestRun>
+        updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => Promise<void>
+        delete: (id: number) => Promise<void>
       }
       tests: {
         run: (formIds: number[], paymentMethodIds: number[]) => Promise<any>

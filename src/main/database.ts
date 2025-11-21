@@ -338,6 +338,12 @@ export const testRunQueries = {
     db.prepare('INSERT INTO test_runs (formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?)').run(
       testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs
     ),
-  updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => 
-    db.prepare('UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?').run(status, errorMessage, durationMs, id)
+  updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => {
+    const stmt = db.prepare('UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?')
+    return stmt.run(status, errorMessage, durationMs, id)
+  },
+  delete: (id: number) => {
+    const stmt = db.prepare('DELETE FROM test_runs WHERE id = ?')
+    return stmt.run(id)
+  }
 }

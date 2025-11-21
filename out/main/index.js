@@ -241,29 +241,8 @@ const paymentMethodQueries = {
           details = "{}";
         }
       }
-      console.log("Database: Final sanitized payment method values:", { name, type, isActive, details });
-      console.log("Database: Final payment method value types:", {
-        name: typeof name,
-        type: typeof type,
-        isActive: typeof isActive,
-        details: typeof details
-      });
-      console.log("Database: Testing simple insert...");
-      try {
-        const testStmt = db.prepare("INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)");
-        console.log("Database: Prepared statement created successfully");
-        console.log("Database: About to run with values:", [name, type, isActive, details]);
-        const result = testStmt.run(name, type, isActive, details);
-        console.log("Database: Payment method insert result:", result);
-        return result;
-      } catch (insertError) {
-        console.error("Database: Insert error details:", insertError);
-        if (insertError instanceof Error) {
-          console.error("Database: Insert error message:", insertError.message);
-          console.error("Database: Insert error stack:", insertError.stack);
-        }
-        throw insertError;
-      }
+      const stmt = db.prepare("INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)");
+      return stmt.run(name, type, isActive, details);
     } catch (error) {
       console.error("Database: Error in payment method create method:", error);
       console.error("Database: Payment method error details:", {
@@ -324,8 +303,25 @@ const testRunQueries = {
     testRun.logDetails,
     testRun.durationMs
   ),
-  updateStatus: (id, status, errorMessage, durationMs) => db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?").run(status, errorMessage, durationMs, id)
+  updateStatus: (id, status, errorMessage, durationMs) => {
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
+    return stmt.run(status, errorMessage, durationMs, id);
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
+    return stmt.run(id);
+  }
 };
+async function runSingleTest(testRunId, form, paymentMethod, settings) {
+  console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
+  console.log("Test runner temporarily disabled - marking as skipped");
+  await testRunQueries.updateStatus(
+    testRunId,
+    "SKIPPED",
+    "Test runner temporarily disabled",
+    0
+  );
+}
 function setupIpcHandlers() {
   console.log("=== SETTING UP IPC HANDLERS ===");
   console.log("IPC Setup: formQueries available:", !!formQueries);
@@ -444,9 +440,46 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:getByForm", (_, formId) => testRunQueries.getByForm(formId));
   electron.ipcMain.handle("testRuns:create", (_, testRun) => testRunQueries.create(testRun));
   electron.ipcMain.handle("testRuns:updateStatus", (_, id, status, errorMessage, durationMs) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
+  electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
   electron.ipcMain.handle("tests:run", async (_, formIds, paymentMethodIds) => {
-    console.log("Running tests for forms:", formIds, "with payment methods:", paymentMethodIds);
-    return { success: true, message: "Test execution started" };
+    try {
+      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
+      const testRunIds = [];
+      const forms = formIds.map((id) => formQueries.getById(id)).filter((form) => form !== void 0);
+      const paymentMethods = paymentMethodIds.map((id) => paymentMethodQueries.getById(id)).filter((pm) => pm !== void 0);
+      console.log(`Found ${forms.length} forms and ${paymentMethods.length} payment methods`);
+      const settings = settingsQueries.getAll();
+      const settingsMap = settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {});
+      for (const form of forms) {
+        for (const paymentMethod of paymentMethods) {
+          console.log(`Creating test run for form "${form.name}" with payment method "${paymentMethod.name}"`);
+          const testRun = testRunQueries.create({
+            formId: form.id,
+            paymentMethodId: paymentMethod.id,
+            status: "RUNNING",
+            logDetails: JSON.stringify([`Test started for ${form.name} with ${paymentMethod.name}`]),
+            screenshotPath: void 0,
+            errorMessage: void 0,
+            durationMs: void 0
+          });
+          testRunIds.push(testRun.lastInsertRowid);
+          setImmediate(async () => {
+            await runSingleTest(testRun.lastInsertRowid, form, paymentMethod, settingsMap);
+          });
+        }
+      }
+      return {
+        success: true,
+        message: `Started ${testRunIds.length} test runs`,
+        testRunIds
+      };
+    } catch (error) {
+      console.error("Test execution error:", error);
+      throw error;
+    }
   });
 }
 function createWindow() {

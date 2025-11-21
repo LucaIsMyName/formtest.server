@@ -1,6 +1,21 @@
 import { ipcMain } from 'electron'
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries } from './database'
+// import { createTestRunner } from './testRunner' // Temporarily disabled
 import type { Form, PaymentMethod, TestRun } from '../common/types'
+
+// Function to run a single test - temporarily disabled
+async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>) {
+  console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`)
+  console.log('Test runner temporarily disabled - marking as skipped')
+  
+  // Temporarily just mark as skipped until we fix the module resolution
+  await testRunQueries.updateStatus(
+    testRunId,
+    'SKIPPED',
+    'Test runner temporarily disabled',
+    0
+  )
+}
 
 export function setupIpcHandlers(): void {
   console.log('=== SETTING UP IPC HANDLERS ===')
@@ -141,11 +156,60 @@ export function setupIpcHandlers(): void {
   ipcMain.handle('testRuns:create', (_, testRun: Omit<TestRun, 'id' | 'runAt'>) => testRunQueries.create(testRun))
   ipcMain.handle('testRuns:updateStatus', (_, id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => 
     testRunQueries.updateStatus(id, status, errorMessage, durationMs))
+  ipcMain.handle('testRuns:delete', (_, id: number) => testRunQueries.delete(id))
 
-  // Test execution handler (placeholder for now)
+  // Test execution handlers
   ipcMain.handle('tests:run', async (_, formIds: number[], paymentMethodIds: number[]) => {
-    // This will be implemented with Playwright integration
-    console.log('Running tests for forms:', formIds, 'with payment methods:', paymentMethodIds)
-    return { success: true, message: 'Test execution started' }
+    try {
+      console.log('Starting test execution for forms:', formIds, 'with payment methods:', paymentMethodIds)
+      
+      const testRunIds: number[] = []
+      
+      // Get forms and payment methods from database
+      const forms = formIds.map(id => formQueries.getById(id)).filter((form): form is Form => form !== undefined)
+      const paymentMethods = paymentMethodIds.map(id => paymentMethodQueries.getById(id)).filter((pm): pm is PaymentMethod => pm !== undefined)
+      
+      console.log(`Found ${forms.length} forms and ${paymentMethods.length} payment methods`)
+      
+      // Get settings for test configuration
+      const settings = settingsQueries.getAll()
+      const settingsMap = settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value
+        return acc
+      }, {} as Record<string, string>)
+      
+      // Create test runs for each combination
+      for (const form of forms) {
+        for (const paymentMethod of paymentMethods) {
+          console.log(`Creating test run for form "${form.name}" with payment method "${paymentMethod.name}"`)
+          
+          const testRun = testRunQueries.create({
+            formId: form.id,
+            paymentMethodId: paymentMethod.id,
+            status: 'RUNNING',
+            logDetails: JSON.stringify([`Test started for ${form.name} with ${paymentMethod.name}`]),
+            screenshotPath: undefined,
+            errorMessage: undefined,
+            durationMs: undefined
+          })
+          
+          testRunIds.push(testRun.lastInsertRowid as number)
+          
+          // Run the actual test asynchronously (don't wait for completion)
+          setImmediate(async () => {
+            await runSingleTest(testRun.lastInsertRowid as number, form, paymentMethod, settingsMap)
+          })
+        }
+      }
+      
+      return {
+        success: true,
+        message: `Started ${testRunIds.length} test runs`,
+        testRunIds
+      }
+    } catch (error) {
+      console.error('Test execution error:', error)
+      throw error
+    }
   })
 }

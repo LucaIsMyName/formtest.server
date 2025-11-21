@@ -36,7 +36,8 @@ const api = {
     getByForm: (formId: number) => ipcRenderer.invoke('testRuns:getByForm', formId),
     create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => ipcRenderer.invoke('testRuns:create', testRun),
     updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => 
-      ipcRenderer.invoke('testRuns:updateStatus', id, status, errorMessage, durationMs)
+      ipcRenderer.invoke('testRuns:updateStatus', id, status, errorMessage, durationMs),
+    delete: (id: number) => ipcRenderer.invoke('testRuns:delete', id)
   },
 
   // Test execution

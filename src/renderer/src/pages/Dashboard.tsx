@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFormsStore } from '../store/useFormsStore'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
+import { useTestRunsStore } from '../store/useTestRunsStore'
+import TestRunDialog from '../components/TestRunDialog'
 
 interface DashboardStats {
   totalForms: number
@@ -18,6 +20,7 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate()
   const { forms, loadForms } = useFormsStore()
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore()
+  const { testRuns, loadTestRuns, isRunning } = useTestRunsStore()
   const [stats, setStats] = useState<DashboardStats>({
     totalForms: 0,
     activeForms: 0,
@@ -29,25 +32,32 @@ const Dashboard: React.FC = () => {
     successRate: 0
   })
   const [isLoading, setIsLoading] = useState(true)
+  const [showTestDialog, setShowTestDialog] = useState(false)
 
   useEffect(() => {
     const loadDashboardData = async () => {
       setIsLoading(true)
       try {
-        await Promise.all([loadForms(), loadPaymentMethods()])
+        await Promise.all([loadForms(), loadPaymentMethods(), loadTestRuns()])
         
         const activeForms = forms.filter(form => form.isActive).length
         const activePaymentMethods = paymentMethods.filter(pm => pm.isActive).length
+        
+        // Calculate test run statistics
+        const successfulTests = testRuns.filter(run => run.status === 'SUCCESS').length
+        const failedTests = testRuns.filter(run => run.status === 'FAILURE').length
+        const totalTestRuns = testRuns.length
+        const successRate = totalTestRuns > 0 ? (successfulTests / totalTestRuns) * 100 : 0
         
         setStats({
           totalForms: forms.length,
           activeForms,
           totalPaymentMethods: paymentMethods.length,
           activePaymentMethods,
-          totalTestRuns: 0,
-          successfulTests: 0,
-          failedTests: 0,
-          successRate: 0
+          totalTestRuns,
+          successfulTests,
+          failedTests,
+          successRate
         })
       } catch (error) {
         console.error('Failed to load dashboard data:', error)
@@ -68,7 +78,7 @@ const Dashboard: React.FC = () => {
         navigate('/payment-methods')
         break
       case 'run-tests':
-        navigate('/test-results')
+        setShowTestDialog(true)
         break
       case 'view-results':
         navigate('/test-results')
@@ -90,9 +100,16 @@ const Dashboard: React.FC = () => {
           <button
             onClick={() => handleQuickAction('run-tests')}
             className="btn-primary"
-            disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}
+            disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0 || isRunning}
           >
-            🚀 Run Tests
+            {isRunning ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Running Tests...
+              </>
+            ) : (
+              <>🚀 Run Tests</>
+            )}
           </button>
           <button
             onClick={() => handleQuickAction('settings')}
@@ -209,6 +226,12 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Test Run Dialog */}
+      <TestRunDialog 
+        isOpen={showTestDialog}
+        onClose={() => setShowTestDialog(false)}
+      />
     </div>
   )
 }

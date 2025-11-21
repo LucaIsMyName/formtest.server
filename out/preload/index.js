@@ -30,7 +30,8 @@ const api = {
     getById: (id) => electron.ipcRenderer.invoke("testRuns:getById", id),
     getByForm: (formId) => electron.ipcRenderer.invoke("testRuns:getByForm", formId),
     create: (testRun) => electron.ipcRenderer.invoke("testRuns:create", testRun),
-    updateStatus: (id, status, errorMessage, durationMs) => electron.ipcRenderer.invoke("testRuns:updateStatus", id, status, errorMessage, durationMs)
+    updateStatus: (id, status, errorMessage, durationMs) => electron.ipcRenderer.invoke("testRuns:updateStatus", id, status, errorMessage, durationMs),
+    delete: (id) => electron.ipcRenderer.invoke("testRuns:delete", id)
   },
   // Test execution
   tests: {
