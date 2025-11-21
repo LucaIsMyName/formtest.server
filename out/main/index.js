@@ -3,6 +3,8 @@ const electron = require("electron");
 const path = require("path");
 const utils = require("@electron-toolkit/utils");
 const Database = require("better-sqlite3");
+const child_process = require("child_process");
+const events = require("events");
 let db;
 function initDatabase() {
   console.log("=== INITIALIZING DATABASE ===");
@@ -312,15 +314,220 @@ const testRunQueries = {
     return stmt.run(id);
   }
 };
+class TestProcessManager extends events.EventEmitter {
+  constructor() {
+    super();
+    this.process = null;
+    this.messageQueue = /* @__PURE__ */ new Map();
+    this.isRunning = false;
+    this.messageId = 0;
+  }
+  async startProcess() {
+    if (this.isRunning) {
+      console.log("Test process already running");
+      return;
+    }
+    console.log("Starting test runner process...");
+    try {
+      let runnerPath = path.join(__dirname, "testRunner", "runner.js");
+      const fs = require("fs");
+      if (!fs.existsSync(runnerPath)) {
+        runnerPath = path.join(process.cwd(), "src", "main", "testRunner", "runner.js");
+        console.log(`Using development runner path: ${runnerPath}`);
+      } else {
+        console.log(`Using production runner path: ${runnerPath}`);
+      }
+      this.process = child_process.spawn("node", [runnerPath], {
+        stdio: ["pipe", "pipe", "pipe"],
+        cwd: process.cwd()
+      });
+      this.isRunning = true;
+      this.process.stdout?.on("data", (data) => {
+        const lines = data.toString().split("\n").filter((line) => line.trim());
+        for (const line of lines) {
+          try {
+            const message = JSON.parse(line);
+            this.handleMessage(message);
+          } catch (error) {
+            console.log("Test runner output:", line);
+          }
+        }
+      });
+      this.process.stderr?.on("data", (data) => {
+        console.log("Test runner log:", data.toString());
+      });
+      this.process.on("exit", (code, signal) => {
+        console.log(`Test runner process exited with code ${code}, signal ${signal}`);
+        this.isRunning = false;
+        this.process = null;
+        for (const [id, { reject, timeout }] of this.messageQueue) {
+          clearTimeout(timeout);
+          reject(new Error("Process exited unexpectedly"));
+        }
+        this.messageQueue.clear();
+        this.emit("processExit", { code, signal });
+      });
+      this.process.on("error", (error) => {
+        console.error("Test runner process error:", error);
+        this.isRunning = false;
+        this.emit("processError", error);
+      });
+      await this.ping();
+      console.log("Test runner process started successfully");
+    } catch (error) {
+      console.error("Failed to start test runner process:", error);
+      this.isRunning = false;
+      throw error;
+    }
+  }
+  async stopProcess() {
+    if (!this.isRunning || !this.process) {
+      return;
+    }
+    console.log("Stopping test runner process...");
+    try {
+      this.process.kill("SIGTERM");
+      await new Promise((resolve) => setTimeout(resolve, 2e3));
+      if (this.isRunning) {
+        this.process.kill("SIGKILL");
+      }
+    } catch (error) {
+      console.error("Error stopping test runner process:", error);
+    }
+    this.isRunning = false;
+    this.process = null;
+  }
+  async runTest(testRunId, form, paymentMethod, settings) {
+    if (!this.isRunning) {
+      await this.startProcess();
+    }
+    console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
+    const message = {
+      id: this.generateMessageId(),
+      type: "START_TEST",
+      payload: {
+        testRunId,
+        form,
+        paymentMethod,
+        settings
+      }
+    };
+    try {
+      const response = await this.sendMessage(message, 12e4);
+      if (response.payload?.success) {
+        return {
+          success: true,
+          duration: response.payload.result?.duration || 0,
+          logs: response.payload.result?.logs || [],
+          screenshot: response.payload.result?.screenshot,
+          formAnalysis: response.payload.result?.formAnalysis
+        };
+      } else {
+        return {
+          success: false,
+          error: response.payload?.error || "Unknown error",
+          duration: 0,
+          logs: response.payload?.logs || []
+        };
+      }
+    } catch (error) {
+      console.error(`Test ${testRunId} failed:`, error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+        duration: 0,
+        logs: []
+      };
+    }
+  }
+  async ping() {
+    const message = {
+      id: this.generateMessageId(),
+      type: "PING"
+    };
+    await this.sendMessage(message, 5e3);
+  }
+  sendMessage(message, timeoutMs = 3e4) {
+    return new Promise((resolve, reject) => {
+      if (!this.process || !this.isRunning) {
+        reject(new Error("Test process not running"));
+        return;
+      }
+      const timeout = setTimeout(() => {
+        this.messageQueue.delete(message.id);
+        reject(new Error(`Message timeout: ${message.type}`));
+      }, timeoutMs);
+      this.messageQueue.set(message.id, { resolve, reject, timeout });
+      try {
+        const messageStr = JSON.stringify(message) + "\n";
+        this.process.stdin?.write(messageStr);
+      } catch (error) {
+        this.messageQueue.delete(message.id);
+        clearTimeout(timeout);
+        reject(error);
+      }
+    });
+  }
+  handleMessage(message) {
+    const handler = this.messageQueue.get(message.id);
+    if (handler) {
+      clearTimeout(handler.timeout);
+      this.messageQueue.delete(message.id);
+      if (message.type === "ERROR") {
+        handler.reject(new Error(message.payload?.error || "Unknown error"));
+      } else {
+        handler.resolve(message);
+      }
+    } else {
+      this.emit("message", message);
+    }
+  }
+  generateMessageId() {
+    return `msg_${++this.messageId}_${Date.now()}`;
+  }
+  isProcessRunning() {
+    return this.isRunning;
+  }
+}
+let processManager = null;
+function getTestProcessManager() {
+  if (!processManager) {
+    processManager = new TestProcessManager();
+    process.on("exit", () => {
+      processManager?.stopProcess();
+    });
+    process.on("SIGINT", () => {
+      processManager?.stopProcess();
+      process.exit(0);
+    });
+    process.on("SIGTERM", () => {
+      processManager?.stopProcess();
+      process.exit(0);
+    });
+  }
+  return processManager;
+}
 async function runSingleTest(testRunId, form, paymentMethod, settings) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
-  console.log("Test runner temporarily disabled - marking as skipped");
-  await testRunQueries.updateStatus(
-    testRunId,
-    "SKIPPED",
-    "Test runner temporarily disabled",
-    0
-  );
+  try {
+    const processManager2 = getTestProcessManager();
+    const result = await processManager2.runTest(testRunId, form, paymentMethod, settings);
+    await testRunQueries.updateStatus(
+      testRunId,
+      result.success ? "SUCCESS" : "FAILURE",
+      result.error,
+      result.duration
+    );
+    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"}`);
+  } catch (error) {
+    console.error(`Test ${testRunId} failed with error:`, error);
+    await testRunQueries.updateStatus(
+      testRunId,
+      "FAILURE",
+      error instanceof Error ? error.message : String(error),
+      0
+    );
+  }
 }
 function setupIpcHandlers() {
   console.log("=== SETTING UP IPC HANDLERS ===");

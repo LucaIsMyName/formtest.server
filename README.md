@@ -86,6 +86,144 @@ This application automates the testing of FundraisingBox donation forms across m
   - [ ] Results list with filtering and sorting
   - [ ] Detailed test result viewer
   - [ ] Screenshot gallery
+
+---
+
+## 🚀 **BROWSER AUTOMATION IMPLEMENTATION PLAN**
+
+### **Current Issue: Playwright Module Resolution in Electron**
+The Playwright library cannot be directly imported in the Electron main process due to module resolution conflicts between Node.js versions and native dependencies.
+
+### **🎯 SOLUTION STRATEGY: Child Process Architecture**
+
+#### **Phase A: Separate Process Implementation**
+1. **Create dedicated test runner process**
+   - Separate Node.js process for Playwright execution
+   - IPC communication between Electron main and test runner
+   - Isolated environment for browser automation
+
+2. **Process Communication Protocol**
+   - JSON-based message passing
+   - Test job queue system
+   - Real-time status updates
+   - Error handling and recovery
+
+3. **File Structure Changes**
+   ```
+   src/
+   ├── main/
+   │   ├── testRunner/           # NEW: Separate test runner
+   │   │   ├── runner.js         # Standalone Node.js process
+   │   │   ├── formAutomation.js # Browser automation logic
+   │   │   └── processManager.ts # Process lifecycle management
+   │   └── ipcHandlers.ts        # Updated with process communication
+   ```
+
+#### **Phase B: Implementation Steps**
+
+**Step B1: Create Standalone Test Runner Process**
+- [ ] Extract Playwright logic to separate Node.js script
+- [ ] Implement JSON-based communication protocol
+- [ ] Add process lifecycle management
+- [ ] Test basic process spawning and communication
+
+**Step B2: Update IPC Architecture**
+- [ ] Modify IPC handlers to use child process
+- [ ] Implement test job queue system
+- [ ] Add real-time status updates via events
+- [ ] Handle process errors and recovery
+
+**Step B3: Browser Automation Logic**
+- [ ] Port FormFieldDetector to standalone process
+- [ ] Port SmartFormFiller to standalone process
+- [ ] Implement screenshot capture and storage
+- [ ] Add comprehensive logging system
+
+**Step B4: Integration & Testing**
+- [ ] Connect UI to new architecture
+- [ ] Test end-to-end form automation
+- [ ] Implement error handling and recovery
+- [ ] Performance optimization and cleanup
+
+#### **Phase C: Advanced Features**
+
+**Step C1: Parallel Test Execution**
+- [ ] Multiple test runner processes
+- [ ] Load balancing and job distribution
+- [ ] Resource management and limits
+
+**Step C2: Enhanced Browser Features**
+- [ ] Multiple browser support (Chrome, Firefox, Safari)
+- [ ] Mobile viewport testing
+- [ ] Network condition simulation
+- [ ] Advanced screenshot and video capture
+
+**Step C3: Smart Form Detection**
+- [ ] AI-powered form analysis
+- [ ] Dynamic selector generation
+- [ ] Form change detection and adaptation
+- [ ] Success/failure pattern recognition
+
+### **🔧 TECHNICAL IMPLEMENTATION DETAILS**
+
+#### **Communication Protocol**
+```typescript
+interface TestMessage {
+  id: string
+  type: 'START_TEST' | 'UPDATE_STATUS' | 'TEST_COMPLETE' | 'ERROR'
+  payload: {
+    testRunId?: number
+    form?: Form
+    paymentMethod?: PaymentMethod
+    settings?: Record<string, string>
+    status?: TestStatus
+    result?: TestResult
+    error?: string
+  }
+}
+```
+
+#### **Process Architecture**
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Electron UI   │◄──►│  Main Process    │◄──►│  Test Runner    │
+│   (Renderer)    │    │  (IPC Handler)   │    │  (Child Process)│
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │                        │
+                                ▼                        ▼
+                       ┌──────────────────┐    ┌─────────────────┐
+                       │    Database      │    │   Playwright    │
+                       │   (SQLite)       │    │   (Browser)     │
+                       └──────────────────┘    └─────────────────┘
+```
+
+#### **File System Structure**
+```
+screenshots/           # Test screenshots
+├── success/          # Successful test screenshots
+├── failure/          # Failed test screenshots
+└── temp/             # Temporary files
+
+logs/                 # Detailed test logs
+├── test-runs/        # Individual test run logs
+└── system/           # System and error logs
+```
+
+### **🎯 IMPLEMENTATION PRIORITY**
+1. **HIGH**: Basic child process communication (Step B1-B2)
+2. **HIGH**: Form automation in separate process (Step B3)
+3. **MEDIUM**: UI integration and testing (Step B4)
+4. **LOW**: Advanced features (Step C1-C3)
+
+### **⚠️ RISKS & MITIGATION**
+- **Risk**: Process communication overhead
+  - **Mitigation**: Efficient JSON serialization, batch operations
+- **Risk**: Child process crashes
+  - **Mitigation**: Process monitoring, automatic restart, graceful degradation
+- **Risk**: Resource consumption
+  - **Mitigation**: Process limits, cleanup routines, resource monitoring
+
+---
   - [ ] Log viewer with syntax highlighting
 - [ ] **Step 4.2**: Reporting Features
   - [ ] Export test results (CSV, JSON)

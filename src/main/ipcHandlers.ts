@@ -1,20 +1,37 @@
 import { ipcMain } from 'electron'
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries } from './database'
-// import { createTestRunner } from './testRunner' // Temporarily disabled
+import { getTestProcessManager } from './testRunner/processManager'
 import type { Form, PaymentMethod, TestRun } from '../common/types'
 
-// Function to run a single test - temporarily disabled
+// Function to run a single test using child process
 async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`)
-  console.log('Test runner temporarily disabled - marking as skipped')
   
-  // Temporarily just mark as skipped until we fix the module resolution
-  await testRunQueries.updateStatus(
-    testRunId,
-    'SKIPPED',
-    'Test runner temporarily disabled',
-    0
-  )
+  try {
+    const processManager = getTestProcessManager()
+    const result = await processManager.runTest(testRunId, form, paymentMethod, settings)
+    
+    // Update test run with results
+    await testRunQueries.updateStatus(
+      testRunId,
+      result.success ? 'SUCCESS' : 'FAILURE',
+      result.error,
+      result.duration
+    )
+    
+    console.log(`Test ${testRunId} completed: ${result.success ? 'SUCCESS' : 'FAILURE'}`)
+    
+  } catch (error) {
+    console.error(`Test ${testRunId} failed with error:`, error)
+    
+    // Update test run with error
+    await testRunQueries.updateStatus(
+      testRunId,
+      'FAILURE',
+      error instanceof Error ? error.message : String(error),
+      0
+    )
+  }
 }
 
 export function setupIpcHandlers(): void {
