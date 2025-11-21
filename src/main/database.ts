@@ -80,13 +80,49 @@ export function getDatabase(): Database.Database {
 
 // Form operations
 export const formQueries = {
-  getAll: () => db.prepare('SELECT * FROM forms ORDER BY name').all() as Form[],
-  getById: (id: number) => db.prepare('SELECT * FROM forms WHERE id = ?').get(id) as Form | undefined,
-  create: (form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => 
-    db.prepare('INSERT INTO forms (name, url, hash, isActive) VALUES (?, ?, ?, ?)').run(form.name, form.url, form.hash, form.isActive),
-  update: (id: number, form: Partial<Form>) => 
-    db.prepare('UPDATE forms SET name = ?, url = ?, hash = ?, isActive = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?')
-      .run(form.name, form.url, form.hash, form.isActive, id),
+  getAll: () => {
+    const forms = db.prepare('SELECT * FROM forms ORDER BY name').all() as any[]
+    return forms.map(form => ({
+      ...form,
+      isActive: Boolean(form.isActive),
+      createdAt: new Date(form.createdAt),
+      updatedAt: new Date(form.updatedAt)
+    })) as Form[]
+  },
+  getById: (id: number) => {
+    const form = db.prepare('SELECT * FROM forms WHERE id = ?').get(id) as any
+    if (!form) return undefined
+    return {
+      ...form,
+      isActive: Boolean(form.isActive),
+      createdAt: new Date(form.createdAt),
+      updatedAt: new Date(form.updatedAt)
+    } as Form
+  },
+  create: (form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => {
+    console.log('Database: Creating form with data:', form)
+    
+    // Ensure all values are proper SQLite types
+    const name = String(form.name || '')
+    const url = String(form.url || '')
+    const hash = form.hash && form.hash.trim() ? String(form.hash.trim()) : null
+    const isActive = form.isActive === true ? 1 : 0
+    
+    console.log('Database: Sanitized values:', { name, url, hash, isActive })
+    
+    const stmt = db.prepare('INSERT INTO forms (name, url, hash, isActive) VALUES (?, ?, ?, ?)')
+    return stmt.run(name, url, hash, isActive)
+  },
+  update: (id: number, form: Partial<Form>) => {
+    const stmt = db.prepare('UPDATE forms SET name = ?, url = ?, hash = ?, isActive = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?')
+    return stmt.run(
+      form.name || '',
+      form.url || '',
+      form.hash || null,
+      form.isActive ? 1 : 0,
+      id
+    )
+  },
   delete: (id: number) => db.prepare('DELETE FROM forms WHERE id = ?').run(id)
 }
 

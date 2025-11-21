@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+// import icon from '../../resources/icon.png?asset' // TODO: Add proper icon
 import { initDatabase } from './database'
 import { setupIpcHandlers } from './ipcHandlers'
 
@@ -11,7 +11,7 @@ function createWindow(): void {
     height: 800,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    // ...(process.platform === 'linux' ? { icon } : {}), // TODO: Add proper icon
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,

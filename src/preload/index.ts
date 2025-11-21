@@ -52,12 +52,14 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+    console.log('Preload: API exposed successfully')
   } catch (error) {
-    console.error(error)
+    console.error('Preload: Failed to expose API', error)
   }
 } else {
   // @ts-ignore (define in dts)
   window.electron = electronAPI
   // @ts-ignore (define in dts)
   window.api = api
+  console.log('Preload: API attached to window (no context isolation)')
 }
