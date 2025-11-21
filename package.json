@@ -9,11 +9,12 @@
     "preview": "electron-vite preview",
     "pack": "electron-builder",
     "dist": "npm run build && electron-builder",
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps && npm run rebuild:sqlite",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:playwright": "playwright test",
-    "test:playwright:ui": "playwright test --ui"
+    "test:playwright:ui": "playwright test --ui",
+    "rebuild:sqlite": "electron-rebuild -f -w better-sqlite3"
   },
   "keywords": [
     "electron",
@@ -26,8 +27,9 @@
   "author": "Luca",
   "license": "MIT",
   "devDependencies": {
-    "@electron/rebuild": "^3.6.0",
+    "@electron/rebuild": "^3.7.2",
     "@playwright/test": "^1.40.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.10.0",
     "@types/react": "^19.2.6",

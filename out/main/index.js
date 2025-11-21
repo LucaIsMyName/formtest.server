@@ -3,7 +3,6 @@ const electron = require("electron");
 const path = require("path");
 const utils = require("@electron-toolkit/utils");
 const Database = require("better-sqlite3");
-const icon = path.join(__dirname, "../../resources/icon.png");
 let db;
 function initDatabase() {
   const dbPath = path.join(electron.app.getPath("userData"), "formtest.db");
@@ -68,10 +67,111 @@ function initDatabase() {
   }
 }
 const formQueries = {
-  getAll: () => db.prepare("SELECT * FROM forms ORDER BY name").all(),
-  getById: (id) => db.prepare("SELECT * FROM forms WHERE id = ?").get(id),
-  create: (form) => db.prepare("INSERT INTO forms (name, url, hash, isActive) VALUES (?, ?, ?, ?)").run(form.name, form.url, form.hash, form.isActive),
-  update: (id, form) => db.prepare("UPDATE forms SET name = ?, url = ?, hash = ?, isActive = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?").run(form.name, form.url, form.hash, form.isActive, id),
+  getAll: () => {
+    const forms = db.prepare("SELECT * FROM forms ORDER BY name").all();
+    return forms.map((form) => ({
+      ...form,
+      isActive: Boolean(form.isActive),
+      createdAt: new Date(form.createdAt),
+      updatedAt: new Date(form.updatedAt)
+    }));
+  },
+  getById: (id) => {
+    const form = db.prepare("SELECT * FROM forms WHERE id = ?").get(id);
+    if (!form) return void 0;
+    return {
+      ...form,
+      isActive: Boolean(form.isActive),
+      createdAt: new Date(form.createdAt),
+      updatedAt: new Date(form.updatedAt)
+    };
+  },
+  create: (form) => {
+    console.log("Database: Creating form with raw data:", JSON.stringify(form, null, 2));
+    console.log("Database: Form data types:", {
+      name: typeof form.name,
+      url: typeof form.url,
+      hash: typeof form.hash,
+      isActive: typeof form.isActive
+    });
+    let name = "";
+    let url = "";
+    let hash = null;
+    let isActive = 0;
+    try {
+      if (form.name === null || form.name === void 0) {
+        name = "";
+      } else {
+        name = String(form.name).trim();
+      }
+      if (form.url === null || form.url === void 0) {
+        url = "";
+      } else {
+        url = String(form.url).trim();
+      }
+      if (form.hash === null || form.hash === void 0 || form.hash === "") {
+        hash = null;
+      } else {
+        const hashStr = String(form.hash).trim();
+        hash = hashStr === "" ? null : hashStr;
+      }
+      const isActiveValue = form.isActive;
+      if (isActiveValue === true || isActiveValue === 1 || isActiveValue === "1" || isActiveValue === "true") {
+        isActive = 1;
+      } else {
+        isActive = 0;
+      }
+      console.log("Database: Final sanitized values:", { name, url, hash, isActive });
+      console.log("Database: Final value types:", {
+        name: typeof name,
+        url: typeof url,
+        hash: typeof hash,
+        isActive: typeof isActive
+      });
+      const stmt = db.prepare("INSERT INTO forms (name, url, hash, isActive) VALUES (?, ?, ?, ?)");
+      const result = stmt.run(name, url, hash, isActive);
+      console.log("Database: Insert result:", result);
+      return result;
+    } catch (error) {
+      console.error("Database: Error in create method:", error);
+      console.error("Database: Error details:", {
+        originalForm: form,
+        sanitizedValues: { name, url, hash, isActive }
+      });
+      throw error;
+    }
+  },
+  update: (id, form) => {
+    console.log("Database: Updating form with data:", { id, form });
+    const name = form.name !== void 0 ? String(form.name) : void 0;
+    const url = form.url !== void 0 ? String(form.url) : void 0;
+    const hash = form.hash !== void 0 ? form.hash && form.hash.trim() ? String(form.hash.trim()) : null : void 0;
+    const isActive = form.isActive !== void 0 ? form.isActive === true ? 1 : 0 : void 0;
+    const updates = [];
+    const values = [];
+    if (name !== void 0) {
+      updates.push("name = ?");
+      values.push(name);
+    }
+    if (url !== void 0) {
+      updates.push("url = ?");
+      values.push(url);
+    }
+    if (hash !== void 0) {
+      updates.push("hash = ?");
+      values.push(hash);
+    }
+    if (isActive !== void 0) {
+      updates.push("isActive = ?");
+      values.push(isActive);
+    }
+    updates.push("updatedAt = CURRENT_TIMESTAMP");
+    values.push(id);
+    const sql = `UPDATE forms SET ${updates.join(", ")} WHERE id = ?`;
+    console.log("Database: Update SQL:", sql, "Values:", values);
+    const stmt = db.prepare(sql);
+    return stmt.run(...values);
+  },
   delete: (id) => db.prepare("DELETE FROM forms WHERE id = ?").run(id)
 };
 const paymentMethodQueries = {
@@ -102,11 +202,49 @@ const testRunQueries = {
   updateStatus: (id, status, errorMessage, durationMs) => db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?").run(status, errorMessage, durationMs, id)
 };
 function setupIpcHandlers() {
-  electron.ipcMain.handle("forms:getAll", () => formQueries.getAll());
-  electron.ipcMain.handle("forms:getById", (_, id) => formQueries.getById(id));
-  electron.ipcMain.handle("forms:create", (_, form) => formQueries.create(form));
-  electron.ipcMain.handle("forms:update", (_, id, form) => formQueries.update(id, form));
-  electron.ipcMain.handle("forms:delete", (_, id) => formQueries.delete(id));
+  electron.ipcMain.handle("forms:getAll", async () => {
+    try {
+      return formQueries.getAll();
+    } catch (error) {
+      console.error("IPC Error - forms:getAll:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("forms:getById", async (_, id) => {
+    try {
+      return formQueries.getById(id);
+    } catch (error) {
+      console.error("IPC Error - forms:getById:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("forms:create", async (_, form) => {
+    try {
+      console.log("IPC Handler - forms:create received:", form);
+      const result = formQueries.create(form);
+      console.log("IPC Handler - forms:create result:", result);
+      return result;
+    } catch (error) {
+      console.error("IPC Error - forms:create:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("forms:update", async (_, id, form) => {
+    try {
+      return formQueries.update(id, form);
+    } catch (error) {
+      console.error("IPC Error - forms:update:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("forms:delete", async (_, id) => {
+    try {
+      return formQueries.delete(id);
+    } catch (error) {
+      console.error("IPC Error - forms:delete:", error);
+      throw error;
+    }
+  });
   electron.ipcMain.handle("paymentMethods:getAll", () => paymentMethodQueries.getAll());
   electron.ipcMain.handle("paymentMethods:getById", (_, id) => paymentMethodQueries.getById(id));
   electron.ipcMain.handle("paymentMethods:create", (_, method) => paymentMethodQueries.create(method));
@@ -131,7 +269,7 @@ function createWindow() {
     height: 800,
     show: false,
     autoHideMenuBar: true,
-    ...process.platform === "linux" ? { icon } : {},
+    // ...(process.platform === 'linux' ? { icon } : {}), // TODO: Add proper icon
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
       sandbox: false,

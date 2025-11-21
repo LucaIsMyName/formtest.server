@@ -100,28 +100,100 @@ export const formQueries = {
     } as Form
   },
   create: (form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => {
-    console.log('Database: Creating form with data:', form)
+    console.log('Database: Creating form with raw data:', JSON.stringify(form, null, 2))
+    console.log('Database: Form data types:', {
+      name: typeof form.name,
+      url: typeof form.url, 
+      hash: typeof form.hash,
+      isActive: typeof form.isActive
+    })
     
-    // Ensure all values are proper SQLite types
-    const name = String(form.name || '')
-    const url = String(form.url || '')
-    const hash = form.hash && form.hash.trim() ? String(form.hash.trim()) : null
-    const isActive = form.isActive === true ? 1 : 0
+    // Ultra-robust data sanitization
+    let name: string = ''
+    let url: string = ''
+    let hash: string | null = null
+    let isActive: number = 0
     
-    console.log('Database: Sanitized values:', { name, url, hash, isActive })
-    
-    const stmt = db.prepare('INSERT INTO forms (name, url, hash, isActive) VALUES (?, ?, ?, ?)')
-    return stmt.run(name, url, hash, isActive)
+    try {
+      // Handle name
+      if (form.name === null || form.name === undefined) {
+        name = ''
+      } else {
+        name = String(form.name).trim()
+      }
+      
+      // Handle URL
+      if (form.url === null || form.url === undefined) {
+        url = ''
+      } else {
+        url = String(form.url).trim()
+      }
+      
+      // Handle hash - be very explicit about null vs undefined vs empty string
+      if (form.hash === null || form.hash === undefined || form.hash === '') {
+        hash = null
+      } else {
+        const hashStr = String(form.hash).trim()
+        hash = hashStr === '' ? null : hashStr
+      }
+      
+      // Handle isActive - be very explicit about boolean conversion
+      // Use any type to handle potential type mismatches from IPC
+      const isActiveValue = form.isActive as any
+      if (isActiveValue === true || isActiveValue === 1 || isActiveValue === '1' || isActiveValue === 'true') {
+        isActive = 1
+      } else {
+        isActive = 0
+      }
+      
+      console.log('Database: Final sanitized values:', { name, url, hash, isActive })
+      console.log('Database: Final value types:', {
+        name: typeof name,
+        url: typeof url,
+        hash: typeof hash,
+        isActive: typeof isActive
+      })
+      
+      const stmt = db.prepare('INSERT INTO forms (name, url, hash, isActive) VALUES (?, ?, ?, ?)')
+      const result = stmt.run(name, url, hash, isActive)
+      console.log('Database: Insert result:', result)
+      return result
+      
+    } catch (error) {
+      console.error('Database: Error in create method:', error)
+      console.error('Database: Error details:', {
+        originalForm: form,
+        sanitizedValues: { name, url, hash, isActive }
+      })
+      throw error
+    }
   },
   update: (id: number, form: Partial<Form>) => {
-    const stmt = db.prepare('UPDATE forms SET name = ?, url = ?, hash = ?, isActive = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?')
-    return stmt.run(
-      form.name || '',
-      form.url || '',
-      form.hash || null,
-      form.isActive ? 1 : 0,
-      id
-    )
+    console.log('Database: Updating form with data:', { id, form })
+    
+    // Ensure all values are proper SQLite types
+    const name = form.name !== undefined ? String(form.name) : undefined
+    const url = form.url !== undefined ? String(form.url) : undefined
+    const hash = form.hash !== undefined ? (form.hash && form.hash.trim() ? String(form.hash.trim()) : null) : undefined
+    const isActive = form.isActive !== undefined ? (form.isActive === true ? 1 : 0) : undefined
+    
+    // Only update fields that are provided
+    const updates = []
+    const values = []
+    
+    if (name !== undefined) { updates.push('name = ?'); values.push(name) }
+    if (url !== undefined) { updates.push('url = ?'); values.push(url) }
+    if (hash !== undefined) { updates.push('hash = ?'); values.push(hash) }
+    if (isActive !== undefined) { updates.push('isActive = ?'); values.push(isActive) }
+    
+    updates.push('updatedAt = CURRENT_TIMESTAMP')
+    values.push(id)
+    
+    const sql = `UPDATE forms SET ${updates.join(', ')} WHERE id = ?`
+    console.log('Database: Update SQL:', sql, 'Values:', values)
+    
+    const stmt = db.prepare(sql)
+    return stmt.run(...values)
   },
   delete: (id: number) => db.prepare('DELETE FROM forms WHERE id = ?').run(id)
 }

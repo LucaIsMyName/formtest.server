@@ -2,7 +2,7 @@ export interface Form {
   id: number;
   name: string;
   url: string;
-  hash?: string;
+  hash?: string | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

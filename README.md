@@ -126,6 +126,28 @@ npm run build
 
 # Package application
 npm run dist
+
+# Run unit tests
+npm test
+
+# Run Playwright e2e tests
+npm run test:playwright
+```
+
+### Troubleshooting
+
+**better-sqlite3 Node.js version mismatch:**
+If you encounter Node.js version errors with better-sqlite3:
+
+```bash
+# For Jest tests (regular Node.js)
+npm rebuild better-sqlite3
+
+# For Electron app
+npx electron-rebuild -f -w better-sqlite3
+
+# Or use the convenience script
+npm run rebuild:sqlite
 ```
 
 ## 📊 Database Schema
@@ -169,6 +191,12 @@ npm run dist
 - Fixed window.api undefined error with better error handling and logging
 - Added comprehensive unit tests with Jest
 - Improved data type conversion for database operations
+- Enhanced data sanitization in database layer (null vs undefined handling)
+- Added comprehensive logging for debugging form creation issues
+- Updated TypeScript types to properly handle null values for SQLite compatibility
+- Fixed Node.js version mismatch with better-sqlite3 using @electron/rebuild
+- Added ultra-robust data sanitization to handle all edge cases from IPC
+- Configured proper test runner (Jest vs Playwright) separation
 
 ## 🎯 Next Steps
 

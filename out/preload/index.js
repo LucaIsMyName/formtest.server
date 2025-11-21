@@ -41,10 +41,12 @@ if (process.contextIsolated) {
   try {
     electron.contextBridge.exposeInMainWorld("electron", preload.electronAPI);
     electron.contextBridge.exposeInMainWorld("api", api);
+    console.log("Preload: API exposed successfully");
   } catch (error) {
-    console.error(error);
+    console.error("Preload: Failed to expose API", error);
   }
 } else {
   window.electron = preload.electronAPI;
   window.api = api;
+  console.log("Preload: API attached to window (no context isolation)");
 }

@@ -1,14 +1,56 @@
 import { ipcMain } from 'electron'
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries } from './database'
-import type { Form, PaymentMethod, GlobalSetting, TestRun } from '../common/types'
+import type { Form, PaymentMethod, TestRun } from '../common/types'
 
 export function setupIpcHandlers(): void {
-  // Form handlers
-  ipcMain.handle('forms:getAll', () => formQueries.getAll())
-  ipcMain.handle('forms:getById', (_, id: number) => formQueries.getById(id))
-  ipcMain.handle('forms:create', (_, form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => formQueries.create(form))
-  ipcMain.handle('forms:update', (_, id: number, form: Partial<Form>) => formQueries.update(id, form))
-  ipcMain.handle('forms:delete', (_, id: number) => formQueries.delete(id))
+  // Form handlers with error handling
+  ipcMain.handle('forms:getAll', async () => {
+    try {
+      return formQueries.getAll()
+    } catch (error) {
+      console.error('IPC Error - forms:getAll:', error)
+      throw error
+    }
+  })
+  
+  ipcMain.handle('forms:getById', async (_, id: number) => {
+    try {
+      return formQueries.getById(id)
+    } catch (error) {
+      console.error('IPC Error - forms:getById:', error)
+      throw error
+    }
+  })
+  
+  ipcMain.handle('forms:create', async (_, form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      console.log('IPC Handler - forms:create received:', form)
+      const result = formQueries.create(form)
+      console.log('IPC Handler - forms:create result:', result)
+      return result
+    } catch (error) {
+      console.error('IPC Error - forms:create:', error)
+      throw error
+    }
+  })
+  
+  ipcMain.handle('forms:update', async (_, id: number, form: Partial<Form>) => {
+    try {
+      return formQueries.update(id, form)
+    } catch (error) {
+      console.error('IPC Error - forms:update:', error)
+      throw error
+    }
+  })
+  
+  ipcMain.handle('forms:delete', async (_, id: number) => {
+    try {
+      return formQueries.delete(id)
+    } catch (error) {
+      console.error('IPC Error - forms:delete:', error)
+      throw error
+    }
+  })
 
   // Payment method handlers
   ipcMain.handle('paymentMethods:getAll', () => paymentMethodQueries.getAll())

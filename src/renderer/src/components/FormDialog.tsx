@@ -72,12 +72,15 @@ const FormDialog: React.FC<FormDialogProps> = ({
     }
 
     try {
-      await onSubmit({
+      const submitData = {
         name: formData.name.trim(),
         url: formData.url.trim(),
-        hash: formData.hash.trim() || undefined,
+        hash: formData.hash.trim() || null, // Use null instead of undefined for SQLite compatibility
         isActive: formData.isActive
-      })
+      }
+      
+      console.log('FormDialog: Submitting form data:', submitData)
+      await onSubmit(submitData)
       onClose()
     } catch (error) {
       console.error('Failed to submit form:', error)
