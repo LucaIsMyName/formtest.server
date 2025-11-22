@@ -9057,140 +9057,209 @@ const Dashboard = () => {
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { style: {
-      fontSize: "24px",
-      fontWeight: "600",
-      color: "var(--color-text)",
-      margin: 0,
-      marginBottom: "32px"
-    }, children: "Dashboard" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: "32px"
-    }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center"
-    }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          onClick: () => handleQuickAction("run-tests"),
-          style: {
-            backgroundColor: "var(--color-primary)",
-            color: "var(--color-text)",
-            padding: "12px 24px",
-            borderRadius: "8px",
-            border: "none",
-            cursor: "pointer"
-          },
-          disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0 || isRunning,
-          children: isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-              width: "16px",
-              height: "16px",
-              border: "2px solid var(--color-text)",
-              borderTop: "2px solid transparent",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite"
-            } }),
-            "Running Tests..."
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "Run Tests" })
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          onClick: () => handleQuickAction("settings"),
-          style: {
-            backgroundColor: "var(--color-secondary)",
-            color: "var(--color-text)",
-            padding: "12px 24px",
-            borderRadius: "8px",
-            border: "none",
-            cursor: "pointer"
-          },
-          children: "Settings"
-        }
-      )
-    ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-      gap: "24px",
-      marginBottom: "32px"
-    }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        backgroundColor: "var(--color-background)",
-        padding: "24px",
-        borderRadius: "8px",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
-      }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: {
-          fontSize: "14px",
-          color: "var(--color-text-secondary)",
-          margin: 0,
-          marginBottom: "4px"
-        }, children: "Total Tests" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: {
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "h1",
+      {
+        style: {
           fontSize: "24px",
           fontWeight: "600",
           color: "var(--color-text)",
-          margin: 0
-        }, children: stats.totalTestRuns })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        backgroundColor: "var(--color-background)",
-        padding: "24px",
-        borderRadius: "8px",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
-      }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: {
-          fontSize: "14px",
-          color: "var(--color-text-secondary)",
           margin: 0,
-          marginBottom: "4px"
-        }, children: "Payment Methods" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: {
-          fontSize: "24px",
-          fontWeight: "600",
-          color: "var(--color-text)",
-          margin: 0
-        }, children: stats.totalPaymentMethods })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        backgroundColor: "var(--color-background)",
-        padding: "24px",
-        borderRadius: "8px",
-        boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
-      }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: {
-          fontSize: "14px",
-          color: "var(--color-text-secondary)",
-          margin: 0,
-          marginBottom: "4px"
-        }, children: "Successful" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: {
-          fontSize: "24px",
-          fontWeight: "600",
-          color: "var(--color-text)",
-          margin: 0
-        }, children: stats.successfulTests }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-500", children: "Success Rate" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-yellow-600", children: isLoading ? "..." : `${stats.successRate.toFixed(1)}%` }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-400", children: [
-              stats.failedTests,
-              " failed"
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-yellow-500 text-2xl", children: "📊" })
-        ] })
-      ] }) })
-    ] }),
+          marginBottom: "32px"
+        },
+        children: "Dashboard"
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "div",
+      {
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "32px"
+        },
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            style: {
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: () => handleQuickAction("run-tests"),
+                  className: "btn btn-primary",
+                  disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0 || isRunning,
+                  children: isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      "div",
+                      {
+                        style: {
+                          width: "16px",
+                          height: "16px",
+                          border: "2px solid var(--color-text)",
+                          borderTop: "2px solid transparent",
+                          borderRadius: "50%",
+                          animation: "spin 1s linear infinite"
+                        }
+                      }
+                    ),
+                    "Running Tests..."
+                  ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "Run Tests" })
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: () => handleQuickAction("settings"),
+                  className: "btn",
+                  children: "Settings"
+                }
+              )
+            ]
+          }
+        )
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "div",
+      {
+        style: {
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "24px",
+          marginBottom: "32px"
+        },
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              style: {
+                backgroundColor: "var(--color-background)",
+                padding: "24px",
+                // borderRadius: '8px',
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
+              },
+              children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    style: {
+                      fontSize: "14px",
+                      color: "var(--color-text-secondary)",
+                      margin: 0,
+                      marginBottom: "4px"
+                    },
+                    children: "Total Tests"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    style: {
+                      fontSize: "24px",
+                      fontWeight: "600",
+                      color: "var(--color-text)",
+                      margin: 0
+                    },
+                    children: stats.totalTestRuns
+                  }
+                )
+              ] })
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              style: {
+                backgroundColor: "var(--color-background)",
+                padding: "24px",
+                // borderRadius: '8px',
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
+              },
+              children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    style: {
+                      fontSize: "14px",
+                      color: "var(--color-text-secondary)",
+                      margin: 0,
+                      marginBottom: "4px"
+                    },
+                    children: "Payment Methods"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    style: {
+                      fontSize: "24px",
+                      fontWeight: "600",
+                      color: "var(--color-text)",
+                      margin: 0
+                    },
+                    children: stats.totalPaymentMethods
+                  }
+                )
+              ] })
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              style: {
+                backgroundColor: "var(--color-background)",
+                padding: "24px",
+                // borderRadius: '8px',
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
+              },
+              children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    style: {
+                      fontSize: "14px",
+                      color: "var(--color-text-secondary)",
+                      margin: 0,
+                      marginBottom: "4px"
+                    },
+                    children: "Successful"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "p",
+                  {
+                    style: {
+                      fontSize: "24px",
+                      fontWeight: "600",
+                      color: "var(--color-text)",
+                      margin: 0
+                    },
+                    children: stats.successfulTests
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-500", children: "Success Rate" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-yellow-600", children: isLoading ? "..." : `${stats.successRate.toFixed(1)}%` }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-400", children: [
+                      stats.failedTests,
+                      " failed"
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-yellow-500 text-2xl", children: "📊" })
+                ] })
+              ] })
+            }
+          )
+        ]
+      }
+    ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card-header", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-medium", children: "Quick Actions" }),
@@ -9201,7 +9270,7 @@ const Dashboard = () => {
           "button",
           {
             onClick: () => handleQuickAction("add-form"),
-            className: "flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors",
+            className: "flex flex-col items-center p-4 border border-gray-200  hover:border-blue-300 hover:bg-blue-50 transition-colors",
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl mb-2", children: "📝" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium", children: "Add Form" })
@@ -9212,7 +9281,7 @@ const Dashboard = () => {
           "button",
           {
             onClick: () => handleQuickAction("add-payment"),
-            className: "flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors",
+            className: "flex flex-col items-center p-4 border border-gray-200  hover:border-green-300 hover:bg-green-50 transition-colors",
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl mb-2", children: "💳" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium", children: "Add Payment" })
@@ -9223,7 +9292,7 @@ const Dashboard = () => {
           "button",
           {
             onClick: () => handleQuickAction("run-tests"),
-            className: "flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors",
+            className: "flex flex-col items-center p-4 border border-gray-200  hover:border-purple-300 hover:bg-purple-50 transition-colors",
             disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0,
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl mb-2", children: "🚀" }),
@@ -9235,7 +9304,7 @@ const Dashboard = () => {
           "button",
           {
             onClick: () => handleQuickAction("view-results"),
-            className: "flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:border-yellow-300 hover:bg-yellow-50 transition-colors",
+            className: "flex flex-col items-center p-4 border border-gray-200  hover:border-yellow-300 hover:bg-yellow-50 transition-colors",
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-2xl mb-2", children: "📊" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium", children: "View Results" })

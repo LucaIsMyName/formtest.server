@@ -931,7 +931,7 @@ body {
 
 .btn-primary {
   background-color: var(--color-primary);
-  color: white;
+  color: white !important;
   border-color: var(--color-primary);
 }
 
