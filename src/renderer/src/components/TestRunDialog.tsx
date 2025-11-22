@@ -1,125 +1,118 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useFormsStore } from '../store/useFormsStore'
-import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
-import { useTestRunsStore } from '../store/useTestRunsStore'
-import Button from './Button'
+import React, { useState, useEffect, useRef } from "react";
+import { useFormsStore } from "../store/useFormsStore";
+import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
+import { useTestRunsStore } from "../store/useTestRunsStore";
+import Button from "./Button";
 
 interface TestRunDialogProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
-  const { forms, loadForms } = useFormsStore()
-  const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore()
-  const { runTests, isRunning } = useTestRunsStore()
-  
-  const [selectedFormIds, setSelectedFormIds] = useState<number[]>([])
-  const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = useState<number[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const modalRef = useRef<HTMLDivElement>(null)
+  const { forms, loadForms } = useFormsStore();
+  const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
+  const { runTests, isRunning } = useTestRunsStore();
+
+  const [selectedFormIds, setSelectedFormIds] = useState<number[]>([]);
+  const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = useState<number[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
-      loadForms()
-      loadPaymentMethods()
+      loadForms();
+      loadPaymentMethods();
       // Reset selections when dialog opens
-      setSelectedFormIds([])
-      setSelectedPaymentMethodIds([])
-      setError(null)
+      setSelectedFormIds([]);
+      setSelectedPaymentMethodIds([]);
+      setError(null);
     }
-  }, [isOpen, loadForms, loadPaymentMethods])
+  }, [isOpen, loadForms, loadPaymentMethods]);
 
   // ESC key handler
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
-        onClose()
+      if (event.key === "Escape" && isOpen) {
+        onClose();
       }
-    }
+    };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscKey)
-      return () => document.removeEventListener('keydown', handleEscKey)
+      document.addEventListener("keydown", handleEscKey);
+      return () => document.removeEventListener("keydown", handleEscKey);
     }
-  }, [isOpen, onClose])
+  }, [isOpen, onClose]);
 
   // Click outside handler
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
-      onClose()
+      onClose();
     }
-  }
+  };
 
-  const activeForms = forms.filter(form => form.isActive)
-  const activePaymentMethods = paymentMethods.filter(pm => pm.isActive)
+  const activeForms = forms.filter((form) => form.isActive);
+  const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);
 
   const handleFormToggle = (formId: number) => {
-    setSelectedFormIds(prev => 
-      prev.includes(formId) 
-        ? prev.filter(id => id !== formId)
-        : [...prev, formId]
-    )
-  }
+    setSelectedFormIds((prev) => (prev.includes(formId) ? prev.filter((id) => id !== formId) : [...prev, formId]));
+  };
 
   const handlePaymentMethodToggle = (pmId: number) => {
-    setSelectedPaymentMethodIds(prev => 
-      prev.includes(pmId) 
-        ? prev.filter(id => id !== pmId)
-        : [...prev, pmId]
-    )
-  }
+    setSelectedPaymentMethodIds((prev) => (prev.includes(pmId) ? prev.filter((id) => id !== pmId) : [...prev, pmId]));
+  };
 
   const handleSelectAllForms = () => {
     if (selectedFormIds.length === activeForms.length) {
-      setSelectedFormIds([])
+      setSelectedFormIds([]);
     } else {
-      setSelectedFormIds(activeForms.map(form => form.id))
+      setSelectedFormIds(activeForms.map((form) => form.id));
     }
-  }
+  };
 
   const handleSelectAllPaymentMethods = () => {
     if (selectedPaymentMethodIds.length === activePaymentMethods.length) {
-      setSelectedPaymentMethodIds([])
+      setSelectedPaymentMethodIds([]);
     } else {
-      setSelectedPaymentMethodIds(activePaymentMethods.map(pm => pm.id))
+      setSelectedPaymentMethodIds(activePaymentMethods.map((pm) => pm.id));
     }
-  }
+  };
 
   const handleRunTests = async () => {
     if (selectedFormIds.length === 0) {
-      setError('Please select at least one form to test')
-      return
+      setError("Please select at least one form to test");
+      return;
     }
     if (selectedPaymentMethodIds.length === 0) {
-      setError('Please select at least one payment method to test')
-      return
+      setError("Please select at least one payment method to test");
+      return;
     }
 
     try {
-      await runTests(selectedFormIds, selectedPaymentMethodIds)
-      onClose()
+      await runTests(selectedFormIds, selectedPaymentMethodIds);
+      onClose();
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to start tests')
+      setError(error instanceof Error ? error.message : "Failed to start tests");
     }
-  }
+  };
 
-  const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length
+  const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length;
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleOverlayClick}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden" ref={modalRef}>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={handleOverlayClick}>
+      <div
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden"
+        ref={modalRef}>
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white m-0">
-            Tests ausführen
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Tests ausführen</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl p-0 bg-transparent border-none cursor-pointer"
-            disabled={isRunning}
-          >
+            disabled={isRunning}>
             ×
           </button>
         </div>
@@ -135,20 +128,17 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
             {/* Forms Selection */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Forms ({activeForms.length} available)
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Forms ({activeForms.length} available)</h3>
                 <Button
                   onClick={handleSelectAllForms}
                   variant="ghost"
                   size="sm"
                   disabled={isRunning}
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
-                >
-                  {selectedFormIds.length === activeForms.length ? 'Deselect All' : 'Select All'}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                  {selectedFormIds.length === activeForms.length ? "Deselect All" : "Select All"}
                 </Button>
               </div>
-              
+
               {activeForms.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <p>No active forms available</p>
@@ -156,8 +146,10 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {activeForms.map(form => (
-                    <label key={form.id} className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                  {activeForms.map((form) => (
+                    <label
+                      key={form.id}
+                      className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedFormIds.includes(form.id)}
@@ -178,20 +170,17 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
             {/* Payment Methods Selection */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Payment Methods ({activePaymentMethods.length} available)
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Payment Methods ({activePaymentMethods.length} available)</h3>
                 <Button
                   onClick={handleSelectAllPaymentMethods}
                   variant="ghost"
                   size="sm"
                   disabled={isRunning}
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
-                >
-                  {selectedPaymentMethodIds.length === activePaymentMethods.length ? 'Deselect All' : 'Select All'}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                  {selectedPaymentMethodIds.length === activePaymentMethods.length ? "Deselect All" : "Select All"}
                 </Button>
               </div>
-              
+
               {activePaymentMethods.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <p>No active payment methods available</p>
@@ -199,8 +188,10 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {activePaymentMethods.map(pm => (
-                    <label key={pm.id} className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                  {activePaymentMethods.map((pm) => (
+                    <label
+                      key={pm.id}
+                      className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedPaymentMethodIds.includes(pm.id)}
@@ -213,10 +204,10 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
                         <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{pm.type}</div>
                       </div>
                       <div className="text-xs text-gray-400 dark:text-gray-500">
-                        {pm.type === 'paypal' && '💳'}
-                        {pm.type === 'sepa' && '🏦'}
-                        {pm.type === 'creditcard' && '💳'}
-                        {pm.type === 'eps' && '🇦🇹'}
+                        {pm.type === "paypal" && "💳"}
+                        {pm.type === "sepa" && "🏦"}
+                        {pm.type === "creditcard" && "💳"}
+                        {pm.type === "eps" && "🇦🇹"}
                       </div>
                     </label>
                   ))}
@@ -246,17 +237,16 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
                 Tests werden ausgeführt...
               </span>
             ) : (
-              `Bereit für ${totalTests} Test${totalTests !== 1 ? 's' : ''}`
+              `Bereit für ${totalTests} Test${totalTests !== 1 ? "s" : ""}`
             )}
           </div>
-          
+
           <div className="flex gap-3">
             <Button
               onClick={onClose}
               variant="secondary"
               size="md"
-              disabled={isRunning}
-            >
+              disabled={isRunning}>
               Abbrechen
             </Button>
             <Button
@@ -264,15 +254,14 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
               variant="primary"
               size="md"
               isLoading={isRunning}
-              disabled={isRunning || totalTests === 0}
-            >
-              {isRunning ? 'Läuft...' : `${totalTests} Test${totalTests !== 1 ? 's' : ''} starten`}
+              disabled={isRunning || totalTests === 0}>
+              {isRunning ? "Läuft..." : `${totalTests} Test${totalTests !== 1 ? "s" : ""} starten`}
             </Button>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TestRunDialog
+export default TestRunDialog;
