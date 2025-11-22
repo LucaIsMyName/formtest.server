@@ -138,7 +138,36 @@ class TestRunner {
     }
 
     this.log(`Navigating to: ${form.url}`)
-    await this.page.goto(form.url, { waitUntil: 'networkidle' })
+    
+    // Try multiple navigation strategies for better reliability
+    try {
+      await this.page.goto(form.url, { 
+        waitUntil: 'domcontentloaded', 
+        timeout: 30000 
+      })
+      this.log('Page loaded with domcontentloaded')
+      
+      // Wait a bit more for dynamic content
+      await this.page.waitForTimeout(2000)
+      
+    } catch (error) {
+      this.log(`Navigation with domcontentloaded failed: ${error.message}`)
+      
+      // Fallback: try with load event
+      try {
+        await this.page.goto(form.url, { 
+          waitUntil: 'load', 
+          timeout: 20000 
+        })
+        this.log('Page loaded with load event')
+      } catch (fallbackError) {
+        this.log(`Navigation with load failed: ${fallbackError.message}`)
+        throw new Error(`Failed to navigate to ${form.url}: ${fallbackError.message}`)
+      }
+    }
+    
+    // Handle cookie consent first
+    await this.handleCookieConsent()
     
     // Take initial screenshot
     const screenshotPath = await this.takeScreenshot('initial')
@@ -330,14 +359,82 @@ class TestRunner {
     }
   }
 
+  async handleCookieConsent() {
+    this.log('Checking for cookie consent banner...')
+    
+    try {
+      // Wait for cookie banner to appear (max 5 seconds)
+      const cookieBanner = await this.page.waitForSelector('#ccm-widget, .ccm-modal, [class*="cookie"], [id*="cookie"]', { 
+        timeout: 5000 
+      })
+      
+      if (cookieBanner) {
+        this.log('Cookie banner detected, attempting to accept all cookies')
+        
+        // Try multiple selectors for "Accept All" buttons
+        const acceptSelectors = [
+          'button[data-full-consent="true"]',  // CCM19 specific
+          'button:has-text("Alles annehmen")',
+          'button:has-text("Alle akzeptieren")',
+          'button:has-text("Accept All")',
+          'button:has-text("Akzeptieren")',
+          '.ccm--save-settings[data-full-consent="true"]',
+          '[data-testid="accept-all"]',
+          '[data-cy="accept-all"]'
+        ]
+        
+        for (const selector of acceptSelectors) {
+          try {
+            const acceptButton = await this.page.$(selector)
+            if (acceptButton) {
+              await acceptButton.click()
+              this.log(`Clicked accept button: ${selector}`)
+              
+              // Wait for banner to disappear
+              await this.page.waitForSelector('#ccm-widget', { 
+                state: 'hidden', 
+                timeout: 3000 
+              }).catch(() => {
+                // Banner might just become invisible, not removed
+                this.log('Cookie banner handling completed')
+              })
+              
+              return
+            }
+          } catch (error) {
+            // Continue trying other selectors
+          }
+        }
+        
+        this.log('Could not find accept button, trying to close banner')
+      }
+    } catch (error) {
+      this.log('No cookie banner found or timeout - continuing with form')
+    }
+  }
+
   async handlePaymentMethod(paymentMethod, formAnalysis) {
     this.log(`Handling payment method: ${paymentMethod.type}`)
     
+    // Parse payment method details
+    let paymentDetails = {}
+    try {
+      if (typeof paymentMethod.details === 'string') {
+        paymentDetails = JSON.parse(paymentMethod.details)
+      } else {
+        paymentDetails = paymentMethod.details || {}
+      }
+    } catch (error) {
+      this.log(`Error parsing payment details: ${error.message}`)
+      paymentDetails = {}
+    }
+    
     // Try to select payment method
     const paymentSelectors = [
-      `input[value*="${paymentMethod.type}"]`,
-      `button[data-payment*="${paymentMethod.type}"]`,
-      `input[name*="payment"][value*="${paymentMethod.type}"]`
+      `input[value*="${paymentMethod.type.toLowerCase()}"]`,
+      `button[data-payment*="${paymentMethod.type.toLowerCase()}"]`,
+      `input[name*="payment"][value*="${paymentMethod.type.toLowerCase()}"]`,
+      `label:has-text("${paymentMethod.type}")`
     ]
     
     for (const selector of paymentSelectors) {
@@ -346,12 +443,141 @@ class TestRunner {
         if (element) {
           await element.click()
           this.log(`Selected payment method: ${paymentMethod.type}`)
+          
+          // Fill payment-specific fields
+          await this.fillPaymentFields(paymentMethod.type, paymentDetails)
           break
         }
       } catch (error) {
         // Continue trying other selectors
       }
     }
+  }
+
+  async fillPaymentFields(paymentType, paymentDetails) {
+    this.log(`Filling payment fields for: ${paymentType}`)
+    
+    try {
+      switch (paymentType.toUpperCase()) {
+        case 'VISA':
+        case 'CREDITCARD':
+          await this.fillCreditCardFields(paymentDetails)
+          break
+        case 'SEPA':
+          await this.fillSepaFields(paymentDetails)
+          break
+        case 'EPS':
+          await this.fillEpsFields(paymentDetails)
+          break
+        case 'PAYPAL':
+          // PayPal doesn't need additional fields, just redirect
+          this.log('PayPal selected - no additional fields needed')
+          break
+        default:
+          this.log(`Unknown payment type: ${paymentType}`)
+      }
+    } catch (error) {
+      this.log(`Error filling payment fields: ${error.message}`)
+    }
+  }
+
+  async fillCreditCardFields(details) {
+    this.log('Filling credit card fields...')
+    
+    const cardFields = [
+      { 
+        selectors: ['input[name*="card"][name*="number"]', 'input[placeholder*="Kartennummer"]', '#cardnumber'], 
+        value: details.cardNumber || '4111111111111111',
+        name: 'card number'
+      },
+      { 
+        selectors: ['input[name*="card"][name*="holder"]', 'input[name*="owner"]', 'input[placeholder*="Karteninhaber"]'], 
+        value: details.cardHolder || 'Max Mustermann',
+        name: 'card holder'
+      },
+      { 
+        selectors: ['input[name*="expiry"]', 'input[name*="expire"]', 'input[placeholder*="MM/YY"]'], 
+        value: details.expiryDate || '12/25',
+        name: 'expiry date'
+      },
+      { 
+        selectors: ['input[name*="cvv"]', 'input[name*="cvc"]', 'input[placeholder*="CVV"]'], 
+        value: details.cvv || '123',
+        name: 'CVV'
+      }
+    ]
+    
+    for (const field of cardFields) {
+      await this.tryFillField(field.selectors, field.value, field.name)
+    }
+  }
+
+  async fillSepaFields(details) {
+    this.log('Filling SEPA fields...')
+    
+    const sepaFields = [
+      { 
+        selectors: ['input[name*="account"][name*="holder"]', 'input[name*="kontoinhaber"]', 'input[placeholder*="Kontoinhaber"]'], 
+        value: details.accountHolder || 'Max Mustermann',
+        name: 'account holder'
+      },
+      { 
+        selectors: ['input[name*="iban"]', 'input[placeholder*="IBAN"]'], 
+        value: details.iban || 'DE89370400440532013000',
+        name: 'IBAN'
+      }
+    ]
+    
+    for (const field of sepaFields) {
+      await this.tryFillField(field.selectors, field.value, field.name)
+    }
+  }
+
+  async fillEpsFields(details) {
+    this.log('Filling EPS fields...')
+    
+    // Try to select bank from dropdown
+    const bankSelectors = [
+      'select[name*="bank"]',
+      'select[name*="eps"]',
+      'select[placeholder*="Bank"]'
+    ]
+    
+    const bankName = details.bankName || 'Erste Bank'
+    
+    for (const selector of bankSelectors) {
+      try {
+        const selectElement = await this.page.$(selector)
+        if (selectElement) {
+          // Try to select by text content
+          await selectElement.selectOption({ label: bankName })
+          this.log(`Selected bank: ${bankName}`)
+          return
+        }
+      } catch (error) {
+        // Try next selector
+      }
+    }
+    
+    this.log('Could not find bank selection dropdown')
+  }
+
+  async tryFillField(selectors, value, fieldName) {
+    for (const selector of selectors) {
+      try {
+        const element = await this.page.$(selector)
+        if (element) {
+          await element.fill(value)
+          this.log(`Filled ${fieldName}: ${value}`)
+          return true
+        }
+      } catch (error) {
+        // Continue trying other selectors
+      }
+    }
+    
+    this.log(`Could not find field for: ${fieldName}`)
+    return false
   }
 
   async takeScreenshot(type) {
