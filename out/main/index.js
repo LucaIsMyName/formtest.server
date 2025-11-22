@@ -397,22 +397,23 @@ class TestProcessManager extends events.EventEmitter {
     this.isRunning = false;
     this.process = null;
   }
-  async runTest(testRunId, form, paymentMethod, settings) {
-    if (!this.isRunning) {
-      await this.startProcess();
-    }
-    console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
-    const message = {
-      id: this.generateMessageId(),
-      type: "START_TEST",
-      payload: {
-        testRunId,
-        form,
-        paymentMethod,
-        settings
-      }
-    };
+  async runTest(testRunId, form, paymentMethod, settings, retryCount = 0) {
+    const maxRetries = 2;
     try {
+      if (!this.isRunning) {
+        await this.startProcess();
+      }
+      console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);
+      const message = {
+        id: this.generateMessageId(),
+        type: "START_TEST",
+        payload: {
+          testRunId,
+          form,
+          paymentMethod,
+          settings
+        }
+      };
       const response = await this.sendMessage(message, 12e4);
       if (response.payload?.success) {
         return {
@@ -423,20 +424,23 @@ class TestProcessManager extends events.EventEmitter {
           formAnalysis: response.payload.result?.formAnalysis
         };
       } else {
-        return {
-          success: false,
-          error: response.payload?.error || "Unknown error",
-          duration: 0,
-          logs: response.payload?.logs || []
-        };
+        throw new Error(response.payload?.error || "Test execution failed");
       }
     } catch (error) {
-      console.error(`Test ${testRunId} failed:`, error);
+      console.error(`Test ${testRunId} attempt ${retryCount + 1} failed:`, error);
+      if (retryCount < maxRetries) {
+        console.log(`Retrying test ${testRunId} (${retryCount + 1}/${maxRetries})...`);
+        if (this.isRunning) {
+          await this.stopProcess();
+        }
+        await new Promise((resolve) => setTimeout(resolve, 2e3));
+        return this.runTest(testRunId, form, paymentMethod, settings, retryCount + 1);
+      }
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
         duration: 0,
-        logs: []
+        logs: [`Failed after ${maxRetries + 1} attempts: ${error}`]
       };
     }
   }
