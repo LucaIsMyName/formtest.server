@@ -52,15 +52,6 @@ const PaymentMethods: React.FC = () => {
     })
   }
 
-  const getPaymentTypeIcon = (type: PaymentMethod['type']) => {
-    switch (type) {
-      case 'paypal': return '💳'
-      case 'sepa': return '🏦'
-      case 'creditcard': return '💳'
-      case 'eps': return '🇦🇹'
-      default: return '💰'
-    }
-  }
 
   const getPaymentTypeLabel = (type: PaymentMethod['type']) => {
     switch (type) {
@@ -88,29 +79,39 @@ const PaymentMethods: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Payment Methods</h1>
-          <p className="text-gray-600 mt-1">
-            Manage payment methods for automated form testing
-          </p>
-        </div>
+    <div>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        marginBottom: '32px'
+      }}>
+        <h1 style={{ 
+          fontSize: '24px', 
+          fontWeight: '600', 
+          color: 'var(--color-text)',
+          margin: 0
+        }}>
+          Bezahlmethoden
+        </h1>
         <button 
           onClick={handleAddMethod}
-          className="btn-primary"
+          className="btn btn-primary"
           disabled={isLoading}
         >
-          Add Payment Method
+          Neue Bezahlmethode
         </button>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <div className="flex">
-            <div className="text-red-800">
-              <strong>Error:</strong> {error}
-            </div>
+        <div style={{ 
+          backgroundColor: '#fef2f2', 
+          border: '1px solid #fecaca', 
+          padding: '16px',
+          marginBottom: '24px'
+        }}>
+          <div style={{ color: 'var(--color-destructive)' }}>
+            <strong>Error:</strong> {error}
           </div>
         </div>
       )}
@@ -118,21 +119,29 @@ const PaymentMethods: React.FC = () => {
       {isLoading && paymentMethods.length === 0 ? (
         <div className="card">
           <div className="card-content">
-            <div className="flex items-center justify-center py-8">
-              <div className="text-gray-500">Loading payment methods...</div>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              padding: '32px 0'
+            }}>
+              <div style={{ color: 'var(--color-text-secondary)' }}>Loading payment methods...</div>
             </div>
           </div>
         </div>
       ) : paymentMethods.length === 0 ? (
         <div className="card">
           <div className="card-content">
-            <div className="text-center py-8">
-              <div className="text-gray-500 mb-4">
+            <div style={{ textAlign: 'center', padding: '32px 0' }}>
+              <div style={{ 
+                color: 'var(--color-text-secondary)', 
+                marginBottom: '16px' 
+              }}>
                 No payment methods configured yet. Add your first payment method to get started.
               </div>
               <button 
                 onClick={handleAddMethod}
-                className="btn-primary"
+                className="btn btn-primary"
               >
                 Add Your First Payment Method
               </button>
@@ -142,81 +151,104 @@ const PaymentMethods: React.FC = () => {
       ) : (
         <div className="card">
           <div className="card-header">
-            <h3 className="text-lg font-medium">Configured Payment Methods ({paymentMethods.length})</h3>
+            <h3 style={{ 
+              fontSize: '16px', 
+              fontWeight: '500',
+              margin: 0,
+              color: 'var(--color-text)'
+            }}>
+              Bezahlmethoden ({paymentMethods.length})
+            </h3>
           </div>
-          <div className="card-content">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Name</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Type</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Details</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-700">Created</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paymentMethods.map((method) => (
-                    <tr key={method.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-3 px-4">
-                        <div className="font-medium text-gray-900">{method.name}</div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center">
-                          <span className="mr-2">{getPaymentTypeIcon(method.type)}</span>
-                          <span className="text-sm text-gray-700">{getPaymentTypeLabel(method.type)}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="text-sm text-gray-500 font-mono">
-                          {maskSensitiveData(method)}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
+          <div className="card-content" style={{ padding: 0 }}>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Typ</th>
+                  <th>Details</th>
+                  <th>Status</th>
+                  <th>Erstellt</th>
+                  <th style={{ textAlign: 'right' }}>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentMethods.map((method) => (
+                  <tr key={method.id}>
+                    <td>
+                      <div style={{ fontWeight: '500' }}>{method.name}</div>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: '14px' }}>{getPaymentTypeLabel(method.type)}</span>
+                    </td>
+                    <td>
+                      <span style={{ 
+                        fontSize: '12px', 
+                        color: 'var(--color-text-secondary)',
+                        fontFamily: 'monospace'
+                      }}>
+                        {maskSensitiveData(method)}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => togglePaymentMethodActive(method.id)}
+                        className={method.isActive ? 'status-active' : 'status-inactive'}
+                        disabled={isLoading}
+                        style={{ border: 'none', cursor: 'pointer' }}
+                      >
+                        {method.isActive ? 'Active' : 'Inactive'}
+                      </button>
+                    </td>
+                    <td style={{ 
+                      fontSize: '14px', 
+                      color: 'var(--color-text-secondary)' 
+                    }}>
+                      {formatDate(method.createdAt)}
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'flex-end', 
+                        gap: '8px' 
+                      }}>
                         <button
-                          onClick={() => togglePaymentMethodActive(method.id)}
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            method.isActive
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
+                          onClick={() => handleEditMethod(method)}
+                          style={{ 
+                            color: 'var(--color-primary)', 
+                            background: 'none', 
+                            border: 'none', 
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: '500'
+                          }}
                           disabled={isLoading}
                         >
-                          {method.isActive ? 'Active' : 'Inactive'}
+                          Bearbeiten
                         </button>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-500">
-                        {formatDate(method.createdAt)}
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end space-x-2">
-                          <button
-                            onClick={() => handleEditMethod(method)}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                            disabled={isLoading}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteMethod(method.id)}
-                            className={`text-sm font-medium ${
-                              deleteConfirm === method.id
-                                ? 'text-red-800 bg-red-100 px-2 py-1 rounded'
-                                : 'text-red-600 hover:text-red-800'
-                            }`}
-                            disabled={isLoading}
-                          >
-                            {deleteConfirm === method.id ? 'Confirm Delete' : 'Delete'}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        <button
+                          onClick={() => handleDeleteMethod(method.id)}
+                          className={deleteConfirm === method.id ? 'btn btn-destructive' : ''}
+                          style={{ 
+                            color: deleteConfirm === method.id ? 'white' : 'var(--color-destructive)', 
+                            background: deleteConfirm === method.id ? 'var(--color-destructive)' : 'none', 
+                            border: deleteConfirm === method.id ? '1px solid var(--color-destructive)' : 'none', 
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            padding: deleteConfirm === method.id ? '4px 8px' : '0'
+                          }}
+                          disabled={isLoading}
+                        >
+                          {deleteConfirm === method.id ? 'Löschen bestätigen' : 'Löschen'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

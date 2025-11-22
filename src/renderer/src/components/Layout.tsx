@@ -9,38 +9,58 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
 
   const navigation = [
-    { name: "Dashboard", href: "/", icon: "📊" },
-    { name: "Forms", href: "/forms", icon: "📝" },
-    { name: "Payment Methods", href: "/payment-methods", icon: "💳" },
-    { name: "Test Results", href: "/test-results", icon: "📈" },
-    { name: "Settings", href: "/settings", icon: "⚙️" },
+    { name: "Dashboard", href: "/" },
+    { name: "Formulare", href: "/forms" },
+    { name: "Bezahlmethoden", href: "/payment-methods" },
+    { name: "Test Resultate", href: "/test-results" },
+    { name: "Einstellungen", href: "/settings" },
   ];
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: 'var(--color-background)' }}>
       {/* Sidebar */}
-      <div className="w-64 bg-white shadow-lg">
-        <div className="flex items-center justify-center h-16 border-b">
-          <h1 className="text-xl font-bold text-gray-800">FormTest Server</h1>
+      <div style={{ 
+        width: '200px', 
+        backgroundColor: 'var(--color-background)', 
+        borderRight: '1px solid var(--color-border)' 
+      }}>
+        <div style={{ 
+          padding: '24px 16px', 
+          borderBottom: '1px solid var(--color-border)' 
+        }}>
+          <h1 style={{ 
+            fontSize: '18px', 
+            fontWeight: '600', 
+            color: 'var(--color-text)',
+            margin: 0
+          }}>
+            Formtest.Server
+          </h1>
         </div>
-        <nav className="mt-8">
-          <div className="px-4 space-y-2">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${location.pathname === item.href ? "bg-primary-50 text-primary-700 border-r-2 border-primary-500" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
-                <span className="mr-3 text-lg">{item.icon}</span>
-                {item.name}
-              </Link>
-            ))}
-          </div>
+        <nav>
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className={`nav-link ${location.pathname === item.href ? 'active' : ''}`}
+              style={{ textDecoration: 'none' }}
+            >
+              {item.name}
+            </Link>
+          ))}
         </nav>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">{children}</main>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <main style={{ 
+          flex: 1, 
+          overflow: 'auto', 
+          backgroundColor: 'var(--color-background)', 
+          padding: '32px' 
+        }}>
+          {children}
+        </main>
       </div>
     </div>
   );

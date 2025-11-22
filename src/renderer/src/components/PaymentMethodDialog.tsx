@@ -271,89 +271,122 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">{editMethod ? "Edit Payment Method" : "Add New Payment Method"}</h2>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h2 style={{ 
+            fontSize: '18px', 
+            fontWeight: '600', 
+            color: 'var(--color-text)',
+            margin: 0
+          }}>
+            {editMethod ? "Bezahlmethode bearbeiten" : "Neue Bezahlmethode"}
+          </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl"
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '20px',
+              cursor: 'pointer',
+              color: 'var(--color-text-secondary)',
+              padding: 0
+            }}
             disabled={isLoading}>
             ×
           </button>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="p-6 space-y-4">
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1">
-              Payment Method Name *
-            </label>
-            <input
-              type="text"
-              id="name"
-              className={`input ${errors.name ? "border-red-500" : ""}`}
-              value={methodData.name}
-              onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
-              placeholder="e.g., Test PayPal Account"
-              disabled={isLoading}
-            />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <div style={{ marginBottom: '20px' }}>
+              <label
+                htmlFor="name"
+                style={{ 
+                  display: 'block', 
+                  fontSize: '14px', 
+                  fontWeight: '500', 
+                  color: 'var(--color-text)',
+                  marginBottom: '4px'
+                }}>
+                Name der Bezahlmethode *
+              </label>
+              <input
+                type="text"
+                id="name"
+                className={`input ${errors.name ? "border-red-500" : ""}`}
+                value={methodData.name}
+                onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
+                placeholder="z.B. Test PayPal Account"
+                disabled={isLoading}
+              />
+              {errors.name && <p style={{ color: 'var(--color-destructive)', fontSize: '12px', marginTop: '4px' }}>{errors.name}</p>}
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label
+                htmlFor="type"
+                style={{ 
+                  display: 'block', 
+                  fontSize: '14px', 
+                  fontWeight: '500', 
+                  color: 'var(--color-text)',
+                  marginBottom: '4px'
+                }}>
+                Bezahlmethoden-Typ *
+              </label>
+              <select
+                id="type"
+                className="input"
+                value={methodData.type}
+                onChange={(e) => setMethodData({ ...methodData, type: e.target.value as PaymentMethod["type"], details: {} as PaymentMethodDetails })}
+                disabled={isLoading}>
+                <option value="paypal">PayPal</option>
+                <option value="sepa">SEPA Lastschrift</option>
+                <option value="creditcard">Kreditkarte</option>
+                <option value="eps">EPS (Österreich)</option>
+              </select>
+            </div>
+
+            {renderTypeSpecificFields()}
+
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              marginTop: '20px'
+            }}>
+              <input
+                type="checkbox"
+                id="isActive"
+                checked={methodData.isActive}
+                onChange={(e) => setMethodData({ ...methodData, isActive: e.target.checked })}
+                style={{ marginRight: '8px' }}
+                disabled={isLoading}
+              />
+              <label
+                htmlFor="isActive"
+                style={{ 
+                  fontSize: '14px', 
+                  color: 'var(--color-text)' 
+                }}>
+                Aktiv (in Tests verwenden)
+              </label>
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="type"
-              className="block text-sm font-medium text-gray-700 mb-1">
-              Payment Type *
-            </label>
-            <select
-              id="type"
-              className="input"
-              value={methodData.type}
-              onChange={(e) => setMethodData({ ...methodData, type: e.target.value as PaymentMethod["type"], details: {} as PaymentMethodDetails })}
-              disabled={isLoading}>
-              <option value="paypal">PayPal</option>
-              <option value="sepa">SEPA Direct Debit</option>
-              <option value="creditcard">Credit Card</option>
-              <option value="eps">EPS (Austria)</option>
-            </select>
-          </div>
-
-          {renderTypeSpecificFields()}
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="isActive"
-              checked={methodData.isActive}
-              onChange={(e) => setMethodData({ ...methodData, isActive: e.target.checked })}
-              className="h-4 w-4 text-blue-600 rounded border-gray-300"
-              disabled={isLoading}
-            />
-            <label
-              htmlFor="isActive"
-              className="ml-2 text-sm text-gray-700">
-              Active (include in tests)
-            </label>
-          </div>
-
-          <div className="flex justify-end space-x-3 pt-4">
+          <div className="modal-footer">
             <button
               type="button"
               onClick={onClose}
-              className="btn-outline"
+              className="btn btn-outline"
               disabled={isLoading}>
-              Cancel
+              Abbrechen
             </button>
             <button
               type="submit"
-              className="btn-primary"
+              className="btn btn-primary"
               disabled={isLoading}>
-              {isLoading ? "Saving..." : editMethod ? "Update Payment Method" : "Add Payment Method"}
+              {isLoading ? "Speichern..." : editMethod ? "Bezahlmethode aktualisieren" : "Bezahlmethode hinzufügen"}
             </button>
           </div>
         </form>

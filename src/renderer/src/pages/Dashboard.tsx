@@ -90,85 +90,139 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Overview of your form testing setup</p>
-        </div>
-        <div className="flex space-x-3">
+    <div>
+      <h1 style={{ 
+        fontSize: '24px', 
+        fontWeight: '600', 
+        color: 'var(--color-text)',
+        margin: 0,
+        marginBottom: '32px'
+      }}>
+        Dashboard
+      </h1>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: '32px'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center'
+        }}>
           <button
             onClick={() => handleQuickAction('run-tests')}
-            className="btn-primary"
+            style={{ 
+              backgroundColor: 'var(--color-primary)', 
+              color: 'var(--color-text)', 
+              padding: '12px 24px', 
+              borderRadius: '8px', 
+              border: 'none', 
+              cursor: 'pointer'
+            }}
             disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0 || isRunning}
           >
             {isRunning ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div style={{ 
+                  width: '16px', 
+                  height: '16px', 
+                  border: '2px solid var(--color-text)', 
+                  borderTop: '2px solid transparent', 
+                  borderRadius: '50%', 
+                  animation: 'spin 1s linear infinite'
+                }}></div>
                 Running Tests...
               </>
             ) : (
-              <>🚀 Run Tests</>
+              <>Run Tests</>
             )}
           </button>
           <button
             onClick={() => handleQuickAction('settings')}
-            className="btn-outline"
+            style={{ 
+              backgroundColor: 'var(--color-secondary)', 
+              color: 'var(--color-text)', 
+              padding: '12px 24px', 
+              borderRadius: '8px', 
+              border: 'none', 
+              cursor: 'pointer'
+            }}
           >
-            ⚙️ Settings
+            Settings
           </button>
         </div>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="card">
-          <div className="card-content">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Forms</h3>
-                <p className="text-2xl font-bold text-blue-600">
-                  {isLoading ? '...' : stats.totalForms}
-                </p>
-                <p className="text-xs text-gray-400">{stats.activeForms} active</p>
-              </div>
-              <div className="text-blue-500 text-2xl">📝</div>
-            </div>
+      {/* Stats Cards */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+        gap: '24px',
+        marginBottom: '32px'
+      }}>
+        <div style={{ 
+          backgroundColor: 'var(--color-background)', 
+          padding: '24px', 
+          borderRadius: '8px', 
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'
+        }}>
+          <div>
+            <p style={{ 
+              fontSize: '14px', 
+              color: 'var(--color-text-secondary)',
+              margin: 0,
+              marginBottom: '4px'
+            }}>Total Tests</p>
+            <p style={{ 
+              fontSize: '24px', 
+              fontWeight: '600', 
+              color: 'var(--color-text)',
+              margin: 0
+            }}>{stats.totalTestRuns}</p>
           </div>
         </div>
-        
-        <div className="card">
-          <div className="card-content">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Payment Methods</h3>
-                <p className="text-2xl font-bold text-green-600">
-                  {isLoading ? '...' : stats.totalPaymentMethods}
-                </p>
-                <p className="text-xs text-gray-400">{stats.activePaymentMethods} active</p>
-              </div>
-              <div className="text-green-500 text-2xl">💳</div>
-            </div>
+        <div style={{ 
+          backgroundColor: 'var(--color-background)', 
+          padding: '24px', 
+          borderRadius: '8px', 
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'
+        }}>
+          <div>
+            <p style={{ 
+              fontSize: '14px', 
+              color: 'var(--color-text-secondary)',
+              margin: 0,
+              marginBottom: '4px'
+            }}>Payment Methods</p>
+            <p style={{ 
+              fontSize: '24px', 
+              fontWeight: '600', 
+              color: 'var(--color-text)',
+              margin: 0
+            }}>{stats.totalPaymentMethods}</p>
           </div>
         </div>
-        
-        <div className="card">
-          <div className="card-content">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Tests Run</h3>
-                <p className="text-2xl font-bold text-purple-600">
-                  {isLoading ? '...' : stats.totalTestRuns}
-                </p>
-                <p className="text-xs text-gray-400">{stats.successfulTests} successful</p>
-              </div>
-              <div className="text-purple-500 text-2xl">🧪</div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="card">
-          <div className="card-content">
+        <div style={{ 
+          backgroundColor: 'var(--color-background)', 
+          padding: '24px', 
+          borderRadius: '8px', 
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'
+        }}>
+          <div>
+            <p style={{ 
+              fontSize: '14px', 
+              color: 'var(--color-text-secondary)',
+              margin: 0,
+              marginBottom: '4px'
+            }}>Successful</p>
+            <p style={{ 
+              fontSize: '24px', 
+              fontWeight: '600', 
+              color: 'var(--color-text)',
+              margin: 0
+            }}>{stats.successfulTests}</p>
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Success Rate</h3>
