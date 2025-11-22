@@ -10634,28 +10634,11 @@ const TestResults = () => {
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const [selectedTestRun, setSelectedTestRun] = reactExports.useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = reactExports.useState(null);
-  const deleteModalRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     loadTestRuns();
     loadForms();
     loadPaymentMethods();
   }, [loadTestRuns, loadForms, loadPaymentMethods]);
-  reactExports.useEffect(() => {
-    const handleEscKey = (event) => {
-      if (event.key === "Escape" && showDeleteConfirm !== null) {
-        setShowDeleteConfirm(null);
-      }
-    };
-    if (showDeleteConfirm !== null) {
-      document.addEventListener("keydown", handleEscKey);
-      return () => document.removeEventListener("keydown", handleEscKey);
-    }
-  }, [showDeleteConfirm]);
-  const handleDeleteOverlayClick = (event) => {
-    if (event.target === event.currentTarget) {
-      setShowDeleteConfirm(null);
-    }
-  };
   const getFormName = (formId) => {
     const form = forms.find((f2) => f2.id === formId);
     return form ? form.name : `Form #${formId}`;
@@ -10729,14 +10712,24 @@ const TestResults = () => {
   const formatDate = (date) => {
     return new Date(date).toLocaleString();
   };
-  const handleDeleteTestRun = async (id2) => {
+  const handleDeleteClick = (testRun) => {
+    const formName = getFormName(testRun.formId);
+    const paymentMethodName = getPaymentMethodName(testRun.paymentMethodId);
+    const testRunName = `${formName} × ${paymentMethodName}`;
+    setShowDeleteConfirm({ id: testRun.id, name: testRunName });
+  };
+  const confirmDeleteTestRun = async () => {
+    if (!showDeleteConfirm) return;
     try {
       if (!window.api) {
         throw new Error("API not available");
       }
-      await window.api.testRuns.delete(id2);
+      await window.api.testRuns.delete(showDeleteConfirm.id);
       await loadTestRuns();
       setShowDeleteConfirm(null);
+      if (selectedTestRun === showDeleteConfirm.id) {
+        setSelectedTestRun(null);
+      }
     } catch (error2) {
       console.error("Failed to delete test run:", error2);
     }
@@ -10807,7 +10800,7 @@ const TestResults = () => {
                     {
                       onClick: (e) => {
                         e.stopPropagation();
-                        setShowDeleteConfirm(testRun.id);
+                        handleDeleteClick(testRun);
                       },
                       className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium px-2 py-1",
                       children: "Delete"
@@ -10878,37 +10871,18 @@ const TestResults = () => {
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", padding: "32px 0" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { color: "var(--color-text-secondary)" }, children: "Select a test run to view details" }) }) })
       ] }) })
     ] }),
-    showDeleteConfirm && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", onClick: handleDeleteOverlayClick, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", ref: deleteModalRef, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: {
-        fontSize: "18px",
-        fontWeight: "600",
-        color: "var(--color-text)",
-        margin: 0
-      }, children: "Test Run löschen" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: {
-        fontSize: "14px",
-        color: "var(--color-text-secondary)",
-        margin: 0
-      }, children: "Are you sure you want to delete this test run? This action cannot be undone." }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-footer", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: () => setShowDeleteConfirm(null),
-            className: "btn btn-outline",
-            children: "Abbrechen"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: () => handleDeleteTestRun(showDeleteConfirm),
-            className: "btn btn-destructive",
-            children: "Löschen"
-          }
-        )
-      ] })
-    ] }) })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      DeleteConfirmDialog,
+      {
+        isOpen: !!showDeleteConfirm,
+        onClose: () => setShowDeleteConfirm(null),
+        onConfirm: confirmDeleteTestRun,
+        title: "Test Run löschen",
+        message: "Sind Sie sicher, dass Sie diesen Test Run löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+        itemName: showDeleteConfirm?.name,
+        isLoading
+      }
+    )
   ] });
 };
 function App() {

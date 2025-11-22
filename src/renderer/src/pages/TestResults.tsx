@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTestRunsStore } from '../store/useTestRunsStore'
 import { useFormsStore } from '../store/useFormsStore'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
+import DeleteConfirmDialog from '../components/DeleteConfirmDialog'
 import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw } from 'lucide-react'
 
 const TestResults: React.FC = () => {
@@ -9,35 +10,13 @@ const TestResults: React.FC = () => {
   const { forms, loadForms } = useFormsStore()
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore()
   const [selectedTestRun, setSelectedTestRun] = useState<number | null>(null)
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null)
-  const deleteModalRef = useRef<HTMLDivElement>(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ id: number; name: string } | null>(null)
 
   useEffect(() => {
     loadTestRuns()
     loadForms()
     loadPaymentMethods()
   }, [loadTestRuns, loadForms, loadPaymentMethods])
-
-  // ESC key handler for delete dialog
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && showDeleteConfirm !== null) {
-        setShowDeleteConfirm(null)
-      }
-    }
-
-    if (showDeleteConfirm !== null) {
-      document.addEventListener('keydown', handleEscKey)
-      return () => document.removeEventListener('keydown', handleEscKey)
-    }
-  }, [showDeleteConfirm])
-
-  // Click outside handler for delete dialog
-  const handleDeleteOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      setShowDeleteConfirm(null)
-    }
-  }
 
   const getFormName = (formId: number) => {
     const form = forms.find(f => f.id === formId)
@@ -110,14 +89,26 @@ const TestResults: React.FC = () => {
     return new Date(date).toLocaleString()
   }
 
-  const handleDeleteTestRun = async (id: number) => {
+  const handleDeleteClick = (testRun: any) => {
+    const formName = getFormName(testRun.formId)
+    const paymentMethodName = getPaymentMethodName(testRun.paymentMethodId)
+    const testRunName = `${formName} × ${paymentMethodName}`
+    setShowDeleteConfirm({ id: testRun.id, name: testRunName })
+  }
+
+  const confirmDeleteTestRun = async () => {
+    if (!showDeleteConfirm) return
+    
     try {
       if (!window.api) {
         throw new Error('API not available')
       }
-      await window.api.testRuns.delete(id)
+      await window.api.testRuns.delete(showDeleteConfirm.id)
       await loadTestRuns() // Refresh the list
       setShowDeleteConfirm(null)
+      if (selectedTestRun === showDeleteConfirm.id) {
+        setSelectedTestRun(null)
+      }
     } catch (error) {
       console.error('Failed to delete test run:', error)
     }
@@ -223,7 +214,7 @@ const TestResults: React.FC = () => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation()
-                                setShowDeleteConfirm(testRun.id)
+                                handleDeleteClick(testRun)
                               }}
                               className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium px-2 py-1"
                             >
@@ -354,46 +345,15 @@ const TestResults: React.FC = () => {
         </div>
       </div>
 
-      {/* Delete Confirmation Dialog */}
-      {showDeleteConfirm && (
-        <div className="modal-overlay" onClick={handleDeleteOverlayClick}>
-          <div className="modal-content" ref={deleteModalRef}>
-            <div className="modal-header">
-              <h3 style={{ 
-                fontSize: '18px', 
-                fontWeight: '600', 
-                color: 'var(--color-text)',
-                margin: 0
-              }}>
-                Test Run löschen
-              </h3>
-            </div>
-            <div className="modal-body">
-              <p style={{ 
-                fontSize: '14px', 
-                color: 'var(--color-text-secondary)',
-                margin: 0
-              }}>
-                Are you sure you want to delete this test run? This action cannot be undone.
-              </p>
-            </div>
-            <div className="modal-footer">
-              <button
-                onClick={() => setShowDeleteConfirm(null)}
-                className="btn btn-outline"
-              >
-                Abbrechen
-              </button>
-              <button
-                onClick={() => handleDeleteTestRun(showDeleteConfirm)}
-                className="btn btn-destructive"
-              >
-                Löschen
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmDialog
+        isOpen={!!showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(null)}
+        onConfirm={confirmDeleteTestRun}
+        title="Test Run löschen"
+        message="Sind Sie sicher, dass Sie diesen Test Run löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+        itemName={showDeleteConfirm?.name}
+        isLoading={isLoading}
+      />
     </div>
   )
 }
