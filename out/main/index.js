@@ -352,15 +352,7 @@ const testRunQueries = {
   getAll: () => db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all(),
   getById: (id) => db.prepare("SELECT * FROM test_runs WHERE id = ?").get(id),
   getByForm: (formId) => db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId),
-  create: (testRun) => db.prepare("INSERT INTO test_runs (formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?)").run(
-    testRun.formId,
-    testRun.paymentMethodId,
-    testRun.status,
-    testRun.errorMessage,
-    testRun.screenshotPath,
-    testRun.logDetails,
-    testRun.durationMs
-  ),
+  create: (testRun) => db.prepare("INSERT INTO test_runs (formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?)").run(testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs),
   updateStatus: (id, status, errorMessage, durationMs) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, id);
@@ -572,21 +564,11 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
   try {
     const processManager2 = getTestProcessManager();
     const result = await processManager2.runTest(testRunId, form, paymentMethod, settings);
-    await testRunQueries.updateStatus(
-      testRunId,
-      result.success ? "SUCCESS" : "FAILURE",
-      result.error,
-      result.duration
-    );
+    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration);
     console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"}`);
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
-    await testRunQueries.updateStatus(
-      testRunId,
-      "FAILURE",
-      error instanceof Error ? error.message : String(error),
-      0
-    );
+    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
   }
 }
 function setupIpcHandlers() {
