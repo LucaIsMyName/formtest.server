@@ -37,17 +37,20 @@ const CustomTitleBar: React.FC = () => {
   }
 
   return (
-    <div className="custom-title-bar">
+    <div 
+      className="h-10 bg-white dark:bg-gray-900 flex items-center justify-between px-3 select-none"
+      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+    >
       <TrafficLights
         onClose={handleClose}
         onMinimize={handleMinimize}
         onMaximize={handleMaximize}
         isMaximized={isMaximized}
       />
-      <div className="title-bar-title text-left">
+      <div className="flex-1 text-left text-xs font-normal text-gray-700 dark:text-gray-300 font-mono mx-5">
         Formtest.Server
       </div>
-      <div className="title-bar-spacer" />
+      <div className="w-16" />
     </div>
   )
 }

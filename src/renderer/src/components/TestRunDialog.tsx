@@ -108,37 +108,25 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className="modal-content" ref={modalRef} style={{ maxWidth: '800px', width: '100%', maxHeight: '90vh', overflow: 'hidden' }}>
-        <div className="modal-header">
-          <h2 style={{ 
-            fontSize: '18px', 
-            fontWeight: '600', 
-            color: 'var(--color-text)',
-            margin: 0
-          }}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleOverlayClick}>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden" ref={modalRef}>
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white m-0">
             Tests ausführen
           </h2>
           <button
             onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '20px',
-              cursor: 'pointer',
-              color: 'var(--color-text-secondary)',
-              padding: 0
-            }}
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl p-0 bg-transparent border-none cursor-pointer"
             disabled={isRunning}
           >
             ×
           </button>
         </div>
 
-        <div className="modal-body" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
+        <div className="p-6 overflow-y-auto max-h-[60vh]">
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-red-800 text-sm">{error}</p>
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+              <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
             </div>
           )}
 
@@ -146,12 +134,12 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
             {/* Forms Selection */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                   Forms ({activeForms.length} available)
                 </h3>
                 <button
                   onClick={handleSelectAllForms}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                   disabled={isRunning}
                 >
                   {selectedFormIds.length === activeForms.length ? 'Deselect All' : 'Select All'}
@@ -159,24 +147,24 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
               </div>
               
               {activeForms.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <p>No active forms available</p>
                   <p className="text-sm">Create and activate forms first</p>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {activeForms.map(form => (
-                    <label key={form.id} className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <label key={form.id} className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedFormIds.includes(form.id)}
                         onChange={() => handleFormToggle(form.id)}
-                        className="h-4 w-4 text-blue-600 rounded border-gray-300"
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                         disabled={isRunning}
                       />
                       <div className="ml-3 flex-1">
-                        <div className="text-sm font-medium text-gray-900">{form.name}</div>
-                        <div className="text-xs text-gray-500 truncate">{form.url}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{form.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{form.url}</div>
                       </div>
                     </label>
                   ))}
@@ -187,12 +175,12 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
             {/* Payment Methods Selection */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                   Payment Methods ({activePaymentMethods.length} available)
                 </h3>
                 <button
                   onClick={handleSelectAllPaymentMethods}
-                  className="text-sm text-blue-600 hover:text-blue-800"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                   disabled={isRunning}
                 >
                   {selectedPaymentMethodIds.length === activePaymentMethods.length ? 'Deselect All' : 'Select All'}
@@ -200,26 +188,26 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
               </div>
               
               {activePaymentMethods.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   <p>No active payment methods available</p>
                   <p className="text-sm">Create and activate payment methods first</p>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {activePaymentMethods.map(pm => (
-                    <label key={pm.id} className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <label key={pm.id} className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={selectedPaymentMethodIds.includes(pm.id)}
                         onChange={() => handlePaymentMethodToggle(pm.id)}
-                        className="h-4 w-4 text-blue-600 rounded border-gray-300"
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                         disabled={isRunning}
                       />
                       <div className="ml-3 flex-1">
-                        <div className="text-sm font-medium text-gray-900">{pm.name}</div>
-                        <div className="text-xs text-gray-500 capitalize">{pm.type}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{pm.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{pm.type}</div>
                       </div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-gray-400 dark:text-gray-500">
                         {pm.type === 'paypal' && '💳'}
                         {pm.type === 'sepa' && '🏦'}
                         {pm.type === 'creditcard' && '💳'}
@@ -234,9 +222,9 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
 
           {/* Test Summary */}
           {totalTests > 0 && (
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-              <h4 className="text-sm font-medium text-blue-900">Test Summary</h4>
-              <div className="mt-2 text-sm text-blue-800">
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+              <h4 className="text-sm font-medium text-blue-900 dark:text-blue-200">Test Summary</h4>
+              <div className="mt-2 text-sm text-blue-800 dark:text-blue-300">
                 <p>• {selectedFormIds.length} form(s) selected</p>
                 <p>• {selectedPaymentMethodIds.length} payment method(s) selected</p>
                 <p className="font-medium">• Total tests to run: {totalTests}</p>
@@ -245,19 +233,11 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
-          <div style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
+        <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             {isRunning ? (
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ 
-                  width: '16px', 
-                  height: '16px', 
-                  border: '2px solid var(--color-primary)', 
-                  borderTop: '2px solid transparent', 
-                  borderRadius: '50%', 
-                  animation: 'spin 1s linear infinite',
-                  marginRight: '8px'
-                }}></div>
+              <span className="flex items-center">
+                <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2"></div>
                 Tests werden ausgeführt...
               </span>
             ) : (
@@ -265,17 +245,17 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
             )}
           </div>
           
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="btn btn-outline"
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
               disabled={isRunning}
             >
               Abbrechen
             </button>
             <button
               onClick={handleRunTests}
-              className="btn btn-primary"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
               disabled={isRunning || totalTests === 0}
             >
               {isRunning ? 'Läuft...' : `${totalTests} Test${totalTests !== 1 ? 's' : ''} starten`}

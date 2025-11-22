@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
 import PaymentMethodDialog from '../components/PaymentMethodDialog'
+import DeleteConfirmDialog from '../components/DeleteConfirmDialog'
 import type { PaymentMethod } from '../../../common/types'
 
 const PaymentMethods: React.FC = () => {
   const { paymentMethods, isLoading, error, loadPaymentMethods, addPaymentMethod, updatePaymentMethod, deletePaymentMethod, togglePaymentMethodActive } = usePaymentMethodsStore()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null)
-  const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null)
 
   useEffect(() => {
     loadPaymentMethods()
@@ -31,14 +32,14 @@ const PaymentMethods: React.FC = () => {
     }
   }
 
-  const handleDeleteMethod = async (id: number) => {
-    if (deleteConfirm === id) {
-      await deletePaymentMethod(id)
+  const handleDeleteMethod = (method: PaymentMethod) => {
+    setDeleteConfirm({ id: method.id, name: method.name })
+  }
+
+  const confirmDelete = async () => {
+    if (deleteConfirm) {
+      await deletePaymentMethod(deleteConfirm.id)
       setDeleteConfirm(null)
-    } else {
-      setDeleteConfirm(id)
-      // Auto-cancel delete confirmation after 3 seconds
-      setTimeout(() => setDeleteConfirm(null), 3000)
     }
   }
 
@@ -80,23 +81,13 @@ const PaymentMethods: React.FC = () => {
 
   return (
     <div>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        marginBottom: '32px'
-      }}>
-        <h1 style={{ 
-          fontSize: '24px', 
-          fontWeight: '600', 
-          color: 'var(--color-text)',
-          margin: 0
-        }}>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white m-0">
           Bezahlmethoden
         </h1>
         <button 
           onClick={handleAddMethod}
-          className="btn btn-primary"
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
           disabled={isLoading}
         >
           Neue Bezahlmethode
@@ -104,144 +95,102 @@ const PaymentMethods: React.FC = () => {
       </div>
 
       {error && (
-        <div style={{ 
-          backgroundColor: '#fef2f2', 
-          border: '1px solid #fecaca', 
-          padding: '16px',
-          marginBottom: '24px'
-        }}>
-          <div style={{ color: 'var(--color-destructive)' }}>
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md">
+          <div className="text-red-800 dark:text-red-200">
             <strong>Error:</strong> {error}
           </div>
         </div>
       )}
 
       {isLoading && paymentMethods.length === 0 ? (
-        <div className="card">
-          <div className="card-content">
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              padding: '32px 0'
-            }}>
-              <div style={{ color: 'var(--color-text-secondary)' }}>Loading payment methods...</div>
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          <div className="p-6">
+            <div className="flex items-center justify-center py-8">
+              <div className="text-gray-500 dark:text-gray-400">Loading payment methods...</div>
             </div>
           </div>
         </div>
       ) : paymentMethods.length === 0 ? (
-        <div className="card">
-          <div className="card-content">
-            <div style={{ textAlign: 'center', padding: '32px 0' }}>
-              <div style={{ 
-                color: 'var(--color-text-secondary)', 
-                marginBottom: '16px' 
-              }}>
-                No payment methods configured yet. Add your first payment method to get started.
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          <div className="p-6">
+            <div className="text-center py-8">
+              <div className="text-gray-500 dark:text-gray-400 mb-4">
+                No payment methods configured yet.
               </div>
               <button 
                 onClick={handleAddMethod}
-                className="btn btn-primary"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+                disabled={isLoading}
               >
-                Add Your First Payment Method
+                Add your first payment method
               </button>
             </div>
           </div>
         </div>
       ) : (
-        <div className="card">
-          <div className="card-header">
-            <h3 style={{ 
-              fontSize: '16px', 
-              fontWeight: '500',
-              margin: 0,
-              color: 'var(--color-text)'
-            }}>
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">
               Bezahlmethoden ({paymentMethods.length})
             </h3>
           </div>
-          <div className="card-content" style={{ padding: 0 }}>
-            <table className="table">
-              <thead>
+          <div className="overflow-x-auto">
+            <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th>Name</th>
-                  <th>Typ</th>
-                  <th>Details</th>
-                  <th>Status</th>
-                  <th>Erstellt</th>
-                  <th style={{ textAlign: 'right' }}>Aktionen</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Typ</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Details</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Erstellt</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aktionen</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {paymentMethods.map((method) => (
-                  <tr key={method.id}>
-                    <td>
-                      <div style={{ fontWeight: '500' }}>{method.name}</div>
+                  <tr key={method.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-gray-900 dark:text-white">{method.name}</div>
                     </td>
-                    <td>
-                      <span style={{ fontSize: '14px' }}>{getPaymentTypeLabel(method.type)}</span>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
                     </td>
-                    <td>
-                      <span style={{ 
-                        fontSize: '12px', 
-                        color: 'var(--color-text-secondary)',
-                        fontFamily: 'monospace'
-                      }}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
                         {maskSensitiveData(method)}
                       </span>
                     </td>
-                    <td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => togglePaymentMethodActive(method.id)}
-                        className={method.isActive ? 'status-active' : 'status-inactive'}
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${
+                          method.isActive 
+                            ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200' 
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+                        }`}
                         disabled={isLoading}
-                        style={{ border: 'none', cursor: 'pointer' }}
                       >
                         {method.isActive ? 'Active' : 'Inactive'}
                       </button>
                     </td>
-                    <td style={{ 
-                      fontSize: '14px', 
-                      color: 'var(--color-text-secondary)' 
-                    }}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {formatDate(method.createdAt)}
                     </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'flex-end', 
-                        gap: '8px' 
-                      }}>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEditMethod(method)}
-                          style={{ 
-                            color: 'var(--color-primary)', 
-                            background: 'none', 
-                            border: 'none', 
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: '500'
-                          }}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 bg-transparent border-none cursor-pointer text-sm font-medium"
                           disabled={isLoading}
                         >
                           Bearbeiten
                         </button>
                         <button
-                          onClick={() => handleDeleteMethod(method.id)}
-                          className={deleteConfirm === method.id ? 'btn btn-destructive' : ''}
-                          style={{ 
-                            color: deleteConfirm === method.id ? 'white' : 'var(--color-destructive)', 
-                            background: deleteConfirm === method.id ? 'var(--color-destructive)' : 'none', 
-                            border: deleteConfirm === method.id ? '1px solid var(--color-destructive)' : 'none', 
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: '500',
-                            padding: deleteConfirm === method.id ? '4px 8px' : '0'
-                          }}
+                          onClick={() => handleDeleteMethod(method)}
+                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium"
                           disabled={isLoading}
                         >
-                          {deleteConfirm === method.id ? 'Löschen bestätigen' : 'Löschen'}
+                          Löschen
                         </button>
                       </div>
                     </td>
@@ -258,6 +207,16 @@ const PaymentMethods: React.FC = () => {
         onClose={() => setIsDialogOpen(false)}
         onSubmit={handleMethodSubmit}
         editMethod={editingMethod}
+        isLoading={isLoading}
+      />
+
+      <DeleteConfirmDialog
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={confirmDelete}
+        title="Bezahlmethode löschen"
+        message="Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+        itemName={deleteConfirm?.name}
         isLoading={isLoading}
       />
     </div>

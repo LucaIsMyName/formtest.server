@@ -4,8 +4,13 @@ module.exports = {
     "./src/renderer/index.html",
     "./src/renderer/src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'media', // Use system preference for dark mode
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Geist', 'system-ui', 'sans-serif'],
+        'mono': ['Geist Mono', 'ui-monospace', 'monospace'],
+      },
       colors: {
         primary: {
           50: '#eff6ff',

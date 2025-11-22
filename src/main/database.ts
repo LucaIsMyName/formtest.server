@@ -13,9 +13,30 @@ export function initDatabase(): void {
   try {
     db = new Database(dbPath)
     console.log('Database: SQLite connection established')
+    
+    // Enable foreign key constraints
+    db.pragma('foreign_keys = ON')
+    console.log('Database: Foreign key constraints enabled')
   } catch (dbError) {
     console.error('Database: Failed to create SQLite connection:', dbError)
     throw dbError
+  }
+
+  // Check if we need to migrate the test_runs table for CASCADE DELETE
+  try {
+    const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get() as { sql: string } | undefined
+    if (tableInfo && !tableInfo.sql.includes('ON DELETE CASCADE')) {
+      console.log('Database: Migrating test_runs table to add CASCADE DELETE...')
+      
+      // Backup existing data
+      db.exec(`
+        CREATE TABLE test_runs_backup AS SELECT * FROM test_runs;
+        DROP TABLE test_runs;
+      `)
+      console.log('Database: Backed up and dropped old test_runs table')
+    }
+  } catch (error) {
+    console.log('Database: No existing test_runs table found, will create new one')
   }
 
   // Create tables
@@ -56,14 +77,29 @@ export function initDatabase(): void {
       logDetails TEXT,
       durationMs INTEGER,
       runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (formId) REFERENCES forms (id),
-      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id)
+      FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
+      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
     );
 
     CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
   `)
+
+  // Restore backed up data if migration occurred
+  try {
+    const backupExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='test_runs_backup'").get()
+    if (backupExists) {
+      console.log('Database: Restoring test_runs data from backup...')
+      db.exec(`
+        INSERT INTO test_runs SELECT * FROM test_runs_backup;
+        DROP TABLE test_runs_backup;
+      `)
+      console.log('Database: Successfully restored test_runs data and cleaned up backup')
+    }
+  } catch (error) {
+    console.log('Database: No backup to restore')
+  }
 
   // Insert default settings
   const defaultSettings = [
@@ -207,7 +243,26 @@ export const formQueries = {
     const stmt = db.prepare(sql)
     return stmt.run(...values)
   },
-  delete: (id: number) => db.prepare('DELETE FROM forms WHERE id = ?').run(id)
+  delete: (id: number) => {
+    console.log('Database: Deleting form with CASCADE DELETE for id:', id)
+    
+    try {
+      // Check if there are any test runs for this form (for logging)
+      const checkTestRuns = db.prepare('SELECT COUNT(*) as count FROM test_runs WHERE formId = ?')
+      const testRunCount = checkTestRuns.get(id) as { count: number }
+      console.log('Database: Found', testRunCount.count, 'test runs for form', id, '(will be auto-deleted)')
+      
+      // Delete the form - CASCADE DELETE will automatically delete related test runs
+      const deleteForm = db.prepare('DELETE FROM forms WHERE id = ?')
+      const result = deleteForm.run(id)
+      console.log('Database: Deleted form', id, 'and cascaded test runs, result:', result)
+      
+      return result
+    } catch (error) {
+      console.error('Database: Error deleting form', id, ':', error)
+      throw error
+    }
+  }
 }
 
 // Payment method operations
@@ -318,7 +373,26 @@ export const paymentMethodQueries = {
     const stmt = db.prepare(sql)
     return stmt.run(...values)
   },
-  delete: (id: number) => db.prepare('DELETE FROM payment_methods WHERE id = ?').run(id)
+  delete: (id: number) => {
+    console.log('Database: Deleting payment method with CASCADE DELETE for id:', id)
+    
+    try {
+      // Check if there are any test runs for this payment method (for logging)
+      const checkTestRuns = db.prepare('SELECT COUNT(*) as count FROM test_runs WHERE paymentMethodId = ?')
+      const testRunCount = checkTestRuns.get(id) as { count: number }
+      console.log('Database: Found', testRunCount.count, 'test runs for payment method', id, '(will be auto-deleted)')
+      
+      // Delete the payment method - CASCADE DELETE will automatically delete related test runs
+      const deletePaymentMethod = db.prepare('DELETE FROM payment_methods WHERE id = ?')
+      const result = deletePaymentMethod.run(id)
+      console.log('Database: Deleted payment method', id, 'and cascaded test runs, result:', result)
+      
+      return result
+    } catch (error) {
+      console.error('Database: Error deleting payment method', id, ':', error)
+      throw error
+    }
+  }
 }
 
 // Global settings operations

@@ -18,26 +18,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="app-container">
+    <div className="flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden">
       <CustomTitleBar />
-      <div className="app-content ">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div
-          className="select-none"
-          style={{
-            width: "200px",
-            backgroundColor: "var(--color-background)",
-            // borderRight: '1px solid var(--color-border)',
-            display: "flex",
-            flexDirection: "column",
-          }}>
-          <nav style={{ flex: 1 }}>
+        <div className="w-48 bg-white dark:bg-gray-900 flex flex-col select-none">
+          <nav className="flex-1">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`nav-link ${location.pathname === item.href ? "active" : ""}`}
-                style={{ textDecoration: "none" }}>
+                className={`block px-4 py-3 text-sm font-normal text-gray-700 dark:text-gray-300 no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${
+                  location.pathname === item.href 
+                    ? "text-blue-600 dark:text-blue-400 font-medium" 
+                    : ""
+                }`}>
                 {item.name}
               </Link>
             ))}
@@ -45,14 +40,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Main content */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          <main
-            style={{
-              flex: 1,
-              overflow: "auto",
-              backgroundColor: "var(--color-background)",
-              padding: "16px",
-            }}>
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 p-4">
             {children}
           </main>
         </div>

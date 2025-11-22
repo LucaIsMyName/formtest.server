@@ -127,25 +127,14 @@ const TestResults: React.FC = () => {
 
   return (
     <div>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        marginBottom: '32px'
-      }}>
-        <h1 style={{ 
-          fontSize: '24px', 
-          fontWeight: '600', 
-          color: 'var(--color-text)',
-          margin: 0
-        }}>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Test Resultate
         </h1>
         <button
           onClick={loadTestRuns}
-          className="btn btn-outline"
+          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50 flex items-center gap-2"
           disabled={isLoading}
-          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
         >
           <RefreshCw size={16} />
           {isLoading ? 'Aktualisieren...' : 'Aktualisieren'}
@@ -153,13 +142,8 @@ const TestResults: React.FC = () => {
       </div>
 
       {error && (
-        <div style={{ 
-          backgroundColor: '#fef2f2', 
-          border: '1px solid #fecaca', 
-          padding: '16px',
-          marginBottom: '24px'
-        }}>
-          <div style={{ color: 'var(--color-destructive)' }}>
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md">
+          <div className="text-red-800 dark:text-red-200">
             <strong>Error:</strong> {error}
           </div>
         </div>
@@ -172,40 +156,31 @@ const TestResults: React.FC = () => {
       }}>
         {/* Test Runs List */}
         <div>
-          <div className="card">
-            <div className="card-header">
-              <h3 style={{ 
-                fontSize: '16px', 
-                fontWeight: '500',
-                margin: 0,
-                color: 'var(--color-text)'
-              }}>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">
                 Test Runs ({testRuns.length})
               </h3>
             </div>
-            <div className="card-content" style={{ padding: 0 }}>
+            <div className="overflow-x-auto">
               {isLoading && testRuns.length === 0 ? (
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  padding: '32px 0'
-                }}>
-                  <div style={{ color: 'var(--color-text-secondary)' }}>Loading test runs...</div>
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+                  <div className="p-6">
+                    <div className="flex items-center justify-center py-8">
+                      <div className="text-gray-500 dark:text-gray-400">Loading test results...</div>
+                    </div>
+                  </div>
                 </div>
               ) : testRuns.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '32px 0' }}>
-                  <p style={{ 
-                    fontSize: '16px', 
-                    color: 'var(--color-text-secondary)',
-                    margin: 0,
-                    marginBottom: '8px'
-                  }}>No test runs yet</p>
-                  <p style={{ 
-                    fontSize: '14px', 
-                    color: 'var(--color-text-secondary)',
-                    margin: 0
-                  }}>Run some tests to see results here</p>
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+                  <div className="p-6">
+                    <div className="text-center py-8">
+                      <div className="text-gray-500 dark:text-gray-400 mb-4">
+                        No test results yet.
+                      </div>
+                      <p className="text-gray-500 dark:text-gray-400">Run some tests to see results here.</p>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div>
@@ -214,61 +189,35 @@ const TestResults: React.FC = () => {
                     return (
                       <div
                         key={testRun.id}
-                        style={{
-                          padding: '16px',
-                          borderBottom: '1px solid var(--color-border)',
-                          cursor: 'pointer',
-                          backgroundColor: selectedTestRun === testRun.id ? '#f0f9ff' : statusStyles.backgroundColor,
-                          borderLeft: selectedTestRun === testRun.id ? '3px solid var(--color-primary)' : 'none'
-                        }}
+                        className={`p-4 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                          selectedTestRun === testRun.id 
+                            ? 'bg-blue-50 dark:bg-blue-900/20 border-l-3 border-l-blue-500' 
+                            : statusStyles.backgroundColor
+                        }`}
                         onClick={() => setSelectedTestRun(testRun.id)}
                       >
-                        <div style={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'space-between' 
-                        }}>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              gap: '12px' 
-                            }}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
                               <div style={{ color: statusStyles.color }}>
                                 {getStatusIcon(testRun.status)}
                               </div>
                               <div>
-                                <div style={{ 
-                                  fontWeight: '500',
-                                  color: 'var(--color-text)',
-                                  marginBottom: '4px'
-                                }}>
+                                <div className="font-medium text-gray-900 dark:text-white mb-1">
                                   {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
                                 </div>
-                                <div style={{ 
-                                  fontSize: '12px', 
-                                  color: 'var(--color-text-secondary)' 
-                                }}>
+                                <div className="text-xs text-gray-500 dark:text-gray-400">
                                   {formatDate(testRun.runAt)} • {formatDuration(testRun.durationMs)}
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '8px' 
-                          }}>
-                            <span style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              padding: '4px 8px',
-                              fontSize: '12px',
-                              fontWeight: '500',
-                              backgroundColor: statusStyles.backgroundColor,
-                              color: statusStyles.color,
-                              border: `1px solid ${statusStyles.borderColor}`
-                            }}>
+                          <div className="flex items-center gap-2">
+                            <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
+                              testRun.status === 'SUCCESS' 
+                                ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800'
+                                : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800'
+                            }`}>
                               {testRun.status}
                             </span>
                             <button
@@ -276,16 +225,7 @@ const TestResults: React.FC = () => {
                                 e.stopPropagation()
                                 setShowDeleteConfirm(testRun.id)
                               }}
-                              style={{
-                                color: 'var(--color-destructive)',
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontSize: '14px',
-                                fontWeight: '500',
-                                padding: '4px 8px'
-                              }}
-                              title="Delete test run"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium px-2 py-1"
                             >
                               Delete
                             </button>
@@ -302,109 +242,70 @@ const TestResults: React.FC = () => {
 
         {/* Test Run Details */}
         <div>
-          <div className="card">
-            <div className="card-header">
-              <h3 style={{ 
-                fontSize: '16px', 
-                fontWeight: '500',
-                margin: 0,
-                color: 'var(--color-text)'
-              }}>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">
                 Test Details
               </h3>
             </div>
-            <div className="card-content">
+            <div className="p-6">
               {selectedTestRunData ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="flex flex-col gap-4">
                   <div>
-                    <label style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: 'var(--color-text-secondary)',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>Status</label>
-                    <div style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '4px 8px',
-                      fontSize: '12px',
-                      fontWeight: '500',
-                      ...getStatusStyles(selectedTestRunData.status)
-                    }}>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      Status
+                    </label>
+                    <div className={`inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full ${
+                      selectedTestRunData.status === 'SUCCESS' 
+                        ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200' 
+                        : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200'
+                    }`}>
                       {getStatusIcon(selectedTestRunData.status)} {selectedTestRunData.status}
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: 'var(--color-text-secondary)',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>Form</label>
-                    <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      Form
+                    </label>
+                    <div className="text-sm text-gray-900 dark:text-white">
                       {getFormName(selectedTestRunData.formId)}
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: 'var(--color-text-secondary)',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>Payment Method</label>
-                    <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      Payment Method
+                    </label>
+                    <div className="text-sm text-gray-900 dark:text-white">
                       {getPaymentMethodName(selectedTestRunData.paymentMethodId)}
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: 'var(--color-text-secondary)',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>Duration</label>
-                    <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      Duration
+                    </label>
+                    <div className="text-sm text-gray-900 dark:text-white font-mono">
                       {formatDuration(selectedTestRunData.durationMs)}
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '500', 
-                      color: 'var(--color-text-secondary)',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>Run At</label>
-                    <div style={{ fontSize: '14px', color: 'var(--color-text)' }}>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                      Run At
+                    </label>
+                    <div className="text-sm text-gray-900 dark:text-white font-mono">
                       {formatDate(selectedTestRunData.runAt)}
                     </div>
                   </div>
 
                   {selectedTestRunData.errorMessage && (
                     <div>
-                      <label style={{ 
-                        fontSize: '14px', 
-                        fontWeight: '500', 
-                        color: 'var(--color-text-secondary)',
-                        display: 'block',
-                        marginBottom: '4px'
-                      }}>Error Message</label>
-                      <div style={{ 
-                        padding: '8px', 
-                        backgroundColor: '#fef2f2', 
-                        border: '1px solid #fecaca', 
-                        fontSize: '12px', 
-                        color: 'var(--color-destructive)' 
-                      }}>
+                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                        Error Message
+                      </label>
+                      <div className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-xs text-red-800 dark:text-red-200 font-mono">
                         {selectedTestRunData.errorMessage}
                       </div>
                     </div>
@@ -412,23 +313,11 @@ const TestResults: React.FC = () => {
 
                   {selectedTestRunData.logDetails && (
                     <div>
-                      <label style={{ 
-                        fontSize: '14px', 
-                        fontWeight: '500', 
-                        color: 'var(--color-text-secondary)',
-                        display: 'block',
-                        marginBottom: '4px'
-                      }}>Logs</label>
-                      <div style={{ 
-                        padding: '8px', 
-                        backgroundColor: 'var(--color-background-secondary)', 
-                        border: '1px solid var(--color-border)', 
-                        fontSize: '11px', 
-                        color: 'var(--color-text-secondary)',
-                        maxHeight: '128px',
-                        overflowY: 'auto'
-                      }}>
-                        <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{selectedTestRunData.logDetails}</pre>
+                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+                        Logs
+                      </label>
+                      <div className="p-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded text-xs text-gray-600 dark:text-gray-400 max-h-32 overflow-y-auto">
+                        <pre className="whitespace-pre-wrap m-0 font-mono">{selectedTestRunData.logDetails}</pre>
                       </div>
                     </div>
                   )}
