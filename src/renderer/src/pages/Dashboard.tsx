@@ -4,6 +4,7 @@ import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
+import { FileText, CreditCard, Rocket, BarChart3 } from "lucide-react";
 
 interface DashboardStats {
   totalForms: number;
@@ -91,9 +92,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">
-        Dashboard
-      </h1>
+      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">Dashboard</h1>
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <button
@@ -122,41 +121,25 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Gesamt Tests</p>
-            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">
-              {stats.totalTestRuns}
-            </p>
+            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">{stats.totalTestRuns}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Bezahlmethoden</p>
-            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">
-              {stats.totalPaymentMethods}
-            </p>
+            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">{stats.totalPaymentMethods}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Erfolgreich</p>
-            <p className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2">
-              {stats.successfulTests}
-            </p>
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Success Rate</h3>
-                <p className="text-2xl font-bold text-yellow-600">{isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}</p>
-                <p className="text-xs text-gray-400">{stats.failedTests} failed</p>
-              </div>
-              <div className="text-yellow-500 text-2xl">📊</div>
-            </div>
+            <p className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2">{stats.successfulTests}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Erfolgsrate</p>
-            <p className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400 mt-2">
-              {isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}
-            </p>
+            <p className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2">{isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}</p>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{stats.failedTests} fehlgeschlagen</p>
           </div>
         </div>
@@ -169,34 +152,34 @@ const Dashboard: React.FC = () => {
           <p className="text-sm text-gray-600 dark:text-gray-400">Häufige Aufgaben und Verknüpfungen</p>
         </div>
         <div className="p-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <button
               onClick={() => handleQuickAction("add-form")}
-              className="flex flex-col items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-              <div className="text-2xl mb-2">📝</div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Formular hinzufügen</span>
+              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+              <FileText className="w-6 h-6 text-blue-500 dark:text-blue-400 mr-3" />
+              <span className="text-sm font-medium text-gray-900 dark:text-white">Formular</span>
             </button>
 
             <button
               onClick={() => handleQuickAction("add-payment")}
-              className="flex flex-col items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors">
-              <div className="text-2xl mb-2">💳</div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Bezahlmethode hinzufügen</span>
+              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors">
+              <CreditCard className="w-6 h-6 text-green-500 dark:text-green-400 mr-3" />
+              <span className="text-sm font-medium text-gray-900 dark:text-white">Bezahlmethode</span>
             </button>
 
             <button
               onClick={() => handleQuickAction("run-tests")}
-              className="flex flex-col items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors disabled:opacity-50"
+              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors disabled:opacity-50"
               disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}>
-              <div className="text-2xl mb-2">🚀</div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Tests starten</span>
+              <Rocket className="w-6 h-6 text-purple-500 dark:text-purple-400 mr-3" />
+              <span className="text-sm font-medium text-gray-900 dark:text-white">Test</span>
             </button>
 
             <button
               onClick={() => handleQuickAction("view-results")}
-              className="flex flex-col items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors">
-              <div className="text-2xl mb-2">📊</div>
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Ergebnisse anzeigen</span>
+              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors">
+              <BarChart3 className="w-6 h-6 text-yellow-500 dark:text-yellow-400 mr-3" />
+              <span className="text-sm font-medium text-gray-900 dark:text-white">Ergebnisse</span>
             </button>
           </div>
         </div>

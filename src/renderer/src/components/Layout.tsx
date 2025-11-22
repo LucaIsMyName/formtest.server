@@ -18,7 +18,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden">
       <CustomTitleBar />
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
@@ -28,12 +28,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`block px-4 py-3 text-sm font-normal text-gray-700 dark:text-gray-300 no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${
-                  location.pathname === item.href 
-                    ? "text-blue-600 dark:text-blue-400 font-medium" 
-                    : ""
-                }`}>
+                className={`inline-block px-4 pt-3 pb-1.5 text-sm font-normal text-gray-700 dark:text-gray-300 no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 relative ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-medium" : ""}`}>
                 {item.name}
+                {location.pathname === item.href && <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-blue-600 dark:bg-blue-400"></div>}
               </Link>
             ))}
           </nav>
@@ -41,9 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 p-4">
-            {children}
-          </main>
+          <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 pb-4">{children}</main>
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
@@ -7,7 +6,7 @@ import PaymentMethods from './pages/PaymentMethods'
 import Settings from './pages/Settings'
 import TestResults from './pages/TestResults'
 
-function App(): JSX.Element {
+function App() {
   return (
     <Layout>
       <Routes>
