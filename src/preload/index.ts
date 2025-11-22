@@ -43,6 +43,14 @@ const api = {
   // Test execution
   tests: {
     run: (formIds: number[], paymentMethodIds: number[]) => ipcRenderer.invoke('tests:run', formIds, paymentMethodIds)
+  },
+
+  // Window controls
+  windowControls: {
+    close: () => ipcRenderer.invoke('window-close'),
+    minimize: () => ipcRenderer.invoke('window-minimize'),
+    maximize: () => ipcRenderer.invoke('window-maximize'),
+    isMaximized: () => ipcRenderer.invoke('window-is-maximized')
   }
 }
 

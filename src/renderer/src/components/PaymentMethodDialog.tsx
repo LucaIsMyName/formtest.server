@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type { PaymentMethod, PaymentMethodDetails } from "../../../common/types";
 
 interface PaymentMethodDialogProps {
@@ -17,6 +17,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
     details: {} as PaymentMethodDetails,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (editMethod) {
@@ -36,6 +37,27 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
     }
     setErrors({});
   }, [editMethod, isOpen]);
+
+  // ESC key handler
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey);
+      return () => document.removeEventListener('keydown', handleEscKey);
+    }
+  }, [isOpen, onClose]);
+
+  // Click outside handler
+  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -271,8 +293,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal-content" ref={modalRef}>
         <div className="modal-header">
           <h2 style={{ 
             fontSize: '18px', 

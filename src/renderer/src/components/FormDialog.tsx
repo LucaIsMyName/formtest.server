@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import type { Form } from '../../../common/types'
 
 interface FormDialogProps {
@@ -23,6 +23,7 @@ const FormDialog: React.FC<FormDialogProps> = ({
     isActive: true
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (editForm) {
@@ -42,6 +43,27 @@ const FormDialog: React.FC<FormDialogProps> = ({
     }
     setErrors({})
   }, [editForm, isOpen])
+
+  // ESC key handler
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey)
+      return () => document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [isOpen, onClose])
+
+  // Click outside handler
+  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose()
+    }
+  }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -90,22 +112,42 @@ const FormDialog: React.FC<FormDialogProps> = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {editForm ? 'Edit Form' : 'Add New Form'}
+    <div 
+      className="modal-overlay"
+      onClick={handleOverlayClick}
+    >
+      <div 
+        className="modal-content"
+        ref={modalRef}
+        style={{ maxWidth: '500px', width: '100%' }}
+      >
+        <div className="modal-header">
+          <h2 style={{ 
+            fontSize: '18px', 
+            fontWeight: '600', 
+            color: 'var(--color-text)',
+            margin: 0
+          }}>
+            {editForm ? 'Formular bearbeiten' : 'Neues Formular'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl"
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '20px',
+              cursor: 'pointer',
+              color: 'var(--color-text-secondary)',
+              padding: 0
+            }}
             disabled={isLoading}
           >
             ×
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Form Name *
@@ -170,21 +212,23 @@ const FormDialog: React.FC<FormDialogProps> = ({
             </label>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4">
+          </div>
+          
+          <div className="modal-footer">
             <button
               type="button"
               onClick={onClose}
-              className="btn-outline"
+              className="btn btn-outline"
               disabled={isLoading}
             >
-              Cancel
+              Abbrechen
             </button>
             <button
               type="submit"
-              className="btn-primary"
+              className="btn btn-primary"
               disabled={isLoading}
             >
-              {isLoading ? 'Saving...' : editForm ? 'Update Form' : 'Add Form'}
+              {isLoading ? 'Speichern...' : editForm ? 'Formular aktualisieren' : 'Formular hinzufügen'}
             </button>
           </div>
         </form>

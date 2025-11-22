@@ -693,13 +693,21 @@ function setupIpcHandlers() {
     }
   });
 }
+let mainWindow;
 function createWindow() {
-  const mainWindow = new electron.BrowserWindow({
+  mainWindow = new electron.BrowserWindow({
     width: 1200,
     height: 800,
+    minWidth: 800,
+    minHeight: 600,
     show: false,
+    frame: false,
+    // Remove OS frame
+    titleBarStyle: "hidden",
+    // Hide title bar
+    trafficLightPosition: { x: -1e3, y: -1e3 },
+    // Hide traffic lights completely
     autoHideMenuBar: true,
-    // ...(process.platform === 'linux' ? { icon } : {}), // TODO: Add proper icon
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
       sandbox: false,
@@ -736,4 +744,26 @@ electron.app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     electron.app.quit();
   }
+});
+electron.ipcMain.handle("window-minimize", () => {
+  if (mainWindow) {
+    mainWindow.minimize();
+  }
+});
+electron.ipcMain.handle("window-maximize", () => {
+  if (mainWindow) {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  }
+});
+electron.ipcMain.handle("window-close", () => {
+  if (mainWindow) {
+    mainWindow.close();
+  }
+});
+electron.ipcMain.handle("window-is-maximized", () => {
+  return mainWindow ? mainWindow.isMaximized() : false;
 });

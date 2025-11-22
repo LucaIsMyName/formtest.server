@@ -36,6 +36,13 @@ const api = {
   // Test execution
   tests: {
     run: (formIds, paymentMethodIds) => electron.ipcRenderer.invoke("tests:run", formIds, paymentMethodIds)
+  },
+  // Window controls
+  windowControls: {
+    close: () => electron.ipcRenderer.invoke("window-close"),
+    minimize: () => electron.ipcRenderer.invoke("window-minimize"),
+    maximize: () => electron.ipcRenderer.invoke("window-maximize"),
+    isMaximized: () => electron.ipcRenderer.invoke("window-is-maximized")
   }
 };
 if (process.contextIsolated) {

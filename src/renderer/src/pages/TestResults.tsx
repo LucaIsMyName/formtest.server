@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useTestRunsStore } from '../store/useTestRunsStore'
 import { useFormsStore } from '../store/useFormsStore'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
@@ -10,12 +10,34 @@ const TestResults: React.FC = () => {
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore()
   const [selectedTestRun, setSelectedTestRun] = useState<number | null>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null)
+  const deleteModalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     loadTestRuns()
     loadForms()
     loadPaymentMethods()
   }, [loadTestRuns, loadForms, loadPaymentMethods])
+
+  // ESC key handler for delete dialog
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showDeleteConfirm !== null) {
+        setShowDeleteConfirm(null)
+      }
+    }
+
+    if (showDeleteConfirm !== null) {
+      document.addEventListener('keydown', handleEscKey)
+      return () => document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [showDeleteConfirm])
+
+  // Click outside handler for delete dialog
+  const handleDeleteOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      setShowDeleteConfirm(null)
+    }
+  }
 
   const getFormName = (formId: number) => {
     const form = forms.find(f => f.id === formId)
@@ -445,8 +467,8 @@ const TestResults: React.FC = () => {
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-overlay" onClick={handleDeleteOverlayClick}>
+          <div className="modal-content" ref={deleteModalRef}>
             <div className="modal-header">
               <h3 style={{ 
                 fontSize: '18px', 

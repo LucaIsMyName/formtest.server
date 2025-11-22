@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useFormsStore } from '../store/useFormsStore'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
 import { useTestRunsStore } from '../store/useTestRunsStore'
@@ -16,6 +16,7 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
   const [selectedFormIds, setSelectedFormIds] = useState<number[]>([])
   const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = useState<number[]>([])
   const [error, setError] = useState<string | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isOpen) {
@@ -27,6 +28,27 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
       setError(null)
     }
   }, [isOpen, loadForms, loadPaymentMethods])
+
+  // ESC key handler
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscKey)
+      return () => document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [isOpen, onClose])
+
+  // Click outside handler
+  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose()
+    }
+  }
 
   const activeForms = forms.filter(form => form.isActive)
   const activePaymentMethods = paymentMethods.filter(pm => pm.isActive)
@@ -86,25 +108,34 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
-        <div className="flex items-center justify-between p-6 border-b">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900">Run Form Tests</h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Select forms and payment methods to test
-            </p>
-          </div>
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal-content" ref={modalRef} style={{ maxWidth: '800px', width: '100%', maxHeight: '90vh', overflow: 'hidden' }}>
+        <div className="modal-header">
+          <h2 style={{ 
+            fontSize: '18px', 
+            fontWeight: '600', 
+            color: 'var(--color-text)',
+            margin: 0
+          }}>
+            Tests ausführen
+          </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl"
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '20px',
+              cursor: 'pointer',
+              color: 'var(--color-text-secondary)',
+              padding: 0
+            }}
             disabled={isRunning}
           >
             ×
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
+        <div className="modal-body" style={{ overflowY: 'auto', maxHeight: '60vh' }}>
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
               <p className="text-red-800 text-sm">{error}</p>
@@ -214,32 +245,40 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        <div className="flex items-center justify-between p-6 border-t bg-gray-50">
-          <div className="text-sm text-gray-600">
+        <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
+          <div style={{ fontSize: '14px', color: 'var(--color-text-secondary)' }}>
             {isRunning ? (
-              <span className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                Running tests...
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ 
+                  width: '16px', 
+                  height: '16px', 
+                  border: '2px solid var(--color-primary)', 
+                  borderTop: '2px solid transparent', 
+                  borderRadius: '50%', 
+                  animation: 'spin 1s linear infinite',
+                  marginRight: '8px'
+                }}></div>
+                Tests werden ausgeführt...
               </span>
             ) : (
-              `Ready to run ${totalTests} test${totalTests !== 1 ? 's' : ''}`
+              `Bereit für ${totalTests} Test${totalTests !== 1 ? 's' : ''}`
             )}
           </div>
           
-          <div className="flex space-x-3">
+          <div style={{ display: 'flex', gap: '12px' }}>
             <button
               onClick={onClose}
-              className="btn-outline"
+              className="btn btn-outline"
               disabled={isRunning}
             >
-              Cancel
+              Abbrechen
             </button>
             <button
               onClick={handleRunTests}
-              className="btn-primary"
+              className="btn btn-primary"
               disabled={isRunning || totalTests === 0}
             >
-              {isRunning ? 'Running...' : `Run ${totalTests} Test${totalTests !== 1 ? 's' : ''}`}
+              {isRunning ? 'Läuft...' : `${totalTests} Test${totalTests !== 1 ? 's' : ''} starten`}
             </button>
           </div>
         </div>

@@ -8367,6 +8367,82 @@ function useLinkClickHandler(to, _temp) {
     }
   }, [location, navigate, path, replaceProp, state, target, to, preventScrollReset, relative, viewTransition]);
 }
+const TrafficLights = ({ onClose, onMinimize, onMaximize, isMaximized }) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "traffic-lights", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        className: "traffic-light close",
+        onClick: onClose,
+        title: "Close",
+        "aria-label": "Close window",
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "traffic-light-icon", children: "×" })
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        className: "traffic-light minimize",
+        onClick: onMinimize,
+        title: "Minimize",
+        "aria-label": "Minimize window",
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "traffic-light-icon", children: "−" })
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        className: "traffic-light maximize",
+        onClick: onMaximize,
+        title: isMaximized ? "Restore" : "Maximize",
+        "aria-label": isMaximized ? "Restore window" : "Maximize window",
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "traffic-light-icon", children: isMaximized ? "⧉" : "□" })
+      }
+    )
+  ] });
+};
+const CustomTitleBar = () => {
+  const [isMaximized, setIsMaximized] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    const checkMaximized = async () => {
+      if (window.api?.windowControls) {
+        const maximized = await window.api.windowControls.isMaximized();
+        setIsMaximized(maximized);
+      }
+    };
+    checkMaximized();
+  }, []);
+  const handleClose = async () => {
+    if (window.api?.windowControls) {
+      await window.api.windowControls.close();
+    }
+  };
+  const handleMinimize = async () => {
+    if (window.api?.windowControls) {
+      await window.api.windowControls.minimize();
+    }
+  };
+  const handleMaximize = async () => {
+    if (window.api?.windowControls) {
+      await window.api.windowControls.maximize();
+      const maximized = await window.api.windowControls.isMaximized();
+      setIsMaximized(maximized);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "custom-title-bar", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TrafficLights,
+      {
+        onClose: handleClose,
+        onMinimize: handleMinimize,
+        onMaximize: handleMaximize,
+        isMaximized
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "title-bar-title", children: "Formtest.Server" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "title-bar-spacer" })
+  ] });
+};
 const Layout = ({ children }) => {
   const location = useLocation();
   const navigation = [
@@ -8376,22 +8452,16 @@ const Layout = ({ children }) => {
     { name: "Test Resultate", href: "/test-results" },
     { name: "Einstellungen", href: "/settings" }
   ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", height: "100vh", backgroundColor: "var(--color-background)" }, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: {
-      width: "200px",
-      backgroundColor: "var(--color-background)",
-      borderRight: "1px solid var(--color-border)"
-    }, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "app-container", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, {}),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "app-content", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
-        padding: "24px 16px",
-        borderBottom: "1px solid var(--color-border)"
-      }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { style: {
-        fontSize: "18px",
-        fontWeight: "600",
-        color: "var(--color-text)",
-        margin: 0
-      }, children: "Formtest.Server" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { children: navigation.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+        width: "200px",
+        backgroundColor: "var(--color-background)",
+        borderRight: "1px solid var(--color-border)",
+        display: "flex",
+        flexDirection: "column"
+      }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { style: { flex: 1 }, children: navigation.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
         Link,
         {
           to: item.href,
@@ -8400,14 +8470,14 @@ const Layout = ({ children }) => {
           children: item.name
         },
         item.name
-      )) })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { style: {
-      flex: 1,
-      overflow: "auto",
-      backgroundColor: "var(--color-background)",
-      padding: "32px"
-    }, children }) })
+      )) }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { style: {
+        flex: 1,
+        overflow: "auto",
+        backgroundColor: "var(--color-background)",
+        padding: "32px"
+      }, children }) })
+    ] })
   ] });
 };
 const __vite_import_meta_env__$1 = {};
@@ -8790,6 +8860,7 @@ const TestRunDialog = ({ isOpen, onClose }) => {
   const [selectedFormIds, setSelectedFormIds] = reactExports.useState([]);
   const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = reactExports.useState([]);
   const [error, setError] = reactExports.useState(null);
+  const modalRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     if (isOpen) {
       loadForms();
@@ -8799,6 +8870,22 @@ const TestRunDialog = ({ isOpen, onClose }) => {
       setError(null);
     }
   }, [isOpen, loadForms, loadPaymentMethods]);
+  reactExports.useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscKey);
+      return () => document.removeEventListener("keydown", handleEscKey);
+    }
+  }, [isOpen, onClose]);
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
   const activeForms = forms.filter((form) => form.isActive);
   const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);
   const handleFormToggle = (formId) => {
@@ -8843,23 +8930,32 @@ const TestRunDialog = ({ isOpen, onClose }) => {
   };
   const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length;
   if (!isOpen) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-6 border-b", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900", children: "Run Form Tests" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 mt-1", children: "Select forms and payment methods to test" })
-      ] }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", onClick: handleOverlayClick, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", ref: modalRef, style: { maxWidth: "800px", width: "100%", maxHeight: "90vh", overflow: "hidden" }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: {
+        fontSize: "18px",
+        fontWeight: "600",
+        color: "var(--color-text)",
+        margin: 0
+      }, children: "Tests ausführen" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           onClick: onClose,
-          className: "text-gray-400 hover:text-gray-600 text-2xl",
+          style: {
+            background: "none",
+            border: "none",
+            fontSize: "20px",
+            cursor: "pointer",
+            color: "var(--color-text-secondary)",
+            padding: 0
+          },
           disabled: isRunning,
           children: "×"
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 overflow-y-auto max-h-[60vh]", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", style: { overflowY: "auto", maxHeight: "60vh" }, children: [
       error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 p-3 bg-red-50 border border-red-200 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-800 text-sm", children: error }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -8963,28 +9059,36 @@ const TestRunDialog = ({ isOpen, onClose }) => {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-6 border-t bg-gray-50", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600", children: isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2" }),
-        "Running tests..."
-      ] }) : `Ready to run ${totalTests} test${totalTests !== 1 ? "s" : ""}` }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex space-x-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-footer", style: { justifyContent: "space-between" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { fontSize: "14px", color: "var(--color-text-secondary)" }, children: isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { style: { display: "flex", alignItems: "center" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+          width: "16px",
+          height: "16px",
+          border: "2px solid var(--color-primary)",
+          borderTop: "2px solid transparent",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          marginRight: "8px"
+        } }),
+        "Tests werden ausgeführt..."
+      ] }) : `Bereit für ${totalTests} Test${totalTests !== 1 ? "s" : ""}` }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "12px" }, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             onClick: onClose,
-            className: "btn-outline",
+            className: "btn btn-outline",
             disabled: isRunning,
-            children: "Cancel"
+            children: "Abbrechen"
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             onClick: handleRunTests,
-            className: "btn-primary",
+            className: "btn btn-primary",
             disabled: isRunning || totalTests === 0,
-            children: isRunning ? "Running..." : `Run ${totalTests} Test${totalTests !== 1 ? "s" : ""}`
+            children: isRunning ? "Läuft..." : `${totalTests} Test${totalTests !== 1 ? "s" : ""} starten`
           }
         )
       ] })
@@ -9135,128 +9239,62 @@ const Dashboard = () => {
           marginBottom: "32px"
         },
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "div",
-            {
-              style: {
-                backgroundColor: "var(--color-background)",
-                padding: "24px",
-                // borderRadius: '8px',
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
-              },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "p",
-                  {
-                    style: {
-                      fontSize: "14px",
-                      color: "var(--color-text-secondary)",
-                      margin: 0,
-                      marginBottom: "4px"
-                    },
-                    children: "Total Tests"
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "p",
-                  {
-                    style: {
-                      fontSize: "24px",
-                      fontWeight: "600",
-                      color: "var(--color-text)",
-                      margin: 0
-                    },
-                    children: stats.totalTestRuns
-                  }
-                )
-              ] })
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "div",
-            {
-              style: {
-                backgroundColor: "var(--color-background)",
-                padding: "24px",
-                // borderRadius: '8px',
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
-              },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "p",
-                  {
-                    style: {
-                      fontSize: "14px",
-                      color: "var(--color-text-secondary)",
-                      margin: 0,
-                      marginBottom: "4px"
-                    },
-                    children: "Payment Methods"
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "p",
-                  {
-                    style: {
-                      fontSize: "24px",
-                      fontWeight: "600",
-                      color: "var(--color-text)",
-                      margin: 0
-                    },
-                    children: stats.totalPaymentMethods
-                  }
-                )
-              ] })
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "div",
-            {
-              style: {
-                backgroundColor: "var(--color-background)",
-                padding: "24px",
-                // borderRadius: '8px',
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
-              },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "p",
-                  {
-                    style: {
-                      fontSize: "14px",
-                      color: "var(--color-text-secondary)",
-                      margin: 0,
-                      marginBottom: "4px"
-                    },
-                    children: "Successful"
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "p",
-                  {
-                    style: {
-                      fontSize: "24px",
-                      fontWeight: "600",
-                      color: "var(--color-text)",
-                      margin: 0
-                    },
-                    children: stats.successfulTests
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-500", children: "Success Rate" }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-yellow-600", children: isLoading ? "..." : `${stats.successRate.toFixed(1)}%` }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-400", children: [
-                      stats.failedTests,
-                      " failed"
-                    ] })
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-yellow-500 text-2xl", children: "📊" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Total Tests" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "p",
+              {
+                style: {
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  color: "var(--color-text)",
+                  margin: 0
+                },
+                children: stats.totalTestRuns
+              }
+            )
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Payment Methods" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "p",
+              {
+                style: {
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  color: "var(--color-text)",
+                  margin: 0
+                },
+                children: stats.totalPaymentMethods
+              }
+            )
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Successful" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "p",
+              {
+                style: {
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  color: "var(--color-text)",
+                  margin: 0
+                },
+                children: stats.successfulTests
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-500", children: "Success Rate" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold text-yellow-600", children: isLoading ? "..." : `${stats.successRate.toFixed(1)}%` }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-400", children: [
+                  stats.failedTests,
+                  " failed"
                 ] })
-              ] })
-            }
-          )
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-yellow-500 text-2xl", children: "📊" })
+            ] })
+          ] }) })
         ]
       }
     ),
@@ -9336,6 +9374,7 @@ const FormDialog = ({
     isActive: true
   });
   const [errors, setErrors] = reactExports.useState({});
+  const modalRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     if (editForm) {
       setFormData({
@@ -9354,6 +9393,22 @@ const FormDialog = ({
     }
     setErrors({});
   }, [editForm, isOpen]);
+  reactExports.useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscKey);
+      return () => document.removeEventListener("keydown", handleEscKey);
+    }
+  }, [isOpen, onClose]);
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name.trim()) {
@@ -9392,105 +9447,134 @@ const FormDialog = ({
     }
   };
   if (!isOpen) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white rounded-lg shadow-xl w-full max-w-md mx-4", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-6 border-b", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900", children: editForm ? "Edit Form" : "Add New Form" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    "div",
+    {
+      className: "modal-overlay",
+      onClick: handleOverlayClick,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
         {
-          onClick: onClose,
-          className: "text-gray-400 hover:text-gray-600 text-2xl",
-          disabled: isLoading,
-          children: "×"
+          className: "modal-content",
+          ref: modalRef,
+          style: { maxWidth: "500px", width: "100%" },
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: {
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "var(--color-text)",
+                margin: 0
+              }, children: editForm ? "Formular bearbeiten" : "Neues Formular" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: onClose,
+                  style: {
+                    background: "none",
+                    border: "none",
+                    fontSize: "20px",
+                    cursor: "pointer",
+                    color: "var(--color-text-secondary)",
+                    padding: 0
+                  },
+                  disabled: isLoading,
+                  children: "×"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "name", className: "block text-sm font-medium text-gray-700 mb-1", children: "Form Name *" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "text",
+                      id: "name",
+                      className: `input ${errors.name ? "border-red-500" : ""}`,
+                      value: formData.name,
+                      onChange: (e) => setFormData({ ...formData, name: e.target.value }),
+                      placeholder: "e.g., General Donation Form",
+                      disabled: isLoading
+                    }
+                  ),
+                  errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm mt-1", children: errors.name })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "url", className: "block text-sm font-medium text-gray-700 mb-1", children: "Form URL *" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "url",
+                      id: "url",
+                      className: `input ${errors.url ? "border-red-500" : ""}`,
+                      value: formData.url,
+                      onChange: (e) => setFormData({ ...formData, url: e.target.value }),
+                      placeholder: "https://secure.fundraisingbox.com/...",
+                      disabled: isLoading
+                    }
+                  ),
+                  errors.url && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm mt-1", children: errors.url })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "hash", className: "block text-sm font-medium text-gray-700 mb-1", children: "Form Hash (Optional)" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "text",
+                      id: "hash",
+                      className: "input",
+                      value: formData.hash,
+                      onChange: (e) => setFormData({ ...formData, hash: e.target.value }),
+                      placeholder: "e.g., s85hkigup9ml6y94",
+                      disabled: isLoading
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 text-sm mt-1", children: "Form identification hash from FundraisingBox" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "checkbox",
+                      id: "isActive",
+                      checked: formData.isActive,
+                      onChange: (e) => setFormData({ ...formData, isActive: e.target.checked }),
+                      className: "h-4 w-4 text-blue-600 rounded border-gray-300",
+                      disabled: isLoading
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "isActive", className: "ml-2 text-sm text-gray-700", children: "Active (include in tests)" })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-footer", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: onClose,
+                    className: "btn btn-outline",
+                    disabled: isLoading,
+                    children: "Abbrechen"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "button",
+                  {
+                    type: "submit",
+                    className: "btn btn-primary",
+                    disabled: isLoading,
+                    children: isLoading ? "Speichern..." : editForm ? "Formular aktualisieren" : "Formular hinzufügen"
+                  }
+                )
+              ] })
+            ] })
+          ]
         }
       )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "p-6 space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "name", className: "block text-sm font-medium text-gray-700 mb-1", children: "Form Name *" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "input",
-          {
-            type: "text",
-            id: "name",
-            className: `input ${errors.name ? "border-red-500" : ""}`,
-            value: formData.name,
-            onChange: (e) => setFormData({ ...formData, name: e.target.value }),
-            placeholder: "e.g., General Donation Form",
-            disabled: isLoading
-          }
-        ),
-        errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm mt-1", children: errors.name })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "url", className: "block text-sm font-medium text-gray-700 mb-1", children: "Form URL *" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "input",
-          {
-            type: "url",
-            id: "url",
-            className: `input ${errors.url ? "border-red-500" : ""}`,
-            value: formData.url,
-            onChange: (e) => setFormData({ ...formData, url: e.target.value }),
-            placeholder: "https://secure.fundraisingbox.com/...",
-            disabled: isLoading
-          }
-        ),
-        errors.url && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm mt-1", children: errors.url })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "hash", className: "block text-sm font-medium text-gray-700 mb-1", children: "Form Hash (Optional)" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "input",
-          {
-            type: "text",
-            id: "hash",
-            className: "input",
-            value: formData.hash,
-            onChange: (e) => setFormData({ ...formData, hash: e.target.value }),
-            placeholder: "e.g., s85hkigup9ml6y94",
-            disabled: isLoading
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 text-sm mt-1", children: "Form identification hash from FundraisingBox" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "input",
-          {
-            type: "checkbox",
-            id: "isActive",
-            checked: formData.isActive,
-            onChange: (e) => setFormData({ ...formData, isActive: e.target.checked }),
-            className: "h-4 w-4 text-blue-600 rounded border-gray-300",
-            disabled: isLoading
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "isActive", className: "ml-2 text-sm text-gray-700", children: "Active (include in tests)" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end space-x-3 pt-4", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "button",
-            onClick: onClose,
-            className: "btn-outline",
-            disabled: isLoading,
-            children: "Cancel"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            type: "submit",
-            className: "btn-primary",
-            disabled: isLoading,
-            children: isLoading ? "Saving..." : editForm ? "Update Form" : "Add Form"
-          }
-        )
-      ] })
-    ] })
-  ] }) });
+    }
+  );
 };
 const Forms = () => {
   const { forms, isLoading, error, loadForms, addForm, updateForm, deleteForm, toggleFormActive } = useFormsStore();
@@ -9707,6 +9791,7 @@ const PaymentMethodDialog = ({ isOpen, onClose, onSubmit, editMethod, isLoading 
     details: {}
   });
   const [errors, setErrors] = reactExports.useState({});
+  const modalRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     if (editMethod) {
       setMethodData({
@@ -9725,6 +9810,22 @@ const PaymentMethodDialog = ({ isOpen, onClose, onSubmit, editMethod, isLoading 
     }
     setErrors({});
   }, [editMethod, isOpen]);
+  reactExports.useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscKey);
+      return () => document.removeEventListener("keydown", handleEscKey);
+    }
+  }, [isOpen, onClose]);
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!methodData.name.trim()) {
@@ -9977,7 +10078,7 @@ const PaymentMethodDialog = ({ isOpen, onClose, onSubmit, editMethod, isLoading 
     }
   };
   if (!isOpen) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", onClick: handleOverlayClick, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", ref: modalRef, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: {
         fontSize: "18px",
@@ -10693,11 +10794,28 @@ const TestResults = () => {
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const [selectedTestRun, setSelectedTestRun] = reactExports.useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = reactExports.useState(null);
+  const deleteModalRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     loadTestRuns();
     loadForms();
     loadPaymentMethods();
   }, [loadTestRuns, loadForms, loadPaymentMethods]);
+  reactExports.useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === "Escape" && showDeleteConfirm !== null) {
+        setShowDeleteConfirm(null);
+      }
+    };
+    if (showDeleteConfirm !== null) {
+      document.addEventListener("keydown", handleEscKey);
+      return () => document.removeEventListener("keydown", handleEscKey);
+    }
+  }, [showDeleteConfirm]);
+  const handleDeleteOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      setShowDeleteConfirm(null);
+    }
+  };
   const getFormName = (formId) => {
     const form = forms.find((f2) => f2.id === formId);
     return form ? form.name : `Form #${formId}`;
@@ -11067,7 +11185,7 @@ const TestResults = () => {
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", padding: "32px 0" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { color: "var(--color-text-secondary)" }, children: "Select a test run to view details" }) }) })
       ] }) })
     ] }),
-    showDeleteConfirm && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", children: [
+    showDeleteConfirm && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", onClick: handleDeleteOverlayClick, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", ref: deleteModalRef, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { style: {
         fontSize: "18px",
         fontWeight: "600",

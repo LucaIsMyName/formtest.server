@@ -151,23 +151,9 @@ const Dashboard: React.FC = () => {
           gap: "24px",
           marginBottom: "32px",
         }}>
-        <div
-          style={{
-            backgroundColor: "var(--color-background)",
-            padding: "24px",
-            // borderRadius: '8px',
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          }}>
+        <div className="p-4 border">
           <div>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "var(--color-text-secondary)",
-                margin: 0,
-                marginBottom: "4px",
-              }}>
-              Total Tests
-            </p>
+            <p>Total Tests</p>
             <p
               style={{
                 fontSize: "24px",
@@ -179,23 +165,9 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-        <div
-          style={{
-            backgroundColor: "var(--color-background)",
-            padding: "24px",
-            // borderRadius: '8px',
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          }}>
+        <div className="p-4 border">
           <div>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "var(--color-text-secondary)",
-                margin: 0,
-                marginBottom: "4px",
-              }}>
-              Payment Methods
-            </p>
+            <p>Payment Methods</p>
             <p
               style={{
                 fontSize: "24px",
@@ -207,23 +179,9 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-        <div
-          style={{
-            backgroundColor: "var(--color-background)",
-            padding: "24px",
-            // borderRadius: '8px',
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-          }}>
+        <div className="p-4 border">
           <div>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "var(--color-text-secondary)",
-                margin: 0,
-                marginBottom: "4px",
-              }}>
-              Successful
-            </p>
+            <p>Successful</p>
             <p
               style={{
                 fontSize: "24px",

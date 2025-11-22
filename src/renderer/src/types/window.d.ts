@@ -1,4 +1,4 @@
-import type { Form, PaymentMethod, TestRun } from '../../../common/types'
+import type { Form, PaymentMethod, TestRun, GlobalSetting } from '../../../common/types'
 
 declare global {
   interface Window {
@@ -32,6 +32,12 @@ declare global {
       }
       tests: {
         run: (formIds: number[], paymentMethodIds: number[]) => Promise<any>
+      }
+      windowControls: {
+        close: () => Promise<void>
+        minimize: () => Promise<void>
+        maximize: () => Promise<void>
+        isMaximized: () => Promise<boolean>
       }
     }
   }

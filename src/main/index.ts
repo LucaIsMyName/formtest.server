@@ -1,17 +1,22 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-// import icon from '../../resources/icon.png?asset' // TODO: Add proper icon
 import { initDatabase } from './database'
 import { setupIpcHandlers } from './ipcHandlers'
 
+let mainWindow: BrowserWindow
+
 function createWindow(): void {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    minWidth: 800,
+    minHeight: 600,
     show: false,
+    frame: false, // Remove OS frame
+    titleBarStyle: 'hidden', // Hide title bar
+    trafficLightPosition: { x: -1000, y: -1000 }, // Hide traffic lights completely
     autoHideMenuBar: true,
-    // ...(process.platform === 'linux' ? { icon } : {}), // TODO: Add proper icon
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -60,4 +65,31 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+// Window control IPC handlers
+ipcMain.handle('window-minimize', () => {
+  if (mainWindow) {
+    mainWindow.minimize()
+  }
+})
+
+ipcMain.handle('window-maximize', () => {
+  if (mainWindow) {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize()
+    } else {
+      mainWindow.maximize()
+    }
+  }
+})
+
+ipcMain.handle('window-close', () => {
+  if (mainWindow) {
+    mainWindow.close()
+  }
+})
+
+ipcMain.handle('window-is-maximized', () => {
+  return mainWindow ? mainWindow.isMaximized() : false
 })
