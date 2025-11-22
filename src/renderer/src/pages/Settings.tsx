@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Button from '../components/Button'
 import { useSettingsStore } from '../store/useSettingsStore'
 
 const Settings: React.FC = () => {
@@ -176,33 +177,37 @@ const Settings: React.FC = () => {
                             />
                           )}
                           <div className="flex items-center space-x-2 mt-2">
-                            <button
+                            <Button
                               onClick={() => handleSave(setting.key, setting.description)}
-                              className="px-3 py-1 text-xs font-medium text-white bg-blue-600 border border-transparent rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+                              variant="primary"
+                              size="sm"
                               disabled={isLoading}
                             >
                               Save
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               onClick={handleCancel}
-                              className="px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                              variant="secondary"
+                              size="sm"
                               disabled={isLoading}
                             >
                               Cancel
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       )}
                     </div>
 
                     {editingKey !== setting.key && (
-                      <button
+                      <Button
                         onClick={() => handleEdit(setting.key, setting.value)}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium"
+                        variant="ghost"
+                        size="sm"
                         disabled={isLoading}
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                       >
                         Edit
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>

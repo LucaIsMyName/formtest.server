@@ -8481,7 +8481,7 @@ const Layout = ({ children }) => {
         },
         item.name
       )) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 p-4", children }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 pb-4", children }) })
     ] })
   ] });
 };
@@ -8858,228 +8858,6 @@ const useTestRunsStore = create((set, get) => ({
     }
   }
 }));
-const TestRunDialog = ({ isOpen, onClose }) => {
-  const { forms, loadForms } = useFormsStore();
-  const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
-  const { runTests, isRunning } = useTestRunsStore();
-  const [selectedFormIds, setSelectedFormIds] = reactExports.useState([]);
-  const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = reactExports.useState([]);
-  const [error, setError] = reactExports.useState(null);
-  const modalRef = reactExports.useRef(null);
-  reactExports.useEffect(() => {
-    if (isOpen) {
-      loadForms();
-      loadPaymentMethods();
-      setSelectedFormIds([]);
-      setSelectedPaymentMethodIds([]);
-      setError(null);
-    }
-  }, [isOpen, loadForms, loadPaymentMethods]);
-  reactExports.useEffect(() => {
-    const handleEscKey = (event) => {
-      if (event.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscKey);
-      return () => document.removeEventListener("keydown", handleEscKey);
-    }
-  }, [isOpen, onClose]);
-  const handleOverlayClick = (event) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
-  };
-  const activeForms = forms.filter((form) => form.isActive);
-  const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);
-  const handleFormToggle = (formId) => {
-    setSelectedFormIds(
-      (prev) => prev.includes(formId) ? prev.filter((id2) => id2 !== formId) : [...prev, formId]
-    );
-  };
-  const handlePaymentMethodToggle = (pmId) => {
-    setSelectedPaymentMethodIds(
-      (prev) => prev.includes(pmId) ? prev.filter((id2) => id2 !== pmId) : [...prev, pmId]
-    );
-  };
-  const handleSelectAllForms = () => {
-    if (selectedFormIds.length === activeForms.length) {
-      setSelectedFormIds([]);
-    } else {
-      setSelectedFormIds(activeForms.map((form) => form.id));
-    }
-  };
-  const handleSelectAllPaymentMethods = () => {
-    if (selectedPaymentMethodIds.length === activePaymentMethods.length) {
-      setSelectedPaymentMethodIds([]);
-    } else {
-      setSelectedPaymentMethodIds(activePaymentMethods.map((pm) => pm.id));
-    }
-  };
-  const handleRunTests = async () => {
-    if (selectedFormIds.length === 0) {
-      setError("Please select at least one form to test");
-      return;
-    }
-    if (selectedPaymentMethodIds.length === 0) {
-      setError("Please select at least one payment method to test");
-      return;
-    }
-    try {
-      await runTests(selectedFormIds, selectedPaymentMethodIds);
-      onClose();
-    } catch (error2) {
-      setError(error2 instanceof Error ? error2.message : "Failed to start tests");
-    }
-  };
-  const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length;
-  if (!isOpen) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", onClick: handleOverlayClick, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden", ref: modalRef, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white m-0", children: "Tests ausführen" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          onClick: onClose,
-          className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl p-0 bg-transparent border-none cursor-pointer",
-          disabled: isRunning,
-          children: "×"
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 overflow-y-auto max-h-[60vh]", children: [
-      error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-800 dark:text-red-200 text-sm", children: error }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-medium text-gray-900 dark:text-white", children: [
-              "Forms (",
-              activeForms.length,
-              " available)"
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: handleSelectAllForms,
-                className: "text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300",
-                disabled: isRunning,
-                children: selectedFormIds.length === activeForms.length ? "Deselect All" : "Select All"
-              }
-            )
-          ] }),
-          activeForms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8 text-gray-500 dark:text-gray-400", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No active forms available" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Create and activate forms first" })
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: activeForms.map((form) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                type: "checkbox",
-                checked: selectedFormIds.includes(form.id),
-                onChange: () => handleFormToggle(form.id),
-                className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500",
-                disabled: isRunning
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-3 flex-1", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900 dark:text-white", children: form.name }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-500 dark:text-gray-400 truncate", children: form.url })
-            ] })
-          ] }, form.id)) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-medium text-gray-900 dark:text-white", children: [
-              "Payment Methods (",
-              activePaymentMethods.length,
-              " available)"
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                onClick: handleSelectAllPaymentMethods,
-                className: "text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300",
-                disabled: isRunning,
-                children: selectedPaymentMethodIds.length === activePaymentMethods.length ? "Deselect All" : "Select All"
-              }
-            )
-          ] }),
-          activePaymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8 text-gray-500 dark:text-gray-400", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No active payment methods available" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Create and activate payment methods first" })
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: activePaymentMethods.map((pm) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                type: "checkbox",
-                checked: selectedPaymentMethodIds.includes(pm.id),
-                onChange: () => handlePaymentMethodToggle(pm.id),
-                className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500",
-                disabled: isRunning
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-3 flex-1", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900 dark:text-white", children: pm.name }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-500 dark:text-gray-400 capitalize", children: pm.type })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-400 dark:text-gray-500", children: [
-              pm.type === "paypal" && "💳",
-              pm.type === "sepa" && "🏦",
-              pm.type === "creditcard" && "💳",
-              pm.type === "eps" && "🇦🇹"
-            ] })
-          ] }, pm.id)) })
-        ] })
-      ] }),
-      totalTests > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-sm font-medium text-blue-900 dark:text-blue-200", children: "Test Summary" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 text-sm text-blue-800 dark:text-blue-300", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-            "• ",
-            selectedFormIds.length,
-            " form(s) selected"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-            "• ",
-            selectedPaymentMethodIds.length,
-            " payment method(s) selected"
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-medium", children: [
-            "• Total tests to run: ",
-            totalTests
-          ] })
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" }),
-        "Tests werden ausgeführt..."
-      ] }) : `Bereit für ${totalTests} Test${totalTests !== 1 ? "s" : ""}` }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: onClose,
-            className: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors",
-            disabled: isRunning,
-            children: "Abbrechen"
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
-          {
-            onClick: handleRunTests,
-            className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
-            disabled: isRunning || totalTests === 0,
-            children: isRunning ? "Läuft..." : `${totalTests} Test${totalTests !== 1 ? "s" : ""} starten`
-          }
-        )
-      ] })
-    ] })
-  ] }) });
-};
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -9185,13 +8963,24 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$9 = [
+const __iconNode$a = [
   ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
   ["path", { d: "M18 17V9", key: "2bz60n" }],
   ["path", { d: "M13 17V5", key: "1frdt8" }],
   ["path", { d: "M8 17v-3", key: "17ska0" }]
 ];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$9);
+const ChartColumn = createLucideIcon("chart-column", __iconNode$a);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$9 = [
+  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
+  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+];
+const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$9);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -9199,10 +8988,11 @@ const ChartColumn = createLucideIcon("chart-column", __iconNode$9);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$8 = [
-  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
-  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
 ];
-const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$8);
+const CircleX = createLucideIcon("circle-x", __iconNode$8);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -9210,11 +9000,10 @@ const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$8);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$7 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+  ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
 ];
-const CircleX = createLucideIcon("circle-x", __iconNode$7);
+const Clock = createLucideIcon("clock", __iconNode$7);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -9222,10 +9011,10 @@ const CircleX = createLucideIcon("circle-x", __iconNode$7);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$6 = [
-  ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
+  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
 ];
-const Clock = createLucideIcon("clock", __iconNode$6);
+const CreditCard = createLucideIcon("credit-card", __iconNode$6);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -9233,17 +9022,6 @@ const Clock = createLucideIcon("clock", __iconNode$6);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$5 = [
-  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
-  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
-];
-const CreditCard = createLucideIcon("credit-card", __iconNode$5);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$4 = [
   [
     "path",
     {
@@ -9256,7 +9034,15 @@ const __iconNode$4 = [
   ["path", { d: "M16 13H8", key: "t4e002" }],
   ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileText = createLucideIcon("file-text", __iconNode$4);
+const FileText = createLucideIcon("file-text", __iconNode$5);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$4);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -9330,6 +9116,267 @@ const __iconNode = [
   ["path", { d: "M12 17h.01", key: "p32p05" }]
 ];
 const TriangleAlert = createLucideIcon("triangle-alert", __iconNode);
+const Button = React$2.forwardRef(
+  ({ className = "", variant = "primary", size = "md", isLoading = false, disabled, children, ...props }, ref) => {
+    const baseClasses = "inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none";
+    const variants = {
+      primary: "text-white bg-blue-600 border border-transparent hover:bg-blue-700",
+      secondary: "text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600",
+      outline: "text-blue-600 dark:text-blue-400 bg-transparent border border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20",
+      ghost: "text-gray-700 dark:text-gray-300 bg-transparent border border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+    };
+    const sizes = {
+      sm: "px-2 py-0.5 text-xs",
+      md: "px-3 py-1 text-sm",
+      lg: "px-4 py-2 text-base"
+    };
+    const variantClasses = variants[variant];
+    const sizeClasses = sizes[size];
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "button",
+      {
+        ref,
+        className: `${baseClasses} ${variantClasses} ${sizeClasses} ${className}`,
+        disabled: disabled || isLoading,
+        ...props,
+        children: [
+          isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }),
+          children
+        ]
+      }
+    );
+  }
+);
+Button.displayName = "Button";
+const TestRunDialog = ({ isOpen, onClose }) => {
+  const { forms, loadForms } = useFormsStore();
+  const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
+  const { runTests, isRunning } = useTestRunsStore();
+  const [selectedFormIds, setSelectedFormIds] = reactExports.useState([]);
+  const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = reactExports.useState([]);
+  const [error, setError] = reactExports.useState(null);
+  const modalRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    if (isOpen) {
+      loadForms();
+      loadPaymentMethods();
+      setSelectedFormIds([]);
+      setSelectedPaymentMethodIds([]);
+      setError(null);
+    }
+  }, [isOpen, loadForms, loadPaymentMethods]);
+  reactExports.useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscKey);
+      return () => document.removeEventListener("keydown", handleEscKey);
+    }
+  }, [isOpen, onClose]);
+  const handleOverlayClick = (event) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+  const activeForms = forms.filter((form) => form.isActive);
+  const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);
+  const handleFormToggle = (formId) => {
+    setSelectedFormIds(
+      (prev) => prev.includes(formId) ? prev.filter((id2) => id2 !== formId) : [...prev, formId]
+    );
+  };
+  const handlePaymentMethodToggle = (pmId) => {
+    setSelectedPaymentMethodIds(
+      (prev) => prev.includes(pmId) ? prev.filter((id2) => id2 !== pmId) : [...prev, pmId]
+    );
+  };
+  const handleSelectAllForms = () => {
+    if (selectedFormIds.length === activeForms.length) {
+      setSelectedFormIds([]);
+    } else {
+      setSelectedFormIds(activeForms.map((form) => form.id));
+    }
+  };
+  const handleSelectAllPaymentMethods = () => {
+    if (selectedPaymentMethodIds.length === activePaymentMethods.length) {
+      setSelectedPaymentMethodIds([]);
+    } else {
+      setSelectedPaymentMethodIds(activePaymentMethods.map((pm) => pm.id));
+    }
+  };
+  const handleRunTests = async () => {
+    if (selectedFormIds.length === 0) {
+      setError("Please select at least one form to test");
+      return;
+    }
+    if (selectedPaymentMethodIds.length === 0) {
+      setError("Please select at least one payment method to test");
+      return;
+    }
+    try {
+      await runTests(selectedFormIds, selectedPaymentMethodIds);
+      onClose();
+    } catch (error2) {
+      setError(error2 instanceof Error ? error2.message : "Failed to start tests");
+    }
+  };
+  const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length;
+  if (!isOpen) return null;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50", onClick: handleOverlayClick, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden", ref: modalRef, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white m-0", children: "Tests ausführen" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          onClick: onClose,
+          className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl p-0 bg-transparent border-none cursor-pointer",
+          disabled: isRunning,
+          children: "×"
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 overflow-y-auto max-h-[60vh]", children: [
+      error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-800 dark:text-red-200 text-sm", children: error }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-medium text-gray-900 dark:text-white", children: [
+              "Forms (",
+              activeForms.length,
+              " available)"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                onClick: handleSelectAllForms,
+                variant: "ghost",
+                size: "sm",
+                disabled: isRunning,
+                className: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300",
+                children: selectedFormIds.length === activeForms.length ? "Deselect All" : "Select All"
+              }
+            )
+          ] }),
+          activeForms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8 text-gray-500 dark:text-gray-400", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No active forms available" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Create and activate forms first" })
+          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: activeForms.map((form) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "checkbox",
+                checked: selectedFormIds.includes(form.id),
+                onChange: () => handleFormToggle(form.id),
+                className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500",
+                disabled: isRunning
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-3 flex-1", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900 dark:text-white", children: form.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-500 dark:text-gray-400 truncate", children: form.url })
+            ] })
+          ] }, form.id)) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-lg font-medium text-gray-900 dark:text-white", children: [
+              "Payment Methods (",
+              activePaymentMethods.length,
+              " available)"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Button,
+              {
+                onClick: handleSelectAllPaymentMethods,
+                variant: "ghost",
+                size: "sm",
+                disabled: isRunning,
+                className: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300",
+                children: selectedPaymentMethodIds.length === activePaymentMethods.length ? "Deselect All" : "Select All"
+              }
+            )
+          ] }),
+          activePaymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8 text-gray-500 dark:text-gray-400", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No active payment methods available" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Create and activate payment methods first" })
+          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: activePaymentMethods.map((pm) => /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "checkbox",
+                checked: selectedPaymentMethodIds.includes(pm.id),
+                onChange: () => handlePaymentMethodToggle(pm.id),
+                className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500",
+                disabled: isRunning
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-3 flex-1", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900 dark:text-white", children: pm.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-500 dark:text-gray-400 capitalize", children: pm.type })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-400 dark:text-gray-500", children: [
+              pm.type === "paypal" && "💳",
+              pm.type === "sepa" && "🏦",
+              pm.type === "creditcard" && "💳",
+              pm.type === "eps" && "🇦🇹"
+            ] })
+          ] }, pm.id)) })
+        ] })
+      ] }),
+      totalTests > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-sm font-medium text-blue-900 dark:text-blue-200", children: "Test Summary" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-2 text-sm text-blue-800 dark:text-blue-300", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "• ",
+            selectedFormIds.length,
+            " form(s) selected"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "• ",
+            selectedPaymentMethodIds.length,
+            " payment method(s) selected"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "font-medium", children: [
+            "• Total tests to run: ",
+            totalTests
+          ] })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" }),
+        "Tests werden ausgeführt..."
+      ] }) : `Bereit für ${totalTests} Test${totalTests !== 1 ? "s" : ""}` }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            onClick: onClose,
+            variant: "secondary",
+            size: "md",
+            disabled: isRunning,
+            children: "Abbrechen"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Button,
+          {
+            onClick: handleRunTests,
+            variant: "primary",
+            size: "md",
+            isLoading: isRunning,
+            disabled: isRunning || totalTests === 0,
+            children: isRunning ? "Läuft..." : `${totalTests} Test${totalTests !== 1 ? "s" : ""} starten`
+          }
+        )
+      ] })
+    ] })
+  ] }) });
+};
 const Dashboard = () => {
   const navigate = useNavigate();
   const { forms, loadForms } = useFormsStore();
@@ -9399,22 +9446,23 @@ const Dashboard = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-semibold text-gray-900 dark:text-white mb-8", children: "Dashboard" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-between items-center mb-8", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+        Button,
         {
           onClick: () => handleQuickAction("run-tests"),
-          className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50 flex items-center gap-2",
-          disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0 || isRunning,
-          children: isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" }),
-            "Tests werden ausgeführt..."
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "Tests starten" })
+          variant: "primary",
+          size: "md",
+          isLoading: isRunning,
+          disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0,
+          className: "gap-2",
+          children: isRunning ? "Tests werden ausgeführt..." : "Tests starten"
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+        Button,
         {
           onClick: () => handleQuickAction("settings"),
-          className: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors",
+          variant: "secondary",
+          size: "md",
           children: "Einstellungen"
         }
       )
@@ -9680,20 +9728,23 @@ const FormDialog = ({
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "button",
+                  Button,
                   {
                     type: "button",
                     onClick: onClose,
-                    className: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors",
+                    variant: "secondary",
+                    size: "md",
                     disabled: isLoading,
                     children: "Abbrechen"
                   }
                 ),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "button",
+                  Button,
                   {
                     type: "submit",
-                    className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
+                    variant: "primary",
+                    size: "md",
+                    isLoading,
                     disabled: isLoading,
                     children: isLoading ? "Speichern..." : editForm ? "Formular aktualisieren" : "Formular hinzufügen"
                   }
@@ -9816,10 +9867,11 @@ const Forms = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-semibold text-gray-900 dark:text-white m-0", children: "Formulare" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+        Button,
         {
           onClick: handleAddForm,
-          className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
+          variant: "primary",
+          size: "md",
           disabled: isLoading,
           children: "Neues Formular"
         }
@@ -9833,10 +9885,11 @@ const Forms = () => {
     isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400", children: "Loading forms..." }) }) }) }) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "No forms configured yet." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+        Button,
         {
           onClick: handleAddForm,
-          className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
+          variant: "primary",
+          size: "md",
           disabled: isLoading,
           children: "Add your first form"
         }
@@ -9885,20 +9938,24 @@ const Forms = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", children: formatDate(form.createdAt) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
+              Button,
               {
                 onClick: () => handleEditForm(form),
-                className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 bg-transparent border-none cursor-pointer text-sm font-medium",
+                variant: "ghost",
+                size: "sm",
                 disabled: isLoading,
+                className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300",
                 children: "Bearbeiten"
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
+              Button,
               {
                 onClick: () => handleDeleteForm(form),
-                className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium",
+                variant: "ghost",
+                size: "sm",
                 disabled: isLoading,
+                className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300",
                 children: "Löschen"
               }
             )
@@ -10307,20 +10364,23 @@ const PaymentMethodDialog = ({ isOpen, onClose, onSubmit, editMethod, isLoading 
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
+          Button,
           {
             type: "button",
             onClick: onClose,
-            className: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors",
+            variant: "secondary",
+            size: "md",
             disabled: isLoading,
             children: "Abbrechen"
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
+          Button,
           {
             type: "submit",
-            className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
+            variant: "primary",
+            size: "md",
+            isLoading,
             disabled: isLoading,
             children: isLoading ? "Speichern..." : editMethod ? "Bezahlmethode aktualisieren" : "Bezahlmethode hinzufügen"
           }
@@ -10402,10 +10462,11 @@ const PaymentMethods = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-semibold text-gray-900 dark:text-white m-0", children: "Bezahlmethoden" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+        Button,
         {
           onClick: handleAddMethod,
-          className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
+          variant: "primary",
+          size: "md",
           disabled: isLoading,
           children: "Neue Bezahlmethode"
         }
@@ -10419,10 +10480,11 @@ const PaymentMethods = () => {
     isLoading && paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400", children: "Loading payment methods..." }) }) }) }) : paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "No payment methods configured yet." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
+        Button,
         {
           onClick: handleAddMethod,
-          className: "px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
+          variant: "primary",
+          size: "md",
           disabled: isLoading,
           children: "Add your first payment method"
         }
@@ -10458,20 +10520,24 @@ const PaymentMethods = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", children: formatDate(method.createdAt) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
+              Button,
               {
                 onClick: () => handleEditMethod(method),
-                className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 bg-transparent border-none cursor-pointer text-sm font-medium",
+                variant: "ghost",
+                size: "sm",
                 disabled: isLoading,
+                className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300",
                 children: "Bearbeiten"
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
+              Button,
               {
                 onClick: () => handleDeleteMethod(method),
-                className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium",
+                variant: "ghost",
+                size: "sm",
                 disabled: isLoading,
+                className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300",
                 children: "Löschen"
               }
             )
@@ -10656,19 +10722,21 @@ const Settings = () => {
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 mt-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "button",
+                Button,
                 {
                   onClick: () => handleSave(setting.key, setting.description),
-                  className: "px-3 py-1 text-xs font-medium text-white bg-blue-600 border border-transparent rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50",
+                  variant: "primary",
+                  size: "sm",
                   disabled: isLoading,
                   children: "Save"
                 }
               ),
               /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "button",
+                Button,
                 {
                   onClick: handleCancel,
-                  className: "px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors",
+                  variant: "secondary",
+                  size: "sm",
                   disabled: isLoading,
                   children: "Cancel"
                 }
@@ -10677,11 +10745,13 @@ const Settings = () => {
           ] })
         ] }),
         editingKey !== setting.key && /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "button",
+          Button,
           {
             onClick: () => handleEdit(setting.key, setting.value),
-            className: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium",
+            variant: "ghost",
+            size: "sm",
             disabled: isLoading,
+            className: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300",
             children: "Edit"
           }
         )
@@ -10800,11 +10870,13 @@ const TestResults = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-semibold text-gray-900 dark:text-white", children: "Test Resultate" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
-        "button",
+        Button,
         {
           onClick: loadTestRuns,
-          className: "px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50 flex items-center gap-2",
+          variant: "secondary",
+          size: "md",
           disabled: isLoading,
+          className: "gap-2",
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 16 }),
             isLoading ? "Aktualisieren..." : "Aktualisieren"
@@ -10857,13 +10929,15 @@ const TestResults = () => {
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800"}`, children: testRun.status }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "button",
+                    Button,
                     {
                       onClick: (e) => {
                         e.stopPropagation();
                         handleDeleteClick(testRun);
                       },
-                      className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium px-2 py-1",
+                      variant: "ghost",
+                      size: "sm",
+                      className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300",
                       children: "Delete"
                     }
                   )

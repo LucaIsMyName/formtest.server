@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useFormsStore } from '../store/useFormsStore'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
 import { useTestRunsStore } from '../store/useTestRunsStore'
+import Button from './Button'
 
 interface TestRunDialogProps {
   isOpen: boolean
@@ -137,13 +138,15 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                   Forms ({activeForms.length} available)
                 </h3>
-                <button
+                <Button
                   onClick={handleSelectAllForms}
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                  variant="ghost"
+                  size="sm"
                   disabled={isRunning}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                 >
                   {selectedFormIds.length === activeForms.length ? 'Deselect All' : 'Select All'}
-                </button>
+                </Button>
               </div>
               
               {activeForms.length === 0 ? (
@@ -178,13 +181,15 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                   Payment Methods ({activePaymentMethods.length} available)
                 </h3>
-                <button
+                <Button
                   onClick={handleSelectAllPaymentMethods}
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                  variant="ghost"
+                  size="sm"
                   disabled={isRunning}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
                 >
                   {selectedPaymentMethodIds.length === activePaymentMethods.length ? 'Deselect All' : 'Select All'}
-                </button>
+                </Button>
               </div>
               
               {activePaymentMethods.length === 0 ? (
@@ -246,20 +251,23 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
           </div>
           
           <div className="flex gap-3">
-            <button
+            <Button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+              variant="secondary"
+              size="md"
               disabled={isRunning}
             >
               Abbrechen
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleRunTests}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+              variant="primary"
+              size="md"
+              isLoading={isRunning}
               disabled={isRunning || totalTests === 0}
             >
               {isRunning ? 'Läuft...' : `${totalTests} Test${totalTests !== 1 ? 's' : ''} starten`}
-            </button>
+            </Button>
           </div>
         </div>
       </div>

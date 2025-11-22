@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
 import PaymentMethodDialog from '../components/PaymentMethodDialog'
 import DeleteConfirmDialog from '../components/DeleteConfirmDialog'
+import Button from '../components/Button'
 import type { PaymentMethod } from '../../../common/types'
 
 const PaymentMethods: React.FC = () => {
@@ -85,13 +86,14 @@ const PaymentMethods: React.FC = () => {
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white m-0">
           Bezahlmethoden
         </h1>
-        <button 
+        <Button 
           onClick={handleAddMethod}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+          variant="primary"
+          size="md"
           disabled={isLoading}
         >
           Neue Bezahlmethode
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -117,13 +119,14 @@ const PaymentMethods: React.FC = () => {
               <div className="text-gray-500 dark:text-gray-400 mb-4">
                 No payment methods configured yet.
               </div>
-              <button 
+              <Button 
                 onClick={handleAddMethod}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+                variant="primary"
+                size="md"
                 disabled={isLoading}
               >
                 Add your first payment method
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -178,20 +181,24 @@ const PaymentMethods: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
-                        <button
+                        <Button
                           onClick={() => handleEditMethod(method)}
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 bg-transparent border-none cursor-pointer text-sm font-medium"
+                          variant="ghost"
+                          size="sm"
                           disabled={isLoading}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                         >
                           Bearbeiten
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() => handleDeleteMethod(method)}
-                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium"
+                          variant="ghost"
+                          size="sm"
                           disabled={isLoading}
+                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                         >
                           Löschen
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>

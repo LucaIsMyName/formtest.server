@@ -4,6 +4,7 @@ import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
+import Button from "../components/Button";
 import { FileText, CreditCard, Rocket, BarChart3 } from "lucide-react";
 
 interface DashboardStats {
@@ -95,24 +96,21 @@ const Dashboard: React.FC = () => {
       <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">Dashboard</h1>
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <button
+          <Button
             onClick={() => handleQuickAction("run-tests")}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50 flex items-center gap-2"
-            disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0 || isRunning}>
-            {isRunning ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Tests werden ausgeführt...
-              </>
-            ) : (
-              <>Tests starten</>
-            )}
-          </button>
-          <button
+            variant="primary"
+            size="md"
+            isLoading={isRunning}
+            disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}
+            className="gap-2">
+            {isRunning ? "Tests werden ausgeführt..." : "Tests starten"}
+          </Button>
+          <Button
             onClick={() => handleQuickAction("settings")}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+            variant="secondary"
+            size="md">
             Einstellungen
-          </button>
+          </Button>
         </div>
       </div>
 

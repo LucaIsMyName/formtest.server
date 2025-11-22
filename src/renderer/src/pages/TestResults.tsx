@@ -3,6 +3,7 @@ import { useTestRunsStore } from '../store/useTestRunsStore'
 import { useFormsStore } from '../store/useFormsStore'
 import { usePaymentMethodsStore } from '../store/usePaymentMethodsStore'
 import DeleteConfirmDialog from '../components/DeleteConfirmDialog'
+import Button from '../components/Button'
 import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw } from 'lucide-react'
 
 const TestResults: React.FC = () => {
@@ -122,14 +123,16 @@ const TestResults: React.FC = () => {
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Test Resultate
         </h1>
-        <button
+        <Button
           onClick={loadTestRuns}
-          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50 flex items-center gap-2"
+          variant="secondary"
+          size="md"
           disabled={isLoading}
+          className="gap-2"
         >
           <RefreshCw size={16} />
           {isLoading ? 'Aktualisieren...' : 'Aktualisieren'}
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -211,15 +214,17 @@ const TestResults: React.FC = () => {
                             }`}>
                               {testRun.status}
                             </span>
-                            <button
+                            <Button
                               onClick={(e) => {
                                 e.stopPropagation()
                                 handleDeleteClick(testRun)
                               }}
-                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium px-2 py-1"
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                             >
                               Delete
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useFormsStore } from '../store/useFormsStore'
 import FormDialog from '../components/FormDialog'
 import DeleteConfirmDialog from '../components/DeleteConfirmDialog'
+import Button from '../components/Button'
 import type { Form } from '../../../common/types'
 
 const Forms: React.FC = () => {
@@ -59,13 +60,14 @@ const Forms: React.FC = () => {
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white m-0">
           Formulare
         </h1>
-        <button 
+        <Button 
           onClick={handleAddForm}
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+          variant="primary"
+          size="md"
           disabled={isLoading}
         >
           Neues Formular
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -91,13 +93,14 @@ const Forms: React.FC = () => {
               <div className="text-gray-500 dark:text-gray-400 mb-4">
                 No forms configured yet.
               </div>
-              <button 
+              <Button 
                 onClick={handleAddForm}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:opacity-50"
+                variant="primary"
+                size="md"
                 disabled={isLoading}
               >
                 Add your first form
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -158,20 +161,24 @@ const Forms: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
-                        <button
+                        <Button
                           onClick={() => handleEditForm(form)}
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 bg-transparent border-none cursor-pointer text-sm font-medium"
+                          variant="ghost"
+                          size="sm"
                           disabled={isLoading}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                         >
                           Bearbeiten
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() => handleDeleteForm(form)}
-                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 bg-transparent border-none cursor-pointer text-sm font-medium"
+                          variant="ghost"
+                          size="sm"
                           disabled={isLoading}
+                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                         >
                           Löschen
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
