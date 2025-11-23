@@ -5,6 +5,28 @@ import FormDialog from "../components/FormDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/Button";
 import type { Form } from "../../../common/types";
+import { Skeleton } from "../components/ui/Skeleton";
+
+const FormsSkeleton = () => (
+  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+    <div className="p-6">
+      <div className="space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-6 w-24" />
+            <div className="flex-1 flex justify-end gap-2">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const Forms: React.FC = () => {
   const { forms, isLoading, error, loadForms, addForm, updateForm, deleteForm, toggleFormActive } = useFormsStore();
@@ -77,13 +99,7 @@ const Forms: React.FC = () => {
       )}
 
       {isLoading && forms.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center justify-center py-8">
-              <div className="text-gray-500 dark:text-gray-400">Loading forms...</div>
-            </div>
-          </div>
-        </div>
+        <FormsSkeleton />
       ) : forms.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div className="p-6">

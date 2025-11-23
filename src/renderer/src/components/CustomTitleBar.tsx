@@ -54,7 +54,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
           onMaximize={handleMaximize}
           isMaximized={isMaximized}
         />
-        <div className="uppercase text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 font-mono ml-4 leading-[0]">Formtest.Server</div>
+        <div className="uppercase text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 ml-4 leading-[0]">Formtest.Server</div>
 
         {/* Global Search */}
         <div

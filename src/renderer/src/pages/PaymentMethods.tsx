@@ -6,6 +6,29 @@ import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/Button";
 import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
+import { Skeleton } from "../components/ui/Skeleton";
+
+const PaymentMethodsSkeleton = () => (
+  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+    <div className="p-6">
+      <div className="space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-6 w-24" />
+            <div className="flex-1 flex justify-end gap-2">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const PaymentMethods: React.FC = () => {
   const { paymentMethods, isLoading, error, loadPaymentMethods, addPaymentMethod, updatePaymentMethod, deletePaymentMethod, togglePaymentMethodActive } = usePaymentMethodsStore();
@@ -118,13 +141,7 @@ const PaymentMethods: React.FC = () => {
       )}
 
       {isLoading && paymentMethods.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center justify-center py-8">
-              <div className="text-gray-500 dark:text-gray-400">Loading payment methods...</div>
-            </div>
-          </div>
-        </div>
+        <PaymentMethodsSkeleton />
       ) : paymentMethods.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div className="p-6">

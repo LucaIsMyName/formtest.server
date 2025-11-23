@@ -6,6 +6,27 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/Button";
 import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw } from "lucide-react";
+import { Skeleton } from "../components/ui/Skeleton";
+
+const TestResultsSkeleton = () => (
+  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+    <div className="p-6">
+      <div className="space-y-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-6 w-16" />
+            <Skeleton className="h-6 w-20" />
+            <div className="flex-1 flex justify-end">
+              <Skeleton className="h-8 w-20" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const TestResults: React.FC = () => {
   const { testRuns, loadTestRuns, isLoading, error } = useTestRunsStore();
@@ -118,11 +139,7 @@ const TestResults: React.FC = () => {
         <div>
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
             {isLoading && testRuns.length === 0 ? (
-              <div className="p-6">
-                <div className="flex items-center justify-center py-8">
-                  <div className="text-gray-500 dark:text-gray-400">Loading test results...</div>
-                </div>
-              </div>
+              <TestResultsSkeleton />
             ) : testRuns.length === 0 ? (
               <div className="p-6">
                 <div className="text-center py-8">
@@ -254,28 +271,28 @@ const TestResults: React.FC = () => {
                 <div className="flex flex-col gap-4">
                   {/* Skeleton loader - no layout shift */}
                   <div>
-                    <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
-                    <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <Skeleton className="h-4 w-16 mb-1" />
+                    <Skeleton className="h-6 w-24" />
                   </div>
 
                   <div>
-                    <div className="h-4 w-12 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
-                    <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <Skeleton className="h-4 w-12 mb-1" />
+                    <Skeleton className="h-5 w-32" />
                   </div>
 
                   <div>
-                    <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
-                    <div className="h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <Skeleton className="h-4 w-32 mb-1" />
+                    <Skeleton className="h-5 w-40" />
                   </div>
 
                   <div>
-                    <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
-                    <div className="h-5 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <Skeleton className="h-4 w-16 mb-1" />
+                    <Skeleton className="h-5 w-20" />
                   </div>
 
                   <div>
-                    <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
-                    <div className="h-5 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <Skeleton className="h-4 w-20 mb-1" />
+                    <Skeleton className="h-5 w-48" />
                   </div>
                 </div>
               )}

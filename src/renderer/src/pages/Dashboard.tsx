@@ -7,21 +7,8 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/Button";
 import { FileText, CreditCard, Rocket, BarChart3 } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { Skeleton } from "../components/ui/Skeleton";
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 interface DashboardStats {
   totalForms: number;
@@ -33,6 +20,70 @@ interface DashboardStats {
   failedTests: number;
   successRate: number;
 }
+
+const DashboardSkeleton = () => (
+  <div>
+    <div className="h-8 w-48 mb-6">
+      <Skeleton className="h-full w-full" />
+    </div>
+
+    <div className="flex justify-between items-center mb-8">
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    </div>
+
+    {/* Stats Cards */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {[...Array(4)].map((_, i) => (
+        <div
+          key={i}
+          className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          <Skeleton className="h-4 w-24 mb-2" />
+          <Skeleton className="h-8 w-16" />
+        </div>
+      ))}
+    </div>
+
+    {/* Charts Placeholder */}
+    <div className="space-y-6 mb-8">
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+        <Skeleton className="h-6 w-32 mb-4" />
+        <Skeleton className="h-[300px] w-full" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {[...Array(2)].map((_, i) => (
+          <div
+            key={i}
+            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <Skeleton className="h-6 w-40 mb-4" />
+            <Skeleton className="h-[250px] w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Quick Actions Placeholder */}
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <Skeleton className="h-6 w-32 mb-2" />
+        <Skeleton className="h-4 w-48" />
+      </div>
+      <div className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton
+              key={i}
+              className="h-16 w-full rounded-lg"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -56,12 +107,12 @@ const Dashboard: React.FC = () => {
   const prepareTimelineData = () => {
     const sortedRuns = [...testRuns].sort((a, b) => new Date(a.runAt).getTime() - new Date(b.runAt).getTime());
     const grouped = sortedRuns.reduce((acc, run) => {
-      const date = new Date(run.runAt).toLocaleDateString('de-DE');
+      const date = new Date(run.runAt).toLocaleDateString("de-DE");
       if (!acc[date]) {
         acc[date] = { date, success: 0, failure: 0 };
       }
-      if (run.status === 'SUCCESS') acc[date].success++;
-      if (run.status === 'FAILURE') acc[date].failure++;
+      if (run.status === "SUCCESS") acc[date].success++;
+      if (run.status === "FAILURE") acc[date].failure++;
       return acc;
     }, {} as Record<string, { date: string; success: number; failure: number }>);
     return Object.values(grouped);
@@ -69,13 +120,13 @@ const Dashboard: React.FC = () => {
 
   const preparePaymentMethodData = () => {
     const grouped = testRuns.reduce((acc, run) => {
-      const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
-      const name = pm?.name || 'Unknown';
+      const pm = paymentMethods.find((p) => p.id === run.paymentMethodId);
+      const name = pm?.name || "Unknown";
       if (!acc[name]) {
         acc[name] = { name, success: 0, failure: 0 };
       }
-      if (run.status === 'SUCCESS') acc[name].success++;
-      if (run.status === 'FAILURE') acc[name].failure++;
+      if (run.status === "SUCCESS") acc[name].success++;
+      if (run.status === "FAILURE") acc[name].failure++;
       return acc;
     }, {} as Record<string, { name: string; success: number; failure: number }>);
     return Object.values(grouped);
@@ -83,24 +134,24 @@ const Dashboard: React.FC = () => {
 
   const prepareFormData = () => {
     const grouped = testRuns.reduce((acc, run) => {
-      const form = forms.find(f => f.id === run.formId);
-      const name = form?.name || 'Unknown';
+      const form = forms.find((f) => f.id === run.formId);
+      const name = form?.name || "Unknown";
       if (!acc[name]) {
         acc[name] = { name, success: 0, failure: 0 };
       }
-      if (run.status === 'SUCCESS') acc[name].success++;
-      if (run.status === 'FAILURE') acc[name].failure++;
+      if (run.status === "SUCCESS") acc[name].success++;
+      if (run.status === "FAILURE") acc[name].failure++;
       return acc;
     }, {} as Record<string, { name: string; success: number; failure: number }>);
     return Object.values(grouped);
   };
 
   const prepareSuccessRateData = () => {
-    const successful = testRuns.filter(r => r.status === 'SUCCESS').length;
-    const failed = testRuns.filter(r => r.status === 'FAILURE').length;
+    const successful = testRuns.filter((r) => r.status === "SUCCESS").length;
+    const failed = testRuns.filter((r) => r.status === "FAILURE").length;
     return [
-      { name: 'Erfolgreich', value: successful, color: '#10b981' },
-      { name: 'Fehlgeschlagen', value: failed, color: '#ef4444' },
+      { name: "Erfolgreich", value: successful, color: "#10b981" },
+      { name: "Fehlgeschlagen", value: failed, color: "#ef4444" },
     ];
   };
 
@@ -137,7 +188,7 @@ const Dashboard: React.FC = () => {
     };
 
     loadDashboardData();
-  }, [forms.length, paymentMethods.length, testRuns.length, loadForms, loadPaymentMethods, loadTestRuns]);
+  }, [loadForms, loadPaymentMethods, loadTestRuns]);
 
   const handleQuickAction = (action: string) => {
     switch (action) {
@@ -159,9 +210,14 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
+
   return (
     <div>
       <h1 className={CONFIG.style.title.className}>Dashboard</h1>
+
       <div className="mt-6 flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <Button
@@ -217,22 +273,42 @@ const Dashboard: React.FC = () => {
           {/* Timeline Chart */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer
+              width="100%"
+              height={300}>
               <LineChart data={prepareTimelineData()}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="date" stroke="#9ca3af" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#374151"
+                />
+                <XAxis
+                  dataKey="date"
+                  stroke="#9ca3af"
+                />
                 <YAxis stroke="#9ca3af" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
-                    borderRadius: '0.5rem',
-                    color: '#fff',
+                    backgroundColor: "#1f2937",
+                    border: "1px solid #374151",
+                    borderRadius: "0.5rem",
+                    color: "#fff",
                   }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="success" stroke="#10b981" name="Erfolgreich" strokeWidth={2} />
-                <Line type="monotone" dataKey="failure" stroke="#ef4444" name="Fehlgeschlagen" strokeWidth={2} />
+                <Line
+                  type="monotone"
+                  dataKey="success"
+                  stroke="#10b981"
+                  name="Erfolgreich"
+                  strokeWidth={2}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="failure"
+                  stroke="#ef4444"
+                  name="Fehlgeschlagen"
+                  strokeWidth={2}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -241,7 +317,9 @@ const Dashboard: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Erfolgsrate Übersicht</h3>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer
+                width="100%"
+                height={250}>
                 <PieChart>
                   <Pie
                     data={prepareSuccessRateData()}
@@ -253,15 +331,18 @@ const Dashboard: React.FC = () => {
                     fill="#8884d8"
                     dataKey="value">
                     {prepareSuccessRateData().map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.color}
+                      />
                     ))}
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#1f2937',
-                      border: '1px solid #374151',
-                      borderRadius: '0.5rem',
-                      color: '#fff',
+                      backgroundColor: "#1f2937",
+                      border: "1px solid #374151",
+                      borderRadius: "0.5rem",
+                      color: "#fff",
                     }}
                   />
                 </PieChart>
@@ -271,22 +352,38 @@ const Dashboard: React.FC = () => {
             {/* Payment Method Performance */}
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Bezahlmethoden Performance</h3>
-              <ResponsiveContainer width="100%" height={250}>
+              <ResponsiveContainer
+                width="100%"
+                height={250}>
                 <BarChart data={preparePaymentMethodData()}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="name" stroke="#9ca3af" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#374151"
+                  />
+                  <XAxis
+                    dataKey="name"
+                    stroke="#9ca3af"
+                  />
                   <YAxis stroke="#9ca3af" />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#1f2937',
-                      border: '1px solid #374151',
-                      borderRadius: '0.5rem',
-                      color: '#fff',
+                      backgroundColor: "#1f2937",
+                      border: "1px solid #374151",
+                      borderRadius: "0.5rem",
+                      color: "#fff",
                     }}
                   />
                   <Legend />
-                  <Bar dataKey="success" fill="#10b981" name="Erfolgreich" />
-                  <Bar dataKey="failure" fill="#ef4444" name="Fehlgeschlagen" />
+                  <Bar
+                    dataKey="success"
+                    fill="#10b981"
+                    name="Erfolgreich"
+                  />
+                  <Bar
+                    dataKey="failure"
+                    fill="#ef4444"
+                    name="Fehlgeschlagen"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -295,22 +392,45 @@ const Dashboard: React.FC = () => {
           {/* Form Performance */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Formular Performance</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={prepareFormData()} layout="horizontal">
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis type="number" stroke="#9ca3af" />
-                <YAxis dataKey="name" type="category" stroke="#9ca3af" width={150} />
+            <ResponsiveContainer
+              width="100%"
+              height={300}>
+              <BarChart
+                data={prepareFormData()}
+                layout="horizontal">
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#374151"
+                />
+                <XAxis
+                  type="number"
+                  stroke="#9ca3af"
+                />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  stroke="#9ca3af"
+                  width={150}
+                />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
-                    borderRadius: '0.5rem',
-                    color: '#fff',
+                    backgroundColor: "#1f2937",
+                    border: "1px solid #374151",
+                    borderRadius: "0.5rem",
+                    color: "#fff",
                   }}
                 />
                 <Legend />
-                <Bar dataKey="success" fill="#10b981" name="Erfolgreich" />
-                <Bar dataKey="failure" fill="#ef4444" name="Fehlgeschlagen" />
+                <Bar
+                  dataKey="success"
+                  fill="#10b981"
+                  name="Erfolgreich"
+                />
+                <Bar
+                  dataKey="failure"
+                  fill="#ef4444"
+                  name="Fehlgeschlagen"
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>

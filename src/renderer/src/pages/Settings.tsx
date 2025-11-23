@@ -9,6 +9,38 @@ import { Label } from "../components/ui/Label";
 import { Checkbox } from "../components/ui/Checkbox";
 import { RadioGroup, RadioGroupItem } from "../components/ui/RadioGroup";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
+import { Skeleton } from "../components/ui/Skeleton";
+
+const SettingsSkeleton = () => (
+  <div className="space-y-6">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+      <Skeleton className="h-6 w-32 mb-4" />
+      <div className="space-y-4">
+        <div>
+          <Skeleton className="h-4 w-16 mb-2" />
+          <div className="grid grid-cols-3 gap-3">
+            <Skeleton className="h-24 w-full rounded-lg" />
+            <Skeleton className="h-24 w-full rounded-lg" />
+            <Skeleton className="h-24 w-full rounded-lg" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+      <Skeleton className="h-6 w-40 mb-4" />
+      <div className="space-y-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i}>
+            <Skeleton className="h-4 w-48 mb-2" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-3 w-64 mt-1" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
 
 const Settings: React.FC = () => {
   const { settings, isLoading, error, loadSettings, updateSetting } = useSettingsStore();
@@ -123,13 +155,7 @@ const Settings: React.FC = () => {
       )}
 
       {isLoading && settings.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center justify-center py-8">
-              <div className="text-gray-500 dark:text-gray-400">Einstellungen werden geladen...</div>
-            </div>
-          </div>
-        </div>
+        <SettingsSkeleton />
       ) : (
         <div className="space-y-6">
           {/* Theme Settings */}
