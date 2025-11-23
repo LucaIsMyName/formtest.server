@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
-import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, Trash2, AlertTriangle } from "lucide-react";
+import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, AlertTriangle } from "lucide-react";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
@@ -641,7 +641,6 @@ const Settings: React.FC = () => {
                     }
                   }}
                   variant="secondary"
-                  size="sm"
                   size="md"
                   disabled={isImporting || (!exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings)}
                   isLoading={isImporting}

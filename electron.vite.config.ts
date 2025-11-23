@@ -30,7 +30,13 @@ export default defineConfig({
         '@': resolve('src/renderer/src')
       }
     },
-    plugins: [react()],
+    plugins: [
+      react({
+        babel: {
+          plugins: [['babel-plugin-react-compiler', { target: '18' }]]
+        }
+      })
+    ],
     build: {
       rollupOptions: {
         input: {
