@@ -442,7 +442,7 @@ const Settings: React.FC = () => {
                   {isImporting ? "Importiere..." : "Daten importieren"}
                 </Button>
 
-                {importResult && (
+                {importResult && importResult.imported && importResult.skipped && (
                   <div className={`mt-4 p-4 rounded-md ${importResult.success ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
                     <div className="flex items-start gap-2 mb-3">
                       {importResult.success ? (
@@ -452,7 +452,7 @@ const Settings: React.FC = () => {
                       )}
                       <div className="flex-1">
                         <h4 className={`text-sm font-medium ${importResult.success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}`}>
-                          {importResult.success ? 'Import erfolgreich!' : 'Import mit Fehlern'}
+                          {importResult.success ? 'Import erfolgreich!' : 'Import abgebrochen oder mit Fehlern'}
                         </h4>
                       </div>
                     </div>
@@ -466,6 +466,9 @@ const Settings: React.FC = () => {
                             {importResult.imported.paymentMethods > 0 && <li>• {importResult.imported.paymentMethods} Bezahlmethoden</li>}
                             {importResult.imported.testRuns > 0 && <li>• {importResult.imported.testRuns} Test Resultate</li>}
                             {importResult.imported.settings > 0 && <li>• {importResult.imported.settings} Einstellungen</li>}
+                            {importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.settings === 0 && (
+                              <li className="italic text-gray-500">Keine Daten importiert</li>
+                            )}
                           </ul>
                         </div>
                         <div>
@@ -475,11 +478,14 @@ const Settings: React.FC = () => {
                             {importResult.skipped.paymentMethods > 0 && <li>• {importResult.skipped.paymentMethods} Bezahlmethoden</li>}
                             {importResult.skipped.testRuns > 0 && <li>• {importResult.skipped.testRuns} Test Resultate</li>}
                             {importResult.skipped.settings > 0 && <li>• {importResult.skipped.settings} Einstellungen</li>}
+                            {importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.settings === 0 && (
+                              <li className="italic text-gray-500">Keine Daten übersprungen</li>
+                            )}
                           </ul>
                         </div>
                       </div>
 
-                      {importResult.warnings.length > 0 && (
+                      {importResult.warnings && importResult.warnings.length > 0 && (
                         <div className="mt-3">
                           <p className="font-medium text-yellow-700 dark:text-yellow-300">Warnungen:</p>
                           <ul className="text-xs text-yellow-600 dark:text-yellow-400 ml-4 mt-1">
@@ -493,7 +499,7 @@ const Settings: React.FC = () => {
                         </div>
                       )}
 
-                      {importResult.errors.length > 0 && (
+                      {importResult.errors && importResult.errors.length > 0 && (
                         <div className="mt-3">
                           <p className="font-medium text-red-700 dark:text-red-300">Fehler:</p>
                           <ul className="text-xs text-red-600 dark:text-red-400 ml-4 mt-1">

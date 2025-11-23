@@ -278,7 +278,13 @@ export function setupIpcHandlers(): void {
       });
       
       if (canceled || filePaths.length === 0) {
-        return { success: false, message: "Import cancelled" };
+        return {
+          success: false,
+          imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          errors: [],
+          warnings: []
+        };
       }
       
       const filePath = filePaths[0];
@@ -289,9 +295,12 @@ export function setupIpcHandlers(): void {
       
       // Validate data structure
       if (!importData.version || !importData.data) {
-        return { 
-          success: false, 
-          message: "Ungültiges Dateiformat" 
+        return {
+          success: false,
+          imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          errors: ["Ungültiges Dateiformat"],
+          warnings: []
         };
       }
       

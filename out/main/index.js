@@ -1272,7 +1272,13 @@ function setupIpcHandlers() {
         properties: ["openFile"]
       });
       if (canceled || filePaths.length === 0) {
-        return { success: false, message: "Import cancelled" };
+        return {
+          success: false,
+          imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          errors: [],
+          warnings: []
+        };
       }
       const filePath = filePaths[0];
       const fileContent = fs.readFileSync(filePath, "utf-8");
@@ -1280,7 +1286,10 @@ function setupIpcHandlers() {
       if (!importData.version || !importData.data) {
         return {
           success: false,
-          message: "Ungültiges Dateiformat"
+          imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+          errors: ["Ungültiges Dateiformat"],
+          warnings: []
         };
       }
       let result;

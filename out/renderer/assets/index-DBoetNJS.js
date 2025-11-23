@@ -48060,7 +48060,7 @@ const Layout = ({ children }) => {
 const CONFIG = {
   style: {
     title: {
-      className: "text-gray-800 text-5xl mt-2 font-semibold text-gray-900 dark:text-gray-100 text-shadow-[1px_1px_0px_rgba(0,0,0,0.2)] dark:text-shadow-[1px_1px_0px_rgba(255,255,255,0.2)]"
+      className: "text-gray-800 text-4xl mt-2 font-semibold dark:text-gray-200 text-shadow-[1px_1px_0px_rgba(0,0,0,0.2)] dark:text-shadow-[1px_1px_0px_rgba(255,255,255,0.2)]"
     }
   }
 };
@@ -74023,10 +74023,10 @@ const Settings = () => {
                 ]
               }
             ),
-            importResult && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `mt-4 p-4 rounded-md ${importResult.success ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}`, children: [
+            importResult && importResult.imported && importResult.skipped && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `mt-4 p-4 rounded-md ${importResult.success ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}`, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2 mb-3", children: [
                 importResult.success ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "text-green-600 dark:text-green-400 flex-shrink-0", size: 20 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "text-red-600 dark:text-red-400 flex-shrink-0", size: 20 }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: `text-sm font-medium ${importResult.success ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"}`, children: importResult.success ? "Import erfolgreich!" : "Import mit Fehlern" }) })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: `text-sm font-medium ${importResult.success ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"}`, children: importResult.success ? "Import erfolgreich!" : "Import abgebrochen oder mit Fehlern" }) })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm space-y-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
@@ -74052,7 +74052,8 @@ const Settings = () => {
                         "• ",
                         importResult.imported.settings,
                         " Einstellungen"
-                      ] })
+                      ] }),
+                      importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.settings === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "italic text-gray-500", children: "Keine Daten importiert" })
                     ] })
                   ] }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -74077,11 +74078,12 @@ const Settings = () => {
                         "• ",
                         importResult.skipped.settings,
                         " Einstellungen"
-                      ] })
+                      ] }),
+                      importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.settings === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "italic text-gray-500", children: "Keine Daten übersprungen" })
                     ] })
                   ] })
                 ] }),
-                importResult.warnings.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
+                importResult.warnings && importResult.warnings.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-yellow-700 dark:text-yellow-300", children: "Warnungen:" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-xs text-yellow-600 dark:text-yellow-400 ml-4 mt-1", children: [
                     importResult.warnings.slice(0, 5).map((warning2, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
@@ -74095,7 +74097,7 @@ const Settings = () => {
                     ] })
                   ] })
                 ] }),
-                importResult.errors.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
+                importResult.errors && importResult.errors.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-red-700 dark:text-red-300", children: "Fehler:" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-xs text-red-600 dark:text-red-400 ml-4 mt-1", children: [
                     importResult.errors.slice(0, 5).map((error2, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
