@@ -9,6 +9,7 @@ interface SchedulesState {
   createSchedule: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => Promise<void>;
   updateSchedule: (id: number, schedule: Partial<TestSchedule>) => Promise<void>;
   deleteSchedule: (id: number) => Promise<void>;
+  runScheduleNow: (id: number) => Promise<void>;
 }
 
 export const useSchedulesStore = create<SchedulesState>((set, get) => ({
@@ -55,6 +56,22 @@ export const useSchedulesStore = create<SchedulesState>((set, get) => ({
       await get().loadSchedules();
     } catch (error) {
       set({ error: "Failed to delete schedule", isLoading: false });
+      throw error;
+    }
+  },
+
+  runScheduleNow: async (id) => {
+    // Don't set global loading state as this is a background action
+    // The user might want to continue interacting with the UI
+    try {
+      await window.api.testSchedules.runNow(id);
+      // Optionally reload schedules to update "last run" time, but give it a moment
+      // for the backend to update the DB
+      setTimeout(() => {
+        get().loadSchedules();
+      }, 500);
+    } catch (error) {
+      console.error("Failed to run schedule now:", error);
       throw error;
     }
   },

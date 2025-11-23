@@ -333,6 +333,15 @@ export function setupIpcHandlers(): void {
   
   ipcMain.handle("testSchedules:getById", (_, id: number) => testScheduleQueries.getById(id));
   
+  ipcMain.handle("testSchedules:runNow", async (_, id: number) => {
+    try {
+      return await scheduler.runJobNow(id);
+    } catch (error) {
+      console.error("IPC Error - testSchedules:runNow:", error);
+      throw error;
+    }
+  });
+
   ipcMain.handle("testSchedules:create", (_, schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => {
     const result = testScheduleQueries.create(schedule);
     const id = result.lastInsertRowid as number;

@@ -16612,6 +16612,249 @@ var getIsProduction = () => {
   }
   return isProduction;
 };
+const __vite_import_meta_env__$1 = {};
+const createStoreImpl = (createState) => {
+  let state;
+  const listeners = /* @__PURE__ */ new Set();
+  const setState = (partial, replace) => {
+    const nextState = typeof partial === "function" ? partial(state) : partial;
+    if (!Object.is(nextState, state)) {
+      const previousState = state;
+      state = (replace != null ? replace : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
+      listeners.forEach((listener2) => listener2(state, previousState));
+    }
+  };
+  const getState2 = () => state;
+  const getInitialState = () => initialState2;
+  const subscribe = (listener2) => {
+    listeners.add(listener2);
+    return () => listeners.delete(listener2);
+  };
+  const destroy = () => {
+    if ((__vite_import_meta_env__$1 ? "production" : void 0) !== "production") {
+      console.warn(
+        "[DEPRECATED] The `destroy` method will be unsupported in a future version. Instead use unsubscribe function returned by subscribe. Everything will be garbage-collected if store is garbage-collected."
+      );
+    }
+    listeners.clear();
+  };
+  const api = { setState, getState: getState2, getInitialState, subscribe, destroy };
+  const initialState2 = state = createState(setState, getState2, api);
+  return api;
+};
+const createStore$1 = (createState) => createState ? createStoreImpl(createState) : createStoreImpl;
+var withSelector = { exports: {} };
+var withSelector_production = {};
+var shim$2 = { exports: {} };
+var useSyncExternalStoreShim_production = {};
+/**
+ * @license React
+ * use-sync-external-store-shim.production.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var React$3 = reactExports;
+function is$4(x2, y2) {
+  return x2 === y2 && (0 !== x2 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
+}
+var objectIs$2 = "function" === typeof Object.is ? Object.is : is$4, useState = React$3.useState, useEffect$3 = React$3.useEffect, useLayoutEffect = React$3.useLayoutEffect, useDebugValue$3 = React$3.useDebugValue;
+function useSyncExternalStore$2(subscribe, getSnapshot) {
+  var value = getSnapshot(), _useState = useState({ inst: { value, getSnapshot } }), inst = _useState[0].inst, forceUpdate = _useState[1];
+  useLayoutEffect(
+    function() {
+      inst.value = value;
+      inst.getSnapshot = getSnapshot;
+      checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+    },
+    [subscribe, value, getSnapshot]
+  );
+  useEffect$3(
+    function() {
+      checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+      return subscribe(function() {
+        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+      });
+    },
+    [subscribe]
+  );
+  useDebugValue$3(value);
+  return value;
+}
+function checkIfSnapshotChanged(inst) {
+  var latestGetSnapshot = inst.getSnapshot;
+  inst = inst.value;
+  try {
+    var nextValue = latestGetSnapshot();
+    return !objectIs$2(inst, nextValue);
+  } catch (error) {
+    return true;
+  }
+}
+function useSyncExternalStore$1$1(subscribe, getSnapshot) {
+  return getSnapshot();
+}
+var shim$1 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1$1 : useSyncExternalStore$2;
+useSyncExternalStoreShim_production.useSyncExternalStore = void 0 !== React$3.useSyncExternalStore ? React$3.useSyncExternalStore : shim$1;
+{
+  shim$2.exports = useSyncExternalStoreShim_production;
+}
+var shimExports = shim$2.exports;
+/**
+ * @license React
+ * use-sync-external-store-shim/with-selector.production.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var React$2 = reactExports, shim = shimExports;
+function is$3(x2, y2) {
+  return x2 === y2 && (0 !== x2 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
+}
+var objectIs$1 = "function" === typeof Object.is ? Object.is : is$3, useSyncExternalStore$1 = shim.useSyncExternalStore, useRef$2 = React$2.useRef, useEffect$2 = React$2.useEffect, useMemo$1 = React$2.useMemo, useDebugValue$2 = React$2.useDebugValue;
+withSelector_production.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
+  var instRef = useRef$2(null);
+  if (null === instRef.current) {
+    var inst = { hasValue: false, value: null };
+    instRef.current = inst;
+  } else inst = instRef.current;
+  instRef = useMemo$1(
+    function() {
+      function memoizedSelector(nextSnapshot) {
+        if (!hasMemo) {
+          hasMemo = true;
+          memoizedSnapshot = nextSnapshot;
+          nextSnapshot = selector(nextSnapshot);
+          if (void 0 !== isEqual && inst.hasValue) {
+            var currentSelection = inst.value;
+            if (isEqual(currentSelection, nextSnapshot))
+              return memoizedSelection = currentSelection;
+          }
+          return memoizedSelection = nextSnapshot;
+        }
+        currentSelection = memoizedSelection;
+        if (objectIs$1(memoizedSnapshot, nextSnapshot)) return currentSelection;
+        var nextSelection = selector(nextSnapshot);
+        if (void 0 !== isEqual && isEqual(currentSelection, nextSelection))
+          return memoizedSnapshot = nextSnapshot, currentSelection;
+        memoizedSnapshot = nextSnapshot;
+        return memoizedSelection = nextSelection;
+      }
+      var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
+      return [
+        function() {
+          return memoizedSelector(getSnapshot());
+        },
+        null === maybeGetServerSnapshot ? void 0 : function() {
+          return memoizedSelector(maybeGetServerSnapshot());
+        }
+      ];
+    },
+    [getSnapshot, getServerSnapshot, selector, isEqual]
+  );
+  var value = useSyncExternalStore$1(subscribe, instRef[0], instRef[1]);
+  useEffect$2(
+    function() {
+      inst.hasValue = true;
+      inst.value = value;
+    },
+    [value]
+  );
+  useDebugValue$2(value);
+  return value;
+};
+{
+  withSelector.exports = withSelector_production;
+}
+var withSelectorExports = withSelector.exports;
+const useSyncExternalStoreExports = /* @__PURE__ */ getDefaultExportFromCjs(withSelectorExports);
+const __vite_import_meta_env__ = {};
+const { useDebugValue: useDebugValue$1 } = React$4;
+const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
+let didWarnAboutEqualityFn = false;
+const identity$5 = (arg) => arg;
+function useStore(api, selector = identity$5, equalityFn) {
+  if ((__vite_import_meta_env__ ? "production" : void 0) !== "production" && equalityFn && !didWarnAboutEqualityFn) {
+    console.warn(
+      "[DEPRECATED] Use `createWithEqualityFn` instead of `create` or use `useStoreWithEqualityFn` instead of `useStore`. They can be imported from 'zustand/traditional'. https://github.com/pmndrs/zustand/discussions/1937"
+    );
+    didWarnAboutEqualityFn = true;
+  }
+  const slice = useSyncExternalStoreWithSelector(
+    api.subscribe,
+    api.getState,
+    api.getServerState || api.getInitialState,
+    selector,
+    equalityFn
+  );
+  useDebugValue$1(slice);
+  return slice;
+}
+const createImpl = (createState) => {
+  if ((__vite_import_meta_env__ ? "production" : void 0) !== "production" && typeof createState !== "function") {
+    console.warn(
+      "[DEPRECATED] Passing a vanilla store will be unsupported in a future version. Instead use `import { useStore } from 'zustand'`."
+    );
+  }
+  const api = typeof createState === "function" ? createStore$1(createState) : createState;
+  const useBoundStore = (selector, equalityFn) => useStore(api, selector, equalityFn);
+  Object.assign(useBoundStore, api);
+  return useBoundStore;
+};
+const create = (createState) => createState ? createImpl(createState) : createImpl;
+const useSettingsStore = create((set2, get2) => ({
+  settings: [],
+  isLoading: false,
+  error: null,
+  loadSettings: async () => {
+    set2({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      const settings = await window.api.settings.getAll();
+      set2({
+        settings,
+        isLoading: false
+      });
+    } catch (error) {
+      console.error("Failed to load settings:", error);
+      set2({
+        error: error instanceof Error ? error.message : "Failed to load settings",
+        isLoading: false
+      });
+    }
+  },
+  getSetting: (key) => {
+    return get2().settings.find((setting) => setting.key === key);
+  },
+  updateSetting: async (key, value, description) => {
+    set2({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      await window.api.settings.set(key, value, description);
+      await get2().loadSettings();
+    } catch (error) {
+      console.error("Failed to update setting:", error);
+      set2({
+        error: error instanceof Error ? error.message : "Failed to update setting",
+        isLoading: false
+      });
+    }
+  }
+}));
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -16663,22 +16906,22 @@ __export(index_exports, {
   useRenderCounter: () => useRenderCounter
 });
 var dist = __toCommonJS(index_exports);
-var React$3 = __toESM(reactExports);
-var { useRef: useRef$2, useEffect: useEffect$3, isValidElement } = React$3;
+var React$1 = __toESM(reactExports);
+var { useRef: useRef$1, useEffect: useEffect$1, isValidElement } = React$1;
 var _a;
 var ReactSecretInternals = (
   //@ts-ignore
-  (_a = React$3.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE) != null ? _a : React$3.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
+  (_a = React$1.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE) != null ? _a : React$1.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED
 );
 var $empty = Symbol.for("react.memo_cache_sentinel");
 var _a2;
 var c$2 = (
   // @ts-expect-error
-  typeof ((_a2 = React$3.__COMPILER_RUNTIME) == null ? void 0 : _a2.c) === "function" ? (
+  typeof ((_a2 = React$1.__COMPILER_RUNTIME) == null ? void 0 : _a2.c) === "function" ? (
     // @ts-expect-error
-    React$3.__COMPILER_RUNTIME.c
+    React$1.__COMPILER_RUNTIME.c
   ) : function c2(size2) {
-    return React$3.useMemo(() => {
+    return React$1.useMemo(() => {
       const $2 = new Array(size2);
       for (let ii2 = 0; ii2 < size2; ii2++) {
         $2[ii2] = $empty;
@@ -16804,11 +17047,11 @@ function removeRenderCounter(name, val) {
   counters.delete(val);
 }
 function useRenderCounter(name) {
-  const val = useRef$2(null);
+  const val = useRef$1(null);
   if (val.current != null) {
     val.current.count += 1;
   }
-  useEffect$3(() => {
+  useEffect$1(() => {
     if (val.current == null) {
       const counter = { count: 0 };
       registerRenderCounter(name, counter);
@@ -48387,7 +48630,7 @@ const CustomTitleBar = (t02) => {
   }
   reactExports.useEffect(t2, t3);
   const handleClose = _temp$7;
-  const handleMinimize = _temp2$5;
+  const handleMinimize = _temp2$4;
   let t4;
   if ($2[2] === Symbol.for("react.memo_cache_sentinel")) {
     t4 = async () => {
@@ -48711,205 +48954,11 @@ async function _temp$7() {
     await window.api.windowControls.close();
   }
 }
-async function _temp2$5() {
+async function _temp2$4() {
   if (window.api?.windowControls) {
     await window.api.windowControls.minimize();
   }
 }
-const __vite_import_meta_env__$1 = {};
-const createStoreImpl = (createState) => {
-  let state;
-  const listeners = /* @__PURE__ */ new Set();
-  const setState = (partial, replace) => {
-    const nextState = typeof partial === "function" ? partial(state) : partial;
-    if (!Object.is(nextState, state)) {
-      const previousState = state;
-      state = (replace != null ? replace : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
-      listeners.forEach((listener2) => listener2(state, previousState));
-    }
-  };
-  const getState2 = () => state;
-  const getInitialState = () => initialState2;
-  const subscribe = (listener2) => {
-    listeners.add(listener2);
-    return () => listeners.delete(listener2);
-  };
-  const destroy = () => {
-    if ((__vite_import_meta_env__$1 ? "production" : void 0) !== "production") {
-      console.warn(
-        "[DEPRECATED] The `destroy` method will be unsupported in a future version. Instead use unsubscribe function returned by subscribe. Everything will be garbage-collected if store is garbage-collected."
-      );
-    }
-    listeners.clear();
-  };
-  const api = { setState, getState: getState2, getInitialState, subscribe, destroy };
-  const initialState2 = state = createState(setState, getState2, api);
-  return api;
-};
-const createStore$1 = (createState) => createState ? createStoreImpl(createState) : createStoreImpl;
-var withSelector = { exports: {} };
-var withSelector_production = {};
-var shim$2 = { exports: {} };
-var useSyncExternalStoreShim_production = {};
-/**
- * @license React
- * use-sync-external-store-shim.production.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var React$2 = reactExports;
-function is$4(x2, y2) {
-  return x2 === y2 && (0 !== x2 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
-}
-var objectIs$2 = "function" === typeof Object.is ? Object.is : is$4, useState = React$2.useState, useEffect$2 = React$2.useEffect, useLayoutEffect = React$2.useLayoutEffect, useDebugValue$3 = React$2.useDebugValue;
-function useSyncExternalStore$2(subscribe, getSnapshot) {
-  var value = getSnapshot(), _useState = useState({ inst: { value, getSnapshot } }), inst = _useState[0].inst, forceUpdate = _useState[1];
-  useLayoutEffect(
-    function() {
-      inst.value = value;
-      inst.getSnapshot = getSnapshot;
-      checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-    },
-    [subscribe, value, getSnapshot]
-  );
-  useEffect$2(
-    function() {
-      checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-      return subscribe(function() {
-        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-      });
-    },
-    [subscribe]
-  );
-  useDebugValue$3(value);
-  return value;
-}
-function checkIfSnapshotChanged(inst) {
-  var latestGetSnapshot = inst.getSnapshot;
-  inst = inst.value;
-  try {
-    var nextValue = latestGetSnapshot();
-    return !objectIs$2(inst, nextValue);
-  } catch (error) {
-    return true;
-  }
-}
-function useSyncExternalStore$1$1(subscribe, getSnapshot) {
-  return getSnapshot();
-}
-var shim$1 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1$1 : useSyncExternalStore$2;
-useSyncExternalStoreShim_production.useSyncExternalStore = void 0 !== React$2.useSyncExternalStore ? React$2.useSyncExternalStore : shim$1;
-{
-  shim$2.exports = useSyncExternalStoreShim_production;
-}
-var shimExports = shim$2.exports;
-/**
- * @license React
- * use-sync-external-store-shim/with-selector.production.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var React$1 = reactExports, shim = shimExports;
-function is$3(x2, y2) {
-  return x2 === y2 && (0 !== x2 || 1 / x2 === 1 / y2) || x2 !== x2 && y2 !== y2;
-}
-var objectIs$1 = "function" === typeof Object.is ? Object.is : is$3, useSyncExternalStore$1 = shim.useSyncExternalStore, useRef$1 = React$1.useRef, useEffect$1 = React$1.useEffect, useMemo$1 = React$1.useMemo, useDebugValue$2 = React$1.useDebugValue;
-withSelector_production.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
-  var instRef = useRef$1(null);
-  if (null === instRef.current) {
-    var inst = { hasValue: false, value: null };
-    instRef.current = inst;
-  } else inst = instRef.current;
-  instRef = useMemo$1(
-    function() {
-      function memoizedSelector(nextSnapshot) {
-        if (!hasMemo) {
-          hasMemo = true;
-          memoizedSnapshot = nextSnapshot;
-          nextSnapshot = selector(nextSnapshot);
-          if (void 0 !== isEqual && inst.hasValue) {
-            var currentSelection = inst.value;
-            if (isEqual(currentSelection, nextSnapshot))
-              return memoizedSelection = currentSelection;
-          }
-          return memoizedSelection = nextSnapshot;
-        }
-        currentSelection = memoizedSelection;
-        if (objectIs$1(memoizedSnapshot, nextSnapshot)) return currentSelection;
-        var nextSelection = selector(nextSnapshot);
-        if (void 0 !== isEqual && isEqual(currentSelection, nextSelection))
-          return memoizedSnapshot = nextSnapshot, currentSelection;
-        memoizedSnapshot = nextSnapshot;
-        return memoizedSelection = nextSelection;
-      }
-      var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
-      return [
-        function() {
-          return memoizedSelector(getSnapshot());
-        },
-        null === maybeGetServerSnapshot ? void 0 : function() {
-          return memoizedSelector(maybeGetServerSnapshot());
-        }
-      ];
-    },
-    [getSnapshot, getServerSnapshot, selector, isEqual]
-  );
-  var value = useSyncExternalStore$1(subscribe, instRef[0], instRef[1]);
-  useEffect$1(
-    function() {
-      inst.hasValue = true;
-      inst.value = value;
-    },
-    [value]
-  );
-  useDebugValue$2(value);
-  return value;
-};
-{
-  withSelector.exports = withSelector_production;
-}
-var withSelectorExports = withSelector.exports;
-const useSyncExternalStoreExports = /* @__PURE__ */ getDefaultExportFromCjs(withSelectorExports);
-const __vite_import_meta_env__ = {};
-const { useDebugValue: useDebugValue$1 } = React$4;
-const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
-let didWarnAboutEqualityFn = false;
-const identity$5 = (arg) => arg;
-function useStore(api, selector = identity$5, equalityFn) {
-  if ((__vite_import_meta_env__ ? "production" : void 0) !== "production" && equalityFn && !didWarnAboutEqualityFn) {
-    console.warn(
-      "[DEPRECATED] Use `createWithEqualityFn` instead of `create` or use `useStoreWithEqualityFn` instead of `useStore`. They can be imported from 'zustand/traditional'. https://github.com/pmndrs/zustand/discussions/1937"
-    );
-    didWarnAboutEqualityFn = true;
-  }
-  const slice = useSyncExternalStoreWithSelector(
-    api.subscribe,
-    api.getState,
-    api.getServerState || api.getInitialState,
-    selector,
-    equalityFn
-  );
-  useDebugValue$1(slice);
-  return slice;
-}
-const createImpl = (createState) => {
-  if ((__vite_import_meta_env__ ? "production" : void 0) !== "production" && typeof createState !== "function") {
-    console.warn(
-      "[DEPRECATED] Passing a vanilla store will be unsupported in a future version. Instead use `import { useStore } from 'zustand'`."
-    );
-  }
-  const api = typeof createState === "function" ? createStore$1(createState) : createState;
-  const useBoundStore = (selector, equalityFn) => useStore(api, selector, equalityFn);
-  Object.assign(useBoundStore, api);
-  return useBoundStore;
-};
-const create = (createState) => createState ? createImpl(createState) : createImpl;
 const useFormsStore = create((set2, get2) => ({
   forms: [],
   isLoading: false,
@@ -54483,7 +54532,7 @@ const TestRunDialog = (t02) => {
     t6 = () => {
       if (isOpen && preselectAll) {
         const activeForms = forms.filter(_temp$6);
-        const activePaymentMethods = paymentMethods.filter(_temp2$4);
+        const activePaymentMethods = paymentMethods.filter(_temp2$3);
         setSelectedFormIds(activeForms.map(_temp3$1));
         setSelectedPaymentMethodIds(activePaymentMethods.map(_temp4$1));
       } else {
@@ -54920,7 +54969,7 @@ const TestRunDialog = (t02) => {
 function _temp$6(f2) {
   return f2.isActive;
 }
-function _temp2$4(pm) {
+function _temp2$3(pm) {
   return pm.isActive;
 }
 function _temp3$1(f_0) {
@@ -55739,57 +55788,8 @@ const GlobalSearch = (t02) => {
   }
   return t47;
 };
-const useSettingsStore = create((set2, get2) => ({
-  settings: [],
-  isLoading: false,
-  error: null,
-  loadSettings: async () => {
-    set2({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      const settings = await window.api.settings.getAll();
-      set2({
-        settings,
-        isLoading: false
-      });
-    } catch (error) {
-      console.error("Failed to load settings:", error);
-      set2({
-        error: error instanceof Error ? error.message : "Failed to load settings",
-        isLoading: false
-      });
-    }
-  },
-  getSetting: (key) => {
-    return get2().settings.find((setting) => setting.key === key);
-  },
-  updateSetting: async (key, value, description) => {
-    set2({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      await window.api.settings.set(key, value, description);
-      await get2().loadSettings();
-    } catch (error) {
-      console.error("Failed to update setting:", error);
-      set2({
-        error: error instanceof Error ? error.message : "Failed to update setting",
-        isLoading: false
-      });
-    }
-  }
-}));
 const Layout = (t02) => {
-  const $2 = dist.c(47);
+  const $2 = dist.c(42);
   const {
     children
   } = t02;
@@ -55800,15 +55800,14 @@ const Layout = (t02) => {
   const [preselectAll, setPreselectAll] = reactExports.useState(false);
   const [showSearch, setShowSearch] = reactExports.useState(false);
   const {
-    getSetting,
     updateSetting,
     loadSettings,
     settings
   } = useSettingsStore();
   let t12;
-  if ($2[0] !== getSetting) {
-    t12 = getSetting("theme");
-    $2[0] = getSetting;
+  if ($2[0] !== settings) {
+    t12 = settings.find(_temp$5);
+    $2[0] = settings;
     $2[1] = t12;
   } else {
     t12 = $2[1];
@@ -55831,101 +55830,74 @@ const Layout = (t02) => {
   }
   reactExports.useEffect(t2, t3);
   let t4;
-  if ($2[5] !== currentTheme) {
+  if ($2[5] === Symbol.for("react.memo_cache_sentinel")) {
     t4 = () => {
-      const root = window.document.documentElement;
-      root.classList.remove("light", "dark");
-      if (currentTheme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        root.classList.add(systemTheme);
-      } else {
-        root.classList.add(currentTheme);
-      }
-    };
-    $2[5] = currentTheme;
-    $2[6] = t4;
-  } else {
-    t4 = $2[6];
-  }
-  let t5;
-  if ($2[7] !== currentTheme || $2[8] !== settings) {
-    t5 = [currentTheme, settings];
-    $2[7] = currentTheme;
-    $2[8] = settings;
-    $2[9] = t5;
-  } else {
-    t5 = $2[9];
-  }
-  reactExports.useEffect(t4, t5);
-  let t6;
-  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = () => {
       if (mainContentRef.current) {
         mainContentRef.current.scrollTop = 0;
       }
     };
-    $2[10] = t6;
+    $2[5] = t4;
   } else {
-    t6 = $2[10];
+    t4 = $2[5];
   }
-  let t7;
-  if ($2[11] !== location.pathname) {
-    t7 = [location.pathname];
-    $2[11] = location.pathname;
-    $2[12] = t7;
+  let t5;
+  if ($2[6] !== location.pathname) {
+    t5 = [location.pathname];
+    $2[6] = location.pathname;
+    $2[7] = t5;
   } else {
-    t7 = $2[12];
+    t5 = $2[7];
   }
-  reactExports.useEffect(t6, t7);
-  let t8;
-  if ($2[13] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = () => {
+  reactExports.useEffect(t4, t5);
+  let t6;
+  if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = () => {
       setPreselectAll(true);
       setShowTestDialog(true);
     };
-    $2[13] = t8;
+    $2[8] = t6;
   } else {
-    t8 = $2[13];
+    t6 = $2[8];
   }
-  const handleRunAllTests = t8;
-  let t9;
-  if ($2[14] === Symbol.for("react.memo_cache_sentinel")) {
-    t9 = () => {
+  const handleRunAllTests = t6;
+  let t7;
+  if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = () => {
       setShowSearch(true);
     };
+    $2[9] = t7;
+  } else {
+    t7 = $2[9];
+  }
+  const handleOpenSearch = t7;
+  let t8;
+  if ($2[10] !== currentTheme || $2[11] !== updateSetting) {
+    t8 = async () => {
+      const nextTheme = currentTheme === "system" ? "light" : currentTheme === "light" ? "dark" : "system";
+      await updateSetting("theme", nextTheme, "UI-Theme-Präferenz (system, light, dark)");
+    };
+    $2[10] = currentTheme;
+    $2[11] = updateSetting;
+    $2[12] = t8;
+  } else {
+    t8 = $2[12];
+  }
+  const handleToggleTheme = t8;
+  let t9;
+  if ($2[13] !== navigate) {
+    t9 = () => {
+      navigate("/settings");
+    };
+    $2[13] = navigate;
     $2[14] = t9;
   } else {
     t9 = $2[14];
   }
-  const handleOpenSearch = t9;
+  const handleOpenSettings = t9;
   let t10;
-  if ($2[15] !== currentTheme || $2[16] !== updateSetting) {
-    t10 = async () => {
-      const nextTheme = currentTheme === "system" ? "light" : currentTheme === "light" ? "dark" : "system";
-      await updateSetting("theme", nextTheme, "UI-Theme-Präferenz (system, light, dark)");
-    };
-    $2[15] = currentTheme;
-    $2[16] = updateSetting;
-    $2[17] = t10;
-  } else {
-    t10 = $2[17];
-  }
-  const handleToggleTheme = t10;
   let t11;
-  if ($2[18] !== navigate) {
-    t11 = () => {
-      navigate("/settings");
-    };
-    $2[18] = navigate;
-    $2[19] = t11;
-  } else {
-    t11 = $2[19];
-  }
-  const handleOpenSettings = t11;
-  let t122;
-  let t13;
-  if ($2[20] === Symbol.for("react.memo_cache_sentinel")) {
-    t122 = () => {
+  if ($2[15] === Symbol.for("react.memo_cache_sentinel")) {
+    t10 = () => {
       const handleKeyDown = (e3) => {
         if ((e3.metaKey || e3.ctrlKey) && e3.key === "k") {
           e3.preventDefault();
@@ -55938,17 +55910,17 @@ const Layout = (t02) => {
       window.addEventListener("keydown", handleKeyDown);
       return () => window.removeEventListener("keydown", handleKeyDown);
     };
-    t13 = [];
-    $2[20] = t122;
-    $2[21] = t13;
+    t11 = [];
+    $2[15] = t10;
+    $2[16] = t11;
   } else {
-    t122 = $2[20];
-    t13 = $2[21];
+    t10 = $2[15];
+    t11 = $2[16];
   }
-  reactExports.useEffect(t122, t13);
-  let t14;
-  if ($2[22] === Symbol.for("react.memo_cache_sentinel")) {
-    t14 = [{
+  reactExports.useEffect(t10, t11);
+  let t122;
+  if ($2[17] === Symbol.for("react.memo_cache_sentinel")) {
+    t122 = [{
       name: "Dashboard",
       href: "/",
       icon: LayoutDashboard
@@ -55977,116 +55949,119 @@ const Layout = (t02) => {
       href: "/info-doku",
       icon: BookOpen
     }];
+    $2[17] = t122;
+  } else {
+    t122 = $2[17];
+  }
+  const navigation = t122;
+  let t13;
+  if ($2[18] !== currentTheme || $2[19] !== handleOpenSettings || $2[20] !== handleToggleTheme) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
+    $2[18] = currentTheme;
+    $2[19] = handleOpenSettings;
+    $2[20] = handleToggleTheme;
+    $2[21] = t13;
+  } else {
+    t13 = $2[21];
+  }
+  let t14;
+  if ($2[22] === Symbol.for("react.memo_cache_sentinel")) {
+    t14 = {
+      width: "clamp(16rem, 22.5vw, 40rem)"
+    };
     $2[22] = t14;
   } else {
     t14 = $2[22];
   }
-  const navigation = t14;
   let t15;
-  if ($2[23] !== currentTheme || $2[24] !== handleOpenSettings || $2[25] !== handleToggleTheme) {
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
-    $2[23] = currentTheme;
-    $2[24] = handleOpenSettings;
-    $2[25] = handleToggleTheme;
-    $2[26] = t15;
-  } else {
-    t15 = $2[26];
-  }
-  let t16;
-  if ($2[27] === Symbol.for("react.memo_cache_sentinel")) {
-    t16 = {
-      width: "clamp(16rem, 22.5vw, 40rem)"
-    };
-    $2[27] = t16;
-  } else {
-    t16 = $2[27];
-  }
-  let t17;
-  if ($2[28] !== location.pathname) {
-    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t16, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
+  if ($2[23] !== location.pathname) {
+    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t14, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
       const IconComponent = item.icon;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(Link$1, { to: item.href, className: `flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"}`, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-blue-600 dark:stroke-blue-400 scale-[115%]" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-stretched", children: item.name })
       ] }, item.name);
     }) }) });
-    $2[28] = location.pathname;
+    $2[23] = location.pathname;
+    $2[24] = t15;
+  } else {
+    t15 = $2[24];
+  }
+  let t16;
+  if ($2[25] !== children) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[1040px]", children }) }) });
+    $2[25] = children;
+    $2[26] = t16;
+  } else {
+    t16 = $2[26];
+  }
+  let t17;
+  if ($2[27] !== t15 || $2[28] !== t16) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
+      t15,
+      t16
+    ] });
+    $2[27] = t15;
+    $2[28] = t16;
     $2[29] = t17;
   } else {
     t17 = $2[29];
   }
   let t18;
-  if ($2[30] !== children) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[1040px]", children }) }) });
-    $2[30] = children;
-    $2[31] = t18;
-  } else {
-    t18 = $2[31];
-  }
-  let t19;
-  if ($2[32] !== t17 || $2[33] !== t18) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
-      t17,
-      t18
-    ] });
-    $2[32] = t17;
-    $2[33] = t18;
-    $2[34] = t19;
-  } else {
-    t19 = $2[34];
-  }
-  let t20;
-  if ($2[35] === Symbol.for("react.memo_cache_sentinel")) {
-    t20 = () => {
+  if ($2[30] === Symbol.for("react.memo_cache_sentinel")) {
+    t18 = () => {
       setShowTestDialog(false);
       setPreselectAll(false);
     };
-    $2[35] = t20;
+    $2[30] = t18;
   } else {
-    t20 = $2[35];
+    t18 = $2[30];
+  }
+  let t19;
+  if ($2[31] !== preselectAll || $2[32] !== showTestDialog) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t18, preselectAll });
+    $2[31] = preselectAll;
+    $2[32] = showTestDialog;
+    $2[33] = t19;
+  } else {
+    t19 = $2[33];
+  }
+  let t20;
+  if ($2[34] === Symbol.for("react.memo_cache_sentinel")) {
+    t20 = () => setShowSearch(false);
+    $2[34] = t20;
+  } else {
+    t20 = $2[34];
   }
   let t21;
-  if ($2[36] !== preselectAll || $2[37] !== showTestDialog) {
-    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t20, preselectAll });
-    $2[36] = preselectAll;
-    $2[37] = showTestDialog;
-    $2[38] = t21;
+  if ($2[35] !== showSearch) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t20 });
+    $2[35] = showSearch;
+    $2[36] = t21;
   } else {
-    t21 = $2[38];
+    t21 = $2[36];
   }
   let t22;
-  if ($2[39] === Symbol.for("react.memo_cache_sentinel")) {
-    t22 = () => setShowSearch(false);
-    $2[39] = t22;
-  } else {
-    t22 = $2[39];
-  }
-  let t23;
-  if ($2[40] !== showSearch) {
-    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t22 });
-    $2[40] = showSearch;
-    $2[41] = t23;
-  } else {
-    t23 = $2[41];
-  }
-  let t24;
-  if ($2[42] !== t15 || $2[43] !== t19 || $2[44] !== t21 || $2[45] !== t23) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
-      t15,
+  if ($2[37] !== t13 || $2[38] !== t17 || $2[39] !== t19 || $2[40] !== t21) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
+      t13,
+      t17,
       t19,
-      t21,
-      t23
+      t21
     ] });
-    $2[42] = t15;
-    $2[43] = t19;
-    $2[44] = t21;
-    $2[45] = t23;
-    $2[46] = t24;
+    $2[37] = t13;
+    $2[38] = t17;
+    $2[39] = t19;
+    $2[40] = t21;
+    $2[41] = t22;
   } else {
-    t24 = $2[46];
+    t22 = $2[41];
   }
-  return t24;
+  return t22;
 };
+function _temp$5(s2) {
+  return s2.key === "theme";
+}
 const CONFIG = {
   style: {
     title: {
@@ -80065,7 +80040,7 @@ const DashboardSkeleton = () => {
   }
   let t2;
   if ($2[2] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8", children: [...Array(4)].map(_temp$5) });
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8", children: [...Array(4)].map(_temp$4) });
     $2[2] = t2;
   } else {
     t2 = $2[2];
@@ -80088,7 +80063,7 @@ const DashboardSkeleton = () => {
       t2,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 mb-8", children: [
         t3,
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [...Array(2)].map(_temp2$3) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [...Array(2)].map(_temp2$2) })
       ] })
     ] });
     $2[4] = t4;
@@ -80367,13 +80342,13 @@ const Dashboard = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: () => setShowTestDialog(false) })
   ] });
 };
-function _temp$5(_2, i2) {
+function _temp$4(_2, i2) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-24 mb-2" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-16" })
   ] }, i2);
 }
-function _temp2$3(__0, i_0) {
+function _temp2$2(__0, i_0) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-40 mb-4" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-[250px] w-full" })
@@ -81131,7 +81106,7 @@ const FormsSkeleton = () => {
   const $2 = dist.c(1);
   let t02;
   if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp$4) }) }) });
+    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp$3) }) }) });
     $2[0] = t02;
   } else {
     t02 = $2[0];
@@ -81279,7 +81254,7 @@ const Forms = () => {
     t9 = $2[20];
   }
   const confirmDelete = t9;
-  const formatDate = _temp2$2;
+  const formatDate = _temp2$1;
   let t10;
   if ($2[21] === Symbol.for("react.memo_cache_sentinel")) {
     t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Formulare" });
@@ -81405,7 +81380,7 @@ const Forms = () => {
   }
   return t19;
 };
-function _temp$4(_2, i2) {
+function _temp$3(_2, i2) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-1/4" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-1/3" }),
@@ -81417,7 +81392,7 @@ function _temp$4(_2, i2) {
     ] })
   ] }, i2);
 }
-function _temp2$2(dateString) {
+function _temp2$1(dateString) {
   return new Date(dateString).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -83367,7 +83342,7 @@ const PaymentMethodsSkeleton = () => {
   const $2 = dist.c(1);
   let t02;
   if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp$3) }) }) });
+    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp$2) }) }) });
     $2[0] = t02;
   } else {
     t02 = $2[0];
@@ -83515,7 +83490,7 @@ const PaymentMethods = () => {
     t9 = $2[20];
   }
   const confirmDelete = t9;
-  const formatDate = _temp2$1;
+  const formatDate = _temp2;
   const getPaymentTypeLabel = _temp3;
   const getPaymentMethodIcon = _temp4;
   const maskSensitiveData = _temp5;
@@ -83640,7 +83615,7 @@ const PaymentMethods = () => {
   }
   return t19;
 };
-function _temp$3(_2, i2) {
+function _temp$2(_2, i2) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-1/4" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-20" }),
@@ -83653,7 +83628,7 @@ function _temp$3(_2, i2) {
     ] })
   ] }, i2);
 }
-function _temp2$1(dateString) {
+function _temp2(dateString) {
   return new Date(dateString).toLocaleDateString("de-AT", {
     year: "numeric",
     month: "short",
@@ -84308,7 +84283,7 @@ const SettingsSkeleton = () => {
       t2,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         t3,
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: [...Array(4)].map(_temp$2) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: [...Array(4)].map(_temp$1) })
       ] })
     ] });
     $2[4] = t4;
@@ -84373,7 +84348,6 @@ const Settings = () => {
           break;
         case "theme":
           setTheme(setting.value);
-          applyTheme(setting.value);
           break;
       }
     });
@@ -84511,33 +84485,33 @@ const Settings = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-gray-900 dark:text-white  text-lg font-semibold  mb-4 flex items-center gap-2", children: "Daten löschen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: () => setDeleteConfirmation({
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap gap-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "md", onClick: () => setDeleteConfirmation({
               type: "forms",
               title: "Alle Formulare löschen",
               message: "Sind Sie sicher, dass Sie ALLE Formulare löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne."
             }), className: "justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20", children: "Alle Formulare löschen" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: () => setDeleteConfirmation({
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "md", onClick: () => setDeleteConfirmation({
               type: "paymentMethods",
               title: "Alle Bezahlmethoden löschen",
               message: "Sind Sie sicher, dass Sie ALLE Bezahlmethoden löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne."
             }), className: "justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20", children: "Alle Bezahlmethoden löschen" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: () => setDeleteConfirmation({
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "md", onClick: () => setDeleteConfirmation({
               type: "testRuns",
               title: "Alle Test-Resultate löschen",
               message: "Sind Sie sicher, dass Sie ALLE Test-Resultate löschen möchten?"
             }), className: "justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20", children: "Alle Test-Resultate löschen" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: () => setDeleteConfirmation({
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "md", onClick: () => setDeleteConfirmation({
               type: "schedules",
               title: "Alle Zeitpläne löschen",
               message: "Sind Sie sicher, dass Sie ALLE Zeitpläne löschen möchten?"
             }), className: "justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20", children: "Alle Zeitpläne löschen" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 pt-4 border-t border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "danger", size: "md", onClick: () => setDeleteConfirmation({
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "danger", size: "md", onClick: () => setDeleteConfirmation({
             type: "all",
             title: "ALLES löschen (Factory Reset)",
             message: "ACHTUNG: Sind Sie sicher, dass Sie ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) löschen möchten? Die Anwendung wird auf den Ursprungszustand zurückgesetzt (außer Einstellungen)."
-          }), className: "w-full bg-red-600 hover:bg-red-700 text-white border-none justify-center", children: [
+          }), className: " hover:bg-red-700 text-white border-none justify-center", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(TriangleAlert, { size: 18, className: "mr-2" }),
             "Alle Daten löschen"
           ] }) })
@@ -84779,7 +84753,7 @@ const Settings = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deleteConfirmation, onClose: () => setDeleteConfirmation(null), onConfirm: handleDelete, title: deleteConfirmation?.title || "", message: deleteConfirmation?.message || "", isLoading: isDeleting })
   ] });
 };
-function _temp$2(_2, i2) {
+function _temp$1(_2, i2) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-48 mb-2" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 w-full" }),
@@ -84790,7 +84764,7 @@ const TestResultsSkeleton = () => {
   const $2 = dist.c(1);
   let t02;
   if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp$1) }) }) });
+    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp) }) }) });
     $2[0] = t02;
   } else {
     t02 = $2[0];
@@ -85046,7 +85020,7 @@ const TestResults = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!showDeleteConfirm, onClose: () => setShowDeleteConfirm(null), onConfirm: confirmDeleteTestRun, title: "Test Run löschen", message: "Sind Sie sicher, dass Sie diesen Test Run löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.", itemName: showDeleteConfirm?.name, isLoading })
   ] });
 };
-function _temp$1(_2, i2) {
+function _temp(_2, i2) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-16" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-1/3" }),
@@ -85057,7 +85031,7 @@ function _temp$1(_2, i2) {
   ] }, i2);
 }
 const InfoDoku = () => {
-  const $2 = dist.c(48);
+  const $2 = dist.c(50);
   let t02;
   if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
     t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Info & Doku" });
@@ -85074,35 +85048,31 @@ const InfoDoku = () => {
   }
   let t2;
   if ($2[2] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "", children: [
-      t12,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Angaben gemäß § 5 TMG:" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Luca Mack" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Lorystrasse 71" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1110 Wien" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Österreich" })
-      ] })
-    ] });
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("br", {});
     $2[2] = t2;
   } else {
     t2 = $2[2];
   }
   let t3;
   if ($2[3] === Symbol.for("react.memo_cache_sentinel")) {
-    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Lizenz & Rechtliches" });
+    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("br", {});
     $2[3] = t3;
   } else {
     t3 = $2[3];
   }
   let t4;
   if ($2[4] === Symbol.for("react.memo_cache_sentinel")) {
-    t4 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2", children: "MIT License" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Copyright (c) 2025 Luca Mack" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed", children: 'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:' }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2", children: "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2 font-semibold", children: 'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.' })
+    t4 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "", children: [
+      t12,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+        "Luca Mack",
+        t2,
+        "Lorystrasse 71",
+        t3,
+        "1110 Wien",
+        /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+        "Österreich"
+      ] }) })
     ] });
     $2[4] = t4;
   } else {
@@ -85110,12 +85080,32 @@ const InfoDoku = () => {
   }
   let t5;
   if ($2[5] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "select-auto my-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700", children: [
-      t2,
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Lizenz & Rechtliches" });
+    $2[5] = t5;
+  } else {
+    t5 = $2[5];
+  }
+  let t6;
+  if ($2[6] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2", children: "MIT License" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Copyright (c) 2025 Luca Mack" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed", children: 'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:' }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2", children: "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2 font-semibold", children: 'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.' })
+    ] });
+    $2[6] = t6;
+  } else {
+    t6 = $2[6];
+  }
+  let t7;
+  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "select-auto my-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700", children: [
+      t4,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "my-6", children: [
-        t3,
+        t5,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-4", children: [
-          t4,
+          t6,
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-4 border-y border-gray-200 dark:border-gray-700", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2", children: "Haftungsausschluss" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed", children: "Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko." })
@@ -85123,37 +85113,26 @@ const InfoDoku = () => {
         ] })
       ] })
     ] });
-    $2[5] = t5;
-  } else {
-    t5 = $2[5];
-  }
-  let t6;
-  if ($2[6] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Benutzer-Dokumentation" });
-    $2[6] = t6;
-  } else {
-    t6 = $2[6];
-  }
-  let t7;
-  let t8;
-  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Erste Schritte" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "FormTest.Server ist eine Anwendung zum automatisierten Testen von Spendenformularen mit verschiedenen Zahlungsmethoden. Die Anwendung verwendet Playwright für die Browser-Automatisierung und speichert alle Daten lokal in einer SQLite-Datenbank." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Um mit dem Testen zu beginnen, müssen Sie zunächst Formulare und Zahlungsmethoden konfigurieren." })
-    ] });
-    t8 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Formulare verwalten" });
     $2[7] = t7;
-    $2[8] = t8;
   } else {
     t7 = $2[7];
+  }
+  let t8;
+  if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Benutzer-Dokumentation" });
+    $2[8] = t8;
+  } else {
     t8 = $2[8];
   }
   let t10;
   let t9;
   if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
-    t9 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Navigieren Sie zur Seite "Formulare"' });
-    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf "Neues Formular"' });
+    t9 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Erste Schritte" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "FormTest.Server ist eine Anwendung zum automatisierten Testen von Spendenformularen mit verschiedenen Zahlungsmethoden. Die Anwendung verwendet Playwright für die Browser-Automatisierung und speichert alle Daten lokal in einer SQLite-Datenbank." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Um mit dem Testen zu beginnen, müssen Sie zunächst Formulare und Zahlungsmethoden konfigurieren." })
+    ] });
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Formulare verwalten" });
     $2[9] = t10;
     $2[10] = t9;
   } else {
@@ -85161,10 +85140,21 @@ const InfoDoku = () => {
     t9 = $2[10];
   }
   let t11;
+  let t122;
   if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "list-decimal list-inside space-y-2 ml-2", children: [
-      t9,
-      t10,
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Navigieren Sie zur Seite "Formulare"' });
+    t122 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf "Neues Formular"' });
+    $2[11] = t11;
+    $2[12] = t122;
+  } else {
+    t11 = $2[11];
+    t122 = $2[12];
+  }
+  let t13;
+  if ($2[13] === Symbol.for("react.memo_cache_sentinel")) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "list-decimal list-inside space-y-2 ml-2", children: [
+      t11,
+      t122,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Geben Sie folgende Informationen ein:",
         /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-6 mt-1 space-y-1", children: [
@@ -85188,33 +85178,22 @@ const InfoDoku = () => {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Speichern Sie das Formular" })
     ] });
-    $2[11] = t11;
-  } else {
-    t11 = $2[11];
-  }
-  let t122;
-  let t13;
-  if ($2[12] === Symbol.for("react.memo_cache_sentinel")) {
-    t122 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t8,
-      t11,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-sm", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Hinweis:" }),
-        " Nur aktive Formulare werden bei Testläufen berücksichtigt."
-      ] })
-    ] });
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Zahlungsmethoden verwalten" });
-    $2[12] = t122;
     $2[13] = t13;
   } else {
-    t122 = $2[12];
     t13 = $2[13];
   }
   let t14;
   let t15;
   if ($2[14] === Symbol.for("react.memo_cache_sentinel")) {
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Navigieren Sie zur Seite "Bezahlmethoden"' });
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf "Neue Bezahlmethode"' });
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      t10,
+      t13,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Hinweis:" }),
+        " Nur aktive Formulare werden bei Testläufen berücksichtigt."
+      ] })
+    ] });
+    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Zahlungsmethoden verwalten" });
     $2[14] = t14;
     $2[15] = t15;
   } else {
@@ -85222,10 +85201,21 @@ const InfoDoku = () => {
     t15 = $2[15];
   }
   let t16;
+  let t17;
   if ($2[16] === Symbol.for("react.memo_cache_sentinel")) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "list-decimal list-inside space-y-2 ml-2", children: [
-      t14,
-      t15,
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Navigieren Sie zur Seite "Bezahlmethoden"' });
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf "Neue Bezahlmethode"' });
+    $2[16] = t16;
+    $2[17] = t17;
+  } else {
+    t16 = $2[16];
+    t17 = $2[17];
+  }
+  let t18;
+  if ($2[18] === Symbol.for("react.memo_cache_sentinel")) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "list-decimal list-inside space-y-2 ml-2", children: [
+      t16,
+      t17,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Wählen Sie den Zahlungstyp:",
         /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-6 mt-1 space-y-1", children: [
@@ -85251,39 +85241,22 @@ const InfoDoku = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Aktivieren Sie die Zahlungsmethode" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Speichern Sie die Zahlungsmethode" })
     ] });
-    $2[16] = t16;
-  } else {
-    t16 = $2[16];
-  }
-  let t17;
-  let t18;
-  if ($2[17] === Symbol.for("react.memo_cache_sentinel")) {
-    t17 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t13,
-      t16,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-sm", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sicherheit:" }),
-        " Alle Zahlungsdaten werden verschlüsselt gespeichert (AES-256-GCM). Der Verschlüsselungsschlüssel wird sicher im macOS Keychain gespeichert."
-      ] })
-    ] });
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Tests durchführen" });
-    $2[17] = t17;
     $2[18] = t18;
   } else {
-    t17 = $2[17];
     t18 = $2[18];
   }
   let t19;
   let t20;
   if ($2[19] === Symbol.for("react.memo_cache_sentinel")) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "list-decimal list-inside space-y-2 ml-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Stellen Sie sicher, dass mindestens ein Formular und eine Zahlungsmethode aktiv sind" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf dem Dashboard auf "Tests starten"' }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Wählen Sie die zu testenden Formulare aus" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Wählen Sie die zu testenden Zahlungsmethoden aus" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf "Tests starten"' })
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      t15,
+      t18,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sicherheit:" }),
+        " Alle Zahlungsdaten werden verschlüsselt gespeichert (AES-256-GCM). Der Verschlüsselungsschlüssel wird sicher im macOS Keychain gespeichert."
+      ] })
     ] });
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2", children: 'Die Tests werden im Hintergrund ausgeführt. Sie können den Fortschritt auf der Seite "Test Resultate" verfolgen.' });
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Tests durchführen" });
     $2[19] = t19;
     $2[20] = t20;
   } else {
@@ -85292,31 +85265,48 @@ const InfoDoku = () => {
   }
   let t21;
   let t22;
-  let t23;
   if ($2[21] === Symbol.for("react.memo_cache_sentinel")) {
-    t21 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t18,
-      t19,
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { className: "list-decimal list-inside space-y-2 ml-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Stellen Sie sicher, dass mindestens ein Formular und eine Zahlungsmethode aktiv sind" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf dem Dashboard auf "Tests starten"' }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Wählen Sie die zu testenden Formulare aus" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Wählen Sie die zu testenden Zahlungsmethoden aus" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Klicken Sie auf "Tests starten"' })
+    ] });
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2", children: 'Die Tests werden im Hintergrund ausgeführt. Sie können den Fortschritt auf der Seite "Test Resultate" verfolgen.' });
+    $2[21] = t21;
+    $2[22] = t22;
+  } else {
+    t21 = $2[21];
+    t22 = $2[22];
+  }
+  let t23;
+  let t24;
+  let t25;
+  if ($2[23] === Symbol.for("react.memo_cache_sentinel")) {
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t20,
+      t21,
+      t22,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-sm", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Hinweis:" }),
         " Während der Testausführung wird ein Browser-Fenster geöffnet, das die automatisierten Aktionen durchführt. Bitte nicht schließen oder unterbrechen."
       ] })
     ] });
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Testergebnisse verstehen" });
-    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Jeder Testlauf wird mit einem der folgenden Status gespeichert:" });
-    $2[21] = t21;
-    $2[22] = t22;
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Testergebnisse verstehen" });
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Jeder Testlauf wird mit einem der folgenden Status gespeichert:" });
     $2[23] = t23;
+    $2[24] = t24;
+    $2[25] = t25;
   } else {
-    t21 = $2[21];
-    t22 = $2[22];
     t23 = $2[23];
+    t24 = $2[24];
+    t25 = $2[25];
   }
-  let t24;
-  let t25;
-  if ($2[24] === Symbol.for("react.memo_cache_sentinel")) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 space-y-1", children: [
+  let t26;
+  let t27;
+  if ($2[26] === Symbol.for("react.memo_cache_sentinel")) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 space-y-1", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "text-green-600 dark:text-green-400", children: "SUCCESS:" }),
         " Test erfolgreich abgeschlossen"
@@ -85330,22 +85320,22 @@ const InfoDoku = () => {
         " Test läuft noch"
       ] })
     ] });
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2", children: "Für jeden Testlauf werden folgende Informationen gespeichert:" });
-    $2[24] = t24;
-    $2[25] = t25;
+    t27 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2", children: "Für jeden Testlauf werden folgende Informationen gespeichert:" });
+    $2[26] = t26;
+    $2[27] = t27;
   } else {
-    t24 = $2[24];
-    t25 = $2[25];
+    t26 = $2[26];
+    t27 = $2[27];
   }
-  let t26;
-  let t27;
   let t28;
-  if ($2[26] === Symbol.for("react.memo_cache_sentinel")) {
-    t26 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t22,
-      t23,
+  let t29;
+  let t30;
+  if ($2[28] === Symbol.for("react.memo_cache_sentinel")) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t24,
       t25,
+      t26,
+      t27,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 space-y-1", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Formular und Zahlungsmethode" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Zeitstempel" }),
@@ -85355,23 +85345,23 @@ const InfoDoku = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Fehlermeldungen (bei Fehlern)" })
       ] })
     ] });
-    t27 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Dashboard-Statistiken" });
-    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Das Dashboard bietet eine umfassende Übersicht über Ihre Testaktivitäten:" });
-    $2[26] = t26;
-    $2[27] = t27;
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Dashboard-Statistiken" });
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Das Dashboard bietet eine umfassende Übersicht über Ihre Testaktivitäten:" });
     $2[28] = t28;
+    $2[29] = t29;
+    $2[30] = t30;
   } else {
-    t26 = $2[26];
-    t27 = $2[27];
     t28 = $2[28];
+    t29 = $2[29];
+    t30 = $2[30];
   }
-  let t29;
-  let t30;
   let t31;
-  if ($2[29] === Symbol.for("react.memo_cache_sentinel")) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t27,
-      t28,
+  let t32;
+  let t33;
+  if ($2[31] === Symbol.for("react.memo_cache_sentinel")) {
+    t31 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      t29,
+      t30,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 space-y-1", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Test-Verlauf:" }),
@@ -85392,22 +85382,22 @@ const InfoDoku = () => {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-2 text-sm", children: "Diese Statistiken helfen Ihnen, Probleme mit bestimmten Formularen oder Zahlungsmethoden zu identifizieren." })
     ] });
-    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Einstellungen" });
-    t31 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Auf der Einstellungsseite können Sie globale Konfigurationen vornehmen:" });
-    $2[29] = t29;
-    $2[30] = t30;
+    t32 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Einstellungen" });
+    t33 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Auf der Einstellungsseite können Sie globale Konfigurationen vornehmen:" });
     $2[31] = t31;
+    $2[32] = t32;
+    $2[33] = t33;
   } else {
-    t29 = $2[29];
-    t30 = $2[30];
     t31 = $2[31];
+    t32 = $2[32];
+    t33 = $2[33];
   }
-  let t32;
-  let t33;
-  if ($2[32] === Symbol.for("react.memo_cache_sentinel")) {
-    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t30,
-      t31,
+  let t34;
+  let t35;
+  if ($2[34] === Symbol.for("react.memo_cache_sentinel")) {
+    t34 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      t32,
+      t33,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 space-y-1", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Headless Mode:" }),
@@ -85423,37 +85413,18 @@ const InfoDoku = () => {
         ] })
       ] })
     ] });
-    t33 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Fehlerbehebung" });
-    $2[32] = t32;
-    $2[33] = t33;
-  } else {
-    t32 = $2[32];
-    t33 = $2[33];
-  }
-  let t34;
-  if ($2[34] === Symbol.for("react.memo_cache_sentinel")) {
-    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold", children: "Tests schlagen fehl:" });
+    t35 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Fehlerbehebung" });
     $2[34] = t34;
+    $2[35] = t35;
   } else {
     t34 = $2[34];
+    t35 = $2[35];
   }
-  let t35;
   let t36;
-  if ($2[35] === Symbol.for("react.memo_cache_sentinel")) {
-    t35 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t34,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 text-sm", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Überprüfen Sie die Formular-URL" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Stellen Sie sicher, dass die Zahlungsdaten korrekt sind" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Erhöhen Sie den Timeout in den Einstellungen" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Prüfen Sie die Logs in den Testergebnissen" })
-      ] })
-    ] });
-    t36 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold", children: "Browser startet nicht:" });
-    $2[35] = t35;
+  if ($2[36] === Symbol.for("react.memo_cache_sentinel")) {
+    t36 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold", children: "Tests schlagen fehl:" });
     $2[36] = t36;
   } else {
-    t35 = $2[35];
     t36 = $2[36];
   }
   let t37;
@@ -85462,11 +85433,13 @@ const InfoDoku = () => {
     t37 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t36,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 text-sm", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Stellen Sie sicher, dass Playwright installiert ist" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Starten Sie die Anwendung neu" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Überprüfen Sie die Formular-URL" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Stellen Sie sicher, dass die Zahlungsdaten korrekt sind" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Erhöhen Sie den Timeout in den Einstellungen" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Prüfen Sie die Logs in den Testergebnissen" })
       ] })
     ] });
-    t38 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold", children: "Zahlungsdaten können nicht gespeichert werden:" });
+    t38 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold", children: "Browser startet nicht:" });
     $2[37] = t37;
     $2[38] = t38;
   } else {
@@ -85475,15 +85448,32 @@ const InfoDoku = () => {
   }
   let t39;
   let t40;
-  let t41;
   if ($2[39] === Symbol.for("react.memo_cache_sentinel")) {
     t39 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t33,
+      t38,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 text-sm", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Stellen Sie sicher, dass Playwright installiert ist" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Starten Sie die Anwendung neu" })
+      ] })
+    ] });
+    t40 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-semibold", children: "Zahlungsdaten können nicht gespeichert werden:" });
+    $2[39] = t39;
+    $2[40] = t40;
+  } else {
+    t39 = $2[39];
+    t40 = $2[40];
+  }
+  let t41;
+  let t42;
+  let t43;
+  if ($2[41] === Symbol.for("react.memo_cache_sentinel")) {
+    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      t35,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
-        t35,
         t37,
+        t39,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          t38,
+          t40,
           /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 text-sm", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Überprüfen Sie die Keychain-Berechtigungen" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Starten Sie die Anwendung neu" })
@@ -85491,19 +85481,19 @@ const InfoDoku = () => {
         ] })
       ] })
     ] });
-    t40 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Datenspeicherung" });
-    t41 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Alle Daten werden lokal auf Ihrem Computer gespeichert:" });
-    $2[39] = t39;
-    $2[40] = t40;
+    t42 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2 text-gray-900 dark:text-white", children: "Datenspeicherung" });
+    t43 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Alle Daten werden lokal auf Ihrem Computer gespeichert:" });
     $2[41] = t41;
+    $2[42] = t42;
+    $2[43] = t43;
   } else {
-    t39 = $2[39];
-    t40 = $2[40];
     t41 = $2[41];
+    t42 = $2[42];
+    t43 = $2[43];
   }
-  let t42;
-  if ($2[42] === Symbol.for("react.memo_cache_sentinel")) {
-    t42 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 space-y-1", children: [
+  let t44;
+  if ($2[44] === Symbol.for("react.memo_cache_sentinel")) {
+    t44 = /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-2 space-y-1", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Datenbank:" }),
         " ~/Library/Application Support/formtest-server/formtest.db"
@@ -85521,27 +85511,27 @@ const InfoDoku = () => {
         " macOS Keychain (Service: FormTestServer)"
       ] })
     ] });
-    $2[42] = t42;
+    $2[44] = t44;
   } else {
-    t42 = $2[42];
+    t44 = $2[44];
   }
-  let t43;
-  if ($2[43] === Symbol.for("react.memo_cache_sentinel")) {
-    t43 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-auto border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6", children: [
-      t6,
+  let t45;
+  if ($2[45] === Symbol.for("react.memo_cache_sentinel")) {
+    t45 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-auto border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6", children: [
+      t8,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 text-gray-700 dark:text-gray-300", children: [
-        t7,
-        t122,
-        t17,
-        t21,
-        t26,
-        t29,
-        t32,
-        t39,
+        t9,
+        t14,
+        t19,
+        t23,
+        t28,
+        t31,
+        t34,
+        t41,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          t40,
-          t41,
           t42,
+          t43,
+          t44,
           /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "mt-2 text-sm", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Datenschutz:" }),
             " Keine Daten werden an externe Server gesendet. Alle Informationen bleiben auf Ihrem lokalen System."
@@ -85549,42 +85539,42 @@ const InfoDoku = () => {
         ] })
       ] })
     ] });
-    $2[43] = t43;
-  } else {
-    t43 = $2[43];
-  }
-  let t44;
-  if ($2[44] === Symbol.for("react.memo_cache_sentinel")) {
-    t44 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Version & Technologie" });
-    $2[44] = t44;
-  } else {
-    t44 = $2[44];
-  }
-  let t45;
-  let t46;
-  if ($2[45] === Symbol.for("react.memo_cache_sentinel")) {
-    t45 = /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
-      " 1.0.2"
-    ] });
-    t46 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Technologie-Stack:" }) });
     $2[45] = t45;
-    $2[46] = t46;
   } else {
     t45 = $2[45];
+  }
+  let t46;
+  if ($2[46] === Symbol.for("react.memo_cache_sentinel")) {
+    t46 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Version & Technologie" });
+    $2[46] = t46;
+  } else {
     t46 = $2[46];
   }
   let t47;
+  let t48;
   if ($2[47] === Symbol.for("react.memo_cache_sentinel")) {
-    t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-4xl", children: [
+    t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
+      " 1.0.2"
+    ] });
+    t48 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Technologie-Stack:" }) });
+    $2[47] = t47;
+    $2[48] = t48;
+  } else {
+    t47 = $2[47];
+    t48 = $2[48];
+  }
+  let t49;
+  if ($2[49] === Symbol.for("react.memo_cache_sentinel")) {
+    t49 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-4xl", children: [
       t02,
-      t5,
-      t43,
+      t7,
+      t45,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
-        t44,
+        t46,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: [
-          t45,
-          t46,
+          t47,
+          t48,
           /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-4 text-sm space-y-1", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Electron - Desktop-Anwendungsframework" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "React - UI-Framework" }),
@@ -85598,11 +85588,11 @@ const InfoDoku = () => {
         ] })
       ] })
     ] });
-    $2[47] = t47;
+    $2[49] = t49;
   } else {
-    t47 = $2[47];
+    t49 = $2[49];
   }
-  return t47;
+  return t49;
 };
 const useSchedulesStore = create((set2, get2) => ({
   schedules: [],
@@ -85671,6 +85661,17 @@ const useSchedulesStore = create((set2, get2) => ({
         error: "Failed to delete schedule",
         isLoading: false
       });
+      throw error;
+    }
+  },
+  runScheduleNow: async (id2) => {
+    try {
+      await window.api.testSchedules.runNow(id2);
+      setTimeout(() => {
+        get2().loadSchedules();
+      }, 500);
+    } catch (error) {
+      console.error("Failed to run schedule now:", error);
       throw error;
     }
   }
@@ -85848,13 +85849,13 @@ const ScheduleDialog = ({
   ] }) });
 };
 const Schedules = () => {
-  const $2 = dist.c(44);
   const {
     schedules,
     loadSchedules,
     createSchedule,
     updateSchedule,
     deleteSchedule,
+    runScheduleNow,
     isLoading,
     error
   } = useSchedulesStore();
@@ -85869,101 +85870,57 @@ const Schedules = () => {
   const [isCreateOpen, setIsCreateOpen] = reactExports.useState(false);
   const [editingSchedule, setEditingSchedule] = reactExports.useState(void 0);
   const [deletingSchedule, setDeletingSchedule] = reactExports.useState(null);
-  let t02;
-  let t12;
-  if ($2[0] !== loadForms || $2[1] !== loadPaymentMethods || $2[2] !== loadSchedules) {
-    t02 = () => {
-      loadSchedules();
-      loadForms();
-      loadPaymentMethods();
-    };
-    t12 = [loadSchedules, loadForms, loadPaymentMethods];
-    $2[0] = loadForms;
-    $2[1] = loadPaymentMethods;
-    $2[2] = loadSchedules;
-    $2[3] = t02;
-    $2[4] = t12;
-  } else {
-    t02 = $2[3];
-    t12 = $2[4];
-  }
-  reactExports.useEffect(t02, t12);
-  let t2;
-  if ($2[5] !== forms) {
-    t2 = (id2) => forms.find((f2) => f2.id === id2)?.name || `Form #${id2}`;
-    $2[5] = forms;
-    $2[6] = t2;
-  } else {
-    t2 = $2[6];
-  }
-  const getFormName = t2;
-  let t3;
-  if ($2[7] !== paymentMethods) {
-    t3 = (id_0) => paymentMethods.find((pm) => pm.id === id_0)?.name || `PM #${id_0}`;
-    $2[7] = paymentMethods;
-    $2[8] = t3;
-  } else {
-    t3 = $2[8];
-  }
-  const getPaymentMethodName = t3;
-  let t4;
-  if ($2[9] !== createSchedule || $2[10] !== editingSchedule || $2[11] !== updateSchedule) {
-    t4 = async (data) => {
-      if (editingSchedule) {
-        await updateSchedule(editingSchedule.id, data);
-      } else {
-        await createSchedule(data);
-      }
-      setEditingSchedule(void 0);
-      setIsCreateOpen(false);
-    };
-    $2[9] = createSchedule;
-    $2[10] = editingSchedule;
-    $2[11] = updateSchedule;
-    $2[12] = t4;
-  } else {
-    t4 = $2[12];
-  }
-  const handleSave = t4;
-  const formatDate = _temp;
-  let t5;
-  if ($2[13] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Zeitpläne" });
-    $2[13] = t5;
-  } else {
-    t5 = $2[13];
-  }
-  let t6;
-  if ($2[14] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = () => setIsCreateOpen(true);
-    $2[14] = t6;
-  } else {
-    t6 = $2[14];
-  }
-  let t7;
-  if ($2[15] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
-      t5,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: t6, className: "gap-2", children: [
+  const [runningSchedules, setRunningSchedules] = reactExports.useState(/* @__PURE__ */ new Set());
+  reactExports.useEffect(() => {
+    loadSchedules();
+    loadForms();
+    loadPaymentMethods();
+  }, [loadSchedules, loadForms, loadPaymentMethods]);
+  const getFormName = (id2) => forms.find((f2) => f2.id === id2)?.name || `Form #${id2}`;
+  const getPaymentMethodName = (id_0) => paymentMethods.find((pm) => pm.id === id_0)?.name || `PM #${id_0}`;
+  const handleSave = async (data) => {
+    if (editingSchedule) {
+      await updateSchedule(editingSchedule.id, data);
+    } else {
+      await createSchedule(data);
+    }
+    setEditingSchedule(void 0);
+    setIsCreateOpen(false);
+  };
+  const handleRunNow = async (id_1) => {
+    setRunningSchedules((prev) => {
+      const next = new Set(prev);
+      next.add(id_1);
+      return next;
+    });
+    try {
+      await runScheduleNow(id_1);
+    } catch (error_0) {
+      console.error("Failed to run schedule:", error_0);
+    } finally {
+      setTimeout(() => {
+        setRunningSchedules((prev) => {
+          const next = new Set(prev);
+          next.delete(id_1);
+          return next;
+        });
+      }, 1e3);
+    }
+  };
+  const formatDate = (date2) => {
+    if (!date2) return "-";
+    return new Date(date2).toLocaleString();
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Zeitpläne" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => setIsCreateOpen(true), className: "gap-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 }),
         "Neuer Zeitplan"
       ] })
-    ] });
-    $2[15] = t7;
-  } else {
-    t7 = $2[15];
-  }
-  let t8;
-  if ($2[16] !== error) {
-    t8 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800", children: error });
-    $2[16] = error;
-    $2[17] = t8;
-  } else {
-    t8 = $2[17];
-  }
-  let t9;
-  if ($2[18] !== getFormName || $2[19] !== getPaymentMethodName || $2[20] !== isLoading || $2[21] !== schedules) {
-    t9 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: isLoading && schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 space-y-4", children: [...Array(3)].map(_temp2) }) : schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-12 text-center text-gray-500 dark:text-gray-400", children: "Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
+    ] }),
+    error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800", children: error }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: isLoading && schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 space-y-4", children: [...Array(3)].map((_2, i2) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i2)) }) : schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-12 text-center text-gray-500 dark:text-gray-400", children: "Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Name" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Test Konfiguration" }),
@@ -85983,121 +85940,38 @@ const Schedules = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono", children: formatDate(schedule.lastRun) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${schedule.isActive ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"}`, children: schedule.isActive ? "Aktiv" : "Inaktiv" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => handleRunNow(schedule.id), disabled: runningSchedules.has(schedule.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setEditingSchedule(schedule), title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setDeletingSchedule(schedule), title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
         ] }) })
       ] }, schedule.id)) })
-    ] }) });
-    $2[18] = getFormName;
-    $2[19] = getPaymentMethodName;
-    $2[20] = isLoading;
-    $2[21] = schedules;
-    $2[22] = t9;
-  } else {
-    t9 = $2[22];
-  }
-  const t10 = isCreateOpen || !!editingSchedule;
-  let t11;
-  if ($2[23] === Symbol.for("react.memo_cache_sentinel")) {
-    t11 = () => {
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleDialog, { isOpen: isCreateOpen || !!editingSchedule, onClose: () => {
       setIsCreateOpen(false);
       setEditingSchedule(void 0);
-    };
-    $2[23] = t11;
-  } else {
-    t11 = $2[23];
-  }
-  const t122 = editingSchedule ? "Zeitplan bearbeiten" : "Neuer Zeitplan";
-  let t13;
-  if ($2[24] !== editingSchedule || $2[25] !== handleSave || $2[26] !== t10 || $2[27] !== t122) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleDialog, { isOpen: t10, onClose: t11, onSave: handleSave, initialData: editingSchedule, title: t122 });
-    $2[24] = editingSchedule;
-    $2[25] = handleSave;
-    $2[26] = t10;
-    $2[27] = t122;
-    $2[28] = t13;
-  } else {
-    t13 = $2[28];
-  }
-  const t14 = !!deletingSchedule;
-  let t15;
-  if ($2[29] === Symbol.for("react.memo_cache_sentinel")) {
-    t15 = () => setDeletingSchedule(null);
-    $2[29] = t15;
-  } else {
-    t15 = $2[29];
-  }
-  let t16;
-  if ($2[30] !== deleteSchedule || $2[31] !== deletingSchedule) {
-    t16 = async () => {
+    }, onSave: handleSave, initialData: editingSchedule, title: editingSchedule ? "Zeitplan bearbeiten" : "Neuer Zeitplan" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deletingSchedule, onClose: () => setDeletingSchedule(null), onConfirm: async () => {
       if (deletingSchedule) {
         await deleteSchedule(deletingSchedule.id);
         setDeletingSchedule(null);
       }
-    };
-    $2[30] = deleteSchedule;
-    $2[31] = deletingSchedule;
-    $2[32] = t16;
-  } else {
-    t16 = $2[32];
-  }
-  const t17 = `Sind Sie sicher, dass Sie den Zeitplan "${deletingSchedule?.name}" löschen möchten?`;
-  const t18 = deletingSchedule?.name;
-  let t19;
-  if ($2[33] !== isLoading || $2[34] !== t14 || $2[35] !== t16 || $2[36] !== t17 || $2[37] !== t18) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t14, onClose: t15, onConfirm: t16, title: "Zeitplan löschen", message: t17, itemName: t18, isLoading });
-    $2[33] = isLoading;
-    $2[34] = t14;
-    $2[35] = t16;
-    $2[36] = t17;
-    $2[37] = t18;
-    $2[38] = t19;
-  } else {
-    t19 = $2[38];
-  }
-  let t20;
-  if ($2[39] !== t13 || $2[40] !== t19 || $2[41] !== t8 || $2[42] !== t9) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t7,
-      t8,
-      t9,
-      t13,
-      t19
-    ] });
-    $2[39] = t13;
-    $2[40] = t19;
-    $2[41] = t8;
-    $2[42] = t9;
-    $2[43] = t20;
-  } else {
-    t20 = $2[43];
-  }
-  return t20;
+    }, title: "Zeitplan löschen", message: `Sind Sie sicher, dass Sie den Zeitplan "${deletingSchedule?.name}" löschen möchten?`, itemName: deletingSchedule?.name, isLoading })
+  ] });
 };
-function _temp(date2) {
-  if (!date2) {
-    return "-";
-  }
-  return new Date(date2).toLocaleString();
-}
-function _temp2(_2, i2) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i2);
-}
 function App() {
+  const {
+    settings,
+    loadSettings
+  } = useSettingsStore();
   reactExports.useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        const settings = await window.api.settings.getAll();
-        const themeSetting = settings.find((s2) => s2.key === "theme");
-        if (themeSetting) {
-          applyTheme(themeSetting.value);
-        }
-      } catch (error) {
-        console.error("Failed to load theme:", error);
-      }
-    };
-    loadTheme();
-  }, []);
+    loadSettings();
+  }, [loadSettings]);
+  reactExports.useEffect(() => {
+    const themeSetting = settings.find((s2) => s2.key === "theme");
+    if (themeSetting) {
+      applyTheme(themeSetting.value);
+    }
+  }, [settings]);
   const applyTheme = (themeValue) => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");

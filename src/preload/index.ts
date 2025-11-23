@@ -52,6 +52,7 @@ const api = {
   testSchedules: {
     getAll: () => ipcRenderer.invoke('testSchedules:getAll'),
     getById: (id: number) => ipcRenderer.invoke('testSchedules:getById', id),
+    runNow: (id: number) => ipcRenderer.invoke('testSchedules:runNow', id),
     create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => ipcRenderer.invoke('testSchedules:create', schedule),
     update: (id: number, schedule: Partial<TestSchedule>) => ipcRenderer.invoke('testSchedules:update', id, schedule),
     delete: (id: number) => ipcRenderer.invoke('testSchedules:delete', id),

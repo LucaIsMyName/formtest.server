@@ -1264,6 +1264,25 @@ class SchedulerService {
     this.jobs.set(schedule.id, task);
   }
   /**
+   * Manually execute a job immediately
+   */
+  async runJobNow(id) {
+    const schedule = testScheduleQueries.getById(id);
+    if (!schedule) {
+      throw new Error(`Schedule with ID ${id} not found`);
+    }
+    console.log(`Scheduler: Manually executing job ${schedule.id} (${schedule.name})...`);
+    try {
+      await createAndRunTest(schedule.formId, schedule.paymentMethodId);
+      testScheduleQueries.update(schedule.id, { lastRun: /* @__PURE__ */ new Date() });
+      console.log(`Scheduler: Manual job ${schedule.id} execution initiated successfully`);
+      return { success: true };
+    } catch (error) {
+      console.error(`Scheduler: Manual job ${schedule.id} failed to start:`, error);
+      throw error;
+    }
+  }
+  /**
    * Stop a scheduled job
    */
   stopJob(id) {
@@ -1551,6 +1570,14 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("testSchedules:getAll", () => testScheduleQueries.getAll());
   electron.ipcMain.handle("testSchedules:getById", (_, id) => testScheduleQueries.getById(id));
+  electron.ipcMain.handle("testSchedules:runNow", async (_, id) => {
+    try {
+      return await scheduler.runJobNow(id);
+    } catch (error) {
+      console.error("IPC Error - testSchedules:runNow:", error);
+      throw error;
+    }
+  });
   electron.ipcMain.handle("testSchedules:create", (_, schedule) => {
     const result = testScheduleQueries.create(schedule);
     const id = result.lastInsertRowid;

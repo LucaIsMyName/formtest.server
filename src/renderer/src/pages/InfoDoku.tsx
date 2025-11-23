@@ -12,12 +12,14 @@ const InfoDoku: React.FC = () => {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
           <div className="text-gray-700 dark:text-gray-300 space-y-2">
             <p>
-              <strong>Angaben gemäß § 5 TMG:</strong>
+              Luca Mack
+              <br />
+              Lorystrasse 71
+              <br />
+              1110 Wien
+              <br />
+              Österreich
             </p>
-            <p>Luca Mack</p>
-            <p>Lorystrasse 71</p>
-            <p>1110 Wien</p>
-            <p>Österreich</p>
           </div>
         </div>
 

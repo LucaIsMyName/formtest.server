@@ -343,10 +343,10 @@ const Settings: React.FC = () => {
             <div className="space-y-4">
               <p className="text-sm text-gray-600 dark:text-gray-400">Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden.</p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4">
                 <Button
                   variant="secondary"
-                  size="sm"
+                  size="md"
                   onClick={() =>
                     setDeleteConfirmation({
                       type: "forms",
@@ -360,7 +360,7 @@ const Settings: React.FC = () => {
 
                 <Button
                   variant="secondary"
-                  size="sm"
+                  size="md"
                   onClick={() =>
                     setDeleteConfirmation({
                       type: "paymentMethods",
@@ -374,7 +374,7 @@ const Settings: React.FC = () => {
 
                 <Button
                   variant="secondary"
-                  size="sm"
+                  size="md"
                   onClick={() =>
                     setDeleteConfirmation({
                       type: "testRuns",
@@ -388,7 +388,7 @@ const Settings: React.FC = () => {
 
                 <Button
                   variant="secondary"
-                  size="sm"
+                  size="md"
                   onClick={() =>
                     setDeleteConfirmation({
                       type: "schedules",
@@ -401,7 +401,7 @@ const Settings: React.FC = () => {
                 </Button>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="">
                 <Button
                   variant="danger"
                   size="md"

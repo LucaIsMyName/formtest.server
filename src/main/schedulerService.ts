@@ -55,6 +55,29 @@ class SchedulerService {
   }
 
   /**
+   * Manually execute a job immediately
+   */
+  public async runJobNow(id: number) {
+    const schedule = testScheduleQueries.getById(id);
+    if (!schedule) {
+      throw new Error(`Schedule with ID ${id} not found`);
+    }
+
+    console.log(`Scheduler: Manually executing job ${schedule.id} (${schedule.name})...`);
+    try {
+      await createAndRunTest(schedule.formId, schedule.paymentMethodId);
+
+      // Update lastRun
+      testScheduleQueries.update(schedule.id, { lastRun: new Date() });
+      console.log(`Scheduler: Manual job ${schedule.id} execution initiated successfully`);
+      return { success: true };
+    } catch (error) {
+      console.error(`Scheduler: Manual job ${schedule.id} failed to start:`, error);
+      throw error;
+    }
+  }
+
+  /**
    * Stop a scheduled job
    */
   public stopJob(id: number) {

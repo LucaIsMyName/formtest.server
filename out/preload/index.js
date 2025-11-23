@@ -44,6 +44,7 @@ const api = {
   testSchedules: {
     getAll: () => electron.ipcRenderer.invoke("testSchedules:getAll"),
     getById: (id) => electron.ipcRenderer.invoke("testSchedules:getById", id),
+    runNow: (id) => electron.ipcRenderer.invoke("testSchedules:runNow", id),
     create: (schedule) => electron.ipcRenderer.invoke("testSchedules:create", schedule),
     update: (id, schedule) => electron.ipcRenderer.invoke("testSchedules:update", id, schedule),
     delete: (id) => electron.ipcRenderer.invoke("testSchedules:delete", id),

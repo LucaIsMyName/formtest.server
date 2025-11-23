@@ -33,6 +33,7 @@ declare global {
       testSchedules: {
         getAll: () => Promise<TestSchedule[]>
         getById: (id: number) => Promise<TestSchedule | undefined>
+        runNow: (id: number) => Promise<any>
         create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => Promise<any>
         update: (id: number, schedule: Partial<TestSchedule>) => Promise<any>
         delete: (id: number) => Promise<void>

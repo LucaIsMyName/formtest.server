@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus, Edit2, Trash2, Play, Loader2 } from "lucide-react";
 import { useSchedulesStore } from "../store/useSchedulesStore";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
@@ -12,13 +12,14 @@ import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import { TestSchedule } from "../../../common/types";
 
 const Schedules: React.FC = () => {
-  const { schedules, loadSchedules, createSchedule, updateSchedule, deleteSchedule, isLoading, error } = useSchedulesStore();
+  const { schedules, loadSchedules, createSchedule, updateSchedule, deleteSchedule, runScheduleNow, isLoading, error } = useSchedulesStore();
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<TestSchedule | undefined>(undefined);
   const [deletingSchedule, setDeletingSchedule] = useState<TestSchedule | null>(null);
+  const [runningSchedules, setRunningSchedules] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     loadSchedules();
@@ -37,6 +38,29 @@ const Schedules: React.FC = () => {
     }
     setEditingSchedule(undefined);
     setIsCreateOpen(false);
+  };
+
+  const handleRunNow = async (id: number) => {
+    setRunningSchedules((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+
+    try {
+      await runScheduleNow(id);
+    } catch (error) {
+      console.error("Failed to run schedule:", error);
+    } finally {
+      // Keep showing loading state for a bit longer to indicate action
+      setTimeout(() => {
+        setRunningSchedules((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      }, 1000);
+    }
   };
 
   const formatDate = (date?: Date) => {
@@ -108,6 +132,24 @@ const Schedules: React.FC = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRunNow(schedule.id)}
+                        disabled={runningSchedules.has(schedule.id)}
+                        title="Jetzt ausführen">
+                        {runningSchedules.has(schedule.id) ? (
+                          <Loader2
+                            size={16}
+                            className="text-green-600 dark:text-green-400 animate-spin"
+                          />
+                        ) : (
+                          <Play
+                            size={16}
+                            className="text-green-600 dark:text-green-400"
+                          />
+                        )}
+                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"

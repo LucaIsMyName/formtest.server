@@ -18,27 +18,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [preselectAll, setPreselectAll] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
 
-  const { getSetting, updateSetting, loadSettings, settings } = useSettingsStore();
-  const themeSetting = getSetting("theme");
+  const { updateSetting, loadSettings, settings } = useSettingsStore();
+  const themeSetting = settings.find((s) => s.key === "theme");
   const currentTheme = themeSetting?.value || "system";
 
   // Load settings on mount
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
-
-  // Apply theme when it changes
-  useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
-
-    if (currentTheme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      root.classList.add(systemTheme);
-    } else {
-      root.classList.add(currentTheme);
-    }
-  }, [currentTheme, settings]);
 
   // Scroll to top on route change
   useEffect(() => {
