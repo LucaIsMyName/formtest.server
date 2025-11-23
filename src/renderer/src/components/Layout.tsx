@@ -57,7 +57,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Sidebar */}
         <div
           className="bg-white dark:bg-gray-900 flex flex-col select-none"
-          style={{ width: "clamp(15rem, 20vw, 32rem)" }}>
+          style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
           <nav className="flex-1 p-2">
             {navigation.map((item) => {
               const IconComponent = item.icon;

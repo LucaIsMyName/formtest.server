@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
-import Button from "./Button";
+import Button from "./ui/Button";
 import { CreditCard, Building2, Landmark } from "lucide-react";
 import {
   Dialog,

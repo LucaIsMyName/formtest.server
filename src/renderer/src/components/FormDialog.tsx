@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Button from "./Button";
+import Button from "./ui/Button";
 import IconPicker from "./IconPicker";
 import { renderIcon } from "../utils/iconHelper";
 import type { Form } from "../../../common/types";

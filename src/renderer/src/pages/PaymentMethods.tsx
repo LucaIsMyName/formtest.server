@@ -3,7 +3,7 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
 import PaymentMethodDialog from "../components/PaymentMethodDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import Button from "../components/Button";
+import Button from "../components/ui/Button";
 import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Skeleton } from "../components/ui/Skeleton";

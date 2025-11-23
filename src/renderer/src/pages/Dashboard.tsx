@@ -5,8 +5,8 @@ import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
-import Button from "../components/Button";
-import { FileText, CreditCard, Rocket, BarChart3 } from "lucide-react";
+import Button from "../components/ui/Button";
+import { FileText, CreditCard, Rocket, BarChart3, Settings } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -29,6 +29,8 @@ const DashboardSkeleton = () => (
 
     <div className="flex justify-between items-center mb-8">
       <div className="flex items-center gap-4">
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-32" />
         <Skeleton className="h-10 w-32" />
         <Skeleton className="h-10 w-32" />
       </div>
@@ -62,24 +64,6 @@ const DashboardSkeleton = () => (
             <Skeleton className="h-[250px] w-full" />
           </div>
         ))}
-      </div>
-    </div>
-
-    {/* Quick Actions Placeholder */}
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-        <Skeleton className="h-6 w-32 mb-2" />
-        <Skeleton className="h-4 w-48" />
-      </div>
-      <div className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton
-              key={i}
-              className="h-16 w-full rounded-lg"
-            />
-          ))}
-        </div>
       </div>
     </div>
   </div>
@@ -218,24 +202,42 @@ const Dashboard: React.FC = () => {
     <div>
       <h1 className={CONFIG.style.title.className}>Dashboard</h1>
 
-      <div className="mt-6 flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <Button
-            onClick={() => handleQuickAction("run-tests")}
-            variant="primary"
-            size="md"
-            isLoading={isRunning}
-            disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}
-            className="gap-2">
-            {isRunning ? "Tests werden ausgeführt..." : "Tests starten"}
-          </Button>
-          <Button
-            onClick={() => handleQuickAction("settings")}
-            variant="secondary"
-            size="md">
-            Einstellungen
-          </Button>
-        </div>
+      <div className="mt-6 flex flex-wrap items-center gap-4 mb-8">
+        <button
+          onClick={() => handleQuickAction("run-tests")}
+          disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}
+          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group">
+          <Rocket className="w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-medium text-gray-900 dark:text-white">{isRunning ? "Tests laufen..." : "Tests starten"}</span>
+        </button>
+
+        <button
+          onClick={() => handleQuickAction("add-form")}
+          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group">
+          <FileText className="w-5 h-5 text-blue-500 dark:text-blue-400 mr-2 group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-medium text-gray-900 dark:text-white">Formular</span>
+        </button>
+
+        <button
+          onClick={() => handleQuickAction("add-payment")}
+          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group">
+          <CreditCard className="w-5 h-5 text-green-500 dark:text-green-400 mr-2 group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-medium text-gray-900 dark:text-white">Bezahlmethode</span>
+        </button>
+
+        <button
+          onClick={() => handleQuickAction("view-results")}
+          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group">
+          <BarChart3 className="w-5 h-5 text-yellow-500 dark:text-yellow-400 mr-2 group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-medium text-gray-900 dark:text-white">Ergebnisse</span>
+        </button>
+
+        <button
+          onClick={() => handleQuickAction("settings")}
+          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group">
+          <Settings className="w-5 h-5 text-gray-500 dark:text-gray-400 mr-2 group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-medium text-gray-900 dark:text-white">Einstellungen</span>
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -436,46 +438,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Quick Actions */}
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Schnellaktionen</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Häufige Aufgaben und Verknüpfungen</p>
-        </div>
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button
-              onClick={() => handleQuickAction("add-form")}
-              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
-              <FileText className="w-6 h-6 text-blue-500 dark:text-blue-400 mr-3" />
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Formular</span>
-            </button>
-
-            <button
-              onClick={() => handleQuickAction("add-payment")}
-              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors">
-              <CreditCard className="w-6 h-6 text-green-500 dark:text-green-400 mr-3" />
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Bezahlmethode</span>
-            </button>
-
-            <button
-              onClick={() => handleQuickAction("run-tests")}
-              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors disabled:opacity-50"
-              disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}>
-              <Rocket className="w-6 h-6 text-purple-500 dark:text-purple-400 mr-3" />
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Test</span>
-            </button>
-
-            <button
-              onClick={() => handleQuickAction("view-results")}
-              className="flex items-center p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-colors">
-              <BarChart3 className="w-6 h-6 text-yellow-500 dark:text-yellow-400 mr-3" />
-              <span className="text-sm font-medium text-gray-900 dark:text-white">Ergebnisse</span>
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* Test Run Dialog */}
       <TestRunDialog

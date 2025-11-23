@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Button from "./Button";
+import Button from "./ui/Button";
 import IconPicker from "./IconPicker";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import type { PaymentMethod, PaymentMethodDetails } from "../../../common/types";

@@ -46,7 +46,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
   return (
     <Tooltip.Provider>
       <div
-        className="relative h-12 border-b dark:border-b-gray-700 flex items-center justify-between px-5 pr-4 select-none"
+        className="relative h-12 bg-white dark:bg-gray-900 flex items-center justify-between px-5 pr-4 select-none"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         <TrafficLights
           onClose={handleClose}
@@ -54,7 +54,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
           onMaximize={handleMaximize}
           isMaximized={isMaximized}
         />
-        <div className="uppercase text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 ml-4 leading-[0]">Formtest.Server</div>
+        <div className=" text-left tracking-wider text-[11px] text-gray-700 dark:text-gray-300 ml-4 leading-[0]">Formtest.Server</div>
 
         {/* Global Search */}
         <div

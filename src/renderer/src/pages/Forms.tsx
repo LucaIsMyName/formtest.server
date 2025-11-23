@@ -3,7 +3,7 @@ import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
 import FormDialog from "../components/FormDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import Button from "../components/Button";
+import Button from "../components/ui/Button";
 import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 

@@ -4,7 +4,7 @@ import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import Button from "../components/Button";
+import Button from "../components/ui/Button";
 import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 
@@ -13,7 +13,9 @@ const TestResultsSkeleton = () => (
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4">
+          <div
+            key={i}
+            className="flex items-center gap-4">
             <Skeleton className="h-6 w-1/3" />
             <Skeleton className="h-6 w-24" />
             <Skeleton className="h-6 w-16" />
@@ -128,7 +130,7 @@ const TestResults: React.FC = () => {
       )}
 
       <div
-      className="mt-4"
+        className="mt-4"
         style={{
           display: "grid",
           gridTemplateColumns: "66% 33%",
@@ -150,13 +152,13 @@ const TestResults: React.FC = () => {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
-                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Test</th>
-                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Datum</th>
-                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Dauer</th>
-                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                      <th className="px-4 py-3 text-right text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aktionen</th>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Test</th>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Datum</th>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Dauer</th>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                      <th className="px-4 py-3 text-right text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aktionen</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 dark:divide-gray-700">

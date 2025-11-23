@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2 } from "lucide-react";
 import { CONFIG } from "../app.config";
-import Button from "../components/Button";
+import Button from "../components/ui/Button";
 import type { ImportOptions, ImportResult } from "../../../common/types";
 import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/Label";

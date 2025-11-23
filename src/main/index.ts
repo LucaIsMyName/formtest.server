@@ -10,10 +10,10 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 800,
-    minWidth: 800,
-    minHeight: 600,
-    maxHeight: 1200,
-    maxWidth: 1520,
+    minWidth: 1080,
+    minHeight: 500,
+    maxHeight: 1080,
+    maxWidth: 1620,
     show: false,
     frame: false, // Remove OS frame
     titleBarStyle: "hidden", // Hide title bar
