@@ -1,8 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import IconPicker from "./IconPicker";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import type { PaymentMethod, PaymentMethodDetails } from "../../../common/types";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/Dialog";
+import { Input } from "./ui/Input";
+import { Label } from "./ui/Label";
+import { Checkbox } from "./ui/Checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 
 interface PaymentMethodDialogProps {
   isOpen: boolean;
@@ -22,7 +27,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showIconPicker, setShowIconPicker] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (editMethod) {
@@ -44,27 +48,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
     }
     setErrors({});
   }, [editMethod, isOpen]);
-
-  // ESC key handler
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscKey);
-      return () => document.removeEventListener("keydown", handleEscKey);
-    }
-  }, [isOpen, onClose]);
-
-  // Click outside handler
-  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
-  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -121,15 +104,6 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
         details: methodData.details || {},
       };
 
-      console.log("PaymentMethodDialog: Submitting payment method data:", submitData);
-      console.log("PaymentMethodDialog: Data types:", {
-        name: typeof submitData.name,
-        type: typeof submitData.type,
-        isActive: typeof submitData.isActive,
-        details: typeof submitData.details,
-      });
-      console.log("PaymentMethodDialog: Details content:", submitData.details);
-
       await onSubmit(submitData);
       onClose();
     } catch (error) {
@@ -151,61 +125,49 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
     switch (methodData.type) {
       case "paypal":
         return (
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              PayPal Email *
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="email">PayPal Email *</Label>
+            <Input
               type="email"
               id="email"
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
               value={methodData.details.email || ""}
               onChange={(e) => updateDetails("email", e.target.value)}
               placeholder="paypal@example.com"
               disabled={isLoading}
+              className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
             />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
           </div>
         );
 
       case "sepa":
         return (
           <>
-            <div className="mb-4">
-              <label
-                htmlFor="iban"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                IBAN *
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label  className="text-gray-600 dark:text-gray-400"  htmlFor="iban">IBAN *</Label>
+              <Input
                 type="text"
                 id="iban"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.iban ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
                 value={methodData.details.iban || ""}
                 onChange={(e) => updateDetails("iban", e.target.value)}
                 placeholder="DE89 3704 0044 0532 0130 00"
                 disabled={isLoading}
+                className={errors.iban ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
-              {errors.iban && <p className="text-red-500 text-xs mt-1">{errors.iban}</p>}
+              {errors.iban && <p className="text-red-500 text-xs">{errors.iban}</p>}
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="bic"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                BIC *
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label className="text-gray-600 dark:text-gray-400" htmlFor="bic">BIC *</Label>
+              <Input
                 type="text"
                 id="bic"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.bic ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
                 value={methodData.details.bic || ""}
                 onChange={(e) => updateDetails("bic", e.target.value)}
                 placeholder="COBADEFFXXX"
                 disabled={isLoading}
+                className={errors.bic ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
-              {errors.bic && <p className="text-red-500 text-xs mt-1">{errors.bic}</p>}
+              {errors.bic && <p className="text-red-500 text-xs">{errors.bic}</p>}
             </div>
           </>
         );
@@ -213,57 +175,45 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
       case "creditcard":
         return (
           <>
-            <div className="mb-4">
-              <label
-                htmlFor="cardNumber"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Card Number *
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label className="text-gray-600 dark:text-gray-400" htmlFor="cardNumber">Card Number *</Label>
+              <Input
                 type="text"
                 id="cardNumber"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.cardNumber ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
                 value={methodData.details.cardNumber || ""}
                 onChange={(e) => updateDetails("cardNumber", e.target.value)}
                 placeholder="4111 1111 1111 1111"
                 disabled={isLoading}
+                className={errors.cardNumber ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
-              {errors.cardNumber && <p className="text-red-500 text-xs mt-1">{errors.cardNumber}</p>}
+              {errors.cardNumber && <p className="text-red-500 text-xs">{errors.cardNumber}</p>}
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="expiryDate"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Expiry Date *
-                </label>
-                <input
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-gray-600 dark:text-gray-400" htmlFor="expiryDate">Expiry Date *</Label>
+                <Input
                   type="text"
                   id="expiryDate"
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.expiryDate ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
                   value={methodData.details.expiryDate || ""}
                   onChange={(e) => updateDetails("expiryDate", e.target.value)}
                   placeholder="MM/YY"
                   disabled={isLoading}
+                  className={errors.expiryDate ? "border-red-500 focus-visible:ring-red-500" : ""}
                 />
-                {errors.expiryDate && <p className="text-red-500 text-xs mt-1">{errors.expiryDate}</p>}
+                {errors.expiryDate && <p className="text-red-500 text-xs">{errors.expiryDate}</p>}
               </div>
-              <div>
-                <label
-                  htmlFor="cvv"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  CVV *
-                </label>
-                <input
+              <div className="space-y-2">
+                <Label className="text-gray-600 dark:text-gray-400" htmlFor="cvv">CVV *</Label>
+                <Input
                   type="text"
                   id="cvv"
-                  className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.cvv ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
                   value={methodData.details.cvv || ""}
                   onChange={(e) => updateDetails("cvv", e.target.value)}
                   placeholder="123"
                   disabled={isLoading}
+                  className={errors.cvv ? "border-red-500 focus-visible:ring-red-500" : ""}
                 />
-                {errors.cvv && <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>}
+                {errors.cvv && <p className="text-red-500 text-sm">{errors.cvv}</p>}
               </div>
             </div>
           </>
@@ -271,25 +221,25 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
 
       case "eps":
         return (
-          <div className="mb-4">
-            <label
-              htmlFor="bankCode"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Bank Code *
-            </label>
-            <select
-              id="bankCode"
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.bankCode ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="bankCode">Bank Code *</Label>
+            <Select
               value={methodData.details.bankCode || ""}
-              onChange={(e) => updateDetails("bankCode", e.target.value)}
+              onValueChange={(value) => updateDetails("bankCode", value)}
               disabled={isLoading}>
-              <option value="">Select Bank</option>
-              <option value="BAWAATWW">Bank Austria</option>
-              <option value="RLNWATWW">Raiffeisen Bank</option>
-              <option value="BKAUATWW">UniCredit Bank Austria</option>
-              <option value="GIBAATWW">Erste Bank</option>
-            </select>
-            {errors.bankCode && <p className="text-red-500 text-xs mt-1">{errors.bankCode}</p>}
+              <SelectTrigger
+                id="bankCode"
+                className={errors.bankCode ? "border-red-500 focus:ring-red-500" : ""}>
+                <SelectValue placeholder="Select Bank" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="BAWAATWW">Bank Austria</SelectItem>
+                <SelectItem value="RLNWATWW">Raiffeisen Bank</SelectItem>
+                <SelectItem value="BKAUATWW">UniCredit Bank Austria</SelectItem>
+                <SelectItem value="GIBAATWW">Erste Bank</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.bankCode && <p className="text-red-500 text-xs">{errors.bankCode}</p>}
           </div>
         );
 
@@ -298,98 +248,84 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={handleOverlayClick}>
-      <div
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg mx-4"
-        ref={modalRef}>
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white m-0">{editMethod ? "Bezahlmethode bearbeiten" : "Neue Bezahlmethode"}</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl p-0 bg-transparent border-none cursor-pointer"
-            disabled={isLoading}>
-            ×
-          </button>
-        </div>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{editMethod ? "Bezahlmethode bearbeiten" : "Neue Bezahlmethode"}</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="p-6 space-y-4">
-            <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Name der Bezahlmethode *
-              </label>
-              <input
-                type="text"
-                id="name"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.name ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
-                value={methodData.name}
-                onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
-                placeholder="z.B. Test PayPal Account"
-                disabled={isLoading}
-              />
-              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="type"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Bezahlmethoden-Typ *
-              </label>
-              <select
-                id="type"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                value={methodData.type}
-                onChange={(e) => setMethodData({ ...methodData, type: e.target.value as PaymentMethod["type"], details: {} as PaymentMethodDetails })}
-                disabled={isLoading}>
-                <option value="paypal">PayPal</option>
-                <option value="sepa">SEPA Lastschrift</option>
-                <option value="creditcard">Kreditkarte</option>
-                <option value="eps">EPS (Österreich)</option>
-              </select>
-            </div>
-
-            {renderTypeSpecificFields()}
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Icon
-              </label>
-              <button
-                type="button"
-                onClick={() => setShowIconPicker(true)}
-                disabled={isLoading}
-                className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                {renderIcon(methodData.icon, 20, "text-blue-600 dark:text-blue-400")}
-                <span className="text-sm text-gray-700 dark:text-gray-300">{methodData.icon}</span>
-              </button>
-            </div>
-
-            <div className="flex items-center mt-5">
-              <input
-                type="checkbox"
-                id="isActive"
-                checked={methodData.isActive}
-                onChange={(e) => setMethodData({ ...methodData, isActive: e.target.checked })}
-                className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mr-2"
-                disabled={isLoading}
-              />
-              <label
-                htmlFor="isActive"
-                className="text-sm text-gray-700 dark:text-gray-300">
-                Aktiv (in Tests verwenden)
-              </label>
-            </div>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="name">Name der Bezahlmethode *</Label>
+            <Input
+              id="name"
+              value={methodData.name}
+              onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
+              placeholder="z.B. Test PayPal Account"
+              disabled={isLoading}
+              className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
+            />
+            {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
           </div>
 
-          <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="type">Bezahlmethoden-Typ *</Label>
+            <Select
+              value={methodData.type}
+              onValueChange={(value) =>
+                setMethodData({
+                  ...methodData,
+                  type: value as PaymentMethod["type"],
+                  details: {} as PaymentMethodDetails,
+                })
+              }
+              disabled={isLoading}>
+              <SelectTrigger id="type">
+                <SelectValue placeholder="Wähle einen Typ" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="paypal">PayPal</SelectItem>
+                <SelectItem value="sepa">SEPA Lastschrift</SelectItem>
+                <SelectItem value="creditcard">Kreditkarte</SelectItem>
+                <SelectItem value="eps">EPS (Österreich)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {renderTypeSpecificFields()}
+
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="icon">Icon</Label>
+            <button
+              type="button"
+              onClick={() => setShowIconPicker(true)}
+              disabled={isLoading}
+              className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+              {renderIcon(methodData.icon, 20, "text-blue-600 dark:text-blue-400")}
+              <span className="text-sm text-gray-700 dark:text-gray-300">{methodData.icon}</span>
+            </button>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="isActive"
+              checked={methodData.isActive}
+              onCheckedChange={(checked) => setMethodData({ ...methodData, isActive: checked === true })}
+              disabled={isLoading}
+            />
+            <Label
+              htmlFor="isActive"
+              className="text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+              Aktiv (in Tests verwenden)
+            </Label>
+          </div>
+
+          <DialogFooter className="pt-4">
             <Button
               type="button"
               onClick={onClose}
@@ -406,10 +342,9 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
               disabled={isLoading}>
               {isLoading ? "Speichern..." : editMethod ? "Bezahlmethode aktualisieren" : "Bezahlmethode hinzufügen"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
 
-        {/* Icon Picker Modal */}
         {showIconPicker && (
           <IconPicker
             value={methodData.icon}
@@ -420,8 +355,8 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
             onClose={() => setShowIconPicker(false)}
           />
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

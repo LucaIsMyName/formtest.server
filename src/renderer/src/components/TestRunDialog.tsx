@@ -1,9 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import Button from "./Button";
 import { CreditCard, Building2, Landmark } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./ui/Dialog";
+import { Checkbox } from "./ui/Checkbox";
+import { Label } from "./ui/Label";
 
 interface TestRunDialogProps {
   isOpen: boolean;
@@ -19,7 +28,6 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
   const [selectedFormIds, setSelectedFormIds] = useState<number[]>([]);
   const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -42,27 +50,6 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
       setSelectedPaymentMethodIds([]);
     }
   }, [isOpen, preselectAll, forms, paymentMethods]);
-
-  // ESC key handler
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscKey);
-      return () => document.removeEventListener("keydown", handleEscKey);
-    }
-  }, [isOpen, onClose]);
-
-  // Click outside handler
-  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
-  };
 
   const activeForms = forms.filter((form) => form.isActive);
   const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);
@@ -111,26 +98,14 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
 
   const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length;
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={handleOverlayClick}>
-      <div
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden"
-        ref={modalRef}>
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white m-0">Tests ausführen</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl p-0 bg-transparent border-none cursor-pointer"
-            disabled={isRunning}>
-            ×
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && !isRunning && onClose()}>
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0 gap-0">
+        <DialogHeader className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <DialogTitle>Tests ausführen</DialogTitle>
+        </DialogHeader>
 
-        <div className="p-6 overflow-y-auto max-h-[60vh]">
+        <div className="p-6 overflow-y-auto">
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
               <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
@@ -160,21 +135,20 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {activeForms.map((form) => (
-                    <label
+                    <div
                       key={form.id}
-                      className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                      <input
-                        type="checkbox"
+                      className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <Checkbox
+                        id={`form-${form.id}`}
                         checked={selectedFormIds.includes(form.id)}
-                        onChange={() => handleFormToggle(form.id)}
-                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        onCheckedChange={() => handleFormToggle(form.id)}
                         disabled={isRunning}
                       />
-                      <div className="ml-3 flex-1">
+                      <Label htmlFor={`form-${form.id}`} className="ml-3 flex-1 cursor-pointer font-normal">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">{form.name}</div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{form.url}</div>
-                      </div>
-                    </label>
+                      </Label>
+                    </div>
                   ))}
                 </div>
               )}
@@ -202,27 +176,26 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {activePaymentMethods.map((pm) => (
-                    <label
+                    <div
                       key={pm.id}
-                      className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                      <input
-                        type="checkbox"
+                      className="flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <Checkbox
+                        id={`pm-${pm.id}`}
                         checked={selectedPaymentMethodIds.includes(pm.id)}
-                        onChange={() => handlePaymentMethodToggle(pm.id)}
-                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        onCheckedChange={() => handlePaymentMethodToggle(pm.id)}
                         disabled={isRunning}
                       />
-                      <div className="ml-3 flex-1">
+                      <Label htmlFor={`pm-${pm.id}`} className="ml-3 flex-1 cursor-pointer font-normal">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">{pm.name}</div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{pm.type}</div>
-                      </div>
+                      </Label>
                       <div className="text-gray-400 dark:text-gray-500">
                         {pm.type === "paypal" && <CreditCard size={16} />}
                         {pm.type === "sepa" && <Building2 size={16} />}
                         {pm.type === "creditcard" && <CreditCard size={16} />}
                         {pm.type === "eps" && <Landmark size={16} />}
                       </div>
-                    </label>
+                    </div>
                   ))}
                 </div>
               )}
@@ -252,8 +225,8 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
           )}
         </div>
 
-        <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <div className="text-sm text-gray-600 dark:text-gray-400">
+        <DialogFooter className="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 sm:justify-between">
+          <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
             {isRunning ? (
               <span className="flex items-center">
                 <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -281,9 +254,9 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
               {isRunning ? "Läuft..." : `${totalTests} Test${totalTests !== 1 ? "s" : ""} starten`}
             </Button>
           </div>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

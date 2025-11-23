@@ -4,6 +4,11 @@ import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2 } from 
 import { CONFIG } from "../app.config";
 import Button from "../components/Button";
 import type { ImportOptions, ImportResult } from "../../../common/types";
+import { Input } from "../components/ui/Input";
+import { Label } from "../components/ui/Label";
+import { Checkbox } from "../components/ui/Checkbox";
+import { RadioGroup, RadioGroupItem } from "../components/ui/RadioGroup";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
 
 const Settings: React.FC = () => {
   const { settings, isLoading, error, loadSettings, updateSetting } = useSettingsStore();
@@ -20,7 +25,7 @@ const Settings: React.FC = () => {
     includeForms: true,
     includePaymentMethods: true,
     includeTestRuns: true,
-    includeSettings: true
+    includeSettings: true,
   });
   const [importMode, setImportMode] = useState<"overwrite" | "merge">("merge");
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
@@ -103,7 +108,7 @@ const Settings: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className={CONFIG.style.title.className}>Einstellungen</h1>
-          <p className="mt-4 text-gray-600 dark:text-gray-400 mt-1">Globale Optionen für Formular-Tests konfigurieren</p>
+          <p className="mt-4 text-gray-800 dark:text-gray-400 mt-1">Globale Optionen für Formular-Tests konfigurieren</p>
         </div>
       </div>
 
@@ -133,7 +138,7 @@ const Settings: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Theme</label>
+                <Label className="block mb-2 text-gray-800 dark:text-gray-400">Theme</Label>
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => handleThemeChange("system")}
@@ -164,77 +169,81 @@ const Settings: React.FC = () => {
 
             <div className="space-y-6">
               {/* Donation Amount */}
-              <div>
-                <label
-                  htmlFor="donation-amount"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="donation-amount">
                   Standard-Spendenbetrag (EUR)
-                </label>
-                <input
+                </Label>
+                <Input
                   id="donation-amount"
                   type="number"
                   value={donationAmount}
                   onChange={(e) => handleDonationAmountChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                   disabled={isLoading}
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird</p>
               </div>
 
               {/* Donation Interval */}
-              <div>
-                <label
-                  htmlFor="donation-interval"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="donation-interval">
                   Standard-Spendenintervall
-                </label>
-                <select
-                  id="donation-interval"
+                </Label>
+                <Select
                   value={donationInterval}
-                  onChange={(e) => handleDonationIntervalChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  onValueChange={handleDonationIntervalChange}
                   disabled={isLoading}>
-                  <option value="0">Einmalig</option>
-                  <option value="1">Monatlich</option>
-                </select>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Das Standard-Spendenintervall für Tests</p>
+                  <SelectTrigger id="donation-interval">
+                    <SelectValue placeholder="Wähle ein Intervall" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Einmalig</SelectItem>
+                    <SelectItem value="1">Monatlich</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Das Standard-Spendenintervall für Tests</p>
               </div>
 
               {/* Test Timeout */}
-              <div>
-                <label
-                  htmlFor="test-timeout"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="test-timeout">
                   Test-Timeout (Millisekunden)
-                </label>
-                <input
+                </Label>
+                <Input
                   id="test-timeout"
                   type="number"
                   value={testTimeout}
                   onChange={(e) => handleTestTimeoutChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                   disabled={isLoading}
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>
               </div>
 
               {/* Headless Mode */}
-              <div>
-                <label
-                  htmlFor="headless-mode"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="headless-mode">
                   Headless-Modus
-                </label>
-                <select
-                  id="headless-mode"
+                </Label>
+                <Select
                   value={headlessMode}
-                  onChange={(e) => handleHeadlessModeChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                  onValueChange={handleHeadlessModeChange}
                   disabled={isLoading}>
-                  <option value="true">Aktiviert</option>
-                  <option value="false">Deaktiviert</option>
-                </select>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Browser-Tests ohne sichtbares Fenster ausführen</p>
+                  <SelectTrigger id="headless-mode">
+                    <SelectValue placeholder="Headless Modus" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Aktiviert</SelectItem>
+                    <SelectItem value="false">Deaktiviert</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Browser-Tests ohne sichtbares Fenster ausführen</p>
               </div>
             </div>
           </div>
@@ -247,50 +256,60 @@ const Settings: React.FC = () => {
               {/* Export Section */}
               <div>
                 <h3 className="text-md font-medium text-gray-900 dark:text-white mb-3">Daten exportieren</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  Wähle die Daten aus, die du exportieren möchtest:
-                </p>
+                <p className="text-sm text-gray-800 dark:text-gray-400 mb-4">Wähle die Daten aus, die du exportieren möchtest:</p>
 
-                <div className="space-y-2 mb-4">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="export-forms"
                       checked={exportOptions.includeForms}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includeForms: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeForms: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Formulare</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="export-forms">
+                      Formulare
+                    </Label>
+                  </div>
 
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="export-payment"
                       checked={exportOptions.includePaymentMethods}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includePaymentMethods: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includePaymentMethods: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Bezahlmethoden</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="export-payment">
+                      Bezahlmethoden
+                    </Label>
+                  </div>
 
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="export-runs"
                       checked={exportOptions.includeTestRuns}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includeTestRuns: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeTestRuns: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Test Resultate</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="export-runs">
+                      Test Resultate
+                    </Label>
+                  </div>
 
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="export-settings"
                       checked={exportOptions.includeSettings}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includeSettings: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeSettings: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Einstellungen</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="export-settings">
+                      Einstellungen
+                    </Label>
+                  </div>
                 </div>
 
                 <Button
@@ -320,7 +339,7 @@ const Settings: React.FC = () => {
                 </Button>
 
                 {exportMessage && (
-                  <div className={`mt-3 p-3 rounded-md ${exportMessage.startsWith('✓') ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200' : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200'}`}>
+                  <div className={`mt-3 p-3 rounded-md ${exportMessage.startsWith("✓") ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200"}`}>
                     <p className="text-sm">{exportMessage}</p>
                   </div>
                 )}
@@ -331,87 +350,98 @@ const Settings: React.FC = () => {
               {/* Import Section */}
               <div>
                 <h3 className="text-md font-medium text-gray-900 dark:text-white mb-3">Daten importieren</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  Wähle den Import-Modus:
-                </p>
+                <p className="text-sm text-gray-800 dark:text-gray-400 mb-4">Wähle den Import-Modus:</p>
+
+                <RadioGroup
+                  value={importMode}
+                  onValueChange={(val) => setImportMode(val as "merge" | "overwrite")}
+                  className="mb-4">
+                  <div className="flex items-start space-x-2">
+                    <RadioGroupItem
+                      value="merge"
+                      id="import-merge"
+                      className="mt-1"
+                    />
+                    <div className="grid gap-1.5 leading-none">
+                      <Label
+                        className="cursor-pointer text-gray-800 dark:text-gray-400"
+                        htmlFor="import-merge">
+                        Zusammenführen (Empfohlen)
+                      </Label>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Bestehende Daten bleiben erhalten. Neue Einträge werden hinzugefügt, unterschiedliche Einträge werden aktualisiert.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-2 mt-2">
+                    <RadioGroupItem
+                      value="overwrite"
+                      id="import-overwrite"
+                      className="mt-1"
+                    />
+                    <div className="grid gap-1.5 leading-none">
+                      <Label
+                        htmlFor="import-overwrite"
+                        className="cursor-pointer font-normal text-gray-800 dark:text-gray-400">
+                        Überschreiben (Vorsicht!)
+                      </Label>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Alle ausgewählten Daten werden gelöscht und durch die importierten Daten ersetzt.</p>
+                    </div>
+                  </div>
+                </RadioGroup>
 
                 <div className="space-y-3 mb-4">
-                  <label className="flex items-start">
-                    <input
-                      type="radio"
-                      name="importMode"
-                      value="merge"
-                      checked={importMode === "merge"}
-                      onChange={(e) => setImportMode(e.target.value as "merge")}
-                      className="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <div className="ml-2">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">Zusammenführen (Empfohlen)</span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Bestehende Daten bleiben erhalten. Neue Einträge werden hinzugefügt, unterschiedliche Einträge werden aktualisiert.
-                      </p>
-                    </div>
-                  </label>
-
-                  <label className="flex items-start">
-                    <input
-                      type="radio"
-                      name="importMode"
-                      value="overwrite"
-                      checked={importMode === "overwrite"}
-                      onChange={(e) => setImportMode(e.target.value as "overwrite")}
-                      className="mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <div className="ml-2">
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">Überschreiben (Vorsicht!)</span>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        Alle ausgewählten Daten werden gelöscht und durch die importierten Daten ersetzt.
-                      </p>
-                    </div>
-                  </label>
-                </div>
-
-                <div className="space-y-2 mb-4">
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Zu importierende Daten:</p>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="import-forms"
                       checked={exportOptions.includeForms}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includeForms: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeForms: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Formulare</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="import-forms">
+                      Formulare
+                    </Label>
+                  </div>
 
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="import-payment"
                       checked={exportOptions.includePaymentMethods}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includePaymentMethods: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includePaymentMethods: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Bezahlmethoden</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="import-payment">
+                      Bezahlmethoden
+                    </Label>
+                  </div>
 
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="import-runs"
                       checked={exportOptions.includeTestRuns}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includeTestRuns: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeTestRuns: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Test Resultate</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="import-runs">
+                      Test Resultate
+                    </Label>
+                  </div>
 
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="import-settings"
                       checked={exportOptions.includeSettings}
-                      onChange={(e) => setExportOptions({ ...exportOptions, includeSettings: e.target.checked })}
-                      className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeSettings: checked === true })}
                     />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Einstellungen</span>
-                  </label>
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="import-settings">
+                      Einstellungen
+                    </Label>
+                  </div>
                 </div>
 
                 <Button
@@ -427,7 +457,7 @@ const Settings: React.FC = () => {
                         imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
                         skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
                         errors: [`Import fehlgeschlagen: ${error.message}`],
-                        warnings: []
+                        warnings: [],
                       });
                     } finally {
                       setIsImporting(false);
@@ -443,17 +473,21 @@ const Settings: React.FC = () => {
                 </Button>
 
                 {importResult && importResult.imported && importResult.skipped && (
-                  <div className={`mt-4 p-4 rounded-md ${importResult.success ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}`}>
+                  <div className={`mt-4 p-4 rounded-md ${importResult.success ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}`}>
                     <div className="flex items-start gap-2 mb-3">
                       {importResult.success ? (
-                        <CheckCircle2 className="text-green-600 dark:text-green-400 flex-shrink-0" size={20} />
+                        <CheckCircle2
+                          className="text-green-600 dark:text-green-400 flex-shrink-0"
+                          size={20}
+                        />
                       ) : (
-                        <AlertCircle className="text-red-600 dark:text-red-400 flex-shrink-0" size={20} />
+                        <AlertCircle
+                          className="text-red-600 dark:text-red-400 flex-shrink-0"
+                          size={20}
+                        />
                       )}
                       <div className="flex-1">
-                        <h4 className={`text-sm font-medium ${importResult.success ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}`}>
-                          {importResult.success ? 'Import erfolgreich!' : 'Import abgebrochen oder mit Fehlern'}
-                        </h4>
+                        <h4 className={`text-sm font-medium ${importResult.success ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"}`}>{importResult.success ? "Import erfolgreich!" : "Import abgebrochen oder mit Fehlern"}</h4>
                       </div>
                     </div>
 
@@ -461,26 +495,22 @@ const Settings: React.FC = () => {
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <p className="font-medium text-gray-700 dark:text-gray-300">Importiert:</p>
-                          <ul className="text-xs text-gray-600 dark:text-gray-400 ml-4">
+                          <ul className="text-xs !text-gray-600 !dark:text-gray-400 ml-4">
                             {importResult.imported.forms > 0 && <li>• {importResult.imported.forms} Formulare</li>}
                             {importResult.imported.paymentMethods > 0 && <li>• {importResult.imported.paymentMethods} Bezahlmethoden</li>}
                             {importResult.imported.testRuns > 0 && <li>• {importResult.imported.testRuns} Test Resultate</li>}
                             {importResult.imported.settings > 0 && <li>• {importResult.imported.settings} Einstellungen</li>}
-                            {importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.settings === 0 && (
-                              <li className="italic text-gray-500">Keine Daten importiert</li>
-                            )}
+                            {importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.settings === 0 && <li className="italic text-gray-500">Keine Daten importiert</li>}
                           </ul>
                         </div>
                         <div>
                           <p className="font-medium text-gray-700 dark:text-gray-300">Übersprungen:</p>
-                          <ul className="text-xs text-gray-600 dark:text-gray-400 ml-4">
+                          <ul className="text-xs !text-gray-600 !dark:text-gray-400 ml-4">
                             {importResult.skipped.forms > 0 && <li>• {importResult.skipped.forms} Formulare</li>}
                             {importResult.skipped.paymentMethods > 0 && <li>• {importResult.skipped.paymentMethods} Bezahlmethoden</li>}
                             {importResult.skipped.testRuns > 0 && <li>• {importResult.skipped.testRuns} Test Resultate</li>}
                             {importResult.skipped.settings > 0 && <li>• {importResult.skipped.settings} Einstellungen</li>}
-                            {importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.settings === 0 && (
-                              <li className="italic text-gray-500">Keine Daten übersprungen</li>
-                            )}
+                            {importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.settings === 0 && <li className="italic text-gray-500">Keine Daten übersprungen</li>}
                           </ul>
                         </div>
                       </div>
@@ -492,9 +522,7 @@ const Settings: React.FC = () => {
                             {importResult.warnings.slice(0, 5).map((warning, i) => (
                               <li key={i}>• {warning}</li>
                             ))}
-                            {importResult.warnings.length > 5 && (
-                              <li className="italic">... und {importResult.warnings.length - 5} weitere</li>
-                            )}
+                            {importResult.warnings.length > 5 && <li className="italic">... und {importResult.warnings.length - 5} weitere</li>}
                           </ul>
                         </div>
                       )}
@@ -506,9 +534,7 @@ const Settings: React.FC = () => {
                             {importResult.errors.slice(0, 5).map((error, i) => (
                               <li key={i}>• {error}</li>
                             ))}
-                            {importResult.errors.length > 5 && (
-                              <li className="italic">... und {importResult.errors.length - 5} weitere</li>
-                            )}
+                            {importResult.errors.length > 5 && <li className="italic">... und {importResult.errors.length - 5} weitere</li>}
                           </ul>
                         </div>
                       )}

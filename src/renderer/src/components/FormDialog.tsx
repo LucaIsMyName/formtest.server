@@ -1,8 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import IconPicker from "./IconPicker";
 import { renderIcon } from "../utils/iconHelper";
 import type { Form } from "../../../common/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "./ui/Dialog";
+import { Input } from "./ui/Input";
+import { Label } from "./ui/Label";
+import { Checkbox } from "./ui/Checkbox";
 
 interface FormDialogProps {
   isOpen: boolean;
@@ -22,7 +32,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showIconPicker, setShowIconPicker] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (editForm) {
@@ -44,27 +53,6 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
     }
     setErrors({});
   }, [editForm, isOpen]);
-
-  // ESC key handler
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscKey);
-      return () => document.removeEventListener("keydown", handleEscKey);
-    }
-  }, [isOpen, onClose]);
-
-  // Click outside handler
-  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
-  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -98,12 +86,11 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
       const submitData = {
         name: formData.name.trim(),
         url: formData.url.trim(),
-        hash: formData.hash.trim() || null, // Use null instead of undefined for SQLite compatibility
+        hash: formData.hash.trim() || null,
         icon: formData.icon,
         isActive: formData.isActive,
       };
 
-      console.log("FormDialog: Submitting form data:", submitData);
       await onSubmit(submitData);
       onClose();
     } catch (error) {
@@ -111,113 +98,78 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={handleOverlayClick}>
-      <div
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg mx-4"
-        ref={modalRef}>
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white m-0">{editForm ? "Formular bearbeiten" : "Neues Formular"}</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl p-0 bg-transparent border-none cursor-pointer"
-            disabled={isLoading}>
-            ×
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>{editForm ? "Formular bearbeiten" : "Neues Formular"}</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="p-6 space-y-4">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Formular Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.name ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="z.B. Allgemeine Spendenform"
-                disabled={isLoading}
-              />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
-
-            <div>
-              <label
-                htmlFor="url"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Formular URL *
-              </label>
-              <input
-                type="url"
-                id="url"
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.url ? "border-red-500" : "border-gray-300 dark:border-gray-600"}`}
-                value={formData.url}
-                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                placeholder="https://secure.fundraisingbox.com/..."
-                disabled={isLoading}
-              />
-              {errors.url && <p className="text-red-500 text-sm mt-1">{errors.url}</p>}
-            </div>
-
-            <div>
-              <label
-                htmlFor="hash"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Formular Hash (Optional)
-              </label>
-              <input
-                type="text"
-                id="hash"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-                value={formData.hash}
-                onChange={(e) => setFormData({ ...formData, hash: e.target.value })}
-                placeholder="z.B. s85hkigup9ml6y94"
-                disabled={isLoading}
-              />
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Formular-Identifikations-Hash von FundraisingBox</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Icon
-              </label>
-              <button
-                type="button"
-                onClick={() => setShowIconPicker(true)}
-                disabled={isLoading}
-                className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                {renderIcon(formData.icon, 20, "text-blue-600 dark:text-blue-400")}
-                <span className="text-sm text-gray-700 dark:text-gray-300">{formData.icon}</span>
-              </button>
-            </div>
-
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="isActive"
-                checked={formData.isActive}
-                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                disabled={isLoading}
-              />
-              <label
-                htmlFor="isActive"
-                className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                Aktiv (in Tests einbeziehen)
-              </label>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="name">Formular Name *</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="z.B. Allgemeine Spendenform"
+              disabled={isLoading}
+              className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
+            />
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
 
-          <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="url">Formular URL *</Label>
+            <Input
+              id="url"
+              type="url"
+              value={formData.url}
+              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              placeholder="https://secure.fundraisingbox.com/..."
+              disabled={isLoading}
+              className={errors.url ? "border-red-500 focus-visible:ring-red-500" : ""}
+            />
+            {errors.url && <p className="text-red-500 text-sm">{errors.url}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="hash">Formular Hash (Optional)</Label>
+            <Input
+              id="hash"
+              value={formData.hash}
+              onChange={(e) => setFormData({ ...formData, hash: e.target.value })}
+              placeholder="z.B. s85hkigup9ml6y94"
+              disabled={isLoading}
+            />
+            <p className="text-gray-500 dark:text-gray-400 text-xs">Formular-Identifikations-Hash von FundraisingBox</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-gray-600 dark:text-gray-400" htmlFor="icon">Icon</Label>
+            <button
+              type="button"
+              onClick={() => setShowIconPicker(true)}
+              disabled={isLoading}
+              className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+              {renderIcon(formData.icon, 20, "text-blue-600 dark:text-blue-400")}
+              <span className="text-sm text-gray-700 dark:text-gray-300">{formData.icon}</span>
+            </button>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="isActive"
+              checked={formData.isActive}
+              onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
+              disabled={isLoading}
+            />
+            <Label htmlFor="isActive" className="text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+              Aktiv (in Tests einbeziehen)
+            </Label>
+          </div>
+
+          <DialogFooter className="pt-4">
             <Button
               type="button"
               onClick={onClose}
@@ -234,10 +186,9 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
               disabled={isLoading}>
               {isLoading ? "Speichern..." : editForm ? "Formular aktualisieren" : "Formular hinzufügen"}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
 
-        {/* Icon Picker Modal */}
         {showIconPicker && (
           <IconPicker
             value={formData.icon}
@@ -248,8 +199,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
             onClose={() => setShowIconPicker(false)}
           />
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
