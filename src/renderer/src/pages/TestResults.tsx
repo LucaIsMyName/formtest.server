@@ -5,7 +5,7 @@ import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
-import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw } from "lucide-react";
+import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 
 const TestResultsSkeleton = () => (
@@ -105,6 +105,17 @@ const TestResults: React.FC = () => {
   };
 
   const selectedTestRunData = selectedTestRun ? testRuns.find((tr) => tr.id === selectedTestRun) : null;
+
+  const handleExportJson = () => {
+    if (!selectedTestRunData) return;
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(selectedTestRunData, null, 2));
+    const downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `test_result_${selectedTestRunData.id}_${new Date(selectedTestRunData.runAt).toISOString().split("T")[0]}.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
 
   return (
     <div>
@@ -207,8 +218,22 @@ const TestResults: React.FC = () => {
         {/* Test Run Details */}
         <div>
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm mr-4">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
               <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">Test Details</h3>
+              {selectedTestRunData && (
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleExportJson}
+                    title="Export JSON">
+                    <FileJson
+                      size={16}
+                      className="text-gray-500 dark:text-gray-400"
+                    />
+                  </Button>
+                </div>
+              )}
             </div>
             <div className="p-6">
               {selectedTestRunData ? (

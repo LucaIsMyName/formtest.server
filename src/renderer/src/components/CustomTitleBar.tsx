@@ -46,7 +46,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
   return (
     <Tooltip.Provider>
       <div
-        className="relative h-14 bg-white dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800"
+        className="relative h-14 bg-white/80 backdrop-blur-sm dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         {/* Left Section - Matches Sidebar Width */}
         <div

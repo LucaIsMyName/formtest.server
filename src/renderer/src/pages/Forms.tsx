@@ -119,7 +119,7 @@ const Forms: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+              <thead className="border-b border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
                   <th className="px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">URL</th>

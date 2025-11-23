@@ -27,17 +27,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Keyboard shortcut: Cmd+K or Ctrl+K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setShowSearch(true);
       }
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setShowSearch(false);
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const navigation = [
@@ -51,7 +51,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative">
-      <CustomTitleBar onRunAllTests={handleRunAllTests} onOpenSearch={handleOpenSearch} />
+      <CustomTitleBar
+        onRunAllTests={handleRunAllTests}
+        onOpenSearch={handleOpenSearch}
+      />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
@@ -65,8 +68,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-300"}`}>
-                  <IconComponent size={18} />
+                  className={`flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"}`}>
+                  <IconComponent
+                    className={`${location.pathname === item.href ? " stroke-blue-600 dark:stroke-blue-400 scale-110" : ""} text-gray-700 dark:text-gray-400 transition-all`}
+                    size={18}
+                    strokeWidth={location.pathname === item.href ? 2 : 2}
+                  />
                   {item.name}
                 </Link>
               );
