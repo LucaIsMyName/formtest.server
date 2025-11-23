@@ -6,7 +6,7 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/ui/Button";
-import { FileText, CreditCard, Rocket, BarChart3, Settings } from "lucide-react";
+import { FileText, CreditCard, Terminal, BarChart3, Settings } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -230,7 +230,7 @@ const Dashboard: React.FC = () => {
           variant="outline"
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
         >
-          <Rocket className="w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" />
+          <Terminal className="w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" />
           <span className="text-sm text-gray-900 dark:text-white">
             {isRunning ? "Tests laufen..." : "Tests starten"}
           </span>

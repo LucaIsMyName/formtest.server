@@ -104,7 +104,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div
-          className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none"
+          className="bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
           <nav className="flex-1 p-2">
             {navigation.map((item) => {
@@ -130,7 +130,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex-1  flex flex-col overflow-hidden">
           <main
             ref={mainContentRef}
-            className="flex-1  overflow-auto bg-white dark:bg-gray-900 px-4 py-4">
+            className="flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4">
             <div className="max-w-[1040px]">{children}</div>
           </main>
         </div>

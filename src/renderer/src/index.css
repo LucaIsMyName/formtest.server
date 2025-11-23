@@ -46,8 +46,9 @@
   --color-text: #000000;
   --color-text-secondary: #666666;
   --color-border: #e5e5e5;
-  --color-background: #ffffff;
+  --color-background: rgba(249 250 251 / var(--tw-bg-opacity, 1));
   --color-background-secondary: #f8f9fa;
+  --color-white: rgba(249 250 251 / var(--tw-bg-opacity, 1));
 
   /* Google Sans Flex Variable Font Settings */
   --font-sans: "Google Sans Flex";

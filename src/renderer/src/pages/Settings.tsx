@@ -108,9 +108,12 @@ const Settings: React.FC = () => {
   }, [settings]);
 
   // Auto-save handlers
-  const handleDonationAmountChange = async (value: string) => {
+  const handleDonationAmountChange = (value: string) => {
     setDonationAmount(value);
-    await updateSetting("default_donation_amount", value, "Standard-Spendenbetrag in EUR");
+  };
+
+  const saveDonationAmount = async () => {
+    await updateSetting("default_donation_amount", donationAmount, "Standard-Spendenbetrag in EUR");
   };
 
   const handleDonationIntervalChange = async (value: string) => {
@@ -118,9 +121,12 @@ const Settings: React.FC = () => {
     await updateSetting("default_interval", value, "Standard-Spendenintervall (0=einmalig, 1=monatlich)");
   };
 
-  const handleTestTimeoutChange = async (value: string) => {
+  const handleTestTimeoutChange = (value: string) => {
     setTestTimeout(value);
-    await updateSetting("test_timeout", value, "Test-Timeout in Millisekunden");
+  };
+
+  const saveTestTimeout = async () => {
+    await updateSetting("test_timeout", testTimeout, "Test-Timeout in Millisekunden");
   };
 
   const handleHeadlessModeChange = async (value: string) => {
@@ -218,6 +224,7 @@ const Settings: React.FC = () => {
                   type="number"
                   value={donationAmount}
                   onChange={(e) => handleDonationAmountChange(e.target.value)}
+                  onBlur={saveDonationAmount}
                   disabled={isLoading}
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400">Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird</p>
@@ -257,6 +264,7 @@ const Settings: React.FC = () => {
                   type="number"
                   value={testTimeout}
                   onChange={(e) => handleTestTimeoutChange(e.target.value)}
+                  onBlur={saveTestTimeout}
                   disabled={isLoading}
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>

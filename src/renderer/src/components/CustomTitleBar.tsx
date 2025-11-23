@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TrafficLights from "./TrafficLights";
-import { Play, Search, Sun, Moon, Monitor, Settings } from "lucide-react";
+import { Terminal, Search, Sun, Moon, Monitor, Settings } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface CustomTitleBarProps {
@@ -71,7 +71,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
   return (
     <Tooltip.Provider>
       <div
-        className="relative h-14 bg-white/80 backdrop-blur-sm dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800"
+        className="relative h-14 bg-gray-50 backdrop-blur-sm dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         {/* Left Section - Matches Sidebar Width */}
         <div
@@ -96,7 +96,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
               style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
               <button
                 onClick={onOpenSearch}
-                className="w-full max-w-[48rem] px-0.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 group">
+                className="w-full max-w-[100%] px-0.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 group">
                 <Search
                   size={14}
                   className="ml-2 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"
@@ -121,7 +121,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
                     onClick={onRunAllTests}
                     className="p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
                     aria-label="Alle Tests ausführen">
-                    <Play size={14} />
+                    <Terminal size={14} />
                   </button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
