@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { CONFIG } from "../app.config";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
@@ -160,7 +161,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">Dashboard</h1>
+      <h1 className={CONFIG.style.title.className}>Dashboard</h1>
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <Button

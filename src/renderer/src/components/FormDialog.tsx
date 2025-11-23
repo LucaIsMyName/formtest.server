@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Button from "./Button";
+import IconPicker from "./IconPicker";
+import { renderIcon } from "../utils/iconHelper";
 import type { Form } from "../../../common/types";
 
 interface FormDialogProps {
@@ -15,9 +17,11 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
     name: "",
     url: "",
     hash: "",
+    icon: "FileText",
     isActive: true,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,6 +30,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
         name: editForm.name,
         url: editForm.url,
         hash: editForm.hash || "",
+        icon: editForm.icon || "FileText",
         isActive: editForm.isActive,
       });
     } else {
@@ -33,6 +38,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
         name: "",
         url: "",
         hash: "",
+        icon: "FileText",
         isActive: true,
       });
     }
@@ -93,6 +99,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
         name: formData.name.trim(),
         url: formData.url.trim(),
         hash: formData.hash.trim() || null, // Use null instead of undefined for SQLite compatibility
+        icon: formData.icon,
         isActive: formData.isActive,
       };
 
@@ -179,6 +186,20 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
               <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Formular-Identifikations-Hash von FundraisingBox</p>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Icon
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowIconPicker(true)}
+                disabled={isLoading}
+                className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                {renderIcon(formData.icon, 20, "text-blue-600 dark:text-blue-400")}
+                <span className="text-sm text-gray-700 dark:text-gray-300">{formData.icon}</span>
+              </button>
+            </div>
+
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -215,6 +236,18 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
             </Button>
           </div>
         </form>
+
+        {/* Icon Picker Modal */}
+        {showIconPicker && (
+          <IconPicker
+            value={formData.icon}
+            onChange={(icon) => {
+              setFormData({ ...formData, icon });
+              setShowIconPicker(false);
+            }}
+            onClose={() => setShowIconPicker(false)}
+          />
+        )}
       </div>
     </div>
   );

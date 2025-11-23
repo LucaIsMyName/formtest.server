@@ -7,6 +7,52 @@ import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 let db: Database.Database;
 
 /**
+ * Migrate existing tables to add icon columns
+ */
+function migrateIconColumns(): void {
+  console.log("Database: Checking for icon columns...");
+  
+  try {
+    // Check if forms.icon exists
+    const formsInfo = db.prepare("PRAGMA table_info(forms)").all() as Array<{name: string}>;
+    const hasFormsIcon = formsInfo.some(col => col.name === 'icon');
+    
+    if (!hasFormsIcon) {
+      console.log("Database: Adding icon column to forms...");
+      db.exec("ALTER TABLE forms ADD COLUMN icon TEXT DEFAULT 'FileText'");
+      console.log("Database: Icon column added to forms");
+    }
+    
+    // Check if payment_methods.icon exists
+    const pmInfo = db.prepare("PRAGMA table_info(payment_methods)").all() as Array<{name: string}>;
+    const hasPmIcon = pmInfo.some(col => col.name === 'icon');
+    
+    if (!hasPmIcon) {
+      console.log("Database: Adding icon column to payment_methods...");
+      db.exec("ALTER TABLE payment_methods ADD COLUMN icon TEXT");
+      
+      // Set default icons based on type
+      db.exec(`
+        UPDATE payment_methods 
+        SET icon = CASE 
+          WHEN type = 'paypal' THEN 'CreditCard'
+          WHEN type = 'sepa' THEN 'Building2'
+          WHEN type = 'creditcard' THEN 'CreditCard'
+          WHEN type = 'eps' THEN 'Landmark'
+          ELSE 'CreditCard'
+        END
+        WHERE icon IS NULL
+      `);
+      console.log("Database: Icon column added to payment_methods with default values");
+    }
+    
+    console.log("Database: Icon columns migration complete");
+  } catch (error) {
+    console.error("Database: Icon migration error:", error);
+  }
+}
+
+/**
  * Migrate existing unencrypted payment methods to encrypted format
  */
 async function migratePaymentMethodEncryption(): Promise<void> {
@@ -91,6 +137,7 @@ export function initDatabase(): void {
       name TEXT NOT NULL,
       url TEXT NOT NULL,
       hash TEXT,
+      icon TEXT DEFAULT 'FileText',
       isActive BOOLEAN DEFAULT 1,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -100,6 +147,7 @@ export function initDatabase(): void {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       type TEXT NOT NULL CHECK (type IN ('paypal', 'sepa', 'creditcard', 'eps')),
+      icon TEXT,
       isActive BOOLEAN DEFAULT 1,
       details TEXT NOT NULL, -- JSON string with encrypted credentials
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -165,6 +213,9 @@ export function initDatabase(): void {
   }
 
   console.log("Database: Tables created and default settings inserted");
+  
+  // Migrate icon columns
+  migrateIconColumns();
   
   // Migrate existing unencrypted payment methods
   migratePaymentMethodEncryption().catch((error) => {
@@ -254,8 +305,9 @@ export const formQueries = {
         isActive: typeof isActive,
       });
 
-      const stmt = db.prepare("INSERT INTO forms (name, url, hash, isActive) VALUES (?, ?, ?, ?)");
-      const result = stmt.run(name, url, hash, isActive);
+      const icon = form.icon ? String(form.icon) : 'FileText';
+      const stmt = db.prepare("INSERT INTO forms (name, url, hash, icon, isActive) VALUES (?, ?, ?, ?, ?)");
+      const result = stmt.run(name, url, hash, icon, isActive);
       console.log("Database: Insert result:", result);
       return result;
     } catch (error) {
@@ -274,6 +326,7 @@ export const formQueries = {
     const name = form.name !== undefined ? String(form.name) : undefined;
     const url = form.url !== undefined ? String(form.url) : undefined;
     const hash = form.hash !== undefined ? (form.hash && form.hash.trim() ? String(form.hash.trim()) : null) : undefined;
+    const icon = form.icon !== undefined ? String(form.icon) : undefined;
     const isActive = form.isActive !== undefined ? (form.isActive === true ? 1 : 0) : undefined;
 
     // Only update fields that are provided
@@ -291,6 +344,10 @@ export const formQueries = {
     if (hash !== undefined) {
       updates.push("hash = ?");
       values.push(hash);
+    }
+    if (icon !== undefined) {
+      updates.push("icon = ?");
+      values.push(icon);
     }
     if (isActive !== undefined) {
       updates.push("isActive = ?");
@@ -431,8 +488,9 @@ export const paymentMethodQueries = {
         }
       }
 
-      const stmt = db.prepare("INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)");
-      return stmt.run(name, type, isActive, details);
+      const icon = method.icon ? String(method.icon) : null;
+      const stmt = db.prepare("INSERT INTO payment_methods (name, type, icon, isActive, details) VALUES (?, ?, ?, ?, ?)");
+      return stmt.run(name, type, icon, isActive, details);
     } catch (error) {
       console.error("Database: Error in payment method create method:", error);
       console.error("Database: Payment method error details:", {
@@ -448,6 +506,7 @@ export const paymentMethodQueries = {
     // Ensure all values are proper SQLite types
     const name = method.name !== undefined ? String(method.name) : undefined;
     const type = method.type !== undefined ? String(method.type) : undefined;
+    const icon = method.icon !== undefined ? String(method.icon) : undefined;
     const isActive = method.isActive !== undefined ? (method.isActive === true ? 1 : 0) : undefined;
     let details: string | undefined = undefined;
     
@@ -473,6 +532,10 @@ export const paymentMethodQueries = {
     if (type !== undefined) {
       updates.push("type = ?");
       values.push(type);
+    }
+    if (icon !== undefined) {
+      updates.push("icon = ?");
+      values.push(icon);
     }
     if (isActive !== undefined) {
       updates.push("isActive = ?");

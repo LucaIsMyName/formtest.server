@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
+import { CONFIG } from "../app.config";
 import PaymentMethodDialog from "../components/PaymentMethodDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/Button";
 import type { PaymentMethod } from "../../../common/types";
-import { CreditCard, Building2, Landmark } from "lucide-react";
+import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 
 const PaymentMethods: React.FC = () => {
   const { paymentMethods, isLoading, error, loadPaymentMethods, addPaymentMethod, updatePaymentMethod, deletePaymentMethod, togglePaymentMethodActive } = usePaymentMethodsStore();
@@ -70,19 +71,14 @@ const PaymentMethods: React.FC = () => {
     }
   };
 
-  const getPaymentTypeIcon = (type: PaymentMethod["type"]) => {
-    switch (type) {
-      case "paypal":
-        return <CreditCard size={14} className="text-blue-600 dark:text-blue-400" />;
-      case "sepa":
-        return <Building2 size={14} className="text-green-600 dark:text-green-400" />;
-      case "creditcard":
-        return <CreditCard size={14} className="text-purple-600 dark:text-purple-400" />;
-      case "eps":
-        return <Landmark size={14} className="text-orange-600 dark:text-orange-400" />;
-      default:
-        return <CreditCard size={14} className="text-gray-600 dark:text-gray-400" />;
-    }
+  const getPaymentMethodIcon = (method: PaymentMethod) => {
+    const iconName = method.icon || getDefaultPaymentIcon(method.type);
+    const colorClass = method.type === 'paypal' ? 'text-blue-600 dark:text-blue-400' :
+                       method.type === 'sepa' ? 'text-green-600 dark:text-green-400' :
+                       method.type === 'creditcard' ? 'text-purple-600 dark:text-purple-400' :
+                       method.type === 'eps' ? 'text-orange-600 dark:text-orange-400' :
+                       'text-gray-600 dark:text-gray-400';
+    return renderIcon(iconName, 14, colorClass);
   };
 
   const maskSensitiveData = (method: PaymentMethod) => {
@@ -103,7 +99,7 @@ const PaymentMethods: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white m-0">Bezahlmethoden</h1>
+        <h1 className={CONFIG.style.title.className}>Bezhalmethoden</h1>
         <Button
           onClick={handleAddMethod}
           variant="primary"
@@ -168,7 +164,7 @@ const PaymentMethods: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap ">
                       <div className="flex items-center gap-2">
-                        {getPaymentTypeIcon(method.type)}
+                        {getPaymentMethodIcon(method)}
                         <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
                       </div>
                     </td>

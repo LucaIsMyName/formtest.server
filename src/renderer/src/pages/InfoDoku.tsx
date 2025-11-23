@@ -1,9 +1,10 @@
 import React from "react";
+import { CONFIG } from "../app.config";
 
 const InfoDoku: React.FC = () => {
   return (
     <div className="max-w-4xl">
-      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">Info & Dokumentation</h1>
+      <h1 className={CONFIG.style.title.className}>Info & Doku</h1>
 
       {/* Impressum Section */}
       <div className="mb-6">

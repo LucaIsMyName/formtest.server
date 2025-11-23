@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Button from "./Button";
+import IconPicker from "./IconPicker";
+import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import type { PaymentMethod, PaymentMethodDetails } from "../../../common/types";
 
 interface PaymentMethodDialogProps {
@@ -14,10 +16,12 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
   const [methodData, setMethodData] = useState({
     name: "",
     type: "paypal" as PaymentMethod["type"],
+    icon: "CreditCard",
     isActive: true,
     details: {} as PaymentMethodDetails,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,6 +29,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
       setMethodData({
         name: editMethod.name,
         type: editMethod.type,
+        icon: editMethod.icon || getDefaultPaymentIcon(editMethod.type),
         isActive: editMethod.isActive,
         details: editMethod.details || {},
       });
@@ -32,6 +37,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
       setMethodData({
         name: "",
         type: "paypal",
+        icon: "CreditCard",
         isActive: true,
         details: {} as PaymentMethodDetails,
       });
@@ -110,6 +116,7 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
       const submitData = {
         name: methodData.name.trim(),
         type: methodData.type,
+        icon: methodData.icon,
         isActive: methodData.isActive,
         details: methodData.details || {},
       };
@@ -351,6 +358,20 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
 
             {renderTypeSpecificFields()}
 
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Icon
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowIconPicker(true)}
+                disabled={isLoading}
+                className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                {renderIcon(methodData.icon, 20, "text-blue-600 dark:text-blue-400")}
+                <span className="text-sm text-gray-700 dark:text-gray-300">{methodData.icon}</span>
+              </button>
+            </div>
+
             <div className="flex items-center mt-5">
               <input
                 type="checkbox"
@@ -387,6 +408,18 @@ const PaymentMethodDialog: React.FC<PaymentMethodDialogProps> = ({ isOpen, onClo
             </Button>
           </div>
         </form>
+
+        {/* Icon Picker Modal */}
+        {showIconPicker && (
+          <IconPicker
+            value={methodData.icon}
+            onChange={(icon) => {
+              setMethodData({ ...methodData, icon });
+              setShowIconPicker(false);
+            }}
+            onClose={() => setShowIconPicker(false)}
+          />
+        )}
       </div>
     </div>
   );

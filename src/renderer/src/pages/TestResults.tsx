@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import { useFormsStore } from "../store/useFormsStore";
+import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/Button";
@@ -85,7 +86,7 @@ const TestResults: React.FC = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Test Resultate</h1>
+        <h1 className={CONFIG.style.title.className}>Test Resultate</h1>
         <Button
           onClick={loadTestRuns}
           variant="secondary"

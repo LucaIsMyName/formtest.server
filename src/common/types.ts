@@ -3,6 +3,7 @@ export interface Form {
   name: string;
   url: string;
   hash?: string | null;
+  icon?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -33,6 +34,7 @@ export interface PaymentMethod {
   id: number;
   name: string;
   type: 'paypal' | 'sepa' | 'creditcard' | 'eps';
+  icon?: string;
   isActive: boolean;
   details: PaymentMethodDetails; // Encrypted JSON data
   createdAt: Date;

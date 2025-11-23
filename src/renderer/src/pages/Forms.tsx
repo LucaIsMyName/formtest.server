@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useFormsStore } from "../store/useFormsStore";
+import { CONFIG } from "../app.config";
 import FormDialog from "../components/FormDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/Button";
@@ -57,7 +58,7 @@ const Forms: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white m-0">Formulare</h1>
+        <h1 className={CONFIG.style.title.className}>Formulare</h1>
         <Button
           onClick={handleAddForm}
           variant="primary"
