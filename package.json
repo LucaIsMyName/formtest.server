@@ -64,6 +64,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@radix-ui/react-tooltip": "^1.2.8",
     "better-sqlite3": "^9.2.2",
+    "cmdk": "^1.1.1",
     "faker": "^6.6.6",
     "keytar": "^7.9.0",
     "lucide-react": "^0.554.0",

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import TrafficLights from "./TrafficLights";
-import { Play } from "lucide-react";
+import { Play, Search } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface CustomTitleBarProps {
   onRunAllTests?: () => void;
+  onOpenSearch?: () => void;
 }
 
-const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests }) => {
+const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSearch }) => {
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests }) => {
   return (
     <Tooltip.Provider>
       <div
-        className="relative h-12 border-b dark:border-b-gray-700 flex items-center justify-between pl-4 pr-3 select-none"
+        className="relative h-12 border-b dark:border-b-gray-700 flex items-center justify-between px-5 pr-4 select-none"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         <TrafficLights
           onClose={handleClose}
@@ -53,7 +54,23 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests }) => {
           onMaximize={handleMaximize}
           isMaximized={isMaximized}
         />
-        <div className="uppercase flex-1 text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 font-mono mx-4 leading-[0]">Formtest.Server</div>
+        <div className="uppercase text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 font-mono ml-4 leading-[0]">Formtest.Server</div>
+
+        {/* Global Search */}
+        <div
+          className="flex-1 flex items-center justify-center px-8"
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+          <button
+            onClick={onOpenSearch}
+            className="w-full max-w-md px-1 py-0.5 rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+            <Search
+              size={12}
+              className="ml-1"
+            />
+            <span className="text-[11px] font-mono">Suche</span>
+            <kbd className="ml-auto text-xs bg-white dark:bg-gray-900 px-1 py-0 rounded border border-gray-300 dark:border-gray-600">⌘K</kbd>
+          </button>
+        </div>
 
         {/* Quicklinks */}
         <div
@@ -63,7 +80,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests }) => {
             <Tooltip.Trigger asChild>
               <button
                 onClick={onRunAllTests}
-                className="p-1.5 rounded-md border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+                className="p-1 rounded-md border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
                 aria-label="Alle Tests ausführen">
                 <Play size={14} />
               </button>

@@ -4,6 +4,7 @@ import PaymentMethodDialog from "../components/PaymentMethodDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/Button";
 import type { PaymentMethod } from "../../../common/types";
+import { CreditCard, Building2, Landmark } from "lucide-react";
 
 const PaymentMethods: React.FC = () => {
   const { paymentMethods, isLoading, error, loadPaymentMethods, addPaymentMethod, updatePaymentMethod, deletePaymentMethod, togglePaymentMethodActive } = usePaymentMethodsStore();
@@ -59,13 +60,28 @@ const PaymentMethods: React.FC = () => {
       case "paypal":
         return "PayPal";
       case "sepa":
-        return "SEPA Direct Debit";
+        return "SEPA";
       case "creditcard":
         return "Credit Card";
       case "eps":
         return "EPS (Austria)";
       default:
         return type;
+    }
+  };
+
+  const getPaymentTypeIcon = (type: PaymentMethod["type"]) => {
+    switch (type) {
+      case "paypal":
+        return <CreditCard size={14} className="text-blue-600 dark:text-blue-400" />;
+      case "sepa":
+        return <Building2 size={14} className="text-green-600 dark:text-green-400" />;
+      case "creditcard":
+        return <CreditCard size={14} className="text-purple-600 dark:text-purple-400" />;
+      case "eps":
+        return <Landmark size={14} className="text-orange-600 dark:text-orange-400" />;
+      default:
+        return <CreditCard size={14} className="text-gray-600 dark:text-gray-400" />;
     }
   };
 
@@ -148,10 +164,13 @@ const PaymentMethods: React.FC = () => {
                     key={method.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900 dark:text-white">{method.name}</div>
+                      <div className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap ">
-                      <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
+                      <div className="flex items-center gap-2">
+                        {getPaymentTypeIcon(method.type)}
+                        <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>

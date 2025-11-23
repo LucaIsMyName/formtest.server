@@ -3,6 +3,7 @@ import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import Button from "./Button";
+import { CreditCard, Building2, Landmark } from "lucide-react";
 
 interface TestRunDialogProps {
   isOpen: boolean;
@@ -92,11 +93,11 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
 
   const handleRunTests = async () => {
     if (selectedFormIds.length === 0) {
-      setError("Please select at least one form to test");
+      setError("Bitte wähle mindestens ein Formular aus");
       return;
     }
     if (selectedPaymentMethodIds.length === 0) {
-      setError("Please select at least one payment method to test");
+      setError("Bitte wähle mindestens eine Bezahlmethode aus");
       return;
     }
 
@@ -104,7 +105,7 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
       await runTests(selectedFormIds, selectedPaymentMethodIds);
       onClose();
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Failed to start tests");
+      setError(error instanceof Error ? error.message : "Tests konnten nicht gestartet werden");
     }
   };
 
@@ -140,21 +141,21 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
             {/* Forms Selection */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Forms ({activeForms.length} available)</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Formulare ({activeForms.length} verfügbar)</h3>
                 <Button
                   onClick={handleSelectAllForms}
                   variant="ghost"
                   size="sm"
                   disabled={isRunning}
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                  {selectedFormIds.length === activeForms.length ? "Deselect All" : "Select All"}
+                  {selectedFormIds.length === activeForms.length ? "Alle abwählen" : "Alle auswählen"}
                 </Button>
               </div>
 
               {activeForms.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  <p>No active forms available</p>
-                  <p className="text-sm">Create and activate forms first</p>
+                  <p>Keine aktiven Formulare verfügbar</p>
+                  <p className="text-sm">Erstelle und aktiviere zuerst Formulare</p>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -182,21 +183,21 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
             {/* Payment Methods Selection */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Payment Methods ({activePaymentMethods.length} available)</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Bezahlmethoden ({activePaymentMethods.length} verfügbar)</h3>
                 <Button
                   onClick={handleSelectAllPaymentMethods}
                   variant="ghost"
                   size="sm"
                   disabled={isRunning}
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                  {selectedPaymentMethodIds.length === activePaymentMethods.length ? "Deselect All" : "Select All"}
+                  {selectedPaymentMethodIds.length === activePaymentMethods.length ? "Alle abwählen" : "Alle auswählen"}
                 </Button>
               </div>
 
               {activePaymentMethods.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  <p>No active payment methods available</p>
-                  <p className="text-sm">Create and activate payment methods first</p>
+                  <p>Keine aktiven Bezahlmethoden verfügbar</p>
+                  <p className="text-sm">Erstelle und aktiviere zuerst Bezahlmethoden</p>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -215,11 +216,11 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
                         <div className="text-sm font-medium text-gray-900 dark:text-white">{pm.name}</div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{pm.type}</div>
                       </div>
-                      <div className="text-xs text-gray-400 dark:text-gray-500">
-                        {pm.type === "paypal" && "💳"}
-                        {pm.type === "sepa" && "🏦"}
-                        {pm.type === "creditcard" && "💳"}
-                        {pm.type === "eps" && "🇦🇹"}
+                      <div className="text-gray-400 dark:text-gray-500">
+                        {pm.type === "paypal" && <CreditCard size={16} />}
+                        {pm.type === "sepa" && <Building2 size={16} />}
+                        {pm.type === "creditcard" && <CreditCard size={16} />}
+                        {pm.type === "eps" && <Landmark size={16} />}
                       </div>
                     </label>
                   ))}
@@ -228,14 +229,24 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
             </div>
           </div>
 
-          {/* Test Summary */}
+          {/* Test Zusammenfassung */}
           {totalTests > 0 && (
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
-              <h4 className="text-sm font-medium text-blue-900 dark:text-blue-200">Test Summary</h4>
-              <div className="mt-2 text-sm text-blue-800 dark:text-blue-300">
-                <p>• {selectedFormIds.length} form(s) selected</p>
-                <p>• {selectedPaymentMethodIds.length} payment method(s) selected</p>
-                <p className="font-medium">• Total tests to run: {totalTests}</p>
+            <div className="mt-6 flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-md">
+              <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+                <span className="flex items-center gap-2">
+                  <span className="font-mono text-blue-600 dark:text-blue-400 font-medium">{selectedFormIds.length}</span>
+                  <span>Formular{selectedFormIds.length !== 1 ? 'e' : ''}</span>
+                </span>
+                <span className="text-gray-300 dark:text-gray-600">×</span>
+                <span className="flex items-center gap-2">
+                  <span className="font-mono text-purple-600 dark:text-purple-400 font-medium">{selectedPaymentMethodIds.length}</span>
+                  <span>Bezahlmethode{selectedPaymentMethodIds.length !== 1 ? 'n' : ''}</span>
+                </span>
+                <span className="text-gray-300 dark:text-gray-600">=</span>
+                <span className="flex items-center gap-2">
+                  <span className="font-mono text-gray-900 dark:text-white font-semibold">{totalTests}</span>
+                  <span>Test{totalTests !== 1 ? 's' : ''}</span>
+                </span>
               </div>
             </div>
           )}

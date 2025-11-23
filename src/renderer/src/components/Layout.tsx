@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
 import TestRunDialog from "./TestRunDialog";
+import GlobalSearch from "./GlobalSearch";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen } from "lucide-react";
 
 interface LayoutProps {
@@ -12,11 +13,32 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [showTestDialog, setShowTestDialog] = useState(false);
   const [preselectAll, setPreselectAll] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
 
   const handleRunAllTests = () => {
     setPreselectAll(true);
     setShowTestDialog(true);
   };
+
+  const handleOpenSearch = () => {
+    setShowSearch(true);
+  };
+
+  // Keyboard shortcut: Cmd+K or Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setShowSearch(true);
+      }
+      if (e.key === 'Escape') {
+        setShowSearch(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const navigation = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -29,7 +51,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative">
-      <CustomTitleBar onRunAllTests={handleRunAllTests} />
+      <CustomTitleBar onRunAllTests={handleRunAllTests} onOpenSearch={handleOpenSearch} />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
@@ -68,6 +90,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           setPreselectAll(false);
         }}
         preselectAll={preselectAll}
+      />
+
+      {/* Global Search */}
+      <GlobalSearch
+        isOpen={showSearch}
+        onClose={() => setShowSearch(false)}
       />
     </div>
   );

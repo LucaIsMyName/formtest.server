@@ -117,7 +117,7 @@ const Forms: React.FC = () => {
                     key={form.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900 dark:text-white">{form.name}</div>
+                      <div className="font-medium text-sm text-gray-900 dark:text-white">{form.name}</div>
                       {form.hash && <div className="text-xs text-gray-500 dark:text-gray-400">Hash: {form.hash}</div>}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
