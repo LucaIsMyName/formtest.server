@@ -8371,7 +8371,7 @@ const TrafficLights = ({ onClose, onMinimize, onMaximize, isMaximized }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: "flex gap-2 relative z-[100]",
+      className: "flex gap-2 relative",
       style: { WebkitAppRegion: "no-drag" },
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -8439,7 +8439,7 @@ const CustomTitleBar = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: "relative h-10  flex items-center justify-between px-3 select-none",
+      className: "relative h-10 border-b dark:border-b-gray-700 flex items-center justify-between px-3 select-none",
       style: { WebkitAppRegion: "drag" },
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -8451,96 +8451,8 @@ const CustomTitleBar = () => {
             isMaximized
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "z-[100] flex-1 text-left text-xs font-normal text-gray-700 dark:text-gray-300 font-mono mx-5", children: "Formtest.Server" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "absolute inset-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "div",
-          {
-            className: "absolute left-0 right-0 pointer-events-none z-50",
-            style: { top: "0px" },
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute top-0 left-0 right-0",
-                  style: {
-                    height: "2.5rem",
-                    backdropFilter: "blur(10px)",
-                    WebkitBackdropFilter: "blur(10px)"
-                  }
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute left-0 right-0",
-                  style: {
-                    top: "0",
-                    height: "8px",
-                    backdropFilter: "blur(8px)",
-                    WebkitBackdropFilter: "blur(8px)"
-                  }
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute left-0 right-0",
-                  style: {
-                    top: "0",
-                    height: "8px",
-                    backdropFilter: "blur(6px)",
-                    WebkitBackdropFilter: "blur(6px)"
-                  }
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute left-0 right-0",
-                  style: {
-                    top: "0",
-                    height: "8px",
-                    backdropFilter: "blur(4px)",
-                    WebkitBackdropFilter: "blur(4px)"
-                  }
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute left-0 right-0",
-                  style: {
-                    top: "0px",
-                    height: "8px",
-                    backdropFilter: "blur(2px)",
-                    WebkitBackdropFilter: "blur(2px)"
-                  }
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute top-0 left-0 right-0 dark:hidden",
-                  style: {
-                    height: "2.5rem",
-                    background: "linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%)"
-                  }
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "div",
-                {
-                  className: "absolute top-0 left-0 right-0 hidden dark:block",
-                  style: {
-                    height: "2.5rem",
-                    background: "linear-gradient(to bottom, rgb(17, 24, 39) 0%, rgba(17, 24, 39, 0.8) 50%, transparent 100%)"
-                  }
-                }
-              )
-            ] })
-          }
-        ) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "uppercase flex-1 text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 font-mono mx-4 leading-[0]", children: "Formtest.Server" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16" })
       ]
     }
   );
@@ -8845,22 +8757,29 @@ const Layout = ({ children }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden relative", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-900 flex flex-col select-none", style: { width: "clamp(12rem, 15vw, 20rem)" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1", children: navigation.map((item) => {
-        const IconComponent = item.icon;
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          Link,
-          {
-            to: item.href,
-            className: `flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-300"}`,
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { size: 18 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
+        {
+          className: "bg-white dark:bg-gray-900 flex flex-col select-none",
+          style: { width: "clamp(12rem, 15vw, 20rem)" },
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
+            const IconComponent = item.icon;
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Link,
+              {
+                to: item.href,
+                className: `flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-300"}`,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { size: 18 }),
+                  item.name
+                ]
+              },
               item.name
-            ]
-          },
-          item.name
-        );
-      }) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 pb-4", children }) })
+            );
+          }) })
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 py-4", children }) })
     ] })
   ] });
 };
@@ -10067,11 +9986,11 @@ const Forms = () => {
       )
     ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full divide-y divide-gray-200 dark:divide-gray-700", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50 dark:bg-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Name" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "URL" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Status" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Erstellt" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Aktionen" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Name" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "URL" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Status" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Erstellt" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-right text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Aktionen" })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700", children: forms.map((form) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "tr",
@@ -10091,7 +10010,7 @@ const Forms = () => {
                 href: form.url,
                 target: "_blank",
                 rel: "noopener noreferrer",
-                className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-sm break-all",
+                className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all",
                 children: form.url
               }
             ) }),
@@ -10104,7 +10023,7 @@ const Forms = () => {
                 children: form.isActive ? "Active" : "Inactive"
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", children: formatDate(form.createdAt) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form.createdAt) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 Button,
@@ -10614,7 +10533,7 @@ const PaymentMethods = () => {
     }
   };
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("de-AT", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -10683,12 +10602,12 @@ const PaymentMethods = () => {
       )
     ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full divide-y divide-gray-200 dark:divide-gray-700", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50 dark:bg-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Name" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Typ" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Details" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Status" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Erstellt" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Aktionen" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Name" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Typ" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Details" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Status" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Erstellt" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-6 py-3 text-right text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", children: "Aktionen" })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700", children: paymentMethods.map((method) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "tr",
@@ -10696,8 +10615,8 @@ const PaymentMethods = () => {
           className: "hover:bg-gray-50 dark:hover:bg-gray-700",
           children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-gray-900 dark:text-white", children: method.name }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-gray-300", children: getPaymentTypeLabel(method.type) }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400 font-mono", children: maskSensitiveData(method) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap ", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-mono text-gray-900 dark:text-gray-300", children: getPaymentTypeLabel(method.type) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: maskSensitiveData(method) }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
@@ -10707,7 +10626,7 @@ const PaymentMethods = () => {
                 children: method.isActive ? "Active" : "Inactive"
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400", children: formatDate(method.createdAt) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(method.createdAt) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(
                 Button,

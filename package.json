@@ -64,6 +64,7 @@
     "@electron-toolkit/utils": "^3.0.0",
     "better-sqlite3": "^9.2.2",
     "faker": "^6.6.6",
+    "keytar": "^7.9.0",
     "lucide-react": "^0.554.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

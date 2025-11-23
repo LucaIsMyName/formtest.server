@@ -91,7 +91,7 @@ export function setupIpcHandlers(): void {
   // Payment method handlers with error handling
   ipcMain.handle("paymentMethods:getAll", async () => {
     try {
-      return paymentMethodQueries.getAll();
+      return await paymentMethodQueries.getAll();
     } catch (error) {
       console.error("IPC Error - paymentMethods:getAll:", error);
       throw error;
@@ -100,7 +100,7 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("paymentMethods:getById", async (_, id: number) => {
     try {
-      return paymentMethodQueries.getById(id);
+      return await paymentMethodQueries.getById(id);
     } catch (error) {
       console.error("IPC Error - paymentMethods:getById:", error);
       throw error;
@@ -116,7 +116,7 @@ export function setupIpcHandlers(): void {
 
     try {
       console.log("IPC Handler - About to call paymentMethodQueries.create");
-      const result = paymentMethodQueries.create(method);
+      const result = await paymentMethodQueries.create(method);
       console.log("IPC Handler - paymentMethods:create result:", result);
       console.log("=== IPC HANDLER SUCCESS ===");
       return result;
@@ -134,7 +134,7 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("paymentMethods:update", async (_, id: number, method: Partial<PaymentMethod>) => {
     try {
-      return paymentMethodQueries.update(id, method);
+      return await paymentMethodQueries.update(id, method);
     } catch (error) {
       console.error("IPC Error - paymentMethods:update:", error);
       throw error;
@@ -172,7 +172,11 @@ export function setupIpcHandlers(): void {
 
       // Get forms and payment methods from database
       const forms = formIds.map((id) => formQueries.getById(id)).filter((form): form is Form => form !== undefined);
-      const paymentMethods = paymentMethodIds.map((id) => paymentMethodQueries.getById(id)).filter((pm): pm is PaymentMethod => pm !== undefined);
+      
+      // Payment methods are now async due to encryption
+      const paymentMethodPromises = paymentMethodIds.map((id) => paymentMethodQueries.getById(id));
+      const paymentMethodsResolved = await Promise.all(paymentMethodPromises);
+      const paymentMethods = paymentMethodsResolved.filter((pm): pm is PaymentMethod => pm !== undefined);
 
       console.log(`Found ${forms.length} forms and ${paymentMethods.length} payment methods`);
 

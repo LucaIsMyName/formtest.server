@@ -2,8 +2,53 @@ import Database from "better-sqlite3";
 import { app } from "electron";
 import { join } from "path";
 import type { Form, PaymentMethod, GlobalSetting, TestRun } from "../common/types";
+import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 
 let db: Database.Database;
+
+/**
+ * Migrate existing unencrypted payment methods to encrypted format
+ */
+async function migratePaymentMethodEncryption(): Promise<void> {
+  console.log("Database: Checking for unencrypted payment methods...");
+  
+  try {
+    const methods = db.prepare("SELECT id, details FROM payment_methods").all() as Array<{ id: number; details: string }>;
+    
+    let migratedCount = 0;
+    
+    for (const method of methods) {
+      // Check if already encrypted
+      if (!isEncrypted(method.details)) {
+        console.log(`Database: Migrating payment method ${method.id} to encrypted format`);
+        
+        try {
+          // Parse the unencrypted JSON
+          const detailsObj = JSON.parse(method.details);
+          
+          // Encrypt it
+          const encryptedDetails = await encrypt(detailsObj);
+          
+          // Update in database
+          db.prepare("UPDATE payment_methods SET details = ? WHERE id = ?").run(encryptedDetails, method.id);
+          
+          migratedCount++;
+        } catch (error) {
+          console.error(`Database: Failed to migrate payment method ${method.id}:`, error);
+        }
+      }
+    }
+    
+    if (migratedCount > 0) {
+      console.log(`Database: Successfully migrated ${migratedCount} payment method(s) to encrypted format`);
+    } else {
+      console.log("Database: No unencrypted payment methods found");
+    }
+  } catch (error) {
+    console.error("Database: Error during payment method migration:", error);
+    throw error;
+  }
+}
 
 export function initDatabase(): void {
   console.log("=== INITIALIZING DATABASE ===");
@@ -119,6 +164,12 @@ export function initDatabase(): void {
   }
 
   console.log("Database: Tables created and default settings inserted");
+  
+  // Migrate existing unencrypted payment methods
+  migratePaymentMethodEncryption().catch((error) => {
+    console.error("Database: Failed to migrate payment methods:", error);
+  });
+  
   console.log("Database: Initialization complete");
 }
 
@@ -279,28 +330,61 @@ export const formQueries = {
 // Payment method operations
 console.log("Database: Initializing paymentMethodQueries...");
 export const paymentMethodQueries = {
-  getAll: () => {
+  getAll: async () => {
     const methods = db.prepare("SELECT * FROM payment_methods ORDER BY name").all() as any[];
-    return methods.map((method) => ({
-      ...method,
-      isActive: Boolean(method.isActive),
-      details: JSON.parse(method.details),
-      createdAt: new Date(method.createdAt),
-      updatedAt: new Date(method.updatedAt),
-    })) as PaymentMethod[];
+    const decryptedMethods = await Promise.all(
+      methods.map(async (method) => {
+        let details;
+        try {
+          // Check if details are encrypted
+          if (isEncrypted(method.details)) {
+            details = await decrypt(method.details);
+          } else {
+            // Legacy unencrypted data
+            details = JSON.parse(method.details);
+          }
+        } catch (error) {
+          console.error("Database: Failed to decrypt payment method details:", error);
+          details = {};
+        }
+        return {
+          ...method,
+          isActive: Boolean(method.isActive),
+          details,
+          createdAt: new Date(method.createdAt),
+          updatedAt: new Date(method.updatedAt),
+        };
+      })
+    );
+    return decryptedMethods as PaymentMethod[];
   },
-  getById: (id: number) => {
+  getById: async (id: number) => {
     const method = db.prepare("SELECT * FROM payment_methods WHERE id = ?").get(id) as any;
     if (!method) return undefined;
+    
+    let details;
+    try {
+      // Check if details are encrypted
+      if (isEncrypted(method.details)) {
+        details = await decrypt(method.details);
+      } else {
+        // Legacy unencrypted data
+        details = JSON.parse(method.details);
+      }
+    } catch (error) {
+      console.error("Database: Failed to decrypt payment method details:", error);
+      details = {};
+    }
+    
     return {
       ...method,
       isActive: Boolean(method.isActive),
-      details: JSON.parse(method.details),
+      details,
       createdAt: new Date(method.createdAt),
       updatedAt: new Date(method.updatedAt),
     } as PaymentMethod;
   },
-  create: (method: Omit<PaymentMethod, "id" | "createdAt" | "updatedAt">) => {
+  create: async (method: Omit<PaymentMethod, "id" | "createdAt" | "updatedAt">) => {
     // Ultra-robust data sanitization
     let name: string = "";
     let type: string = "paypal";
@@ -332,15 +416,17 @@ export const paymentMethodQueries = {
         isActive = 0;
       }
 
-      // Handle details - ensure it's valid JSON
+      // Handle details - encrypt sensitive data
       if (method.details === null || method.details === undefined) {
-        details = "{}";
+        details = await encrypt({});
       } else {
         try {
-          details = JSON.stringify(method.details);
-        } catch (jsonError) {
-          console.error("Database: Failed to stringify details:", jsonError);
-          details = "{}";
+          // Encrypt the payment details
+          details = await encrypt(method.details);
+          console.log("Database: Payment details encrypted successfully");
+        } catch (encryptError) {
+          console.error("Database: Failed to encrypt details:", encryptError);
+          throw new Error("Failed to encrypt payment details");
         }
       }
 
@@ -350,19 +436,30 @@ export const paymentMethodQueries = {
       console.error("Database: Error in payment method create method:", error);
       console.error("Database: Payment method error details:", {
         originalMethod: method,
-        sanitizedValues: { name, type, isActive, details },
+        sanitizedValues: { name, type, isActive, details: "[ENCRYPTED]" },
       });
       throw error;
     }
   },
-  update: (id: number, method: Partial<PaymentMethod>) => {
+  update: async (id: number, method: Partial<PaymentMethod>) => {
     console.log("Database: Updating payment method with data:", { id, method });
 
     // Ensure all values are proper SQLite types
     const name = method.name !== undefined ? String(method.name) : undefined;
     const type = method.type !== undefined ? String(method.type) : undefined;
     const isActive = method.isActive !== undefined ? (method.isActive === true ? 1 : 0) : undefined;
-    const details = method.details !== undefined ? JSON.stringify(method.details) : undefined;
+    let details: string | undefined = undefined;
+    
+    // Encrypt details if provided
+    if (method.details !== undefined) {
+      try {
+        details = await encrypt(method.details);
+        console.log("Database: Payment details encrypted for update");
+      } catch (encryptError) {
+        console.error("Database: Failed to encrypt details:", encryptError);
+        throw new Error("Failed to encrypt payment details");
+      }
+    }
 
     // Only update fields that are provided
     const updates = [];
@@ -389,7 +486,7 @@ export const paymentMethodQueries = {
     values.push(id);
 
     const sql = `UPDATE payment_methods SET ${updates.join(", ")} WHERE id = ?`;
-    console.log("Database: Payment method update SQL:", sql, "Values:", values);
+    console.log("Database: Payment method update SQL:", sql, "Values: [ENCRYPTED]");
 
     const stmt = db.prepare(sql);
     return stmt.run(...values);

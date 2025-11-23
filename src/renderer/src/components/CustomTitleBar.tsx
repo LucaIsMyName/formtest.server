@@ -38,7 +38,7 @@ const CustomTitleBar: React.FC = () => {
 
   return (
     <div
-      className="relative h-10 border-b flex items-center justify-between px-3 select-none"
+      className="relative h-10 border-b dark:border-b-gray-700 flex items-center justify-between px-3 select-none"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
       <TrafficLights
         onClose={handleClose}

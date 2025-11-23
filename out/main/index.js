@@ -3,9 +3,133 @@ const electron = require("electron");
 const path = require("path");
 const utils = require("@electron-toolkit/utils");
 const Database = require("better-sqlite3");
+const crypto = require("crypto");
+const keytar = require("keytar");
 const child_process = require("child_process");
 const events = require("events");
+function _interopNamespaceDefault(e) {
+  const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
+  if (e) {
+    for (const k in e) {
+      if (k !== "default") {
+        const d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: () => e[k]
+        });
+      }
+    }
+  }
+  n.default = e;
+  return Object.freeze(n);
+}
+const keytar__namespace = /* @__PURE__ */ _interopNamespaceDefault(keytar);
+const SERVICE_NAME = "FormTestServer";
+const ACCOUNT_NAME = "payment-encryption-key";
+const ALGORITHM = "aes-256-gcm";
+const KEY_LENGTH = 32;
+const IV_LENGTH = 16;
+const SALT_LENGTH = 32;
+async function getEncryptionKey() {
+  try {
+    const existingKey = await keytar__namespace.getPassword(SERVICE_NAME, ACCOUNT_NAME);
+    if (existingKey) {
+      console.log("Encryption: Using existing encryption key from keychain");
+      return Buffer.from(existingKey, "hex");
+    }
+    console.log("Encryption: Generating new encryption key");
+    const newKey = crypto.randomBytes(KEY_LENGTH);
+    await keytar__namespace.setPassword(SERVICE_NAME, ACCOUNT_NAME, newKey.toString("hex"));
+    console.log("Encryption: New key stored in keychain");
+    return newKey;
+  } catch (error) {
+    console.error("Encryption: Failed to access keychain:", error);
+    throw new Error("Failed to initialize encryption key");
+  }
+}
+async function encrypt(plaintext) {
+  try {
+    const plaintextStr = typeof plaintext === "string" ? plaintext : JSON.stringify(plaintext);
+    const masterKey = await getEncryptionKey();
+    const iv = crypto.randomBytes(IV_LENGTH);
+    const salt = crypto.randomBytes(SALT_LENGTH);
+    const key = crypto.scryptSync(masterKey, salt, KEY_LENGTH);
+    const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
+    let encrypted = cipher.update(plaintextStr, "utf8", "base64");
+    encrypted += cipher.final("base64");
+    const authTag = cipher.getAuthTag();
+    const result = [
+      iv.toString("base64"),
+      authTag.toString("base64"),
+      salt.toString("base64"),
+      encrypted
+    ].join(":");
+    return result;
+  } catch (error) {
+    console.error("Encryption: Failed to encrypt data:", error);
+    throw new Error("Encryption failed");
+  }
+}
+async function decrypt(encryptedData) {
+  try {
+    const parts = encryptedData.split(":");
+    if (parts.length !== 4) {
+      throw new Error("Invalid encrypted data format");
+    }
+    const [ivBase64, authTagBase64, saltBase64, ciphertext] = parts;
+    const iv = Buffer.from(ivBase64, "base64");
+    const authTag = Buffer.from(authTagBase64, "base64");
+    const salt = Buffer.from(saltBase64, "base64");
+    const masterKey = await getEncryptionKey();
+    const key = crypto.scryptSync(masterKey, salt, KEY_LENGTH);
+    const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
+    decipher.setAuthTag(authTag);
+    let decrypted = decipher.update(ciphertext, "base64", "utf8");
+    decrypted += decipher.final("utf8");
+    try {
+      return JSON.parse(decrypted);
+    } catch {
+      return decrypted;
+    }
+  } catch (error) {
+    console.error("Encryption: Failed to decrypt data:", error);
+    throw new Error("Decryption failed");
+  }
+}
+function isEncrypted(data) {
+  if (typeof data !== "string") return false;
+  const parts = data.split(":");
+  return parts.length === 4;
+}
 let db;
+async function migratePaymentMethodEncryption() {
+  console.log("Database: Checking for unencrypted payment methods...");
+  try {
+    const methods = db.prepare("SELECT id, details FROM payment_methods").all();
+    let migratedCount = 0;
+    for (const method of methods) {
+      if (!isEncrypted(method.details)) {
+        console.log(`Database: Migrating payment method ${method.id} to encrypted format`);
+        try {
+          const detailsObj = JSON.parse(method.details);
+          const encryptedDetails = await encrypt(detailsObj);
+          db.prepare("UPDATE payment_methods SET details = ? WHERE id = ?").run(encryptedDetails, method.id);
+          migratedCount++;
+        } catch (error) {
+          console.error(`Database: Failed to migrate payment method ${method.id}:`, error);
+        }
+      }
+    }
+    if (migratedCount > 0) {
+      console.log(`Database: Successfully migrated ${migratedCount} payment method(s) to encrypted format`);
+    } else {
+      console.log("Database: No unencrypted payment methods found");
+    }
+  } catch (error) {
+    console.error("Database: Error during payment method migration:", error);
+    throw error;
+  }
+}
 function initDatabase() {
   console.log("=== INITIALIZING DATABASE ===");
   const dbPath = path.join(electron.app.getPath("userData"), "formtest.db");
@@ -104,6 +228,9 @@ function initDatabase() {
     insertSetting.run(setting.key, setting.value, setting.description);
   }
   console.log("Database: Tables created and default settings inserted");
+  migratePaymentMethodEncryption().catch((error) => {
+    console.error("Database: Failed to migrate payment methods:", error);
+  });
   console.log("Database: Initialization complete");
 }
 const formQueries = {
@@ -230,28 +357,55 @@ const formQueries = {
 };
 console.log("Database: Initializing paymentMethodQueries...");
 const paymentMethodQueries = {
-  getAll: () => {
+  getAll: async () => {
     const methods = db.prepare("SELECT * FROM payment_methods ORDER BY name").all();
-    return methods.map((method) => ({
-      ...method,
-      isActive: Boolean(method.isActive),
-      details: JSON.parse(method.details),
-      createdAt: new Date(method.createdAt),
-      updatedAt: new Date(method.updatedAt)
-    }));
+    const decryptedMethods = await Promise.all(
+      methods.map(async (method) => {
+        let details;
+        try {
+          if (isEncrypted(method.details)) {
+            details = await decrypt(method.details);
+          } else {
+            details = JSON.parse(method.details);
+          }
+        } catch (error) {
+          console.error("Database: Failed to decrypt payment method details:", error);
+          details = {};
+        }
+        return {
+          ...method,
+          isActive: Boolean(method.isActive),
+          details,
+          createdAt: new Date(method.createdAt),
+          updatedAt: new Date(method.updatedAt)
+        };
+      })
+    );
+    return decryptedMethods;
   },
-  getById: (id) => {
+  getById: async (id) => {
     const method = db.prepare("SELECT * FROM payment_methods WHERE id = ?").get(id);
     if (!method) return void 0;
+    let details;
+    try {
+      if (isEncrypted(method.details)) {
+        details = await decrypt(method.details);
+      } else {
+        details = JSON.parse(method.details);
+      }
+    } catch (error) {
+      console.error("Database: Failed to decrypt payment method details:", error);
+      details = {};
+    }
     return {
       ...method,
       isActive: Boolean(method.isActive),
-      details: JSON.parse(method.details),
+      details,
       createdAt: new Date(method.createdAt),
       updatedAt: new Date(method.updatedAt)
     };
   },
-  create: (method) => {
+  create: async (method) => {
     let name = "";
     let type = "paypal";
     let isActive = 0;
@@ -276,13 +430,14 @@ const paymentMethodQueries = {
         isActive = 0;
       }
       if (method.details === null || method.details === void 0) {
-        details = "{}";
+        details = await encrypt({});
       } else {
         try {
-          details = JSON.stringify(method.details);
-        } catch (jsonError) {
-          console.error("Database: Failed to stringify details:", jsonError);
-          details = "{}";
+          details = await encrypt(method.details);
+          console.log("Database: Payment details encrypted successfully");
+        } catch (encryptError) {
+          console.error("Database: Failed to encrypt details:", encryptError);
+          throw new Error("Failed to encrypt payment details");
         }
       }
       const stmt = db.prepare("INSERT INTO payment_methods (name, type, isActive, details) VALUES (?, ?, ?, ?)");
@@ -291,17 +446,26 @@ const paymentMethodQueries = {
       console.error("Database: Error in payment method create method:", error);
       console.error("Database: Payment method error details:", {
         originalMethod: method,
-        sanitizedValues: { name, type, isActive, details }
+        sanitizedValues: { name, type, isActive, details: "[ENCRYPTED]" }
       });
       throw error;
     }
   },
-  update: (id, method) => {
+  update: async (id, method) => {
     console.log("Database: Updating payment method with data:", { id, method });
     const name = method.name !== void 0 ? String(method.name) : void 0;
     const type = method.type !== void 0 ? String(method.type) : void 0;
     const isActive = method.isActive !== void 0 ? method.isActive === true ? 1 : 0 : void 0;
-    const details = method.details !== void 0 ? JSON.stringify(method.details) : void 0;
+    let details = void 0;
+    if (method.details !== void 0) {
+      try {
+        details = await encrypt(method.details);
+        console.log("Database: Payment details encrypted for update");
+      } catch (encryptError) {
+        console.error("Database: Failed to encrypt details:", encryptError);
+        throw new Error("Failed to encrypt payment details");
+      }
+    }
     const updates = [];
     const values = [];
     if (name !== void 0) {
@@ -323,7 +487,7 @@ const paymentMethodQueries = {
     updates.push("updatedAt = CURRENT_TIMESTAMP");
     values.push(id);
     const sql = `UPDATE payment_methods SET ${updates.join(", ")} WHERE id = ?`;
-    console.log("Database: Payment method update SQL:", sql, "Values:", values);
+    console.log("Database: Payment method update SQL:", sql, "Values: [ENCRYPTED]");
     const stmt = db.prepare(sql);
     return stmt.run(...values);
   },
@@ -628,7 +792,7 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("paymentMethods:getAll", async () => {
     try {
-      return paymentMethodQueries.getAll();
+      return await paymentMethodQueries.getAll();
     } catch (error) {
       console.error("IPC Error - paymentMethods:getAll:", error);
       throw error;
@@ -636,7 +800,7 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("paymentMethods:getById", async (_, id) => {
     try {
-      return paymentMethodQueries.getById(id);
+      return await paymentMethodQueries.getById(id);
     } catch (error) {
       console.error("IPC Error - paymentMethods:getById:", error);
       throw error;
@@ -650,7 +814,7 @@ function setupIpcHandlers() {
     console.log("IPC Handler - paymentMethodQueries.create available:", !!paymentMethodQueries?.create);
     try {
       console.log("IPC Handler - About to call paymentMethodQueries.create");
-      const result = paymentMethodQueries.create(method);
+      const result = await paymentMethodQueries.create(method);
       console.log("IPC Handler - paymentMethods:create result:", result);
       console.log("=== IPC HANDLER SUCCESS ===");
       return result;
@@ -667,7 +831,7 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("paymentMethods:update", async (_, id, method) => {
     try {
-      return paymentMethodQueries.update(id, method);
+      return await paymentMethodQueries.update(id, method);
     } catch (error) {
       console.error("IPC Error - paymentMethods:update:", error);
       throw error;
@@ -695,7 +859,9 @@ function setupIpcHandlers() {
       console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
       const testRunIds = [];
       const forms = formIds.map((id) => formQueries.getById(id)).filter((form) => form !== void 0);
-      const paymentMethods = paymentMethodIds.map((id) => paymentMethodQueries.getById(id)).filter((pm) => pm !== void 0);
+      const paymentMethodPromises = paymentMethodIds.map((id) => paymentMethodQueries.getById(id));
+      const paymentMethodsResolved = await Promise.all(paymentMethodPromises);
+      const paymentMethods = paymentMethodsResolved.filter((pm) => pm !== void 0);
       console.log(`Found ${forms.length} forms and ${paymentMethods.length} payment methods`);
       const settings = settingsQueries.getAll();
       const settingsMap = settings.reduce((acc, setting) => {

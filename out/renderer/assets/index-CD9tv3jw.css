@@ -432,17 +432,11 @@ video {
 [hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
-.pointer-events-none {
-  pointer-events: none;
-}
 .visible {
   visibility: visible;
 }
 .fixed {
   position: fixed;
-}
-.absolute {
-  position: absolute;
 }
 .relative {
   position: relative;
@@ -450,20 +444,8 @@ video {
 .inset-0 {
   inset: 0px;
 }
-.left-0 {
-  left: 0px;
-}
-.right-0 {
-  right: 0px;
-}
-.top-0 {
-  top: 0px;
-}
 .z-50 {
   z-index: 50;
-}
-.z-\[100\] {
-  z-index: 100;
 }
 .m-0 {
   margin: 0px;
@@ -471,10 +453,6 @@ video {
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem;
-}
-.mx-5 {
-  margin-left: 1.25rem;
-  margin-right: 1.25rem;
 }
 .mb-1 {
   margin-bottom: 0.25rem;
@@ -535,9 +513,6 @@ video {
 }
 .grid {
   display: grid;
-}
-.hidden {
-  display: none;
 }
 .h-10 {
   height: 2.5rem;
@@ -904,9 +879,6 @@ video {
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
-.pb-4 {
-  padding-bottom: 1rem;
-}
 .pb-6 {
   padding-bottom: 1.5rem;
 }
@@ -925,6 +897,12 @@ video {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+.text-\[10px\] {
+  font-size: 10px;
+}
+.text-\[11px\] {
+  font-size: 11px;
 }
 .text-base {
   font-size: 1rem;
@@ -963,6 +941,9 @@ video {
 }
 .capitalize {
   text-transform: capitalize;
+}
+.leading-\[0\] {
+  line-height: 0;
 }
 .tracking-wider {
   letter-spacing: 0.05em;
@@ -1073,10 +1054,6 @@ video {
 }
 .outline {
   outline-style: solid;
-}
-.blur {
-  --tw-blur: blur(8px);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -1394,12 +1371,6 @@ select.input {
   }
 }
 @media (prefers-color-scheme: dark) {
-  .dark\:block {
-    display: block;
-  }
-  .dark\:hidden {
-    display: none;
-  }
   .dark\:divide-gray-700 > :not([hidden]) ~ :not([hidden]) {
     --tw-divide-opacity: 1;
     border-color: rgb(55 65 81 / var(--tw-divide-opacity, 1));
@@ -1427,6 +1398,10 @@ select.input {
   .dark\:border-red-800 {
     --tw-border-opacity: 1;
     border-color: rgb(153 27 27 / var(--tw-border-opacity, 1));
+  }
+  .dark\:border-b-gray-700 {
+    --tw-border-opacity: 1;
+    border-bottom-color: rgb(55 65 81 / var(--tw-border-opacity, 1));
   }
   .dark\:bg-blue-900\/20 {
     background-color: rgb(30 58 138 / 0.2);
