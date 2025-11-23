@@ -1,4 +1,4 @@
-import type { Form, PaymentMethod, TestRun, GlobalSetting } from '../../../common/types'
+import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult } from '../../../common/types'
 
 declare global {
   interface Window {
@@ -38,6 +38,10 @@ declare global {
         minimize: () => Promise<void>
         maximize: () => Promise<void>
         isMaximized: () => Promise<boolean>
+      }
+      database: {
+        export: (options: ImportOptions) => Promise<{ success: boolean; message: string; filePath?: string }>
+        import: (mode: 'overwrite' | 'merge', options: ImportOptions) => Promise<ImportResult>
       }
     }
   }

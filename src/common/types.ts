@@ -87,3 +87,40 @@ export interface UserData {
   birthday?: string;
   company?: string;
 }
+
+export interface ExportData {
+  version: string;
+  exportedAt: string;
+  schemaVersion: number;
+  data: {
+    forms?: Form[];
+    paymentMethods?: PaymentMethod[];
+    testRuns?: TestRun[];
+    settings?: GlobalSetting[];
+  };
+}
+
+export interface ImportOptions {
+  includeForms: boolean;
+  includePaymentMethods: boolean;
+  includeTestRuns: boolean;
+  includeSettings: boolean;
+}
+
+export interface ImportResult {
+  success: boolean;
+  imported: {
+    forms: number;
+    paymentMethods: number;
+    testRuns: number;
+    settings: number;
+  };
+  skipped: {
+    forms: number;
+    paymentMethods: number;
+    testRuns: number;
+    settings: number;
+  };
+  errors: string[];
+  warnings: string[];
+}

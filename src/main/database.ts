@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import { app } from "electron";
 import { join } from "path";
-import type { Form, PaymentMethod, GlobalSetting, TestRun } from "../common/types";
+import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult } from "../common/types";
 import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 
 let db: Database.Database;
@@ -598,4 +598,351 @@ export const testRunQueries = {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
     return stmt.run(id);
   },
+};
+
+// Export/Import operations
+export const exportQueries = {
+  async exportAll(options: ImportOptions): Promise<ExportData> {
+    console.log("Database: Exporting data with options:", options);
+    
+    const exportData: ExportData = {
+      version: "1.0.0",
+      exportedAt: new Date().toISOString(),
+      schemaVersion: 1,
+      data: {}
+    };
+
+    try {
+      if (options.includeForms) {
+        exportData.data.forms = formQueries.getAll();
+        console.log(`Database: Exported ${exportData.data.forms.length} forms`);
+      }
+
+      if (options.includePaymentMethods) {
+        const methods = await paymentMethodQueries.getAll();
+        // Payment methods are already decrypted by getAll()
+        exportData.data.paymentMethods = methods;
+        console.log(`Database: Exported ${exportData.data.paymentMethods?.length || 0} payment methods`);
+      }
+
+      if (options.includeTestRuns) {
+        exportData.data.testRuns = testRunQueries.getAll();
+        console.log(`Database: Exported ${exportData.data.testRuns.length} test runs`);
+      }
+
+      if (options.includeSettings) {
+        exportData.data.settings = settingsQueries.getAll();
+        console.log(`Database: Exported ${exportData.data.settings.length} settings`);
+      }
+
+      return exportData;
+    } catch (error) {
+      console.error("Database: Export failed:", error);
+      throw error;
+    }
+  }
+};
+
+export const importQueries = {
+  async importOverwrite(data: ExportData, options: ImportOptions): Promise<ImportResult> {
+    console.log("Database: Starting overwrite import");
+    
+    const result: ImportResult = {
+      success: true,
+      imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      errors: [],
+      warnings: []
+    };
+
+    try {
+      db.exec("BEGIN TRANSACTION");
+
+      // Delete existing data for selected tables
+      if (options.includeForms && data.data.forms) {
+        db.exec("DELETE FROM forms");
+        console.log("Database: Cleared forms table");
+      }
+
+      if (options.includePaymentMethods && data.data.paymentMethods) {
+        db.exec("DELETE FROM payment_methods");
+        console.log("Database: Cleared payment_methods table");
+      }
+
+      if (options.includeTestRuns && data.data.testRuns) {
+        db.exec("DELETE FROM test_runs");
+        console.log("Database: Cleared test_runs table");
+      }
+
+      if (options.includeSettings && data.data.settings) {
+        // Keep theme setting
+        db.exec("DELETE FROM global_settings WHERE key != 'theme'");
+        console.log("Database: Cleared settings (kept theme)");
+      }
+
+      // Import forms
+      if (options.includeForms && data.data.forms) {
+        for (const form of data.data.forms) {
+          try {
+            const formData = {
+              name: form.name,
+              url: form.url,
+              hash: form.hash || null,
+              icon: form.icon || "FileText",
+              isActive: form.isActive
+            };
+            formQueries.create(formData);
+            result.imported.forms++;
+          } catch (error: any) {
+            result.errors.push(`Failed to import form "${form.name}": ${error.message}`);
+          }
+        }
+      }
+
+      // Import payment methods
+      if (options.includePaymentMethods && data.data.paymentMethods) {
+        for (const pm of data.data.paymentMethods) {
+          try {
+            // Re-encrypt with current machine's key
+            const pmData = {
+              name: pm.name,
+              type: pm.type,
+              icon: pm.icon || undefined,
+              isActive: pm.isActive,
+              details: pm.details // Already decrypted, will be encrypted by create()
+            };
+            await paymentMethodQueries.create(pmData);
+            result.imported.paymentMethods++;
+          } catch (error: any) {
+            result.errors.push(`Failed to import payment method "${pm.name}": ${error.message}`);
+          }
+        }
+      }
+
+      // Import test runs
+      if (options.includeTestRuns && data.data.testRuns) {
+        for (const tr of data.data.testRuns) {
+          try {
+            testRunQueries.create({
+              formId: tr.formId,
+              paymentMethodId: tr.paymentMethodId,
+              status: tr.status,
+              errorMessage: tr.errorMessage,
+              screenshotPath: tr.screenshotPath,
+              logDetails: tr.logDetails,
+              durationMs: tr.durationMs
+            });
+            result.imported.testRuns++;
+          } catch (error: any) {
+            result.errors.push(`Failed to import test run: ${error.message}`);
+          }
+        }
+      }
+
+      // Import settings
+      if (options.includeSettings && data.data.settings) {
+        for (const setting of data.data.settings) {
+          try {
+            if (setting.key !== 'theme') { // Skip theme to keep user's preference
+              settingsQueries.set(setting.key, setting.value, setting.description);
+              result.imported.settings++;
+            }
+          } catch (error: any) {
+            result.errors.push(`Failed to import setting "${setting.key}": ${error.message}`);
+          }
+        }
+      }
+
+      db.exec("COMMIT");
+      console.log("Database: Overwrite import completed successfully");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      result.success = false;
+      result.errors.push(`Import failed: ${(error as any).message}`);
+      console.error("Database: Import failed, rolled back:", error);
+    }
+
+    return result;
+  },
+
+  async importMerge(data: ExportData, options: ImportOptions): Promise<ImportResult> {
+    console.log("Database: Starting merge import");
+    
+    const result: ImportResult = {
+      success: true,
+      imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      errors: [],
+      warnings: []
+    };
+
+    const idMap = {
+      forms: new Map<number, number>(),
+      paymentMethods: new Map<number, number>()
+    };
+
+    try {
+      db.exec("BEGIN TRANSACTION");
+
+      // Merge forms
+      if (options.includeForms && data.data.forms) {
+        const existingForms = formQueries.getAll();
+        
+        for (const importedForm of data.data.forms) {
+          try {
+            // Check if form exists (by name + url)
+            const existing = existingForms.find(
+              f => f.name === importedForm.name && f.url === importedForm.url
+            );
+
+            if (existing) {
+              // Check if different
+              const isDifferent = 
+                existing.hash !== importedForm.hash ||
+                existing.icon !== importedForm.icon ||
+                existing.isActive !== importedForm.isActive;
+
+              if (isDifferent) {
+                // Update existing
+                formQueries.update(existing.id, {
+                  hash: importedForm.hash || null,
+                  icon: importedForm.icon || "FileText",
+                  isActive: importedForm.isActive
+                });
+                result.imported.forms++;
+                idMap.forms.set(importedForm.id, existing.id);
+                result.warnings.push(`Updated form "${importedForm.name}"`);
+              } else {
+                result.skipped.forms++;
+                idMap.forms.set(importedForm.id, existing.id);
+              }
+            } else {
+              // Create new
+              const newForm = formQueries.create({
+                name: importedForm.name,
+                url: importedForm.url,
+                hash: importedForm.hash || null,
+                icon: importedForm.icon || "FileText",
+                isActive: importedForm.isActive
+              });
+              result.imported.forms++;
+              idMap.forms.set(importedForm.id, Number(newForm.lastInsertRowid));
+            }
+          } catch (error: any) {
+            result.errors.push(`Failed to merge form "${importedForm.name}": ${error.message}`);
+          }
+        }
+      }
+
+      // Merge payment methods
+      if (options.includePaymentMethods && data.data.paymentMethods) {
+        const existingMethods = await paymentMethodQueries.getAll();
+        
+        for (const importedPM of data.data.paymentMethods) {
+          try {
+            // Check if exists (by name + type)
+            const existing = existingMethods.find(
+              (pm: PaymentMethod) => pm.name === importedPM.name && pm.type === importedPM.type
+            );
+
+            if (existing) {
+              // Always update payment methods in merge mode (details might have changed)
+              await paymentMethodQueries.update(existing.id, {
+                icon: importedPM.icon || undefined,
+                isActive: importedPM.isActive,
+                details: importedPM.details // Already decrypted, will be encrypted by update()
+              });
+              result.imported.paymentMethods++;
+              idMap.paymentMethods.set(importedPM.id, existing.id);
+              result.warnings.push(`Updated payment method "${importedPM.name}"`);
+            } else {
+              // Create new
+              const newPM = await paymentMethodQueries.create({
+                name: importedPM.name,
+                type: importedPM.type,
+                icon: importedPM.icon || undefined,
+                isActive: importedPM.isActive,
+                details: importedPM.details // Already decrypted, will be encrypted by create()
+              });
+              result.imported.paymentMethods++;
+              idMap.paymentMethods.set(importedPM.id, Number(newPM.lastInsertRowid));
+            }
+          } catch (error: any) {
+            result.errors.push(`Failed to merge payment method "${importedPM.name}": ${error.message}`);
+          }
+        }
+      }
+
+      // Merge test runs (with ID remapping)
+      if (options.includeTestRuns && data.data.testRuns) {
+        const existingTestRuns = testRunQueries.getAll();
+        
+        for (const importedTR of data.data.testRuns) {
+          try {
+            // Remap foreign keys
+            const remappedFormId = idMap.forms.get(importedTR.formId) || importedTR.formId;
+            const remappedPMId = idMap.paymentMethods.get(importedTR.paymentMethodId) || importedTR.paymentMethodId;
+
+            // Check if test run exists (by formId + paymentMethodId + runAt)
+            const existing = existingTestRuns.find(
+              tr => tr.formId === remappedFormId && 
+                    tr.paymentMethodId === remappedPMId &&
+                    new Date(tr.runAt).getTime() === new Date(importedTR.runAt).getTime()
+            );
+
+            if (!existing) {
+              // Only import if doesn't exist
+              testRunQueries.create({
+                formId: remappedFormId,
+                paymentMethodId: remappedPMId,
+                status: importedTR.status,
+                errorMessage: importedTR.errorMessage,
+                screenshotPath: importedTR.screenshotPath,
+                logDetails: importedTR.logDetails,
+                durationMs: importedTR.durationMs
+              });
+              result.imported.testRuns++;
+            } else {
+              result.skipped.testRuns++;
+            }
+          } catch (error: any) {
+            result.errors.push(`Failed to merge test run: ${error.message}`);
+          }
+        }
+      }
+
+      // Merge settings
+      if (options.includeSettings && data.data.settings) {
+        for (const setting of data.data.settings) {
+          try {
+            if (setting.key !== 'theme') { // Skip theme
+              const existing = settingsQueries.get(setting.key);
+              if (existing && existing.value !== setting.value) {
+                settingsQueries.set(setting.key, setting.value, setting.description);
+                result.imported.settings++;
+                result.warnings.push(`Updated setting "${setting.key}"`);
+              } else if (!existing) {
+                settingsQueries.set(setting.key, setting.value, setting.description);
+                result.imported.settings++;
+              } else {
+                result.skipped.settings++;
+              }
+            }
+          } catch (error: any) {
+            result.errors.push(`Failed to merge setting "${setting.key}": ${error.message}`);
+          }
+        }
+      }
+
+      db.exec("COMMIT");
+      console.log("Database: Merge import completed successfully");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      result.success = false;
+      result.errors.push(`Merge import failed: ${(error as any).message}`);
+      console.error("Database: Merge import failed, rolled back:", error);
+    }
+
+    return result;
+  }
 };

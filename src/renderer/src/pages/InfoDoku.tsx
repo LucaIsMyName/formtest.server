@@ -7,7 +7,7 @@ const InfoDoku: React.FC = () => {
       <h1 className={CONFIG.style.title.className}>Info & Doku</h1>
 
       {/* Impressum Section */}
-      <div className="mb-6">
+      <div className="my-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
         <div className="text-gray-700 dark:text-gray-300 space-y-2">
           <p>

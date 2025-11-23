@@ -5,6 +5,7 @@ const utils = require("@electron-toolkit/utils");
 const Database = require("better-sqlite3");
 const crypto = require("crypto");
 const keytar = require("keytar");
+const fs = require("fs");
 const child_process = require("child_process");
 const events = require("events");
 function _interopNamespaceDefault(e) {
@@ -575,6 +576,290 @@ const testRunQueries = {
     return stmt.run(id);
   }
 };
+const exportQueries = {
+  async exportAll(options) {
+    console.log("Database: Exporting data with options:", options);
+    const exportData = {
+      version: "1.0.0",
+      exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      schemaVersion: 1,
+      data: {}
+    };
+    try {
+      if (options.includeForms) {
+        exportData.data.forms = formQueries.getAll();
+        console.log(`Database: Exported ${exportData.data.forms.length} forms`);
+      }
+      if (options.includePaymentMethods) {
+        const methods = await paymentMethodQueries.getAll();
+        exportData.data.paymentMethods = methods;
+        console.log(`Database: Exported ${exportData.data.paymentMethods?.length || 0} payment methods`);
+      }
+      if (options.includeTestRuns) {
+        exportData.data.testRuns = testRunQueries.getAll();
+        console.log(`Database: Exported ${exportData.data.testRuns.length} test runs`);
+      }
+      if (options.includeSettings) {
+        exportData.data.settings = settingsQueries.getAll();
+        console.log(`Database: Exported ${exportData.data.settings.length} settings`);
+      }
+      return exportData;
+    } catch (error) {
+      console.error("Database: Export failed:", error);
+      throw error;
+    }
+  }
+};
+const importQueries = {
+  async importOverwrite(data, options) {
+    console.log("Database: Starting overwrite import");
+    const result = {
+      success: true,
+      imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      errors: [],
+      warnings: []
+    };
+    try {
+      db.exec("BEGIN TRANSACTION");
+      if (options.includeForms && data.data.forms) {
+        db.exec("DELETE FROM forms");
+        console.log("Database: Cleared forms table");
+      }
+      if (options.includePaymentMethods && data.data.paymentMethods) {
+        db.exec("DELETE FROM payment_methods");
+        console.log("Database: Cleared payment_methods table");
+      }
+      if (options.includeTestRuns && data.data.testRuns) {
+        db.exec("DELETE FROM test_runs");
+        console.log("Database: Cleared test_runs table");
+      }
+      if (options.includeSettings && data.data.settings) {
+        db.exec("DELETE FROM global_settings WHERE key != 'theme'");
+        console.log("Database: Cleared settings (kept theme)");
+      }
+      if (options.includeForms && data.data.forms) {
+        for (const form of data.data.forms) {
+          try {
+            const formData = {
+              name: form.name,
+              url: form.url,
+              hash: form.hash || null,
+              icon: form.icon || "FileText",
+              isActive: form.isActive
+            };
+            formQueries.create(formData);
+            result.imported.forms++;
+          } catch (error) {
+            result.errors.push(`Failed to import form "${form.name}": ${error.message}`);
+          }
+        }
+      }
+      if (options.includePaymentMethods && data.data.paymentMethods) {
+        for (const pm of data.data.paymentMethods) {
+          try {
+            const pmData = {
+              name: pm.name,
+              type: pm.type,
+              icon: pm.icon || void 0,
+              isActive: pm.isActive,
+              details: pm.details
+              // Already decrypted, will be encrypted by create()
+            };
+            await paymentMethodQueries.create(pmData);
+            result.imported.paymentMethods++;
+          } catch (error) {
+            result.errors.push(`Failed to import payment method "${pm.name}": ${error.message}`);
+          }
+        }
+      }
+      if (options.includeTestRuns && data.data.testRuns) {
+        for (const tr of data.data.testRuns) {
+          try {
+            testRunQueries.create({
+              formId: tr.formId,
+              paymentMethodId: tr.paymentMethodId,
+              status: tr.status,
+              errorMessage: tr.errorMessage,
+              screenshotPath: tr.screenshotPath,
+              logDetails: tr.logDetails,
+              durationMs: tr.durationMs
+            });
+            result.imported.testRuns++;
+          } catch (error) {
+            result.errors.push(`Failed to import test run: ${error.message}`);
+          }
+        }
+      }
+      if (options.includeSettings && data.data.settings) {
+        for (const setting of data.data.settings) {
+          try {
+            if (setting.key !== "theme") {
+              settingsQueries.set(setting.key, setting.value, setting.description);
+              result.imported.settings++;
+            }
+          } catch (error) {
+            result.errors.push(`Failed to import setting "${setting.key}": ${error.message}`);
+          }
+        }
+      }
+      db.exec("COMMIT");
+      console.log("Database: Overwrite import completed successfully");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      result.success = false;
+      result.errors.push(`Import failed: ${error.message}`);
+      console.error("Database: Import failed, rolled back:", error);
+    }
+    return result;
+  },
+  async importMerge(data, options) {
+    console.log("Database: Starting merge import");
+    const result = {
+      success: true,
+      imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      errors: [],
+      warnings: []
+    };
+    const idMap = {
+      forms: /* @__PURE__ */ new Map(),
+      paymentMethods: /* @__PURE__ */ new Map()
+    };
+    try {
+      db.exec("BEGIN TRANSACTION");
+      if (options.includeForms && data.data.forms) {
+        const existingForms = formQueries.getAll();
+        for (const importedForm of data.data.forms) {
+          try {
+            const existing = existingForms.find(
+              (f) => f.name === importedForm.name && f.url === importedForm.url
+            );
+            if (existing) {
+              const isDifferent = existing.hash !== importedForm.hash || existing.icon !== importedForm.icon || existing.isActive !== importedForm.isActive;
+              if (isDifferent) {
+                formQueries.update(existing.id, {
+                  hash: importedForm.hash || null,
+                  icon: importedForm.icon || "FileText",
+                  isActive: importedForm.isActive
+                });
+                result.imported.forms++;
+                idMap.forms.set(importedForm.id, existing.id);
+                result.warnings.push(`Updated form "${importedForm.name}"`);
+              } else {
+                result.skipped.forms++;
+                idMap.forms.set(importedForm.id, existing.id);
+              }
+            } else {
+              const newForm = formQueries.create({
+                name: importedForm.name,
+                url: importedForm.url,
+                hash: importedForm.hash || null,
+                icon: importedForm.icon || "FileText",
+                isActive: importedForm.isActive
+              });
+              result.imported.forms++;
+              idMap.forms.set(importedForm.id, Number(newForm.lastInsertRowid));
+            }
+          } catch (error) {
+            result.errors.push(`Failed to merge form "${importedForm.name}": ${error.message}`);
+          }
+        }
+      }
+      if (options.includePaymentMethods && data.data.paymentMethods) {
+        const existingMethods = await paymentMethodQueries.getAll();
+        for (const importedPM of data.data.paymentMethods) {
+          try {
+            const existing = existingMethods.find(
+              (pm) => pm.name === importedPM.name && pm.type === importedPM.type
+            );
+            if (existing) {
+              await paymentMethodQueries.update(existing.id, {
+                icon: importedPM.icon || void 0,
+                isActive: importedPM.isActive,
+                details: importedPM.details
+                // Already decrypted, will be encrypted by update()
+              });
+              result.imported.paymentMethods++;
+              idMap.paymentMethods.set(importedPM.id, existing.id);
+              result.warnings.push(`Updated payment method "${importedPM.name}"`);
+            } else {
+              const newPM = await paymentMethodQueries.create({
+                name: importedPM.name,
+                type: importedPM.type,
+                icon: importedPM.icon || void 0,
+                isActive: importedPM.isActive,
+                details: importedPM.details
+                // Already decrypted, will be encrypted by create()
+              });
+              result.imported.paymentMethods++;
+              idMap.paymentMethods.set(importedPM.id, Number(newPM.lastInsertRowid));
+            }
+          } catch (error) {
+            result.errors.push(`Failed to merge payment method "${importedPM.name}": ${error.message}`);
+          }
+        }
+      }
+      if (options.includeTestRuns && data.data.testRuns) {
+        const existingTestRuns = testRunQueries.getAll();
+        for (const importedTR of data.data.testRuns) {
+          try {
+            const remappedFormId = idMap.forms.get(importedTR.formId) || importedTR.formId;
+            const remappedPMId = idMap.paymentMethods.get(importedTR.paymentMethodId) || importedTR.paymentMethodId;
+            const existing = existingTestRuns.find(
+              (tr) => tr.formId === remappedFormId && tr.paymentMethodId === remappedPMId && new Date(tr.runAt).getTime() === new Date(importedTR.runAt).getTime()
+            );
+            if (!existing) {
+              testRunQueries.create({
+                formId: remappedFormId,
+                paymentMethodId: remappedPMId,
+                status: importedTR.status,
+                errorMessage: importedTR.errorMessage,
+                screenshotPath: importedTR.screenshotPath,
+                logDetails: importedTR.logDetails,
+                durationMs: importedTR.durationMs
+              });
+              result.imported.testRuns++;
+            } else {
+              result.skipped.testRuns++;
+            }
+          } catch (error) {
+            result.errors.push(`Failed to merge test run: ${error.message}`);
+          }
+        }
+      }
+      if (options.includeSettings && data.data.settings) {
+        for (const setting of data.data.settings) {
+          try {
+            if (setting.key !== "theme") {
+              const existing = settingsQueries.get(setting.key);
+              if (existing && existing.value !== setting.value) {
+                settingsQueries.set(setting.key, setting.value, setting.description);
+                result.imported.settings++;
+                result.warnings.push(`Updated setting "${setting.key}"`);
+              } else if (!existing) {
+                settingsQueries.set(setting.key, setting.value, setting.description);
+                result.imported.settings++;
+              } else {
+                result.skipped.settings++;
+              }
+            }
+          } catch (error) {
+            result.errors.push(`Failed to merge setting "${setting.key}": ${error.message}`);
+          }
+        }
+      }
+      db.exec("COMMIT");
+      console.log("Database: Merge import completed successfully");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      result.success = false;
+      result.errors.push(`Merge import failed: ${error.message}`);
+      console.error("Database: Merge import failed, rolled back:", error);
+    }
+    return result;
+  }
+};
 class TestProcessManager extends events.EventEmitter {
   constructor() {
     super();
@@ -591,8 +876,8 @@ class TestProcessManager extends events.EventEmitter {
     console.log("Starting test runner process...");
     try {
       let runnerPath = path.join(__dirname, "testRunner", "runner.js");
-      const fs = require("fs");
-      if (!fs.existsSync(runnerPath)) {
+      const fs2 = require("fs");
+      if (!fs2.existsSync(runnerPath)) {
         runnerPath = path.join(process.cwd(), "src", "main", "testRunner", "runner.js");
         console.log(`Using development runner path: ${runnerPath}`);
       } else {
@@ -943,6 +1228,78 @@ function setupIpcHandlers() {
     } catch (error) {
       console.error("Test execution error:", error);
       throw error;
+    }
+  });
+  electron.ipcMain.handle("database:export", async (_event, options) => {
+    try {
+      console.log("IPC: Exporting database with options:", options);
+      const exportData = await exportQueries.exportAll(options);
+      const { filePath, canceled } = await electron.dialog.showSaveDialog({
+        title: "Datenbank exportieren",
+        defaultPath: `formtest-export-${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.json`,
+        filters: [
+          { name: "JSON Files", extensions: ["json"] },
+          { name: "All Files", extensions: ["*"] }
+        ]
+      });
+      if (canceled || !filePath) {
+        return { success: false, message: "Export cancelled" };
+      }
+      fs.writeFileSync(filePath, JSON.stringify(exportData, null, 2), "utf-8");
+      console.log(`IPC: Successfully exported to ${filePath}`);
+      return {
+        success: true,
+        message: `Daten erfolgreich exportiert nach ${filePath}`,
+        filePath
+      };
+    } catch (error) {
+      console.error("IPC Error - database:export:", error);
+      return {
+        success: false,
+        message: `Export fehlgeschlagen: ${error.message}`
+      };
+    }
+  });
+  electron.ipcMain.handle("database:import", async (_event, mode, options) => {
+    try {
+      console.log("IPC: Importing database with mode:", mode, "options:", options);
+      const { filePaths, canceled } = await electron.dialog.showOpenDialog({
+        title: "Datenbank importieren",
+        filters: [
+          { name: "JSON Files", extensions: ["json"] },
+          { name: "All Files", extensions: ["*"] }
+        ],
+        properties: ["openFile"]
+      });
+      if (canceled || filePaths.length === 0) {
+        return { success: false, message: "Import cancelled" };
+      }
+      const filePath = filePaths[0];
+      const fileContent = fs.readFileSync(filePath, "utf-8");
+      const importData = JSON.parse(fileContent);
+      if (!importData.version || !importData.data) {
+        return {
+          success: false,
+          message: "Ungültiges Dateiformat"
+        };
+      }
+      let result;
+      if (mode === "overwrite") {
+        result = await importQueries.importOverwrite(importData, options);
+      } else {
+        result = await importQueries.importMerge(importData, options);
+      }
+      console.log("IPC: Import completed:", result);
+      return result;
+    } catch (error) {
+      console.error("IPC Error - database:import:", error);
+      return {
+        success: false,
+        imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+        skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+        errors: [`Import fehlgeschlagen: ${error.message}`],
+        warnings: []
+      };
     }
   });
 }

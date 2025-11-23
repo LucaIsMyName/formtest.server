@@ -99,7 +99,7 @@ const PaymentMethods: React.FC = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className={CONFIG.style.title.className}>Bezhalmethoden</h1>
+        <h1 className={CONFIG.style.title.className}>Bezahlmethoden</h1>
         <Button
           onClick={handleAddMethod}
           variant="primary"

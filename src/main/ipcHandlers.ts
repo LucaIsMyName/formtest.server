@@ -1,7 +1,8 @@
-import { ipcMain } from "electron";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries } from "./database";
+import { ipcMain, dialog } from "electron";
+import { writeFileSync, readFileSync } from "fs";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
-import type { Form, PaymentMethod, TestRun } from "../common/types";
+import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData } from "../common/types";
 
 // Function to run a single test using child process
 async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>) {
@@ -219,6 +220,100 @@ export function setupIpcHandlers(): void {
     } catch (error) {
       console.error("Test execution error:", error);
       throw error;
+    }
+  });
+
+  // Export/Import handlers
+  ipcMain.handle("database:export", async (_event, options: ImportOptions) => {
+    try {
+      console.log("IPC: Exporting database with options:", options);
+      
+      // Get export data
+      const exportData = await exportQueries.exportAll(options);
+      
+      // Show save dialog
+      const { filePath, canceled } = await dialog.showSaveDialog({
+        title: "Datenbank exportieren",
+        defaultPath: `formtest-export-${new Date().toISOString().split('T')[0]}.json`,
+        filters: [
+          { name: "JSON Files", extensions: ["json"] },
+          { name: "All Files", extensions: ["*"] }
+        ]
+      });
+      
+      if (canceled || !filePath) {
+        return { success: false, message: "Export cancelled" };
+      }
+      
+      // Write to file
+      writeFileSync(filePath, JSON.stringify(exportData, null, 2), "utf-8");
+      
+      console.log(`IPC: Successfully exported to ${filePath}`);
+      return { 
+        success: true, 
+        message: `Daten erfolgreich exportiert nach ${filePath}`,
+        filePath 
+      };
+    } catch (error: any) {
+      console.error("IPC Error - database:export:", error);
+      return { 
+        success: false, 
+        message: `Export fehlgeschlagen: ${error.message}` 
+      };
+    }
+  });
+
+  ipcMain.handle("database:import", async (_event, mode: "overwrite" | "merge", options: ImportOptions) => {
+    try {
+      console.log("IPC: Importing database with mode:", mode, "options:", options);
+      
+      // Show open dialog
+      const { filePaths, canceled } = await dialog.showOpenDialog({
+        title: "Datenbank importieren",
+        filters: [
+          { name: "JSON Files", extensions: ["json"] },
+          { name: "All Files", extensions: ["*"] }
+        ],
+        properties: ["openFile"]
+      });
+      
+      if (canceled || filePaths.length === 0) {
+        return { success: false, message: "Import cancelled" };
+      }
+      
+      const filePath = filePaths[0];
+      
+      // Read and parse file
+      const fileContent = readFileSync(filePath, "utf-8");
+      const importData: ExportData = JSON.parse(fileContent);
+      
+      // Validate data structure
+      if (!importData.version || !importData.data) {
+        return { 
+          success: false, 
+          message: "Ungültiges Dateiformat" 
+        };
+      }
+      
+      // Import based on mode
+      let result;
+      if (mode === "overwrite") {
+        result = await importQueries.importOverwrite(importData, options);
+      } else {
+        result = await importQueries.importMerge(importData, options);
+      }
+      
+      console.log("IPC: Import completed:", result);
+      return result;
+    } catch (error: any) {
+      console.error("IPC Error - database:import:", error);
+      return { 
+        success: false, 
+        imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+        skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+        errors: [`Import fehlgeschlagen: ${error.message}`],
+        warnings: []
+      };
     }
   });
 }

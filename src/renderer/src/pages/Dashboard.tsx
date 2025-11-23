@@ -162,7 +162,7 @@ const Dashboard: React.FC = () => {
   return (
     <div>
       <h1 className={CONFIG.style.title.className}>Dashboard</h1>
-      <div className="flex justify-between items-center mb-8">
+      <div className="mt-6 flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <Button
             onClick={() => handleQuickAction("run-tests")}

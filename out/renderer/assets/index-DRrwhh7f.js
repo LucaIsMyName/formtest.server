@@ -45865,7 +45865,7 @@ const Button = React$3.forwardRef(({ className = "", variant = "primary", size: 
   };
   const sizes = {
     sm: "px-2 py-0.5 text-xs",
-    md: "px-3 py-1 text-sm",
+    md: "px-4 py-2 text-sm",
     lg: "px-4 py-2 text-base"
   };
   const variantClasses = variants[variant];
@@ -48060,7 +48060,7 @@ const Layout = ({ children }) => {
 const CONFIG = {
   style: {
     title: {
-      className: "text-gray-800 text-5xl mt-4 font-semibold text-gray-900 dark:text-gray-100 mb-8 text-shadow-[1px_1px_0px_rgba(0,0,0,0.2)]"
+      className: "text-gray-800 text-5xl mt-2 font-semibold text-gray-900 dark:text-gray-100 text-shadow-[1px_1px_0px_rgba(0,0,0,0.2)] dark:text-shadow-[1px_1px_0px_rgba(255,255,255,0.2)]"
     }
   }
 };
@@ -72096,7 +72096,7 @@ const Dashboard = () => {
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Dashboard" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-between items-center mb-8", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 flex justify-between items-center mb-8", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Button,
         {
@@ -73441,7 +73441,7 @@ const PaymentMethods = () => {
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Bezhalmethoden" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Bezahlmethoden" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         Button,
         {
@@ -73594,6 +73594,17 @@ const Settings = () => {
   const [testTimeout, setTestTimeout] = reactExports.useState("30000");
   const [headlessMode, setHeadlessMode] = reactExports.useState("true");
   const [theme, setTheme] = reactExports.useState("system");
+  const [exportOptions, setExportOptions] = reactExports.useState({
+    includeForms: true,
+    includePaymentMethods: true,
+    includeTestRuns: true,
+    includeSettings: true
+  });
+  const [importMode, setImportMode] = reactExports.useState("merge");
+  const [importResult, setImportResult] = reactExports.useState(null);
+  const [exportMessage, setExportMessage] = reactExports.useState(null);
+  const [isExporting, setIsExporting] = reactExports.useState(false);
+  const [isImporting, setIsImporting] = reactExports.useState(false);
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
@@ -73653,7 +73664,7 @@ const Settings = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Einstellungen" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600 dark:text-gray-400 mt-1", children: "Globale Optionen für Formular-Tests konfigurieren" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-4 text-gray-600 dark:text-gray-400 mt-1", children: "Globale Optionen für Formular-Tests konfigurieren" })
     ] }) }),
     error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
@@ -73800,6 +73811,308 @@ const Settings = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Browser-Tests ohne sichtbares Fenster ausführen" })
           ] })
         ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Import / Export" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md font-medium text-gray-900 dark:text-white mb-3", children: "Daten exportieren" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Wähle die Daten aus, die du exportieren möchtest:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2 mb-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includeForms,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includeForms: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Formulare" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includePaymentMethods,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includePaymentMethods: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Bezahlmethoden" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includeTestRuns,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includeTestRuns: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Test Resultate" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includeSettings,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includeSettings: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Einstellungen" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Button,
+              {
+                onClick: async () => {
+                  setIsExporting(true);
+                  setExportMessage(null);
+                  try {
+                    const result = await window.api.database.export(exportOptions);
+                    if (result.success) {
+                      setExportMessage(`✓ ${result.message}`);
+                    } else {
+                      setExportMessage(`✗ ${result.message}`);
+                    }
+                  } catch (error2) {
+                    setExportMessage(`✗ Export fehlgeschlagen: ${error2.message}`);
+                  } finally {
+                    setIsExporting(false);
+                  }
+                },
+                variant: "primary",
+                size: "md",
+                disabled: isExporting || !exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings,
+                isLoading: isExporting,
+                className: "flex items-center gap-2",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Download, { size: 16 }),
+                  isExporting ? "Exportiere..." : "Daten exportieren"
+                ]
+              }
+            ),
+            exportMessage && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `mt-3 p-3 rounded-md ${exportMessage.startsWith("✓") ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200"}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: exportMessage }) })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t border-gray-200 dark:border-gray-700 my-6" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md font-medium text-gray-900 dark:text-white mb-3", children: "Daten importieren" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Wähle den Import-Modus:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3 mb-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-start", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "radio",
+                    name: "importMode",
+                    value: "merge",
+                    checked: importMode === "merge",
+                    onChange: (e3) => setImportMode(e3.target.value),
+                    className: "mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Zusammenführen (Empfohlen)" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Bestehende Daten bleiben erhalten. Neue Einträge werden hinzugefügt, unterschiedliche Einträge werden aktualisiert." })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-start", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "radio",
+                    name: "importMode",
+                    value: "overwrite",
+                    checked: importMode === "overwrite",
+                    onChange: (e3) => setImportMode(e3.target.value),
+                    className: "mt-1 h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ml-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Überschreiben (Vorsicht!)" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Alle ausgewählten Daten werden gelöscht und durch die importierten Daten ersetzt." })
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2 mb-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Zu importierende Daten:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includeForms,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includeForms: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Formulare" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includePaymentMethods,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includePaymentMethods: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Bezahlmethoden" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includeTestRuns,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includeTestRuns: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Test Resultate" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "flex items-center", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: exportOptions.includeSettings,
+                    onChange: (e3) => setExportOptions({ ...exportOptions, includeSettings: e3.target.checked }),
+                    className: "h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-sm text-gray-700 dark:text-gray-300", children: "Einstellungen" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Button,
+              {
+                onClick: async () => {
+                  setIsImporting(true);
+                  setImportResult(null);
+                  try {
+                    const result = await window.api.database.import(importMode, exportOptions);
+                    setImportResult(result);
+                  } catch (error2) {
+                    setImportResult({
+                      success: false,
+                      imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+                      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+                      errors: [`Import fehlgeschlagen: ${error2.message}`],
+                      warnings: []
+                    });
+                  } finally {
+                    setIsImporting(false);
+                  }
+                },
+                variant: "secondary",
+                size: "md",
+                disabled: isImporting || !exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings,
+                isLoading: isImporting,
+                className: "flex items-center gap-2",
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Upload, { size: 16 }),
+                  isImporting ? "Importiere..." : "Daten importieren"
+                ]
+              }
+            ),
+            importResult && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `mt-4 p-4 rounded-md ${importResult.success ? "bg-green-50 dark:bg-green-900/20" : "bg-red-50 dark:bg-red-900/20"}`, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start gap-2 mb-3", children: [
+                importResult.success ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "text-green-600 dark:text-green-400 flex-shrink-0", size: 20 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "text-red-600 dark:text-red-400 flex-shrink-0", size: 20 }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: `text-sm font-medium ${importResult.success ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"}`, children: importResult.success ? "Import erfolgreich!" : "Import mit Fehlern" }) })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-gray-700 dark:text-gray-300", children: "Importiert:" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-xs text-gray-600 dark:text-gray-400 ml-4", children: [
+                      importResult.imported.forms > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.imported.forms,
+                        " Formulare"
+                      ] }),
+                      importResult.imported.paymentMethods > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.imported.paymentMethods,
+                        " Bezahlmethoden"
+                      ] }),
+                      importResult.imported.testRuns > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.imported.testRuns,
+                        " Test Resultate"
+                      ] }),
+                      importResult.imported.settings > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.imported.settings,
+                        " Einstellungen"
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-gray-700 dark:text-gray-300", children: "Übersprungen:" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-xs text-gray-600 dark:text-gray-400 ml-4", children: [
+                      importResult.skipped.forms > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.skipped.forms,
+                        " Formulare"
+                      ] }),
+                      importResult.skipped.paymentMethods > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.skipped.paymentMethods,
+                        " Bezahlmethoden"
+                      ] }),
+                      importResult.skipped.testRuns > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.skipped.testRuns,
+                        " Test Resultate"
+                      ] }),
+                      importResult.skipped.settings > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.skipped.settings,
+                        " Einstellungen"
+                      ] })
+                    ] })
+                  ] })
+                ] }),
+                importResult.warnings.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-yellow-700 dark:text-yellow-300", children: "Warnungen:" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-xs text-yellow-600 dark:text-yellow-400 ml-4 mt-1", children: [
+                    importResult.warnings.slice(0, 5).map((warning2, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                      "• ",
+                      warning2
+                    ] }, i)),
+                    importResult.warnings.length > 5 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "italic", children: [
+                      "... und ",
+                      importResult.warnings.length - 5,
+                      " weitere"
+                    ] })
+                  ] })
+                ] }),
+                importResult.errors.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-red-700 dark:text-red-300", children: "Fehler:" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-xs text-red-600 dark:text-red-400 ml-4 mt-1", children: [
+                    importResult.errors.slice(0, 5).map((error2, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                      "• ",
+                      error2
+                    ] }, i)),
+                    importResult.errors.length > 5 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "italic", children: [
+                      "... und ",
+                      importResult.errors.length - 5,
+                      " weitere"
+                    ] })
+                  ] })
+                ] })
+              ] })
+            ] })
+          ] })
+        ] })
       ] })
     ] })
   ] });
@@ -73887,7 +74200,7 @@ const TestResults = () => {
         }
       )
     ] }),
-    error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
+    error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
       " ",
       error
@@ -73895,6 +74208,7 @@ const TestResults = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
+        className: "mt-4",
         style: {
           display: "grid",
           gridTemplateColumns: "66% 33%",
@@ -74040,7 +74354,7 @@ const TestResults = () => {
 const InfoDoku = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-4xl", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Info & Doku" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "my-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Impressum" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Angaben gemäß § 5 TMG:" }) }),

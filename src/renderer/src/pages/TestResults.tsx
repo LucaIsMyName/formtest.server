@@ -99,7 +99,7 @@ const TestResults: React.FC = () => {
       </div>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md">
+        <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md">
           <div className="text-red-800 dark:text-red-200">
             <strong>Error:</strong> {error}
           </div>
@@ -107,6 +107,7 @@ const TestResults: React.FC = () => {
       )}
 
       <div
+      className="mt-4"
         style={{
           display: "grid",
           gridTemplateColumns: "66% 33%",

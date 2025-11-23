@@ -43,6 +43,11 @@ const api = {
     minimize: () => electron.ipcRenderer.invoke("window-minimize"),
     maximize: () => electron.ipcRenderer.invoke("window-maximize"),
     isMaximized: () => electron.ipcRenderer.invoke("window-is-maximized")
+  },
+  // Database export/import
+  database: {
+    export: (options) => electron.ipcRenderer.invoke("database:export", options),
+    import: (mode, options) => electron.ipcRenderer.invoke("database:import", mode, options)
   }
 };
 if (process.contextIsolated) {

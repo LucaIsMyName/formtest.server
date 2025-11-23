@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { Form, PaymentMethod, TestRun } from '../common/types'
+import type { Form, PaymentMethod, TestRun, ImportOptions } from '../common/types'
 
 // Custom APIs for renderer
 const api = {
@@ -51,6 +51,12 @@ const api = {
     minimize: () => ipcRenderer.invoke('window-minimize'),
     maximize: () => ipcRenderer.invoke('window-maximize'),
     isMaximized: () => ipcRenderer.invoke('window-is-maximized')
+  },
+
+  // Database export/import
+  database: {
+    export: (options: ImportOptions) => ipcRenderer.invoke('database:export', options),
+    import: (mode: 'overwrite' | 'merge', options: ImportOptions) => ipcRenderer.invoke('database:import', mode, options)
   }
 }
 
