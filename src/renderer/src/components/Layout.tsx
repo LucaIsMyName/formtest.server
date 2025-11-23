@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
 import TestRunDialog from "./TestRunDialog";
@@ -13,6 +13,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const mainContentRef = useRef<HTMLDivElement>(null);
   const [showTestDialog, setShowTestDialog] = useState(false);
   const [preselectAll, setPreselectAll] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -38,6 +39,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       root.classList.add(currentTheme);
     }
   }, [currentTheme, settings]);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTop = 0;
+    }
+  }, [location.pathname]);
 
   const handleRunAllTests = () => {
     setPreselectAll(true);
@@ -119,7 +127,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Main content */}
         <div className="flex-1  flex flex-col overflow-hidden">
-          <main className="flex-1  overflow-auto bg-white dark:bg-gray-900 px-4 py-4">
+          <main 
+            ref={mainContentRef}
+            className="flex-1  overflow-auto bg-white dark:bg-gray-900 px-4 py-4">
             <div className="max-w-[1040px]">{children}</div>
           </main>
         </div>
