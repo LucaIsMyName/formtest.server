@@ -78,13 +78,13 @@ const TestResults: React.FC = () => {
       const paramId = searchParams.get("id");
       if (paramId) {
         // Try to find by UUID first, then ID
-        const found = testRuns.find(tr => tr.uuid === paramId || String(tr.id) === paramId);
+        const found = testRuns.find((tr) => tr.uuid === paramId || String(tr.id) === paramId);
         if (found) {
           setSelectedTestRun(found.id);
           return;
         }
       }
-      
+
       // Default to latest if no selection or not found
       if (!selectedTestRun) {
         setSelectedTestRun(testRuns[0].id);
@@ -244,7 +244,7 @@ const TestResults: React.FC = () => {
                             <div className="flex items-center gap-1 group">
                               <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
                               {testRun.uuid && (
-                                <button 
+                                <button
                                   onClick={(e) => handleCopyUuid(e, testRun.uuid)}
                                   className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
                                   title="ID kopieren">
@@ -316,11 +316,9 @@ const TestResults: React.FC = () => {
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">ID</label>
                     <div className="flex items-center gap-2">
-                      <code className="text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                        {selectedTestRunData.uuid || selectedTestRunData.id}
-                      </code>
+                      <code className="text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{selectedTestRunData.uuid || selectedTestRunData.id}</code>
                       {selectedTestRunData.uuid && (
-                        <button 
+                        <button
                           onClick={(e) => handleCopyUuid(e, selectedTestRunData.uuid!)}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                           title="ID kopieren">
@@ -332,16 +330,7 @@ const TestResults: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
-                    <div
-                      className={`border inline-flex items-center gap-2 pl-1 pr-2 py-1 text-[11px] font-medium font-mono rounded-full ${
-                        selectedTestRunData.status === "SUCCESS"
-                          ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400"
-                          : selectedTestRunData.status === "FAILURE"
-                          ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400"
-                          : selectedTestRunData.status === "RUNNING"
-                          ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400"
-                          : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"
-                      }`}>
+                    <div className={`border inline-flex items-center gap-2 pl-1 pr-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : selectedTestRunData.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400" : selectedTestRunData.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"}`}>
                       {getStatusIcon(selectedTestRunData.status)} {selectedTestRunData.status}
                     </div>
                   </div>
