@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
+import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings } from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,11 +11,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
 
   const navigation = [
-    { name: "Dashboard", href: "/" },
-    { name: "Formulare", href: "/forms" },
-    { name: "Bezahlmethoden", href: "/payment-methods" },
-    { name: "Test Resultate", href: "/test-results" },
-    { name: "Einstellungen", href: "/settings" },
+    { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Formulare", href: "/forms", icon: FileText },
+    { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
+    { name: "Test Resultate", href: "/test-results", icon: BarChart3 },
+    { name: "Einstellungen", href: "/settings", icon: Settings },
   ];
 
   return (
@@ -22,17 +23,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <CustomTitleBar />
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-48 bg-white dark:bg-gray-900 flex flex-col select-none">
+        <div className="bg-white dark:bg-gray-900 flex flex-col select-none" style={{ width: 'clamp(12rem, 15vw, 20rem)' }}>
           <nav className="flex-1">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`inline-block px-4 pt-3 pb-1.5 text-sm font-normal text-gray-700 dark:text-gray-300 no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 relative ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-medium" : ""}`}>
-                {item.name}
-                {location.pathname === item.href && <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-blue-600 dark:bg-blue-400"></div>}
-              </Link>
-            ))}
+            {navigation.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${
+                    location.pathname === item.href 
+                      ? "text-blue-600 dark:text-blue-400 font-medium" 
+                      : "text-gray-700 dark:text-gray-300"
+                  }`}>
+                  <IconComponent size={18} />
+                  {item.name}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
