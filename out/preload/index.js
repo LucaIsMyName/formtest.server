@@ -8,7 +8,8 @@ const api = {
     getById: (id) => electron.ipcRenderer.invoke("forms:getById", id),
     create: (form) => electron.ipcRenderer.invoke("forms:create", form),
     update: (id, form) => electron.ipcRenderer.invoke("forms:update", id, form),
-    delete: (id) => electron.ipcRenderer.invoke("forms:delete", id)
+    delete: (id) => electron.ipcRenderer.invoke("forms:delete", id),
+    deleteAll: () => electron.ipcRenderer.invoke("forms:deleteAll")
   },
   // Payment method operations
   paymentMethods: {
@@ -16,7 +17,8 @@ const api = {
     getById: (id) => electron.ipcRenderer.invoke("paymentMethods:getById", id),
     create: (method) => electron.ipcRenderer.invoke("paymentMethods:create", method),
     update: (id, method) => electron.ipcRenderer.invoke("paymentMethods:update", id, method),
-    delete: (id) => electron.ipcRenderer.invoke("paymentMethods:delete", id)
+    delete: (id) => electron.ipcRenderer.invoke("paymentMethods:delete", id),
+    deleteAll: () => electron.ipcRenderer.invoke("paymentMethods:deleteAll")
   },
   // Settings operations
   settings: {
@@ -31,7 +33,12 @@ const api = {
     getByForm: (formId) => electron.ipcRenderer.invoke("testRuns:getByForm", formId),
     create: (testRun) => electron.ipcRenderer.invoke("testRuns:create", testRun),
     updateStatus: (id, status, errorMessage, durationMs) => electron.ipcRenderer.invoke("testRuns:updateStatus", id, status, errorMessage, durationMs),
-    delete: (id) => electron.ipcRenderer.invoke("testRuns:delete", id)
+    delete: (id) => electron.ipcRenderer.invoke("testRuns:delete", id),
+    deleteAll: () => electron.ipcRenderer.invoke("testRuns:deleteAll")
+  },
+  // Test execution
+  tests: {
+    run: (formIds, paymentMethodIds) => electron.ipcRenderer.invoke("tests:run", formIds, paymentMethodIds)
   },
   // Test schedule operations
   testSchedules: {
@@ -39,11 +46,8 @@ const api = {
     getById: (id) => electron.ipcRenderer.invoke("testSchedules:getById", id),
     create: (schedule) => electron.ipcRenderer.invoke("testSchedules:create", schedule),
     update: (id, schedule) => electron.ipcRenderer.invoke("testSchedules:update", id, schedule),
-    delete: (id) => electron.ipcRenderer.invoke("testSchedules:delete", id)
-  },
-  // Test execution
-  tests: {
-    run: (formIds, paymentMethodIds) => electron.ipcRenderer.invoke("tests:run", formIds, paymentMethodIds)
+    delete: (id) => electron.ipcRenderer.invoke("testSchedules:delete", id),
+    deleteAll: () => electron.ipcRenderer.invoke("testSchedules:deleteAll")
   },
   // Window controls
   windowControls: {

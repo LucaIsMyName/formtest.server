@@ -451,6 +451,11 @@ export const formQueries = {
       throw error;
     }
   },
+  deleteAll: () => {
+    console.log("Database: Deleting all forms");
+    // This will cascade delete test runs and schedules
+    return db.prepare("DELETE FROM forms").run();
+  },
 };
 
 // Payment method operations
@@ -643,6 +648,11 @@ export const paymentMethodQueries = {
       throw error;
     }
   },
+  deleteAll: () => {
+    console.log("Database: Deleting all payment methods");
+    // This will cascade delete test runs and schedules
+    return db.prepare("DELETE FROM payment_methods").run();
+  },
 };
 
 // Global settings operations
@@ -664,6 +674,9 @@ export const testRunQueries = {
   delete: (id: number) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
     return stmt.run(id);
+  },
+  deleteAll: () => {
+    return db.prepare("DELETE FROM test_runs").run();
   },
 };
 
@@ -708,6 +721,9 @@ export const testScheduleQueries = {
   },
   delete: (id: number) => {
     return db.prepare("DELETE FROM test_schedules WHERE id = ?").run(id);
+  },
+  deleteAll: () => {
+    return db.prepare("DELETE FROM test_schedules").run();
   },
 };
 

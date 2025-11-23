@@ -71,6 +71,15 @@ export function setupIpcHandlers(): void {
     }
   });
 
+  ipcMain.handle("forms:deleteAll", async () => {
+    try {
+      return formQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - forms:deleteAll:", error);
+      throw error;
+    }
+  });
+
   // Payment method handlers with error handling
   ipcMain.handle("paymentMethods:getAll", async () => {
     try {
@@ -133,6 +142,15 @@ export function setupIpcHandlers(): void {
     }
   });
 
+  ipcMain.handle("paymentMethods:deleteAll", async () => {
+    try {
+      return paymentMethodQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - paymentMethods:deleteAll:", error);
+      throw error;
+    }
+  });
+
   // Settings handlers
   ipcMain.handle("settings:getAll", () => settingsQueries.getAll());
   ipcMain.handle("settings:get", (_, key: string) => settingsQueries.get(key));
@@ -145,6 +163,7 @@ export function setupIpcHandlers(): void {
   ipcMain.handle("testRuns:create", (_, testRun: Omit<TestRun, "id" | "runAt">) => testRunQueries.create({ ...testRun, uuid: testRun.uuid || randomUUID() }));
   ipcMain.handle("testRuns:updateStatus", (_, id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
   ipcMain.handle("testRuns:delete", (_, id: number) => testRunQueries.delete(id));
+  ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
 
   // Test execution handlers
   ipcMain.handle("tests:run", async (_, formIds: number[], paymentMethodIds: number[]) => {
@@ -333,5 +352,17 @@ export function setupIpcHandlers(): void {
     // Stop the job first
     scheduler.stopJob(id);
     return testScheduleQueries.delete(id);
+  });
+
+  ipcMain.handle("testSchedules:deleteAll", () => {
+    // Stop all jobs first (using private access via reflection or just recreate scheduler?)
+    // Better to just reload all after delete or stop all known ones if we can track them.
+    // The scheduler service doesn't expose stopAll, but we can iterate over getAll() before deleting.
+    
+    const schedules = testScheduleQueries.getAll();
+    for (const schedule of schedules) {
+      scheduler.stopJob(schedule.id);
+    }
+    return testScheduleQueries.deleteAll();
   });
 }

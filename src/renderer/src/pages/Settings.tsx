@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
-import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, Trash2, AlertTriangle } from "lucide-react";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
+import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import type { ImportOptions, ImportResult } from "../../../common/types";
 import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/Label";
@@ -64,6 +65,14 @@ const Settings: React.FC = () => {
   const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+
+  // Delete state
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    type: "forms" | "paymentMethods" | "testRuns" | "schedules" | "all";
+    title: string;
+    message: string;
+  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -141,6 +150,41 @@ const Settings: React.FC = () => {
     applyTheme(value);
   };
 
+  const handleDelete = async () => {
+    if (!deleteConfirmation) return;
+
+    setIsDeleting(true);
+    try {
+      const api = window.api as any;
+      switch (deleteConfirmation.type) {
+        case "forms":
+          await api.forms.deleteAll();
+          break;
+        case "paymentMethods":
+          await api.paymentMethods.deleteAll();
+          break;
+        case "testRuns":
+          await api.testRuns.deleteAll();
+          break;
+        case "schedules":
+          await api.testSchedules.deleteAll();
+          break;
+        case "all":
+          // Delete in order to respect foreign keys if cascade didn't work (but it does)
+          await api.forms.deleteAll();
+          await api.paymentMethods.deleteAll();
+          // testRuns and schedules cascade deleted by forms/paymentMethods, but calling explicit delete ensures cleanup
+          break;
+      }
+      setDeleteConfirmation(null);
+      // Reload settings/state if needed
+    } catch (error) {
+      console.error("Failed to delete data:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -151,7 +195,7 @@ const Settings: React.FC = () => {
       </div>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border rounded-md p-4">
           <div className="flex">
             <div className="text-red-800 dark:text-red-200">
               <strong>Error:</strong> {error}
@@ -290,6 +334,81 @@ const Settings: React.FC = () => {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Browser-Tests ohne sichtbares Fenster ausführen</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Data Management / Delete Section */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <h2 className="text-gray-900 dark:text-white  text-lg font-semibold  mb-4 flex items-center gap-2">
+              <Trash2 size={20} />
+              Daten löschen
+            </h2>
+
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button
+                  variant="secondary"
+                  onClick={() => setDeleteConfirmation({
+                    type: "forms",
+                    title: "Alle Formulare löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Formulare löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne."
+                  })}
+                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                  Alle Formulare löschen
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  onClick={() => setDeleteConfirmation({
+                    type: "paymentMethods",
+                    title: "Alle Bezahlmethoden löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Bezahlmethoden löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne."
+                  })}
+                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                  Alle Bezahlmethoden löschen
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  onClick={() => setDeleteConfirmation({
+                    type: "testRuns",
+                    title: "Alle Test-Resultate löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Test-Resultate löschen möchten?"
+                  })}
+                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                  Alle Test-Resultate löschen
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  onClick={() => setDeleteConfirmation({
+                    type: "schedules",
+                    title: "Alle Zeitpläne löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Zeitpläne löschen möchten?"
+                  })}
+                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                  Alle Zeitpläne löschen
+                </Button>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <Button
+                  variant="danger"
+                  size="lg"
+                  onClick={() => setDeleteConfirmation({
+                    type: "all",
+                    title: "ALLES löschen (Factory Reset)",
+                    message: "ACHTUNG: Sind Sie sicher, dass Sie ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) löschen möchten? Die Anwendung wird auf den Ursprungszustand zurückgesetzt (außer Einstellungen)."
+                  })}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white border-none justify-center">
+                  <AlertTriangle size={18} className="mr-2" />
+                  Alle Daten löschen (Alles!)
+                </Button>
               </div>
             </div>
           </div>
@@ -592,6 +711,15 @@ const Settings: React.FC = () => {
           </div>
         </div>
       )}
+      {/* Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={!!deleteConfirmation}
+        onClose={() => setDeleteConfirmation(null)}
+        onConfirm={handleDelete}
+        title={deleteConfirmation?.title || ""}
+        message={deleteConfirmation?.message || ""}
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

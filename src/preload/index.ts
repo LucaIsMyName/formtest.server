@@ -10,7 +10,8 @@ const api = {
     getById: (id: number) => ipcRenderer.invoke('forms:getById', id),
     create: (form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => ipcRenderer.invoke('forms:create', form),
     update: (id: number, form: Partial<Form>) => ipcRenderer.invoke('forms:update', id, form),
-    delete: (id: number) => ipcRenderer.invoke('forms:delete', id)
+    delete: (id: number) => ipcRenderer.invoke('forms:delete', id),
+    deleteAll: () => ipcRenderer.invoke('forms:deleteAll')
   },
 
   // Payment method operations
@@ -19,7 +20,8 @@ const api = {
     getById: (id: number) => ipcRenderer.invoke('paymentMethods:getById', id),
     create: (method: Omit<PaymentMethod, 'id' | 'createdAt' | 'updatedAt'>) => ipcRenderer.invoke('paymentMethods:create', method),
     update: (id: number, method: Partial<PaymentMethod>) => ipcRenderer.invoke('paymentMethods:update', id, method),
-    delete: (id: number) => ipcRenderer.invoke('paymentMethods:delete', id)
+    delete: (id: number) => ipcRenderer.invoke('paymentMethods:delete', id),
+    deleteAll: () => ipcRenderer.invoke('paymentMethods:deleteAll')
   },
 
   // Settings operations
@@ -37,7 +39,13 @@ const api = {
     create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => ipcRenderer.invoke('testRuns:create', testRun),
     updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => 
       ipcRenderer.invoke('testRuns:updateStatus', id, status, errorMessage, durationMs),
-    delete: (id: number) => ipcRenderer.invoke('testRuns:delete', id)
+    delete: (id: number) => ipcRenderer.invoke('testRuns:delete', id),
+    deleteAll: () => ipcRenderer.invoke('testRuns:deleteAll')
+  },
+
+  // Test execution
+  tests: {
+    run: (formIds: number[], paymentMethodIds: number[]) => ipcRenderer.invoke('tests:run', formIds, paymentMethodIds)
   },
 
   // Test schedule operations
@@ -46,12 +54,8 @@ const api = {
     getById: (id: number) => ipcRenderer.invoke('testSchedules:getById', id),
     create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => ipcRenderer.invoke('testSchedules:create', schedule),
     update: (id: number, schedule: Partial<TestSchedule>) => ipcRenderer.invoke('testSchedules:update', id, schedule),
-    delete: (id: number) => ipcRenderer.invoke('testSchedules:delete', id)
-  },
-
-  // Test execution
-  tests: {
-    run: (formIds: number[], paymentMethodIds: number[]) => ipcRenderer.invoke('tests:run', formIds, paymentMethodIds)
+    delete: (id: number) => ipcRenderer.invoke('testSchedules:delete', id),
+    deleteAll: () => ipcRenderer.invoke('testSchedules:deleteAll')
   },
 
   // Window controls

@@ -449,6 +449,10 @@ const formQueries = {
       console.error("Database: Error deleting form", id, ":", error);
       throw error;
     }
+  },
+  deleteAll: () => {
+    console.log("Database: Deleting all forms");
+    return db.prepare("DELETE FROM forms").run();
   }
 };
 console.log("Database: Initializing paymentMethodQueries...");
@@ -607,6 +611,10 @@ const paymentMethodQueries = {
       console.error("Database: Error deleting payment method", id, ":", error);
       throw error;
     }
+  },
+  deleteAll: () => {
+    console.log("Database: Deleting all payment methods");
+    return db.prepare("DELETE FROM payment_methods").run();
   }
 };
 const settingsQueries = {
@@ -626,6 +634,9 @@ const testRunQueries = {
   delete: (id) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
     return stmt.run(id);
+  },
+  deleteAll: () => {
+    return db.prepare("DELETE FROM test_runs").run();
   }
 };
 const testScheduleQueries = {
@@ -684,6 +695,9 @@ const testScheduleQueries = {
   },
   delete: (id) => {
     return db.prepare("DELETE FROM test_schedules WHERE id = ?").run(id);
+  },
+  deleteAll: () => {
+    return db.prepare("DELETE FROM test_schedules").run();
   }
 };
 const exportQueries = {
@@ -1330,6 +1344,14 @@ function setupIpcHandlers() {
       throw error;
     }
   });
+  electron.ipcMain.handle("forms:deleteAll", async () => {
+    try {
+      return formQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - forms:deleteAll:", error);
+      throw error;
+    }
+  });
   electron.ipcMain.handle("paymentMethods:getAll", async () => {
     try {
       return await paymentMethodQueries.getAll();
@@ -1385,6 +1407,14 @@ function setupIpcHandlers() {
       throw error;
     }
   });
+  electron.ipcMain.handle("paymentMethods:deleteAll", async () => {
+    try {
+      return paymentMethodQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - paymentMethods:deleteAll:", error);
+      throw error;
+    }
+  });
   electron.ipcMain.handle("settings:getAll", () => settingsQueries.getAll());
   electron.ipcMain.handle("settings:get", (_, key) => settingsQueries.get(key));
   electron.ipcMain.handle("settings:set", (_, key, value, description) => settingsQueries.set(key, value, description));
@@ -1394,6 +1424,7 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:create", (_, testRun) => testRunQueries.create({ ...testRun, uuid: testRun.uuid || crypto.randomUUID() }));
   electron.ipcMain.handle("testRuns:updateStatus", (_, id, status, errorMessage, durationMs) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
   electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
+  electron.ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
   electron.ipcMain.handle("tests:run", async (_, formIds, paymentMethodIds) => {
     try {
       console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
@@ -1534,6 +1565,13 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testSchedules:delete", (_, id) => {
     scheduler.stopJob(id);
     return testScheduleQueries.delete(id);
+  });
+  electron.ipcMain.handle("testSchedules:deleteAll", () => {
+    const schedules = testScheduleQueries.getAll();
+    for (const schedule of schedules) {
+      scheduler.stopJob(schedule.id);
+    }
+    return testScheduleQueries.deleteAll();
   });
 }
 let mainWindow;
