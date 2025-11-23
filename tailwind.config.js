@@ -4,7 +4,7 @@ module.exports = {
     "./src/renderer/index.html",
     "./src/renderer/src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'media', // Use system preference for dark mode
+  darkMode: 'class', // Use class-based dark mode for manual control
   theme: {
     extend: {
       fontFamily: {
