@@ -33,6 +33,31 @@ const TestResultsSkeleton = () => (
   </div>
 );
 
+const TestDetailsSkeleton = () => (
+  <div className="flex flex-col gap-4">
+    <div>
+      <Skeleton className="h-4 w-16 mb-1" />
+      <Skeleton className="h-6 w-24" />
+    </div>
+    <div>
+      <Skeleton className="h-4 w-12 mb-1" />
+      <Skeleton className="h-5 w-32" />
+    </div>
+    <div>
+      <Skeleton className="h-4 w-32 mb-1" />
+      <Skeleton className="h-5 w-40" />
+    </div>
+    <div>
+      <Skeleton className="h-4 w-16 mb-1" />
+      <Skeleton className="h-5 w-20" />
+    </div>
+    <div>
+      <Skeleton className="h-4 w-20 mb-1" />
+      <Skeleton className="h-5 w-48" />
+    </div>
+  </div>
+);
+
 const TestResults: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { testRuns, loadTestRuns, isLoading, error } = useTestRunsStore();
@@ -371,33 +396,7 @@ const TestResults: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <div className="flex flex-col gap-4">
-                  {/* Skeleton loader - no layout shift */}
-                  <div>
-                    <Skeleton className="h-4 w-16 mb-1" />
-                    <Skeleton className="h-6 w-24" />
-                  </div>
-
-                  <div>
-                    <Skeleton className="h-4 w-12 mb-1" />
-                    <Skeleton className="h-5 w-32" />
-                  </div>
-
-                  <div>
-                    <Skeleton className="h-4 w-32 mb-1" />
-                    <Skeleton className="h-5 w-40" />
-                  </div>
-
-                  <div>
-                    <Skeleton className="h-4 w-16 mb-1" />
-                    <Skeleton className="h-5 w-20" />
-                  </div>
-
-                  <div>
-                    <Skeleton className="h-4 w-20 mb-1" />
-                    <Skeleton className="h-5 w-48" />
-                  </div>
-                </div>
+                <TestDetailsSkeleton />
               )}
             </div>
           </div>
