@@ -340,57 +340,64 @@ const Settings: React.FC = () => {
 
           {/* Data Management / Delete Section */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-            <h2 className="text-gray-900 dark:text-white  text-lg font-semibold  mb-4 flex items-center gap-2">
-              <Trash2 size={20} />
-              Daten löschen
-            </h2>
+            <h2 className="text-gray-900 dark:text-white  text-lg font-semibold  mb-4 flex items-center gap-2">Daten löschen</h2>
 
             <div className="space-y-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden.
-              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden.</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Button
                   variant="secondary"
-                  onClick={() => setDeleteConfirmation({
-                    type: "forms",
-                    title: "Alle Formulare löschen",
-                    message: "Sind Sie sicher, dass Sie ALLE Formulare löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne."
-                  })}
+                  size="sm"
+                  onClick={() =>
+                    setDeleteConfirmation({
+                      type: "forms",
+                      title: "Alle Formulare löschen",
+                      message: "Sind Sie sicher, dass Sie ALLE Formulare löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne.",
+                    })
+                  }
                   className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
                   Alle Formulare löschen
                 </Button>
 
                 <Button
                   variant="secondary"
-                  onClick={() => setDeleteConfirmation({
-                    type: "paymentMethods",
-                    title: "Alle Bezahlmethoden löschen",
-                    message: "Sind Sie sicher, dass Sie ALLE Bezahlmethoden löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne."
-                  })}
+                  size="sm"
+                  onClick={() =>
+                    setDeleteConfirmation({
+                      type: "paymentMethods",
+                      title: "Alle Bezahlmethoden löschen",
+                      message: "Sind Sie sicher, dass Sie ALLE Bezahlmethoden löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne.",
+                    })
+                  }
                   className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
                   Alle Bezahlmethoden löschen
                 </Button>
 
                 <Button
                   variant="secondary"
-                  onClick={() => setDeleteConfirmation({
-                    type: "testRuns",
-                    title: "Alle Test-Resultate löschen",
-                    message: "Sind Sie sicher, dass Sie ALLE Test-Resultate löschen möchten?"
-                  })}
+                  size="sm"
+                  onClick={() =>
+                    setDeleteConfirmation({
+                      type: "testRuns",
+                      title: "Alle Test-Resultate löschen",
+                      message: "Sind Sie sicher, dass Sie ALLE Test-Resultate löschen möchten?",
+                    })
+                  }
                   className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
                   Alle Test-Resultate löschen
                 </Button>
 
                 <Button
                   variant="secondary"
-                  onClick={() => setDeleteConfirmation({
-                    type: "schedules",
-                    title: "Alle Zeitpläne löschen",
-                    message: "Sind Sie sicher, dass Sie ALLE Zeitpläne löschen möchten?"
-                  })}
+                  size="sm"
+                  onClick={() =>
+                    setDeleteConfirmation({
+                      type: "schedules",
+                      title: "Alle Zeitpläne löschen",
+                      message: "Sind Sie sicher, dass Sie ALLE Zeitpläne löschen möchten?",
+                    })
+                  }
                   className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
                   Alle Zeitpläne löschen
                 </Button>
@@ -399,15 +406,20 @@ const Settings: React.FC = () => {
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <Button
                   variant="danger"
-                  size="lg"
-                  onClick={() => setDeleteConfirmation({
-                    type: "all",
-                    title: "ALLES löschen (Factory Reset)",
-                    message: "ACHTUNG: Sind Sie sicher, dass Sie ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) löschen möchten? Die Anwendung wird auf den Ursprungszustand zurückgesetzt (außer Einstellungen)."
-                  })}
+                  size="md"
+                  onClick={() =>
+                    setDeleteConfirmation({
+                      type: "all",
+                      title: "ALLES löschen (Factory Reset)",
+                      message: "ACHTUNG: Sind Sie sicher, dass Sie ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) löschen möchten? Die Anwendung wird auf den Ursprungszustand zurückgesetzt (außer Einstellungen).",
+                    })
+                  }
                   className="w-full bg-red-600 hover:bg-red-700 text-white border-none justify-center">
-                  <AlertTriangle size={18} className="mr-2" />
-                  Alle Daten löschen (Alles!)
+                  <AlertTriangle
+                    size={18}
+                    className="mr-2"
+                  />
+                  Alle Daten löschen
                 </Button>
               </div>
             </div>
@@ -629,6 +641,7 @@ const Settings: React.FC = () => {
                     }
                   }}
                   variant="secondary"
+                  size="sm"
                   size="md"
                   disabled={isImporting || (!exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings)}
                   isLoading={isImporting}
