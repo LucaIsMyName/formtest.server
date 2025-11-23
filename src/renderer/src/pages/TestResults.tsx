@@ -29,41 +29,6 @@ const TestResults: React.FC = () => {
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
 
-  const getStatusStyles = (status: string) => {
-    switch (status) {
-      case "SUCCESS":
-        return {
-          backgroundColor: "#dcfce7", // light green
-          color: "#166534", // dark green
-          borderColor: "#bbf7d0",
-        };
-      case "FAILURE":
-        return {
-          backgroundColor: "#fef2f2", // light red
-          color: "#dc2626", // red
-          borderColor: "#fecaca",
-        };
-      case "RUNNING":
-        return {
-          backgroundColor: "#dbeafe", // light blue
-          color: "#1d4ed8", // blue
-          borderColor: "#bfdbfe",
-        };
-      case "SKIPPED":
-        return {
-          backgroundColor: "#f3f4f6", // light gray
-          color: "#6b7280", // gray
-          borderColor: "#e5e7eb",
-        };
-      default:
-        return {
-          backgroundColor: "#f3f4f6",
-          color: "#6b7280",
-          borderColor: "#e5e7eb",
-        };
-    }
-  };
-
   const getStatusIcon = (status: string) => {
     const iconProps = { size: 16 };
     switch (status) {
@@ -143,55 +108,60 @@ const TestResults: React.FC = () => {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "2fr 1fr",
+          gridTemplateColumns: "66% 33%",
           gap: "24px",
+          overflowX: "hidden",
         }}>
         {/* Test Runs List */}
         <div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-            <div className="overflow-x-auto">
-              {isLoading && testRuns.length === 0 ? (
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-                  <div className="p-6">
-                    <div className="flex items-center justify-center py-8">
-                      <div className="text-gray-500 dark:text-gray-400">Loading test results...</div>
-                    </div>
-                  </div>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+            {isLoading && testRuns.length === 0 ? (
+              <div className="p-6">
+                <div className="flex items-center justify-center py-8">
+                  <div className="text-gray-500 dark:text-gray-400">Loading test results...</div>
                 </div>
-              ) : testRuns.length === 0 ? (
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-                  <div className="p-6">
-                    <div className="text-center py-8">
-                      <div className="text-gray-500 dark:text-gray-400 mb-4">No test results yet.</div>
-                      <p className="text-gray-500 dark:text-gray-400">Run some tests to see results here.</p>
-                    </div>
-                  </div>
+              </div>
+            ) : testRuns.length === 0 ? (
+              <div className="p-6">
+                <div className="text-center py-8">
+                  <div className="text-gray-500 dark:text-gray-400 mb-4">No test results yet.</div>
+                  <p className="text-gray-500 dark:text-gray-400">Run some tests to see results here.</p>
                 </div>
-              ) : (
-                <div>
-                  {testRuns.map((testRun) => {
-                    const statusStyles = getStatusStyles(testRun.status);
-                    return (
-                      <div
-                        key={testRun.id}
-                        className={`p-4 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${selectedTestRun === testRun.id ? "bg-blue-50 dark:bg-blue-900/20 border-l-3 border-l-blue-500" : statusStyles.backgroundColor}`}
-                        onClick={() => setSelectedTestRun(testRun.id)}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3">
-                              <div style={{ color: statusStyles.color }}>{getStatusIcon(testRun.status)}</div>
-                              <div>
-                                <div className="font-medium text-gray-900 dark:text-white mb-1">
-                                  {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
-                                </div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400">
-                                  {formatDate(testRun.runAt)} • {formatDuration(testRun.durationMs)}
-                                </div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Test</th>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Datum</th>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Dauer</th>
+                      <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                      <th className="px-4 py-3 text-right text-[11px] font-mono font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aktionen</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {testRuns.map((testRun) => {
+                      const isSelected = selectedTestRun === testRun.id;
+                      return (
+                        <tr
+                          key={testRun.id}
+                          className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
+                          onClick={() => setSelectedTestRun(testRun.id)}>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className={`flex-shrink-0 ${testRun.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}>{getStatusIcon(testRun.status)}</div>
+                              <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
                               </div>
                             </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800"}`}>{testRun.status}</span>
+                          </td>
+                          <td className="px-4 py-3 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(testRun.runAt)}</td>
+                          <td className="px-4 py-3 text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono whitespace-nowrap">{formatDuration(testRun.durationMs)}</td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`}>{testRun.status}</span>
+                          </td>
+                          <td className="px-4 py-3 text-right whitespace-nowrap">
                             <Button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -202,63 +172,63 @@ const TestResults: React.FC = () => {
                               className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
                               Löschen
                             </Button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Test Run Details */}
         <div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="max-w-[380px] mr-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+            <div className="px-6 py-4  border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">Test Details</h3>
             </div>
             <div className="p-6">
               {selectedTestRunData ? (
                 <div className="flex flex-col gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
-                    <div className={`inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200"}`}>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
+                    <div className={`border  inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400"}`}>
                       {getStatusIcon(selectedTestRunData.status)} {selectedTestRunData.status}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Form</label>
-                    <div className="text-sm text-gray-900 dark:text-white">{getFormName(selectedTestRunData.formId)}</div>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Formular</label>
+                    <div className="border dark:border-gray-700 text-[11px] font-mono px-1.5 inline-block py-0.5 bg-gray-100 dark:bg-gray-900/20 text-gray-900 dark:text-white">{getFormName(selectedTestRunData.formId)}</div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Payment Method</label>
-                    <div className="text-sm text-gray-900 dark:text-white">{getPaymentMethodName(selectedTestRunData.paymentMethodId)}</div>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Bezahlmethode</label>
+                    <div className="text-sm font-mono text-gray-900 dark:text-white">{getPaymentMethodName(selectedTestRunData.paymentMethodId)}</div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Duration</label>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Duration</label>
                     <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDuration(selectedTestRunData.durationMs)}</div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Run At</label>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Run At</label>
                     <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDate(selectedTestRunData.runAt)}</div>
                   </div>
 
                   {selectedTestRunData.errorMessage && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Error Message</label>
+                      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Error Message</label>
                       <div className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-xs text-red-800 dark:text-red-200 font-mono">{selectedTestRunData.errorMessage}</div>
                     </div>
                   )}
 
                   {selectedTestRunData.logDetails && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Logs</label>
+                      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Logs</label>
                       <div className="p-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded text-xs text-gray-600 dark:text-gray-400 max-h-32 overflow-y-auto">
                         <pre className="whitespace-pre-wrap m-0 font-mono">{selectedTestRunData.logDetails}</pre>
                       </div>
@@ -267,32 +237,44 @@ const TestResults: React.FC = () => {
 
                   {selectedTestRunData.screenshotPath && (
                     <div>
-                      <label
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                          color: "var(--color-text-secondary)",
-                          display: "block",
-                          marginBottom: "4px",
-                        }}>
-                        Screenshot
-                      </label>
+                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Screenshot</label>
                       <div>
                         <img
                           src={selectedTestRunData.screenshotPath}
                           alt="Test screenshot"
-                          style={{
-                            width: "100%",
-                            border: "1px solid var(--color-border)",
-                          }}
+                          className="w-full border border-gray-200 dark:border-gray-700 rounded"
                         />
                       </div>
                     </div>
                   )}
                 </div>
               ) : (
-                <div style={{ textAlign: "center", padding: "32px 0" }}>
-                  <p style={{ color: "var(--color-text-secondary)" }}>Select a test run to view details</p>
+                <div className="flex flex-col gap-4">
+                  {/* Skeleton loader - no layout shift */}
+                  <div>
+                    <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
+                    <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+
+                  <div>
+                    <div className="h-4 w-12 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
+                    <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+
+                  <div>
+                    <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
+                    <div className="h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+
+                  <div>
+                    <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
+                    <div className="h-5 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+
+                  <div>
+                    <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse"></div>
+                    <div className="h-5 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </div>
                 </div>
               )}
             </div>

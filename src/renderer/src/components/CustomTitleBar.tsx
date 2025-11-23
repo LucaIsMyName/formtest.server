@@ -45,7 +45,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests }) => {
   return (
     <Tooltip.Provider>
       <div
-        className="relative h-10 border-b dark:border-b-gray-700 flex items-center justify-between px-3 select-none"
+        className="relative h-12 border-b dark:border-b-gray-700 flex items-center justify-between pl-4 pr-3 select-none"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         <TrafficLights
           onClose={handleClose}
@@ -63,7 +63,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests }) => {
             <Tooltip.Trigger asChild>
               <button
                 onClick={onRunAllTests}
-                className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
+                className="p-1.5 rounded-md border dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300"
                 aria-label="Alle Tests ausführen">
                 <Play size={14} />
               </button>

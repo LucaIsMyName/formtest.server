@@ -28,14 +28,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden relative">
+    <div className="select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative">
       <CustomTitleBar onRunAllTests={handleRunAllTests} />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div
           className="bg-white dark:bg-gray-900 flex flex-col select-none"
-          style={{ width: "clamp(12rem, 15vw, 20rem)" }}>
+          style={{ width: "clamp(15rem, 20vw, 32rem)" }}>
           <nav className="flex-1 p-2">
             {navigation.map((item) => {
               const IconComponent = item.icon;
@@ -53,8 +53,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 py-4">{children}</main>
+        <div className="flex-1  flex flex-col overflow-hidden">
+          <main className="flex-1  overflow-auto bg-white dark:bg-gray-900 px-4 py-4">
+            <div className="max-w-[1040px]">{children}</div>
+          </main>
         </div>
       </div>
 

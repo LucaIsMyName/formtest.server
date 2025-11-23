@@ -8,10 +8,12 @@ let mainWindow: BrowserWindow;
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1400,
     height: 800,
     minWidth: 800,
     minHeight: 600,
+    maxHeight: 1200,
+    maxWidth: 1520,
     show: false,
     frame: false, // Remove OS frame
     titleBarStyle: "hidden", // Hide title bar

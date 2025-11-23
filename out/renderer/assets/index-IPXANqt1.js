@@ -12892,7 +12892,7 @@ const Layout = ({ children }) => {
         "div",
         {
           className: "bg-white dark:bg-gray-900 flex flex-col select-none",
-          style: { width: "clamp(12rem, 15vw, 20rem)" },
+          style: { width: "clamp(15rem, 20vw, 32rem)" },
           children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
             const IconComponent = item.icon;
             return /* @__PURE__ */ jsxRuntimeExports.jsxs(
@@ -12910,7 +12910,7 @@ const Layout = ({ children }) => {
           }) })
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 py-4", children }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 max-w-[1040px] flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 py-4", children }) })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       TestRunDialog,
@@ -38473,48 +38473,6 @@ const TestResults = () => {
     const pm = paymentMethods.find((p2) => p2.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
-  const getStatusStyles = (status) => {
-    switch (status) {
-      case "SUCCESS":
-        return {
-          backgroundColor: "#dcfce7",
-          // light green
-          color: "#166534",
-          // dark green
-          borderColor: "#bbf7d0"
-        };
-      case "FAILURE":
-        return {
-          backgroundColor: "#fef2f2",
-          // light red
-          color: "#dc2626",
-          // red
-          borderColor: "#fecaca"
-        };
-      case "RUNNING":
-        return {
-          backgroundColor: "#dbeafe",
-          // light blue
-          color: "#1d4ed8",
-          // blue
-          borderColor: "#bfdbfe"
-        };
-      case "SKIPPED":
-        return {
-          backgroundColor: "#f3f4f6",
-          // light gray
-          color: "#6b7280",
-          // gray
-          borderColor: "#e5e7eb"
-        };
-      default:
-        return {
-          backgroundColor: "#f3f4f6",
-          color: "#6b7280",
-          borderColor: "#e5e7eb"
-        };
-    }
-  };
   const getStatusIcon = (status) => {
     const iconProps = { size: 16 };
     switch (status) {
@@ -38589,39 +38547,42 @@ const TestResults = () => {
       {
         style: {
           display: "grid",
-          gridTemplateColumns: "2fr 1fr",
-          gap: "24px"
+          gridTemplateColumns: "60% 40%",
+          gap: "24px",
+          overflowX: "hidden"
         },
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: isLoading && testRuns.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400", children: "Loading test results..." }) }) }) }) : testRuns.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: isLoading && testRuns.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400", children: "Loading test results..." }) }) }) : testRuns.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "No test results yet." }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Run some tests to see results here." })
-          ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: testRuns.map((testRun) => {
-            const statusStyles = getStatusStyles(testRun.status);
-            return /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "div",
-              {
-                className: `p-4 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${selectedTestRun === testRun.id ? "bg-blue-50 dark:bg-blue-900/20 border-l-3 border-l-blue-500" : statusStyles.backgroundColor}`,
-                onClick: () => setSelectedTestRun(testRun.id),
-                children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { color: statusStyles.color }, children: getStatusIcon(testRun.status) }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-medium text-gray-900 dark:text-white mb-1", children: [
+          ] }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: "w-full", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Test" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Datum" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Dauer" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Status" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: "Aktionen" })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "divide-y divide-gray-200 dark:divide-gray-700", children: testRuns.map((testRun) => {
+              const isSelected = selectedTestRun === testRun.id;
+              return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                "tr",
+                {
+                  className: `cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`,
+                  onClick: () => setSelectedTestRun(testRun.id),
+                  children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-4 py-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `flex-shrink-0 ${testRun.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`, children: getStatusIcon(testRun.status) }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm font-medium text-gray-900 dark:text-white truncate", children: [
                         getFormName(testRun.formId),
                         " × ",
                         getPaymentMethodName(testRun.paymentMethodId)
-                      ] }),
-                      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-500 dark:text-gray-400", children: [
-                        formatDate(testRun.runAt),
-                        " • ",
-                        formatDuration(testRun.durationMs)
                       ] })
-                    ] })
-                  ] }) }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800"}`, children: testRun.status }),
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    ] }) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-4 py-3 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDate(testRun.runAt) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-4 py-3 text-sm text-gray-500 dark:text-gray-400 font-mono whitespace-nowrap", children: formatDuration(testRun.durationMs) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-4 py-3 whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`, children: testRun.status }) }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "px-4 py-3 text-right whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                       Button,
                       {
                         onClick: (e3) => {
@@ -38633,15 +38594,15 @@ const TestResults = () => {
                         className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300",
                         children: "Löschen"
                       }
-                    )
-                  ] })
-                ] })
-              },
-              testRun.id
-            );
-          }) }) }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-6 py-4 border-b border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-base font-medium text-gray-900 dark:text-white m-0", children: "Test Details" }) }),
+                    ) })
+                  ]
+                },
+                testRun.id
+              );
+            }) })
+          ] }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-[480px] mr-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-6 py-4  border-b border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-base font-medium text-gray-900 dark:text-white m-0", children: "Test Details" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: selectedTestRunData ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-4", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Status" }),
@@ -38676,32 +38637,38 @@ const TestResults = () => {
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded text-xs text-gray-600 dark:text-gray-400 max-h-32 overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap m-0 font-mono", children: selectedTestRunData.logDetails }) })
               ] }),
               selectedTestRunData.screenshotPath && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  "label",
-                  {
-                    style: {
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "var(--color-text-secondary)",
-                      display: "block",
-                      marginBottom: "4px"
-                    },
-                    children: "Screenshot"
-                  }
-                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Screenshot" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "img",
                   {
                     src: selectedTestRunData.screenshotPath,
                     alt: "Test screenshot",
-                    style: {
-                      width: "100%",
-                      border: "1px solid var(--color-border)"
-                    }
+                    className: "w-full border border-gray-200 dark:border-gray-700 rounded"
                   }
                 ) })
               ] })
-            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { textAlign: "center", padding: "32px 0" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { color: "var(--color-text-secondary)" }, children: "Select a test run to view details" }) }) })
+            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-4 w-12 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-5 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-5 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded mb-1 animate-pulse" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-5 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" })
+              ] })
+            ] }) })
           ] }) })
         ]
       }
@@ -38723,7 +38690,7 @@ const TestResults = () => {
 const InfoDoku = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "max-w-4xl", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-2xl font-semibold text-gray-900 dark:text-white mb-8", children: "Info & Dokumentation" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Impressum" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Angaben gemäß § 5 TMG:" }) }),
@@ -38733,7 +38700,7 @@ const InfoDoku = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Österreich" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Lizenz & Rechtliches" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -38743,7 +38710,7 @@ const InfoDoku = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2", children: "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software." }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2 font-semibold", children: 'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.' })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pt-4 border-t border-gray-200 dark:border-gray-700", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-4 border-y border-gray-200 dark:border-gray-700", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2", children: "Haftungsausschluss" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed", children: "Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko." })
         ] })
