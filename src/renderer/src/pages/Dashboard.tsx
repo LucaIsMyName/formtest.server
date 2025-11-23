@@ -139,31 +139,12 @@ const Dashboard: React.FC = () => {
     ];
   };
 
+  // Separate initial load from stats calculation to fix stale closure issue
   useEffect(() => {
     const loadDashboardData = async () => {
       setIsLoading(true);
       try {
         await Promise.all([loadForms(), loadPaymentMethods(), loadTestRuns()]);
-
-        const activeForms = forms.filter((form) => form.isActive).length;
-        const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive).length;
-
-        // Calculate test run statistics
-        const successfulTests = testRuns.filter((run) => run.status === "SUCCESS").length;
-        const failedTests = testRuns.filter((run) => run.status === "FAILURE").length;
-        const totalTestRuns = testRuns.length;
-        const successRate = totalTestRuns > 0 ? (successfulTests / totalTestRuns) * 100 : 0;
-
-        setStats({
-          totalForms: forms.length,
-          activeForms,
-          totalPaymentMethods: paymentMethods.length,
-          activePaymentMethods,
-          totalTestRuns,
-          successfulTests,
-          failedTests,
-          successRate,
-        });
       } catch (error) {
         console.error("Failed to load dashboard data:", error);
       } finally {
@@ -173,6 +154,29 @@ const Dashboard: React.FC = () => {
 
     loadDashboardData();
   }, [loadForms, loadPaymentMethods, loadTestRuns]);
+
+  // Update stats whenever data changes
+  useEffect(() => {
+    const activeForms = forms.filter((form) => form.isActive).length;
+    const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive).length;
+
+    // Calculate test run statistics
+    const successfulTests = testRuns.filter((run) => run.status === "SUCCESS").length;
+    const failedTests = testRuns.filter((run) => run.status === "FAILURE").length;
+    const totalTestRuns = testRuns.length;
+    const successRate = totalTestRuns > 0 ? (successfulTests / totalTestRuns) * 100 : 0;
+
+    setStats({
+      totalForms: forms.length,
+      activeForms,
+      totalPaymentMethods: paymentMethods.length,
+      activePaymentMethods,
+      totalTestRuns,
+      successfulTests,
+      failedTests,
+      successRate,
+    });
+  }, [forms, paymentMethods, testRuns]);
 
   const handleQuickAction = (action: string) => {
     switch (action) {
@@ -203,41 +207,53 @@ const Dashboard: React.FC = () => {
       <h1 className={CONFIG.style.title.className}>Dashboard</h1>
 
       <div className="mt-6 flex flex-wrap items-center gap-4 mb-8">
-        <button
+        <Button
           onClick={() => handleQuickAction("run-tests")}
           disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}
-          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group">
+          variant="ghost"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
+        >
           <Rocket className="w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-medium text-gray-900 dark:text-white">{isRunning ? "Tests laufen..." : "Tests starten"}</span>
-        </button>
+          <span className="text-sm font-medium text-gray-900 dark:text-white">
+            {isRunning ? "Tests laufen..." : "Tests starten"}
+          </span>
+        </Button>
 
-        <button
+        <Button
           onClick={() => handleQuickAction("add-form")}
-          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group">
+          variant="ghost"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
+        >
           <FileText className="w-5 h-5 text-blue-500 dark:text-blue-400 mr-2 group-hover:scale-110 transition-transform" />
           <span className="text-sm font-medium text-gray-900 dark:text-white">Formular</span>
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={() => handleQuickAction("add-payment")}
-          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group">
+          variant="ghost"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
+        >
           <CreditCard className="w-5 h-5 text-green-500 dark:text-green-400 mr-2 group-hover:scale-110 transition-transform" />
           <span className="text-sm font-medium text-gray-900 dark:text-white">Bezahlmethode</span>
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={() => handleQuickAction("view-results")}
-          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group">
+          variant="ghost"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
+        >
           <BarChart3 className="w-5 h-5 text-yellow-500 dark:text-yellow-400 mr-2 group-hover:scale-110 transition-transform" />
           <span className="text-sm font-medium text-gray-900 dark:text-white">Ergebnisse</span>
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={() => handleQuickAction("settings")}
-          className="flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group">
+          variant="ghost"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
+        >
           <Settings className="w-5 h-5 text-gray-500 dark:text-gray-400 mr-2 group-hover:scale-110 transition-transform" />
           <span className="text-sm font-medium text-gray-900 dark:text-white">Einstellungen</span>
-        </button>
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -427,7 +443,7 @@ const Dashboard: React.FC = () => {
                   dataKey="success"
                   fill="#10b981"
                   name="Erfolgreich"
-                />
+                  />
                 <Bar
                   dataKey="failure"
                   fill="#ef4444"

@@ -152,7 +152,7 @@ const TestResults: React.FC = () => {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-gray-700">
+                  <thead className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
                     <tr>
                       <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Test</th>
                       <th className="px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Datum</th>
@@ -215,7 +215,7 @@ const TestResults: React.FC = () => {
                 <div className="flex flex-col gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
-                    <div className={`border  inline-flex items-center gap-2 px-2 py-1 text-xs font-medium rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400"}`}>
+                    <div className={`border  inline-flex items-center gap-2 pl-1 pr-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400"}`}>
                       {getStatusIcon(selectedTestRunData.status)} {selectedTestRunData.status}
                     </div>
                   </div>
