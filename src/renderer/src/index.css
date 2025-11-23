@@ -50,8 +50,8 @@
   --color-background-secondary: #f8f9fa;
 
   /* Google Sans Flex Variable Font Settings */
-  --font-sans: "Google Sans Flex", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: "Google Sans Flex";
+  --font-mono: "JetBrains Mono";
 
   /* Variable font weight scale */
   --font-weight-light: 300;

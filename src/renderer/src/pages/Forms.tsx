@@ -9,6 +9,7 @@ import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { renderIcon } from "../utils/iconHelper";
+import { Edit2, Trash2 } from "lucide-react";
 
 const FormsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
@@ -189,16 +190,16 @@ const Forms: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
-                        Bearbeiten
+                        title="Bearbeiten">
+                        <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
                       </Button>
                       <Button
                         onClick={() => handleDeleteForm(form)}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
-                        className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
-                        Löschen
+                        title="Löschen">
+                        <Trash2 size={16} className="text-red-600 dark:text-red-400" />
                       </Button>
                     </div>
                   </TableCell>

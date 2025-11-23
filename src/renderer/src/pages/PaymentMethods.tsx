@@ -9,6 +9,7 @@ import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { Edit2, Trash2 } from "lucide-react";
 
 const PaymentMethodsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
@@ -223,16 +224,16 @@ const PaymentMethods: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
-                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
-                        Bearbeiten
+                        title="Bearbeiten">
+                        <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
                       </Button>
                       <Button
                         onClick={() => handleDeleteMethod(method)}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
-                        className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
-                        Löschen
+                        title="Löschen">
+                        <Trash2 size={16} className="text-red-600 dark:text-red-400" />
                       </Button>
                     </div>
                   </TableCell>

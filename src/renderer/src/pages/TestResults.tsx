@@ -6,7 +6,7 @@ import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
-import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy } from "lucide-react";
+import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2 } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 
@@ -249,8 +249,9 @@ const TestResults: React.FC = () => {
                               }}
                               variant="ghost"
                               size="sm"
-                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
-                              Löschen
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                              title="Löschen">
+                              <Trash2 size={16} />
                             </Button>
                           </TableCell>
                         </TableRow>
