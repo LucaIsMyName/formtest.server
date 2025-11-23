@@ -5,6 +5,7 @@ import Forms from "./pages/Forms";
 import PaymentMethods from "./pages/PaymentMethods";
 import Settings from "./pages/Settings";
 import TestResults from "./pages/TestResults";
+import InfoDoku from "./pages/InfoDoku";
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
         <Route
           path="/test-results"
           element={<TestResults />}
+        />
+        <Route
+          path="/info-doku"
+          element={<InfoDoku />}
         />
       </Routes>
     </Layout>

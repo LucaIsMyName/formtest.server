@@ -6,6 +6,21 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/Button";
 import { FileText, CreditCard, Rocket, BarChart3 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 interface DashboardStats {
   totalForms: number;
@@ -35,6 +50,58 @@ const Dashboard: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [showTestDialog, setShowTestDialog] = useState(false);
+
+  // Prepare chart data
+  const prepareTimelineData = () => {
+    const sortedRuns = [...testRuns].sort((a, b) => new Date(a.runAt).getTime() - new Date(b.runAt).getTime());
+    const grouped = sortedRuns.reduce((acc, run) => {
+      const date = new Date(run.runAt).toLocaleDateString('de-DE');
+      if (!acc[date]) {
+        acc[date] = { date, success: 0, failure: 0 };
+      }
+      if (run.status === 'SUCCESS') acc[date].success++;
+      if (run.status === 'FAILURE') acc[date].failure++;
+      return acc;
+    }, {} as Record<string, { date: string; success: number; failure: number }>);
+    return Object.values(grouped);
+  };
+
+  const preparePaymentMethodData = () => {
+    const grouped = testRuns.reduce((acc, run) => {
+      const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
+      const name = pm?.name || 'Unknown';
+      if (!acc[name]) {
+        acc[name] = { name, success: 0, failure: 0 };
+      }
+      if (run.status === 'SUCCESS') acc[name].success++;
+      if (run.status === 'FAILURE') acc[name].failure++;
+      return acc;
+    }, {} as Record<string, { name: string; success: number; failure: number }>);
+    return Object.values(grouped);
+  };
+
+  const prepareFormData = () => {
+    const grouped = testRuns.reduce((acc, run) => {
+      const form = forms.find(f => f.id === run.formId);
+      const name = form?.name || 'Unknown';
+      if (!acc[name]) {
+        acc[name] = { name, success: 0, failure: 0 };
+      }
+      if (run.status === 'SUCCESS') acc[name].success++;
+      if (run.status === 'FAILURE') acc[name].failure++;
+      return acc;
+    }, {} as Record<string, { name: string; success: number; failure: number }>);
+    return Object.values(grouped);
+  };
+
+  const prepareSuccessRateData = () => {
+    const successful = testRuns.filter(r => r.status === 'SUCCESS').length;
+    const failed = testRuns.filter(r => r.status === 'FAILURE').length;
+    return [
+      { name: 'Erfolgreich', value: successful, color: '#10b981' },
+      { name: 'Fehlgeschlagen', value: failed, color: '#ef4444' },
+    ];
+  };
 
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -69,7 +136,7 @@ const Dashboard: React.FC = () => {
     };
 
     loadDashboardData();
-  }, [forms.length, paymentMethods.length, loadForms, loadPaymentMethods]);
+  }, [forms.length, paymentMethods.length, testRuns.length, loadForms, loadPaymentMethods, loadTestRuns]);
 
   const handleQuickAction = (action: string) => {
     switch (action) {
@@ -142,6 +209,112 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Charts Section */}
+      {testRuns.length > 0 && (
+        <div className="space-y-6 mb-8">
+          {/* Timeline Chart */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={prepareTimelineData()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis dataKey="date" stroke="#9ca3af" />
+                <YAxis stroke="#9ca3af" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: '1px solid #374151',
+                    borderRadius: '0.5rem',
+                    color: '#fff',
+                  }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="success" stroke="#10b981" name="Erfolgreich" strokeWidth={2} />
+                <Line type="monotone" dataKey="failure" stroke="#ef4444" name="Fehlgeschlagen" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Success Rate Pie Chart and Stats */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Erfolgsrate Übersicht</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={prepareSuccessRateData()}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value">
+                    {prepareSuccessRateData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
+                      border: '1px solid #374151',
+                      borderRadius: '0.5rem',
+                      color: '#fff',
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Payment Method Performance */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Bezahlmethoden Performance</h3>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={preparePaymentMethodData()}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="name" stroke="#9ca3af" />
+                  <YAxis stroke="#9ca3af" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1f2937',
+                      border: '1px solid #374151',
+                      borderRadius: '0.5rem',
+                      color: '#fff',
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="success" fill="#10b981" name="Erfolgreich" />
+                  <Bar dataKey="failure" fill="#ef4444" name="Fehlgeschlagen" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Form Performance */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Formular Performance</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={prepareFormData()} layout="horizontal">
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis type="number" stroke="#9ca3af" />
+                <YAxis dataKey="name" type="category" stroke="#9ca3af" width={150} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: '1px solid #374151',
+                    borderRadius: '0.5rem',
+                    color: '#fff',
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="success" fill="#10b981" name="Erfolgreich" />
+                <Bar dataKey="failure" fill="#ef4444" name="Fehlgeschlagen" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">

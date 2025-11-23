@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
-import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen } from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +16,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
     { name: "Test Resultate", href: "/test-results", icon: BarChart3 },
     { name: "Einstellungen", href: "/settings", icon: Settings },
+    { name: "Info & Doku", href: "/info-doku", icon: BookOpen },
   ];
 
   return (
