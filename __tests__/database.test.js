@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment node
+ */
 const Database = require('better-sqlite3')
 
 // Mock database for testing
