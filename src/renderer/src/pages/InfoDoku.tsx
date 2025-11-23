@@ -6,7 +6,7 @@ const InfoDoku: React.FC = () => {
     <div className="max-w-4xl">
       <h1 className={CONFIG.style.title.className}>Info & Doku</h1>
 
-      <section className="select-all my-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+      <section className="select-auto my-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
         {/* Impressum Section */}
         <div className="">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
@@ -40,7 +40,7 @@ const InfoDoku: React.FC = () => {
         </div>
       </section>
       {/* User Documentation Section */}
-      <div className="select-all border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6">
+      <div className="select-auto border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Benutzer-Dokumentation</h2>
 
         <div className="space-y-6 text-gray-700 dark:text-gray-300">

@@ -151,7 +151,7 @@ const TestResults: React.FC = () => {
         className="mt-4"
         style={{
           display: "grid",
-          gridTemplateColumns: "66% 33%",
+          gridTemplateColumns: "75% 25%",
           gap: "24px",
           overflowX: "hidden",
         }}>
@@ -238,15 +238,16 @@ const TestResults: React.FC = () => {
 
         {/* Test Run Details */}
         <div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm mr-4">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-              <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">Test Details</h3>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm mr-6">
+            <div className="px-2 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+              <h3 className="ml-2 text-base font-medium text-gray-900 dark:text-white m-0">Test Details</h3>
               {selectedTestRunData && (
                 <div className="flex gap-2">
                   <Button
-                    variant="ghost"
+                    variant="secondary"
                     size="sm"
                     onClick={handleExportJson}
+                    className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 h-8"
                     title="Export JSON">
                     <FileJson
                       size={16}
@@ -256,13 +257,13 @@ const TestResults: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="p-6">
+            <div className="p-4">
               {selectedTestRunData ? (
                 <div className="flex flex-col gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">ID</label>
                     <div className="flex items-center gap-2">
-                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                      <code className="text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
                         {selectedTestRunData.uuid || selectedTestRunData.id}
                       </code>
                       {selectedTestRunData.uuid && (

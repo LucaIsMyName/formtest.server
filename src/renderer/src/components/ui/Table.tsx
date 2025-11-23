@@ -40,7 +40,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
 TableHead.displayName = "TableHead";
 
 const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<HTMLTableCellElement>>(({ className, ...props }, ref) => (
-  <td ref={ref} className={cn("select-all px-4 py-3 whitespace-nowrap", className)} {...props} />
+  <td ref={ref} className={cn("select-normal px-4 py-3 whitespace-nowrap", className)} {...props} />
 ));
 TableCell.displayName = "TableCell";
 

@@ -112,12 +112,12 @@ More balanced layout with better proportions.
 ### Data Row
 ```tsx
 <tr className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
-  <td>
+  <td className="select-auto">
     <Icon /> Form × Payment Method
   </td>
-  <td>23.11.2025, 07:56:47</td>
-  <td>4.2s</td>
-  <td><Badge>SUCCESS</Badge></td>
+  <td className="select-auto">23.11.2025, 07:56:47</td>
+  <td className="select-auto">4.2s</td>
+  <td className="select-auto"><Badge>SUCCESS</Badge></td>
   <td><Button>Löschen</Button></td>
 </tr>
 ```
