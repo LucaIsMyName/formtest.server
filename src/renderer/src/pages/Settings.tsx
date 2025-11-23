@@ -16,6 +16,19 @@ const Settings: React.FC = () => {
     loadSettings();
   }, [loadSettings]);
 
+  // Theme application function
+  const applyTheme = (themeValue: string) => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    
+    if (themeValue === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(themeValue);
+    }
+  };
+
   // Update local state when settings load
   useEffect(() => {
     settings.forEach((setting) => {
@@ -34,6 +47,8 @@ const Settings: React.FC = () => {
           break;
         case "theme":
           setTheme(setting.value);
+          // Apply theme immediately when loaded from database
+          applyTheme(setting.value);
           break;
       }
     });
@@ -65,18 +80,6 @@ const Settings: React.FC = () => {
     await updateSetting("theme", value, "UI-Theme-Präferenz (system, light, dark)");
     // Apply theme immediately
     applyTheme(value);
-  };
-
-  const applyTheme = (themeValue: string) => {
-    const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
-    
-    if (themeValue === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      root.classList.add(systemTheme);
-    } else {
-      root.classList.add(themeValue);
-    }
   };
 
   return (

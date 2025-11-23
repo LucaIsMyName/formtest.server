@@ -38275,6 +38275,16 @@ const Settings = () => {
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
+  const applyTheme = (themeValue) => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    if (themeValue === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(themeValue);
+    }
+  };
   reactExports.useEffect(() => {
     settings.forEach((setting) => {
       switch (setting.key) {
@@ -38292,6 +38302,7 @@ const Settings = () => {
           break;
         case "theme":
           setTheme(setting.value);
+          applyTheme(setting.value);
           break;
       }
     });
@@ -38316,16 +38327,6 @@ const Settings = () => {
     setTheme(value);
     await updateSetting("theme", value, "UI-Theme-Präferenz (system, light, dark)");
     applyTheme(value);
-  };
-  const applyTheme = (themeValue) => {
-    const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
-    if (themeValue === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      root.classList.add(systemTheme);
-    } else {
-      root.classList.add(themeValue);
-    }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -38986,6 +38987,30 @@ const InfoDoku = () => {
   ] });
 };
 function App() {
+  reactExports.useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const settings = await window.api.settings.getAll();
+        const themeSetting = settings.find((s2) => s2.key === "theme");
+        if (themeSetting) {
+          applyTheme(themeSetting.value);
+        }
+      } catch (error) {
+        console.error("Failed to load theme:", error);
+      }
+    };
+    loadTheme();
+  }, []);
+  const applyTheme = (themeValue) => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    if (themeValue === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(themeValue);
+    }
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       Route,
