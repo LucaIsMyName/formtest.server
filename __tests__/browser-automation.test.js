@@ -14,141 +14,147 @@ describe('Browser Automation Integration', () => {
     }
   })
 
-  test('should start test runner process successfully', (done) => {
-    const runnerPath = path.join(__dirname, '..', 'src', 'main', 'testRunner', 'runner.js')
-    
-    runnerProcess = spawn('node', [runnerPath], {
-      stdio: ['pipe', 'pipe', 'pipe']
-    })
-
-    let hasStarted = false
-
-    runnerProcess.stderr.on('data', (data) => {
-      const output = data.toString()
-      console.log('Runner log:', output)
+  test('should start test runner process successfully', () => {
+    return new Promise((resolve, reject) => {
+      const runnerPath = path.join(__dirname, '..', 'src', 'main', 'testRunner', 'runner.js')
       
-      if (output.includes('Test runner process started') && !hasStarted) {
-        hasStarted = true
-        done()
-      }
-    })
+      runnerProcess = spawn('node', [runnerPath], {
+        stdio: ['pipe', 'pipe', 'pipe']
+      })
 
-    runnerProcess.on('error', (error) => {
-      done(error)
-    })
+      let hasStarted = false
 
-    runnerProcess.on('exit', (code) => {
-      if (!hasStarted) {
-        done(new Error(`Process exited with code ${code} before starting`))
-      }
-    })
+      runnerProcess.stderr.on('data', (data) => {
+        const output = data.toString()
+        // console.log('Runner log:', output)
+        
+        if (output.includes('Test runner process started') && !hasStarted) {
+          hasStarted = true
+          resolve()
+        }
+      })
 
-    // Give it a moment to start
-    setTimeout(() => {
-      if (!hasStarted) {
-        done(new Error('Process did not start within timeout'))
-      }
-    }, 5000)
+      runnerProcess.on('error', (error) => {
+        reject(error)
+      })
+
+      runnerProcess.on('exit', (code) => {
+        if (!hasStarted) {
+          reject(new Error(`Process exited with code ${code} before starting`))
+        }
+      })
+
+      // Give it a moment to start
+      setTimeout(() => {
+        if (!hasStarted) {
+          reject(new Error('Process did not start within timeout'))
+        }
+      }, 5000)
+    })
   }, 10000)
 
-  test('should respond to ping message', (done) => {
-    const runnerPath = path.join(__dirname, '..', 'src', 'main', 'testRunner', 'runner.js')
-    
-    runnerProcess = spawn('node', [runnerPath], {
-      stdio: ['pipe', 'pipe', 'pipe']
-    })
-
-    let hasStarted = false
-    let hasPonged = false
-
-    runnerProcess.stdout.on('data', (data) => {
-      const lines = data.toString().split('\n').filter(line => line.trim())
+  test('should respond to ping message', () => {
+    return new Promise((resolve, reject) => {
+      const runnerPath = path.join(__dirname, '..', 'src', 'main', 'testRunner', 'runner.js')
       
-      for (const line of lines) {
-        try {
-          const message = JSON.parse(line)
-          if (message.type === 'PONG' && !hasPonged) {
-            hasPonged = true
-            done()
+      runnerProcess = spawn('node', [runnerPath], {
+        stdio: ['pipe', 'pipe', 'pipe']
+      })
+
+      let hasStarted = false
+      let hasPonged = false
+
+      runnerProcess.stdout.on('data', (data) => {
+        const lines = data.toString().split('\n').filter(line => line.trim())
+        
+        for (const line of lines) {
+          try {
+            const message = JSON.parse(line)
+            if (message.type === 'PONG' && !hasPonged) {
+              hasPonged = true
+              resolve()
+            }
+          } catch (error) {
+            // Ignore non-JSON output
           }
-        } catch (error) {
-          // Ignore non-JSON output
         }
-      }
-    })
+      })
 
-    runnerProcess.stderr.on('data', (data) => {
-      const output = data.toString()
-      
-      if (output.includes('Test runner process started') && !hasStarted) {
-        hasStarted = true
+      runnerProcess.stderr.on('data', (data) => {
+        const output = data.toString()
         
-        // Send ping message
-        const pingMessage = {
-          id: 'test_ping_1',
-          type: 'PING'
+        if (output.includes('Test runner process started') && !hasStarted) {
+          hasStarted = true
+          
+          // Send ping message
+          const pingMessage = {
+            id: 'test_ping_1',
+            type: 'PING'
+          }
+          
+          runnerProcess.stdin.write(JSON.stringify(pingMessage) + '\n')
         }
-        
-        runnerProcess.stdin.write(JSON.stringify(pingMessage) + '\n')
-      }
-    })
+      })
 
-    runnerProcess.on('error', (error) => {
-      done(error)
-    })
+      runnerProcess.on('error', (error) => {
+        reject(error)
+      })
 
-    // Timeout
-    setTimeout(() => {
-      if (!hasPonged) {
-        done(new Error('No pong response received within timeout'))
-      }
-    }, 8000)
+      // Timeout
+      setTimeout(() => {
+        if (!hasPonged) {
+          reject(new Error('No pong response received within timeout'))
+        }
+      }, 8000)
+    })
   }, 10000)
 
-  test('should handle invalid message gracefully', (done) => {
-    const runnerPath = path.join(__dirname, '..', 'src', 'main', 'testRunner', 'runner.js')
-    
-    runnerProcess = spawn('node', [runnerPath], {
-      stdio: ['pipe', 'pipe', 'pipe']
-    })
-
-    let hasStarted = false
-    let processStillRunning = true
-
-    runnerProcess.stderr.on('data', (data) => {
-      const output = data.toString()
+  test('should handle invalid message gracefully', () => {
+    return new Promise((resolve, reject) => {
+      const runnerPath = path.join(__dirname, '..', 'src', 'main', 'testRunner', 'runner.js')
       
-      if (output.includes('Test runner process started') && !hasStarted) {
-        hasStarted = true
+      runnerProcess = spawn('node', [runnerPath], {
+        stdio: ['pipe', 'pipe', 'pipe']
+      })
+
+      let hasStarted = false
+      let processStillRunning = true
+
+      runnerProcess.stderr.on('data', (data) => {
+        const output = data.toString()
         
-        // Send invalid JSON
-        runnerProcess.stdin.write('invalid json message\n')
-        
-        // Wait a bit and check if process is still running
-        setTimeout(() => {
-          if (processStillRunning) {
-            done() // Success - process handled invalid message gracefully
-          }
-        }, 2000)
-      }
-    })
+        if (output.includes('Test runner process started') && !hasStarted) {
+          hasStarted = true
+          
+          // Send invalid JSON
+          runnerProcess.stdin.write('invalid json message\n')
+          
+          // Wait a bit and check if process is still running
+          setTimeout(() => {
+            if (processStillRunning) {
+              resolve() // Success - process handled invalid message gracefully
+            }
+          }, 2000)
+        }
+      })
 
-    runnerProcess.on('exit', () => {
-      processStillRunning = false
-      if (hasStarted) {
-        done(new Error('Process exited after invalid message - should handle gracefully'))
-      }
-    })
+      runnerProcess.on('exit', () => {
+        processStillRunning = false
+        if (hasStarted) {
+          reject(new Error('Process exited after invalid message - should handle gracefully'))
+        }
+      })
 
-    runnerProcess.on('error', (error) => {
-      done(error)
-    })
+      runnerProcess.on('error', (error) => {
+        reject(error)
+      })
 
-    // Timeout
-    setTimeout(() => {
-      if (!hasStarted) {
-        done(new Error('Process did not start within timeout'))
-      }
-    }, 5000)
+      // Timeout
+      setTimeout(() => {
+        if (!hasStarted) {
+          reject(new Error('Process did not start within timeout'))
+        }
+      }, 5000)
+    })
   }, 8000)
 })
