@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import TrafficLights from "./TrafficLights";
-import { Play, Search } from "lucide-react";
+import { Play, Search, Sun, Moon, Monitor, Settings } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface CustomTitleBarProps {
   onRunAllTests?: () => void;
   onOpenSearch?: () => void;
+  onToggleTheme?: () => void;
+  onOpenSettings?: () => void;
+  currentTheme?: string;
 }
 
-const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSearch }) => {
+const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ 
+  onRunAllTests, 
+  onOpenSearch, 
+  onToggleTheme, 
+  onOpenSettings,
+  currentTheme = "system"
+}) => {
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
@@ -40,6 +49,22 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
       // Update state after maximize/restore
       const maximized = await window.api.windowControls.isMaximized();
       setIsMaximized(maximized);
+    }
+  };
+
+  const getThemeIcon = () => {
+    switch (currentTheme) {
+      case "light": return <Sun size={14} />;
+      case "dark": return <Moon size={14} />;
+      default: return <Monitor size={14} />;
+    }
+  };
+
+  const getThemeLabel = () => {
+    switch (currentTheme) {
+      case "light": return "Theme: Hell";
+      case "dark": return "Theme: Dunkel";
+      default: return "Theme: System";
     }
   };
 
@@ -87,6 +112,8 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
             <div
               className="flex items-center gap-2 flex-shrink-0"
               style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+              
+              {/* Run All Tests */}
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
                   <button
@@ -105,6 +132,47 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                   </Tooltip.Content>
                 </Tooltip.Portal>
               </Tooltip.Root>
+
+              {/* Toggle Theme */}
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={onToggleTheme}
+                    className="p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
+                    aria-label="Theme wechseln">
+                    {getThemeIcon()}
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+                    sideOffset={5}>
+                    {getThemeLabel()}
+                    <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+
+              {/* Open Settings */}
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={onOpenSettings}
+                    className="p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
+                    aria-label="Einstellungen öffnen">
+                    <Settings size={14} />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+                    sideOffset={5}>
+                    Einstellungen öffnen
+                    <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+
             </div>
           </div>
         </div>

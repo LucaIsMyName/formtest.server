@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
 import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen } from "lucide-react";
+import { useSettingsStore } from "../store/useSettingsStore";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,9 +12,32 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [showTestDialog, setShowTestDialog] = useState(false);
   const [preselectAll, setPreselectAll] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  
+  const { getSetting, updateSetting, loadSettings, settings } = useSettingsStore();
+  const themeSetting = getSetting("theme");
+  const currentTheme = themeSetting?.value || "system";
+
+  // Load settings on mount
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
+
+  // Apply theme when it changes
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    
+    if (currentTheme === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(currentTheme);
+    }
+  }, [currentTheme, settings]);
 
   const handleRunAllTests = () => {
     setPreselectAll(true);
@@ -22,6 +46,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const handleOpenSearch = () => {
     setShowSearch(true);
+  };
+
+  const handleToggleTheme = async () => {
+    const nextTheme = currentTheme === "system" ? "light" : currentTheme === "light" ? "dark" : "system";
+    await updateSetting("theme", nextTheme, "UI-Theme-Präferenz (system, light, dark)");
+  };
+
+  const handleOpenSettings = () => {
+    navigate("/settings");
   };
 
   // Keyboard shortcut: Cmd+K or Ctrl+K
@@ -54,6 +87,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <CustomTitleBar
         onRunAllTests={handleRunAllTests}
         onOpenSearch={handleOpenSearch}
+        onToggleTheme={handleToggleTheme}
+        onOpenSettings={handleOpenSettings}
+        currentTheme={currentTheme}
       />
 
       <div className="flex flex-1 overflow-hidden">

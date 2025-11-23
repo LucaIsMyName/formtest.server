@@ -171,7 +171,7 @@ const Settings: React.FC = () => {
                     className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
                     <Monitor className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
                     <span
-                      style={{ fontStretch: "125%" }}
+                      style={{ fontStretch: "115%" }}
                       className="text-sm font-medium text-gray-900 dark:text-white">
                       System
                     </span>
@@ -181,7 +181,7 @@ const Settings: React.FC = () => {
                     className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
                     <Sun className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
                     <span
-                      style={{ fontStretch: "125%" }}
+                      style={{ fontStretch: "115%" }}
                       className="text-sm font-medium text-gray-900 dark:text-white">
                       Hell
                     </span>
@@ -191,7 +191,7 @@ const Settings: React.FC = () => {
                     className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
                     <Moon className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
                     <span
-                      style={{ fontStretch: "125%" }}
+                      style={{ fontStretch: "115%" }}
                       className="text-sm font-medium text-gray-900 dark:text-white">
                       Dunkel
                     </span>
