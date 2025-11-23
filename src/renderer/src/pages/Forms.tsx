@@ -7,6 +7,7 @@ import Button from "../components/ui/Button";
 import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { renderIcon } from "../utils/iconHelper";
 
 const FormsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
@@ -132,8 +133,13 @@ const Forms: React.FC = () => {
               {forms.map((form) => (
                 <TableRow key={form.id}>
                   <TableCell>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">{form.name}</div>
-                    {form.hash && <div className="text-xs text-gray-500 dark:text-gray-400">Hash: {form.hash}</div>}
+                    <div className="flex items-center gap-2.5">
+                      {renderIcon(form.icon || "FileText", 16, "text-gray-500 dark:text-gray-400")}
+                      <div>
+                        <div className="font-medium text-sm text-gray-900 dark:text-white">{form.name}</div>
+                        {form.hash && <div className="text-xs text-gray-500 dark:text-gray-400">Hash: {form.hash}</div>}
+                      </div>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <a

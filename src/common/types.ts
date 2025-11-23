@@ -49,6 +49,7 @@ export interface GlobalSetting {
 
 export interface TestRun {
   id: number;
+  uuid: string;
   formId: number;
   paymentMethodId: number;
   status: 'SUCCESS' | 'FAILURE' | 'SKIPPED' | 'RUNNING';

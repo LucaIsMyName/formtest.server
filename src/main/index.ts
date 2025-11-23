@@ -8,8 +8,8 @@ let mainWindow: BrowserWindow;
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
-    width: 1090,
-    height: 650,
+    width: 1200,
+    height: 700,
     minWidth: 1090,
     minHeight: 500,
     // maxHeight: 1080,

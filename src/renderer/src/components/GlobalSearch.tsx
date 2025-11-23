@@ -125,16 +125,20 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
             {testRuns.slice(0, 5).map((testRun) => {
               const formName = forms.find((f) => f.id === testRun.formId)?.name || `Form #${testRun.formId}`;
               const pmName = paymentMethods.find((p) => p.id === testRun.paymentMethodId)?.name || `PM #${testRun.paymentMethodId}`;
+              const uuid = testRun.uuid || "";
               return (
                 <Command.Item
                   key={testRun.id}
-                  value={`test-${formName}-${pmName}`}
+                  value={`test-${formName}-${pmName}-${uuid}`}
                   onSelect={() => handleSelect("/test-results")}
-                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7 group">
                   <ChevronRight className="w-3 h-3 flex-shrink-0" />
-                  <span className="text-xs font-normal">
-                    {formName} × {pmName}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-normal">
+                      {formName} × {pmName}
+                    </span>
+                    {uuid && <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">ID: {uuid.substring(0, 8)}...</span>}
+                  </div>
                   <span className={`text-xs ml-auto px-2 py-0.5 rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200"}`}>{testRun.status}</span>
                 </Command.Item>
               );

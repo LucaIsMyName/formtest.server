@@ -103,6 +103,30 @@ function isEncrypted(data) {
   return parts.length === 4;
 }
 let db;
+function migrateTestRunUuid() {
+  console.log("Database: Checking for test_runs UUID column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasUuid = columns.some((col) => col.name === "uuid");
+    if (!hasUuid) {
+      console.log("Database: Adding uuid column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN uuid TEXT");
+      const runs = db.prepare("SELECT id FROM test_runs WHERE uuid IS NULL").all();
+      const updateStmt = db.prepare("UPDATE test_runs SET uuid = ? WHERE id = ?");
+      let updatedCount = 0;
+      db.transaction(() => {
+        for (const run of runs) {
+          updateStmt.run(crypto.randomUUID(), run.id);
+          updatedCount++;
+        }
+      })();
+      console.log(`Database: Added UUIDs to ${updatedCount} existing test runs`);
+    }
+    db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid)");
+  } catch (error) {
+    console.error("Database: UUID migration error:", error);
+  }
+}
 function migrateIconColumns() {
   console.log("Database: Checking for icon columns...");
   try {
@@ -221,6 +245,7 @@ function initDatabase() {
 
     CREATE TABLE IF NOT EXISTS test_runs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      uuid TEXT,
       formId INTEGER NOT NULL,
       paymentMethodId INTEGER NOT NULL,
       status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING')),
@@ -241,10 +266,21 @@ function initDatabase() {
     const backupExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='test_runs_backup'").get();
     if (backupExists) {
       console.log("Database: Restoring test_runs data from backup...");
-      db.exec(`
-        INSERT INTO test_runs SELECT * FROM test_runs_backup;
-        DROP TABLE test_runs_backup;
-      `);
+      const backupInfo = db.prepare("PRAGMA table_info(test_runs_backup)").all();
+      const backupHasUuid = backupInfo.some((col) => col.name === "uuid");
+      if (backupHasUuid) {
+        db.exec(`
+          INSERT INTO test_runs SELECT * FROM test_runs_backup;
+          DROP TABLE test_runs_backup;
+        `);
+      } else {
+        db.exec(`
+          INSERT INTO test_runs (id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt)
+          SELECT id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt 
+          FROM test_runs_backup;
+          DROP TABLE test_runs_backup;
+        `);
+      }
       console.log("Database: Successfully restored test_runs data and cleaned up backup");
     }
   } catch (error) {
@@ -265,6 +301,7 @@ function initDatabase() {
     insertSetting.run(setting.key, setting.value, setting.description);
   }
   console.log("Database: Tables created and default settings inserted");
+  migrateTestRunUuid();
   migrateIconColumns();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
@@ -566,7 +603,7 @@ const testRunQueries = {
   getAll: () => db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all(),
   getById: (id) => db.prepare("SELECT * FROM test_runs WHERE id = ?").get(id),
   getByForm: (formId) => db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId),
-  create: (testRun) => db.prepare("INSERT INTO test_runs (formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?)").run(testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs),
+  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs),
   updateStatus: (id, status, errorMessage, durationMs) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, id);
@@ -677,6 +714,7 @@ const importQueries = {
         for (const tr of data.data.testRuns) {
           try {
             testRunQueries.create({
+              uuid: tr.uuid || crypto.randomUUID(),
               formId: tr.formId,
               paymentMethodId: tr.paymentMethodId,
               status: tr.status,
@@ -802,22 +840,21 @@ const importQueries = {
       }
       if (options.includeTestRuns && data.data.testRuns) {
         const existingTestRuns = testRunQueries.getAll();
-        for (const importedTR of data.data.testRuns) {
+        for (const tr of data.data.testRuns) {
           try {
-            const remappedFormId = idMap.forms.get(importedTR.formId) || importedTR.formId;
-            const remappedPMId = idMap.paymentMethods.get(importedTR.paymentMethodId) || importedTR.paymentMethodId;
-            const existing = existingTestRuns.find(
-              (tr) => tr.formId === remappedFormId && tr.paymentMethodId === remappedPMId && new Date(tr.runAt).getTime() === new Date(importedTR.runAt).getTime()
-            );
+            const newFormId = idMap.forms.get(tr.formId) || tr.formId;
+            const newPaymentMethodId = idMap.paymentMethods.get(tr.paymentMethodId) || tr.paymentMethodId;
+            const existing = tr.uuid ? existingTestRuns.find((r) => r.uuid === tr.uuid) : null;
             if (!existing) {
               testRunQueries.create({
-                formId: remappedFormId,
-                paymentMethodId: remappedPMId,
-                status: importedTR.status,
-                errorMessage: importedTR.errorMessage,
-                screenshotPath: importedTR.screenshotPath,
-                logDetails: importedTR.logDetails,
-                durationMs: importedTR.durationMs
+                uuid: tr.uuid || crypto.randomUUID(),
+                formId: newFormId,
+                paymentMethodId: newPaymentMethodId,
+                status: tr.status,
+                errorMessage: tr.errorMessage,
+                screenshotPath: tr.screenshotPath,
+                logDetails: tr.logDetails,
+                durationMs: tr.durationMs
               });
               result.imported.testRuns++;
             } else {
@@ -1185,7 +1222,7 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:getAll", () => testRunQueries.getAll());
   electron.ipcMain.handle("testRuns:getById", (_, id) => testRunQueries.getById(id));
   electron.ipcMain.handle("testRuns:getByForm", (_, formId) => testRunQueries.getByForm(formId));
-  electron.ipcMain.handle("testRuns:create", (_, testRun) => testRunQueries.create(testRun));
+  electron.ipcMain.handle("testRuns:create", (_, testRun) => testRunQueries.create({ ...testRun, uuid: testRun.uuid || crypto.randomUUID() }));
   electron.ipcMain.handle("testRuns:updateStatus", (_, id, status, errorMessage, durationMs) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
   electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
   electron.ipcMain.handle("tests:run", async (_, formIds, paymentMethodIds) => {
@@ -1206,6 +1243,7 @@ function setupIpcHandlers() {
         for (const paymentMethod of paymentMethods) {
           console.log(`Creating test run for form "${form.name}" with payment method "${paymentMethod.name}"`);
           const testRun = testRunQueries.create({
+            uuid: crypto.randomUUID(),
             formId: form.id,
             paymentMethodId: paymentMethod.id,
             status: "RUNNING",
@@ -1315,8 +1353,8 @@ function setupIpcHandlers() {
 let mainWindow;
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    width: 1090,
-    height: 650,
+    width: 1200,
+    height: 700,
     minWidth: 1090,
     minHeight: 500,
     // maxHeight: 1080,

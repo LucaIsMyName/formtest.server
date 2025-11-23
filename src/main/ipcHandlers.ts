@@ -1,5 +1,6 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
+import { randomUUID } from "crypto";
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
 import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData } from "../common/types";
@@ -160,7 +161,7 @@ export function setupIpcHandlers(): void {
   ipcMain.handle("testRuns:getAll", () => testRunQueries.getAll());
   ipcMain.handle("testRuns:getById", (_, id: number) => testRunQueries.getById(id));
   ipcMain.handle("testRuns:getByForm", (_, formId: number) => testRunQueries.getByForm(formId));
-  ipcMain.handle("testRuns:create", (_, testRun: Omit<TestRun, "id" | "runAt">) => testRunQueries.create(testRun));
+  ipcMain.handle("testRuns:create", (_, testRun: Omit<TestRun, "id" | "runAt">) => testRunQueries.create({ ...testRun, uuid: testRun.uuid || randomUUID() }));
   ipcMain.handle("testRuns:updateStatus", (_, id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
   ipcMain.handle("testRuns:delete", (_, id: number) => testRunQueries.delete(id));
 
@@ -194,6 +195,7 @@ export function setupIpcHandlers(): void {
           console.log(`Creating test run for form "${form.name}" with payment method "${paymentMethod.name}"`);
 
           const testRun = testRunQueries.create({
+            uuid: randomUUID(),
             formId: form.id,
             paymentMethodId: paymentMethod.id,
             status: "RUNNING",

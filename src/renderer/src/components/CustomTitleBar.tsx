@@ -75,7 +75,8 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         {/* Left Section - Matches Sidebar Width */}
         <div
-          className="flex items-center px-5 h-full"
+
+          className="flex items-center px-5 h-full cursor-grabbing"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)", minWidth: "fit-content" }}>
           <TrafficLights
             onClose={handleClose}

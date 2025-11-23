@@ -1,10 +1,47 @@
 import Database from "better-sqlite3";
 import { app } from "electron";
 import { join } from "path";
+import { randomUUID } from "crypto";
 import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult } from "../common/types";
 import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 
 let db: Database.Database;
+
+/**
+ * Migrate test_runs table to add UUID column
+ */
+function migrateTestRunUuid(): void {
+  console.log("Database: Checking for test_runs UUID column...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasUuid = columns.some(col => col.name === 'uuid');
+    
+    if (!hasUuid) {
+      console.log("Database: Adding uuid column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN uuid TEXT");
+      
+      // Generate UUIDs for existing records
+      const runs = db.prepare("SELECT id FROM test_runs WHERE uuid IS NULL").all() as Array<{id: number}>;
+      const updateStmt = db.prepare("UPDATE test_runs SET uuid = ? WHERE id = ?");
+      
+      let updatedCount = 0;
+      db.transaction(() => {
+        for (const run of runs) {
+          updateStmt.run(randomUUID(), run.id);
+          updatedCount++;
+        }
+      })();
+      
+      console.log(`Database: Added UUIDs to ${updatedCount} existing test runs`);
+    }
+    
+    // Always ensure unique index exists (idempotent)
+    db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid)");
+  } catch (error) {
+    console.error("Database: UUID migration error:", error);
+  }
+}
 
 /**
  * Migrate existing tables to add icon columns
@@ -162,6 +199,7 @@ export function initDatabase(): void {
 
     CREATE TABLE IF NOT EXISTS test_runs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      uuid TEXT,
       formId INTEGER NOT NULL,
       paymentMethodId INTEGER NOT NULL,
       status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING')),
@@ -184,10 +222,24 @@ export function initDatabase(): void {
     const backupExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='test_runs_backup'").get();
     if (backupExists) {
       console.log("Database: Restoring test_runs data from backup...");
-      db.exec(`
-        INSERT INTO test_runs SELECT * FROM test_runs_backup;
-        DROP TABLE test_runs_backup;
-      `);
+      // Check if backup has uuid column
+      const backupInfo = db.prepare("PRAGMA table_info(test_runs_backup)").all() as Array<{name: string}>;
+      const backupHasUuid = backupInfo.some(col => col.name === 'uuid');
+      
+      if (backupHasUuid) {
+        db.exec(`
+          INSERT INTO test_runs SELECT * FROM test_runs_backup;
+          DROP TABLE test_runs_backup;
+        `);
+      } else {
+        // Restore without uuid, migration will handle it
+        db.exec(`
+          INSERT INTO test_runs (id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt)
+          SELECT id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt 
+          FROM test_runs_backup;
+          DROP TABLE test_runs_backup;
+        `);
+      }
       console.log("Database: Successfully restored test_runs data and cleaned up backup");
     }
   } catch (error) {
@@ -214,6 +266,9 @@ export function initDatabase(): void {
 
   console.log("Database: Tables created and default settings inserted");
   
+  // Migrate UUIDs
+  migrateTestRunUuid();
+
   // Migrate icon columns
   migrateIconColumns();
   
@@ -584,12 +639,11 @@ export const settingsQueries = {
   set: (key: string, value: string, description?: string) => db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(key, value, description),
 };
 
-// Test run operations
 export const testRunQueries = {
   getAll: () => db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all() as TestRun[],
   getById: (id: number) => db.prepare("SELECT * FROM test_runs WHERE id = ?").get(id) as TestRun | undefined,
   getByForm: (formId: number) => db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId) as TestRun[],
-  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?)").run(testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs),
+  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs),
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, id);
@@ -724,6 +778,7 @@ export const importQueries = {
         for (const tr of data.data.testRuns) {
           try {
             testRunQueries.create({
+              uuid: (tr as any).uuid || randomUUID(),
               formId: tr.formId,
               paymentMethodId: tr.paymentMethodId,
               status: tr.status,
@@ -877,29 +932,25 @@ export const importQueries = {
       if (options.includeTestRuns && data.data.testRuns) {
         const existingTestRuns = testRunQueries.getAll();
         
-        for (const importedTR of data.data.testRuns) {
+        for (const tr of data.data.testRuns) {
           try {
-            // Remap foreign keys
-            const remappedFormId = idMap.forms.get(importedTR.formId) || importedTR.formId;
-            const remappedPMId = idMap.paymentMethods.get(importedTR.paymentMethodId) || importedTR.paymentMethodId;
+            // Map form and payment method IDs
+            const newFormId = idMap.forms.get(tr.formId) || tr.formId;
+            const newPaymentMethodId = idMap.paymentMethods.get(tr.paymentMethodId) || tr.paymentMethodId;
 
-            // Check if test run exists (by formId + paymentMethodId + runAt)
-            const existing = existingTestRuns.find(
-              tr => tr.formId === remappedFormId && 
-                    tr.paymentMethodId === remappedPMId &&
-                    new Date(tr.runAt).getTime() === new Date(importedTR.runAt).getTime()
-            );
+            // Check if test run exists (by uuid if available, or fallback logic)
+            const existing = tr.uuid ? existingTestRuns.find(r => r.uuid === tr.uuid) : null;
 
             if (!existing) {
-              // Only import if doesn't exist
               testRunQueries.create({
-                formId: remappedFormId,
-                paymentMethodId: remappedPMId,
-                status: importedTR.status,
-                errorMessage: importedTR.errorMessage,
-                screenshotPath: importedTR.screenshotPath,
-                logDetails: importedTR.logDetails,
-                durationMs: importedTR.durationMs
+                uuid: (tr as any).uuid || randomUUID(),
+                formId: newFormId,
+                paymentMethodId: newPaymentMethodId,
+                status: tr.status,
+                errorMessage: tr.errorMessage,
+                screenshotPath: tr.screenshotPath,
+                logDetails: tr.logDetails,
+                durationMs: tr.durationMs
               });
               result.imported.testRuns++;
             } else {
@@ -915,7 +966,7 @@ export const importQueries = {
       if (options.includeSettings && data.data.settings) {
         for (const setting of data.data.settings) {
           try {
-            if (setting.key !== 'theme') { // Skip theme
+            if (setting.key !== 'theme') {
               const existing = settingsQueries.get(setting.key);
               if (existing && existing.value !== setting.value) {
                 settingsQueries.set(setting.key, setting.value, setting.description);
