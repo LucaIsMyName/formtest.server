@@ -7,6 +7,7 @@ import PaymentMethods from "./pages/PaymentMethods";
 import Settings from "./pages/Settings";
 import TestResults from "./pages/TestResults";
 import InfoDoku from "./pages/InfoDoku";
+import Schedules from "./pages/Schedules";
 
 function App() {
   // Load and apply theme on app startup
@@ -61,6 +62,10 @@ function App() {
         <Route
           path="/test-results"
           element={<TestResults />}
+        />
+        <Route
+          path="/schedules"
+          element={<Schedules />}
         />
         <Route
           path="/info-doku"

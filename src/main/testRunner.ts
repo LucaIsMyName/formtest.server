@@ -88,7 +88,7 @@ export class FormTestRunner {
       await this.page.goto(form.url, { waitUntil: "networkidle" });
 
       // Take initial screenshot
-      const initialScreenshot = await this.page.screenshot({
+      await this.page.screenshot({
         path: `screenshots/initial-${Date.now()}.png`,
         fullPage: true,
       });
@@ -103,8 +103,9 @@ export class FormTestRunner {
       await this.submitForm();
 
       // Take final screenshot
-      const finalScreenshot = await this.page.screenshot({
-        path: `screenshots/final-${Date.now()}.png`,
+      const finalScreenshotPath = `screenshots/final-${Date.now()}.png`;
+      await this.page.screenshot({
+        path: finalScreenshotPath,
         fullPage: true,
       });
 
@@ -115,7 +116,7 @@ export class FormTestRunner {
         success: true,
         duration,
         logs: [...this.logs],
-        screenshot: `screenshots/final-${Date.now()}.png`,
+        screenshot: finalScreenshotPath,
       };
     } catch (error) {
       const duration = Date.now() - startTime;
@@ -219,7 +220,7 @@ export class FormTestRunner {
     }
   }
 
-  private async handlePayPal(paymentMethod: PaymentMethod): Promise<void> {
+  private async handlePayPal(_paymentMethod: PaymentMethod): Promise<void> {
     this.log("Selecting PayPal payment method");
 
     // Try to select PayPal option
@@ -247,7 +248,7 @@ export class FormTestRunner {
     this.log("SEPA details filled");
   }
 
-  private async handleCreditCard(paymentMethod: PaymentMethod): Promise<void> {
+  private async handleCreditCard(_paymentMethod: PaymentMethod): Promise<void> {
     this.log("Handling Credit Card payment method");
 
     // Select credit card option

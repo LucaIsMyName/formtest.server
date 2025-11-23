@@ -23,11 +23,9 @@ export interface FormAnalysis {
 
 export class FormFieldDetector {
   private page: Page;
-  private locale: string;
 
-  constructor(page: Page, locale: string = "de") {
+  constructor(page: Page, _locale: string = "de") {
     this.page = page;
-    this.locale = locale;
   }
 
   async analyzeForm(): Promise<FormAnalysis> {
@@ -293,11 +291,9 @@ export class FormFieldDetector {
 
 export class SmartFormFiller {
   private page: Page;
-  private locale: string;
 
-  constructor(page: Page, locale: string = "de") {
+  constructor(page: Page, _locale: string = "de") {
     this.page = page;
-    this.locale = locale;
   }
 
   async fillFormIntelligently(fields: FormField[], customData?: Record<string, string>): Promise<void> {

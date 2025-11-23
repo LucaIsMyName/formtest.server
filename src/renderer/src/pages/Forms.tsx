@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
 import FormDialog from "../components/FormDialog";
@@ -31,6 +32,7 @@ const FormsSkeleton = () => (
 );
 
 const Forms: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { forms, isLoading, error, loadForms, addForm, updateForm, deleteForm, toggleFormActive } = useFormsStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingForm, setEditingForm] = useState<Form | null>(null);
@@ -40,14 +42,35 @@ const Forms: React.FC = () => {
     loadForms();
   }, [loadForms]);
 
+  // Handle URL params
+  useEffect(() => {
+    if (forms.length > 0) {
+      const paramId = searchParams.get("id");
+      if (paramId) {
+        const form = forms.find(f => String(f.id) === paramId || f.name === paramId);
+        if (form) {
+          setEditingForm(form);
+          setIsDialogOpen(true);
+        }
+      }
+    }
+  }, [forms, searchParams]);
+
   const handleAddForm = () => {
     setEditingForm(null);
     setIsDialogOpen(true);
+    setSearchParams({});
   };
 
   const handleEditForm = (form: Form) => {
     setEditingForm(form);
     setIsDialogOpen(true);
+    setSearchParams({ id: String(form.id) });
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSearchParams({});
   };
 
   const handleFormSubmit = async (formData: Omit<Form, "id" | "createdAt" | "updatedAt">) => {
@@ -188,7 +211,7 @@ const Forms: React.FC = () => {
 
       <FormDialog
         isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        onClose={handleCloseDialog}
         onSubmit={handleFormSubmit}
         editForm={editingForm}
         isLoading={isLoading}

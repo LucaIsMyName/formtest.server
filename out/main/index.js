@@ -8,6 +8,7 @@ const keytar = require("keytar");
 const fs = require("fs");
 const child_process = require("child_process");
 const events = require("events");
+const cron = require("node-cron");
 function _interopNamespaceDefault(e) {
   const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
   if (e) {
@@ -25,12 +26,13 @@ function _interopNamespaceDefault(e) {
   return Object.freeze(n);
 }
 const keytar__namespace = /* @__PURE__ */ _interopNamespaceDefault(keytar);
+const cron__namespace = /* @__PURE__ */ _interopNamespaceDefault(cron);
 const SERVICE_NAME = "FormTestServer";
 const ACCOUNT_NAME = "payment-encryption-key";
 const ALGORITHM = "aes-256-gcm";
 const KEY_LENGTH = 32;
 const IV_LENGTH = 16;
-const SALT_LENGTH = 32;
+const SALT_LENGTH = 64;
 async function getEncryptionKey() {
   try {
     const existingKey = await keytar__namespace.getPassword(SERVICE_NAME, ACCOUNT_NAME);
@@ -254,6 +256,19 @@ function initDatabase() {
       logDetails TEXT,
       durationMs INTEGER,
       runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
+      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS test_schedules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      formId INTEGER NOT NULL,
+      paymentMethodId INTEGER NOT NULL,
+      cronExpression TEXT NOT NULL,
+      isActive BOOLEAN DEFAULT 1,
+      lastRun DATETIME,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
       FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
     );
@@ -613,6 +628,64 @@ const testRunQueries = {
     return stmt.run(id);
   }
 };
+const testScheduleQueries = {
+  getAll: () => {
+    const schedules = db.prepare("SELECT * FROM test_schedules ORDER BY createdAt DESC").all();
+    return schedules.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
+      createdAt: new Date(s.createdAt)
+    }));
+  },
+  getById: (id) => {
+    const s = db.prepare("SELECT * FROM test_schedules WHERE id = ?").get(id);
+    if (!s) return void 0;
+    return {
+      ...s,
+      isActive: Boolean(s.isActive),
+      lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
+      createdAt: new Date(s.createdAt)
+    };
+  },
+  create: (schedule) => {
+    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive) VALUES (?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0);
+  },
+  update: (id, schedule) => {
+    const updates = [];
+    const values = [];
+    if (schedule.name !== void 0) {
+      updates.push("name = ?");
+      values.push(schedule.name);
+    }
+    if (schedule.formId !== void 0) {
+      updates.push("formId = ?");
+      values.push(schedule.formId);
+    }
+    if (schedule.paymentMethodId !== void 0) {
+      updates.push("paymentMethodId = ?");
+      values.push(schedule.paymentMethodId);
+    }
+    if (schedule.cronExpression !== void 0) {
+      updates.push("cronExpression = ?");
+      values.push(schedule.cronExpression);
+    }
+    if (schedule.isActive !== void 0) {
+      updates.push("isActive = ?");
+      values.push(schedule.isActive ? 1 : 0);
+    }
+    if (schedule.lastRun !== void 0) {
+      updates.push("lastRun = ?");
+      values.push(schedule.lastRun.toISOString());
+    }
+    if (updates.length === 0) return { changes: 0 };
+    values.push(id);
+    return db.prepare(`UPDATE test_schedules SET ${updates.join(", ")} WHERE id = ?`).run(...values);
+  },
+  delete: (id) => {
+    return db.prepare("DELETE FROM test_schedules WHERE id = ?").run(id);
+  }
+};
 const exportQueries = {
   async exportAll(options) {
     console.log("Database: Exporting data with options:", options);
@@ -943,7 +1016,7 @@ class TestProcessManager extends events.EventEmitter {
         console.log(`Test runner process exited with code ${code}, signal ${signal}`);
         this.isRunning = false;
         this.process = null;
-        for (const [id, { reject, timeout }] of this.messageQueue) {
+        for (const { reject, timeout } of this.messageQueue.values()) {
           clearTimeout(timeout);
           reject(new Error("Process exited unexpectedly"));
         }
@@ -1106,6 +1179,102 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
     await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
   }
 }
+async function createAndRunTest(formId, paymentMethodId) {
+  try {
+    const form = formQueries.getById(formId);
+    const paymentMethod = await paymentMethodQueries.getById(paymentMethodId);
+    if (!form || !paymentMethod) {
+      throw new Error(`Form ${formId} or PaymentMethod ${paymentMethodId} not found`);
+    }
+    const settings = settingsQueries.getAll();
+    const settingsMap = settings.reduce((acc, setting) => {
+      acc[setting.key] = setting.value;
+      return acc;
+    }, {});
+    const testRun = testRunQueries.create({
+      uuid: crypto.randomUUID(),
+      formId: form.id,
+      paymentMethodId: paymentMethod.id,
+      status: "RUNNING",
+      logDetails: JSON.stringify([`Scheduled test started for ${form.name} with ${paymentMethod.name}`]),
+      screenshotPath: void 0,
+      errorMessage: void 0,
+      durationMs: void 0
+    });
+    const testRunId = testRun.lastInsertRowid;
+    runSingleTest(testRunId, form, paymentMethod, settingsMap);
+    return testRunId;
+  } catch (error) {
+    console.error("Failed to create and run scheduled test:", error);
+    throw error;
+  }
+}
+class SchedulerService {
+  constructor() {
+    this.jobs = /* @__PURE__ */ new Map();
+  }
+  /**
+   * Initialize scheduler by loading all active jobs from database
+   */
+  init() {
+    console.log("Scheduler: Initializing...");
+    const schedules = testScheduleQueries.getAll();
+    console.log(`Scheduler: Found ${schedules.length} schedules`);
+    for (const schedule of schedules) {
+      if (schedule.isActive) {
+        this.scheduleJob(schedule);
+      }
+    }
+    console.log(`Scheduler: Started ${this.jobs.size} active jobs`);
+  }
+  /**
+   * Schedule a new cron job
+   */
+  scheduleJob(schedule) {
+    this.stopJob(schedule.id);
+    if (!cron__namespace.validate(schedule.cronExpression)) {
+      console.error(`Scheduler: Invalid cron expression for schedule ${schedule.id}: ${schedule.cronExpression}`);
+      return;
+    }
+    console.log(`Scheduler: Scheduling job ${schedule.id} (${schedule.name}) with cron: ${schedule.cronExpression}`);
+    const task = cron__namespace.schedule(schedule.cronExpression, async () => {
+      console.log(`Scheduler: Executing job ${schedule.id} (${schedule.name})...`);
+      try {
+        await createAndRunTest(schedule.formId, schedule.paymentMethodId);
+        testScheduleQueries.update(schedule.id, { lastRun: /* @__PURE__ */ new Date() });
+        console.log(`Scheduler: Job ${schedule.id} execution initiated successfully`);
+      } catch (error) {
+        console.error(`Scheduler: Job ${schedule.id} failed to start:`, error);
+      }
+    });
+    this.jobs.set(schedule.id, task);
+  }
+  /**
+   * Stop a scheduled job
+   */
+  stopJob(id) {
+    const job = this.jobs.get(id);
+    if (job) {
+      job.stop();
+      this.jobs.delete(id);
+      console.log(`Scheduler: Stopped job ${id}`);
+    }
+  }
+  /**
+   * Reload a job (e.g. after update)
+   */
+  reloadJob(id) {
+    const schedule = testScheduleQueries.getById(id);
+    if (schedule) {
+      if (schedule.isActive) {
+        this.scheduleJob(schedule);
+      } else {
+        this.stopJob(id);
+      }
+    }
+  }
+}
+const scheduler = new SchedulerService();
 function setupIpcHandlers() {
   console.log("=== SETTING UP IPC HANDLERS ===");
   console.log("IPC Setup: formQueries available:", !!formQueries);
@@ -1349,6 +1518,23 @@ function setupIpcHandlers() {
       };
     }
   });
+  electron.ipcMain.handle("testSchedules:getAll", () => testScheduleQueries.getAll());
+  electron.ipcMain.handle("testSchedules:getById", (_, id) => testScheduleQueries.getById(id));
+  electron.ipcMain.handle("testSchedules:create", (_, schedule) => {
+    const result = testScheduleQueries.create(schedule);
+    const id = result.lastInsertRowid;
+    scheduler.reloadJob(id);
+    return result;
+  });
+  electron.ipcMain.handle("testSchedules:update", (_, id, schedule) => {
+    const result = testScheduleQueries.update(id, schedule);
+    scheduler.reloadJob(id);
+    return result;
+  });
+  electron.ipcMain.handle("testSchedules:delete", (_, id) => {
+    scheduler.stopJob(id);
+    return testScheduleQueries.delete(id);
+  });
 }
 let mainWindow;
 function createWindow() {
@@ -1394,6 +1580,7 @@ electron.app.whenReady().then(() => {
   });
   initDatabase();
   setupIpcHandlers();
+  scheduler.init();
   createWindow();
   electron.app.on("activate", function() {
     if (electron.BrowserWindow.getAllWindows().length === 0) createWindow();

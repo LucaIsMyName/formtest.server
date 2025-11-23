@@ -3,6 +3,7 @@ import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { initDatabase } from "./database";
 import { setupIpcHandlers } from "./ipcHandlers";
+import { scheduler } from "./schedulerService";
 
 let mainWindow: BrowserWindow;
 
@@ -55,6 +56,9 @@ app.whenReady().then(() => {
 
   // Setup IPC handlers
   setupIpcHandlers();
+
+  // Initialize scheduler
+  scheduler.init();
 
   createWindow();
 

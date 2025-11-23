@@ -60,6 +60,18 @@ export interface TestRun {
   runAt: Date;
 }
 
+export interface TestSchedule {
+  id: number;
+  name: string;
+  formId: number;
+  paymentMethodId: number;
+  cronExpression: string;
+  isActive: boolean;
+  lastRun?: Date;
+  nextRun?: Date; // Computed property, not in DB
+  createdAt: Date;
+}
+
 export interface FormSelectors {
   amount: string[];
   customAmount: string[];

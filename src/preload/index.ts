@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { Form, PaymentMethod, TestRun, ImportOptions } from '../common/types'
+import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule } from '../common/types'
 
 // Custom APIs for renderer
 const api = {
@@ -38,6 +38,15 @@ const api = {
     updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => 
       ipcRenderer.invoke('testRuns:updateStatus', id, status, errorMessage, durationMs),
     delete: (id: number) => ipcRenderer.invoke('testRuns:delete', id)
+  },
+
+  // Test schedule operations
+  testSchedules: {
+    getAll: () => ipcRenderer.invoke('testSchedules:getAll'),
+    getById: (id: number) => ipcRenderer.invoke('testSchedules:getById', id),
+    create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => ipcRenderer.invoke('testSchedules:create', schedule),
+    update: (id: number, schedule: Partial<TestSchedule>) => ipcRenderer.invoke('testSchedules:update', id, schedule),
+    delete: (id: number) => ipcRenderer.invoke('testSchedules:delete', id)
   },
 
   // Test execution

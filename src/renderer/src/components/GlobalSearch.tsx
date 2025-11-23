@@ -80,7 +80,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
               <Command.Item
                 key={form.id}
                 value={`form-${form.name}`}
-                onSelect={() => handleSelect("/forms")}
+                onSelect={() => handleSelect(`/forms?id=${form.id}`)}
                 className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
                 <ChevronRight className="w-3 h-3 flex-shrink-0" />
                 <span className="text-xs font-normal">{form.name}</span>
@@ -103,7 +103,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
               <Command.Item
                 key={pm.id}
                 value={`payment-${pm.name}`}
-                onSelect={() => handleSelect("/payment-methods")}
+                onSelect={() => handleSelect(`/payment-methods?id=${pm.id}`)}
                 className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
                 <ChevronRight className="w-3 h-3 flex-shrink-0" />
                 <span className="text-xs font-normal">{pm.name}</span>
@@ -130,7 +130,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                 <Command.Item
                   key={testRun.id}
                   value={`test-${formName}-${pmName}-${uuid}`}
-                  onSelect={() => handleSelect("/test-results")}
+                  onSelect={() => handleSelect(`/test-results?id=${testRun.id}`)}
                   className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7 group">
                   <ChevronRight className="w-3 h-3 flex-shrink-0" />
                   <div className="flex flex-col">

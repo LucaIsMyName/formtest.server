@@ -1,4 +1,4 @@
-import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult } from '../../../common/types'
+import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule } from '../../../common/types'
 
 declare global {
   interface Window {
@@ -28,6 +28,13 @@ declare global {
         getByForm: (formId: number) => Promise<TestRun[]>
         create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => Promise<TestRun>
         updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => Promise<void>
+        delete: (id: number) => Promise<void>
+      }
+      testSchedules: {
+        getAll: () => Promise<TestSchedule[]>
+        getById: (id: number) => Promise<TestSchedule | undefined>
+        create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => Promise<any>
+        update: (id: number, schedule: Partial<TestSchedule>) => Promise<any>
         delete: (id: number) => Promise<void>
       }
       tests: {

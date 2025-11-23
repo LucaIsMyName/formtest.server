@@ -95,7 +95,7 @@ export class TestProcessManager extends EventEmitter {
         this.process = null;
 
         // Reject all pending messages
-        for (const [id, { reject, timeout }] of this.messageQueue) {
+        for (const { reject, timeout } of this.messageQueue.values()) {
           clearTimeout(timeout);
           reject(new Error("Process exited unexpectedly"));
         }

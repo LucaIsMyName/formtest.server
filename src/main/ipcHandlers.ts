@@ -1,29 +1,10 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries } from "./database";
-import { getTestProcessManager } from "./testRunner/processManager";
-import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData } from "../common/types";
-
-// Function to run a single test using child process
-async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>) {
-  console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
-
-  try {
-    const processManager = getTestProcessManager();
-    const result = await processManager.runTest(testRunId, form, paymentMethod, settings);
-
-    // Update test run with results
-    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration);
-
-    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"}`);
-  } catch (error) {
-    console.error(`Test ${testRunId} failed with error:`, error);
-
-    // Update test run with error
-    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
-  }
-}
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries } from "./database";
+import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule } from "../common/types";
+import { runSingleTest } from "./testExecutor";
+import { scheduler } from "./schedulerService";
 
 export function setupIpcHandlers(): void {
   console.log("=== SETTING UP IPC HANDLERS ===");
@@ -326,5 +307,31 @@ export function setupIpcHandlers(): void {
         warnings: []
       };
     }
+  });
+
+  // Test schedule handlers
+  ipcMain.handle("testSchedules:getAll", () => testScheduleQueries.getAll());
+  
+  ipcMain.handle("testSchedules:getById", (_, id: number) => testScheduleQueries.getById(id));
+  
+  ipcMain.handle("testSchedules:create", (_, schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => {
+    const result = testScheduleQueries.create(schedule);
+    const id = result.lastInsertRowid as number;
+    // Start the job immediately if active
+    scheduler.reloadJob(id);
+    return result;
+  });
+  
+  ipcMain.handle("testSchedules:update", (_, id: number, schedule: Partial<TestSchedule>) => {
+    const result = testScheduleQueries.update(id, schedule);
+    // Reload the job configuration
+    scheduler.reloadJob(id);
+    return result;
+  });
+  
+  ipcMain.handle("testSchedules:delete", (_, id: number) => {
+    // Stop the job first
+    scheduler.stopJob(id);
+    return testScheduleQueries.delete(id);
   });
 }

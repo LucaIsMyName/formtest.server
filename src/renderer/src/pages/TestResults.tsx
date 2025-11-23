@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
@@ -33,6 +34,7 @@ const TestResultsSkeleton = () => (
 );
 
 const TestResults: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { testRuns, loadTestRuns, isLoading, error } = useTestRunsStore();
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
@@ -44,6 +46,31 @@ const TestResults: React.FC = () => {
     loadForms();
     loadPaymentMethods();
   }, [loadTestRuns, loadForms, loadPaymentMethods]);
+
+  // Handle URL params and default selection
+  useEffect(() => {
+    if (testRuns.length > 0) {
+      const paramId = searchParams.get("id");
+      if (paramId) {
+        // Try to find by UUID first, then ID
+        const found = testRuns.find(tr => tr.uuid === paramId || String(tr.id) === paramId);
+        if (found) {
+          setSelectedTestRun(found.id);
+          return;
+        }
+      }
+      
+      // Default to latest if no selection or not found
+      if (!selectedTestRun) {
+        setSelectedTestRun(testRuns[0].id);
+      }
+    }
+  }, [testRuns, searchParams]);
+
+  const handleSelectTestRun = (id: number) => {
+    setSelectedTestRun(id);
+    setSearchParams({ id: String(id) });
+  };
 
   const getFormName = (formId: number) => {
     const form = forms.find((f) => f.id === formId);
@@ -187,7 +214,7 @@ const TestResults: React.FC = () => {
                         <TableRow
                           key={testRun.id}
                           className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
-                          onClick={() => setSelectedTestRun(testRun.id)}>
+                          onClick={() => handleSelectTestRun(testRun.id)}>
                           <TableCell className="px-4">
                             <div className="flex items-center gap-1 group">
                               <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
@@ -295,7 +322,7 @@ const TestResults: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Formular</label>
-                    <div className="border dark:border-gray-700 text-[11px] font-mono px-1.5 inline-block py-0.5 bg-gray-100 dark:bg-gray-900/20 text-gray-900 dark:text-white">{getFormName(selectedTestRunData.formId)}</div>
+                    <div className="border dark:border-gray-700 rounded font-semibold text-[11px] font-mono px-1.5 inline-block py-0.5 bg-gray-100 dark:bg-gray-900/20 text-gray-900 dark:text-white">{getFormName(selectedTestRunData.formId)}</div>
                   </div>
 
                   <div>

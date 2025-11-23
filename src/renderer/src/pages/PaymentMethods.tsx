@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
 import PaymentMethodDialog from "../components/PaymentMethodDialog";
@@ -34,6 +35,7 @@ const PaymentMethodsSkeleton = () => (
 );
 
 const PaymentMethods: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { paymentMethods, isLoading, error, loadPaymentMethods, addPaymentMethod, updatePaymentMethod, deletePaymentMethod, togglePaymentMethodActive } = usePaymentMethodsStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null);
@@ -43,14 +45,35 @@ const PaymentMethods: React.FC = () => {
     loadPaymentMethods();
   }, [loadPaymentMethods]);
 
+  // Handle URL params
+  useEffect(() => {
+    if (paymentMethods.length > 0) {
+      const paramId = searchParams.get("id");
+      if (paramId) {
+        const method = paymentMethods.find(pm => String(pm.id) === paramId || pm.name === paramId);
+        if (method) {
+          setEditingMethod(method);
+          setIsDialogOpen(true);
+        }
+      }
+    }
+  }, [paymentMethods, searchParams]);
+
   const handleAddMethod = () => {
     setEditingMethod(null);
     setIsDialogOpen(true);
+    setSearchParams({});
   };
 
   const handleEditMethod = (method: PaymentMethod) => {
     setEditingMethod(method);
     setIsDialogOpen(true);
+    setSearchParams({ id: String(method.id) });
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSearchParams({});
   };
 
   const handleMethodSubmit = async (methodData: Omit<PaymentMethod, "id" | "createdAt" | "updatedAt">) => {
@@ -222,7 +245,7 @@ const PaymentMethods: React.FC = () => {
 
       <PaymentMethodDialog
         isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        onClose={handleCloseDialog}
         onSubmit={handleMethodSubmit}
         editMethod={editingMethod}
         isLoading={isLoading}

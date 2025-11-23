@@ -33,6 +33,14 @@ const api = {
     updateStatus: (id, status, errorMessage, durationMs) => electron.ipcRenderer.invoke("testRuns:updateStatus", id, status, errorMessage, durationMs),
     delete: (id) => electron.ipcRenderer.invoke("testRuns:delete", id)
   },
+  // Test schedule operations
+  testSchedules: {
+    getAll: () => electron.ipcRenderer.invoke("testSchedules:getAll"),
+    getById: (id) => electron.ipcRenderer.invoke("testSchedules:getById", id),
+    create: (schedule) => electron.ipcRenderer.invoke("testSchedules:create", schedule),
+    update: (id, schedule) => electron.ipcRenderer.invoke("testSchedules:update", id, schedule),
+    delete: (id) => electron.ipcRenderer.invoke("testSchedules:delete", id)
+  },
   // Test execution
   tests: {
     run: (formIds, paymentMethodIds) => electron.ipcRenderer.invoke("tests:run", formIds, paymentMethodIds)

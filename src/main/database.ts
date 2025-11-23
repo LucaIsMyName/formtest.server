@@ -212,6 +212,19 @@ export function initDatabase(): void {
       FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS test_schedules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      formId INTEGER NOT NULL,
+      paymentMethodId INTEGER NOT NULL,
+      cronExpression TEXT NOT NULL,
+      isActive BOOLEAN DEFAULT 1,
+      lastRun DATETIME,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
+      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+    );
+
     CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
@@ -651,6 +664,50 @@ export const testRunQueries = {
   delete: (id: number) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
     return stmt.run(id);
+  },
+};
+
+export const testScheduleQueries = {
+  getAll: () => {
+    const schedules = db.prepare("SELECT * FROM test_schedules ORDER BY createdAt DESC").all() as any[];
+    return schedules.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      lastRun: s.lastRun ? new Date(s.lastRun) : undefined,
+      createdAt: new Date(s.createdAt),
+    }));
+  },
+  getById: (id: number) => {
+    const s = db.prepare("SELECT * FROM test_schedules WHERE id = ?").get(id) as any;
+    if (!s) return undefined;
+    return {
+      ...s,
+      isActive: Boolean(s.isActive),
+      lastRun: s.lastRun ? new Date(s.lastRun) : undefined,
+      createdAt: new Date(s.createdAt),
+    };
+  },
+  create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => {
+    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive) VALUES (?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0);
+  },
+  update: (id: number, schedule: Partial<{ name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; lastRun: Date }>) => {
+    const updates: string[] = [];
+    const values: any[] = [];
+
+    if (schedule.name !== undefined) { updates.push("name = ?"); values.push(schedule.name); }
+    if (schedule.formId !== undefined) { updates.push("formId = ?"); values.push(schedule.formId); }
+    if (schedule.paymentMethodId !== undefined) { updates.push("paymentMethodId = ?"); values.push(schedule.paymentMethodId); }
+    if (schedule.cronExpression !== undefined) { updates.push("cronExpression = ?"); values.push(schedule.cronExpression); }
+    if (schedule.isActive !== undefined) { updates.push("isActive = ?"); values.push(schedule.isActive ? 1 : 0); }
+    if (schedule.lastRun !== undefined) { updates.push("lastRun = ?"); values.push(schedule.lastRun.toISOString()); }
+
+    if (updates.length === 0) return { changes: 0 };
+
+    values.push(id);
+    return db.prepare(`UPDATE test_schedules SET ${updates.join(", ")} WHERE id = ?`).run(...values);
+  },
+  delete: (id: number) => {
+    return db.prepare("DELETE FROM test_schedules WHERE id = ?").run(id);
   },
 };
 

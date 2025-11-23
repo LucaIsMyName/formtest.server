@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
 import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
-import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Clock } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
 
 interface LayoutProps {
@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [showTestDialog, setShowTestDialog] = useState(false);
   const [preselectAll, setPreselectAll] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-  
+
   const { getSetting, updateSetting, loadSettings, settings } = useSettingsStore();
   const themeSetting = getSetting("theme");
   const currentTheme = themeSetting?.value || "system";
@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
-    
+
     if (currentTheme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       root.classList.add(systemTheme);
@@ -86,6 +86,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: "Formulare", href: "/forms", icon: FileText },
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
     { name: "Test Resultate", href: "/test-results", icon: BarChart3 },
+    { name: "Zeitpläne", href: "/schedules", icon: Clock },
     { name: "Einstellungen", href: "/settings", icon: Settings },
     { name: "Info & Doku", href: "/info-doku", icon: BookOpen },
   ];
@@ -114,7 +115,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   to={item.href}
                   className={`flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"}`}>
                   <IconComponent
-                    className={`${location.pathname === item.href ? " stroke-blue-600 dark:stroke-blue-400 scale-110" : ""} text-gray-700 dark:text-gray-400 transition-all`}
+                    className={`${location.pathname === item.href ? ` stroke-blue-600 dark:stroke-blue-400 scale-[115%]` : ""} text-gray-700 dark:text-gray-400 transition-all`}
                     size={18}
                     strokeWidth={location.pathname === item.href ? 2 : 2}
                   />
@@ -127,7 +128,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Main content */}
         <div className="flex-1  flex flex-col overflow-hidden">
-          <main 
+          <main
             ref={mainContentRef}
             className="flex-1  overflow-auto bg-white dark:bg-gray-900 px-4 py-4">
             <div className="max-w-[1040px]">{children}</div>
