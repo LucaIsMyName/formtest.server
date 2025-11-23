@@ -185,8 +185,8 @@ const TestResults: React.FC = () => {
 
         {/* Test Run Details */}
         <div>
-          <div className="max-w-[380px] mr-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-            <div className="px-6 py-4  border-b border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">Test Details</h3>
             </div>
             <div className="p-6">
