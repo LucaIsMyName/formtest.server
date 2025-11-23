@@ -7,6 +7,7 @@ import Button from "../components/ui/Button";
 import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Skeleton } from "../components/ui/Skeleton";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 
 const PaymentMethodsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
@@ -157,69 +158,65 @@ const PaymentMethods: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="border-b border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Typ</th>
-                  <th className="px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Details</th>
-                  <th className="px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Erstellt</th>
-                  <th className="px-6 py-3 text-right text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Aktionen</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {paymentMethods.map((method) => (
-                  <tr
-                    key={method.id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="select-all px-4 py-3 whitespace-nowrap">
-                      <div className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</div>
-                    </td>
-                    <td className="select-all px-4 py-3 whitespace-nowrap ">
-                      <div className="flex items-center gap-2">
-                        {getPaymentMethodIcon(method)}
-                        <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
-                      </div>
-                    </td>
-                    <td className="select-all px-4 py-3 whitespace-nowrap">
-                      <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>
-                    </td>
-                    <td className="select-all px-4 py-3 whitespace-nowrap">
-                      <button
-                        onClick={() => togglePaymentMethodActive(method.id)}
-                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${method.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`}
-                        disabled={isLoading}>
-                        {method.isActive ? "Active" : "Inactive"}
-                      </button>
-                    </td>
-                    <td className="select-all px-4 py-3 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</td>
-                    <td className=" px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          onClick={() => handleEditMethod(method)}
-                          variant="ghost"
-                          size="sm"
-                          disabled={isLoading}
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
-                          Bearbeiten
-                        </Button>
-                        <Button
-                          onClick={() => handleDeleteMethod(method)}
-                          variant="ghost"
-                          size="sm"
-                          disabled={isLoading}
-                          className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
-                          Löschen
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Typ</TableHead>
+                <TableHead>Details</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Erstellt</TableHead>
+                <TableHead className="text-right">Aktionen</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paymentMethods.map((method) => (
+                <TableRow key={method.id}>
+                  <TableCell>
+                    <div className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {getPaymentMethodIcon(method)}
+                      <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => togglePaymentMethodActive(method.id)}
+                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${method.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`}
+                      disabled={isLoading}>
+                      {method.isActive ? "Active" : "Inactive"}
+                    </button>
+                  </TableCell>
+                  <TableCell className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</TableCell>
+                  <TableCell className="text-right text-sm font-medium">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button
+                        onClick={() => handleEditMethod(method)}
+                        variant="ghost"
+                        size="sm"
+                        disabled={isLoading}
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
+                        Bearbeiten
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteMethod(method)}
+                        variant="ghost"
+                        size="sm"
+                        disabled={isLoading}
+                        className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
+                        Löschen
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
 

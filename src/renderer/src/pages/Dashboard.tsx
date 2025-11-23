@@ -203,7 +203,7 @@ const Dashboard: React.FC = () => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-lg shadow-lg">
-          <p className="font-medium text-gray-900 dark:text-white mb-2">{label}</p>
+          <p className="text-gray-900 dark:text-white mb-2">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
@@ -231,7 +231,7 @@ const Dashboard: React.FC = () => {
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
         >
           <Rocket className="w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-medium text-gray-900 dark:text-white">
+          <span className="text-sm text-gray-900 dark:text-white">
             {isRunning ? "Tests laufen..." : "Tests starten"}
           </span>
         </Button>
@@ -242,7 +242,7 @@ const Dashboard: React.FC = () => {
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
         >
           <FileText className="w-5 h-5 text-blue-500 dark:text-blue-400 mr-2 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-medium text-gray-900 dark:text-white">Formular</span>
+          <span className="text-sm text-gray-900 dark:text-white">Formular</span>
         </Button>
 
         <Button
@@ -251,7 +251,7 @@ const Dashboard: React.FC = () => {
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
         >
           <CreditCard className="w-5 h-5 text-green-500 dark:text-green-400 mr-2 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-medium text-gray-900 dark:text-white">Bezahlmethode</span>
+          <span className="text-smtext-gray-900 dark:text-white">Bezahlmethode</span>
         </Button>
 
         <Button
@@ -260,7 +260,7 @@ const Dashboard: React.FC = () => {
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
         >
           <BarChart3 className="w-5 h-5 text-yellow-500 dark:text-yellow-400 mr-2 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-medium text-gray-900 dark:text-white">Ergebnisse</span>
+          <span className="text-smtext-gray-900 dark:text-white">Ergebnisse</span>
         </Button>
 
         <Button
@@ -269,7 +269,7 @@ const Dashboard: React.FC = () => {
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300"
         >
           <Settings className="w-5 h-5 text-gray-500 dark:text-gray-400 mr-2 group-hover:scale-110 transition-transform" />
-          <span className="text-sm font-medium text-gray-900 dark:text-white">Einstellungen</span>
+          <span className="text-smtext-gray-900 dark:text-white">Einstellungen</span>
         </Button>
       </div>
 
@@ -277,26 +277,26 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Gesamt Tests</p>
-            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">{stats.totalTestRuns}</p>
+            <p className="text-smtext-gray-500 dark:text-gray-400">Gesamt Tests</p>
+            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2" style={{fontStretch: "125%"}}>{stats.totalTestRuns}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Bezahlmethoden</p>
-            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2">{stats.totalPaymentMethods}</p>
+            <p className="text-smtext-gray-500 dark:text-gray-400">Bezahlmethoden</p>
+            <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-2" style={{fontStretch: "125%"}}>{stats.totalPaymentMethods}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Erfolgreich</p>
-            <p className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2">{stats.successfulTests}</p>
+            <p className="text-smtext-gray-500 dark:text-gray-400">Erfolgreich</p>
+            <p className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2" style={{fontStretch: "125%"}}>{stats.successfulTests}</p>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Erfolgsrate</p>
-            <p className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2">{isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}</p>
+            <p className="text-smtext-gray-500 dark:text-gray-400">Erfolgsrate</p>
+            <p className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2" style={{fontStretch: "125%"}}>{isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}</p>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{stats.failedTests} fehlgeschlagen</p>
           </div>
         </div>
@@ -307,7 +307,7 @@ const Dashboard: React.FC = () => {
         <div className="space-y-6 mb-8">
           {/* Timeline Chart */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
+            <h3 className="text-lgtext-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>
@@ -344,7 +344,7 @@ const Dashboard: React.FC = () => {
           {/* Success Rate Pie Chart and Stats */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Erfolgsrate Übersicht</h3>
+              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Erfolgsrate Übersicht</h3>
               <ResponsiveContainer
                 width="100%"
                 height={250}>
@@ -372,7 +372,7 @@ const Dashboard: React.FC = () => {
 
             {/* Payment Method Performance */}
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Bezahlmethoden Performance</h3>
+              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Bezahlmethoden Performance</h3>
               <ResponsiveContainer
                 width="100%"
                 height={250}>
@@ -405,7 +405,7 @@ const Dashboard: React.FC = () => {
 
           {/* Form Performance */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Formular Performance</h3>
+            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Formular Performance</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>
