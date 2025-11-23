@@ -100,9 +100,6 @@ const Forms: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-base font-medium text-gray-900 dark:text-white m-0">Formulare ({forms.length})</h3>
-          </div>
           <div className="overflow-x-auto">
             <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">

@@ -115,10 +115,6 @@ const Settings: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Globale Konfiguration</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Diese Einstellungen gelten für alle Formular-Tests und Operationen</p>
-          </div>
           <div className="p-6">
             <div className="space-y-6">
               {settings.map((setting) => (
