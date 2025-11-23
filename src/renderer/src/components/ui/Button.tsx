@@ -35,7 +35,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "
       className={`${baseClasses} ${variantClasses} ${sizeClasses} ${className}`}
       disabled={disabled || isLoading}
       {...props}>
-      {isLoading && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /><span className="ml-2">Laden ...</span></>}
+      {isLoading && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /></>}
       {children}
     </button>
   );

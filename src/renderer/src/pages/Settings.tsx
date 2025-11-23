@@ -109,8 +109,6 @@ const Settings: React.FC = () => {
           break;
         case "theme":
           setTheme(setting.value);
-          // Apply theme immediately when loaded from database
-          applyTheme(setting.value);
           break;
       }
     });
@@ -414,7 +412,7 @@ const Settings: React.FC = () => {
                       message: "ACHTUNG: Sind Sie sicher, dass Sie ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) löschen möchten? Die Anwendung wird auf den Ursprungszustand zurückgesetzt (außer Einstellungen).",
                     })
                   }
-                  className="w-full bg-red-600 hover:bg-red-700 text-white border-none justify-center">
+                  className=" hover:bg-red-700 text-white border-none justify-center">
                   <AlertTriangle
                     size={18}
                     className="mr-2"

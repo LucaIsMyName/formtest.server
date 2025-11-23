@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
+import { useSettingsStore } from "./store/useSettingsStore";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Forms from "./pages/Forms";
@@ -10,23 +11,20 @@ import InfoDoku from "./pages/InfoDoku";
 import Schedules from "./pages/Schedules";
 
 function App() {
-  // Load and apply theme on app startup
-  useEffect(() => {
-    const loadTheme = async () => {
-      try {
-        const settings = await window.api.settings.getAll();
-        const themeSetting = settings.find((s: any) => s.key === "theme");
-        
-        if (themeSetting) {
-          applyTheme(themeSetting.value);
-        }
-      } catch (error) {
-        console.error("Failed to load theme:", error);
-      }
-    };
+  const { settings, loadSettings } = useSettingsStore();
 
-    loadTheme();
-  }, []);
+  // Load settings on app startup
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
+
+  // Apply theme whenever settings change
+  useEffect(() => {
+    const themeSetting = settings.find((s) => s.key === "theme");
+    if (themeSetting) {
+      applyTheme(themeSetting.value);
+    }
+  }, [settings]);
 
   const applyTheme = (themeValue: string) => {
     const root = window.document.documentElement;
