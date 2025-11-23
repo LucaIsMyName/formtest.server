@@ -58,7 +58,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
             onMaximize={handleMaximize}
             isMaximized={isMaximized}
           />
-          <div className="text-left tracking-wider text-[11px] text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap">Formtest.Server</div>
+          <div className="text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap"><span className="uppercase font-bold" style={{ fontStretch: "125%", fontFamily: "Google Sans Flex" }}>Formtest</span><span className="font-mono uppercase">.Server</span></div>
         </div>
 
         {/* Right Section - Matches Main Content Area */}

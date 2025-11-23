@@ -59,7 +59,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div
-          className="bg-white dark:bg-gray-900 flex flex-col select-none"
+          className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
           <nav className="flex-1 p-2">
             {navigation.map((item) => {
@@ -74,7 +74,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     size={18}
                     strokeWidth={location.pathname === item.href ? 2 : 2}
                   />
-                  {item.name}
+                  <span className="font-stretched">{item.name}</span>
                 </Link>
               );
             })}

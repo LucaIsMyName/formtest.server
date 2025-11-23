@@ -133,11 +133,11 @@ const Forms: React.FC = () => {
                   <tr
                     key={form.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="select-all px-4 py-3 whitespace-nowrap">
                       <div className="font-medium text-sm text-gray-900 dark:text-white">{form.name}</div>
                       {form.hash && <div className="text-xs text-gray-500 dark:text-gray-400">Hash: {form.hash}</div>}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="select-all px-4 py-3 whitespace-nowrap">
                       <a
                         href={form.url}
                         target="_blank"
@@ -146,7 +146,7 @@ const Forms: React.FC = () => {
                         {form.url}
                       </a>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="select-all px-4 py-3 whitespace-nowrap">
                       <button
                         onClick={() => toggleFormActive(form.id)}
                         className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${form.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`}
@@ -154,8 +154,8 @@ const Forms: React.FC = () => {
                         {form.isActive ? "Active" : "Inactive"}
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="select-all px-4 py-3 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</td>
+                    <td className="select-all px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
                         <Button
                           onClick={() => handleEditForm(form)}

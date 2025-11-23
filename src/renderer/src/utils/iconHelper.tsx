@@ -1,20 +1,13 @@
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
-import { LucideIcon } from 'lucide-react';
+import { icons, LucideIcon } from 'lucide-react';
 
 /**
  * Get Lucide icon component from icon name string
  */
 export const getIconComponent = (iconName?: string): LucideIcon => {
-  if (!iconName) return LucideIcons.FileText;
+  if (!iconName || !(icons as any)[iconName]) return icons.FileText;
   
-  const IconComponent = (LucideIcons as any)[iconName];
-  
-  if (typeof IconComponent === 'function') {
-    return IconComponent as LucideIcon;
-  }
-  
-  return LucideIcons.FileText; // Fallback
+  return (icons as any)[iconName] as LucideIcon;
 };
 
 /**
@@ -33,9 +26,7 @@ export const renderIcon = (
  * Get all available Lucide icon names
  */
 export const getAllIconNames = (): string[] => {
-  return Object.keys(LucideIcons).filter(
-    key => typeof (LucideIcons as any)[key] === 'function' && key !== 'createLucideIcon'
-  ).sort();
+  return Object.keys(icons).sort();
 };
 
 /**

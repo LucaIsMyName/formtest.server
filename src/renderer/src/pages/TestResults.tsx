@@ -180,7 +180,7 @@ const TestResults: React.FC = () => {
                           key={testRun.id}
                           className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
                           onClick={() => setSelectedTestRun(testRun.id)}>
-                          <td className="px-4 py-3">
+                          <td className="select-all px-4 py-3">
                             <div className="flex items-center gap-2 min-w-0">
                               <div className={`flex-shrink-0 ${testRun.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}>{getStatusIcon(testRun.status)}</div>
                               <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
@@ -188,9 +188,9 @@ const TestResults: React.FC = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-3 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(testRun.runAt)}</td>
-                          <td className="px-4 py-3 text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono whitespace-nowrap">{formatDuration(testRun.durationMs)}</td>
-                          <td className="px-4 py-3 whitespace-nowrap">
+                          <td className="select-all px-4 py-3 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(testRun.runAt)}</td>
+                          <td className="select-all px-4 py-3 text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono whitespace-nowrap">{formatDuration(testRun.durationMs)}</td>
+                          <td className="select-all px-4 py-3 whitespace-nowrap">
                             <span className={`inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`}>{testRun.status}</span>
                           </td>
                           <td className="px-4 py-3 text-right whitespace-nowrap">

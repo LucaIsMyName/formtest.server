@@ -1315,12 +1315,12 @@ function setupIpcHandlers() {
 let mainWindow;
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    width: 1400,
-    height: 800,
-    minWidth: 1080,
+    width: 1090,
+    height: 650,
+    minWidth: 1090,
     minHeight: 500,
-    maxHeight: 1080,
-    maxWidth: 1620,
+    // maxHeight: 1080,
+    // maxWidth: 1340,
     show: false,
     frame: false,
     // Remove OS frame

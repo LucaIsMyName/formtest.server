@@ -6,38 +6,39 @@ const InfoDoku: React.FC = () => {
     <div className="max-w-4xl">
       <h1 className={CONFIG.style.title.className}>Info & Doku</h1>
 
-      {/* Impressum Section */}
-      <div className="my-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
-        <div className="text-gray-700 dark:text-gray-300 space-y-2">
-          <p>
-            <strong>Angaben gemäß § 5 TMG:</strong>
-          </p>
-          <p>Luca Mack</p>
-          <p>Lorystrasse 71</p>
-          <p>1110 Wien</p>
-          <p>Österreich</p>
-        </div>
-      </div>
-
-      {/* Legal & License Section */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Lizenz & Rechtliches</h2>
-        <div className="text-gray-700 dark:text-gray-300 space-y-4">
-          <div>
-            <h3 className="font-semibold text-lg mb-2">MIT License</h3>
-            <p className="mb-2">Copyright (c) 2025 Luca Mack</p>
-            <p className="text-sm leading-relaxed">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
-            <p className="text-sm leading-relaxed mt-2">The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
-            <p className="text-sm leading-relaxed mt-2 font-semibold">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
-          </div>
-          <div className="py-4 border-y border-gray-200 dark:border-gray-700">
-            <h3 className="font-semibold text-lg mb-2">Haftungsausschluss</h3>
-            <p className="text-sm leading-relaxed">Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko.</p>
+      <section className="my-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+        {/* Impressum Section */}
+        <div className="">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
+          <div className="text-gray-700 dark:text-gray-300 space-y-2">
+            <p>
+              <strong>Angaben gemäß § 5 TMG:</strong>
+            </p>
+            <p>Luca Mack</p>
+            <p>Lorystrasse 71</p>
+            <p>1110 Wien</p>
+            <p>Österreich</p>
           </div>
         </div>
-      </div>
 
+        {/* Legal & License Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Lizenz & Rechtliches</h2>
+          <div className="text-gray-700 dark:text-gray-300 space-y-4">
+            <div>
+              <h3 className="font-semibold text-lg mb-2">MIT License</h3>
+              <p className="mb-2">Copyright (c) 2025 Luca Mack</p>
+              <p className="text-sm leading-relaxed">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+              <p className="text-sm leading-relaxed mt-2">The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+              <p className="text-sm leading-relaxed mt-2 font-semibold">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+            </div>
+            <div className="py-4 border-y border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold text-lg mb-2">Haftungsausschluss</h3>
+              <p className="text-sm leading-relaxed">Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko.</p>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* User Documentation Section */}
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Benutzer-Dokumentation</h2>

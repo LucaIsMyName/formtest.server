@@ -13,7 +13,9 @@ const PaymentMethodsSkeleton = () => (
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4">
+          <div
+            key={i}
+            className="flex items-center gap-4">
             <Skeleton className="h-6 w-1/4" />
             <Skeleton className="h-6 w-20" />
             <Skeleton className="h-6 w-1/3" />
@@ -96,11 +98,7 @@ const PaymentMethods: React.FC = () => {
 
   const getPaymentMethodIcon = (method: PaymentMethod) => {
     const iconName = method.icon || getDefaultPaymentIcon(method.type);
-    const colorClass = method.type === 'paypal' ? 'text-blue-600 dark:text-blue-400' :
-                       method.type === 'sepa' ? 'text-green-600 dark:text-green-400' :
-                       method.type === 'creditcard' ? 'text-purple-600 dark:text-purple-400' :
-                       method.type === 'eps' ? 'text-orange-600 dark:text-orange-400' :
-                       'text-gray-600 dark:text-gray-400';
+    const colorClass = method.type === "paypal" ? "text-blue-600 dark:text-blue-400" : method.type === "sepa" ? "text-green-600 dark:text-green-400" : method.type === "creditcard" ? "text-purple-600 dark:text-purple-400" : method.type === "eps" ? "text-orange-600 dark:text-orange-400" : "text-gray-600 dark:text-gray-400";
     return renderIcon(iconName, 14, colorClass);
   };
 
@@ -176,19 +174,19 @@ const PaymentMethods: React.FC = () => {
                   <tr
                     key={method.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="select-all px-4 py-3 whitespace-nowrap">
                       <div className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap ">
+                    <td className="select-all px-4 py-3 whitespace-nowrap ">
                       <div className="flex items-center gap-2">
                         {getPaymentMethodIcon(method)}
                         <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="select-all px-4 py-3 whitespace-nowrap">
                       <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="select-all px-4 py-3 whitespace-nowrap">
                       <button
                         onClick={() => togglePaymentMethodActive(method.id)}
                         className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${method.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`}
@@ -196,8 +194,8 @@ const PaymentMethods: React.FC = () => {
                         {method.isActive ? "Active" : "Inactive"}
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="select-all px-4 py-3 whitespace-nowrap text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</td>
+                    <td className=" px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
                         <Button
                           onClick={() => handleEditMethod(method)}

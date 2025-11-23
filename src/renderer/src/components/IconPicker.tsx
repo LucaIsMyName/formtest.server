@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { getAllIconNames, renderIcon } from '../utils/iconHelper';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/Dialog';
 
 interface IconPickerProps {
   value?: string;
@@ -24,25 +25,14 @@ const IconPicker: React.FC<IconPickerProps> = ({ value, onChange, onClose }) => 
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
-      onClick={onClose}>
-      <div 
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-3xl mx-4 max-h-[80vh] overflow-hidden flex flex-col"
-        onClick={(e) => e.stopPropagation()}>
-        
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Icon auswählen</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1">
-            <X size={20} />
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col gap-0 p-0 overflow-hidden">
+        <DialogHeader className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <DialogTitle>Icon auswählen</DialogTitle>
+        </DialogHeader>
 
         {/* Search */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <input
@@ -60,7 +50,7 @@ const IconPicker: React.FC<IconPickerProps> = ({ value, onChange, onClose }) => 
         </div>
 
         {/* Icon Grid */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-4 bg-white dark:bg-gray-800">
           <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2">
             {filteredIcons.map((iconName) => (
               <button
@@ -97,8 +87,8 @@ const IconPicker: React.FC<IconPickerProps> = ({ value, onChange, onClose }) => 
             <span>ESC zum Schließen</span>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

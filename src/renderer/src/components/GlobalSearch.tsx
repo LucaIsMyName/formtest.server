@@ -81,7 +81,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                 key={form.id}
                 value={`form-${form.name}`}
                 onSelect={() => handleSelect("/forms")}
-                className="flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
+                className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
                 <ChevronRight className="w-3 h-3 flex-shrink-0" />
                 <span className="text-xs font-normal">{form.name}</span>
                 <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{form.isActive ? "Aktiv" : "Inaktiv"}</span>
@@ -104,7 +104,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                 key={pm.id}
                 value={`payment-${pm.name}`}
                 onSelect={() => handleSelect("/payment-methods")}
-                className="flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
+                className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
                 <ChevronRight className="w-3 h-3 flex-shrink-0" />
                 <span className="text-xs font-normal">{pm.name}</span>
                 <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{pm.type}</span>
@@ -130,7 +130,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                   key={testRun.id}
                   value={`test-${formName}-${pmName}`}
                   onSelect={() => handleSelect("/test-results")}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
                   <ChevronRight className="w-3 h-3 flex-shrink-0" />
                   <span className="text-xs font-normal">
                     {formName} × {pmName}
