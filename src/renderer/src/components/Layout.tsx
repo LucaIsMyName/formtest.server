@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
+import TestRunDialog from "./TestRunDialog";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen } from "lucide-react";
 
 interface LayoutProps {
@@ -9,6 +10,13 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const [showTestDialog, setShowTestDialog] = useState(false);
+  const [preselectAll, setPreselectAll] = useState(false);
+
+  const handleRunAllTests = () => {
+    setPreselectAll(true);
+    setShowTestDialog(true);
+  };
 
   const navigation = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
@@ -21,7 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden relative">
-      <CustomTitleBar />
+      <CustomTitleBar onRunAllTests={handleRunAllTests} />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
@@ -49,6 +57,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <main className="flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 py-4">{children}</main>
         </div>
       </div>
+
+      {/* Test Run Dialog */}
+      <TestRunDialog
+        isOpen={showTestDialog}
+        onClose={() => {
+          setShowTestDialog(false);
+          setPreselectAll(false);
+        }}
+        preselectAll={preselectAll}
+      />
     </div>
   );
 };

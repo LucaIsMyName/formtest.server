@@ -7,9 +7,10 @@ import Button from "./Button";
 interface TestRunDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  preselectAll?: boolean;
 }
 
-const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
+const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselectAll = false }) => {
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const { runTests, isRunning } = useTestRunsStore();
@@ -23,12 +24,23 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose }) => {
     if (isOpen) {
       loadForms();
       loadPaymentMethods();
-      // Reset selections when dialog opens
-      setSelectedFormIds([]);
-      setSelectedPaymentMethodIds([]);
       setError(null);
     }
   }, [isOpen, loadForms, loadPaymentMethods]);
+
+  // Handle preselection when dialog opens
+  useEffect(() => {
+    if (isOpen && preselectAll) {
+      const activeForms = forms.filter(f => f.isActive);
+      const activePaymentMethods = paymentMethods.filter(pm => pm.isActive);
+      setSelectedFormIds(activeForms.map(f => f.id));
+      setSelectedPaymentMethodIds(activePaymentMethods.map(pm => pm.id));
+    } else if (isOpen && !preselectAll) {
+      // Reset selections when dialog opens without preselection
+      setSelectedFormIds([]);
+      setSelectedPaymentMethodIds([]);
+    }
+  }, [isOpen, preselectAll, forms, paymentMethods]);
 
   // ESC key handler
   useEffect(() => {

@@ -8,8 +8,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Geist', 'system-ui', 'sans-serif'],
-        'mono': ['Geist Mono', 'ui-monospace', 'monospace'],
+        'sans': ['Google Sans Flex', 'system-ui', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
         primary: {

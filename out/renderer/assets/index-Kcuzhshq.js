@@ -6984,6 +6984,7 @@ function checkDCE() {
   reactDom.exports = reactDom_production_min;
 }
 var reactDomExports = reactDom.exports;
+const ReactDOM = /* @__PURE__ */ getDefaultExportFromCjs(reactDomExports);
 var m$1 = reactDomExports;
 {
   client.createRoot = m$1.createRoot;
@@ -7064,11 +7065,11 @@ function warning(cond, message) {
 function createKey() {
   return Math.random().toString(36).substr(2, 8);
 }
-function getHistoryState(location, index) {
+function getHistoryState(location, index2) {
   return {
     usr: location.state,
     key: location.key,
-    idx: index
+    idx: index2
   };
 }
 function createLocation(current2, to2, state, key) {
@@ -7129,11 +7130,11 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
   let globalHistory = window2.history;
   let action = Action.Pop;
   let listener2 = null;
-  let index = getIndex();
-  if (index == null) {
-    index = 0;
+  let index2 = getIndex();
+  if (index2 == null) {
+    index2 = 0;
     globalHistory.replaceState(_extends$w({}, globalHistory.state, {
-      idx: index
+      idx: index2
     }), "");
   }
   function getIndex() {
@@ -7145,8 +7146,8 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
   function handlePop() {
     action = Action.Pop;
     let nextIndex = getIndex();
-    let delta = nextIndex == null ? null : nextIndex - index;
-    index = nextIndex;
+    let delta = nextIndex == null ? null : nextIndex - index2;
+    index2 = nextIndex;
     if (listener2) {
       listener2({
         action,
@@ -7158,8 +7159,8 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
   function push(to2, state) {
     action = Action.Push;
     let location = createLocation(history.location, to2, state);
-    index = getIndex() + 1;
-    let historyState = getHistoryState(location, index);
+    index2 = getIndex() + 1;
+    let historyState = getHistoryState(location, index2);
     let url = history.createHref(location);
     try {
       globalHistory.pushState(historyState, "", url);
@@ -7180,8 +7181,8 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
   function replace(to2, state) {
     action = Action.Replace;
     let location = createLocation(history.location, to2, state);
-    index = getIndex();
-    let historyState = getHistoryState(location, index);
+    index2 = getIndex();
+    let historyState = getHistoryState(location, index2);
     let url = history.createHref(location);
     globalHistory.replaceState(historyState, "", url);
     if (v5Compat && listener2) {
@@ -7275,11 +7276,11 @@ function flattenRoutes(routes, branches, parentsMeta, parentPath) {
   if (parentPath === void 0) {
     parentPath = "";
   }
-  let flattenRoute = (route, index, relativePath) => {
+  let flattenRoute = (route, index2, relativePath) => {
     let meta = {
       relativePath: relativePath === void 0 ? route.path || "" : relativePath,
       caseSensitive: route.caseSensitive === true,
-      childrenIndex: index,
+      childrenIndex: index2,
       route
     };
     if (meta.relativePath.startsWith("/")) {
@@ -7306,13 +7307,13 @@ function flattenRoutes(routes, branches, parentsMeta, parentPath) {
       routesMeta
     });
   };
-  routes.forEach((route, index) => {
+  routes.forEach((route, index2) => {
     var _route$path;
     if (route.path === "" || !((_route$path = route.path) != null && _route$path.includes("?"))) {
-      flattenRoute(route, index);
+      flattenRoute(route, index2);
     } else {
       for (let exploded of explodeOptionalSegments(route.path)) {
-        flattenRoute(route, index, exploded);
+        flattenRoute(route, index2, exploded);
       }
     }
   });
@@ -7345,13 +7346,13 @@ const emptySegmentValue = 1;
 const staticSegmentValue = 10;
 const splatPenalty = -2;
 const isSplat = (s2) => s2 === "*";
-function computeScore(path, index) {
+function computeScore(path, index2) {
   let segments = path.split("/");
   let initialScore = segments.length;
   if (segments.some(isSplat)) {
     initialScore += splatPenalty;
   }
-  if (index) {
+  if (index2) {
     initialScore += indexRouteValue;
   }
   return segments.filter((s2) => !isSplat(s2)).reduce((score, segment) => score + (paramRe.test(segment) ? dynamicSegmentValue : segment === "" ? emptySegmentValue : staticSegmentValue), initialScore);
@@ -7418,16 +7419,16 @@ function matchPath(pattern, pathname) {
   let matchedPathname = match[0];
   let pathnameBase = matchedPathname.replace(/(.)\/+$/, "$1");
   let captureGroups = match.slice(1);
-  let params = compiledParams.reduce((memo, _ref2, index) => {
+  let params = compiledParams.reduce((memo, _ref2, index2) => {
     let {
       paramName,
       isOptional
     } = _ref2;
     if (paramName === "*") {
-      let splatValue = captureGroups[index] || "";
+      let splatValue = captureGroups[index2] || "";
       pathnameBase = matchedPathname.slice(0, matchedPathname.length - splatValue.length).replace(/(.)\/+$/, "$1");
     }
-    const value = captureGroups[index];
+    const value = captureGroups[index2];
     if (isOptional && !value) {
       memo[paramName] = void 0;
     } else {
@@ -7543,7 +7544,7 @@ function getInvalidPathError(char, field, dest, path) {
   return "Cannot include a '" + char + "' character in a manually specified " + ("`to." + field + "` field [" + JSON.stringify(path) + "].  Please separate it out to the ") + ("`to." + dest + "` field. Alternatively you may provide the full path as ") + 'a string in <Link to="..."> and the router will parse it for you.';
 }
 function getPathContributingMatches(matches2) {
-  return matches2.filter((match, index) => index === 0 || match.route.path && match.route.path.length > 0);
+  return matches2.filter((match, index2) => index2 === 0 || match.route.path && match.route.path.length > 0);
 }
 function getResolveToMatches(matches2, v7_relativeSplatPath) {
   let pathMatches = getPathContributingMatches(matches2);
@@ -7927,7 +7928,7 @@ function _renderMatches(matches2, parentMatches, dataRouterState, future) {
       }
     }
   }
-  return renderedMatches.reduceRight((outlet, match, index) => {
+  return renderedMatches.reduceRight((outlet, match, index2) => {
     let error;
     let shouldRenderHydrateFallback = false;
     let errorElement = null;
@@ -7936,17 +7937,17 @@ function _renderMatches(matches2, parentMatches, dataRouterState, future) {
       error = errors && match.route.id ? errors[match.route.id] : void 0;
       errorElement = match.route.errorElement || defaultErrorElement;
       if (renderFallback) {
-        if (fallbackIndex < 0 && index === 0) {
+        if (fallbackIndex < 0 && index2 === 0) {
           warningOnce("route-fallback");
           shouldRenderHydrateFallback = true;
           hydrateFallbackElement = null;
-        } else if (fallbackIndex === index) {
+        } else if (fallbackIndex === index2) {
           shouldRenderHydrateFallback = true;
           hydrateFallbackElement = match.route.hydrateFallbackElement || null;
         }
       }
     }
-    let matches22 = parentMatches.concat(renderedMatches.slice(0, index + 1));
+    let matches22 = parentMatches.concat(renderedMatches.slice(0, index2 + 1));
     let getChildren = () => {
       let children;
       if (error) {
@@ -7970,7 +7971,7 @@ function _renderMatches(matches2, parentMatches, dataRouterState, future) {
         children
       });
     };
-    return dataRouterState && (match.route.ErrorBoundary || match.route.errorElement || index === 0) ? /* @__PURE__ */ reactExports.createElement(RenderErrorBoundary, {
+    return dataRouterState && (match.route.ErrorBoundary || match.route.errorElement || index2 === 0) ? /* @__PURE__ */ reactExports.createElement(RenderErrorBoundary, {
       location: dataRouterState.location,
       revalidation: dataRouterState.revalidation,
       component: errorElement,
@@ -8141,11 +8142,11 @@ function createRoutesFromChildren(children, parentPath) {
     parentPath = [];
   }
   let routes = [];
-  reactExports.Children.forEach(children, (element, index) => {
+  reactExports.Children.forEach(children, (element, index2) => {
     if (!/* @__PURE__ */ reactExports.isValidElement(element)) {
       return;
     }
-    let treePath = [...parentPath, index];
+    let treePath = [...parentPath, index2];
     if (element.type === reactExports.Fragment) {
       routes.push.apply(routes, createRoutesFromChildren(element.props.children, treePath));
       return;
@@ -8381,7 +8382,7 @@ const TrafficLights = ({ onClose, onMinimize, onMaximize, isMaximized }) => {
             onClick: onClose,
             title: "Close",
             "aria-label": "Close window",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-0 hover:opacity-100", children: "×" })
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-0 hover:opacity-100" })
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -8391,7 +8392,7 @@ const TrafficLights = ({ onClose, onMinimize, onMaximize, isMaximized }) => {
             onClick: onMinimize,
             title: "Minimize",
             "aria-label": "Minimize window",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-0 hover:opacity-100", children: "−" })
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-0 hover:opacity-100" })
           }
         ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -8401,58 +8402,9 @@ const TrafficLights = ({ onClose, onMinimize, onMaximize, isMaximized }) => {
             onClick: onMaximize,
             title: isMaximized ? "Restore" : "Maximize",
             "aria-label": isMaximized ? "Restore window" : "Maximize window",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-0 hover:opacity-100", children: isMaximized ? "⧉" : "□" })
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-0 hover:opacity-100", children: isMaximized ? "" : "" })
           }
         )
-      ]
-    }
-  );
-};
-const CustomTitleBar = () => {
-  const [isMaximized, setIsMaximized] = reactExports.useState(false);
-  reactExports.useEffect(() => {
-    const checkMaximized = async () => {
-      if (window.api?.windowControls) {
-        const maximized = await window.api.windowControls.isMaximized();
-        setIsMaximized(maximized);
-      }
-    };
-    checkMaximized();
-  }, []);
-  const handleClose = async () => {
-    if (window.api?.windowControls) {
-      await window.api.windowControls.close();
-    }
-  };
-  const handleMinimize = async () => {
-    if (window.api?.windowControls) {
-      await window.api.windowControls.minimize();
-    }
-  };
-  const handleMaximize = async () => {
-    if (window.api?.windowControls) {
-      await window.api.windowControls.maximize();
-      const maximized = await window.api.windowControls.isMaximized();
-      setIsMaximized(maximized);
-    }
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "div",
-    {
-      className: "relative h-10 border-b dark:border-b-gray-700 flex items-center justify-between px-3 select-none",
-      style: { WebkitAppRegion: "drag" },
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          TrafficLights,
-          {
-            onClose: handleClose,
-            onMinimize: handleMinimize,
-            onMaximize: handleMaximize,
-            isMaximized
-          }
-        ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "uppercase flex-1 text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 font-mono mx-4 leading-[0]", children: "Formtest.Server" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16" })
       ]
     }
   );
@@ -8472,8 +8424,8 @@ const toPascalCase = (string2) => {
   const camelCase = toCamelCase(string2);
   return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
 };
-const mergeClasses = (...classes) => classes.filter((className, index, array2) => {
-  return Boolean(className) && className.trim() !== "" && array2.indexOf(className) === index;
+const mergeClasses = (...classes) => classes.filter((className, index2, array2) => {
+  return Boolean(className) && className.trim() !== "" && array2.indexOf(className) === index2;
 }).join(" ").trim();
 const hasA11yProp = (props) => {
   for (const prop in props) {
@@ -8508,7 +8460,7 @@ var defaultAttributes = {
 const Icon$1 = reactExports.forwardRef(
   ({
     color: color2 = "currentColor",
-    size = 24,
+    size: size2 = 24,
     strokeWidth = 2,
     absoluteStrokeWidth,
     className = "",
@@ -8520,10 +8472,10 @@ const Icon$1 = reactExports.forwardRef(
     {
       ref,
       ...defaultAttributes,
-      width: size,
-      height: size,
+      width: size2,
+      height: size2,
       stroke: color2,
-      strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size) : strokeWidth,
+      strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size2) : strokeWidth,
       className: mergeClasses("lucide", className),
       ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
       ...rest
@@ -8562,7 +8514,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$d = [
+const __iconNode$h = [
   ["path", { d: "M12 7v14", key: "1akyts" }],
   [
     "path",
@@ -8572,7 +8524,54 @@ const __iconNode$d = [
     }
   ]
 ];
-const BookOpen = createLucideIcon("book-open", __iconNode$d);
+const BookOpen = createLucideIcon("book-open", __iconNode$h);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$g = [
+  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
+  ["path", { d: "M18 17V9", key: "2bz60n" }],
+  ["path", { d: "M13 17V5", key: "1frdt8" }],
+  ["path", { d: "M8 17v-3", key: "17ska0" }]
+];
+const ChartColumn = createLucideIcon("chart-column", __iconNode$g);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$f = [
+  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
+  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+];
+const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$f);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$e = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+];
+const CircleX = createLucideIcon("circle-x", __iconNode$e);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$d = [
+  ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+];
+const Clock = createLucideIcon("clock", __iconNode$d);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -8580,12 +8579,10 @@ const BookOpen = createLucideIcon("book-open", __iconNode$d);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$c = [
-  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
-  ["path", { d: "M18 17V9", key: "2bz60n" }],
-  ["path", { d: "M13 17V5", key: "1frdt8" }],
-  ["path", { d: "M8 17v-3", key: "17ska0" }]
+  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
+  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
 ];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$c);
+const CreditCard = createLucideIcon("credit-card", __iconNode$c);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -8593,51 +8590,6 @@ const ChartColumn = createLucideIcon("chart-column", __iconNode$c);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$b = [
-  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
-  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
-];
-const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$b);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$a = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("circle-x", __iconNode$a);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$9 = [
-  ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
-];
-const Clock = createLucideIcon("clock", __iconNode$9);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$8 = [
-  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
-  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
-];
-const CreditCard = createLucideIcon("credit-card", __iconNode$8);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$7 = [
   [
     "path",
     {
@@ -8650,7 +8602,56 @@ const __iconNode$7 = [
   ["path", { d: "M16 13H8", key: "t4e002" }],
   ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileText = createLucideIcon("file-text", __iconNode$7);
+const FileText = createLucideIcon("file-text", __iconNode$b);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$a = [
+  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
+  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
+  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
+  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+];
+const LayoutDashboard = createLucideIcon("layout-dashboard", __iconNode$a);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$9 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$9);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$8 = [
+  ["rect", { width: "20", height: "14", x: "2", y: "3", rx: "2", key: "48i651" }],
+  ["line", { x1: "8", x2: "16", y1: "21", y2: "21", key: "1svkeh" }],
+  ["line", { x1: "12", x2: "12", y1: "17", y2: "21", key: "vw1qmm" }]
+];
+const Monitor = createLucideIcon("monitor", __iconNode$8);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$7 = [
+  [
+    "path",
+    {
+      d: "M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401",
+      key: "kfwtm"
+    }
+  ]
+];
+const Moon = createLucideIcon("moon", __iconNode$7);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -8658,20 +8659,28 @@ const FileText = createLucideIcon("file-text", __iconNode$7);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$6 = [
-  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
-  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
-  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
-  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+  [
+    "path",
+    {
+      d: "M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z",
+      key: "10ikf1"
+    }
+  ]
 ];
-const LayoutDashboard = createLucideIcon("layout-dashboard", __iconNode$6);
+const Play = createLucideIcon("play", __iconNode$6);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$5 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$5);
+const __iconNode$5 = [
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+];
+const RefreshCw = createLucideIcon("refresh-cw", __iconNode$5);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -8679,19 +8688,6 @@ const LoaderCircle = createLucideIcon("loader-circle", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
-  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
-  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
-  ["path", { d: "M8 16H3v5", key: "1cv678" }]
-];
-const RefreshCw = createLucideIcon("refresh-cw", __iconNode$4);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$3 = [
   [
     "path",
     {
@@ -8709,14 +8705,14 @@ const __iconNode$3 = [
   ["path", { d: "M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0", key: "1f8sc4" }],
   ["path", { d: "M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5", key: "qeys4" }]
 ];
-const Rocket = createLucideIcon("rocket", __iconNode$3);
+const Rocket = createLucideIcon("rocket", __iconNode$4);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$2 = [
+const __iconNode$3 = [
   [
     "path",
     {
@@ -8726,14 +8722,14 @@ const __iconNode$2 = [
   ],
   ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const Settings$1 = createLucideIcon("settings", __iconNode$2);
+const Settings$1 = createLucideIcon("settings", __iconNode$3);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1 = [
+const __iconNode$2 = [
   ["path", { d: "M21 4v16", key: "7j8fe9" }],
   [
     "path",
@@ -8743,7 +8739,25 @@ const __iconNode$1 = [
     }
   ]
 ];
-const SkipForward = createLucideIcon("skip-forward", __iconNode$1);
+const SkipForward = createLucideIcon("skip-forward", __iconNode$2);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1 = [
+  ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
+  ["path", { d: "M12 2v2", key: "tus03m" }],
+  ["path", { d: "M12 20v2", key: "1lh1kg" }],
+  ["path", { d: "m4.93 4.93 1.41 1.41", key: "149t6j" }],
+  ["path", { d: "m17.66 17.66 1.41 1.41", key: "ptbguv" }],
+  ["path", { d: "M2 12h2", key: "1t8f8n" }],
+  ["path", { d: "M20 12h2", key: "1q8mjw" }],
+  ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
+  ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }]
+];
+const Sun = createLucideIcon("sun", __iconNode$1);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -8762,44 +8776,3433 @@ const __iconNode = [
   ["path", { d: "M12 17h.01", key: "p32p05" }]
 ];
 const TriangleAlert = createLucideIcon("triangle-alert", __iconNode);
-const Layout = ({ children }) => {
-  const location = useLocation();
-  const navigation = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
-    { name: "Formulare", href: "/forms", icon: FileText },
-    { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
-    { name: "Test Resultate", href: "/test-results", icon: ChartColumn },
-    { name: "Einstellungen", href: "/settings", icon: Settings$1 },
-    { name: "Info & Doku", href: "/info-doku", icon: BookOpen }
-  ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden relative", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, {}),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "div",
-        {
-          className: "bg-white dark:bg-gray-900 flex flex-col select-none",
-          style: { width: "clamp(12rem, 15vw, 20rem)" },
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
-            const IconComponent = item.icon;
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-              Link,
-              {
-                to: item.href,
-                className: `flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-300"}`,
-                children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { size: 18 }),
-                  item.name
-                ]
-              },
-              item.name
-            );
-          }) })
+function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
+  return function handleEvent(event) {
+    originalEventHandler?.(event);
+    if (checkForDefaultPrevented === false || !event.defaultPrevented) {
+      return ourEventHandler?.(event);
+    }
+  };
+}
+function setRef(ref, value) {
+  if (typeof ref === "function") {
+    return ref(value);
+  } else if (ref !== null && ref !== void 0) {
+    ref.current = value;
+  }
+}
+function composeRefs(...refs) {
+  return (node) => {
+    let hasCleanup = false;
+    const cleanups = refs.map((ref) => {
+      const cleanup = setRef(ref, node);
+      if (!hasCleanup && typeof cleanup == "function") {
+        hasCleanup = true;
+      }
+      return cleanup;
+    });
+    if (hasCleanup) {
+      return () => {
+        for (let i = 0; i < cleanups.length; i++) {
+          const cleanup = cleanups[i];
+          if (typeof cleanup == "function") {
+            cleanup();
+          } else {
+            setRef(refs[i], null);
+          }
         }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 py-4", children }) })
-    ] })
-  ] });
+      };
+    }
+  };
+}
+function useComposedRefs(...refs) {
+  return reactExports.useCallback(composeRefs(...refs), refs);
+}
+function createContextScope(scopeName, createContextScopeDeps = []) {
+  let defaultContexts = [];
+  function createContext3(rootComponentName, defaultContext) {
+    const BaseContext = reactExports.createContext(defaultContext);
+    const index2 = defaultContexts.length;
+    defaultContexts = [...defaultContexts, defaultContext];
+    const Provider2 = (props) => {
+      const { scope, children, ...context } = props;
+      const Context = scope?.[scopeName]?.[index2] || BaseContext;
+      const value = reactExports.useMemo(() => context, Object.values(context));
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+    };
+    Provider2.displayName = rootComponentName + "Provider";
+    function useContext2(consumerName, scope) {
+      const Context = scope?.[scopeName]?.[index2] || BaseContext;
+      const context = reactExports.useContext(Context);
+      if (context) return context;
+      if (defaultContext !== void 0) return defaultContext;
+      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
+    }
+    return [Provider2, useContext2];
+  }
+  const createScope2 = () => {
+    const scopeContexts = defaultContexts.map((defaultContext) => {
+      return reactExports.createContext(defaultContext);
+    });
+    return function useScope(scope) {
+      const contexts = scope?.[scopeName] || scopeContexts;
+      return reactExports.useMemo(
+        () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
+        [scope, contexts]
+      );
+    };
+  };
+  createScope2.scopeName = scopeName;
+  return [createContext3, composeContextScopes(createScope2, ...createContextScopeDeps)];
+}
+function composeContextScopes(...scopes) {
+  const baseScope = scopes[0];
+  if (scopes.length === 1) return baseScope;
+  const createScope2 = () => {
+    const scopeHooks = scopes.map((createScope22) => ({
+      useScope: createScope22(),
+      scopeName: createScope22.scopeName
+    }));
+    return function useComposedScopes(overrideScopes) {
+      const nextScopes = scopeHooks.reduce((nextScopes2, { useScope, scopeName }) => {
+        const scopeProps = useScope(overrideScopes);
+        const currentScope2 = scopeProps[`__scope${scopeName}`];
+        return { ...nextScopes2, ...currentScope2 };
+      }, {});
+      return reactExports.useMemo(() => ({ [`__scope${baseScope.scopeName}`]: nextScopes }), [nextScopes]);
+    };
+  };
+  createScope2.scopeName = baseScope.scopeName;
+  return createScope2;
+}
+// @__NO_SIDE_EFFECTS__
+function createSlot(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+// @__NO_SIDE_EFFECTS__
+function createSlotClone(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$1(children);
+      const props2 = mergeProps(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
+  return Slottable2;
+}
+function isSlottable(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER;
+}
+function mergeProps(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$1(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+var NODES = [
+  "a",
+  "button",
+  "div",
+  "form",
+  "h2",
+  "h3",
+  "img",
+  "input",
+  "label",
+  "li",
+  "nav",
+  "ol",
+  "p",
+  "select",
+  "span",
+  "svg",
+  "ul"
+];
+var Primitive = NODES.reduce((primitive, node) => {
+  const Slot = /* @__PURE__ */ createSlot(`Primitive.${node}`);
+  const Node2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { asChild, ...primitiveProps } = props;
+    const Comp = asChild ? Slot : node;
+    if (typeof window !== "undefined") {
+      window[Symbol.for("radix-ui")] = true;
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+  });
+  Node2.displayName = `Primitive.${node}`;
+  return { ...primitive, [node]: Node2 };
+}, {});
+function dispatchDiscreteCustomEvent(target, event) {
+  if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+function useCallbackRef(callback) {
+  const callbackRef = reactExports.useRef(callback);
+  reactExports.useEffect(() => {
+    callbackRef.current = callback;
+  });
+  return reactExports.useMemo(() => (...args) => callbackRef.current?.(...args), []);
+}
+function useEscapeKeydown(onEscapeKeyDownProp, ownerDocument = globalThis?.document) {
+  const onEscapeKeyDown = useCallbackRef(onEscapeKeyDownProp);
+  reactExports.useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onEscapeKeyDown(event);
+      }
+    };
+    ownerDocument.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => ownerDocument.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [onEscapeKeyDown, ownerDocument]);
+}
+var DISMISSABLE_LAYER_NAME = "DismissableLayer";
+var CONTEXT_UPDATE = "dismissableLayer.update";
+var POINTER_DOWN_OUTSIDE = "dismissableLayer.pointerDownOutside";
+var FOCUS_OUTSIDE = "dismissableLayer.focusOutside";
+var originalBodyPointerEvents;
+var DismissableLayerContext = reactExports.createContext({
+  layers: /* @__PURE__ */ new Set(),
+  layersWithOutsidePointerEventsDisabled: /* @__PURE__ */ new Set(),
+  branches: /* @__PURE__ */ new Set()
+});
+var DismissableLayer = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      disableOutsidePointerEvents = false,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      onFocusOutside,
+      onInteractOutside,
+      onDismiss,
+      ...layerProps
+    } = props;
+    const context = reactExports.useContext(DismissableLayerContext);
+    const [node, setNode] = reactExports.useState(null);
+    const ownerDocument = node?.ownerDocument ?? globalThis?.document;
+    const [, force] = reactExports.useState({});
+    const composedRefs = useComposedRefs(forwardedRef, (node2) => setNode(node2));
+    const layers = Array.from(context.layers);
+    const [highestLayerWithOutsidePointerEventsDisabled] = [...context.layersWithOutsidePointerEventsDisabled].slice(-1);
+    const highestLayerWithOutsidePointerEventsDisabledIndex = layers.indexOf(highestLayerWithOutsidePointerEventsDisabled);
+    const index2 = node ? layers.indexOf(node) : -1;
+    const isBodyPointerEventsDisabled = context.layersWithOutsidePointerEventsDisabled.size > 0;
+    const isPointerEventsEnabled = index2 >= highestLayerWithOutsidePointerEventsDisabledIndex;
+    const pointerDownOutside = usePointerDownOutside((event) => {
+      const target = event.target;
+      const isPointerDownOnBranch = [...context.branches].some((branch) => branch.contains(target));
+      if (!isPointerEventsEnabled || isPointerDownOnBranch) return;
+      onPointerDownOutside?.(event);
+      onInteractOutside?.(event);
+      if (!event.defaultPrevented) onDismiss?.();
+    }, ownerDocument);
+    const focusOutside = useFocusOutside((event) => {
+      const target = event.target;
+      const isFocusInBranch = [...context.branches].some((branch) => branch.contains(target));
+      if (isFocusInBranch) return;
+      onFocusOutside?.(event);
+      onInteractOutside?.(event);
+      if (!event.defaultPrevented) onDismiss?.();
+    }, ownerDocument);
+    useEscapeKeydown((event) => {
+      const isHighestLayer = index2 === context.layers.size - 1;
+      if (!isHighestLayer) return;
+      onEscapeKeyDown?.(event);
+      if (!event.defaultPrevented && onDismiss) {
+        event.preventDefault();
+        onDismiss();
+      }
+    }, ownerDocument);
+    reactExports.useEffect(() => {
+      if (!node) return;
+      if (disableOutsidePointerEvents) {
+        if (context.layersWithOutsidePointerEventsDisabled.size === 0) {
+          originalBodyPointerEvents = ownerDocument.body.style.pointerEvents;
+          ownerDocument.body.style.pointerEvents = "none";
+        }
+        context.layersWithOutsidePointerEventsDisabled.add(node);
+      }
+      context.layers.add(node);
+      dispatchUpdate();
+      return () => {
+        if (disableOutsidePointerEvents && context.layersWithOutsidePointerEventsDisabled.size === 1) {
+          ownerDocument.body.style.pointerEvents = originalBodyPointerEvents;
+        }
+      };
+    }, [node, ownerDocument, disableOutsidePointerEvents, context]);
+    reactExports.useEffect(() => {
+      return () => {
+        if (!node) return;
+        context.layers.delete(node);
+        context.layersWithOutsidePointerEventsDisabled.delete(node);
+        dispatchUpdate();
+      };
+    }, [node, context]);
+    reactExports.useEffect(() => {
+      const handleUpdate = () => force({});
+      document.addEventListener(CONTEXT_UPDATE, handleUpdate);
+      return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
+    }, []);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive.div,
+      {
+        ...layerProps,
+        ref: composedRefs,
+        style: {
+          pointerEvents: isBodyPointerEventsDisabled ? isPointerEventsEnabled ? "auto" : "none" : void 0,
+          ...props.style
+        },
+        onFocusCapture: composeEventHandlers(props.onFocusCapture, focusOutside.onFocusCapture),
+        onBlurCapture: composeEventHandlers(props.onBlurCapture, focusOutside.onBlurCapture),
+        onPointerDownCapture: composeEventHandlers(
+          props.onPointerDownCapture,
+          pointerDownOutside.onPointerDownCapture
+        )
+      }
+    );
+  }
+);
+DismissableLayer.displayName = DISMISSABLE_LAYER_NAME;
+var BRANCH_NAME = "DismissableLayerBranch";
+var DismissableLayerBranch = reactExports.forwardRef((props, forwardedRef) => {
+  const context = reactExports.useContext(DismissableLayerContext);
+  const ref = reactExports.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  reactExports.useEffect(() => {
+    const node = ref.current;
+    if (node) {
+      context.branches.add(node);
+      return () => {
+        context.branches.delete(node);
+      };
+    }
+  }, [context.branches]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...props, ref: composedRefs });
+});
+DismissableLayerBranch.displayName = BRANCH_NAME;
+function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?.document) {
+  const handlePointerDownOutside = useCallbackRef(onPointerDownOutside);
+  const isPointerInsideReactTreeRef = reactExports.useRef(false);
+  const handleClickRef = reactExports.useRef(() => {
+  });
+  reactExports.useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (event.target && !isPointerInsideReactTreeRef.current) {
+        let handleAndDispatchPointerDownOutsideEvent2 = function() {
+          handleAndDispatchCustomEvent(
+            POINTER_DOWN_OUTSIDE,
+            handlePointerDownOutside,
+            eventDetail,
+            { discrete: true }
+          );
+        };
+        const eventDetail = { originalEvent: event };
+        if (event.pointerType === "touch") {
+          ownerDocument.removeEventListener("click", handleClickRef.current);
+          handleClickRef.current = handleAndDispatchPointerDownOutsideEvent2;
+          ownerDocument.addEventListener("click", handleClickRef.current, { once: true });
+        } else {
+          handleAndDispatchPointerDownOutsideEvent2();
+        }
+      } else {
+        ownerDocument.removeEventListener("click", handleClickRef.current);
+      }
+      isPointerInsideReactTreeRef.current = false;
+    };
+    const timerId = window.setTimeout(() => {
+      ownerDocument.addEventListener("pointerdown", handlePointerDown);
+    }, 0);
+    return () => {
+      window.clearTimeout(timerId);
+      ownerDocument.removeEventListener("pointerdown", handlePointerDown);
+      ownerDocument.removeEventListener("click", handleClickRef.current);
+    };
+  }, [ownerDocument, handlePointerDownOutside]);
+  return {
+    // ensures we check React component tree (not just DOM tree)
+    onPointerDownCapture: () => isPointerInsideReactTreeRef.current = true
+  };
+}
+function useFocusOutside(onFocusOutside, ownerDocument = globalThis?.document) {
+  const handleFocusOutside = useCallbackRef(onFocusOutside);
+  const isFocusInsideReactTreeRef = reactExports.useRef(false);
+  reactExports.useEffect(() => {
+    const handleFocus = (event) => {
+      if (event.target && !isFocusInsideReactTreeRef.current) {
+        const eventDetail = { originalEvent: event };
+        handleAndDispatchCustomEvent(FOCUS_OUTSIDE, handleFocusOutside, eventDetail, {
+          discrete: false
+        });
+      }
+    };
+    ownerDocument.addEventListener("focusin", handleFocus);
+    return () => ownerDocument.removeEventListener("focusin", handleFocus);
+  }, [ownerDocument, handleFocusOutside]);
+  return {
+    onFocusCapture: () => isFocusInsideReactTreeRef.current = true,
+    onBlurCapture: () => isFocusInsideReactTreeRef.current = false
+  };
+}
+function dispatchUpdate() {
+  const event = new CustomEvent(CONTEXT_UPDATE);
+  document.dispatchEvent(event);
+}
+function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
+  const target = detail.originalEvent.target;
+  const event = new CustomEvent(name, { bubbles: false, cancelable: true, detail });
+  if (handler) target.addEventListener(name, handler, { once: true });
+  if (discrete) {
+    dispatchDiscreteCustomEvent(target, event);
+  } else {
+    target.dispatchEvent(event);
+  }
+}
+var useLayoutEffect2 = globalThis?.document ? reactExports.useLayoutEffect : () => {
+};
+var useReactId = React$4[" useId ".trim().toString()] || (() => void 0);
+var count = 0;
+function useId$1(deterministicId) {
+  const [id2, setId] = reactExports.useState(useReactId());
+  useLayoutEffect2(() => {
+    setId((reactId) => reactId ?? String(count++));
+  }, [deterministicId]);
+  return id2 ? `radix-${id2}` : "";
+}
+const sides = ["top", "right", "bottom", "left"];
+const min$1 = Math.min;
+const max$1 = Math.max;
+const round$1 = Math.round;
+const floor = Math.floor;
+const createCoords = (v2) => ({
+  x: v2,
+  y: v2
+});
+const oppositeSideMap = {
+  left: "right",
+  right: "left",
+  bottom: "top",
+  top: "bottom"
+};
+const oppositeAlignmentMap = {
+  start: "end",
+  end: "start"
+};
+function clamp(start, value, end) {
+  return max$1(start, min$1(value, end));
+}
+function evaluate(value, param) {
+  return typeof value === "function" ? value(param) : value;
+}
+function getSide(placement) {
+  return placement.split("-")[0];
+}
+function getAlignment(placement) {
+  return placement.split("-")[1];
+}
+function getOppositeAxis(axis) {
+  return axis === "x" ? "y" : "x";
+}
+function getAxisLength(axis) {
+  return axis === "y" ? "height" : "width";
+}
+const yAxisSides = /* @__PURE__ */ new Set(["top", "bottom"]);
+function getSideAxis(placement) {
+  return yAxisSides.has(getSide(placement)) ? "y" : "x";
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
+  }
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === "x" ? alignment === (rtl ? "end" : "start") ? "right" : "left" : alignment === "start" ? "bottom" : "top";
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getExpandedPlacements(placement) {
+  const oppositePlacement = getOppositePlacement(placement);
+  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.replace(/start|end/g, (alignment) => oppositeAlignmentMap[alignment]);
+}
+const lrPlacement = ["left", "right"];
+const rlPlacement = ["right", "left"];
+const tbPlacement = ["top", "bottom"];
+const btPlacement = ["bottom", "top"];
+function getSideList(side, isStart, rtl) {
+  switch (side) {
+    case "top":
+    case "bottom":
+      if (rtl) return isStart ? rlPlacement : lrPlacement;
+      return isStart ? lrPlacement : rlPlacement;
+    case "left":
+    case "right":
+      return isStart ? tbPlacement : btPlacement;
+    default:
+      return [];
+  }
+}
+function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
+  const alignment = getAlignment(placement);
+  let list = getSideList(getSide(placement), direction === "start", rtl);
+  if (alignment) {
+    list = list.map((side) => side + "-" + alignment);
+    if (flipAlignment) {
+      list = list.concat(list.map(getOppositeAlignmentPlacement));
+    }
+  }
+  return list;
+}
+function getOppositePlacement(placement) {
+  return placement.replace(/left|right|bottom|top/g, (side) => oppositeSideMap[side]);
+}
+function expandPaddingObject(padding) {
+  return {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    ...padding
+  };
+}
+function getPaddingObject(padding) {
+  return typeof padding !== "number" ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  const {
+    x: x2,
+    y: y2,
+    width,
+    height
+  } = rect;
+  return {
+    width,
+    height,
+    top: y2,
+    left: x2,
+    right: x2 + width,
+    bottom: y2 + height,
+    x: x2,
+    y: y2
+  };
+}
+function computeCoordsFromPlacement(_ref2, placement, rtl) {
+  let {
+    reference,
+    floating
+  } = _ref2;
+  const sideAxis = getSideAxis(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const alignLength = getAxisLength(alignmentAxis);
+  const side = getSide(placement);
+  const isVertical = sideAxis === "y";
+  const commonX = reference.x + reference.width / 2 - floating.width / 2;
+  const commonY = reference.y + reference.height / 2 - floating.height / 2;
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
+  let coords;
+  switch (side) {
+    case "top":
+      coords = {
+        x: commonX,
+        y: reference.y - floating.height
+      };
+      break;
+    case "bottom":
+      coords = {
+        x: commonX,
+        y: reference.y + reference.height
+      };
+      break;
+    case "right":
+      coords = {
+        x: reference.x + reference.width,
+        y: commonY
+      };
+      break;
+    case "left":
+      coords = {
+        x: reference.x - floating.width,
+        y: commonY
+      };
+      break;
+    default:
+      coords = {
+        x: reference.x,
+        y: reference.y
+      };
+  }
+  switch (getAlignment(placement)) {
+    case "start":
+      coords[alignmentAxis] -= commonAlign * (rtl && isVertical ? -1 : 1);
+      break;
+    case "end":
+      coords[alignmentAxis] += commonAlign * (rtl && isVertical ? -1 : 1);
+      break;
+  }
+  return coords;
+}
+const computePosition$1 = async (reference, floating, config2) => {
+  const {
+    placement = "bottom",
+    strategy = "absolute",
+    middleware = [],
+    platform: platform2
+  } = config2;
+  const validMiddleware = middleware.filter(Boolean);
+  const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(floating));
+  let rects = await platform2.getElementRects({
+    reference,
+    floating,
+    strategy
+  });
+  let {
+    x: x2,
+    y: y2
+  } = computeCoordsFromPlacement(rects, placement, rtl);
+  let statefulPlacement = placement;
+  let middlewareData = {};
+  let resetCount = 0;
+  for (let i = 0; i < validMiddleware.length; i++) {
+    const {
+      name,
+      fn
+    } = validMiddleware[i];
+    const {
+      x: nextX,
+      y: nextY,
+      data,
+      reset
+    } = await fn({
+      x: x2,
+      y: y2,
+      initialPlacement: placement,
+      placement: statefulPlacement,
+      strategy,
+      middlewareData,
+      rects,
+      platform: platform2,
+      elements: {
+        reference,
+        floating
+      }
+    });
+    x2 = nextX != null ? nextX : x2;
+    y2 = nextY != null ? nextY : y2;
+    middlewareData = {
+      ...middlewareData,
+      [name]: {
+        ...middlewareData[name],
+        ...data
+      }
+    };
+    if (reset && resetCount <= 50) {
+      resetCount++;
+      if (typeof reset === "object") {
+        if (reset.placement) {
+          statefulPlacement = reset.placement;
+        }
+        if (reset.rects) {
+          rects = reset.rects === true ? await platform2.getElementRects({
+            reference,
+            floating,
+            strategy
+          }) : reset.rects;
+        }
+        ({
+          x: x2,
+          y: y2
+        } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
+      }
+      i = -1;
+    }
+  }
+  return {
+    x: x2,
+    y: y2,
+    placement: statefulPlacement,
+    strategy,
+    middlewareData
+  };
+};
+async function detectOverflow(state, options) {
+  var _await$platform$isEle;
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    x: x2,
+    y: y2,
+    platform: platform2,
+    rects,
+    elements,
+    strategy
+  } = state;
+  const {
+    boundary = "clippingAncestors",
+    rootBoundary = "viewport",
+    elementContext = "floating",
+    altBoundary = false,
+    padding = 0
+  } = evaluate(options, state);
+  const paddingObject = getPaddingObject(padding);
+  const altContext = elementContext === "floating" ? "reference" : "floating";
+  const element = elements[altBoundary ? altContext : elementContext];
+  const clippingClientRect = rectToClientRect(await platform2.getClippingRect({
+    element: ((_await$platform$isEle = await (platform2.isElement == null ? void 0 : platform2.isElement(element))) != null ? _await$platform$isEle : true) ? element : element.contextElement || await (platform2.getDocumentElement == null ? void 0 : platform2.getDocumentElement(elements.floating)),
+    boundary,
+    rootBoundary,
+    strategy
+  }));
+  const rect = elementContext === "floating" ? {
+    x: x2,
+    y: y2,
+    width: rects.floating.width,
+    height: rects.floating.height
+  } : rects.reference;
+  const offsetParent = await (platform2.getOffsetParent == null ? void 0 : platform2.getOffsetParent(elements.floating));
+  const offsetScale = await (platform2.isElement == null ? void 0 : platform2.isElement(offsetParent)) ? await (platform2.getScale == null ? void 0 : platform2.getScale(offsetParent)) || {
+    x: 1,
+    y: 1
+  } : {
+    x: 1,
+    y: 1
+  };
+  const elementClientRect = rectToClientRect(platform2.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform2.convertOffsetParentRelativeRectToViewportRelativeRect({
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  }) : rect);
+  return {
+    top: (clippingClientRect.top - elementClientRect.top + paddingObject.top) / offsetScale.y,
+    bottom: (elementClientRect.bottom - clippingClientRect.bottom + paddingObject.bottom) / offsetScale.y,
+    left: (clippingClientRect.left - elementClientRect.left + paddingObject.left) / offsetScale.x,
+    right: (elementClientRect.right - clippingClientRect.right + paddingObject.right) / offsetScale.x
+  };
+}
+const arrow$3 = (options) => ({
+  name: "arrow",
+  options,
+  async fn(state) {
+    const {
+      x: x2,
+      y: y2,
+      placement,
+      rects,
+      platform: platform2,
+      elements,
+      middlewareData
+    } = state;
+    const {
+      element,
+      padding = 0
+    } = evaluate(options, state) || {};
+    if (element == null) {
+      return {};
+    }
+    const paddingObject = getPaddingObject(padding);
+    const coords = {
+      x: x2,
+      y: y2
+    };
+    const axis = getAlignmentAxis(placement);
+    const length = getAxisLength(axis);
+    const arrowDimensions = await platform2.getDimensions(element);
+    const isYAxis = axis === "y";
+    const minProp = isYAxis ? "top" : "left";
+    const maxProp = isYAxis ? "bottom" : "right";
+    const clientProp = isYAxis ? "clientHeight" : "clientWidth";
+    const endDiff = rects.reference[length] + rects.reference[axis] - coords[axis] - rects.floating[length];
+    const startDiff = coords[axis] - rects.reference[axis];
+    const arrowOffsetParent = await (platform2.getOffsetParent == null ? void 0 : platform2.getOffsetParent(element));
+    let clientSize = arrowOffsetParent ? arrowOffsetParent[clientProp] : 0;
+    if (!clientSize || !await (platform2.isElement == null ? void 0 : platform2.isElement(arrowOffsetParent))) {
+      clientSize = elements.floating[clientProp] || rects.floating[length];
+    }
+    const centerToReference = endDiff / 2 - startDiff / 2;
+    const largestPossiblePadding = clientSize / 2 - arrowDimensions[length] / 2 - 1;
+    const minPadding = min$1(paddingObject[minProp], largestPossiblePadding);
+    const maxPadding = min$1(paddingObject[maxProp], largestPossiblePadding);
+    const min$1$1 = minPadding;
+    const max2 = clientSize - arrowDimensions[length] - maxPadding;
+    const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
+    const offset2 = clamp(min$1$1, center, max2);
+    const shouldAddOffset = !middlewareData.arrow && getAlignment(placement) != null && center !== offset2 && rects.reference[length] / 2 - (center < min$1$1 ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+    const alignmentOffset = shouldAddOffset ? center < min$1$1 ? center - min$1$1 : center - max2 : 0;
+    return {
+      [axis]: coords[axis] + alignmentOffset,
+      data: {
+        [axis]: offset2,
+        centerOffset: center - offset2 - alignmentOffset,
+        ...shouldAddOffset && {
+          alignmentOffset
+        }
+      },
+      reset: shouldAddOffset
+    };
+  }
+});
+const flip$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "flip",
+    options,
+    async fn(state) {
+      var _middlewareData$arrow, _middlewareData$flip;
+      const {
+        placement,
+        middlewareData,
+        rects,
+        initialPlacement,
+        platform: platform2,
+        elements
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true,
+        fallbackPlacements: specifiedFallbackPlacements,
+        fallbackStrategy = "bestFit",
+        fallbackAxisSideDirection = "none",
+        flipAlignment = true,
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      if ((_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      const side = getSide(placement);
+      const initialSideAxis = getSideAxis(initialPlacement);
+      const isBasePlacement = getSide(initialPlacement) === initialPlacement;
+      const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
+      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [getOppositePlacement(initialPlacement)] : getExpandedPlacements(initialPlacement));
+      const hasFallbackAxisSideDirection = fallbackAxisSideDirection !== "none";
+      if (!specifiedFallbackPlacements && hasFallbackAxisSideDirection) {
+        fallbackPlacements.push(...getOppositeAxisPlacements(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
+      }
+      const placements = [initialPlacement, ...fallbackPlacements];
+      const overflow = await detectOverflow(state, detectOverflowOptions);
+      const overflows = [];
+      let overflowsData = ((_middlewareData$flip = middlewareData.flip) == null ? void 0 : _middlewareData$flip.overflows) || [];
+      if (checkMainAxis) {
+        overflows.push(overflow[side]);
+      }
+      if (checkCrossAxis) {
+        const sides2 = getAlignmentSides(placement, rects, rtl);
+        overflows.push(overflow[sides2[0]], overflow[sides2[1]]);
+      }
+      overflowsData = [...overflowsData, {
+        placement,
+        overflows
+      }];
+      if (!overflows.every((side2) => side2 <= 0)) {
+        var _middlewareData$flip2, _overflowsData$filter;
+        const nextIndex = (((_middlewareData$flip2 = middlewareData.flip) == null ? void 0 : _middlewareData$flip2.index) || 0) + 1;
+        const nextPlacement = placements[nextIndex];
+        if (nextPlacement) {
+          const ignoreCrossAxisOverflow = checkCrossAxis === "alignment" ? initialSideAxis !== getSideAxis(nextPlacement) : false;
+          if (!ignoreCrossAxisOverflow || // We leave the current main axis only if every placement on that axis
+          // overflows the main axis.
+          overflowsData.every((d2) => getSideAxis(d2.placement) === initialSideAxis ? d2.overflows[0] > 0 : true)) {
+            return {
+              data: {
+                index: nextIndex,
+                overflows: overflowsData
+              },
+              reset: {
+                placement: nextPlacement
+              }
+            };
+          }
+        }
+        let resetPlacement = (_overflowsData$filter = overflowsData.filter((d2) => d2.overflows[0] <= 0).sort((a2, b2) => a2.overflows[1] - b2.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
+        if (!resetPlacement) {
+          switch (fallbackStrategy) {
+            case "bestFit": {
+              var _overflowsData$filter2;
+              const placement2 = (_overflowsData$filter2 = overflowsData.filter((d2) => {
+                if (hasFallbackAxisSideDirection) {
+                  const currentSideAxis = getSideAxis(d2.placement);
+                  return currentSideAxis === initialSideAxis || // Create a bias to the `y` side axis due to horizontal
+                  // reading directions favoring greater width.
+                  currentSideAxis === "y";
+                }
+                return true;
+              }).map((d2) => [d2.placement, d2.overflows.filter((overflow2) => overflow2 > 0).reduce((acc, overflow2) => acc + overflow2, 0)]).sort((a2, b2) => a2[1] - b2[1])[0]) == null ? void 0 : _overflowsData$filter2[0];
+              if (placement2) {
+                resetPlacement = placement2;
+              }
+              break;
+            }
+            case "initialPlacement":
+              resetPlacement = initialPlacement;
+              break;
+          }
+        }
+        if (placement !== resetPlacement) {
+          return {
+            reset: {
+              placement: resetPlacement
+            }
+          };
+        }
+      }
+      return {};
+    }
+  };
+};
+function getSideOffsets(overflow, rect) {
+  return {
+    top: overflow.top - rect.height,
+    right: overflow.right - rect.width,
+    bottom: overflow.bottom - rect.height,
+    left: overflow.left - rect.width
+  };
+}
+function isAnySideFullyClipped(overflow) {
+  return sides.some((side) => overflow[side] >= 0);
+}
+const hide$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "hide",
+    options,
+    async fn(state) {
+      const {
+        rects
+      } = state;
+      const {
+        strategy = "referenceHidden",
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      switch (strategy) {
+        case "referenceHidden": {
+          const overflow = await detectOverflow(state, {
+            ...detectOverflowOptions,
+            elementContext: "reference"
+          });
+          const offsets = getSideOffsets(overflow, rects.reference);
+          return {
+            data: {
+              referenceHiddenOffsets: offsets,
+              referenceHidden: isAnySideFullyClipped(offsets)
+            }
+          };
+        }
+        case "escaped": {
+          const overflow = await detectOverflow(state, {
+            ...detectOverflowOptions,
+            altBoundary: true
+          });
+          const offsets = getSideOffsets(overflow, rects.floating);
+          return {
+            data: {
+              escapedOffsets: offsets,
+              escaped: isAnySideFullyClipped(offsets)
+            }
+          };
+        }
+        default: {
+          return {};
+        }
+      }
+    }
+  };
+};
+const originSides = /* @__PURE__ */ new Set(["left", "top"]);
+async function convertValueToCoords(state, options) {
+  const {
+    placement,
+    platform: platform2,
+    elements
+  } = state;
+  const rtl = await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating));
+  const side = getSide(placement);
+  const alignment = getAlignment(placement);
+  const isVertical = getSideAxis(placement) === "y";
+  const mainAxisMulti = originSides.has(side) ? -1 : 1;
+  const crossAxisMulti = rtl && isVertical ? -1 : 1;
+  const rawValue = evaluate(options, state);
+  let {
+    mainAxis,
+    crossAxis,
+    alignmentAxis
+  } = typeof rawValue === "number" ? {
+    mainAxis: rawValue,
+    crossAxis: 0,
+    alignmentAxis: null
+  } : {
+    mainAxis: rawValue.mainAxis || 0,
+    crossAxis: rawValue.crossAxis || 0,
+    alignmentAxis: rawValue.alignmentAxis
+  };
+  if (alignment && typeof alignmentAxis === "number") {
+    crossAxis = alignment === "end" ? alignmentAxis * -1 : alignmentAxis;
+  }
+  return isVertical ? {
+    x: crossAxis * crossAxisMulti,
+    y: mainAxis * mainAxisMulti
+  } : {
+    x: mainAxis * mainAxisMulti,
+    y: crossAxis * crossAxisMulti
+  };
+}
+const offset$2 = function(options) {
+  if (options === void 0) {
+    options = 0;
+  }
+  return {
+    name: "offset",
+    options,
+    async fn(state) {
+      var _middlewareData$offse, _middlewareData$arrow;
+      const {
+        x: x2,
+        y: y2,
+        placement,
+        middlewareData
+      } = state;
+      const diffCoords = await convertValueToCoords(state, options);
+      if (placement === ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse.placement) && (_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      return {
+        x: x2 + diffCoords.x,
+        y: y2 + diffCoords.y,
+        data: {
+          ...diffCoords,
+          placement
+        }
+      };
+    }
+  };
+};
+const shift$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "shift",
+    options,
+    async fn(state) {
+      const {
+        x: x2,
+        y: y2,
+        placement
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = false,
+        limiter = {
+          fn: (_ref2) => {
+            let {
+              x: x3,
+              y: y3
+            } = _ref2;
+            return {
+              x: x3,
+              y: y3
+            };
+          }
+        },
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      const coords = {
+        x: x2,
+        y: y2
+      };
+      const overflow = await detectOverflow(state, detectOverflowOptions);
+      const crossAxis = getSideAxis(getSide(placement));
+      const mainAxis = getOppositeAxis(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      if (checkMainAxis) {
+        const minSide = mainAxis === "y" ? "top" : "left";
+        const maxSide = mainAxis === "y" ? "bottom" : "right";
+        const min2 = mainAxisCoord + overflow[minSide];
+        const max2 = mainAxisCoord - overflow[maxSide];
+        mainAxisCoord = clamp(min2, mainAxisCoord, max2);
+      }
+      if (checkCrossAxis) {
+        const minSide = crossAxis === "y" ? "top" : "left";
+        const maxSide = crossAxis === "y" ? "bottom" : "right";
+        const min2 = crossAxisCoord + overflow[minSide];
+        const max2 = crossAxisCoord - overflow[maxSide];
+        crossAxisCoord = clamp(min2, crossAxisCoord, max2);
+      }
+      const limitedCoords = limiter.fn({
+        ...state,
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      });
+      return {
+        ...limitedCoords,
+        data: {
+          x: limitedCoords.x - x2,
+          y: limitedCoords.y - y2,
+          enabled: {
+            [mainAxis]: checkMainAxis,
+            [crossAxis]: checkCrossAxis
+          }
+        }
+      };
+    }
+  };
+};
+const limitShift$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    options,
+    fn(state) {
+      const {
+        x: x2,
+        y: y2,
+        placement,
+        rects,
+        middlewareData
+      } = state;
+      const {
+        offset: offset2 = 0,
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true
+      } = evaluate(options, state);
+      const coords = {
+        x: x2,
+        y: y2
+      };
+      const crossAxis = getSideAxis(placement);
+      const mainAxis = getOppositeAxis(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      const rawOffset = evaluate(offset2, state);
+      const computedOffset = typeof rawOffset === "number" ? {
+        mainAxis: rawOffset,
+        crossAxis: 0
+      } : {
+        mainAxis: 0,
+        crossAxis: 0,
+        ...rawOffset
+      };
+      if (checkMainAxis) {
+        const len = mainAxis === "y" ? "height" : "width";
+        const limitMin = rects.reference[mainAxis] - rects.floating[len] + computedOffset.mainAxis;
+        const limitMax = rects.reference[mainAxis] + rects.reference[len] - computedOffset.mainAxis;
+        if (mainAxisCoord < limitMin) {
+          mainAxisCoord = limitMin;
+        } else if (mainAxisCoord > limitMax) {
+          mainAxisCoord = limitMax;
+        }
+      }
+      if (checkCrossAxis) {
+        var _middlewareData$offse, _middlewareData$offse2;
+        const len = mainAxis === "y" ? "width" : "height";
+        const isOriginSide = originSides.has(getSide(placement));
+        const limitMin = rects.reference[crossAxis] - rects.floating[len] + (isOriginSide ? ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse[crossAxis]) || 0 : 0) + (isOriginSide ? 0 : computedOffset.crossAxis);
+        const limitMax = rects.reference[crossAxis] + rects.reference[len] + (isOriginSide ? 0 : ((_middlewareData$offse2 = middlewareData.offset) == null ? void 0 : _middlewareData$offse2[crossAxis]) || 0) - (isOriginSide ? computedOffset.crossAxis : 0);
+        if (crossAxisCoord < limitMin) {
+          crossAxisCoord = limitMin;
+        } else if (crossAxisCoord > limitMax) {
+          crossAxisCoord = limitMax;
+        }
+      }
+      return {
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      };
+    }
+  };
+};
+const size$2 = function(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: "size",
+    options,
+    async fn(state) {
+      var _state$middlewareData, _state$middlewareData2;
+      const {
+        placement,
+        rects,
+        platform: platform2,
+        elements
+      } = state;
+      const {
+        apply = () => {
+        },
+        ...detectOverflowOptions
+      } = evaluate(options, state);
+      const overflow = await detectOverflow(state, detectOverflowOptions);
+      const side = getSide(placement);
+      const alignment = getAlignment(placement);
+      const isYAxis = getSideAxis(placement) === "y";
+      const {
+        width,
+        height
+      } = rects.floating;
+      let heightSide;
+      let widthSide;
+      if (side === "top" || side === "bottom") {
+        heightSide = side;
+        widthSide = alignment === (await (platform2.isRTL == null ? void 0 : platform2.isRTL(elements.floating)) ? "start" : "end") ? "left" : "right";
+      } else {
+        widthSide = side;
+        heightSide = alignment === "end" ? "top" : "bottom";
+      }
+      const maximumClippingHeight = height - overflow.top - overflow.bottom;
+      const maximumClippingWidth = width - overflow.left - overflow.right;
+      const overflowAvailableHeight = min$1(height - overflow[heightSide], maximumClippingHeight);
+      const overflowAvailableWidth = min$1(width - overflow[widthSide], maximumClippingWidth);
+      const noShift = !state.middlewareData.shift;
+      let availableHeight = overflowAvailableHeight;
+      let availableWidth = overflowAvailableWidth;
+      if ((_state$middlewareData = state.middlewareData.shift) != null && _state$middlewareData.enabled.x) {
+        availableWidth = maximumClippingWidth;
+      }
+      if ((_state$middlewareData2 = state.middlewareData.shift) != null && _state$middlewareData2.enabled.y) {
+        availableHeight = maximumClippingHeight;
+      }
+      if (noShift && !alignment) {
+        const xMin = max$1(overflow.left, 0);
+        const xMax = max$1(overflow.right, 0);
+        const yMin = max$1(overflow.top, 0);
+        const yMax = max$1(overflow.bottom, 0);
+        if (isYAxis) {
+          availableWidth = width - 2 * (xMin !== 0 || xMax !== 0 ? xMin + xMax : max$1(overflow.left, overflow.right));
+        } else {
+          availableHeight = height - 2 * (yMin !== 0 || yMax !== 0 ? yMin + yMax : max$1(overflow.top, overflow.bottom));
+        }
+      }
+      await apply({
+        ...state,
+        availableWidth,
+        availableHeight
+      });
+      const nextDimensions = await platform2.getDimensions(elements.floating);
+      if (width !== nextDimensions.width || height !== nextDimensions.height) {
+        return {
+          reset: {
+            rects: true
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+function hasWindow() {
+  return typeof window !== "undefined";
+}
+function getNodeName(node) {
+  if (isNode(node)) {
+    return (node.nodeName || "").toLowerCase();
+  }
+  return "#document";
+}
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref2;
+  return (_ref2 = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref2.documentElement;
+}
+function isNode(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
+function isHTMLElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
+  if (!hasWindow() || typeof ShadowRoot === "undefined") {
+    return false;
+  }
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
+}
+const invalidOverflowDisplayValues = /* @__PURE__ */ new Set(["inline", "contents"]);
+function isOverflowElement(element) {
+  const {
+    overflow,
+    overflowX: overflowX2,
+    overflowY: overflowY2,
+    display
+  } = getComputedStyle$1(element);
+  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY2 + overflowX2) && !invalidOverflowDisplayValues.has(display);
+}
+const tableElements = /* @__PURE__ */ new Set(["table", "td", "th"]);
+function isTableElement(element) {
+  return tableElements.has(getNodeName(element));
+}
+const topLayerSelectors = [":popover-open", ":modal"];
+function isTopLayer(element) {
+  return topLayerSelectors.some((selector) => {
+    try {
+      return element.matches(selector);
+    } catch (_e) {
+      return false;
+    }
+  });
+}
+const transformProperties = ["transform", "translate", "scale", "rotate", "perspective"];
+const willChangeValues = ["transform", "translate", "scale", "rotate", "perspective", "filter"];
+const containValues = ["paint", "layout", "strict", "content"];
+function isContainingBlock(elementOrCss) {
+  const webkit = isWebKit();
+  const css = isElement(elementOrCss) ? getComputedStyle$1(elementOrCss) : elementOrCss;
+  return transformProperties.some((value) => css[value] ? css[value] !== "none" : false) || (css.containerType ? css.containerType !== "normal" : false) || !webkit && (css.backdropFilter ? css.backdropFilter !== "none" : false) || !webkit && (css.filter ? css.filter !== "none" : false) || willChangeValues.some((value) => (css.willChange || "").includes(value)) || containValues.some((value) => (css.contain || "").includes(value));
+}
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else if (isTopLayer(currentNode)) {
+      return null;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  return null;
+}
+function isWebKit() {
+  if (typeof CSS === "undefined" || !CSS.supports) return false;
+  return CSS.supports("-webkit-backdrop-filter", "none");
+}
+const lastTraversableNodeNames = /* @__PURE__ */ new Set(["html", "body", "#document"]);
+function isLastTraversableNode(node) {
+  return lastTraversableNodeNames.has(getNodeName(node));
+}
+function getComputedStyle$1(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.scrollX,
+    scrollTop: element.scrollY
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === "html") {
+    return node;
+  }
+  const result = (
+    // Step into the shadow DOM of the parent of a slotted node.
+    node.assignedSlot || // DOM Element detected.
+    node.parentNode || // ShadowRoot detected.
+    isShadowRoot(node) && node.host || // Fallback.
+    getDocumentElement(node)
+  );
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return node.ownerDocument ? node.ownerDocument.body : node.body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    const frameElement = getFrameElement(win);
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], frameElement && traverseIframes ? getOverflowAncestors(frameElement) : []);
+  }
+  return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+}
+function getFrameElement(win) {
+  return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
+}
+function getCssDimensions(element) {
+  const css = getComputedStyle$1(element);
+  let width = parseFloat(css.width) || 0;
+  let height = parseFloat(css.height) || 0;
+  const hasOffset = isHTMLElement(element);
+  const offsetWidth = hasOffset ? element.offsetWidth : width;
+  const offsetHeight = hasOffset ? element.offsetHeight : height;
+  const shouldFallback = round$1(width) !== offsetWidth || round$1(height) !== offsetHeight;
+  if (shouldFallback) {
+    width = offsetWidth;
+    height = offsetHeight;
+  }
+  return {
+    width,
+    height,
+    $: shouldFallback
+  };
+}
+function unwrapElement(element) {
+  return !isElement(element) ? element.contextElement : element;
+}
+function getScale(element) {
+  const domElement = unwrapElement(element);
+  if (!isHTMLElement(domElement)) {
+    return createCoords(1);
+  }
+  const rect = domElement.getBoundingClientRect();
+  const {
+    width,
+    height,
+    $
+  } = getCssDimensions(domElement);
+  let x2 = ($ ? round$1(rect.width) : rect.width) / width;
+  let y2 = ($ ? round$1(rect.height) : rect.height) / height;
+  if (!x2 || !Number.isFinite(x2)) {
+    x2 = 1;
+  }
+  if (!y2 || !Number.isFinite(y2)) {
+    y2 = 1;
+  }
+  return {
+    x: x2,
+    y: y2
+  };
+}
+const noOffsets = /* @__PURE__ */ createCoords(0);
+function getVisualOffsets(element) {
+  const win = getWindow(element);
+  if (!isWebKit() || !win.visualViewport) {
+    return noOffsets;
+  }
+  return {
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
+  };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  if (isFixed === void 0) {
+    isFixed = false;
+  }
+  if (!floatingOffsetParent || isFixed && floatingOffsetParent !== getWindow(element)) {
+    return false;
+  }
+  return isFixed;
+}
+function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
+  if (includeScale === void 0) {
+    includeScale = false;
+  }
+  if (isFixedStrategy === void 0) {
+    isFixedStrategy = false;
+  }
+  const clientRect = element.getBoundingClientRect();
+  const domElement = unwrapElement(element);
+  let scale = createCoords(1);
+  if (includeScale) {
+    if (offsetParent) {
+      if (isElement(offsetParent)) {
+        scale = getScale(offsetParent);
+      }
+    } else {
+      scale = getScale(element);
+    }
+  }
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : createCoords(0);
+  let x2 = (clientRect.left + visualOffsets.x) / scale.x;
+  let y2 = (clientRect.top + visualOffsets.y) / scale.y;
+  let width = clientRect.width / scale.x;
+  let height = clientRect.height / scale.y;
+  if (domElement) {
+    const win = getWindow(domElement);
+    const offsetWin = offsetParent && isElement(offsetParent) ? getWindow(offsetParent) : offsetParent;
+    let currentWin = win;
+    let currentIFrame = getFrameElement(currentWin);
+    while (currentIFrame && offsetParent && offsetWin !== currentWin) {
+      const iframeScale = getScale(currentIFrame);
+      const iframeRect = currentIFrame.getBoundingClientRect();
+      const css = getComputedStyle$1(currentIFrame);
+      const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) * iframeScale.x;
+      const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
+      x2 *= iframeScale.x;
+      y2 *= iframeScale.y;
+      width *= iframeScale.x;
+      height *= iframeScale.y;
+      x2 += left;
+      y2 += top;
+      currentWin = getWindow(currentIFrame);
+      currentIFrame = getFrameElement(currentWin);
+    }
+  }
+  return rectToClientRect({
+    width,
+    height,
+    x: x2,
+    y: y2
+  });
+}
+function getWindowScrollBarX(element, rect) {
+  const leftScroll = getNodeScroll(element).scrollLeft;
+  if (!rect) {
+    return getBoundingClientRect(getDocumentElement(element)).left + leftScroll;
+  }
+  return rect.left + leftScroll;
+}
+function getHTMLOffset(documentElement, scroll) {
+  const htmlRect = documentElement.getBoundingClientRect();
+  const x2 = htmlRect.left + scroll.scrollLeft - getWindowScrollBarX(documentElement, htmlRect);
+  const y2 = htmlRect.top + scroll.scrollTop;
+  return {
+    x: x2,
+    y: y2
+  };
+}
+function convertOffsetParentRelativeRectToViewportRelativeRect(_ref2) {
+  let {
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  } = _ref2;
+  const isFixed = strategy === "fixed";
+  const documentElement = getDocumentElement(offsetParent);
+  const topLayer = elements ? isTopLayer(elements.floating) : false;
+  if (offsetParent === documentElement || topLayer && isFixed) {
+    return rect;
+  }
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  let scale = createCoords(1);
+  const offsets = createCoords(0);
+  const isOffsetParentAnElement = isHTMLElement(offsetParent);
+  if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+    if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
+      scroll = getNodeScroll(offsetParent);
+    }
+    if (isHTMLElement(offsetParent)) {
+      const offsetRect = getBoundingClientRect(offsetParent);
+      scale = getScale(offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : createCoords(0);
+  return {
+    width: rect.width * scale.x,
+    height: rect.height * scale.y,
+    x: rect.x * scale.x - scroll.scrollLeft * scale.x + offsets.x + htmlOffset.x,
+    y: rect.y * scale.y - scroll.scrollTop * scale.y + offsets.y + htmlOffset.y
+  };
+}
+function getClientRects(element) {
+  return Array.from(element.getClientRects());
+}
+function getDocumentRect(element) {
+  const html = getDocumentElement(element);
+  const scroll = getNodeScroll(element);
+  const body = element.ownerDocument.body;
+  const width = max$1(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = max$1(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
+  let x2 = -scroll.scrollLeft + getWindowScrollBarX(element);
+  const y2 = -scroll.scrollTop;
+  if (getComputedStyle$1(body).direction === "rtl") {
+    x2 += max$1(html.clientWidth, body.clientWidth) - width;
+  }
+  return {
+    width,
+    height,
+    x: x2,
+    y: y2
+  };
+}
+const SCROLLBAR_MAX = 25;
+function getViewportRect(element, strategy) {
+  const win = getWindow(element);
+  const html = getDocumentElement(element);
+  const visualViewport = win.visualViewport;
+  let width = html.clientWidth;
+  let height = html.clientHeight;
+  let x2 = 0;
+  let y2 = 0;
+  if (visualViewport) {
+    width = visualViewport.width;
+    height = visualViewport.height;
+    const visualViewportBased = isWebKit();
+    if (!visualViewportBased || visualViewportBased && strategy === "fixed") {
+      x2 = visualViewport.offsetLeft;
+      y2 = visualViewport.offsetTop;
+    }
+  }
+  const windowScrollbarX = getWindowScrollBarX(html);
+  if (windowScrollbarX <= 0) {
+    const doc = html.ownerDocument;
+    const body = doc.body;
+    const bodyStyles = getComputedStyle(body);
+    const bodyMarginInline = doc.compatMode === "CSS1Compat" ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
+    const clippingStableScrollbarWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
+    if (clippingStableScrollbarWidth <= SCROLLBAR_MAX) {
+      width -= clippingStableScrollbarWidth;
+    }
+  } else if (windowScrollbarX <= SCROLLBAR_MAX) {
+    width += windowScrollbarX;
+  }
+  return {
+    width,
+    height,
+    x: x2,
+    y: y2
+  };
+}
+const absoluteOrFixed = /* @__PURE__ */ new Set(["absolute", "fixed"]);
+function getInnerBoundingClientRect(element, strategy) {
+  const clientRect = getBoundingClientRect(element, true, strategy === "fixed");
+  const top = clientRect.top + element.clientTop;
+  const left = clientRect.left + element.clientLeft;
+  const scale = isHTMLElement(element) ? getScale(element) : createCoords(1);
+  const width = element.clientWidth * scale.x;
+  const height = element.clientHeight * scale.y;
+  const x2 = left * scale.x;
+  const y2 = top * scale.y;
+  return {
+    width,
+    height,
+    x: x2,
+    y: y2
+  };
+}
+function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) {
+  let rect;
+  if (clippingAncestor === "viewport") {
+    rect = getViewportRect(element, strategy);
+  } else if (clippingAncestor === "document") {
+    rect = getDocumentRect(getDocumentElement(element));
+  } else if (isElement(clippingAncestor)) {
+    rect = getInnerBoundingClientRect(clippingAncestor, strategy);
+  } else {
+    const visualOffsets = getVisualOffsets(element);
+    rect = {
+      x: clippingAncestor.x - visualOffsets.x,
+      y: clippingAncestor.y - visualOffsets.y,
+      width: clippingAncestor.width,
+      height: clippingAncestor.height
+    };
+  }
+  return rectToClientRect(rect);
+}
+function hasFixedPositionAncestor(element, stopNode) {
+  const parentNode = getParentNode(element);
+  if (parentNode === stopNode || !isElement(parentNode) || isLastTraversableNode(parentNode)) {
+    return false;
+  }
+  return getComputedStyle$1(parentNode).position === "fixed" || hasFixedPositionAncestor(parentNode, stopNode);
+}
+function getClippingElementAncestors(element, cache) {
+  const cachedResult = cache.get(element);
+  if (cachedResult) {
+    return cachedResult;
+  }
+  let result = getOverflowAncestors(element, [], false).filter((el2) => isElement(el2) && getNodeName(el2) !== "body");
+  let currentContainingBlockComputedStyle = null;
+  const elementIsFixed = getComputedStyle$1(element).position === "fixed";
+  let currentNode = elementIsFixed ? getParentNode(element) : element;
+  while (isElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    const computedStyle = getComputedStyle$1(currentNode);
+    const currentNodeIsContaining = isContainingBlock(currentNode);
+    if (!currentNodeIsContaining && computedStyle.position === "fixed") {
+      currentContainingBlockComputedStyle = null;
+    }
+    const shouldDropCurrentNode = elementIsFixed ? !currentNodeIsContaining && !currentContainingBlockComputedStyle : !currentNodeIsContaining && computedStyle.position === "static" && !!currentContainingBlockComputedStyle && absoluteOrFixed.has(currentContainingBlockComputedStyle.position) || isOverflowElement(currentNode) && !currentNodeIsContaining && hasFixedPositionAncestor(element, currentNode);
+    if (shouldDropCurrentNode) {
+      result = result.filter((ancestor) => ancestor !== currentNode);
+    } else {
+      currentContainingBlockComputedStyle = computedStyle;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  cache.set(element, result);
+  return result;
+}
+function getClippingRect(_ref2) {
+  let {
+    element,
+    boundary,
+    rootBoundary,
+    strategy
+  } = _ref2;
+  const elementClippingAncestors = boundary === "clippingAncestors" ? isTopLayer(element) ? [] : getClippingElementAncestors(element, this._c) : [].concat(boundary);
+  const clippingAncestors = [...elementClippingAncestors, rootBoundary];
+  const firstClippingAncestor = clippingAncestors[0];
+  const clippingRect = clippingAncestors.reduce((accRect, clippingAncestor) => {
+    const rect = getClientRectFromClippingAncestor(element, clippingAncestor, strategy);
+    accRect.top = max$1(rect.top, accRect.top);
+    accRect.right = min$1(rect.right, accRect.right);
+    accRect.bottom = min$1(rect.bottom, accRect.bottom);
+    accRect.left = max$1(rect.left, accRect.left);
+    return accRect;
+  }, getClientRectFromClippingAncestor(element, firstClippingAncestor, strategy));
+  return {
+    width: clippingRect.right - clippingRect.left,
+    height: clippingRect.bottom - clippingRect.top,
+    x: clippingRect.left,
+    y: clippingRect.top
+  };
+}
+function getDimensions(element) {
+  const {
+    width,
+    height
+  } = getCssDimensions(element);
+  return {
+    width,
+    height
+  };
+}
+function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
+  const isOffsetParentAnElement = isHTMLElement(offsetParent);
+  const documentElement = getDocumentElement(offsetParent);
+  const isFixed = strategy === "fixed";
+  const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  const offsets = createCoords(0);
+  function setLeftRTLScrollbarOffset() {
+    offsets.x = getWindowScrollBarX(documentElement);
+  }
+  if (isOffsetParentAnElement || !isOffsetParentAnElement && !isFixed) {
+    if (getNodeName(offsetParent) !== "body" || isOverflowElement(documentElement)) {
+      scroll = getNodeScroll(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    } else if (documentElement) {
+      setLeftRTLScrollbarOffset();
+    }
+  }
+  if (isFixed && !isOffsetParentAnElement && documentElement) {
+    setLeftRTLScrollbarOffset();
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : createCoords(0);
+  const x2 = rect.left + scroll.scrollLeft - offsets.x - htmlOffset.x;
+  const y2 = rect.top + scroll.scrollTop - offsets.y - htmlOffset.y;
+  return {
+    x: x2,
+    y: y2,
+    width: rect.width,
+    height: rect.height
+  };
+}
+function isStaticPositioned(element) {
+  return getComputedStyle$1(element).position === "static";
+}
+function getTrueOffsetParent(element, polyfill) {
+  if (!isHTMLElement(element) || getComputedStyle$1(element).position === "fixed") {
+    return null;
+  }
+  if (polyfill) {
+    return polyfill(element);
+  }
+  let rawOffsetParent = element.offsetParent;
+  if (getDocumentElement(element) === rawOffsetParent) {
+    rawOffsetParent = rawOffsetParent.ownerDocument.body;
+  }
+  return rawOffsetParent;
+}
+function getOffsetParent(element, polyfill) {
+  const win = getWindow(element);
+  if (isTopLayer(element)) {
+    return win;
+  }
+  if (!isHTMLElement(element)) {
+    let svgOffsetParent = getParentNode(element);
+    while (svgOffsetParent && !isLastTraversableNode(svgOffsetParent)) {
+      if (isElement(svgOffsetParent) && !isStaticPositioned(svgOffsetParent)) {
+        return svgOffsetParent;
+      }
+      svgOffsetParent = getParentNode(svgOffsetParent);
+    }
+    return win;
+  }
+  let offsetParent = getTrueOffsetParent(element, polyfill);
+  while (offsetParent && isTableElement(offsetParent) && isStaticPositioned(offsetParent)) {
+    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+  }
+  if (offsetParent && isLastTraversableNode(offsetParent) && isStaticPositioned(offsetParent) && !isContainingBlock(offsetParent)) {
+    return win;
+  }
+  return offsetParent || getContainingBlock(element) || win;
+}
+const getElementRects = async function(data) {
+  const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
+  const getDimensionsFn = this.getDimensions;
+  const floatingDimensions = await getDimensionsFn(data.floating);
+  return {
+    reference: getRectRelativeToOffsetParent(data.reference, await getOffsetParentFn(data.floating), data.strategy),
+    floating: {
+      x: 0,
+      y: 0,
+      width: floatingDimensions.width,
+      height: floatingDimensions.height
+    }
+  };
+};
+function isRTL(element) {
+  return getComputedStyle$1(element).direction === "rtl";
+}
+const platform = {
+  convertOffsetParentRelativeRectToViewportRelativeRect,
+  getDocumentElement,
+  getClippingRect,
+  getOffsetParent,
+  getElementRects,
+  getClientRects,
+  getDimensions,
+  getScale,
+  isElement,
+  isRTL
+};
+function rectsAreEqual(a2, b2) {
+  return a2.x === b2.x && a2.y === b2.y && a2.width === b2.width && a2.height === b2.height;
+}
+function observeMove(element, onMove) {
+  let io = null;
+  let timeoutId;
+  const root = getDocumentElement(element);
+  function cleanup() {
+    var _io;
+    clearTimeout(timeoutId);
+    (_io = io) == null || _io.disconnect();
+    io = null;
+  }
+  function refresh(skip, threshold2) {
+    if (skip === void 0) {
+      skip = false;
+    }
+    if (threshold2 === void 0) {
+      threshold2 = 1;
+    }
+    cleanup();
+    const elementRectForRootMargin = element.getBoundingClientRect();
+    const {
+      left,
+      top,
+      width,
+      height
+    } = elementRectForRootMargin;
+    if (!skip) {
+      onMove();
+    }
+    if (!width || !height) {
+      return;
+    }
+    const insetTop = floor(top);
+    const insetRight = floor(root.clientWidth - (left + width));
+    const insetBottom = floor(root.clientHeight - (top + height));
+    const insetLeft = floor(left);
+    const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
+    const options = {
+      rootMargin,
+      threshold: max$1(0, min$1(1, threshold2)) || 1
+    };
+    let isFirstUpdate = true;
+    function handleObserve(entries) {
+      const ratio = entries[0].intersectionRatio;
+      if (ratio !== threshold2) {
+        if (!isFirstUpdate) {
+          return refresh();
+        }
+        if (!ratio) {
+          timeoutId = setTimeout(() => {
+            refresh(false, 1e-7);
+          }, 1e3);
+        } else {
+          refresh(false, ratio);
+        }
+      }
+      if (ratio === 1 && !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+        refresh();
+      }
+      isFirstUpdate = false;
+    }
+    try {
+      io = new IntersectionObserver(handleObserve, {
+        ...options,
+        // Handle <iframe>s
+        root: root.ownerDocument
+      });
+    } catch (_e) {
+      io = new IntersectionObserver(handleObserve, options);
+    }
+    io.observe(element);
+  }
+  refresh(true);
+  return cleanup;
+}
+function autoUpdate(reference, floating, update, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    ancestorScroll = true,
+    ancestorResize = true,
+    elementResize = typeof ResizeObserver === "function",
+    layoutShift = typeof IntersectionObserver === "function",
+    animationFrame = false
+  } = options;
+  const referenceEl = unwrapElement(reference);
+  const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...getOverflowAncestors(floating)] : [];
+  ancestors.forEach((ancestor) => {
+    ancestorScroll && ancestor.addEventListener("scroll", update, {
+      passive: true
+    });
+    ancestorResize && ancestor.addEventListener("resize", update);
+  });
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
+  let reobserveFrame = -1;
+  let resizeObserver = null;
+  if (elementResize) {
+    resizeObserver = new ResizeObserver((_ref2) => {
+      let [firstEntry] = _ref2;
+      if (firstEntry && firstEntry.target === referenceEl && resizeObserver) {
+        resizeObserver.unobserve(floating);
+        cancelAnimationFrame(reobserveFrame);
+        reobserveFrame = requestAnimationFrame(() => {
+          var _resizeObserver;
+          (_resizeObserver = resizeObserver) == null || _resizeObserver.observe(floating);
+        });
+      }
+      update();
+    });
+    if (referenceEl && !animationFrame) {
+      resizeObserver.observe(referenceEl);
+    }
+    resizeObserver.observe(floating);
+  }
+  let frameId;
+  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
+  if (animationFrame) {
+    frameLoop();
+  }
+  function frameLoop() {
+    const nextRefRect = getBoundingClientRect(reference);
+    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
+      update();
+    }
+    prevRefRect = nextRefRect;
+    frameId = requestAnimationFrame(frameLoop);
+  }
+  update();
+  return () => {
+    var _resizeObserver2;
+    ancestors.forEach((ancestor) => {
+      ancestorScroll && ancestor.removeEventListener("scroll", update);
+      ancestorResize && ancestor.removeEventListener("resize", update);
+    });
+    cleanupIo == null || cleanupIo();
+    (_resizeObserver2 = resizeObserver) == null || _resizeObserver2.disconnect();
+    resizeObserver = null;
+    if (animationFrame) {
+      cancelAnimationFrame(frameId);
+    }
+  };
+}
+const offset$1 = offset$2;
+const shift$1 = shift$2;
+const flip$1 = flip$2;
+const size$1 = size$2;
+const hide$1 = hide$2;
+const arrow$2 = arrow$3;
+const limitShift$1 = limitShift$2;
+const computePosition = (reference, floating, options) => {
+  const cache = /* @__PURE__ */ new Map();
+  const mergedOptions = {
+    platform,
+    ...options
+  };
+  const platformWithCache = {
+    ...mergedOptions.platform,
+    _c: cache
+  };
+  return computePosition$1(reference, floating, {
+    ...mergedOptions,
+    platform: platformWithCache
+  });
+};
+var isClient = typeof document !== "undefined";
+var noop$4 = function noop() {
+};
+var index = isClient ? reactExports.useLayoutEffect : noop$4;
+function deepEqual(a2, b2) {
+  if (a2 === b2) {
+    return true;
+  }
+  if (typeof a2 !== typeof b2) {
+    return false;
+  }
+  if (typeof a2 === "function" && a2.toString() === b2.toString()) {
+    return true;
+  }
+  let length;
+  let i;
+  let keys;
+  if (a2 && b2 && typeof a2 === "object") {
+    if (Array.isArray(a2)) {
+      length = a2.length;
+      if (length !== b2.length) return false;
+      for (i = length; i-- !== 0; ) {
+        if (!deepEqual(a2[i], b2[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+    keys = Object.keys(a2);
+    length = keys.length;
+    if (length !== Object.keys(b2).length) {
+      return false;
+    }
+    for (i = length; i-- !== 0; ) {
+      if (!{}.hasOwnProperty.call(b2, keys[i])) {
+        return false;
+      }
+    }
+    for (i = length; i-- !== 0; ) {
+      const key = keys[i];
+      if (key === "_owner" && a2.$$typeof) {
+        continue;
+      }
+      if (!deepEqual(a2[key], b2[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return a2 !== a2 && b2 !== b2;
+}
+function getDPR(element) {
+  if (typeof window === "undefined") {
+    return 1;
+  }
+  const win = element.ownerDocument.defaultView || window;
+  return win.devicePixelRatio || 1;
+}
+function roundByDPR(element, value) {
+  const dpr = getDPR(element);
+  return Math.round(value * dpr) / dpr;
+}
+function useLatestRef(value) {
+  const ref = reactExports.useRef(value);
+  index(() => {
+    ref.current = value;
+  });
+  return ref;
+}
+function useFloating(options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    placement = "bottom",
+    strategy = "absolute",
+    middleware = [],
+    platform: platform2,
+    elements: {
+      reference: externalReference,
+      floating: externalFloating
+    } = {},
+    transform = true,
+    whileElementsMounted,
+    open
+  } = options;
+  const [data, setData] = reactExports.useState({
+    x: 0,
+    y: 0,
+    strategy,
+    placement,
+    middlewareData: {},
+    isPositioned: false
+  });
+  const [latestMiddleware, setLatestMiddleware] = reactExports.useState(middleware);
+  if (!deepEqual(latestMiddleware, middleware)) {
+    setLatestMiddleware(middleware);
+  }
+  const [_reference, _setReference] = reactExports.useState(null);
+  const [_floating, _setFloating] = reactExports.useState(null);
+  const setReference = reactExports.useCallback((node) => {
+    if (node !== referenceRef.current) {
+      referenceRef.current = node;
+      _setReference(node);
+    }
+  }, []);
+  const setFloating = reactExports.useCallback((node) => {
+    if (node !== floatingRef.current) {
+      floatingRef.current = node;
+      _setFloating(node);
+    }
+  }, []);
+  const referenceEl = externalReference || _reference;
+  const floatingEl = externalFloating || _floating;
+  const referenceRef = reactExports.useRef(null);
+  const floatingRef = reactExports.useRef(null);
+  const dataRef = reactExports.useRef(data);
+  const hasWhileElementsMounted = whileElementsMounted != null;
+  const whileElementsMountedRef = useLatestRef(whileElementsMounted);
+  const platformRef = useLatestRef(platform2);
+  const openRef = useLatestRef(open);
+  const update = reactExports.useCallback(() => {
+    if (!referenceRef.current || !floatingRef.current) {
+      return;
+    }
+    const config2 = {
+      placement,
+      strategy,
+      middleware: latestMiddleware
+    };
+    if (platformRef.current) {
+      config2.platform = platformRef.current;
+    }
+    computePosition(referenceRef.current, floatingRef.current, config2).then((data2) => {
+      const fullData = {
+        ...data2,
+        // The floating element's position may be recomputed while it's closed
+        // but still mounted (such as when transitioning out). To ensure
+        // `isPositioned` will be `false` initially on the next open, avoid
+        // setting it to `true` when `open === false` (must be specified).
+        isPositioned: openRef.current !== false
+      };
+      if (isMountedRef.current && !deepEqual(dataRef.current, fullData)) {
+        dataRef.current = fullData;
+        reactDomExports.flushSync(() => {
+          setData(fullData);
+        });
+      }
+    });
+  }, [latestMiddleware, placement, strategy, platformRef, openRef]);
+  index(() => {
+    if (open === false && dataRef.current.isPositioned) {
+      dataRef.current.isPositioned = false;
+      setData((data2) => ({
+        ...data2,
+        isPositioned: false
+      }));
+    }
+  }, [open]);
+  const isMountedRef = reactExports.useRef(false);
+  index(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+  index(() => {
+    if (referenceEl) referenceRef.current = referenceEl;
+    if (floatingEl) floatingRef.current = floatingEl;
+    if (referenceEl && floatingEl) {
+      if (whileElementsMountedRef.current) {
+        return whileElementsMountedRef.current(referenceEl, floatingEl, update);
+      }
+      update();
+    }
+  }, [referenceEl, floatingEl, update, whileElementsMountedRef, hasWhileElementsMounted]);
+  const refs = reactExports.useMemo(() => ({
+    reference: referenceRef,
+    floating: floatingRef,
+    setReference,
+    setFloating
+  }), [setReference, setFloating]);
+  const elements = reactExports.useMemo(() => ({
+    reference: referenceEl,
+    floating: floatingEl
+  }), [referenceEl, floatingEl]);
+  const floatingStyles = reactExports.useMemo(() => {
+    const initialStyles = {
+      position: strategy,
+      left: 0,
+      top: 0
+    };
+    if (!elements.floating) {
+      return initialStyles;
+    }
+    const x2 = roundByDPR(elements.floating, data.x);
+    const y2 = roundByDPR(elements.floating, data.y);
+    if (transform) {
+      return {
+        ...initialStyles,
+        transform: "translate(" + x2 + "px, " + y2 + "px)",
+        ...getDPR(elements.floating) >= 1.5 && {
+          willChange: "transform"
+        }
+      };
+    }
+    return {
+      position: strategy,
+      left: x2,
+      top: y2
+    };
+  }, [strategy, transform, elements.floating, data.x, data.y]);
+  return reactExports.useMemo(() => ({
+    ...data,
+    update,
+    refs,
+    elements,
+    floatingStyles
+  }), [data, update, refs, elements, floatingStyles]);
+}
+const arrow$1 = (options) => {
+  function isRef(value) {
+    return {}.hasOwnProperty.call(value, "current");
+  }
+  return {
+    name: "arrow",
+    options,
+    fn(state) {
+      const {
+        element,
+        padding
+      } = typeof options === "function" ? options(state) : options;
+      if (element && isRef(element)) {
+        if (element.current != null) {
+          return arrow$2({
+            element: element.current,
+            padding
+          }).fn(state);
+        }
+        return {};
+      }
+      if (element) {
+        return arrow$2({
+          element,
+          padding
+        }).fn(state);
+      }
+      return {};
+    }
+  };
+};
+const offset = (options, deps) => ({
+  ...offset$1(options),
+  options: [options, deps]
+});
+const shift = (options, deps) => ({
+  ...shift$1(options),
+  options: [options, deps]
+});
+const limitShift = (options, deps) => ({
+  ...limitShift$1(options),
+  options: [options, deps]
+});
+const flip = (options, deps) => ({
+  ...flip$1(options),
+  options: [options, deps]
+});
+const size = (options, deps) => ({
+  ...size$1(options),
+  options: [options, deps]
+});
+const hide = (options, deps) => ({
+  ...hide$1(options),
+  options: [options, deps]
+});
+const arrow = (options, deps) => ({
+  ...arrow$1(options),
+  options: [options, deps]
+});
+var NAME$1 = "Arrow";
+var Arrow$1 = reactExports.forwardRef((props, forwardedRef) => {
+  const { children, width = 10, height = 5, ...arrowProps } = props;
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Primitive.svg,
+    {
+      ...arrowProps,
+      ref: forwardedRef,
+      width,
+      height,
+      viewBox: "0 0 30 10",
+      preserveAspectRatio: "none",
+      children: props.asChild ? children : /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "0,0 30,0 15,10" })
+    }
+  );
+});
+Arrow$1.displayName = NAME$1;
+var Root$1 = Arrow$1;
+function useSize(element) {
+  const [size2, setSize] = reactExports.useState(void 0);
+  useLayoutEffect2(() => {
+    if (element) {
+      setSize({ width: element.offsetWidth, height: element.offsetHeight });
+      const resizeObserver = new ResizeObserver((entries) => {
+        if (!Array.isArray(entries)) {
+          return;
+        }
+        if (!entries.length) {
+          return;
+        }
+        const entry = entries[0];
+        let width;
+        let height;
+        if ("borderBoxSize" in entry) {
+          const borderSizeEntry = entry["borderBoxSize"];
+          const borderSize = Array.isArray(borderSizeEntry) ? borderSizeEntry[0] : borderSizeEntry;
+          width = borderSize["inlineSize"];
+          height = borderSize["blockSize"];
+        } else {
+          width = element.offsetWidth;
+          height = element.offsetHeight;
+        }
+        setSize({ width, height });
+      });
+      resizeObserver.observe(element, { box: "border-box" });
+      return () => resizeObserver.unobserve(element);
+    } else {
+      setSize(void 0);
+    }
+  }, [element]);
+  return size2;
+}
+var POPPER_NAME = "Popper";
+var [createPopperContext, createPopperScope] = createContextScope(POPPER_NAME);
+var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
+var Popper = (props) => {
+  const { __scopePopper, children } = props;
+  const [anchor, setAnchor] = reactExports.useState(null);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
+};
+Popper.displayName = POPPER_NAME;
+var ANCHOR_NAME = "PopperAnchor";
+var PopperAnchor = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopePopper, virtualRef, ...anchorProps } = props;
+    const context = usePopperContext(ANCHOR_NAME, __scopePopper);
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref);
+    const anchorRef = reactExports.useRef(null);
+    reactExports.useEffect(() => {
+      const previousAnchor = anchorRef.current;
+      anchorRef.current = virtualRef?.current || ref.current;
+      if (previousAnchor !== anchorRef.current) {
+        context.onAnchorChange(anchorRef.current);
+      }
+    });
+    return virtualRef ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...anchorProps, ref: composedRefs });
+  }
+);
+PopperAnchor.displayName = ANCHOR_NAME;
+var CONTENT_NAME$1 = "PopperContent";
+var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$1);
+var PopperContent = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopePopper,
+      side = "bottom",
+      sideOffset = 0,
+      align = "center",
+      alignOffset = 0,
+      arrowPadding = 0,
+      avoidCollisions = true,
+      collisionBoundary = [],
+      collisionPadding: collisionPaddingProp = 0,
+      sticky = "partial",
+      hideWhenDetached = false,
+      updatePositionStrategy = "optimized",
+      onPlaced,
+      ...contentProps
+    } = props;
+    const context = usePopperContext(CONTENT_NAME$1, __scopePopper);
+    const [content, setContent] = reactExports.useState(null);
+    const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
+    const [arrow$12, setArrow] = reactExports.useState(null);
+    const arrowSize = useSize(arrow$12);
+    const arrowWidth = arrowSize?.width ?? 0;
+    const arrowHeight = arrowSize?.height ?? 0;
+    const desiredPlacement = side + (align !== "center" ? "-" + align : "");
+    const collisionPadding = typeof collisionPaddingProp === "number" ? collisionPaddingProp : { top: 0, right: 0, bottom: 0, left: 0, ...collisionPaddingProp };
+    const boundary = Array.isArray(collisionBoundary) ? collisionBoundary : [collisionBoundary];
+    const hasExplicitBoundaries = boundary.length > 0;
+    const detectOverflowOptions = {
+      padding: collisionPadding,
+      boundary: boundary.filter(isNotNull),
+      // with `strategy: 'fixed'`, this is the only way to get it to respect boundaries
+      altBoundary: hasExplicitBoundaries
+    };
+    const { refs, floatingStyles, placement, isPositioned, middlewareData } = useFloating({
+      // default to `fixed` strategy so users don't have to pick and we also avoid focus scroll issues
+      strategy: "fixed",
+      placement: desiredPlacement,
+      whileElementsMounted: (...args) => {
+        const cleanup = autoUpdate(...args, {
+          animationFrame: updatePositionStrategy === "always"
+        });
+        return cleanup;
+      },
+      elements: {
+        reference: context.anchor
+      },
+      middleware: [
+        offset({ mainAxis: sideOffset + arrowHeight, alignmentAxis: alignOffset }),
+        avoidCollisions && shift({
+          mainAxis: true,
+          crossAxis: false,
+          limiter: sticky === "partial" ? limitShift() : void 0,
+          ...detectOverflowOptions
+        }),
+        avoidCollisions && flip({ ...detectOverflowOptions }),
+        size({
+          ...detectOverflowOptions,
+          apply: ({ elements, rects, availableWidth, availableHeight }) => {
+            const { width: anchorWidth, height: anchorHeight } = rects.reference;
+            const contentStyle = elements.floating.style;
+            contentStyle.setProperty("--radix-popper-available-width", `${availableWidth}px`);
+            contentStyle.setProperty("--radix-popper-available-height", `${availableHeight}px`);
+            contentStyle.setProperty("--radix-popper-anchor-width", `${anchorWidth}px`);
+            contentStyle.setProperty("--radix-popper-anchor-height", `${anchorHeight}px`);
+          }
+        }),
+        arrow$12 && arrow({ element: arrow$12, padding: arrowPadding }),
+        transformOrigin({ arrowWidth, arrowHeight }),
+        hideWhenDetached && hide({ strategy: "referenceHidden", ...detectOverflowOptions })
+      ]
+    });
+    const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
+    const handlePlaced = useCallbackRef(onPlaced);
+    useLayoutEffect2(() => {
+      if (isPositioned) {
+        handlePlaced?.();
+      }
+    }, [isPositioned, handlePlaced]);
+    const arrowX = middlewareData.arrow?.x;
+    const arrowY = middlewareData.arrow?.y;
+    const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
+    const [contentZIndex, setContentZIndex] = reactExports.useState();
+    useLayoutEffect2(() => {
+      if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
+    }, [content]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "div",
+      {
+        ref: refs.setFloating,
+        "data-radix-popper-content-wrapper": "",
+        style: {
+          ...floatingStyles,
+          transform: isPositioned ? floatingStyles.transform : "translate(0, -200%)",
+          // keep off the page when measuring
+          minWidth: "max-content",
+          zIndex: contentZIndex,
+          ["--radix-popper-transform-origin"]: [
+            middlewareData.transformOrigin?.x,
+            middlewareData.transformOrigin?.y
+          ].join(" "),
+          // hide the content if using the hide middleware and should be hidden
+          // set visibility to hidden and disable pointer events so the UI behaves
+          // as if the PopperContent isn't there at all
+          ...middlewareData.hide?.referenceHidden && {
+            visibility: "hidden",
+            pointerEvents: "none"
+          }
+        },
+        dir: props.dir,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          PopperContentProvider,
+          {
+            scope: __scopePopper,
+            placedSide,
+            onArrowChange: setArrow,
+            arrowX,
+            arrowY,
+            shouldHideArrow: cannotCenterArrow,
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              Primitive.div,
+              {
+                "data-side": placedSide,
+                "data-align": placedAlign,
+                ...contentProps,
+                ref: composedRefs,
+                style: {
+                  ...contentProps.style,
+                  // if the PopperContent hasn't been placed yet (not all measurements done)
+                  // we prevent animations so that users's animation don't kick in too early referring wrong sides
+                  animation: !isPositioned ? "none" : void 0
+                }
+              }
+            )
+          }
+        )
+      }
+    );
+  }
+);
+PopperContent.displayName = CONTENT_NAME$1;
+var ARROW_NAME$1 = "PopperArrow";
+var OPPOSITE_SIDE = {
+  top: "bottom",
+  right: "left",
+  bottom: "top",
+  left: "right"
+};
+var PopperArrow = reactExports.forwardRef(function PopperArrow2(props, forwardedRef) {
+  const { __scopePopper, ...arrowProps } = props;
+  const contentContext = useContentContext(ARROW_NAME$1, __scopePopper);
+  const baseSide = OPPOSITE_SIDE[contentContext.placedSide];
+  return (
+    // we have to use an extra wrapper because `ResizeObserver` (used by `useSize`)
+    // doesn't report size as we'd expect on SVG elements.
+    // it reports their bounding box which is effectively the largest path inside the SVG.
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "span",
+      {
+        ref: contentContext.onArrowChange,
+        style: {
+          position: "absolute",
+          left: contentContext.arrowX,
+          top: contentContext.arrowY,
+          [baseSide]: 0,
+          transformOrigin: {
+            top: "",
+            right: "0 0",
+            bottom: "center 0",
+            left: "100% 0"
+          }[contentContext.placedSide],
+          transform: {
+            top: "translateY(100%)",
+            right: "translateY(50%) rotate(90deg) translateX(-50%)",
+            bottom: `rotate(180deg)`,
+            left: "translateY(50%) rotate(-90deg) translateX(50%)"
+          }[contentContext.placedSide],
+          visibility: contentContext.shouldHideArrow ? "hidden" : void 0
+        },
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Root$1,
+          {
+            ...arrowProps,
+            ref: forwardedRef,
+            style: {
+              ...arrowProps.style,
+              // ensures the element can be measured correctly (mostly for if SVG)
+              display: "block"
+            }
+          }
+        )
+      }
+    )
+  );
+});
+PopperArrow.displayName = ARROW_NAME$1;
+function isNotNull(value) {
+  return value !== null;
+}
+var transformOrigin = (options) => ({
+  name: "transformOrigin",
+  options,
+  fn(data) {
+    const { placement, rects, middlewareData } = data;
+    const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
+    const isArrowHidden = cannotCenterArrow;
+    const arrowWidth = isArrowHidden ? 0 : options.arrowWidth;
+    const arrowHeight = isArrowHidden ? 0 : options.arrowHeight;
+    const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
+    const noArrowAlign = { start: "0%", center: "50%", end: "100%" }[placedAlign];
+    const arrowXCenter = (middlewareData.arrow?.x ?? 0) + arrowWidth / 2;
+    const arrowYCenter = (middlewareData.arrow?.y ?? 0) + arrowHeight / 2;
+    let x2 = "";
+    let y2 = "";
+    if (placedSide === "bottom") {
+      x2 = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+      y2 = `${-arrowHeight}px`;
+    } else if (placedSide === "top") {
+      x2 = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+      y2 = `${rects.floating.height + arrowHeight}px`;
+    } else if (placedSide === "right") {
+      x2 = `${-arrowHeight}px`;
+      y2 = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+    } else if (placedSide === "left") {
+      x2 = `${rects.floating.width + arrowHeight}px`;
+      y2 = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
+    }
+    return { data: { x: x2, y: y2 } };
+  }
+});
+function getSideAndAlignFromPlacement(placement) {
+  const [side, align = "center"] = placement.split("-");
+  return [side, align];
+}
+var Root2 = Popper;
+var Anchor = PopperAnchor;
+var Content = PopperContent;
+var Arrow = PopperArrow;
+var PORTAL_NAME$1 = "Portal";
+var Portal$1 = reactExports.forwardRef((props, forwardedRef) => {
+  const { container: containerProp, ...portalProps } = props;
+  const [mounted, setMounted] = reactExports.useState(false);
+  useLayoutEffect2(() => setMounted(true), []);
+  const container = containerProp || mounted && globalThis?.document?.body;
+  return container ? ReactDOM.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
+});
+Portal$1.displayName = PORTAL_NAME$1;
+function useStateMachine(initialState2, machine) {
+  return reactExports.useReducer((state, event) => {
+    const nextState = machine[state][event];
+    return nextState ?? state;
+  }, initialState2);
+}
+var Presence = (props) => {
+  const { present, children } = props;
+  const presence = usePresence(present);
+  const child = typeof children === "function" ? children({ present: presence.isPresent }) : reactExports.Children.only(children);
+  const ref = useComposedRefs(presence.ref, getElementRef(child));
+  const forceMount = typeof children === "function";
+  return forceMount || presence.isPresent ? reactExports.cloneElement(child, { ref }) : null;
+};
+Presence.displayName = "Presence";
+function usePresence(present) {
+  const [node, setNode] = reactExports.useState();
+  const stylesRef = reactExports.useRef(null);
+  const prevPresentRef = reactExports.useRef(present);
+  const prevAnimationNameRef = reactExports.useRef("none");
+  const initialState2 = present ? "mounted" : "unmounted";
+  const [state, send] = useStateMachine(initialState2, {
+    mounted: {
+      UNMOUNT: "unmounted",
+      ANIMATION_OUT: "unmountSuspended"
+    },
+    unmountSuspended: {
+      MOUNT: "mounted",
+      ANIMATION_END: "unmounted"
+    },
+    unmounted: {
+      MOUNT: "mounted"
+    }
+  });
+  reactExports.useEffect(() => {
+    const currentAnimationName = getAnimationName(stylesRef.current);
+    prevAnimationNameRef.current = state === "mounted" ? currentAnimationName : "none";
+  }, [state]);
+  useLayoutEffect2(() => {
+    const styles = stylesRef.current;
+    const wasPresent = prevPresentRef.current;
+    const hasPresentChanged = wasPresent !== present;
+    if (hasPresentChanged) {
+      const prevAnimationName = prevAnimationNameRef.current;
+      const currentAnimationName = getAnimationName(styles);
+      if (present) {
+        send("MOUNT");
+      } else if (currentAnimationName === "none" || styles?.display === "none") {
+        send("UNMOUNT");
+      } else {
+        const isAnimating = prevAnimationName !== currentAnimationName;
+        if (wasPresent && isAnimating) {
+          send("ANIMATION_OUT");
+        } else {
+          send("UNMOUNT");
+        }
+      }
+      prevPresentRef.current = present;
+    }
+  }, [present, send]);
+  useLayoutEffect2(() => {
+    if (node) {
+      let timeoutId;
+      const ownerWindow = node.ownerDocument.defaultView ?? window;
+      const handleAnimationEnd = (event) => {
+        const currentAnimationName = getAnimationName(stylesRef.current);
+        const isCurrentAnimation = currentAnimationName.includes(CSS.escape(event.animationName));
+        if (event.target === node && isCurrentAnimation) {
+          send("ANIMATION_END");
+          if (!prevPresentRef.current) {
+            const currentFillMode = node.style.animationFillMode;
+            node.style.animationFillMode = "forwards";
+            timeoutId = ownerWindow.setTimeout(() => {
+              if (node.style.animationFillMode === "forwards") {
+                node.style.animationFillMode = currentFillMode;
+              }
+            });
+          }
+        }
+      };
+      const handleAnimationStart = (event) => {
+        if (event.target === node) {
+          prevAnimationNameRef.current = getAnimationName(stylesRef.current);
+        }
+      };
+      node.addEventListener("animationstart", handleAnimationStart);
+      node.addEventListener("animationcancel", handleAnimationEnd);
+      node.addEventListener("animationend", handleAnimationEnd);
+      return () => {
+        ownerWindow.clearTimeout(timeoutId);
+        node.removeEventListener("animationstart", handleAnimationStart);
+        node.removeEventListener("animationcancel", handleAnimationEnd);
+        node.removeEventListener("animationend", handleAnimationEnd);
+      };
+    } else {
+      send("ANIMATION_END");
+    }
+  }, [node, send]);
+  return {
+    isPresent: ["mounted", "unmountSuspended"].includes(state),
+    ref: reactExports.useCallback((node2) => {
+      stylesRef.current = node2 ? getComputedStyle(node2) : null;
+      setNode(node2);
+    }, [])
+  };
+}
+function getAnimationName(styles) {
+  return styles?.animationName || "none";
+}
+function getElementRef(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+var useInsertionEffect = React$4[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
+function useControllableState({
+  prop,
+  defaultProp,
+  onChange = () => {
+  },
+  caller
+}) {
+  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
+    defaultProp,
+    onChange
+  });
+  const isControlled = prop !== void 0;
+  const value = isControlled ? prop : uncontrolledProp;
+  {
+    const isControlledRef = reactExports.useRef(prop !== void 0);
+    reactExports.useEffect(() => {
+      const wasControlled = isControlledRef.current;
+      if (wasControlled !== isControlled) {
+        const from2 = wasControlled ? "controlled" : "uncontrolled";
+        const to2 = isControlled ? "controlled" : "uncontrolled";
+        console.warn(
+          `${caller} is changing from ${from2} to ${to2}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
+        );
+      }
+      isControlledRef.current = isControlled;
+    }, [isControlled, caller]);
+  }
+  const setValue = reactExports.useCallback(
+    (nextValue) => {
+      if (isControlled) {
+        const value2 = isFunction(nextValue) ? nextValue(prop) : nextValue;
+        if (value2 !== prop) {
+          onChangeRef.current?.(value2);
+        }
+      } else {
+        setUncontrolledProp(nextValue);
+      }
+    },
+    [isControlled, prop, setUncontrolledProp, onChangeRef]
+  );
+  return [value, setValue];
+}
+function useUncontrolledState({
+  defaultProp,
+  onChange
+}) {
+  const [value, setValue] = reactExports.useState(defaultProp);
+  const prevValueRef = reactExports.useRef(value);
+  const onChangeRef = reactExports.useRef(onChange);
+  useInsertionEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+  reactExports.useEffect(() => {
+    if (prevValueRef.current !== value) {
+      onChangeRef.current?.(value);
+      prevValueRef.current = value;
+    }
+  }, [value, prevValueRef]);
+  return [value, setValue, onChangeRef];
+}
+function isFunction(value) {
+  return typeof value === "function";
+}
+var VISUALLY_HIDDEN_STYLES = Object.freeze({
+  // See: https://github.com/twbs/bootstrap/blob/main/scss/mixins/_visually-hidden.scss
+  position: "absolute",
+  border: 0,
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+  wordWrap: "normal"
+});
+var NAME = "VisuallyHidden";
+var VisuallyHidden = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive.span,
+      {
+        ...props,
+        ref: forwardedRef,
+        style: { ...VISUALLY_HIDDEN_STYLES, ...props.style }
+      }
+    );
+  }
+);
+VisuallyHidden.displayName = NAME;
+var Root = VisuallyHidden;
+var [createTooltipContext] = createContextScope("Tooltip", [
+  createPopperScope
+]);
+var usePopperScope = createPopperScope();
+var PROVIDER_NAME = "TooltipProvider";
+var DEFAULT_DELAY_DURATION = 700;
+var TOOLTIP_OPEN = "tooltip.open";
+var [TooltipProviderContextProvider, useTooltipProviderContext] = createTooltipContext(PROVIDER_NAME);
+var TooltipProvider = (props) => {
+  const {
+    __scopeTooltip,
+    delayDuration = DEFAULT_DELAY_DURATION,
+    skipDelayDuration = 300,
+    disableHoverableContent = false,
+    children
+  } = props;
+  const isOpenDelayedRef = reactExports.useRef(true);
+  const isPointerInTransitRef = reactExports.useRef(false);
+  const skipDelayTimerRef = reactExports.useRef(0);
+  reactExports.useEffect(() => {
+    const skipDelayTimer = skipDelayTimerRef.current;
+    return () => window.clearTimeout(skipDelayTimer);
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    TooltipProviderContextProvider,
+    {
+      scope: __scopeTooltip,
+      isOpenDelayedRef,
+      delayDuration,
+      onOpen: reactExports.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        isOpenDelayedRef.current = false;
+      }, []),
+      onClose: reactExports.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        skipDelayTimerRef.current = window.setTimeout(
+          () => isOpenDelayedRef.current = true,
+          skipDelayDuration
+        );
+      }, [skipDelayDuration]),
+      isPointerInTransitRef,
+      onPointerInTransitChange: reactExports.useCallback((inTransit) => {
+        isPointerInTransitRef.current = inTransit;
+      }, []),
+      disableHoverableContent,
+      children
+    }
+  );
+};
+TooltipProvider.displayName = PROVIDER_NAME;
+var TOOLTIP_NAME = "Tooltip";
+var [TooltipContextProvider, useTooltipContext] = createTooltipContext(TOOLTIP_NAME);
+var Tooltip$1 = (props) => {
+  const {
+    __scopeTooltip,
+    children,
+    open: openProp,
+    defaultOpen,
+    onOpenChange,
+    disableHoverableContent: disableHoverableContentProp,
+    delayDuration: delayDurationProp
+  } = props;
+  const providerContext = useTooltipProviderContext(TOOLTIP_NAME, props.__scopeTooltip);
+  const popperScope = usePopperScope(__scopeTooltip);
+  const [trigger, setTrigger] = reactExports.useState(null);
+  const contentId = useId$1();
+  const openTimerRef = reactExports.useRef(0);
+  const disableHoverableContent = disableHoverableContentProp ?? providerContext.disableHoverableContent;
+  const delayDuration = delayDurationProp ?? providerContext.delayDuration;
+  const wasOpenDelayedRef = reactExports.useRef(false);
+  const [open, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen ?? false,
+    onChange: (open2) => {
+      if (open2) {
+        providerContext.onOpen();
+        document.dispatchEvent(new CustomEvent(TOOLTIP_OPEN));
+      } else {
+        providerContext.onClose();
+      }
+      onOpenChange?.(open2);
+    },
+    caller: TOOLTIP_NAME
+  });
+  const stateAttribute = reactExports.useMemo(() => {
+    return open ? wasOpenDelayedRef.current ? "delayed-open" : "instant-open" : "closed";
+  }, [open]);
+  const handleOpen = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    wasOpenDelayedRef.current = false;
+    setOpen(true);
+  }, [setOpen]);
+  const handleClose = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    setOpen(false);
+  }, [setOpen]);
+  const handleDelayedOpen = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = window.setTimeout(() => {
+      wasOpenDelayedRef.current = true;
+      setOpen(true);
+      openTimerRef.current = 0;
+    }, delayDuration);
+  }, [delayDuration, setOpen]);
+  reactExports.useEffect(() => {
+    return () => {
+      if (openTimerRef.current) {
+        window.clearTimeout(openTimerRef.current);
+        openTimerRef.current = 0;
+      }
+    };
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root2, { ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    TooltipContextProvider,
+    {
+      scope: __scopeTooltip,
+      contentId,
+      open,
+      stateAttribute,
+      trigger,
+      onTriggerChange: setTrigger,
+      onTriggerEnter: reactExports.useCallback(() => {
+        if (providerContext.isOpenDelayedRef.current) handleDelayedOpen();
+        else handleOpen();
+      }, [providerContext.isOpenDelayedRef, handleDelayedOpen, handleOpen]),
+      onTriggerLeave: reactExports.useCallback(() => {
+        if (disableHoverableContent) {
+          handleClose();
+        } else {
+          window.clearTimeout(openTimerRef.current);
+          openTimerRef.current = 0;
+        }
+      }, [handleClose, disableHoverableContent]),
+      onOpen: handleOpen,
+      onClose: handleClose,
+      disableHoverableContent,
+      children
+    }
+  ) });
+};
+Tooltip$1.displayName = TOOLTIP_NAME;
+var TRIGGER_NAME = "TooltipTrigger";
+var TooltipTrigger = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...triggerProps } = props;
+    const context = useTooltipContext(TRIGGER_NAME, __scopeTooltip);
+    const providerContext = useTooltipProviderContext(TRIGGER_NAME, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref, context.onTriggerChange);
+    const isPointerDownRef = reactExports.useRef(false);
+    const hasPointerMoveOpenedRef = reactExports.useRef(false);
+    const handlePointerUp = reactExports.useCallback(() => isPointerDownRef.current = false, []);
+    reactExports.useEffect(() => {
+      return () => document.removeEventListener("pointerup", handlePointerUp);
+    }, [handlePointerUp]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive.button,
+      {
+        "aria-describedby": context.open ? context.contentId : void 0,
+        "data-state": context.stateAttribute,
+        ...triggerProps,
+        ref: composedRefs,
+        onPointerMove: composeEventHandlers(props.onPointerMove, (event) => {
+          if (event.pointerType === "touch") return;
+          if (!hasPointerMoveOpenedRef.current && !providerContext.isPointerInTransitRef.current) {
+            context.onTriggerEnter();
+            hasPointerMoveOpenedRef.current = true;
+          }
+        }),
+        onPointerLeave: composeEventHandlers(props.onPointerLeave, () => {
+          context.onTriggerLeave();
+          hasPointerMoveOpenedRef.current = false;
+        }),
+        onPointerDown: composeEventHandlers(props.onPointerDown, () => {
+          if (context.open) {
+            context.onClose();
+          }
+          isPointerDownRef.current = true;
+          document.addEventListener("pointerup", handlePointerUp, { once: true });
+        }),
+        onFocus: composeEventHandlers(props.onFocus, () => {
+          if (!isPointerDownRef.current) context.onOpen();
+        }),
+        onBlur: composeEventHandlers(props.onBlur, context.onClose),
+        onClick: composeEventHandlers(props.onClick, context.onClose)
+      }
+    ) });
+  }
+);
+TooltipTrigger.displayName = TRIGGER_NAME;
+var PORTAL_NAME = "TooltipPortal";
+var [PortalProvider, usePortalContext] = createTooltipContext(PORTAL_NAME, {
+  forceMount: void 0
+});
+var TooltipPortal = (props) => {
+  const { __scopeTooltip, forceMount, children, container } = props;
+  const context = useTooltipContext(PORTAL_NAME, __scopeTooltip);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { asChild: true, container, children }) }) });
+};
+TooltipPortal.displayName = PORTAL_NAME;
+var CONTENT_NAME = "TooltipContent";
+var TooltipContent = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const portalContext = usePortalContext(CONTENT_NAME, props.__scopeTooltip);
+    const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
+    const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
+  }
+);
+var TooltipContentHoverable = reactExports.forwardRef((props, forwardedRef) => {
+  const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
+  const providerContext = useTooltipProviderContext(CONTENT_NAME, props.__scopeTooltip);
+  const ref = reactExports.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  const [pointerGraceArea, setPointerGraceArea] = reactExports.useState(null);
+  const { trigger, onClose } = context;
+  const content = ref.current;
+  const { onPointerInTransitChange } = providerContext;
+  const handleRemoveGraceArea = reactExports.useCallback(() => {
+    setPointerGraceArea(null);
+    onPointerInTransitChange(false);
+  }, [onPointerInTransitChange]);
+  const handleCreateGraceArea = reactExports.useCallback(
+    (event, hoverTarget) => {
+      const currentTarget = event.currentTarget;
+      const exitPoint = { x: event.clientX, y: event.clientY };
+      const exitSide = getExitSideFromRect(exitPoint, currentTarget.getBoundingClientRect());
+      const paddedExitPoints = getPaddedExitPoints(exitPoint, exitSide);
+      const hoverTargetPoints = getPointsFromRect(hoverTarget.getBoundingClientRect());
+      const graceArea = getHull([...paddedExitPoints, ...hoverTargetPoints]);
+      setPointerGraceArea(graceArea);
+      onPointerInTransitChange(true);
+    },
+    [onPointerInTransitChange]
+  );
+  reactExports.useEffect(() => {
+    return () => handleRemoveGraceArea();
+  }, [handleRemoveGraceArea]);
+  reactExports.useEffect(() => {
+    if (trigger && content) {
+      const handleTriggerLeave = (event) => handleCreateGraceArea(event, content);
+      const handleContentLeave = (event) => handleCreateGraceArea(event, trigger);
+      trigger.addEventListener("pointerleave", handleTriggerLeave);
+      content.addEventListener("pointerleave", handleContentLeave);
+      return () => {
+        trigger.removeEventListener("pointerleave", handleTriggerLeave);
+        content.removeEventListener("pointerleave", handleContentLeave);
+      };
+    }
+  }, [trigger, content, handleCreateGraceArea, handleRemoveGraceArea]);
+  reactExports.useEffect(() => {
+    if (pointerGraceArea) {
+      const handleTrackPointerGrace = (event) => {
+        const target = event.target;
+        const pointerPosition = { x: event.clientX, y: event.clientY };
+        const hasEnteredTarget = trigger?.contains(target) || content?.contains(target);
+        const isPointerOutsideGraceArea = !isPointInPolygon(pointerPosition, pointerGraceArea);
+        if (hasEnteredTarget) {
+          handleRemoveGraceArea();
+        } else if (isPointerOutsideGraceArea) {
+          handleRemoveGraceArea();
+          onClose();
+        }
+      };
+      document.addEventListener("pointermove", handleTrackPointerGrace);
+      return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
+    }
+  }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { ...props, ref: composedRefs });
+});
+var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
+var Slottable = /* @__PURE__ */ createSlottable("TooltipContent");
+var TooltipContentImpl = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopeTooltip,
+      children,
+      "aria-label": ariaLabel,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      ...contentProps
+    } = props;
+    const context = useTooltipContext(CONTENT_NAME, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const { onClose } = context;
+    reactExports.useEffect(() => {
+      document.addEventListener(TOOLTIP_OPEN, onClose);
+      return () => document.removeEventListener(TOOLTIP_OPEN, onClose);
+    }, [onClose]);
+    reactExports.useEffect(() => {
+      if (context.trigger) {
+        const handleScroll = (event) => {
+          const target = event.target;
+          if (target?.contains(context.trigger)) onClose();
+        };
+        window.addEventListener("scroll", handleScroll, { capture: true });
+        return () => window.removeEventListener("scroll", handleScroll, { capture: true });
+      }
+    }, [context.trigger, onClose]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      DismissableLayer,
+      {
+        asChild: true,
+        disableOutsidePointerEvents: false,
+        onEscapeKeyDown,
+        onPointerDownOutside,
+        onFocusOutside: (event) => event.preventDefault(),
+        onDismiss: onClose,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Content,
+          {
+            "data-state": context.stateAttribute,
+            ...popperScope,
+            ...contentProps,
+            ref: forwardedRef,
+            style: {
+              ...contentProps.style,
+              // re-namespace exposed content custom properties
+              ...{
+                "--radix-tooltip-content-transform-origin": "var(--radix-popper-transform-origin)",
+                "--radix-tooltip-content-available-width": "var(--radix-popper-available-width)",
+                "--radix-tooltip-content-available-height": "var(--radix-popper-available-height)",
+                "--radix-tooltip-trigger-width": "var(--radix-popper-anchor-width)",
+                "--radix-tooltip-trigger-height": "var(--radix-popper-anchor-height)"
+              }
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Slottable, { children }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
+            ]
+          }
+        )
+      }
+    );
+  }
+);
+TooltipContent.displayName = CONTENT_NAME;
+var ARROW_NAME = "TooltipArrow";
+var TooltipArrow = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...arrowProps } = props;
+    const popperScope = usePopperScope(__scopeTooltip);
+    const visuallyHiddenContentContext = useVisuallyHiddenContentContext(
+      ARROW_NAME,
+      __scopeTooltip
+    );
+    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+  }
+);
+TooltipArrow.displayName = ARROW_NAME;
+function getExitSideFromRect(point2, rect) {
+  const top = Math.abs(rect.top - point2.y);
+  const bottom = Math.abs(rect.bottom - point2.y);
+  const right = Math.abs(rect.right - point2.x);
+  const left = Math.abs(rect.left - point2.x);
+  switch (Math.min(top, bottom, right, left)) {
+    case left:
+      return "left";
+    case right:
+      return "right";
+    case top:
+      return "top";
+    case bottom:
+      return "bottom";
+    default:
+      throw new Error("unreachable");
+  }
+}
+function getPaddedExitPoints(exitPoint, exitSide, padding = 5) {
+  const paddedExitPoints = [];
+  switch (exitSide) {
+    case "top":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y + padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "bottom":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y - padding }
+      );
+      break;
+    case "left":
+      paddedExitPoints.push(
+        { x: exitPoint.x + padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "right":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x - padding, y: exitPoint.y + padding }
+      );
+      break;
+  }
+  return paddedExitPoints;
+}
+function getPointsFromRect(rect) {
+  const { top, right, bottom, left } = rect;
+  return [
+    { x: left, y: top },
+    { x: right, y: top },
+    { x: right, y: bottom },
+    { x: left, y: bottom }
+  ];
+}
+function isPointInPolygon(point2, polygon) {
+  const { x: x2, y: y2 } = point2;
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const ii2 = polygon[i];
+    const jj2 = polygon[j];
+    const xi2 = ii2.x;
+    const yi2 = ii2.y;
+    const xj2 = jj2.x;
+    const yj2 = jj2.y;
+    const intersect = yi2 > y2 !== yj2 > y2 && x2 < (xj2 - xi2) * (y2 - yi2) / (yj2 - yi2) + xi2;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+function getHull(points) {
+  const newPoints = points.slice();
+  newPoints.sort((a2, b2) => {
+    if (a2.x < b2.x) return -1;
+    else if (a2.x > b2.x) return 1;
+    else if (a2.y < b2.y) return -1;
+    else if (a2.y > b2.y) return 1;
+    else return 0;
+  });
+  return getHullPresorted(newPoints);
+}
+function getHullPresorted(points) {
+  if (points.length <= 1) return points.slice();
+  const upperHull = [];
+  for (let i = 0; i < points.length; i++) {
+    const p2 = points[i];
+    while (upperHull.length >= 2) {
+      const q2 = upperHull[upperHull.length - 1];
+      const r2 = upperHull[upperHull.length - 2];
+      if ((q2.x - r2.x) * (p2.y - r2.y) >= (q2.y - r2.y) * (p2.x - r2.x)) upperHull.pop();
+      else break;
+    }
+    upperHull.push(p2);
+  }
+  upperHull.pop();
+  const lowerHull = [];
+  for (let i = points.length - 1; i >= 0; i--) {
+    const p2 = points[i];
+    while (lowerHull.length >= 2) {
+      const q2 = lowerHull[lowerHull.length - 1];
+      const r2 = lowerHull[lowerHull.length - 2];
+      if ((q2.x - r2.x) * (p2.y - r2.y) >= (q2.y - r2.y) * (p2.x - r2.x)) lowerHull.pop();
+      else break;
+    }
+    lowerHull.push(p2);
+  }
+  lowerHull.pop();
+  if (upperHull.length === 1 && lowerHull.length === 1 && upperHull[0].x === lowerHull[0].x && upperHull[0].y === lowerHull[0].y) {
+    return upperHull;
+  } else {
+    return upperHull.concat(lowerHull);
+  }
+}
+var Provider$1 = TooltipProvider;
+var Root3 = Tooltip$1;
+var Trigger = TooltipTrigger;
+var Portal = TooltipPortal;
+var Content2 = TooltipContent;
+var Arrow2 = TooltipArrow;
+const CustomTitleBar = ({ onRunAllTests }) => {
+  const [isMaximized, setIsMaximized] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    const checkMaximized = async () => {
+      if (window.api?.windowControls) {
+        const maximized = await window.api.windowControls.isMaximized();
+        setIsMaximized(maximized);
+      }
+    };
+    checkMaximized();
+  }, []);
+  const handleClose = async () => {
+    if (window.api?.windowControls) {
+      await window.api.windowControls.close();
+    }
+  };
+  const handleMinimize = async () => {
+    if (window.api?.windowControls) {
+      await window.api.windowControls.minimize();
+    }
+  };
+  const handleMaximize = async () => {
+    if (window.api?.windowControls) {
+      await window.api.windowControls.maximize();
+      const maximized = await window.api.windowControls.isMaximized();
+      setIsMaximized(maximized);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Provider$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    "div",
+    {
+      className: "relative h-10 border-b dark:border-b-gray-700 flex items-center justify-between px-3 select-none",
+      style: { WebkitAppRegion: "drag" },
+      children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          TrafficLights,
+          {
+            onClose: handleClose,
+            onMinimize: handleMinimize,
+            onMaximize: handleMaximize,
+            isMaximized
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "uppercase flex-1 text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 font-mono mx-4 leading-[0]", children: "Formtest.Server" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: "flex items-center gap-2",
+            style: { WebkitAppRegion: "no-drag" },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  onClick: onRunAllTests,
+                  className: "p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-300",
+                  "aria-label": "Alle Tests ausführen",
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 })
+                }
+              ) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Portal, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+                Content2,
+                {
+                  className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg",
+                  sideOffset: 5,
+                  children: [
+                    "Alle Tests ausführen",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
+                  ]
+                }
+              ) })
+            ] })
+          }
+        )
+      ]
+    }
+  ) });
 };
 const __vite_import_meta_env__$1 = {};
 const createStoreImpl = (createState) => {
@@ -9174,7 +12577,7 @@ const useTestRunsStore = create((set2, get2) => ({
     }
   }
 }));
-const Button = React$3.forwardRef(({ className = "", variant = "primary", size = "md", isLoading = false, disabled, children, ...props }, ref) => {
+const Button = React$3.forwardRef(({ className = "", variant = "primary", size: size2 = "md", isLoading = false, disabled, children, ...props }, ref) => {
   const baseClasses = "inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none";
   const variants = {
     primary: "text-white bg-blue-600 border border-transparent hover:bg-blue-700",
@@ -9188,7 +12591,7 @@ const Button = React$3.forwardRef(({ className = "", variant = "primary", size =
     lg: "px-4 py-2 text-base"
   };
   const variantClasses = variants[variant];
-  const sizeClasses = sizes[size];
+  const sizeClasses = sizes[size2];
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "button",
     {
@@ -9204,7 +12607,7 @@ const Button = React$3.forwardRef(({ className = "", variant = "primary", size =
   );
 });
 Button.displayName = "Button";
-const TestRunDialog = ({ isOpen, onClose }) => {
+const TestRunDialog = ({ isOpen, onClose, preselectAll = false }) => {
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const { runTests, isRunning } = useTestRunsStore();
@@ -9216,11 +12619,20 @@ const TestRunDialog = ({ isOpen, onClose }) => {
     if (isOpen) {
       loadForms();
       loadPaymentMethods();
-      setSelectedFormIds([]);
-      setSelectedPaymentMethodIds([]);
       setError(null);
     }
   }, [isOpen, loadForms, loadPaymentMethods]);
+  reactExports.useEffect(() => {
+    if (isOpen && preselectAll) {
+      const activeForms2 = forms.filter((f2) => f2.isActive);
+      const activePaymentMethods2 = paymentMethods.filter((pm) => pm.isActive);
+      setSelectedFormIds(activeForms2.map((f2) => f2.id));
+      setSelectedPaymentMethodIds(activePaymentMethods2.map((pm) => pm.id));
+    } else if (isOpen && !preselectAll) {
+      setSelectedFormIds([]);
+      setSelectedPaymentMethodIds([]);
+    }
+  }, [isOpen, preselectAll, forms, paymentMethods]);
   reactExports.useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === "Escape" && isOpen) {
@@ -9456,6 +12868,62 @@ const TestRunDialog = ({ isOpen, onClose }) => {
       )
     }
   );
+};
+const Layout = ({ children }) => {
+  const location = useLocation();
+  const [showTestDialog, setShowTestDialog] = reactExports.useState(false);
+  const [preselectAll, setPreselectAll] = reactExports.useState(false);
+  const handleRunAllTests = () => {
+    setPreselectAll(true);
+    setShowTestDialog(true);
+  };
+  const navigation = [
+    { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Formulare", href: "/forms", icon: FileText },
+    { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
+    { name: "Test Resultate", href: "/test-results", icon: ChartColumn },
+    { name: "Einstellungen", href: "/settings", icon: Settings$1 },
+    { name: "Info & Doku", href: "/info-doku", icon: BookOpen }
+  ];
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden relative", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
+        {
+          className: "bg-white dark:bg-gray-900 flex flex-col select-none",
+          style: { width: "clamp(12rem, 15vw, 20rem)" },
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
+            const IconComponent = item.icon;
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              Link,
+              {
+                to: item.href,
+                className: `flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-300"}`,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { size: 18 }),
+                  item.name
+                ]
+              },
+              item.name
+            );
+          }) })
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "flex-1 overflow-auto bg-white dark:bg-gray-900 px-4 py-4", children }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      TestRunDialog,
+      {
+        isOpen: showTestDialog,
+        onClose: () => {
+          setShowTestDialog(false);
+          setPreselectAll(false);
+        },
+        preselectAll
+      }
+    )
+  ] });
 };
 function r(e3) {
   var t2, f2, n2 = "";
@@ -10249,15 +13717,15 @@ function bumpY(context) {
   return new Bump(context, false);
 }
 const symbolCircle = {
-  draw(context, size) {
-    const r2 = sqrt$1(size / pi$1);
+  draw(context, size2) {
+    const r2 = sqrt$1(size2 / pi$1);
     context.moveTo(r2, 0);
     context.arc(0, 0, r2, 0, tau$1);
   }
 };
 const symbolCross = {
-  draw(context, size) {
-    const r2 = sqrt$1(size / 5) / 2;
+  draw(context, size2) {
+    const r2 = sqrt$1(size2 / 5) / 2;
     context.moveTo(-3 * r2, -r2);
     context.lineTo(-r2, -r2);
     context.lineTo(-r2, -3 * r2);
@@ -10276,8 +13744,8 @@ const symbolCross = {
 const tan30 = sqrt$1(1 / 3);
 const tan30_2 = tan30 * 2;
 const symbolDiamond = {
-  draw(context, size) {
-    const y2 = sqrt$1(size / tan30_2);
+  draw(context, size2) {
+    const y2 = sqrt$1(size2 / tan30_2);
     const x2 = y2 * tan30;
     context.moveTo(0, -y2);
     context.lineTo(x2, 0);
@@ -10287,8 +13755,8 @@ const symbolDiamond = {
   }
 };
 const symbolSquare = {
-  draw(context, size) {
-    const w2 = sqrt$1(size);
+  draw(context, size2) {
+    const w2 = sqrt$1(size2);
     const x2 = -w2 / 2;
     context.rect(x2, x2, w2, w2);
   }
@@ -10298,8 +13766,8 @@ const kr = sin(pi$1 / 10) / sin(7 * pi$1 / 10);
 const kx = sin(tau$1 / 10) * kr;
 const ky = -cos(tau$1 / 10) * kr;
 const symbolStar = {
-  draw(context, size) {
-    const r2 = sqrt$1(size * ka);
+  draw(context, size2) {
+    const r2 = sqrt$1(size2 * ka);
     const x2 = kx * r2;
     const y2 = ky * r2;
     context.moveTo(0, -r2);
@@ -10316,8 +13784,8 @@ const symbolStar = {
 };
 const sqrt3 = sqrt$1(3);
 const symbolTriangle = {
-  draw(context, size) {
-    const y2 = -sqrt$1(size / (sqrt3 * 3));
+  draw(context, size2) {
+    const y2 = -sqrt$1(size2 / (sqrt3 * 3));
     context.moveTo(0, y2 * 2);
     context.lineTo(-sqrt3 * y2, -y2);
     context.lineTo(sqrt3 * y2, -y2);
@@ -10329,8 +13797,8 @@ const s = sqrt$1(3) / 2;
 const k$1 = 1 / sqrt$1(12);
 const a = (k$1 / 2 + 1) * 3;
 const symbolWye = {
-  draw(context, size) {
-    const r2 = sqrt$1(size / a);
+  draw(context, size2) {
+    const r2 = sqrt$1(size2 / a);
     const x0 = r2 / 2, y0 = r2 * k$1;
     const x1 = x0, y1 = r2 * k$1 + r2;
     const x2 = -x1, y2 = y1;
@@ -10346,21 +13814,21 @@ const symbolWye = {
     context.closePath();
   }
 };
-function Symbol$1(type, size) {
+function Symbol$1(type, size2) {
   let context = null, path = withPath(symbol);
   type = typeof type === "function" ? type : constant$1(type || symbolCircle);
-  size = typeof size === "function" ? size : constant$1(size === void 0 ? 64 : +size);
+  size2 = typeof size2 === "function" ? size2 : constant$1(size2 === void 0 ? 64 : +size2);
   function symbol() {
     let buffer;
     if (!context) context = buffer = path();
-    type.apply(this, arguments).draw(context, +size.apply(this, arguments));
+    type.apply(this, arguments).draw(context, +size2.apply(this, arguments));
     if (buffer) return context = null, buffer + "" || null;
   }
   symbol.type = function(_) {
     return arguments.length ? (type = typeof _ === "function" ? _ : constant$1(_), symbol) : type;
   };
   symbol.size = function(_) {
-    return arguments.length ? (size = typeof _ === "function" ? _ : constant$1(+_), symbol) : size;
+    return arguments.length ? (size2 = typeof _ === "function" ? _ : constant$1(+_), symbol) : size2;
   };
   symbol.context = function(_) {
     return arguments.length ? (context = _ == null ? null : _, symbol) : context;
@@ -10774,7 +14242,7 @@ function stackSeries(key) {
   return series;
 }
 function shapeStack() {
-  var keys = constant$1([]), order = stackOrderNone, offset = stackOffsetNone, value = stackValue;
+  var keys = constant$1([]), order = stackOrderNone, offset2 = stackOffsetNone, value = stackValue;
   function stack(data) {
     var sz = Array.from(keys.apply(this, arguments), stackSeries), i, n2 = sz.length, j = -1, oz;
     for (const d2 of data) {
@@ -10785,7 +14253,7 @@ function shapeStack() {
     for (i = 0, oz = array(order(sz)); i < n2; ++i) {
       sz[oz[i]].index = i;
     }
-    offset(sz, oz);
+    offset2(sz, oz);
     return sz;
   }
   stack.keys = function(_) {
@@ -10798,7 +14266,7 @@ function shapeStack() {
     return arguments.length ? (order = _ == null ? stackOrderNone : typeof _ === "function" ? _ : constant$1(Array.from(_)), stack) : order;
   };
   stack.offset = function(_) {
-    return arguments.length ? (offset = _ == null ? stackOffsetNone : _, stack) : offset;
+    return arguments.length ? (offset2 = _ == null ? stackOffsetNone : _, stack) : offset2;
   };
   return stack;
 }
@@ -10913,20 +14381,20 @@ var toString$1 = {};
     if (length === 0) {
       return result;
     }
-    let index = 0;
+    let index2 = 0;
     let key = "";
     let quoteChar = "";
     let bracket = false;
     if (deepKey.charCodeAt(0) === 46) {
       result.push("");
-      index++;
+      index2++;
     }
-    while (index < length) {
-      const char = deepKey[index];
+    while (index2 < length) {
+      const char = deepKey[index2];
       if (quoteChar) {
-        if (char === "\\" && index + 1 < length) {
-          index++;
-          key += deepKey[index];
+        if (char === "\\" && index2 + 1 < length) {
+          index2++;
+          key += deepKey[index2];
         } else if (char === quoteChar) {
           quoteChar = "";
         } else {
@@ -10958,7 +14426,7 @@ var toString$1 = {};
           key += char;
         }
       }
-      index++;
+      index2++;
     }
     if (key) {
       result.push(key);
@@ -11028,14 +14496,14 @@ var toString$1 = {};
       return defaultValue;
     }
     let current2 = object2;
-    for (let index = 0; index < path.length; index++) {
+    for (let index2 = 0; index2 < path.length; index2++) {
       if (current2 == null) {
         return defaultValue;
       }
-      if (isUnsafeProperty$1.isUnsafeProperty(path[index])) {
+      if (isUnsafeProperty$1.isUnsafeProperty(path[index2])) {
         return defaultValue;
       }
-      current2 = current2[path[index]];
+      current2 = current2[path[index2]];
     }
     if (current2 === void 0) {
       return defaultValue;
@@ -11077,8 +14545,8 @@ var getPercentValue = function getPercentValue2(percent, totalValue) {
     if (totalValue == null) {
       return defaultValue;
     }
-    var index = percent.indexOf("%");
-    value = totalValue * parseFloat(percent.slice(0, index)) / 100;
+    var index2 = percent.indexOf("%");
+    value = totalValue * parseFloat(percent.slice(0, index2)) / 100;
   } else {
     value = +percent;
   }
@@ -11211,27 +14679,27 @@ var getSymbolFactory = (type) => {
   var name = "symbol".concat(upperFirst(type));
   return symbolFactories[name] || symbolCircle;
 };
-var calculateAreaSize = (size, sizeType, type) => {
+var calculateAreaSize = (size2, sizeType, type) => {
   if (sizeType === "area") {
-    return size;
+    return size2;
   }
   switch (type) {
     case "cross":
-      return 5 * size * size / 9;
+      return 5 * size2 * size2 / 9;
     case "diamond":
-      return 0.5 * size * size / Math.sqrt(3);
+      return 0.5 * size2 * size2 / Math.sqrt(3);
     case "square":
-      return size * size;
+      return size2 * size2;
     case "star": {
       var angle = 18 * RADIAN$1;
-      return 1.25 * size * size * (Math.tan(angle) - Math.tan(angle * 2) * Math.tan(angle) ** 2);
+      return 1.25 * size2 * size2 * (Math.tan(angle) - Math.tan(angle * 2) * Math.tan(angle) ** 2);
     }
     case "triangle":
-      return Math.sqrt(3) * size * size / 4;
+      return Math.sqrt(3) * size2 * size2 / 4;
     case "wye":
-      return (21 - 10 * Math.sqrt(3)) * size * size / 8;
+      return (21 - 10 * Math.sqrt(3)) * size2 * size2 / 8;
     default:
-      return Math.PI * size * size / 4;
+      return Math.PI * size2 * size2 / 4;
   }
 };
 var registerSymbol = (key, factory) => {
@@ -11240,12 +14708,12 @@ var registerSymbol = (key, factory) => {
 var Symbols = (_ref2) => {
   var {
     type = "circle",
-    size = 64,
+    size: size2 = 64,
     sizeType = "area"
   } = _ref2, rest = _objectWithoutProperties$m(_ref2, _excluded$m);
   var props = _objectSpread$E(_objectSpread$E({}, rest), {}, {
     type,
-    size,
+    size: size2,
     sizeType
   });
   var realType = "circle";
@@ -11254,7 +14722,7 @@ var Symbols = (_ref2) => {
   }
   var getPath2 = () => {
     var symbolFactory = getSymbolFactory(realType);
-    var symbol = Symbol$1().type(symbolFactory).size(calculateAreaSize(size, sizeType, realType));
+    var symbol = Symbol$1().type(symbolFactory).size(calculateAreaSize(size2, sizeType, realType));
     var s2 = symbol();
     if (s2 === null) {
       return void 0;
@@ -11267,7 +14735,7 @@ var Symbols = (_ref2) => {
     cy
   } = props;
   var filteredProps = svgPropertiesAndEvents(props);
-  if (isNumber(cx) && isNumber(cy) && isNumber(size)) {
+  if (isNumber(cx) && isNumber(cy) && isNumber(size2)) {
     return /* @__PURE__ */ reactExports.createElement("path", _extends$r({}, filteredProps, {
       className: clsx("recharts-symbols", className),
       transform: "translate(".concat(cx, ", ").concat(cy, ")"),
@@ -11299,11 +14767,11 @@ var adaptEventHandlers = (props, newHandler) => {
   });
   return out;
 };
-var getEventHandlerOfChild = (originalHandler, data, index) => (e3) => {
-  originalHandler(data, index, e3);
+var getEventHandlerOfChild = (originalHandler, data, index2) => (e3) => {
+  originalHandler(data, index2, e3);
   return null;
 };
-var adaptEventsOfChild = (props, data, index) => {
+var adaptEventsOfChild = (props, data, index2) => {
   if (props === null || typeof props !== "object" && typeof props !== "function") {
     return null;
   }
@@ -11312,7 +14780,7 @@ var adaptEventsOfChild = (props, data, index) => {
     var item = props[key];
     if (isEventKey(key) && typeof item === "function") {
       if (!out) out = {};
-      out[key] = getEventHandlerOfChild(item, data, index);
+      out[key] = getEventHandlerOfChild(item, data, index2);
     }
   });
   return out;
@@ -12518,8 +15986,8 @@ var createStructuredSelector = Object.assign(
     const structuredSelector = selectorCreator(
       dependencies,
       (...inputSelectorResults) => {
-        return inputSelectorResults.reduce((composition, value, index) => {
-          composition[inputSelectorKeys[index]] = value;
+        return inputSelectorResults.reduce((composition, value, index2) => {
+          composition[inputSelectorKeys[index2]] = value;
           return composition;
         }, {});
       }
@@ -12695,12 +16163,12 @@ var isIterateeCall = {};
   const isArrayLike$1 = isArrayLike;
   const isObject$1 = isObject;
   const eq$1 = eq;
-  function isIterateeCall2(value, index, object2) {
+  function isIterateeCall2(value, index2, object2) {
     if (!isObject$1.isObject(object2)) {
       return false;
     }
-    if (typeof index === "number" && isArrayLike$1.isArrayLike(object2) && isIndex$1.isIndex(index) && index < object2.length || typeof index === "string" && index in object2) {
-      return eq$1.eq(object2[index], value);
+    if (typeof index2 === "number" && isArrayLike$1.isArrayLike(object2) && isIndex$1.isIndex(index2) && index2 < object2.length || typeof index2 === "string" && index2 in object2) {
+      return eq$1.eq(object2[index2], value);
     }
     return false;
   }
@@ -13059,7 +16527,7 @@ function each(obj, iter, strict = true) {
       iter(key, obj[key], obj);
     });
   } else {
-    obj.forEach((entry, index) => iter(index, entry, obj));
+    obj.forEach((entry, index2) => iter(index2, entry, obj));
   }
 }
 function getArchtype(thing) {
@@ -13994,9 +17462,9 @@ function createReducer(initialState2, mapOrBuilderCallback) {
   return reducer;
 }
 var urlAlphabet = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW";
-var nanoid = (size = 21) => {
+var nanoid = (size2 = 21) => {
   let id2 = "";
-  let i = size;
+  let i = size2;
   while (i--) {
     id2 += urlAlphabet[Math.random() * 64 | 0];
   }
@@ -14254,13 +17722,13 @@ function handleThunkCaseReducerDefinition({
     context.addMatcher(thunk2.settled, settled);
   }
   context.exposeCaseReducer(reducerName, {
-    fulfilled: fulfilled || noop,
-    pending: pending || noop,
-    rejected: rejected || noop,
-    settled: settled || noop
+    fulfilled: fulfilled || noop2,
+    pending: pending || noop2,
+    rejected: rejected || noop2,
+    settled: settled || noop2
   });
 }
-function noop() {
+function noop2() {
 }
 var task = "task";
 var listener = "listener";
@@ -14283,9 +17751,9 @@ var assertFunction = (func, expected) => {
     throw new TypeError(formatProdErrorMessage(32));
   }
 };
-var noop2 = () => {
+var noop22 = () => {
 };
-var catchRejection = (promise, onError = noop2) => {
+var catchRejection = (promise, onError = noop22) => {
   promise.catch(onError);
   return promise;
 };
@@ -14319,7 +17787,7 @@ var validateActive = (signal) => {
   }
 };
 function raceWithSignal(signal, promise) {
-  let cleanup = noop2;
+  let cleanup = noop22;
   return new Promise((resolve, reject) => {
     const notifyRejection = () => reject(new TaskAbortError(signal.reason));
     if (signal.aborted) {
@@ -14329,7 +17797,7 @@ function raceWithSignal(signal, promise) {
     cleanup = addAbortSignalListener(signal, notifyRejection);
     promise.finally(() => cleanup()).then(resolve, reject);
   }).finally(() => {
-    cleanup = noop2;
+    cleanup = noop22;
   });
 }
 var runTask = async (task2, cleanUp) => {
@@ -14386,7 +17854,7 @@ var createFork = (parentAbortSignal, parentBlockingPromises) => {
       return result2;
     }, () => abortControllerWithReason(childAbortController, taskCompleted));
     if (opts?.autoJoin) {
-      parentBlockingPromises.push(result.catch(noop2));
+      parentBlockingPromises.push(result.catch(noop22));
     }
     return {
       result: createPause(parentAbortSignal)(result),
@@ -14521,15 +17989,15 @@ var createListenerMiddleware = (middlewareOptions = {}) => {
   const listenerMap = /* @__PURE__ */ new Map();
   const executingListeners = /* @__PURE__ */ new Map();
   const trackExecutingListener = (entry) => {
-    const count = executingListeners.get(entry) ?? 0;
-    executingListeners.set(entry, count + 1);
+    const count2 = executingListeners.get(entry) ?? 0;
+    executingListeners.set(entry, count2 + 1);
   };
   const untrackExecutingListener = (entry) => {
-    const count = executingListeners.get(entry) ?? 1;
-    if (count === 1) {
+    const count2 = executingListeners.get(entry) ?? 1;
+    if (count2 === 1) {
       executingListeners.delete(entry);
     } else {
-      executingListeners.set(entry, count - 1);
+      executingListeners.set(entry, count2 - 1);
     }
   };
   const {
@@ -14780,7 +18248,7 @@ function getValueByDataKey(obj, dataKey, defaultValue) {
   }
   return defaultValue;
 }
-var appendOffsetOfLegend = (offset, legendSettings, legendSize) => {
+var appendOffsetOfLegend = (offset2, legendSettings, legendSize) => {
   if (legendSettings && legendSize) {
     var {
       width: boxWidth,
@@ -14791,18 +18259,18 @@ var appendOffsetOfLegend = (offset, legendSettings, legendSize) => {
       verticalAlign,
       layout
     } = legendSettings;
-    if ((layout === "vertical" || layout === "horizontal" && verticalAlign === "middle") && align !== "center" && isNumber(offset[align])) {
-      return _objectSpread$B(_objectSpread$B({}, offset), {}, {
-        [align]: offset[align] + (boxWidth || 0)
+    if ((layout === "vertical" || layout === "horizontal" && verticalAlign === "middle") && align !== "center" && isNumber(offset2[align])) {
+      return _objectSpread$B(_objectSpread$B({}, offset2), {}, {
+        [align]: offset2[align] + (boxWidth || 0)
       });
     }
-    if ((layout === "horizontal" || layout === "vertical" && align === "center") && verticalAlign !== "middle" && isNumber(offset[verticalAlign])) {
-      return _objectSpread$B(_objectSpread$B({}, offset), {}, {
-        [verticalAlign]: offset[verticalAlign] + (boxHeight || 0)
+    if ((layout === "horizontal" || layout === "vertical" && align === "center") && verticalAlign !== "middle" && isNumber(offset2[verticalAlign])) {
+      return _objectSpread$B(_objectSpread$B({}, offset2), {}, {
+        [verticalAlign]: offset2[verticalAlign] + (boxHeight || 0)
       });
     }
   }
-  return offset;
+  return offset2;
 };
 var isCategoricalAxis = (layout, axisType) => layout === "horizontal" && axisType === "xAxis" || layout === "vertical" && axisType === "yAxis" || layout === "centric" && axisType === "angleAxis" || layout === "radial" && axisType === "radiusAxis";
 var getCoordinatesOfGrid = (ticks2, minValue, maxValue, syncWithTicks) => {
@@ -14848,43 +18316,43 @@ var getTicksOfAxis = (axis, isGrid, isAll) => {
     return null;
   }
   var offsetForBand = realScaleType === "scaleBand" && scale.bandwidth ? scale.bandwidth() / 2 : 2;
-  var offset = type === "category" && scale.bandwidth ? scale.bandwidth() / offsetForBand : 0;
-  offset = axisType === "angleAxis" && range2 && range2.length >= 2 ? mathSign(range2[0] - range2[1]) * 2 * offset : offset;
+  var offset2 = type === "category" && scale.bandwidth ? scale.bandwidth() / offsetForBand : 0;
+  offset2 = axisType === "angleAxis" && range2 && range2.length >= 2 ? mathSign(range2[0] - range2[1]) * 2 * offset2 : offset2;
   if (ticks2 || niceTicks) {
-    var result = (ticks2 || niceTicks || []).map((entry, index) => {
+    var result = (ticks2 || niceTicks || []).map((entry, index2) => {
       var scaleContent = duplicateDomain ? duplicateDomain.indexOf(entry) : entry;
       return {
         // If the scaleContent is not a number, the coordinate will be NaN.
         // That could be the case for example with a PointScale and a string as domain.
-        coordinate: scale(scaleContent) + offset,
+        coordinate: scale(scaleContent) + offset2,
         value: entry,
-        offset,
-        index
+        offset: offset2,
+        index: index2
       };
     });
     return result.filter((row) => !isNan(row.coordinate));
   }
   if (isCategorical && categoricalDomain) {
-    return categoricalDomain.map((entry, index) => ({
-      coordinate: scale(entry) + offset,
+    return categoricalDomain.map((entry, index2) => ({
+      coordinate: scale(entry) + offset2,
       value: entry,
-      index,
-      offset
+      index: index2,
+      offset: offset2
     }));
   }
   if (scale.ticks && true && tickCount != null) {
-    return scale.ticks(tickCount).map((entry, index) => ({
-      coordinate: scale(entry) + offset,
+    return scale.ticks(tickCount).map((entry, index2) => ({
+      coordinate: scale(entry) + offset2,
       value: entry,
-      offset,
-      index
+      offset: offset2,
+      index: index2
     }));
   }
-  return scale.domain().map((entry, index) => ({
-    coordinate: scale(entry) + offset,
+  return scale.domain().map((entry, index2) => ({
+    coordinate: scale(entry) + offset2,
     value: duplicateDomain ? duplicateDomain[entry] : entry,
-    index,
-    offset
+    index: index2,
+    offset: offset2
   }));
 };
 var EPS = 1e-4;
@@ -14992,7 +18460,7 @@ function getCateCoordinateOfLine(_ref2) {
     ticks: ticks2,
     bandSize,
     entry,
-    index,
+    index: index2,
     dataKey
   } = _ref2;
   if (axis.type === "category") {
@@ -15002,7 +18470,7 @@ function getCateCoordinateOfLine(_ref2) {
         return matchedTick.coordinate + bandSize / 2;
       }
     }
-    return ticks2[index] ? ticks2[index].coordinate + bandSize / 2 : null;
+    return ticks2[index2] ? ticks2[index2].coordinate + bandSize / 2 : null;
   }
   var value = getValueByDataKey(entry, !isNullish(dataKey) ? dataKey : axis.dataKey);
   return !isNullish(value) ? axis.scale(value) : null;
@@ -15011,16 +18479,16 @@ var getCateCoordinateOfBar = (_ref2) => {
   var {
     axis,
     ticks: ticks2,
-    offset,
+    offset: offset2,
     bandSize,
     entry,
-    index
+    index: index2
   } = _ref2;
   if (axis.type === "category") {
-    return ticks2[index] ? ticks2[index].coordinate + offset : null;
+    return ticks2[index2] ? ticks2[index2].coordinate + offset2 : null;
   }
-  var value = getValueByDataKey(entry, axis.dataKey, axis.scale.domain()[index]);
-  return !isNullish(value) ? axis.scale(value) - bandSize / 2 + offset : null;
+  var value = getValueByDataKey(entry, axis.dataKey, axis.scale.domain()[index2]);
+  return !isNullish(value) ? axis.scale(value) - bandSize / 2 + offset2 : null;
 };
 var getBaseValueOfBar = (_ref3) => {
   var {
@@ -15223,25 +18691,25 @@ var selectChartOffsetInternal = createSelector([selectChartWidth, selectChartHei
     top: (margin.top || 0) + topAxesOffset,
     bottom: (margin.bottom || 0) + bottomAxesOffset
   };
-  var offset = _objectSpread$A(_objectSpread$A({}, offsetV), offsetH);
-  var brushBottom = offset.bottom;
-  offset.bottom += brushHeight;
-  offset = appendOffsetOfLegend(offset, legendSettings, legendSize);
-  var offsetWidth = chartWidth - offset.left - offset.right;
-  var offsetHeight = chartHeight - offset.top - offset.bottom;
+  var offset2 = _objectSpread$A(_objectSpread$A({}, offsetV), offsetH);
+  var brushBottom = offset2.bottom;
+  offset2.bottom += brushHeight;
+  offset2 = appendOffsetOfLegend(offset2, legendSettings, legendSize);
+  var offsetWidth = chartWidth - offset2.left - offset2.right;
+  var offsetHeight = chartHeight - offset2.top - offset2.bottom;
   return _objectSpread$A(_objectSpread$A({
     brushBottom
-  }, offset), {}, {
+  }, offset2), {}, {
     // never return negative values for height and width
     width: Math.max(offsetWidth, 0),
     height: Math.max(offsetHeight, 0)
   });
 });
-var selectChartViewBox = createSelector(selectChartOffsetInternal, (offset) => ({
-  x: offset.left,
-  y: offset.top,
-  width: offset.width,
-  height: offset.height
+var selectChartViewBox = createSelector(selectChartOffsetInternal, (offset2) => ({
+  x: offset2.left,
+  y: offset2.top,
+  width: offset2.width,
+  height: offset2.height
 }));
 var selectAxisViewBox = createSelector(selectChartWidth, selectChartHeight, (width, height) => ({
   x: 0,
@@ -15252,11 +18720,11 @@ var selectAxisViewBox = createSelector(selectChartWidth, selectChartHeight, (wid
 var PanoramaContext = /* @__PURE__ */ reactExports.createContext(null);
 var useIsPanorama = () => reactExports.useContext(PanoramaContext) != null;
 var selectBrushSettings = (state) => state.brush;
-var selectBrushDimensions = createSelector([selectBrushSettings, selectChartOffsetInternal, selectMargin], (brushSettings, offset, margin) => ({
+var selectBrushDimensions = createSelector([selectBrushSettings, selectChartOffsetInternal, selectMargin], (brushSettings, offset2, margin) => ({
   height: brushSettings.height,
-  x: isNumber(brushSettings.x) ? brushSettings.x : offset.left,
-  y: isNumber(brushSettings.y) ? brushSettings.y : offset.top + offset.height + offset.brushBottom - ((margin === null || margin === void 0 ? void 0 : margin.bottom) || 0),
-  width: isNumber(brushSettings.width) ? brushSettings.width : offset.width
+  x: isNumber(brushSettings.x) ? brushSettings.x : offset2.left,
+  y: isNumber(brushSettings.y) ? brushSettings.y : offset2.top + offset2.height + offset2.brushBottom - ((margin === null || margin === void 0 ? void 0 : margin.bottom) || 0),
+  width: isNumber(brushSettings.width) ? brushSettings.width : offset2.width
 }));
 var throttle$2 = {};
 var debounce$1 = {};
@@ -15539,8 +19007,8 @@ var ResponsiveContainerContext = /* @__PURE__ */ reactExports.createContext({
   width: -1,
   height: -1
 });
-function isAcceptableSize(size) {
-  return isPositiveNumber(size.width) && isPositiveNumber(size.height);
+function isAcceptableSize(size2) {
+  return isPositiveNumber(size2.width) && isPositiveNumber(size2.height);
 }
 function ResponsiveContainerContextProvider(_ref2) {
   var {
@@ -15548,15 +19016,15 @@ function ResponsiveContainerContextProvider(_ref2) {
     width,
     height
   } = _ref2;
-  var size = reactExports.useMemo(() => ({
+  var size2 = reactExports.useMemo(() => ({
     width,
     height
   }), [width, height]);
-  if (!isAcceptableSize(size)) {
+  if (!isAcceptableSize(size2)) {
     return null;
   }
   return /* @__PURE__ */ reactExports.createElement(ResponsiveContainerContext.Provider, {
-    value: size
+    value: size2
   }, children);
 }
 var useResponsiveContainerContext = () => reactExports.useContext(ResponsiveContainerContext);
@@ -15824,18 +19292,18 @@ var legendSlice = createSlice({
           prev,
           next
         } = action.payload;
-        var index = current(state).payload.indexOf(castDraft(prev));
-        if (index > -1) {
-          state.payload[index] = castDraft(next);
+        var index2 = current(state).payload.indexOf(castDraft(prev));
+        if (index2 > -1) {
+          state.payload[index2] = castDraft(next);
         }
       },
       prepare: prepareAutoBatched()
     },
     removeLegendPayload: {
       reducer(state, action) {
-        var index = current(state).payload.indexOf(castDraft(action.payload));
-        if (index > -1) {
-          state.payload.splice(index, 1);
+        var index2 = current(state).payload.indexOf(castDraft(action.payload));
+        if (index2 > -1) {
+          state.payload.splice(index2, 1);
         }
       },
       prepare: prepareAutoBatched()
@@ -16414,7 +19882,7 @@ class TooltipBoundingBox extends reactExports.PureComponent {
       coordinate,
       hasPayload,
       isAnimationActive,
-      offset,
+      offset: offset2,
       position,
       reverseDirection,
       useTranslate3d,
@@ -16430,7 +19898,7 @@ class TooltipBoundingBox extends reactExports.PureComponent {
     } = getTooltipTranslate({
       allowEscapeViewBox,
       coordinate,
-      offsetTopLeft: offset,
+      offsetTopLeft: offset2,
       position,
       reverseDirection,
       tooltipBox: {
@@ -16562,8 +20030,8 @@ var getPath$1 = (_ref2) => {
   var formatPoints = connectNulls ? points.filter(defined) : points;
   var lineFunction;
   if (Array.isArray(baseLine)) {
-    var areaPoints = points.map((entry, index) => _objectSpread$v(_objectSpread$v({}, entry), {}, {
-      base: baseLine[index]
+    var areaPoints = points.map((entry, index2) => _objectSpread$v(_objectSpread$v({}, entry), {}, {
+      base: baseLine[index2]
     }));
     if (layout === "vertical") {
       lineFunction = shapeArea().y(getY).x1(getX).x0((d2) => d2.base.x);
@@ -16696,15 +20164,15 @@ var Cross = (_ref2) => {
     d: getPath(x2, y2, width, height, top, left)
   }));
 };
-function getCursorRectangle(layout, activeCoordinate, offset, tooltipAxisBandSize) {
+function getCursorRectangle(layout, activeCoordinate, offset2, tooltipAxisBandSize) {
   var halfSize = tooltipAxisBandSize / 2;
   return {
     stroke: "none",
     fill: "#ccc",
-    x: layout === "horizontal" ? activeCoordinate.x - halfSize : offset.left + 0.5,
-    y: layout === "horizontal" ? offset.top + 0.5 : activeCoordinate.y - halfSize,
-    width: layout === "horizontal" ? tooltipAxisBandSize : offset.width - 1,
-    height: layout === "horizontal" ? offset.height - 1 : tooltipAxisBandSize
+    x: layout === "horizontal" ? activeCoordinate.x - halfSize : offset2.left + 0.5,
+    y: layout === "horizontal" ? offset2.top + 0.5 : activeCoordinate.y - halfSize,
+    width: layout === "horizontal" ? tooltipAxisBandSize : offset2.width - 1,
+    height: layout === "horizontal" ? offset2.height - 1 : tooltipAxisBandSize
   };
 }
 function ownKeys$t(e3, r2) {
@@ -17433,13 +20901,13 @@ var polarToCartesian = (cx, cy, radius, angle) => ({
   y: cy + Math.sin(-RADIAN * angle) * radius
 });
 var getMaxRadius = function getMaxRadius2(width, height) {
-  var offset = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {
+  var offset2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {
     top: 0,
     right: 0,
     bottom: 0,
     left: 0
   };
-  return Math.min(Math.abs(width - (offset.left || 0) - (offset.right || 0)), Math.abs(height - (offset.top || 0) - (offset.bottom || 0))) / 2;
+  return Math.min(Math.abs(width - (offset2.left || 0) - (offset2.right || 0)), Math.abs(height - (offset2.top || 0) - (offset2.bottom || 0))) / 2;
 };
 var distanceBetweenPoints = (point2, anotherPoint) => {
   var {
@@ -17794,22 +21262,22 @@ var Sector = (sectorProps) => {
     d: path
   }));
 };
-function getCursorPoints(layout, activeCoordinate, offset) {
+function getCursorPoints(layout, activeCoordinate, offset2) {
   if (layout === "horizontal") {
     return [{
       x: activeCoordinate.x,
-      y: offset.top
+      y: offset2.top
     }, {
       x: activeCoordinate.x,
-      y: offset.top + offset.height
+      y: offset2.top + offset2.height
     }];
   }
   if (layout === "vertical") {
     return [{
-      x: offset.left,
+      x: offset2.left,
       y: activeCoordinate.y
     }, {
-      x: offset.left + offset.width,
+      x: offset2.left + offset2.width,
       y: activeCoordinate.y
     }];
   }
@@ -17884,8 +21352,8 @@ var toNumber = {};
     step = step === void 0 ? start < end ? 1 : -1 : toFinite$1.toFinite(step);
     const length = Math.max(Math.ceil((end - start) / (step || 1)), 0);
     const result = new Array(length);
-    for (let index = 0; index < length; index++) {
-      result[index] = start;
+    for (let index2 = 0; index2 < length; index2++) {
+      result[index2] = start;
       start += step;
     }
     return result;
@@ -18010,8 +21478,8 @@ function ascendingDefined(a2, b2) {
   return (a2 == null || !(a2 >= a2)) - (b2 == null || !(b2 >= b2)) || (a2 < b2 ? -1 : a2 > b2 ? 1 : 0);
 }
 const e10 = Math.sqrt(50), e5 = Math.sqrt(10), e2 = Math.sqrt(2);
-function tickSpec(start, stop, count) {
-  const step = (stop - start) / Math.max(0, count), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power), factor = error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1;
+function tickSpec(start, stop, count2) {
+  const step = (stop - start) / Math.max(0, count2), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power), factor = error >= e10 ? 10 : error >= e5 ? 5 : error >= e2 ? 2 : 1;
   let i1, i2, inc;
   if (power < 0) {
     inc = Math.pow(10, -power) / factor;
@@ -18027,14 +21495,14 @@ function tickSpec(start, stop, count) {
     if (i1 * inc < start) ++i1;
     if (i2 * inc > stop) --i2;
   }
-  if (i2 < i1 && 0.5 <= count && count < 2) return tickSpec(start, stop, count * 2);
+  if (i2 < i1 && 0.5 <= count2 && count2 < 2) return tickSpec(start, stop, count2 * 2);
   return [i1, i2, inc];
 }
-function ticks(start, stop, count) {
-  stop = +stop, start = +start, count = +count;
-  if (!(count > 0)) return [];
+function ticks(start, stop, count2) {
+  stop = +stop, start = +start, count2 = +count2;
+  if (!(count2 > 0)) return [];
   if (start === stop) return [start];
-  const reverse2 = stop < start, [i1, i2, inc] = reverse2 ? tickSpec(stop, start, count) : tickSpec(start, stop, count);
+  const reverse2 = stop < start, [i1, i2, inc] = reverse2 ? tickSpec(stop, start, count2) : tickSpec(start, stop, count2);
   if (!(i2 >= i1)) return [];
   const n2 = i2 - i1 + 1, ticks2 = new Array(n2);
   if (reverse2) {
@@ -18046,13 +21514,13 @@ function ticks(start, stop, count) {
   }
   return ticks2;
 }
-function tickIncrement(start, stop, count) {
-  stop = +stop, start = +start, count = +count;
-  return tickSpec(start, stop, count)[2];
+function tickIncrement(start, stop, count2) {
+  stop = +stop, start = +start, count2 = +count2;
+  return tickSpec(start, stop, count2)[2];
 }
-function tickStep(start, stop, count) {
-  stop = +stop, start = +start, count = +count;
-  const reverse2 = stop < start, inc = reverse2 ? tickIncrement(stop, start, count) : tickIncrement(start, stop, count);
+function tickStep(start, stop, count2) {
+  stop = +stop, start = +start, count2 = +count2;
+  const reverse2 = stop < start, inc = reverse2 ? tickIncrement(stop, start, count2) : tickIncrement(start, stop, count2);
   return (reverse2 ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
 }
 function max(values, valueof) {
@@ -18172,21 +21640,21 @@ function initInterpolator(domain, interpolator) {
 }
 const implicit = Symbol("implicit");
 function ordinal() {
-  var index = new InternMap(), domain = [], range2 = [], unknown = implicit;
+  var index2 = new InternMap(), domain = [], range2 = [], unknown = implicit;
   function scale(d2) {
-    let i = index.get(d2);
+    let i = index2.get(d2);
     if (i === void 0) {
       if (unknown !== implicit) return unknown;
-      index.set(d2, i = domain.push(d2) - 1);
+      index2.set(d2, i = domain.push(d2) - 1);
     }
     return range2[i % range2.length];
   }
   scale.domain = function(_) {
     if (!arguments.length) return domain.slice();
-    domain = [], index = new InternMap();
+    domain = [], index2 = new InternMap();
     for (const value of _) {
-      if (index.has(value)) continue;
-      index.set(value, domain.push(value) - 1);
+      if (index2.has(value)) continue;
+      index2.set(value, domain.push(value) - 1);
     }
     return scale;
   };
@@ -18790,19 +22258,19 @@ function copy$1(source, target) {
   return target.domain(source.domain()).range(source.range()).interpolate(source.interpolate()).clamp(source.clamp()).unknown(source.unknown());
 }
 function transformer$2() {
-  var domain = unit, range2 = unit, interpolate$12 = interpolate, transform, untransform, unknown, clamp = identity$3, piecewise2, output, input;
+  var domain = unit, range2 = unit, interpolate$12 = interpolate, transform, untransform, unknown, clamp2 = identity$3, piecewise2, output, input;
   function rescale() {
     var n2 = Math.min(domain.length, range2.length);
-    if (clamp !== identity$3) clamp = clamper(domain[0], domain[n2 - 1]);
+    if (clamp2 !== identity$3) clamp2 = clamper(domain[0], domain[n2 - 1]);
     piecewise2 = n2 > 2 ? polymap : bimap;
     output = input = null;
     return scale;
   }
   function scale(x2) {
-    return x2 == null || isNaN(x2 = +x2) ? unknown : (output || (output = piecewise2(domain.map(transform), range2, interpolate$12)))(transform(clamp(x2)));
+    return x2 == null || isNaN(x2 = +x2) ? unknown : (output || (output = piecewise2(domain.map(transform), range2, interpolate$12)))(transform(clamp2(x2)));
   }
   scale.invert = function(y2) {
-    return clamp(untransform((input || (input = piecewise2(range2, domain.map(transform), interpolateNumber)))(y2)));
+    return clamp2(untransform((input || (input = piecewise2(range2, domain.map(transform), interpolateNumber)))(y2)));
   };
   scale.domain = function(_) {
     return arguments.length ? (domain = Array.from(_, number$1), rescale()) : domain.slice();
@@ -18814,7 +22282,7 @@ function transformer$2() {
     return range2 = Array.from(_), interpolate$12 = interpolateRound, rescale();
   };
   scale.clamp = function(_) {
-    return arguments.length ? (clamp = _ ? true : identity$3, rescale()) : clamp !== identity$3;
+    return arguments.length ? (clamp2 = _ ? true : identity$3, rescale()) : clamp2 !== identity$3;
   };
   scale.interpolate = function(_) {
     return arguments.length ? (interpolate$12 = _, rescale()) : interpolate$12;
@@ -19040,8 +22508,8 @@ function precisionRound(step, max2) {
   step = Math.abs(step), max2 = Math.abs(max2) - step;
   return Math.max(0, exponent(max2) - exponent(step)) + 1;
 }
-function tickFormat(start, stop, count, specifier) {
-  var step = tickStep(start, stop, count), precision;
+function tickFormat(start, stop, count2, specifier) {
+  var step = tickStep(start, stop, count2), precision;
   specifier = formatSpecifier(specifier == null ? ",f" : specifier);
   switch (specifier.type) {
     case "s": {
@@ -19067,16 +22535,16 @@ function tickFormat(start, stop, count, specifier) {
 }
 function linearish(scale) {
   var domain = scale.domain;
-  scale.ticks = function(count) {
+  scale.ticks = function(count2) {
     var d2 = domain();
-    return ticks(d2[0], d2[d2.length - 1], count == null ? 10 : count);
+    return ticks(d2[0], d2[d2.length - 1], count2 == null ? 10 : count2);
   };
-  scale.tickFormat = function(count, specifier) {
+  scale.tickFormat = function(count2, specifier) {
     var d2 = domain();
-    return tickFormat(d2[0], d2[d2.length - 1], count == null ? 10 : count, specifier);
+    return tickFormat(d2[0], d2[d2.length - 1], count2 == null ? 10 : count2, specifier);
   };
-  scale.nice = function(count) {
-    if (count == null) count = 10;
+  scale.nice = function(count2) {
+    if (count2 == null) count2 = 10;
     var d2 = domain();
     var i0 = 0;
     var i1 = d2.length - 1;
@@ -19090,7 +22558,7 @@ function linearish(scale) {
       step = i0, i0 = i1, i1 = step;
     }
     while (maxIter-- > 0) {
-      step = tickIncrement(start, stop, count);
+      step = tickIncrement(start, stop, count2);
       if (step === prestep) {
         d2[i0] = start;
         d2[i1] = stop;
@@ -19193,7 +22661,7 @@ function loggish(transform) {
   scale.domain = function(_) {
     return arguments.length ? (domain(_), rescale()) : domain();
   };
-  scale.ticks = (count) => {
+  scale.ticks = (count2) => {
     const d2 = domain();
     let u2 = d2[0];
     let v2 = d2[d2.length - 1];
@@ -19203,7 +22671,7 @@ function loggish(transform) {
     let j = logs(v2);
     let k2;
     let t2;
-    const n2 = count == null ? 10 : +count;
+    const n2 = count2 == null ? 10 : +count2;
     let z2 = [];
     if (!(base % 1) && j - i < n2) {
       i = Math.floor(i), j = Math.ceil(j);
@@ -19229,15 +22697,15 @@ function loggish(transform) {
     }
     return r2 ? z2.reverse() : z2;
   };
-  scale.tickFormat = (count, specifier) => {
-    if (count == null) count = 10;
+  scale.tickFormat = (count2, specifier) => {
+    if (count2 == null) count2 = 10;
     if (specifier == null) specifier = base === 10 ? "s" : ",";
     if (typeof specifier !== "function") {
       if (!(base % 1) && (specifier = formatSpecifier(specifier)).precision == null) specifier.trim = true;
       specifier = format(specifier);
     }
-    if (count === Infinity) return specifier;
-    const k2 = Math.max(1, base * count / scale.ticks().length);
+    if (count2 === Infinity) return specifier;
+    const k2 = Math.max(1, base * count2 / scale.ticks().length);
     return (d2) => {
       let i = d2 / pows(Math.round(logs(d2)));
       if (i * base < base - 0.5) i *= base;
@@ -19448,7 +22916,7 @@ function threshold() {
   return initRange.apply(scale, arguments);
 }
 const t0 = /* @__PURE__ */ new Date(), t1 = /* @__PURE__ */ new Date();
-function timeInterval(floori, offseti, count, field) {
+function timeInterval(floori, offseti, count2, field) {
   function interval(date2) {
     return floori(date2 = arguments.length === 0 ? /* @__PURE__ */ new Date() : /* @__PURE__ */ new Date(+date2)), date2;
   }
@@ -19492,11 +22960,11 @@ function timeInterval(floori, offseti, count, field) {
       }
     });
   };
-  if (count) {
+  if (count2) {
     interval.count = (start, end) => {
       t0.setTime(+start), t1.setTime(+end);
       floori(t0), floori(t1);
-      return Math.floor(count(t0, t1));
+      return Math.floor(count2(t0, t1));
     };
     interval.every = (step) => {
       step = Math.floor(step);
@@ -19739,18 +23207,18 @@ function ticker(year, month, week, day, hour, minute) {
     [month, 3, 3 * durationMonth],
     [year, 1, durationYear]
   ];
-  function ticks2(start, stop, count) {
+  function ticks2(start, stop, count2) {
     const reverse2 = stop < start;
     if (reverse2) [start, stop] = [stop, start];
-    const interval = count && typeof count.range === "function" ? count : tickInterval(start, stop, count);
+    const interval = count2 && typeof count2.range === "function" ? count2 : tickInterval(start, stop, count2);
     const ticks3 = interval ? interval.range(start, +stop + 1) : [];
     return reverse2 ? ticks3.reverse() : ticks3;
   }
-  function tickInterval(start, stop, count) {
-    const target = Math.abs(stop - start) / count;
+  function tickInterval(start, stop, count2) {
+    const target = Math.abs(stop - start) / count2;
     const i = bisector(([, , step2]) => step2).right(tickIntervals, target);
-    if (i === tickIntervals.length) return year.every(tickStep(start / durationYear, stop / durationYear, count));
-    if (i === 0) return millisecond.every(Math.max(tickStep(start, stop, count), 1));
+    if (i === tickIntervals.length) return year.every(tickStep(start / durationYear, stop / durationYear, count2));
+    if (i === 0) return millisecond.every(Math.max(tickStep(start, stop, count2), 1));
     const [t2, step] = tickIntervals[target / tickIntervals[i - 1][2] < tickIntervals[i][2] / target ? i - 1 : i];
     return t2.every(step);
   }
@@ -20337,7 +23805,7 @@ function calendar(ticks2, tickInterval, year, month, week, day, hour, minute, se
     var d2 = domain();
     return ticks2(d2[0], d2[d2.length - 1], interval == null ? 10 : interval);
   };
-  scale.tickFormat = function(count, specifier) {
+  scale.tickFormat = function(count2, specifier) {
     return specifier == null ? tickFormat2 : format2(specifier);
   };
   scale.nice = function(interval) {
@@ -20357,15 +23825,15 @@ function utcTime() {
   return initRange.apply(calendar(utcTicks, utcTickInterval, utcYear, utcMonth, utcSunday, utcDay, utcHour, utcMinute, second, utcFormat).domain([Date.UTC(2e3, 0, 1), Date.UTC(2e3, 0, 2)]), arguments);
 }
 function transformer$1() {
-  var x0 = 0, x1 = 1, t02, t12, k10, transform, interpolator = identity$3, clamp = false, unknown;
+  var x0 = 0, x1 = 1, t02, t12, k10, transform, interpolator = identity$3, clamp2 = false, unknown;
   function scale(x2) {
-    return x2 == null || isNaN(x2 = +x2) ? unknown : interpolator(k10 === 0 ? 0.5 : (x2 = (transform(x2) - t02) * k10, clamp ? Math.max(0, Math.min(1, x2)) : x2));
+    return x2 == null || isNaN(x2 = +x2) ? unknown : interpolator(k10 === 0 ? 0.5 : (x2 = (transform(x2) - t02) * k10, clamp2 ? Math.max(0, Math.min(1, x2)) : x2));
   }
   scale.domain = function(_) {
     return arguments.length ? ([x0, x1] = _, t02 = transform(x0 = +x0), t12 = transform(x1 = +x1), k10 = t02 === t12 ? 0 : 1 / (t12 - t02), scale) : [x0, x1];
   };
   scale.clamp = function(_) {
-    return arguments.length ? (clamp = !!_, scale) : clamp;
+    return arguments.length ? (clamp2 = !!_, scale) : clamp2;
   };
   scale.interpolator = function(_) {
     return arguments.length ? (interpolator = _, scale) : interpolator;
@@ -20447,15 +23915,15 @@ function sequentialQuantile() {
   return initInterpolator.apply(scale, arguments);
 }
 function transformer() {
-  var x0 = 0, x1 = 0.5, x2 = 1, s2 = 1, t02, t12, t2, k10, k21, interpolator = identity$3, transform, clamp = false, unknown;
+  var x0 = 0, x1 = 0.5, x2 = 1, s2 = 1, t02, t12, t2, k10, k21, interpolator = identity$3, transform, clamp2 = false, unknown;
   function scale(x3) {
-    return isNaN(x3 = +x3) ? unknown : (x3 = 0.5 + ((x3 = +transform(x3)) - t12) * (s2 * x3 < s2 * t12 ? k10 : k21), interpolator(clamp ? Math.max(0, Math.min(1, x3)) : x3));
+    return isNaN(x3 = +x3) ? unknown : (x3 = 0.5 + ((x3 = +transform(x3)) - t12) * (s2 * x3 < s2 * t12 ? k10 : k21), interpolator(clamp2 ? Math.max(0, Math.min(1, x3)) : x3));
   }
   scale.domain = function(_) {
     return arguments.length ? ([x0, x1, x2] = _, t02 = transform(x0 = +x0), t12 = transform(x1 = +x1), t2 = transform(x2 = +x2), k10 = t02 === t12 ? 0 : 0.5 / (t12 - t02), k21 = t12 === t2 ? 0 : 0.5 / (t2 - t12), s2 = t12 < t02 ? -1 : 1, scale) : [x0, x1, x2];
   };
   scale.clamp = function(_) {
-    return arguments.length ? (clamp = !!_, scale) : clamp;
+    return arguments.length ? (clamp2 = !!_, scale) : clamp2;
   };
   scale.interpolator = function(_) {
     return arguments.length ? (interpolator = _, scale) : interpolator;
@@ -21794,7 +25262,7 @@ var getNiceTickValues = function getNiceTickValues2(_ref2) {
   var [min2, max2] = _ref2;
   var tickCount = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 6;
   var allowDecimals = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
-  var count = Math.max(tickCount, 2);
+  var count2 = Math.max(tickCount, 2);
   var [cormin, cormax] = getValidInterval([min2, max2]);
   if (cormin === -Infinity || cormax === Infinity) {
     var _values = cormax === Infinity ? [cormin, ...range(0, tickCount - 1).map(() => Infinity)] : [...range(0, tickCount - 1).map(() => -Infinity), cormax];
@@ -21807,7 +25275,7 @@ var getNiceTickValues = function getNiceTickValues2(_ref2) {
     step,
     tickMin,
     tickMax
-  } = _calculateStep(cormin, cormax, count, allowDecimals, 0);
+  } = _calculateStep(cormin, cormax, count2, allowDecimals, 0);
   var values = rangeStep(tickMin, tickMax.add(new Decimal$1(0.1).mul(step)), step);
   return min2 > max2 ? reverse(values) : values;
 };
@@ -21821,8 +25289,8 @@ var getTickValuesFixedDomain = function getTickValuesFixedDomain2(_ref3, tickCou
   if (cormin === cormax) {
     return [cormin];
   }
-  var count = Math.max(tickCount, 2);
-  var step = getFormatStep(new Decimal$1(cormax).sub(cormin).div(count - 1), allowDecimals, 0);
+  var count2 = Math.max(tickCount, 2);
+  var step = getFormatStep(new Decimal$1(cormax).sub(cormin).div(count2 - 1), allowDecimals, 0);
   var values = [...rangeStep(new Decimal$1(cormin), new Decimal$1(cormax), step), cormax];
   if (allowDecimals === false) {
     values = values.map((value) => Math.round(value));
@@ -22095,8 +25563,8 @@ function combineDisplayedStackedData(stackedGraphicalItems, _ref2, tooltipAxisSe
       return;
     }
     var stackIdentifier = getStackSeriesIdentifier(item);
-    resolvedData.forEach((entry, index) => {
-      var tooltipValue = tooltipDataKey == null || allowDuplicatedCategory ? index : String(getValueByDataKey(entry, tooltipDataKey, null));
+    resolvedData.forEach((entry, index2) => {
+      var tooltipValue = tooltipDataKey == null || allowDuplicatedCategory ? index2 : String(getValueByDataKey(entry, tooltipDataKey, null));
       var numericValue = getValueByDataKey(entry, item.dataKey, 0);
       var curr;
       if (knownItemsByDataKey.has(tooltipValue)) {
@@ -22842,11 +26310,11 @@ var selectSmallestDistanceBetweenValues = createSelector(selectAllAppliedValues,
   }
   return smallestDistanceBetweenValues / diff;
 });
-var selectCalculatedPadding = createSelector(selectSmallestDistanceBetweenValues, selectChartLayout, selectBarCategoryGap, selectChartOffsetInternal, (_1, _2, _3, padding) => padding, (smallestDistanceInPercent, layout, barCategoryGap, offset, padding) => {
+var selectCalculatedPadding = createSelector(selectSmallestDistanceBetweenValues, selectChartLayout, selectBarCategoryGap, selectChartOffsetInternal, (_1, _2, _3, padding) => padding, (smallestDistanceInPercent, layout, barCategoryGap, offset2, padding) => {
   if (!isWellBehavedNumber(smallestDistanceInPercent)) {
     return 0;
   }
-  var rangeWidth = layout === "vertical" ? offset.height : offset.width;
+  var rangeWidth = layout === "vertical" ? offset2.height : offset2.width;
   if (padding === "gap") {
     return smallestDistanceInPercent * rangeWidth / 2;
   }
@@ -22915,16 +26383,16 @@ var selectYAxisPadding = createSelector(selectYAxisSettings, selectCalculatedYAx
     bottom: ((_padding$bottom = padding.bottom) !== null && _padding$bottom !== void 0 ? _padding$bottom : 0) + calculated
   };
 });
-var combineXAxisRange = createSelector([selectChartOffsetInternal, selectXAxisPadding, selectBrushDimensions, selectBrushSettings, (_state, _axisId, isPanorama) => isPanorama], (offset, padding, brushDimensions, _ref4, isPanorama) => {
+var combineXAxisRange = createSelector([selectChartOffsetInternal, selectXAxisPadding, selectBrushDimensions, selectBrushSettings, (_state, _axisId, isPanorama) => isPanorama], (offset2, padding, brushDimensions, _ref4, isPanorama) => {
   var {
     padding: brushPadding
   } = _ref4;
   if (isPanorama) {
     return [brushPadding.left, brushDimensions.width - brushPadding.right];
   }
-  return [offset.left + padding.left, offset.left + offset.width - padding.right];
+  return [offset2.left + padding.left, offset2.left + offset2.width - padding.right];
 });
-var combineYAxisRange = createSelector([selectChartOffsetInternal, selectChartLayout, selectYAxisPadding, selectBrushDimensions, selectBrushSettings, (_state, _axisId, isPanorama) => isPanorama], (offset, layout, padding, brushDimensions, _ref5, isPanorama) => {
+var combineYAxisRange = createSelector([selectChartOffsetInternal, selectChartLayout, selectYAxisPadding, selectBrushDimensions, selectBrushSettings, (_state, _axisId, isPanorama) => isPanorama], (offset2, layout, padding, brushDimensions, _ref5, isPanorama) => {
   var {
     padding: brushPadding
   } = _ref5;
@@ -22932,9 +26400,9 @@ var combineYAxisRange = createSelector([selectChartOffsetInternal, selectChartLa
     return [brushDimensions.height - brushPadding.bottom, brushPadding.top];
   }
   if (layout === "horizontal") {
-    return [offset.top + offset.height - padding.bottom, offset.top + padding.top];
+    return [offset2.top + offset2.height - padding.bottom, offset2.top + padding.top];
   }
-  return [offset.top + padding.top, offset.top + offset.height - padding.bottom];
+  return [offset2.top + padding.top, offset2.top + offset2.height - padding.bottom];
 });
 var selectAxisRange = (state, axisType, axisId, isPanorama) => {
   var _selectZAxisSettings;
@@ -22969,47 +26437,47 @@ var pickAxisOrientation = (_state, orientation) => orientation;
 var pickMirror = (_state, _orientation, mirror) => mirror;
 var selectAllXAxesWithOffsetType = createSelector(selectAllXAxes, pickAxisOrientation, pickMirror, (allAxes, orientation, mirror) => allAxes.filter((axis) => axis.orientation === orientation).filter((axis) => axis.mirror === mirror).sort(compareIds));
 var selectAllYAxesWithOffsetType = createSelector(selectAllYAxes, pickAxisOrientation, pickMirror, (allAxes, orientation, mirror) => allAxes.filter((axis) => axis.orientation === orientation).filter((axis) => axis.mirror === mirror).sort(compareIds));
-var getXAxisSize = (offset, axisSettings) => {
+var getXAxisSize = (offset2, axisSettings) => {
   return {
-    width: offset.width,
+    width: offset2.width,
     height: axisSettings.height
   };
 };
-var getYAxisSize = (offset, axisSettings) => {
+var getYAxisSize = (offset2, axisSettings) => {
   var width = typeof axisSettings.width === "number" ? axisSettings.width : DEFAULT_Y_AXIS_WIDTH;
   return {
     width,
-    height: offset.height
+    height: offset2.height
   };
 };
 var selectXAxisSize = createSelector(selectChartOffsetInternal, selectXAxisSettings, getXAxisSize);
-var combineXAxisPositionStartingPoint = (offset, orientation, chartHeight) => {
+var combineXAxisPositionStartingPoint = (offset2, orientation, chartHeight) => {
   switch (orientation) {
     case "top":
-      return offset.top;
+      return offset2.top;
     case "bottom":
-      return chartHeight - offset.bottom;
+      return chartHeight - offset2.bottom;
     default:
       return 0;
   }
 };
-var combineYAxisPositionStartingPoint = (offset, orientation, chartWidth) => {
+var combineYAxisPositionStartingPoint = (offset2, orientation, chartWidth) => {
   switch (orientation) {
     case "left":
-      return offset.left;
+      return offset2.left;
     case "right":
-      return chartWidth - offset.right;
+      return chartWidth - offset2.right;
     default:
       return 0;
   }
 };
-var selectAllXAxesOffsetSteps = createSelector(selectChartHeight, selectChartOffsetInternal, selectAllXAxesWithOffsetType, pickAxisOrientation, pickMirror, (chartHeight, offset, allAxesWithSameOffsetType, orientation, mirror) => {
+var selectAllXAxesOffsetSteps = createSelector(selectChartHeight, selectChartOffsetInternal, selectAllXAxesWithOffsetType, pickAxisOrientation, pickMirror, (chartHeight, offset2, allAxesWithSameOffsetType, orientation, mirror) => {
   var steps = {};
   var position;
   allAxesWithSameOffsetType.forEach((axis) => {
-    var axisSize = getXAxisSize(offset, axis);
+    var axisSize = getXAxisSize(offset2, axis);
     if (position == null) {
-      position = combineXAxisPositionStartingPoint(offset, orientation, chartHeight);
+      position = combineXAxisPositionStartingPoint(offset2, orientation, chartHeight);
     }
     var needSpace = orientation === "top" && !mirror || orientation === "bottom" && mirror;
     steps[axis.id] = position - Number(needSpace) * axisSize.height;
@@ -23017,13 +26485,13 @@ var selectAllXAxesOffsetSteps = createSelector(selectChartHeight, selectChartOff
   });
   return steps;
 });
-var selectAllYAxesOffsetSteps = createSelector(selectChartWidth, selectChartOffsetInternal, selectAllYAxesWithOffsetType, pickAxisOrientation, pickMirror, (chartWidth, offset, allAxesWithSameOffsetType, orientation, mirror) => {
+var selectAllYAxesOffsetSteps = createSelector(selectChartWidth, selectChartOffsetInternal, selectAllYAxesWithOffsetType, pickAxisOrientation, pickMirror, (chartWidth, offset2, allAxesWithSameOffsetType, orientation, mirror) => {
   var steps = {};
   var position;
   allAxesWithSameOffsetType.forEach((axis) => {
-    var axisSize = getYAxisSize(offset, axis);
+    var axisSize = getYAxisSize(offset2, axis);
     if (position == null) {
-      position = combineYAxisPositionStartingPoint(offset, orientation, chartWidth);
+      position = combineYAxisPositionStartingPoint(offset2, orientation, chartWidth);
     }
     var needSpace = orientation === "left" && !mirror || orientation === "right" && mirror;
     steps[axis.id] = position - Number(needSpace) * axisSize.width;
@@ -23038,19 +26506,19 @@ var selectXAxisOffsetSteps = (state, axisId) => {
   }
   return selectAllXAxesOffsetSteps(state, axisSettings.orientation, axisSettings.mirror);
 };
-var selectXAxisPosition = createSelector([selectChartOffsetInternal, selectXAxisSettings, selectXAxisOffsetSteps, (_, axisId) => axisId], (offset, axisSettings, allSteps, axisId) => {
+var selectXAxisPosition = createSelector([selectChartOffsetInternal, selectXAxisSettings, selectXAxisOffsetSteps, (_, axisId) => axisId], (offset2, axisSettings, allSteps, axisId) => {
   if (axisSettings == null) {
     return void 0;
   }
   var stepOfThisAxis = allSteps === null || allSteps === void 0 ? void 0 : allSteps[axisId];
   if (stepOfThisAxis == null) {
     return {
-      x: offset.left,
+      x: offset2.left,
       y: 0
     };
   }
   return {
-    x: offset.left,
+    x: offset2.left,
     y: stepOfThisAxis
   };
 });
@@ -23061,7 +26529,7 @@ var selectYAxisOffsetSteps = (state, axisId) => {
   }
   return selectAllYAxesOffsetSteps(state, axisSettings.orientation, axisSettings.mirror);
 };
-var selectYAxisPosition = createSelector([selectChartOffsetInternal, selectYAxisSettings, selectYAxisOffsetSteps, (_, axisId) => axisId], (offset, axisSettings, allSteps, axisId) => {
+var selectYAxisPosition = createSelector([selectChartOffsetInternal, selectYAxisSettings, selectYAxisOffsetSteps, (_, axisId) => axisId], (offset2, axisSettings, allSteps, axisId) => {
   if (axisSettings == null) {
     return void 0;
   }
@@ -23069,19 +26537,19 @@ var selectYAxisPosition = createSelector([selectChartOffsetInternal, selectYAxis
   if (stepOfThisAxis == null) {
     return {
       x: 0,
-      y: offset.top
+      y: offset2.top
     };
   }
   return {
     x: stepOfThisAxis,
-    y: offset.top
+    y: offset2.top
   };
 });
-var selectYAxisSize = createSelector(selectChartOffsetInternal, selectYAxisSettings, (offset, axisSettings) => {
+var selectYAxisSize = createSelector(selectChartOffsetInternal, selectYAxisSettings, (offset2, axisSettings) => {
   var width = typeof axisSettings.width === "number" ? axisSettings.width : DEFAULT_Y_AXIS_WIDTH;
   return {
     width,
-    height: offset.height
+    height: offset2.height
   };
 });
 var selectCartesianAxisSize = (state, axisType, axisId) => {
@@ -23166,43 +26634,43 @@ var combineAxisTicks = (layout, axis, realScaleType, scale, niceTicks, axisRange
     tickCount
   } = axis;
   var offsetForBand = realScaleType === "scaleBand" && typeof scale.bandwidth === "function" ? scale.bandwidth() / 2 : 2;
-  var offset = type === "category" && scale.bandwidth ? scale.bandwidth() / offsetForBand : 0;
-  offset = axisType === "angleAxis" && axisRange != null && axisRange.length >= 2 ? mathSign(axisRange[0] - axisRange[1]) * 2 * offset : offset;
+  var offset2 = type === "category" && scale.bandwidth ? scale.bandwidth() / offsetForBand : 0;
+  offset2 = axisType === "angleAxis" && axisRange != null && axisRange.length >= 2 ? mathSign(axisRange[0] - axisRange[1]) * 2 * offset2 : offset2;
   var ticksOrNiceTicks = ticks2 || niceTicks;
   if (ticksOrNiceTicks) {
-    var result = ticksOrNiceTicks.map((entry, index) => {
+    var result = ticksOrNiceTicks.map((entry, index2) => {
       var scaleContent = duplicateDomain ? duplicateDomain.indexOf(entry) : entry;
       return {
-        index,
+        index: index2,
         // If the scaleContent is not a number, the coordinate will be NaN.
         // That could be the case for example with a PointScale and a string as domain.
-        coordinate: scale(scaleContent) + offset,
+        coordinate: scale(scaleContent) + offset2,
         value: entry,
-        offset
+        offset: offset2
       };
     });
     return result.filter((row) => isWellBehavedNumber(row.coordinate));
   }
   if (isCategorical && categoricalDomain) {
-    return categoricalDomain.map((entry, index) => ({
-      coordinate: scale(entry) + offset,
+    return categoricalDomain.map((entry, index2) => ({
+      coordinate: scale(entry) + offset2,
       value: entry,
-      index,
-      offset
+      index: index2,
+      offset: offset2
     })).filter((row) => isWellBehavedNumber(row.coordinate));
   }
   if (scale.ticks) {
     return scale.ticks(tickCount).map((entry) => ({
-      coordinate: scale(entry) + offset,
+      coordinate: scale(entry) + offset2,
       value: entry,
-      offset
+      offset: offset2
     }));
   }
-  return scale.domain().map((entry, index) => ({
-    coordinate: scale(entry) + offset,
+  return scale.domain().map((entry, index2) => ({
+    coordinate: scale(entry) + offset2,
     value: duplicateDomain ? duplicateDomain[entry] : entry,
-    index,
-    offset
+    index: index2,
+    offset: offset2
   }));
 };
 var selectTicksOfAxis = createSelector([selectChartLayout, selectAxisSettings, selectRealScaleType, selectAxisScale, selectNiceTicks, selectAxisRange, selectDuplicateDomain, selectCategoricalDomain, pickAxisType], combineAxisTicks);
@@ -23214,28 +26682,28 @@ var combineGraphicalItemTicks = (layout, axis, scale, axisRange, duplicateDomain
   var {
     tickCount
   } = axis;
-  var offset = 0;
-  offset = axisType === "angleAxis" && (axisRange === null || axisRange === void 0 ? void 0 : axisRange.length) >= 2 ? mathSign(axisRange[0] - axisRange[1]) * 2 * offset : offset;
+  var offset2 = 0;
+  offset2 = axisType === "angleAxis" && (axisRange === null || axisRange === void 0 ? void 0 : axisRange.length) >= 2 ? mathSign(axisRange[0] - axisRange[1]) * 2 * offset2 : offset2;
   if (isCategorical && categoricalDomain) {
-    return categoricalDomain.map((entry, index) => ({
-      coordinate: scale(entry) + offset,
+    return categoricalDomain.map((entry, index2) => ({
+      coordinate: scale(entry) + offset2,
       value: entry,
-      index,
-      offset
+      index: index2,
+      offset: offset2
     }));
   }
   if (scale.ticks) {
     return scale.ticks(tickCount).map((entry) => ({
-      coordinate: scale(entry) + offset,
+      coordinate: scale(entry) + offset2,
       value: entry,
-      offset
+      offset: offset2
     }));
   }
-  return scale.domain().map((entry, index) => ({
-    coordinate: scale(entry) + offset,
+  return scale.domain().map((entry, index2) => ({
+    coordinate: scale(entry) + offset2,
     value: duplicateDomain ? duplicateDomain[entry] : entry,
-    index,
-    offset
+    index: index2,
+    offset: offset2
   }));
 };
 var selectTicksOfGraphicalItem = createSelector([selectChartLayout, selectAxisSettings, selectAxisScale, selectAxisRange, selectDuplicateDomain, selectCategoricalDomain, pickAxisType], combineGraphicalItemTicks);
@@ -23351,18 +26819,18 @@ var tooltipSlice = createSlice({
           prev,
           next
         } = action.payload;
-        var index = current(state).tooltipItemPayloads.indexOf(castDraft(prev));
-        if (index > -1) {
-          state.tooltipItemPayloads[index] = castDraft(next);
+        var index2 = current(state).tooltipItemPayloads.indexOf(castDraft(prev));
+        if (index2 > -1) {
+          state.tooltipItemPayloads[index2] = castDraft(next);
         }
       },
       prepare: prepareAutoBatched()
     },
     removeTooltipEntrySettings: {
       reducer(state, action) {
-        var index = current(state).tooltipItemPayloads.indexOf(castDraft(action.payload));
-        if (index > -1) {
-          state.tooltipItemPayloads.splice(index, 1);
+        var index2 = current(state).tooltipItemPayloads.indexOf(castDraft(action.payload));
+        if (index2 > -1) {
+          state.tooltipItemPayloads.splice(index2, 1);
         }
       },
       prepare: prepareAutoBatched()
@@ -23583,7 +27051,7 @@ var combineActiveTooltipIndex = (tooltipInteraction, chartData, axisDataKey, dom
   }
   return String(clampedIndex);
 };
-var combineCoordinateForDefaultIndex = (width, height, layout, offset, tooltipTicks, defaultIndex, tooltipConfigurations, tooltipPayloadSearcher) => {
+var combineCoordinateForDefaultIndex = (width, height, layout, offset2, tooltipTicks, defaultIndex, tooltipConfigurations, tooltipPayloadSearcher) => {
   if (defaultIndex == null || tooltipPayloadSearcher == null) {
     return void 0;
   }
@@ -23600,12 +27068,12 @@ var combineCoordinateForDefaultIndex = (width, height, layout, offset, tooltipTi
     case "horizontal": {
       return {
         x: tick.coordinate,
-        y: (offset.top + height) / 2
+        y: (offset2.top + height) / 2
       };
     }
     default: {
       return {
-        x: (offset.left + width) / 2,
+        x: (offset2.left + width) / 2,
         y: tick.coordinate
       };
     }
@@ -23822,21 +27290,21 @@ var combineTicksOfTooltipAxis = (layout, axis, realScaleType, scale, range2, dup
     return void 0;
   }
   var offsetForBand = realScaleType === "scaleBand" && scale.bandwidth ? scale.bandwidth() / 2 : 2;
-  var offset = type === "category" && scale.bandwidth ? scale.bandwidth() / offsetForBand : 0;
-  offset = axisType === "angleAxis" && range2 != null && (range2 === null || range2 === void 0 ? void 0 : range2.length) >= 2 ? mathSign(range2[0] - range2[1]) * 2 * offset : offset;
+  var offset2 = type === "category" && scale.bandwidth ? scale.bandwidth() / offsetForBand : 0;
+  offset2 = axisType === "angleAxis" && range2 != null && (range2 === null || range2 === void 0 ? void 0 : range2.length) >= 2 ? mathSign(range2[0] - range2[1]) * 2 * offset2 : offset2;
   if (isCategorical && categoricalDomain) {
-    return categoricalDomain.map((entry, index) => ({
-      coordinate: scale(entry) + offset,
+    return categoricalDomain.map((entry, index2) => ({
+      coordinate: scale(entry) + offset2,
       value: entry,
-      index,
-      offset
+      index: index2,
+      offset: offset2
     }));
   }
-  return scale.domain().map((entry, index) => ({
-    coordinate: scale(entry) + offset,
+  return scale.domain().map((entry, index2) => ({
+    coordinate: scale(entry) + offset2,
     value: duplicateDomain ? duplicateDomain[entry] : entry,
-    index,
-    offset
+    index: index2,
+    offset: offset2
   }));
 };
 var selectTooltipAxisTicks = createSelector([selectChartLayout, selectTooltipAxis, selectTooltipAxisRealScaleType, selectTooltipAxisScale, selectTooltipAxisRange, selectTooltipDuplicateDomain, selectTooltipCategoricalDomain, selectTooltipAxisType], combineTicksOfTooltipAxis);
@@ -24014,16 +27482,16 @@ var getActivePolarCoordinate = (layout, tooltipTicks, activeIndex, rangeObj) => 
     y: 0
   };
 };
-function isInCartesianRange(pointer, offset) {
+function isInCartesianRange(pointer, offset2) {
   var {
     chartX: x2,
     chartY: y2
   } = pointer;
-  return x2 >= offset.left && x2 <= offset.left + offset.width && y2 >= offset.top && y2 <= offset.top + offset.height;
+  return x2 >= offset2.left && x2 <= offset2.left + offset2.width && y2 >= offset2.top && y2 <= offset2.top + offset2.height;
 }
 var calculateActiveTickIndex = (coordinate, ticks2, unsortedTicks, axisType, range2) => {
   var _ticks$length;
-  var index = -1;
+  var index2 = -1;
   var len = (_ticks$length = ticks2 === null || ticks2 === void 0 ? void 0 : ticks2.length) !== null && _ticks$length !== void 0 ? _ticks$length : 0;
   if (len <= 1 || coordinate == null) {
     return 0;
@@ -24050,7 +27518,7 @@ var calculateActiveTickIndex = (coordinate, ticks2, unsortedTicks, axisType, ran
         var sameInterval = [Math.min(cur, (sameDirectionCoord + cur) / 2), Math.max(cur, (sameDirectionCoord + cur) / 2)];
         if (coordinate > sameInterval[0] && coordinate <= sameInterval[1] || coordinate >= diffInterval[0] && coordinate <= diffInterval[1]) {
           ({
-            index
+            index: index2
           } = unsortedTicks[i]);
           break;
         }
@@ -24059,7 +27527,7 @@ var calculateActiveTickIndex = (coordinate, ticks2, unsortedTicks, axisType, ran
         var maxValue = Math.max(before, after);
         if (coordinate > (minValue + cur) / 2 && coordinate <= (maxValue + cur) / 2) {
           ({
-            index
+            index: index2
           } = unsortedTicks[i]);
           break;
         }
@@ -24069,13 +27537,13 @@ var calculateActiveTickIndex = (coordinate, ticks2, unsortedTicks, axisType, ran
     for (var _i = 0; _i < len; _i++) {
       if (_i === 0 && coordinate <= (ticks2[_i].coordinate + ticks2[_i + 1].coordinate) / 2 || _i > 0 && _i < len - 1 && coordinate > (ticks2[_i].coordinate + ticks2[_i - 1].coordinate) / 2 && coordinate <= (ticks2[_i].coordinate + ticks2[_i + 1].coordinate) / 2 || _i === len - 1 && coordinate > (ticks2[_i].coordinate + ticks2[_i - 1].coordinate) / 2) {
         ({
-          index
+          index: index2
         } = ticks2[_i]);
         break;
       }
     }
   }
-  return index;
+  return index2;
 };
 var useChartName = () => {
   return useAppSelector(selectChartName);
@@ -24116,11 +27584,11 @@ var selectIsTooltipActive = createSelector([selectTooltipInteractionState, selec
     activeIndex
   };
 });
-var combineActiveCartesianProps = (chartEvent, layout, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks, offset) => {
+var combineActiveCartesianProps = (chartEvent, layout, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks, offset2) => {
   if (!chartEvent || !tooltipAxisType || !tooltipAxisRange || !tooltipTicks) {
     return void 0;
   }
-  if (!isInCartesianRange(chartEvent, offset)) {
+  if (!isInCartesianRange(chartEvent, offset2)) {
     return void 0;
   }
   var pos = calculateCartesianTooltipPos(chartEvent, layout);
@@ -24147,12 +27615,12 @@ var combineActivePolarProps = (chartEvent, layout, polarViewBox, tooltipAxisType
     activeCoordinate
   };
 };
-var combineActiveProps = (chartEvent, layout, polarViewBox, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks, offset) => {
+var combineActiveProps = (chartEvent, layout, polarViewBox, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks, offset2) => {
   if (!chartEvent || !layout || !tooltipAxisType || !tooltipAxisRange || !tooltipTicks) {
     return void 0;
   }
   if (layout === "horizontal" || layout === "vertical") {
-    return combineActiveCartesianProps(chartEvent, layout, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks, offset);
+    return combineActiveCartesianProps(chartEvent, layout, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks, offset2);
   }
   return combineActivePolarProps(chartEvent, layout, polarViewBox, tooltipAxisType, tooltipAxisRange, tooltipTicks, orderedTooltipTicks);
 };
@@ -24410,8 +27878,8 @@ function CursorInternal(props) {
   var {
     coordinate,
     payload,
-    index,
-    offset,
+    index: index2,
+    offset: offset2,
     tooltipAxisBandSize,
     layout,
     cursor,
@@ -24420,7 +27888,7 @@ function CursorInternal(props) {
   } = props;
   var activeCoordinate = coordinate;
   var activePayload = payload;
-  var activeTooltipIndex = index;
+  var activeTooltipIndex = index2;
   if (!cursor || !activeCoordinate || chartName !== "ScatterChart" && tooltipEventType !== "axis") {
     return null;
   }
@@ -24430,7 +27898,7 @@ function CursorInternal(props) {
     cursorComp = Cross;
     preferredZIndex = DefaultZIndexes.cursorLine;
   } else if (chartName === "BarChart") {
-    restProps = getCursorRectangle(layout, activeCoordinate, offset, tooltipAxisBandSize);
+    restProps = getCursorRectangle(layout, activeCoordinate, offset2, tooltipAxisBandSize);
     cursorComp = Rectangle;
     preferredZIndex = DefaultZIndexes.cursorRectangle;
   } else if (layout === "radial" && isPolarCoordinate(activeCoordinate)) {
@@ -24453,7 +27921,7 @@ function CursorInternal(props) {
     preferredZIndex = DefaultZIndexes.cursorLine;
   } else {
     restProps = {
-      points: getCursorPoints(layout, activeCoordinate, offset)
+      points: getCursorPoints(layout, activeCoordinate, offset2)
     };
     cursorComp = Curve;
     preferredZIndex = DefaultZIndexes.cursorLine;
@@ -24462,7 +27930,7 @@ function CursorInternal(props) {
   var cursorProps = _objectSpread$j(_objectSpread$j(_objectSpread$j(_objectSpread$j({
     stroke: "#ccc",
     pointerEvents: "none"
-  }, offset), restProps), svgPropertiesNoEventsFromUnknown(cursor)), {}, {
+  }, offset2), restProps), svgPropertiesNoEventsFromUnknown(cursor)), {}, {
     payload: activePayload,
     payloadIndex: activeTooltipIndex,
     className: clsx("recharts-tooltip-cursor", extraClassName)
@@ -24477,14 +27945,14 @@ function CursorInternal(props) {
 }
 function Cursor(props) {
   var tooltipAxisBandSize = useTooltipAxisBandSize();
-  var offset = useOffsetInternal();
+  var offset2 = useOffsetInternal();
   var layout = useChartLayout();
   var chartName = useChartName();
-  if (tooltipAxisBandSize == null || offset == null || layout == null || chartName == null) {
+  if (tooltipAxisBandSize == null || offset2 == null || layout == null || chartName == null) {
     return null;
   }
   return /* @__PURE__ */ reactExports.createElement(CursorInternal, _extends$i({}, props, {
-    offset,
+    offset: offset2,
     layout,
     tooltipAxisBandSize,
     chartName
@@ -25038,7 +28506,7 @@ function Tooltip(outsideProps) {
     content,
     filterNull,
     isAnimationActive,
-    offset,
+    offset: offset2,
     payloadUniqBy,
     position,
     reverseDirection,
@@ -25098,7 +28566,7 @@ function Tooltip(outsideProps) {
     active: finalIsActive,
     coordinate,
     hasPayload,
-    offset,
+    offset: offset2,
     position,
     reverseDirection,
     useTranslate3d,
@@ -25490,8 +28958,8 @@ var calculate = (words, lineWidth, spaceWidth, scaleToFit) => words.reduce((resu
 }, []);
 var findLongestLine = (words) => words.reduce((a2, b2) => a2.width > b2.width ? a2 : b2);
 var suffix = "…";
-var checkOverflow = (text, index, breakAll, style, maxLines, lineWidth, spaceWidth, scaleToFit) => {
-  var tempText = text.slice(0, index);
+var checkOverflow = (text, index2, breakAll, style, maxLines, lineWidth, spaceWidth, scaleToFit) => {
+  var tempText = text.slice(0, index2);
   var words = calculateWordWidths({
     breakAll,
     style,
@@ -25670,14 +29138,14 @@ var Text = /* @__PURE__ */ reactExports.forwardRef((outsideProps, ref) => {
     className: clsx("recharts-text", className),
     textAnchor,
     fill: fill.includes("url") ? DEFAULT_FILL : fill
-  }), wordsByLines.map((line, index) => {
+  }), wordsByLines.map((line, index2) => {
     var words = line.words.join(breakAll ? "" : " ");
     return (
       // duplicate words will cause duplicate keys which is why we add the array index here
       /* @__PURE__ */ reactExports.createElement("tspan", {
         x: x2,
-        dy: index === 0 ? startDy : lineHeight,
-        key: "".concat(words, "-").concat(index)
+        dy: index2 === 0 ? startDy : lineHeight,
+        key: "".concat(words, "-").concat(index2)
       }, words)
     );
   }));
@@ -25804,7 +29272,7 @@ var getDeltaAngle = (startAngle, endAngle) => {
 };
 var renderRadialLabel = (labelProps, position, label, attrs, viewBox) => {
   var {
-    offset,
+    offset: offset2,
     className
   } = labelProps;
   var {
@@ -25822,15 +29290,15 @@ var renderRadialLabel = (labelProps, position, label, attrs, viewBox) => {
   var labelAngle, direction;
   switch (position) {
     case "insideStart":
-      labelAngle = startAngle + sign2 * offset;
+      labelAngle = startAngle + sign2 * offset2;
       direction = clockWise;
       break;
     case "insideEnd":
-      labelAngle = endAngle - sign2 * offset;
+      labelAngle = endAngle - sign2 * offset2;
       direction = !clockWise;
       break;
     case "end":
-      labelAngle = endAngle + sign2 * offset;
+      labelAngle = endAngle + sign2 * offset2;
       direction = clockWise;
       break;
     default:
@@ -25851,7 +29319,7 @@ var renderRadialLabel = (labelProps, position, label, attrs, viewBox) => {
     xlinkHref: "#".concat(id2)
   }, label));
 };
-var getAttrsOfPolarLabel = (viewBox, offset, position) => {
+var getAttrsOfPolarLabel = (viewBox, offset2, position) => {
   var {
     cx,
     cy,
@@ -25865,7 +29333,7 @@ var getAttrsOfPolarLabel = (viewBox, offset, position) => {
     var {
       x: _x,
       y: _y
-    } = polarToCartesian(cx, cy, outerRadius + offset, midAngle);
+    } = polarToCartesian(cx, cy, outerRadius + offset2, midAngle);
     return {
       x: _x,
       y: _y,
@@ -25913,7 +29381,7 @@ var isPolar = (viewBox) => "cx" in viewBox && isNumber(viewBox.cx);
 var getAttrsOfCartesianLabel = (props, viewBox) => {
   var {
     parentViewBox: parentViewBoxFromProps,
-    offset,
+    offset: offset2,
     position
   } = props;
   var parentViewBox;
@@ -25933,11 +29401,11 @@ var getAttrsOfCartesianLabel = (props, viewBox) => {
   var midHeightWidth = (upperWidth + lowerWidth) / 2;
   var centerX = upperX + upperWidth / 2;
   var verticalSign = height >= 0 ? 1 : -1;
-  var verticalOffset = verticalSign * offset;
+  var verticalOffset = verticalSign * offset2;
   var verticalEnd = verticalSign > 0 ? "end" : "start";
   var verticalStart = verticalSign > 0 ? "start" : "end";
   var horizontalSign = upperWidth >= 0 ? 1 : -1;
-  var horizontalOffset = horizontalSign * offset;
+  var horizontalOffset = horizontalSign * offset2;
   var horizontalEnd = horizontalSign > 0 ? "end" : "start";
   var horizontalStart = horizontalSign > 0 ? "start" : "end";
   if (position === "top") {
@@ -26288,14 +29756,14 @@ function LabelList(_ref2) {
     zIndex: zIndex !== null && zIndex !== void 0 ? zIndex : DefaultZIndexes.label
   }, /* @__PURE__ */ reactExports.createElement(Layer, {
     className: "recharts-label-list"
-  }, data.map((entry, index) => {
+  }, data.map((entry, index2) => {
     var _restProps$fill;
-    var value = isNullish(dataKey) ? valueAccessor(entry, index) : getValueByDataKey(entry && entry.payload, dataKey);
+    var value = isNullish(dataKey) ? valueAccessor(entry, index2) : getValueByDataKey(entry && entry.payload, dataKey);
     var idProps = isNullish(id2) ? {} : {
-      id: "".concat(id2, "-").concat(index)
+      id: "".concat(id2, "-").concat(index2)
     };
     return /* @__PURE__ */ reactExports.createElement(Label, _extends$f({
-      key: "label-".concat(index)
+      key: "label-".concat(index2)
     }, svgPropertiesAndEvents(entry), others, idProps, {
       /*
        * Prefer to use the explicit fill from LabelList props.
@@ -26308,7 +29776,7 @@ function LabelList(_ref2) {
       value,
       textBreakAll,
       viewBox: entry.viewBox,
-      index,
+      index: index2,
       zIndex: 0
     }));
   })));
@@ -26526,12 +29994,12 @@ var selectPieLegend = createSelector([selectDisplayedData, selectSynchronisedPie
     };
   });
 });
-var selectPieSectors = createSelector([selectDisplayedData, selectSynchronisedPieSettings, pickCells$1, selectChartOffsetInternal], (displayedData, pieSettings, cells, offset) => {
+var selectPieSectors = createSelector([selectDisplayedData, selectSynchronisedPieSettings, pickCells$1, selectChartOffsetInternal], (displayedData, pieSettings, cells, offset2) => {
   if (pieSettings == null || displayedData == null) {
     return void 0;
   }
   return computePieSectors({
-    offset,
+    offset: offset2,
     pieSettings,
     displayedData,
     cells
@@ -27008,10 +30476,10 @@ function Shape(_ref2) {
 }
 var useMouseEnterItemDispatch = (onMouseEnterFromProps, dataKey) => {
   var dispatch = useAppDispatch();
-  return (data, index) => (event) => {
-    onMouseEnterFromProps === null || onMouseEnterFromProps === void 0 || onMouseEnterFromProps(data, index, event);
+  return (data, index2) => (event) => {
+    onMouseEnterFromProps === null || onMouseEnterFromProps === void 0 || onMouseEnterFromProps(data, index2, event);
     dispatch(setActiveMouseOverItemIndex({
-      activeIndex: String(index),
+      activeIndex: String(index2),
       activeDataKey: dataKey,
       activeCoordinate: data.tooltipPosition
     }));
@@ -27019,17 +30487,17 @@ var useMouseEnterItemDispatch = (onMouseEnterFromProps, dataKey) => {
 };
 var useMouseLeaveItemDispatch = (onMouseLeaveFromProps) => {
   var dispatch = useAppDispatch();
-  return (data, index) => (event) => {
-    onMouseLeaveFromProps === null || onMouseLeaveFromProps === void 0 || onMouseLeaveFromProps(data, index, event);
+  return (data, index2) => (event) => {
+    onMouseLeaveFromProps === null || onMouseLeaveFromProps === void 0 || onMouseLeaveFromProps(data, index2, event);
     dispatch(mouseLeaveItem());
   };
 };
 var useMouseClickItemDispatch = (onMouseClickFromProps, dataKey) => {
   var dispatch = useAppDispatch();
-  return (data, index) => (event) => {
-    onMouseClickFromProps === null || onMouseClickFromProps === void 0 || onMouseClickFromProps(data, index, event);
+  return (data, index2) => (event) => {
+    onMouseClickFromProps === null || onMouseClickFromProps === void 0 || onMouseClickFromProps(data, index2, event);
     dispatch(setActiveClickItemIndex({
-      activeIndex: String(index),
+      activeIndex: String(index2),
       activeDataKey: dataKey,
       activeCoordinate: data.tooltipPosition
     }));
@@ -27173,18 +30641,18 @@ var graphicalItemsSlice = createSlice({
           prev,
           next
         } = action.payload;
-        var index = current(state).cartesianItems.indexOf(castDraft(prev));
-        if (index > -1) {
-          state.cartesianItems[index] = castDraft(next);
+        var index2 = current(state).cartesianItems.indexOf(castDraft(prev));
+        if (index2 > -1) {
+          state.cartesianItems[index2] = castDraft(next);
         }
       },
       prepare: prepareAutoBatched()
     },
     removeCartesianGraphicalItem: {
       reducer(state, action) {
-        var index = current(state).cartesianItems.indexOf(castDraft(action.payload));
-        if (index > -1) {
-          state.cartesianItems.splice(index, 1);
+        var index2 = current(state).cartesianItems.indexOf(castDraft(action.payload));
+        if (index2 > -1) {
+          state.cartesianItems.splice(index2, 1);
         }
       },
       prepare: prepareAutoBatched()
@@ -27197,9 +30665,9 @@ var graphicalItemsSlice = createSlice({
     },
     removePolarGraphicalItem: {
       reducer(state, action) {
-        var index = current(state).polarItems.indexOf(castDraft(action.payload));
-        if (index > -1) {
-          state.polarItems.splice(index, 1);
+        var index2 = current(state).polarItems.indexOf(castDraft(action.payload));
+        if (index2 > -1) {
+          state.polarItems.splice(index2, 1);
         }
       },
       prepare: prepareAutoBatched()
@@ -27334,7 +30802,7 @@ var SetPieTooltipEntrySettings = /* @__PURE__ */ reactExports.memo((_ref2) => {
     strokeWidth,
     fill,
     name,
-    hide,
+    hide: hide2,
     tooltipType
   } = _ref2;
   var tooltipEntrySettings = {
@@ -27347,7 +30815,7 @@ var SetPieTooltipEntrySettings = /* @__PURE__ */ reactExports.memo((_ref2) => {
       dataKey,
       nameKey,
       name: getTooltipNameProp(name, dataKey),
-      hide,
+      hide: hide2,
       type: tooltipType,
       color: fill,
       unit: ""
@@ -27373,13 +30841,13 @@ var getOuterRadius = (dataPoint, outerRadius, maxPieRadius) => {
   }
   return getPercentValue(outerRadius, maxPieRadius, maxPieRadius * 0.8);
 };
-var parseCoordinateOfPie = (pieSettings, offset, dataPoint) => {
+var parseCoordinateOfPie = (pieSettings, offset2, dataPoint) => {
   var {
     top,
     left,
     width,
     height
-  } = offset;
+  } = offset2;
   var maxPieRadius = getMaxRadius(width, height);
   var cx = left + getPercentValue(pieSettings.cx, width, width / 2);
   var cy = top + getPercentValue(pieSettings.cy, height, height / 2);
@@ -27558,7 +31026,7 @@ function computePieSectors(_ref4) {
     pieSettings,
     displayedData,
     cells,
-    offset
+    offset: offset2
   } = _ref4;
   var {
     cornerRadius,
@@ -27585,7 +31053,7 @@ function computePieSectors(_ref4) {
     sectors = displayedData.map((entry, i) => {
       var val = getValueByDataKey(entry, dataKey, 0);
       var name = getValueByDataKey(entry, nameKey, i);
-      var coordinate = parseCoordinateOfPie(pieSettings, offset, entry);
+      var coordinate = parseCoordinateOfPie(pieSettings, offset2, entry);
       var percent = (isNumber(val) ? val : 0) / sum;
       var tempStartAngle;
       var entryWithCellInfo = _objectSpread$b(_objectSpread$b({}, entry), cells && cells[i] && cells[i].props);
@@ -27703,9 +31171,9 @@ function SectorsWithAnimation(_ref6) {
     var stepData = [];
     var first = sectors && sectors[0];
     var curAngle = first === null || first === void 0 ? void 0 : first.startAngle;
-    sectors === null || sectors === void 0 || sectors.forEach((entry, index) => {
-      var prev = prevSectors && prevSectors[index];
-      var paddingAngle = index > 0 ? get$1(entry, "paddingAngle", 0) : 0;
+    sectors === null || sectors === void 0 || sectors.forEach((entry, index2) => {
+      var prev = prevSectors && prevSectors[index2];
+      var paddingAngle = index2 > 0 ? get$1(entry, "paddingAngle", 0) : 0;
       if (prev) {
         var angle = interpolate$1(prev.endAngle - prev.startAngle, entry.endAngle - entry.startAngle, t2);
         var latest2 = _objectSpread$b(_objectSpread$b({}, entry), {}, {
@@ -27770,7 +31238,7 @@ function PieImpl(props) {
     id: id2
   } = props, propsWithoutId = _objectWithoutProperties$d(props, _excluded3$3);
   var {
-    hide,
+    hide: hide2,
     className,
     rootTabIndex
   } = props;
@@ -27778,7 +31246,7 @@ function PieImpl(props) {
   var sectors = useAppSelector((state) => selectPieSectors(state, id2, cells));
   var previousSectorsRef = reactExports.useRef(null);
   var layerClass = clsx("recharts-pie", className);
-  if (hide || sectors == null) {
+  if (hide2 || sectors == null) {
     previousSectorsRef.current = null;
     return /* @__PURE__ */ reactExports.createElement(Layer, {
       tabIndex: rootTabIndex,
@@ -28158,15 +31626,15 @@ var selectChartOffset = createSelector([selectChartOffsetInternal], (offsetInter
     right: offsetInternal.right
   };
 });
-var selectPlotArea = createSelector([selectChartOffset, selectChartWidth, selectChartHeight], (offset, chartWidth, chartHeight) => {
-  if (!offset || chartWidth == null || chartHeight == null) {
+var selectPlotArea = createSelector([selectChartOffset, selectChartWidth, selectChartHeight], (offset2, chartWidth, chartHeight) => {
+  if (!offset2 || chartWidth == null || chartHeight == null) {
     return void 0;
   }
   return {
-    x: offset.left,
-    y: offset.top,
-    width: Math.max(0, chartWidth - offset.left - offset.right),
-    height: Math.max(0, chartHeight - offset.top - offset.bottom)
+    x: offset2.left,
+    y: offset2.top,
+    width: Math.max(0, chartWidth - offset2.left - offset2.right),
+    height: Math.max(0, chartHeight - offset2.top - offset2.bottom)
   };
 });
 var usePlotArea = () => {
@@ -28385,11 +31853,11 @@ function BarRectangle(props) {
 }
 var minPointSizeCallback = function minPointSizeCallback2(minPointSize) {
   var defaultValue = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-  return (value, index) => {
+  return (value, index2) => {
     if (isNumber(minPointSize)) return minPointSize;
     var isValueNumberOrNil = isNumber(value) || isNullish(value);
     if (isValueNumberOrNil) {
-      return minPointSize(value, index);
+      return minPointSize(value, index2);
     }
     !isValueNumberOrNil ? invariant() : void 0;
     return defaultValue;
@@ -28895,10 +32363,10 @@ var computeLegendPayloadFromBarData = (props) => {
     name,
     fill,
     legendType,
-    hide
+    hide: hide2
   } = props;
   return [{
-    inactive: hide,
+    inactive: hide2,
     dataKey,
     type: legendType,
     color: fill,
@@ -28913,7 +32381,7 @@ var SetBarTooltipEntrySettings = /* @__PURE__ */ reactExports.memo((_ref2) => {
     strokeWidth,
     fill,
     name,
-    hide,
+    hide: hide2,
     unit: unit2,
     tooltipType
   } = _ref2;
@@ -28927,7 +32395,7 @@ var SetBarTooltipEntrySettings = /* @__PURE__ */ reactExports.memo((_ref2) => {
       dataKey,
       nameKey: void 0,
       name: getTooltipNameProp(name, dataKey),
-      hide,
+      hide: hide2,
       type: tooltipType,
       color: fill,
       unit: unit2
@@ -29023,12 +32491,12 @@ function BarRectangleWithActiveState(props) {
     activeBar,
     baseProps,
     entry,
-    index,
+    index: index2,
     dataKey
   } = props;
   var activeIndex = useAppSelector(selectActiveTooltipIndex);
   var activeDataKey = useAppSelector(selectActiveTooltipDataKey);
-  var isActive = activeBar && String(index) === activeIndex && (activeDataKey == null || dataKey === activeDataKey);
+  var isActive = activeBar && String(index2) === activeIndex && (activeDataKey == null || dataKey === activeDataKey);
   var option = isActive ? activeBar : shape;
   if (isActive) {
     return /* @__PURE__ */ reactExports.createElement(ZIndexLayer, {
@@ -29038,7 +32506,7 @@ function BarRectangleWithActiveState(props) {
     }, entry, {
       isActive,
       option,
-      index,
+      index: index2,
       dataKey
     })));
   }
@@ -29047,7 +32515,7 @@ function BarRectangleWithActiveState(props) {
   }, entry, {
     isActive,
     option,
-    index,
+    index: index2,
     dataKey
   }));
 }
@@ -29056,7 +32524,7 @@ function BarRectangleNeverActive(props) {
     shape,
     baseProps,
     entry,
-    index,
+    index: index2,
     dataKey
   } = props;
   return /* @__PURE__ */ reactExports.createElement(BarRectangle, _extends$9({}, baseProps, {
@@ -29064,7 +32532,7 @@ function BarRectangleNeverActive(props) {
   }, entry, {
     isActive: false,
     option: shape,
-    index,
+    index: index2,
     dataKey
   }));
 }
@@ -29177,8 +32645,8 @@ function RectanglesWithAnimation(_ref5) {
     onAnimationStart: handleAnimationStart,
     key: animationId
   }, (t2) => {
-    var stepData = t2 === 1 ? data : data === null || data === void 0 ? void 0 : data.map((entry, index) => {
-      var prev = prevData && prevData[index];
+    var stepData = t2 === 1 ? data : data === null || data === void 0 ? void 0 : data.map((entry, index2) => {
+      var prev = prevData && prevData[index2];
       if (prev) {
         return _objectSpread$6(_objectSpread$6({}, entry), {}, {
           x: interpolate$1(prev.x, entry.x, t2),
@@ -29237,7 +32705,7 @@ var errorBarDataPointFormatter$1 = (dataPoint, dataKey) => {
 class BarWithState extends reactExports.PureComponent {
   render() {
     var {
-      hide,
+      hide: hide2,
       data,
       dataKey,
       className,
@@ -29247,7 +32715,7 @@ class BarWithState extends reactExports.PureComponent {
       background,
       id: id2
     } = this.props;
-    if (hide || data == null) {
+    if (hide2 || data == null) {
       return null;
     }
     var layerClass = clsx("recharts-bar", className);
@@ -29289,7 +32757,7 @@ function BarImpl(props) {
   var {
     xAxisId,
     yAxisId,
-    hide,
+    hide: hide2,
     legendType,
     minPointSize,
     activeBar,
@@ -29327,7 +32795,7 @@ function BarImpl(props) {
     data: rects,
     xAxisId,
     yAxisId,
-    hide,
+    hide: hide2,
     legendType,
     minPointSize,
     activeBar,
@@ -29352,7 +32820,7 @@ function computeBarRectangles(_ref6) {
     yAxisTicks,
     stackedData,
     displayedData,
-    offset,
+    offset: offset2,
     cells,
     parentViewBox,
     dataStartIndex
@@ -29363,17 +32831,17 @@ function computeBarRectangles(_ref6) {
     numericAxis
   });
   var stackedBarStart = numericAxis.scale(baseValue);
-  return displayedData.map((entry, index) => {
+  return displayedData.map((entry, index2) => {
     var value, x2, y2, width, height, background;
     if (stackedData) {
-      value = truncateByDomain(stackedData[index + dataStartIndex], stackedDomain);
+      value = truncateByDomain(stackedData[index2 + dataStartIndex], stackedDomain);
     } else {
       value = getValueByDataKey(entry, dataKey);
       if (!Array.isArray(value)) {
         value = [baseValue, value];
       }
     }
-    var minPointSize = minPointSizeCallback(minPointSizeProp, defaultMinPointSize)(value[1], index);
+    var minPointSize = minPointSizeCallback(minPointSizeProp, defaultMinPointSize)(value[1], index2);
     if (layout === "horizontal") {
       var _ref7;
       var [baseValueScale, currentValueScale] = [yAxis.scale(value[0]), yAxis.scale(value[1])];
@@ -29383,7 +32851,7 @@ function computeBarRectangles(_ref6) {
         bandSize,
         offset: pos.offset,
         entry,
-        index
+        index: index2
       });
       y2 = (_ref7 = currentValueScale !== null && currentValueScale !== void 0 ? currentValueScale : baseValueScale) !== null && _ref7 !== void 0 ? _ref7 : void 0;
       width = pos.size;
@@ -29391,9 +32859,9 @@ function computeBarRectangles(_ref6) {
       height = isNan(computedHeight) ? 0 : computedHeight;
       background = {
         x: x2,
-        y: offset.top,
+        y: offset2.top,
         width,
-        height: offset.height
+        height: offset2.height
       };
       if (Math.abs(minPointSize) > 0 && Math.abs(height) < Math.abs(minPointSize)) {
         var delta = mathSign(height || minPointSize) * (Math.abs(minPointSize) - Math.abs(height));
@@ -29409,14 +32877,14 @@ function computeBarRectangles(_ref6) {
         bandSize,
         offset: pos.offset,
         entry,
-        index
+        index: index2
       });
       width = _currentValueScale - _baseValueScale;
       height = pos.size;
       background = {
-        x: offset.left,
+        x: offset2.left,
         y: y2,
-        width: offset.width,
+        width: offset2.width,
         height
       };
       if (Math.abs(minPointSize) > 0 && Math.abs(width) < Math.abs(minPointSize)) {
@@ -29441,7 +32909,7 @@ function computeBarRectangles(_ref6) {
         y: y2 + height / 2
       },
       parentViewBox
-    }, cells && cells[index] && cells[index].props);
+    }, cells && cells[index2] && cells[index2].props);
     return barRectangleItem;
   }).filter(Boolean);
 }
@@ -29645,9 +33113,9 @@ function getBarPositions(barGap, barCategoryGap, bandSize, sizeList, maxBarSize)
       fullBarSize *= 0.9;
       sum = len * fullBarSize;
     }
-    var offset = (bandSize - sum) / 2 >> 0;
+    var offset2 = (bandSize - sum) / 2 >> 0;
     var prev = {
-      offset: offset - realBarGap,
+      offset: offset2 - realBarGap,
       size: 0
     };
     result = sizeList.reduce((res, entry) => {
@@ -29673,13 +33141,13 @@ function getBarPositions(barGap, barCategoryGap, bandSize, sizeList, maxBarSize)
     if (originalSize > 1) {
       originalSize >>= 0;
     }
-    var size = isWellBehavedNumber(maxBarSize) ? Math.min(originalSize, maxBarSize) : originalSize;
+    var size2 = isWellBehavedNumber(maxBarSize) ? Math.min(originalSize, maxBarSize) : originalSize;
     result = sizeList.reduce((res, entry, i) => [...res, {
       stackId: entry.stackId,
       dataKeys: entry.dataKeys,
       position: {
-        offset: _offset + (originalSize + realBarGap) * i + (originalSize - size) / 2,
-        size
+        offset: _offset + (originalSize + realBarGap) * i + (originalSize - size2) / 2,
+        size: size2
       }
     }], initialValue);
   }
@@ -29736,7 +33204,7 @@ var combineStackedData = (stackGroups, barSettings) => {
   return stackedData.find((sd2) => sd2.key === stackSeriesIdentifier);
 };
 var selectStackedDataOfItem = createSelector([selectBarStackGroups, selectSynchronisedBarSettings], combineStackedData);
-var selectBarRectangles = createSelector([selectChartOffsetInternal, selectAxisViewBox, selectXAxisWithScale$1, selectYAxisWithScale$1, selectXAxisTicks$1, selectYAxisTicks$1, selectBarPosition, selectChartLayout, selectChartDataWithIndexesIfNotInPanorama, selectAxisBandSize, selectStackedDataOfItem, selectSynchronisedBarSettings, pickCells], (offset, axisViewBox, xAxis, yAxis, xAxisTicks, yAxisTicks, pos, layout, _ref3, bandSize, stackedData, barSettings, cells) => {
+var selectBarRectangles = createSelector([selectChartOffsetInternal, selectAxisViewBox, selectXAxisWithScale$1, selectYAxisWithScale$1, selectXAxisTicks$1, selectYAxisTicks$1, selectBarPosition, selectChartLayout, selectChartDataWithIndexesIfNotInPanorama, selectAxisBandSize, selectStackedDataOfItem, selectSynchronisedBarSettings, pickCells], (offset2, axisViewBox, xAxis, yAxis, xAxisTicks, yAxisTicks, pos, layout, _ref3, bandSize, stackedData, barSettings, cells) => {
   var {
     chartData,
     dataStartIndex,
@@ -29769,7 +33237,7 @@ var selectBarRectangles = createSelector([selectChartOffsetInternal, selectAxisV
     yAxisTicks,
     stackedData,
     displayedData,
-    offset,
+    offset: offset2,
     cells,
     dataStartIndex
   });
@@ -29873,8 +33341,8 @@ class ScaleHelper {
           return this.scale(value);
         }
         case "middle": {
-          var offset = this.bandwidth ? this.bandwidth() / 2 : 0;
-          return this.scale(value) + offset;
+          var offset2 = this.bandwidth ? this.bandwidth() / 2 : 0;
+          return this.scale(value) + offset2;
         }
         case "end": {
           var _offset = this.bandwidth ? this.bandwidth() : 0;
@@ -29927,27 +33395,27 @@ var referenceElementsSlice = createSlice({
       state.dots.push(action.payload);
     },
     removeDot: (state, action) => {
-      var index = current(state).dots.findIndex((dot) => dot === action.payload);
-      if (index !== -1) {
-        state.dots.splice(index, 1);
+      var index2 = current(state).dots.findIndex((dot) => dot === action.payload);
+      if (index2 !== -1) {
+        state.dots.splice(index2, 1);
       }
     },
     addArea: (state, action) => {
       state.areas.push(action.payload);
     },
     removeArea: (state, action) => {
-      var index = current(state).areas.findIndex((area) => area === action.payload);
-      if (index !== -1) {
-        state.areas.splice(index, 1);
+      var index2 = current(state).areas.findIndex((area) => area === action.payload);
+      if (index2 !== -1) {
+        state.areas.splice(index2, 1);
       }
     },
     addLine: (state, action) => {
       state.lines.push(castDraft(action.payload));
     },
     removeLine: (state, action) => {
-      var index = current(state).lines.findIndex((line) => line === action.payload);
-      if (index !== -1) {
-        state.lines.splice(index, 1);
+      var index2 = current(state).lines.findIndex((line) => line === action.payload);
+      if (index2 !== -1) {
+        state.lines.splice(index2, 1);
       }
     }
   }
@@ -30002,11 +33470,11 @@ function getEveryNthWithCondition(array2, n2) {
   return result;
 }
 function getAngledTickWidth(contentSize, unitSize, angle) {
-  var size = {
+  var size2 = {
     width: contentSize.width + unitSize.width,
     height: contentSize.height + unitSize.height
   };
-  return getAngledRectangleWidth(size, angle);
+  return getAngledRectangleWidth(size2, angle);
 }
 function getTickBoundaries(viewBox, sign2, sizeKey) {
   var isWidth = sizeKey === "width";
@@ -30031,8 +33499,8 @@ function isVisible(sign2, tickPosition, getSize, start, end) {
   if (sign2 * tickPosition < sign2 * start || sign2 * tickPosition > sign2 * end) {
     return false;
   }
-  var size = getSize();
-  return sign2 * (tickPosition - sign2 * size / 2 - start) >= 0 && sign2 * (tickPosition + sign2 * size / 2 - end) <= 0;
+  var size2 = getSize();
+  return sign2 * (tickPosition - sign2 * size2 / 2 - start) >= 0 && sign2 * (tickPosition + sign2 * size2 / 2 - end) <= 0;
 }
 function getNumberIntervalTicks(ticks2, interval) {
   return getEveryNthWithCondition(ticks2, interval + 1);
@@ -30043,34 +33511,34 @@ function getEquidistantTicks(sign2, boundaries, getTickSize, ticks2, minTickGap)
     start: initialStart,
     end
   } = boundaries;
-  var index = 0;
+  var index2 = 0;
   var stepsize = 1;
   var start = initialStart;
   var _loop = function _loop2() {
-    var entry = ticks2 === null || ticks2 === void 0 ? void 0 : ticks2[index];
+    var entry = ticks2 === null || ticks2 === void 0 ? void 0 : ticks2[index2];
     if (entry === void 0) {
       return {
         v: getEveryNthWithCondition(ticks2, stepsize)
       };
     }
-    var i = index;
-    var size;
+    var i = index2;
+    var size2;
     var getSize = () => {
-      if (size === void 0) {
-        size = getTickSize(entry, i);
+      if (size2 === void 0) {
+        size2 = getTickSize(entry, i);
       }
-      return size;
+      return size2;
     };
     var tickCoord = entry.coordinate;
-    var isShow = index === 0 || isVisible(sign2, tickCoord, getSize, start, end);
+    var isShow = index2 === 0 || isVisible(sign2, tickCoord, getSize, start, end);
     if (!isShow) {
-      index = 0;
+      index2 = 0;
       start = initialStart;
       stepsize += 1;
     }
     if (isShow) {
       start = tickCoord + sign2 * (getSize() / 2 + minTickGap);
-      index += stepsize;
+      index2 += stepsize;
     }
   }, _ret;
   while (stepsize <= result.length) {
@@ -30128,12 +33596,12 @@ function getTicksEnd(sign2, boundaries, getTickSize, ticks2, minTickGap) {
   } = boundaries;
   var _loop = function _loop2(i2) {
     var entry = result[i2];
-    var size;
+    var size2;
     var getSize = () => {
-      if (size === void 0) {
-        size = getTickSize(entry, i2);
+      if (size2 === void 0) {
+        size2 = getTickSize(entry, i2);
       }
-      return size;
+      return size2;
     };
     if (i2 === len - 1) {
       var gap = sign2 * (entry.coordinate + sign2 * getSize() / 2 - end);
@@ -30184,15 +33652,15 @@ function getTicksStart(sign2, boundaries, getTickSize, ticks2, minTickGap, prese
       }
     }
   }
-  var count = preserveEnd ? len - 1 : len;
+  var count2 = preserveEnd ? len - 1 : len;
   var _loop2 = function _loop22(i2) {
     var entry = result[i2];
-    var size;
+    var size2;
     var getSize = () => {
-      if (size === void 0) {
-        size = getTickSize(entry, i2);
+      if (size2 === void 0) {
+        size2 = getTickSize(entry, i2);
       }
-      return size;
+      return size2;
     };
     if (i2 === 0) {
       var gap = sign2 * (entry.coordinate - sign2 * getSize() / 2 - start);
@@ -30214,7 +33682,7 @@ function getTicksStart(sign2, boundaries, getTickSize, ticks2, minTickGap, prese
       }
     }
   };
-  for (var i = 0; i < count; i++) {
+  for (var i = 0; i < count2; i++) {
     _loop2(i);
   }
   return result;
@@ -30247,8 +33715,8 @@ function getTicks(props, fontSize, letterSpacing) {
     width: 0,
     height: 0
   };
-  var getTickSize = (content, index) => {
-    var value = typeof tickFormatter === "function" ? tickFormatter(content.value, index) : content.value;
+  var getTickSize = (content, index2) => {
+    var value = typeof tickFormatter === "function" ? tickFormatter(content.value, index2) : content.value;
     return sizeKey === "width" ? getAngledTickWidth(getStringSize(value, {
       fontSize,
       letterSpacing
@@ -30622,7 +34090,7 @@ var CartesianAxisComponent = /* @__PURE__ */ reactExports.forwardRef((props, ref
     width,
     height,
     className,
-    hide,
+    hide: hide2,
     ticks: ticks2,
     axisType
   } = props, rest = _objectWithoutProperties$8(props, _excluded$8);
@@ -30657,7 +34125,7 @@ var CartesianAxisComponent = /* @__PURE__ */ reactExports.forwardRef((props, ref
       }
     }
   }, [fontSize, letterSpacing]);
-  if (hide) {
+  if (hide2) {
     return null;
   }
   if (width != null && width <= 0 || height != null && height <= 0) {
@@ -30997,7 +34465,7 @@ var defaultVerticalCoordinatesGenerator = (_ref3, syncWithTicks) => {
     xAxis,
     width,
     height,
-    offset
+    offset: offset2
   } = _ref3;
   return getCoordinatesOfGrid(getTicks(_objectSpread$2(_objectSpread$2(_objectSpread$2({}, defaultCartesianAxisProps), xAxis), {}, {
     ticks: getTicksOfAxis(xAxis),
@@ -31007,14 +34475,14 @@ var defaultVerticalCoordinatesGenerator = (_ref3, syncWithTicks) => {
       width,
       height
     }
-  })), offset.left, offset.left + offset.width, syncWithTicks);
+  })), offset2.left, offset2.left + offset2.width, syncWithTicks);
 };
 var defaultHorizontalCoordinatesGenerator = (_ref4, syncWithTicks) => {
   var {
     yAxis,
     width,
     height,
-    offset
+    offset: offset2
   } = _ref4;
   return getCoordinatesOfGrid(getTicks(_objectSpread$2(_objectSpread$2(_objectSpread$2({}, defaultCartesianAxisProps), yAxis), {}, {
     ticks: getTicksOfAxis(yAxis),
@@ -31024,7 +34492,7 @@ var defaultHorizontalCoordinatesGenerator = (_ref4, syncWithTicks) => {
       width,
       height
     }
-  })), offset.top, offset.top + offset.height, syncWithTicks);
+  })), offset2.top, offset2.top + offset2.height, syncWithTicks);
 };
 var defaultCartesianGridProps = {
   horizontal: true,
@@ -31046,12 +34514,12 @@ var defaultCartesianGridProps = {
 function CartesianGrid(props) {
   var chartWidth = useChartWidth();
   var chartHeight = useChartHeight();
-  var offset = useOffsetInternal();
+  var offset2 = useOffsetInternal();
   var propsIncludingDefaults = _objectSpread$2(_objectSpread$2({}, resolveDefaultProps(props, defaultCartesianGridProps)), {}, {
-    x: isNumber(props.x) ? props.x : offset.left,
-    y: isNumber(props.y) ? props.y : offset.top,
-    width: isNumber(props.width) ? props.width : offset.width,
-    height: isNumber(props.height) ? props.height : offset.height
+    x: isNumber(props.x) ? props.x : offset2.left,
+    y: isNumber(props.y) ? props.y : offset2.top,
+    width: isNumber(props.width) ? props.width : offset2.width,
+    height: isNumber(props.height) ? props.height : offset2.height
   });
   var {
     xAxisId,
@@ -31084,7 +34552,7 @@ function CartesianGrid(props) {
       }) : void 0,
       width: chartWidth !== null && chartWidth !== void 0 ? chartWidth : width,
       height: chartHeight !== null && chartHeight !== void 0 ? chartHeight : height,
-      offset
+      offset: offset2
     }, isHorizontalValues ? true : syncWithTicks);
     warn(Array.isArray(generatorResult), "horizontalCoordinatesGenerator should return Array but instead it returned [".concat(typeof generatorResult, "]"));
     if (Array.isArray(generatorResult)) {
@@ -31099,7 +34567,7 @@ function CartesianGrid(props) {
       }) : void 0,
       width: chartWidth !== null && chartWidth !== void 0 ? chartWidth : width,
       height: chartHeight !== null && chartHeight !== void 0 ? chartHeight : height,
-      offset
+      offset: offset2
     }, isVerticalValues ? true : syncWithTicks);
     warn(Array.isArray(_generatorResult), "verticalCoordinatesGenerator should return Array but instead it returned [".concat(typeof _generatorResult, "]"));
     if (Array.isArray(_generatorResult)) {
@@ -31123,12 +34591,12 @@ function CartesianGrid(props) {
   })), /* @__PURE__ */ reactExports.createElement(VerticalStripes, _extends$7({}, propsIncludingDefaults, {
     verticalPoints
   })), /* @__PURE__ */ reactExports.createElement(HorizontalGridLines, _extends$7({}, propsIncludingDefaults, {
-    offset,
+    offset: offset2,
     horizontalPoints,
     xAxis,
     yAxis
   })), /* @__PURE__ */ reactExports.createElement(VerticalGridLines, _extends$7({}, propsIncludingDefaults, {
-    offset,
+    offset: offset2,
     verticalPoints,
     xAxis,
     yAxis
@@ -31282,10 +34750,10 @@ var computeLegendPayloadFromAreaData = (props) => {
     name,
     stroke,
     legendType,
-    hide
+    hide: hide2
   } = props;
   return [{
-    inactive: hide,
+    inactive: hide2,
     dataKey,
     type: legendType,
     color: stroke,
@@ -31301,7 +34769,7 @@ var SetLineTooltipEntrySettings = /* @__PURE__ */ reactExports.memo((_ref2) => {
     strokeWidth,
     fill,
     name,
-    hide,
+    hide: hide2,
     unit: unit2,
     tooltipType
   } = _ref2;
@@ -31315,7 +34783,7 @@ var SetLineTooltipEntrySettings = /* @__PURE__ */ reactExports.memo((_ref2) => {
       dataKey,
       nameKey: void 0,
       name: getTooltipNameProp(name, dataKey),
-      hide,
+      hide: hide2,
       type: tooltipType,
       color: stroke,
       unit: unit2
@@ -31328,10 +34796,10 @@ var SetLineTooltipEntrySettings = /* @__PURE__ */ reactExports.memo((_ref2) => {
 var generateSimpleStrokeDasharray = (totalLength, length) => {
   return "".concat(length, "px ").concat(totalLength - length, "px");
 };
-function repeat(lines, count) {
+function repeat(lines, count2) {
   var linesUnit = lines.length % 2 !== 0 ? [...lines, 0] : lines;
   var result = [];
-  for (var i = 0; i < count; ++i) {
+  for (var i = 0; i < count2; ++i) {
     result = [...result, ...linesUnit];
   }
   return result;
@@ -31341,7 +34809,7 @@ var getStrokeDasharray = (length, totalLength, lines) => {
   if (!lineLength) {
     return generateSimpleStrokeDasharray(totalLength, length);
   }
-  var count = Math.floor(length / lineLength);
+  var count2 = Math.floor(length / lineLength);
   var remainLength = length % lineLength;
   var restLength = totalLength - length;
   var remainLines = [];
@@ -31352,7 +34820,7 @@ var getStrokeDasharray = (length, totalLength, lines) => {
     }
   }
   var emptyLines = remainLines.length % 2 === 0 ? [0, restLength] : [restLength];
-  return [...repeat(lines, count), ...remainLines, ...emptyLines].map((line) => "".concat(line, "px")).join(", ");
+  return [...repeat(lines, count2), ...remainLines, ...emptyLines].map((line) => "".concat(line, "px")).join(", ");
 };
 function LineDotsWrapper(_ref2) {
   var {
@@ -31534,8 +35002,8 @@ function CurveWithAnimation(_ref5) {
     }
     if (prevPoints) {
       var prevPointsDiffFactor = prevPoints.length / points.length;
-      var stepData = t2 === 1 ? points : points.map((entry, index) => {
-        var prevPointIndex = Math.floor(index * prevPointsDiffFactor);
+      var stepData = t2 === 1 ? points : points.map((entry, index2) => {
+        var prevPointIndex = Math.floor(index2 * prevPointsDiffFactor);
         if (prevPoints[prevPointIndex]) {
           var prev = prevPoints[prevPointIndex];
           return _objectSpread$1(_objectSpread$1({}, entry), {}, {
@@ -31603,7 +35071,7 @@ var errorBarDataPointFormatter = (dataPoint, dataKey) => {
 class LineWithState extends reactExports.Component {
   render() {
     var {
-      hide,
+      hide: hide2,
       dot,
       points,
       className,
@@ -31617,7 +35085,7 @@ class LineWithState extends reactExports.Component {
       needClip,
       zIndex
     } = this.props;
-    if (hide) {
+    if (hide2) {
       return null;
     }
     var layerClass = clsx("recharts-line", className);
@@ -31691,7 +35159,7 @@ function LineImpl(props) {
     animationEasing,
     connectNulls,
     dot,
-    hide,
+    hide: hide2,
     isAnimationActive,
     label,
     legendType,
@@ -31725,7 +35193,7 @@ function LineImpl(props) {
     animationDuration,
     animationEasing,
     isAnimationActive,
-    hide,
+    hide: hide2,
     label,
     legendType,
     xAxisId,
@@ -31750,7 +35218,7 @@ function computeLinePoints(_ref7) {
     bandSize,
     displayedData
   } = _ref7;
-  return displayedData.map((entry, index) => {
+  return displayedData.map((entry, index2) => {
     var value = getValueByDataKey(entry, dataKey);
     if (layout === "horizontal") {
       var _x = getCateCoordinateOfLine({
@@ -31758,7 +35226,7 @@ function computeLinePoints(_ref7) {
         ticks: xAxisTicks,
         bandSize,
         entry,
-        index
+        index: index2
       });
       var _y = isNullish(value) ? null : yAxis.scale(value);
       return {
@@ -31774,7 +35242,7 @@ function computeLinePoints(_ref7) {
       ticks: yAxisTicks,
       bandSize,
       entry,
-      index
+      index: index2
     });
     if (x2 == null || y2 == null) {
       return null;
@@ -32739,7 +36207,7 @@ var RootSurface = /* @__PURE__ */ reactExports.forwardRef((_ref2, ref) => {
 });
 function useReportScale() {
   var dispatch = useAppDispatch();
-  var [ref, setRef] = reactExports.useState(null);
+  var [ref, setRef2] = reactExports.useState(null);
   var scale = useAppSelector(selectContainerScale);
   reactExports.useEffect(() => {
     if (ref == null) {
@@ -32751,7 +36219,7 @@ function useReportScale() {
       dispatch(setScale(newScale));
     }
   }, [ref, dispatch, scale]);
-  return setRef;
+  return setRef2;
 }
 function ownKeys(e3, r2) {
   var t2 = Object.keys(e3);
@@ -33572,7 +37040,7 @@ const Dashboard = () => {
                 outerRadius: 80,
                 fill: "#8884d8",
                 dataKey: "value",
-                children: prepareSuccessRateData().map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.color }, `cell-${index}`))
+                children: prepareSuccessRateData().map((entry, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry.color }, `cell-${index2}`))
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -34799,77 +38267,65 @@ const useSettingsStore = create((set2, get2) => ({
 }));
 const Settings = () => {
   const { settings, isLoading, error, loadSettings, updateSetting } = useSettingsStore();
-  const [editingKey, setEditingKey] = reactExports.useState(null);
-  const [editValue, setEditValue] = reactExports.useState("");
+  const [donationAmount, setDonationAmount] = reactExports.useState("50");
+  const [donationInterval, setDonationInterval] = reactExports.useState("0");
+  const [testTimeout, setTestTimeout] = reactExports.useState("30000");
+  const [headlessMode, setHeadlessMode] = reactExports.useState("true");
+  const [theme, setTheme] = reactExports.useState("system");
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
-  const handleEdit = (key, currentValue) => {
-    setEditingKey(key);
-    setEditValue(currentValue);
+  reactExports.useEffect(() => {
+    settings.forEach((setting) => {
+      switch (setting.key) {
+        case "default_donation_amount":
+          setDonationAmount(setting.value);
+          break;
+        case "default_interval":
+          setDonationInterval(setting.value);
+          break;
+        case "test_timeout":
+          setTestTimeout(setting.value);
+          break;
+        case "headless_mode":
+          setHeadlessMode(setting.value);
+          break;
+        case "theme":
+          setTheme(setting.value);
+          break;
+      }
+    });
+  }, [settings]);
+  const handleDonationAmountChange = async (value) => {
+    setDonationAmount(value);
+    await updateSetting("default_donation_amount", value, "Standard-Spendenbetrag in EUR");
   };
-  const handleSave = async (key, description) => {
-    await updateSetting(key, editValue, description);
-    setEditingKey(null);
-    setEditValue("");
+  const handleDonationIntervalChange = async (value) => {
+    setDonationInterval(value);
+    await updateSetting("default_interval", value, "Standard-Spendenintervall (0=einmalig, 1=monatlich)");
   };
-  const handleCancel = () => {
-    setEditingKey(null);
-    setEditValue("");
+  const handleTestTimeoutChange = async (value) => {
+    setTestTimeout(value);
+    await updateSetting("test_timeout", value, "Test-Timeout in Millisekunden");
   };
-  const getSettingDisplayName = (key) => {
-    const displayNames = {
-      default_donation_amount: "Default Donation Amount (EUR)",
-      default_interval: "Default Donation Interval",
-      test_timeout: "Test Timeout (ms)",
-      headless_mode: "Headless Mode"
-    };
-    return displayNames[key] || key;
+  const handleHeadlessModeChange = async (value) => {
+    setHeadlessMode(value);
+    await updateSetting("headless_mode", value, "Tests im Headless-Modus ausführen");
   };
-  const getSettingHelp = (key) => {
-    const helpTexts = {
-      default_donation_amount: "The default amount to use when testing donation forms",
-      default_interval: "0 = One-time donation, 1 = Monthly donation",
-      test_timeout: "Maximum time to wait for test operations to complete",
-      headless_mode: "Run browser tests without visible window (true/false)"
-    };
-    return helpTexts[key] || "";
+  const handleThemeChange = async (value) => {
+    setTheme(value);
+    await updateSetting("theme", value, "UI-Theme-Präferenz (system, light, dark)");
+    applyTheme(value);
   };
-  const formatValue = (key, value) => {
-    if (key === "default_interval") {
-      return value === "0" ? "One-time" : value === "1" ? "Monthly" : value;
+  const applyTheme = (themeValue) => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    if (themeValue === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(themeValue);
     }
-    if (key === "headless_mode") {
-      return value === "true" ? "Enabled" : "Disabled";
-    }
-    if (key === "default_donation_amount") {
-      return `€${value}`;
-    }
-    if (key === "test_timeout") {
-      return `${value}ms`;
-    }
-    return value;
-  };
-  const getInputType = (key) => {
-    if (key === "default_donation_amount" || key === "test_timeout") {
-      return "number";
-    }
-    return "text";
-  };
-  const getSelectOptions = (key) => {
-    if (key === "default_interval") {
-      return [
-        { value: "0", label: "One-time" },
-        { value: "1", label: "Monthly" }
-      ];
-    }
-    if (key === "headless_mode") {
-      return [
-        { value: "true", label: "Enabled" },
-        { value: "false", label: "Disabled" }
-      ];
-    }
-    return null;
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -34881,84 +38337,120 @@ const Settings = () => {
       " ",
       error
     ] }) }) }),
-    isLoading && settings.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400", children: "Loading settings..." }) }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: settings.map((setting) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "div",
-      {
-        className: "border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0 last:pb-0",
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-3", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-sm font-medium text-gray-900 dark:text-white", children: getSettingDisplayName(setting.key) }),
-              editingKey !== setting.key && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200", children: formatValue(setting.key, setting.value) })
-            ] }),
-            setting.description && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500 dark:text-gray-400 mt-1", children: setting.description }),
-            getSettingHelp(setting.key) && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-400 dark:text-gray-500 mt-1", children: getSettingHelp(setting.key) }),
-            editingKey === setting.key && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
-              getSelectOptions(setting.key) ? /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "select",
-                {
-                  value: editValue,
-                  onChange: (e3) => setEditValue(e3.target.value),
-                  className: "w-48 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
-                  disabled: isLoading,
-                  children: getSelectOptions(setting.key).map((option) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    "option",
-                    {
-                      value: option.value,
-                      children: option.label
-                    },
-                    option.value
-                  ))
-                }
-              ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "input",
-                {
-                  type: getInputType(setting.key),
-                  value: editValue,
-                  onChange: (e3) => setEditValue(e3.target.value),
-                  className: "w-48 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
-                  disabled: isLoading
-                }
-              ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 mt-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Button,
-                  {
-                    onClick: () => handleSave(setting.key, setting.description),
-                    variant: "primary",
-                    size: "sm",
-                    disabled: isLoading,
-                    children: "Save"
-                  }
-                ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  Button,
-                  {
-                    onClick: handleCancel,
-                    variant: "secondary",
-                    size: "sm",
-                    disabled: isLoading,
-                    children: "Cancel"
-                  }
-                )
-              ] })
-            ] })
+    isLoading && settings.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center py-8", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400", children: "Einstellungen werden geladen..." }) }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Darstellung" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Theme" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                onClick: () => handleThemeChange("system"),
+                className: `flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "System" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                onClick: () => handleThemeChange("light"),
+                className: `flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Hell" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "button",
+              {
+                onClick: () => handleThemeChange("dark"),
+                className: `flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Dunkel" })
+                ]
+              }
+            )
+          ] })
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Test-Einstellungen" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "donation-amount", className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Standard-Spendenbetrag (EUR)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                id: "donation-amount",
+                type: "number",
+                value: donationAmount,
+                onChange: (e3) => handleDonationAmountChange(e3.target.value),
+                className: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                disabled: isLoading
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird" })
           ] }),
-          editingKey !== setting.key && /* @__PURE__ */ jsxRuntimeExports.jsx(
-            Button,
-            {
-              onClick: () => handleEdit(setting.key, setting.value),
-              variant: "ghost",
-              size: "sm",
-              disabled: isLoading,
-              className: "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300",
-              children: "Edit"
-            }
-          )
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "donation-interval", className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Standard-Spendenintervall" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "select",
+              {
+                id: "donation-interval",
+                value: donationInterval,
+                onChange: (e3) => handleDonationIntervalChange(e3.target.value),
+                className: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                disabled: isLoading,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "0", children: "Einmalig" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "1", children: "Monatlich" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Das Standard-Spendenintervall für Tests" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "test-timeout", className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Test-Timeout (Millisekunden)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                id: "test-timeout",
+                type: "number",
+                value: testTimeout,
+                onChange: (e3) => handleTestTimeoutChange(e3.target.value),
+                className: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                disabled: isLoading
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "headless-mode", className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Headless-Modus" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "select",
+              {
+                id: "headless-mode",
+                value: headlessMode,
+                onChange: (e3) => handleHeadlessModeChange(e3.target.value),
+                className: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+                disabled: isLoading,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "true", children: "Aktiviert" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "false", children: "Deaktiviert" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Browser-Tests ohne sichtbares Fenster ausführen" })
+          ] })
         ] })
-      },
-      setting.key
-    )) }) }) })
+      ] })
+    ] })
   ] });
 };
 const TestResults = () => {
