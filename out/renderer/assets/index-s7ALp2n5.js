@@ -8371,7 +8371,7 @@ const TrafficLights = ({ onClose, onMinimize, onMaximize, isMaximized }) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: "flex gap-2",
+      className: "flex gap-2 relative z-[100]",
       style: { WebkitAppRegion: "no-drag" },
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -8439,7 +8439,7 @@ const CustomTitleBar = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
-      className: "h-10 bg-white dark:bg-gray-900 flex items-center justify-between px-3 select-none",
+      className: "relative h-10  flex items-center justify-between px-3 select-none",
       style: { WebkitAppRegion: "drag" },
       children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -8451,8 +8451,96 @@ const CustomTitleBar = () => {
             isMaximized
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 text-left text-xs font-normal text-gray-700 dark:text-gray-300 font-mono mx-5", children: "Formtest.Server" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "z-[100] flex-1 text-left text-xs font-normal text-gray-700 dark:text-gray-300 font-mono mx-5", children: "Formtest.Server" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "absolute inset-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: "absolute left-0 right-0 pointer-events-none z-50",
+            style: { top: "0px" },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "absolute top-0 left-0 right-0",
+                  style: {
+                    height: "2.5rem",
+                    backdropFilter: "blur(10px)",
+                    WebkitBackdropFilter: "blur(10px)"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "absolute left-0 right-0",
+                  style: {
+                    top: "0",
+                    height: "8px",
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "absolute left-0 right-0",
+                  style: {
+                    top: "0",
+                    height: "8px",
+                    backdropFilter: "blur(6px)",
+                    WebkitBackdropFilter: "blur(6px)"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "absolute left-0 right-0",
+                  style: {
+                    top: "0",
+                    height: "8px",
+                    backdropFilter: "blur(4px)",
+                    WebkitBackdropFilter: "blur(4px)"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "absolute left-0 right-0",
+                  style: {
+                    top: "0px",
+                    height: "8px",
+                    backdropFilter: "blur(2px)",
+                    WebkitBackdropFilter: "blur(2px)"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "absolute top-0 left-0 right-0 dark:hidden",
+                  style: {
+                    height: "2.5rem",
+                    background: "linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%)"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "div",
+                {
+                  className: "absolute top-0 left-0 right-0 hidden dark:block",
+                  style: {
+                    height: "2.5rem",
+                    background: "linear-gradient(to bottom, rgb(17, 24, 39) 0%, rgba(17, 24, 39, 0.8) 50%, transparent 100%)"
+                  }
+                }
+              )
+            ] })
+          }
+        ) })
       ]
     }
   );
@@ -8754,7 +8842,7 @@ const Layout = ({ children }) => {
     { name: "Test Resultate", href: "/test-results", icon: ChartColumn },
     { name: "Einstellungen", href: "/settings", icon: Settings$1 }
   ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-white dark:bg-gray-900 overflow-hidden relative", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, {}),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-900 flex flex-col select-none", style: { width: "clamp(12rem, 15vw, 20rem)" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1", children: navigation.map((item) => {
@@ -11048,7 +11136,7 @@ const TestResults = () => {
                         variant: "ghost",
                         size: "sm",
                         className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300",
-                        children: "Delete"
+                        children: "Löschen"
                       }
                     )
                   ] })

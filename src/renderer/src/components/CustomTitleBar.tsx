@@ -38,7 +38,7 @@ const CustomTitleBar: React.FC = () => {
 
   return (
     <div
-      className="h-10 bg-white dark:bg-gray-900 flex items-center justify-between px-3 select-none"
+      className="relative h-10 border-b flex items-center justify-between px-3 select-none"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
       <TrafficLights
         onClose={handleClose}
@@ -46,7 +46,7 @@ const CustomTitleBar: React.FC = () => {
         onMaximize={handleMaximize}
         isMaximized={isMaximized}
       />
-      <div className="flex-1 text-left text-xs font-normal text-gray-700 dark:text-gray-300 font-mono mx-5">Formtest.Server</div>
+      <div className="uppercase flex-1 text-left tracking-wider text-[10px] font-medium text-gray-700 dark:text-gray-300 font-mono mx-4 leading-[0]">Formtest.Server</div>
       <div className="w-16" />
     </div>
   );

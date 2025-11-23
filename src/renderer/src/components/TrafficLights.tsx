@@ -10,7 +10,7 @@ interface TrafficLightsProps {
 const TrafficLights: React.FC<TrafficLightsProps> = ({ onClose, onMinimize, onMaximize, isMaximized }) => {
   return (
     <div
-      className="flex gap-2"
+      className="flex gap-2 relative"
       style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
       <button
         className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-red-900 text-xs font-bold transition-colors"
