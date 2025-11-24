@@ -71,6 +71,16 @@ const api = {
   database: {
     export: (options: ImportOptions) => ipcRenderer.invoke('database:export', options),
     import: (mode: 'overwrite' | 'merge', options: ImportOptions) => ipcRenderer.invoke('database:import', mode, options)
+  },
+
+  // Toast notifications
+  toast: {
+    show: (type: 'success' | 'error' | 'info' | 'warning', message: string, description?: string) => 
+      ipcRenderer.invoke('toast:show', type, message, description),
+    onDisplay: (callback: (data: { type: string; message: string; description?: string }) => void) => {
+      ipcRenderer.on('toast:display', (_, data) => callback(data));
+      return () => ipcRenderer.removeAllListeners('toast:display');
+    }
   }
 }
 

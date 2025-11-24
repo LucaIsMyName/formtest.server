@@ -51,6 +51,10 @@ declare global {
         export: (options: ImportOptions) => Promise<{ success: boolean; message: string; filePath?: string }>
         import: (mode: 'overwrite' | 'merge', options: ImportOptions) => Promise<ImportResult>
       }
+      toast: {
+        show: (type: 'success' | 'error' | 'info' | 'warning', message: string, description?: string) => Promise<void>
+        onDisplay: (callback: (data: { type: string; message: string; description?: string }) => void) => () => void
+      }
     }
   }
 }

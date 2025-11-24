@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
+import { Toaster, toast } from "sonner";
 import { useSettingsStore } from "./store/useSettingsStore";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
@@ -17,6 +18,30 @@ function App() {
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
+
+  // Set up toast event listener
+  useEffect(() => {
+    const cleanup = window.api?.toast?.onDisplay?.((data: { type: string; message: string; description?: string }) => {
+      switch (data.type) {
+        case 'success':
+          toast.success(data.message, { description: data.description });
+          break;
+        case 'error':
+          toast.error(data.message, { description: data.description });
+          break;
+        case 'info':
+          toast.info(data.message, { description: data.description });
+          break;
+        case 'warning':
+          toast.warning(data.message, { description: data.description });
+          break;
+        default:
+          toast(data.message, { description: data.description });
+      }
+    });
+
+    return cleanup;
+  }, []);
 
   // Apply theme whenever settings change
   useEffect(() => {
@@ -39,38 +64,46 @@ function App() {
   };
 
   return (
-    <Layout>
-      <Routes>
-        <Route
-          path="/"
-          element={<Dashboard />}
-        />
-        <Route
-          path="/forms"
-          element={<Forms />}
-        />
-        <Route
-          path="/payment-methods"
-          element={<PaymentMethods />}
-        />
-        <Route
-          path="/settings"
-          element={<Settings />}
-        />
-        <Route
-          path="/test-results"
-          element={<TestResults />}
-        />
-        <Route
-          path="/schedules"
-          element={<Schedules />}
-        />
-        <Route
-          path="/info-doku"
-          element={<InfoDoku />}
-        />
-      </Routes>
-    </Layout>
+    <>
+      <Layout>
+        <Routes>
+          <Route
+            path="/"
+            element={<Dashboard />}
+          />
+          <Route
+            path="/forms"
+            element={<Forms />}
+          />
+          <Route
+            path="/payment-methods"
+            element={<PaymentMethods />}
+          />
+          <Route
+            path="/settings"
+            element={<Settings />}
+          />
+          <Route
+            path="/test-results"
+            element={<TestResults />}
+          />
+          <Route
+            path="/schedules"
+            element={<Schedules />}
+          />
+          <Route
+            path="/info-doku"
+            element={<InfoDoku />}
+          />
+        </Routes>
+      </Layout>
+      <Toaster 
+        position="top-right"
+        expand={false}
+        richColors
+        closeButton
+      />
+    </>
   );
 }
 

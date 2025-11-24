@@ -178,7 +178,7 @@ describe('Scheduled Tests Feature', () => {
 
     it('should handle null/undefined values gracefully', () => {
       // Simulate legacy data without isScheduled field
-      const legacyData = {
+      const legacyData: { id: number; formId: number; paymentMethodId: number; isScheduled?: boolean } = {
         id: 1,
         formId: 1,
         paymentMethodId: 1,

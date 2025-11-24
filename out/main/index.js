@@ -1322,14 +1322,36 @@ function getTestProcessManager() {
 }
 async function runSingleTest(testRunId, form, paymentMethod, settings) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
+  const testRun = testRunQueries.getById(testRunId);
+  const isScheduled = testRun?.isScheduled;
   try {
     const processManager2 = getTestProcessManager();
     const result = await processManager2.runTest(testRunId, form, paymentMethod, settings);
     await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration);
     console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"}`);
+    if (isScheduled) {
+      const allWindows = electron.BrowserWindow.getAllWindows();
+      allWindows.forEach((window) => {
+        window.webContents.send("toast:display", {
+          type: result.success ? "success" : "error",
+          message: result.success ? "Autopilot Test Succeeded" : "Autopilot Test Failed",
+          description: `${form.name} × ${paymentMethod.name}`
+        });
+      });
+    }
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
     await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
+    if (isScheduled) {
+      const allWindows = electron.BrowserWindow.getAllWindows();
+      allWindows.forEach((window) => {
+        window.webContents.send("toast:display", {
+          type: "error",
+          message: "Autopilot Test Failed",
+          description: `${form.name} × ${paymentMethod.name}`
+        });
+      });
+    }
   }
 }
 async function createAndRunTest(formId, paymentMethodId) {
@@ -1356,6 +1378,14 @@ async function createAndRunTest(formId, paymentMethodId) {
       isScheduled: true
     });
     const testRunId = testRun.lastInsertRowid;
+    const allWindows = electron.BrowserWindow.getAllWindows();
+    allWindows.forEach((window) => {
+      window.webContents.send("toast:display", {
+        type: "info",
+        message: "Autopilot Test Started",
+        description: `${form.name} × ${paymentMethod.name}`
+      });
+    });
     runSingleTest(testRunId, form, paymentMethod, settingsMap);
     return testRunId;
   } catch (error) {
@@ -1584,6 +1614,9 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:updateStatus", (_, id, status, errorMessage, durationMs) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
   electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
   electron.ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
+  electron.ipcMain.handle("toast:show", (event, type, message, description) => {
+    event.sender.send("toast:display", { type, message, description });
+  });
   electron.ipcMain.handle("tests:run", async (_, formIds, paymentMethodIds) => {
     try {
       console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);

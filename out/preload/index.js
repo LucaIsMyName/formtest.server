@@ -61,6 +61,14 @@ const api = {
   database: {
     export: (options) => electron.ipcRenderer.invoke("database:export", options),
     import: (mode, options) => electron.ipcRenderer.invoke("database:import", mode, options)
+  },
+  // Toast notifications
+  toast: {
+    show: (type, message, description) => electron.ipcRenderer.invoke("toast:show", type, message, description),
+    onDisplay: (callback) => {
+      electron.ipcRenderer.on("toast:display", (_, data) => callback(data));
+      return () => electron.ipcRenderer.removeAllListeners("toast:display");
+    }
   }
 };
 if (process.contextIsolated) {

@@ -11,13 +11,7 @@ interface CustomTitleBarProps {
   currentTheme?: string;
 }
 
-const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ 
-  onRunAllTests, 
-  onOpenSearch, 
-  onToggleTheme, 
-  onOpenSettings,
-  currentTheme = "system"
-}) => {
+const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSearch, onToggleTheme, onOpenSettings, currentTheme = "system" }) => {
   const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
@@ -54,17 +48,23 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
 
   const getThemeIcon = () => {
     switch (currentTheme) {
-      case "light": return <Sun size={14} />;
-      case "dark": return <Moon size={14} />;
-      default: return <Monitor size={14} />;
+      case "light":
+        return <Sun size={14} />;
+      case "dark":
+        return <Moon size={14} />;
+      default:
+        return <Monitor size={14} />;
     }
   };
 
   const getThemeLabel = () => {
     switch (currentTheme) {
-      case "light": return "Theme: Hell";
-      case "dark": return "Theme: Dunkel";
-      default: return "Theme: System";
+      case "light":
+        return "Theme: Hell";
+      case "dark":
+        return "Theme: Dunkel";
+      default:
+        return "Theme: System";
     }
   };
 
@@ -75,8 +75,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         {/* Left Section - Matches Sidebar Width */}
         <div
-
-          className="flex items-center px-5 h-full cursor-grabbing"
+          className="flex items-center px-5 pl-6 h-full"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)", minWidth: "fit-content" }}>
           <TrafficLights
             onClose={handleClose}
@@ -84,7 +83,11 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
             onMaximize={handleMaximize}
             isMaximized={isMaximized}
           />
-          <div className="text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap"><span className="uppercase font-bold" style={{ fontStretch: "125%", fontFamily: "Google Sans Flex" }}>Formtest</span><span className="font-mono uppercase">.Server</span></div>
+          <div className="cursor-grabbing  text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap">
+            <span className="font-mono uppercase  cursor-grabbing ">
+              <b>Formtest</b>.Server
+            </span>
+          </div>
         </div>
 
         {/* Right Section - Matches Main Content Area */}
@@ -113,7 +116,6 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
             <div
               className="flex items-center gap-2 flex-shrink-0"
               style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-              
               {/* Run All Tests */}
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
@@ -173,7 +175,6 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({
                   </Tooltip.Content>
                 </Tooltip.Portal>
               </Tooltip.Root>
-
             </div>
           </div>
         </div>
