@@ -6,9 +6,10 @@ import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
-import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2 } from "lucide-react";
+import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2 } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "../components/ui/Drawer";
 
 const TestResultsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
@@ -58,6 +59,112 @@ const TestDetailsSkeleton = () => (
   </div>
 );
 
+interface TimelineStep {
+  timestamp?: string;
+  message: string;
+  type: "info" | "success" | "error" | "warning";
+}
+
+const TestTimeline: React.FC<{ logDetails?: string; status: string }> = ({ logDetails, status }) => {
+  const parseLogDetails = (logs?: string): TimelineStep[] => {
+    if (!logs) return [];
+
+    try {
+      // Try to parse as JSON array first
+      const parsed = JSON.parse(logs);
+      if (Array.isArray(parsed)) {
+        return parsed.map((log: string) => parseLogEntry(log));
+      }
+    } catch {
+      // If JSON parsing fails, split by newlines
+      const lines = logs.split("\n").filter((line) => line.trim());
+      return lines.map((line) => parseLogEntry(line));
+    }
+
+    return [];
+  };
+
+  const parseLogEntry = (log: string): TimelineStep => {
+    // Extract timestamp if present [YYYY-MM-DDTHH:mm:ss.sssZ]
+    const timestampMatch = log.match(/^\[([^\]]+)\]/);
+    const timestamp = timestampMatch ? timestampMatch[1] : undefined;
+    const message = timestamp ? log.replace(/^\[[^\]]+\]\s*/, "") : log;
+
+    // Determine step type based on message content
+    let type: TimelineStep["type"] = "info";
+    const lowerMessage = message.toLowerCase();
+
+    if (lowerMessage.includes("error") || lowerMessage.includes("failed") || lowerMessage.includes("timeout")) {
+      type = "error";
+    } else if (lowerMessage.includes("success") || lowerMessage.includes("completed") || lowerMessage.includes("detected success")) {
+      type = "success";
+    } else if (lowerMessage.includes("warning") || lowerMessage.includes("skipping")) {
+      type = "warning";
+    }
+
+    return { timestamp, message, type };
+  };
+
+  const steps = parseLogDetails(logDetails);
+
+  // Add final status step
+  const finalStep: TimelineStep = {
+    message: status === "SUCCESS" ? "Test completed successfully" : status === "FAILURE" ? "Test failed" : status === "SKIPPED" ? "Test was skipped" : "Test is running",
+    type: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "warning" : "info",
+  };
+
+  const allSteps = [...steps, finalStep];
+
+  const getStepIcon = (type: TimelineStep["type"]) => {
+    switch (type) {
+      case "success":
+        return <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />;
+      case "error":
+        return <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />;
+      case "warning":
+        return <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+      default:
+        return <Play className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+    }
+  };
+
+  const formatTimestamp = (timestamp?: string) => {
+    if (!timestamp) return null;
+    try {
+      return new Date(timestamp).toLocaleTimeString();
+    } catch {
+      return timestamp;
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <h4 className="text-sm font-medium text-gray-900 dark:text-white">Test Timeline</h4>
+      <div className="relative">
+        {allSteps.map((step, index) => (
+          <div
+            key={index}
+            className="relative flex items-start space-x-3 pb-4">
+            {/* Timeline line */}
+            {/* {index < allSteps.length - 1 ? <div className="absolute left-3 top-6 w-0.5 h-full bg-gray-200 dark:bg-gray-700" /> : null} */}
+            {index === 0 ? null : null}
+            {/* Step icon */}
+            <div className="relative flex items-center justify-center w-6 h-6 bg-white dark:bg-gray-800 ">{getStepIcon(step.type)}</div>
+
+            {/* Step content */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-900 dark:text-white">{step.message}</p>
+                {step.timestamp && <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{formatTimestamp(step.timestamp)}</span>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const TestResults: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { testRuns, loadTestRuns, isLoading, error } = useTestRunsStore();
@@ -72,7 +179,7 @@ const TestResults: React.FC = () => {
     loadPaymentMethods();
   }, [loadTestRuns, loadForms, loadPaymentMethods]);
 
-  // Handle URL params and default selection
+  // Handle URL params and selection
   useEffect(() => {
     if (testRuns.length > 0) {
       const paramId = searchParams.get("id");
@@ -84,17 +191,17 @@ const TestResults: React.FC = () => {
           return;
         }
       }
-
-      // Default to latest if no selection or not found
-      if (!selectedTestRun) {
-        setSelectedTestRun(testRuns[0].id);
-      }
+      // Don't auto-select anything - let user choose
     }
   }, [testRuns, searchParams]);
 
-  const handleSelectTestRun = (id: number) => {
+  const handleSelectTestRun = (id: number | null) => {
     setSelectedTestRun(id);
-    setSearchParams({ id: String(id) });
+    if (id) {
+      setSearchParams({ id: String(id) });
+    } else {
+      setSearchParams({});
+    }
   };
 
   const getFormName = (formId: number) => {
@@ -199,120 +306,103 @@ const TestResults: React.FC = () => {
         </div>
       )}
 
-      <div
-        className="mt-4"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "70% 30%",
-          gap: "24px",
-          overflowX: "hidden",
-        }}>
-        {/* Test Runs List */}
-        <div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
-            {isLoading && testRuns.length === 0 ? (
-              <TestResultsSkeleton />
-            ) : testRuns.length === 0 ? (
-              <div className="p-6">
-                <div className="text-center py-8">
-                  <div className="text-gray-500 dark:text-gray-400 mb-4">No test results yet.</div>
-                  <p className="text-gray-500 dark:text-gray-400">Run some tests to see results here.</p>
-                </div>
+      {/* Test Runs List - Full Width */}
+      <div className="mt-4">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+          {isLoading && testRuns.length === 0 ? (
+            <TestResultsSkeleton />
+          ) : testRuns.length === 0 ? (
+            <div className="p-6">
+              <div className="text-center py-8">
+                <div className="text-gray-500 dark:text-gray-400 mb-4">No test results yet.</div>
+                <p className="text-gray-500 dark:text-gray-400">Run some tests to see results here.</p>
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="px-4">ID</TableHead>
-                      <TableHead className="px-4">Test</TableHead>
-                      <TableHead className="px-4">Datum</TableHead>
-                      <TableHead className="px-4">Dauer</TableHead>
-                      <TableHead className="px-4">Status</TableHead>
-                      <TableHead className="px-4 text-right">Aktionen</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {testRuns.map((testRun) => {
-                      const isSelected = selectedTestRun === testRun.id;
-                      return (
-                        <TableRow
-                          key={testRun.id}
-                          className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
-                          onClick={() => handleSelectTestRun(testRun.id)}>
-                          <TableCell className="px-4">
-                            <div className="flex items-center gap-1 group">
-                              <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
-                              {testRun.uuid && (
-                                <button
-                                  onClick={(e) => handleCopyUuid(e, testRun.uuid)}
-                                  className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  title="ID kopieren">
-                                  <Copy size={10} />
-                                </button>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-4">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <div className={`flex-shrink-0 ${testRun.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}>{getStatusIcon(testRun.status)}</div>
-                              <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                                {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(testRun.runAt)}</TableCell>
-                          <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
-                          <TableCell className="px-4">
-                            <span className={`inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`}>{testRun.status}</span>
-                          </TableCell>
-                          <TableCell className="px-4 text-right">
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteClick(testRun);
-                              }}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
-                              title="Löschen">
-                              <Trash2 size={16} />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Test Run Details */}
-        <div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm mr-6">
-            <div className="px-2 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-              <h3 className="ml-2 text-base font-medium text-gray-900 dark:text-white m-0">Test Details</h3>
-              {selectedTestRunData && (
-                <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleExportJson}
-                    className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 h-8"
-                    title="Export JSON">
-                    <FileJson
-                      size={16}
-                      className="text-gray-500 dark:text-gray-400"
-                    />
-                  </Button>
-                </div>
-              )}
             </div>
-            <div className="p-4">
-              {selectedTestRunData ? (
-                <div className="flex flex-col gap-4">
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="px-4">ID</TableHead>
+                    <TableHead className="px-4">Test</TableHead>
+                    <TableHead className="px-4">Datum</TableHead>
+                    <TableHead className="px-4">Dauer</TableHead>
+                    <TableHead className="px-4">Status</TableHead>
+                    <TableHead className="px-4 text-right">Aktionen</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {testRuns.map((testRun) => {
+                    const isSelected = selectedTestRun === testRun.id;
+                    return (
+                      <TableRow
+                        key={testRun.id}
+                        className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
+                        onClick={() => handleSelectTestRun(testRun.id)}>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-1 group">
+                            <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                            {testRun.uuid && (
+                              <button
+                                onClick={(e) => handleCopyUuid(e, testRun.uuid)}
+                                className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="ID kopieren">
+                                <Copy size={10} />
+                              </button>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className={`flex-shrink-0 ${testRun.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}>{getStatusIcon(testRun.status)}</div>
+                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                              {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
+                        <TableCell className="px-4">
+                          <span className={`inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`}>{testRun.status}</span>
+                        </TableCell>
+                        <TableCell className="px-4 text-right">
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteClick(testRun);
+                            }}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                            title="Löschen">
+                            <Trash2 size={16} />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Test Details Drawer */}
+      <Drawer
+        open={!!selectedTestRun}
+        onOpenChange={(open) => !open && handleSelectTestRun(null)}>
+        <DrawerContent className="w-full max-w-2xl">
+          <DrawerHeader>
+            <DrawerTitle>Test Details</DrawerTitle>
+            <DrawerDescription>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerDescription>
+          </DrawerHeader>
+
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {selectedTestRunData ? (
+              <>
+                {/* Basic Info */}
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">ID</label>
                     <div className="flex items-center gap-2">
@@ -336,16 +426,6 @@ const TestResults: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Formular</label>
-                    <div className="border dark:border-gray-700 rounded font-semibold text-[11px] font-mono px-1.5 inline-block py-0.5 bg-gray-100 dark:bg-gray-900/20 text-gray-900 dark:text-white">{getFormName(selectedTestRunData.formId)}</div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Bezahlmethode</label>
-                    <div className="text-sm font-mono text-gray-900 dark:text-white">{getPaymentMethodName(selectedTestRunData.paymentMethodId)}</div>
-                  </div>
-
-                  <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Duration</label>
                     <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDuration(selectedTestRunData.durationMs)}</div>
                   </div>
@@ -354,43 +434,56 @@ const TestResults: React.FC = () => {
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Run At</label>
                     <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDate(selectedTestRunData.runAt)}</div>
                   </div>
-
-                  {selectedTestRunData.errorMessage && (
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Error Message</label>
-                      <div className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-xs text-red-800 dark:text-red-200 font-mono">{selectedTestRunData.errorMessage}</div>
-                    </div>
-                  )}
-
-                  {selectedTestRunData.logDetails && (
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Logs</label>
-                      <div className="p-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded text-xs text-gray-600 dark:text-gray-400 max-h-32 overflow-y-auto">
-                        <pre className="whitespace-pre-wrap m-0 font-mono">{selectedTestRunData.logDetails}</pre>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedTestRunData.screenshotPath && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Screenshot</label>
-                      <div>
-                        <img
-                          src={selectedTestRunData.screenshotPath}
-                          alt="Test screenshot"
-                          className="w-full border border-gray-200 dark:border-gray-700 rounded"
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
-              ) : (
-                <TestDetailsSkeleton />
-              )}
-            </div>
+
+                {/* Error Message */}
+                {selectedTestRunData.errorMessage && (
+                  <div>
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Error Message</label>
+                    <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-800 dark:text-red-200 font-mono">{selectedTestRunData.errorMessage}</div>
+                  </div>
+                )}
+
+                {/* Test Timeline */}
+                {selectedTestRunData.logDetails && (
+                  <TestTimeline
+                    logDetails={selectedTestRunData.logDetails}
+                    status={selectedTestRunData.status}
+                  />
+                )}
+
+                {/* Screenshot */}
+                {selectedTestRunData.screenshotPath && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Screenshot</label>
+                    <div className="border border-gray-200 dark:border-gray-700 rounded overflow-hidden">
+                      <img
+                        src={selectedTestRunData.screenshotPath}
+                        alt="Test screenshot"
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Export Button */}
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleExportJson}
+                    className="gap-2">
+                    <FileJson size={16} />
+                    Export JSON
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <TestDetailsSkeleton />
+            )}
           </div>
-        </div>
-      </div>
+        </DrawerContent>
+      </Drawer>
 
       <DeleteConfirmDialog
         isOpen={!!showDeleteConfirm}

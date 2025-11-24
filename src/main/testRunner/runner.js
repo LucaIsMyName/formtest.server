@@ -20,9 +20,11 @@ class TestRunner {
     this.config = {}
     this.logs = []
 
+    this.buffer = ''
+
     // Set up process communication
     process.stdin.setEncoding('utf8')
-    process.stdin.on('data', this.handleMessage.bind(this))
+    process.stdin.on('data', this.handleData.bind(this))
 
     // Handle process cleanup
     process.on('SIGINT', this.cleanup.bind(this))
@@ -30,6 +32,19 @@ class TestRunner {
     process.on('uncaughtException', this.handleError.bind(this))
 
     this.log('Test runner process started')
+  }
+
+  handleData(chunk) {
+    this.buffer += chunk
+    
+    const lines = this.buffer.split('\n')
+    this.buffer = lines.pop() // Keep the last partial line in the buffer
+    
+    for (const line of lines) {
+      if (line.trim()) {
+        this.handleMessage(line)
+      }
+    }
   }
 
   async handleMessage(data) {
@@ -178,6 +193,36 @@ class TestRunner {
     // Handle payment method
     await this.handlePaymentMethod(paymentMethod, formAnalysis)
 
+    // Check for invalid interval/payment combination
+    const interval = parseInt(this.config.defaultInterval || '0')
+    const isRecurring = interval > 0
+    const isSepa = paymentMethod.type.toLowerCase() === 'sepa'
+
+    if (isRecurring && !isSepa) {
+      this.log(`VALIDATION: Recurring payment (interval=${interval}) requires SEPA. Found: ${paymentMethod.type}`)
+      this.log('Skipping submission as this combination should not be submitted.')
+      
+      // Take final screenshot (skipped submission)
+      const finalScreenshotPath = await this.takeScreenshot('final_skipped')
+      const duration = Date.now() - startTime
+
+      return {
+        success: true,
+        duration,
+        logs: [...this.logs],
+        screenshot: finalScreenshotPath,
+        formAnalysis,
+        skippedSubmission: true,
+        reason: 'Invalid payment method for recurring donation'
+      }
+    }
+
+    // Submit form
+    await this.submitForm()
+
+    // Wait for success redirect
+    const successResult = await this.waitForSuccessRedirect()
+
     // Take final screenshot
     const finalScreenshotPath = await this.takeScreenshot('final')
 
@@ -188,7 +233,105 @@ class TestRunner {
       duration,
       logs: [...this.logs],
       screenshot: finalScreenshotPath,
-      formAnalysis
+      formAnalysis,
+      redirectUrl: successResult.url
+    }
+  }
+
+  async submitForm() {
+    this.log('Submitting form...')
+    
+    const submitSelectors = [
+      'button[type="submit"]',
+      'input[type="submit"]',
+      'button:has-text("Spenden")',
+      'button:has-text("Jetzt spenden")',
+      'button:has-text("Weiter")',
+      'button:has-text("Donate")',
+      'button:has-text("Pay")',
+      '.submit-button',
+      '#submit',
+      '[data-testid="submit"]'
+    ]
+
+    for (const selector of submitSelectors) {
+      try {
+        const button = await this.page.$(selector)
+        if (button && await button.isVisible() && await button.isEnabled()) {
+          // Scroll into view if needed
+          await button.scrollIntoViewIfNeeded()
+          
+          // Click with navigation wait
+          // We don't wait for navigation here specifically because some forms use AJAX
+          // The waitForSuccessRedirect will handle the waiting
+          await button.click()
+          this.log(`Clicked submit button: ${selector}`)
+          return
+        }
+      } catch (error) {
+        // Continue trying other selectors
+      }
+    }
+    
+    this.log('No submit button found or clickable')
+  }
+
+  async waitForSuccessRedirect() {
+    this.log('Waiting for success redirect or confirmation...')
+    
+    // Success indicators
+    const successPatterns = [
+      /paypal\.com/,
+      /pay\.google\.com/,
+      /stripe\.com/,
+      /visa/,
+      /mastercard/,
+      /amex/,
+      /sepa/,
+      /eps/,
+      /sofort/,
+      /klarna/,
+      /giropay/,
+      /success/,
+      /thank-you/,
+      /danke/,
+      /confirmation/,
+      /bestaetigung/
+    ]
+
+    try {
+      // Wait for URL change or network activity
+      const result = await Promise.race([
+        // Check URL changes
+        this.page.waitForURL((url) => {
+          const urlString = url.toString().toLowerCase()
+          const matched = successPatterns.some(pattern => pattern.test(urlString))
+          if (matched) {
+            this.log(`Detected success URL: ${urlString}`)
+            return true
+          }
+          return false
+        }, { timeout: 30000 }),
+        
+        // Also check for success messages in the page content as a fallback
+        // (some forms stay on the same page)
+        this.page.waitForSelector('.success-message, .alert-success, :text("Vielen Dank"), :text("Thank you")', { timeout: 30000 })
+      ])
+
+      return { success: true, url: this.page.url() }
+    } catch (error) {
+      this.log(`Timeout waiting for success redirect: ${error.message}`)
+      
+      // Check final URL just in case
+      const currentUrl = this.page.url().toLowerCase()
+      const matched = successPatterns.some(pattern => pattern.test(currentUrl))
+      
+      if (matched) {
+         this.log(`Final URL matches success pattern: ${currentUrl}`)
+         return { success: true, url: currentUrl }
+      }
+
+      throw new Error('Form submission did not redirect to a known payment provider or success page')
     }
   }
 

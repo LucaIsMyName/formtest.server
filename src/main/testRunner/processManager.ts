@@ -32,6 +32,7 @@ export class TestProcessManager extends EventEmitter {
   private messageQueue: Map<string, { resolve: Function; reject: Function; timeout: NodeJS.Timeout }> = new Map();
   private isRunning = false;
   private messageId = 0;
+  private buffer = '';
 
   constructor() {
     super();
@@ -68,12 +69,14 @@ export class TestProcessManager extends EventEmitter {
 
       // Handle process output
       this.process.stdout?.on("data", (data) => {
-        const lines = data
-          .toString()
-          .split("\n")
-          .filter((line: string) => line.trim());
-
+        this.buffer += data.toString();
+        
+        const lines = this.buffer.split("\n");
+        this.buffer = lines.pop() || ""; // Keep the last partial line in the buffer
+        
         for (const line of lines) {
+          if (!line.trim()) continue;
+          
           try {
             const message: TestMessage = JSON.parse(line);
             this.handleMessage(message);

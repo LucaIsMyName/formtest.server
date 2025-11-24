@@ -991,6 +991,7 @@ class TestProcessManager extends events.EventEmitter {
     this.messageQueue = /* @__PURE__ */ new Map();
     this.isRunning = false;
     this.messageId = 0;
+    this.buffer = "";
   }
   async startProcess() {
     if (this.isRunning) {
@@ -1013,8 +1014,11 @@ class TestProcessManager extends events.EventEmitter {
       });
       this.isRunning = true;
       this.process.stdout?.on("data", (data) => {
-        const lines = data.toString().split("\n").filter((line) => line.trim());
+        this.buffer += data.toString();
+        const lines = this.buffer.split("\n");
+        this.buffer = lines.pop() || "";
         for (const line of lines) {
+          if (!line.trim()) continue;
           try {
             const message = JSON.parse(line);
             this.handleMessage(message);
