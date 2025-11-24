@@ -94,6 +94,31 @@ function migrateTestScheduleIcon(): void {
 }
 
 /**
+ * Migrate test_runs table to add isScheduled column
+ */
+function migrateTestRunScheduled(): void {
+  console.log("Database: Checking for test_runs isScheduled column...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasIsScheduled = columns.some(col => col.name === 'isScheduled');
+    
+    if (!hasIsScheduled) {
+      console.log("Database: Adding isScheduled column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN isScheduled INTEGER DEFAULT 0");
+      
+      // Initialize existing records as manual tests (not scheduled)
+      const updateStmt = db.prepare("UPDATE test_runs SET isScheduled = 0 WHERE isScheduled IS NULL");
+      const result = updateStmt.run();
+      
+      console.log(`Database: Initialized isScheduled column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run scheduled migration error:", error);
+  }
+}
+
+/**
  * Migrate existing tables to add icon columns
  */
 function migrateIconColumns(): void {
@@ -334,6 +359,9 @@ export function initDatabase(): void {
 
   // Migrate steps column
   migrateTestRunSteps();
+
+  // Migrate test run scheduled column
+  migrateTestRunScheduled();
 
   // Migrate schedule icon column
   migrateTestScheduleIcon();
@@ -723,7 +751,8 @@ export const testRunQueries = {
     const rows = db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all() as any[];
     return rows.map(row => ({
       ...row,
-      steps: row.steps ? JSON.parse(row.steps) : []
+      steps: row.steps ? JSON.parse(row.steps) : [],
+      isScheduled: Boolean(row.isScheduled)
     })) as TestRun[];
   },
   getById: (id: number) => {
@@ -731,17 +760,19 @@ export const testRunQueries = {
     if (!row) return undefined;
     return {
       ...row,
-      steps: row.steps ? JSON.parse(row.steps) : []
+      steps: row.steps ? JSON.parse(row.steps) : [],
+      isScheduled: Boolean(row.isScheduled)
     } as TestRun;
   },
   getByForm: (formId: number) => {
     const rows = db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId) as any[];
     return rows.map(row => ({
       ...row,
-      steps: row.steps ? JSON.parse(row.steps) : []
+      steps: row.steps ? JSON.parse(row.steps) : [],
+      isScheduled: Boolean(row.isScheduled)
     })) as TestRun[];
   },
-  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs),
+  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, id);

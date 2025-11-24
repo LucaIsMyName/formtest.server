@@ -85268,6 +85268,20 @@ const TestResults = () => {
       console.error("Failed to delete test run:", error_0);
     }
   };
+  const handleRunAgain = async (testRun_0) => {
+    try {
+      const form_0 = forms.find((f_0) => f_0.id === testRun_0.formId);
+      const paymentMethod = paymentMethods.find((pm_0) => pm_0.id === testRun_0.paymentMethodId);
+      if (!form_0 || !paymentMethod) {
+        console.error("Form or payment method not found for re-run");
+        return;
+      }
+      await window.api.tests.run([form_0.id], [paymentMethod.id]);
+      await loadTestRuns();
+    } catch (error_1) {
+      console.error("Failed to run test again:", error_1);
+    }
+  };
   const handleCopyUuid = (e3, uuid) => {
     e3.stopPropagation();
     navigator.clipboard.writeText(uuid);
@@ -85316,29 +85330,38 @@ const TestResults = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4", children: "Status" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 text-right", children: "Aktionen" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: testRuns.map((testRun_0) => {
-        const isSelected = selectedTestRun === testRun_0.id;
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: `cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_0.id), children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: testRuns.map((testRun_1) => {
+        const isSelected = selectedTestRun === testRun_1.id;
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: `cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_1.id), children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 group", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: testRun_0.uuid ? testRun_0.uuid.substring(0, 8) : `ID:${testRun_0.id}` }),
-            testRun_0.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => handleCopyUuid(e_0, testRun_0.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: testRun_1.uuid ? testRun_1.uuid.substring(0, 8) : `ID:${testRun_1.id}` }),
+            testRun_1.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => handleCopyUuid(e_0, testRun_1.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `flex-shrink-0 ${testRun_0.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun_0.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun_0.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`, children: getStatusIcon(testRun_0.status) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
-              getFormName(testRun_0.formId),
-              " × ",
-              getPaymentMethodName(testRun_0.paymentMethodId)
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `flex-shrink-0 ${testRun_1.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun_1.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun_1.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`, children: getStatusIcon(testRun_1.status) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
+                getFormName(testRun_1.formId),
+                " × ",
+                getPaymentMethodName(testRun_1.paymentMethodId)
+              ] }),
+              testRun_1.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-blue-600 dark:text-blue-400" }) })
             ] })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDate(testRun_0.runAt) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDuration(testRun_0.durationMs) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun_0.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun_0.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun_0.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`, children: testRun_0.status }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
-            e_1.stopPropagation();
-            handleDeleteClick(testRun_0);
-          }, variant: "ghost", size: "sm", className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300", title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16 }) }) })
-        ] }, testRun_0.id);
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDate(testRun_1.runAt) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDuration(testRun_1.durationMs) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun_1.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun_1.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun_1.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`, children: testRun_1.status }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
+              e_1.stopPropagation();
+              handleRunAgain(testRun_1);
+            }, variant: "ghost", size: "sm", className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300", title: "Test erneut ausführen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16 }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_2) => {
+              e_2.stopPropagation();
+              handleDeleteClick(testRun_1);
+            }, variant: "ghost", size: "sm", className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300", title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16 }) })
+          ] }) })
+        ] }, testRun_1.id);
       }) })
     ] }) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: !!selectedTestRun, onOpenChange: (open) => !open && handleSelectTestRun(null), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { className: "w-full max-w-2xl", children: [
@@ -85349,7 +85372,7 @@ const TestResults = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "ID" }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700", children: selectedTestRunData.uuid || selectedTestRunData.id }),
-              selectedTestRunData.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_2) => handleCopyUuid(e_2, selectedTestRunData.uuid), className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) })
+              selectedTestRunData.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_3) => handleCopyUuid(e_3, selectedTestRunData.uuid), className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) })
             ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [

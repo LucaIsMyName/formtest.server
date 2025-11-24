@@ -48,6 +48,7 @@ export async function createAndRunTest(formId: number, paymentMethodId: number) 
       screenshotPath: undefined,
       errorMessage: undefined,
       durationMs: undefined,
+      isScheduled: true,
     });
 
     const testRunId = testRun.lastInsertRowid as number;

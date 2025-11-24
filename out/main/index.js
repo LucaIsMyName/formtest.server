@@ -161,6 +161,22 @@ function migrateTestScheduleIcon() {
     console.error("Database: Schedule icon migration error:", error);
   }
 }
+function migrateTestRunScheduled() {
+  console.log("Database: Checking for test_runs isScheduled column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasIsScheduled = columns.some((col) => col.name === "isScheduled");
+    if (!hasIsScheduled) {
+      console.log("Database: Adding isScheduled column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN isScheduled INTEGER DEFAULT 0");
+      const updateStmt = db.prepare("UPDATE test_runs SET isScheduled = 0 WHERE isScheduled IS NULL");
+      const result = updateStmt.run();
+      console.log(`Database: Initialized isScheduled column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run scheduled migration error:", error);
+  }
+}
 function migrateIconColumns() {
   console.log("Database: Checking for icon columns...");
   try {
@@ -350,6 +366,7 @@ function initDatabase() {
   console.log("Database: Tables created and default settings inserted");
   migrateTestRunUuid();
   migrateTestRunSteps();
+  migrateTestRunScheduled();
   migrateTestScheduleIcon();
   migrateIconColumns();
   migratePaymentMethodEncryption().catch((error) => {
@@ -661,7 +678,8 @@ const testRunQueries = {
     const rows = db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all();
     return rows.map((row) => ({
       ...row,
-      steps: row.steps ? JSON.parse(row.steps) : []
+      steps: row.steps ? JSON.parse(row.steps) : [],
+      isScheduled: Boolean(row.isScheduled)
     }));
   },
   getById: (id) => {
@@ -669,17 +687,19 @@ const testRunQueries = {
     if (!row) return void 0;
     return {
       ...row,
-      steps: row.steps ? JSON.parse(row.steps) : []
+      steps: row.steps ? JSON.parse(row.steps) : [],
+      isScheduled: Boolean(row.isScheduled)
     };
   },
   getByForm: (formId) => {
     const rows = db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId);
     return rows.map((row) => ({
       ...row,
-      steps: row.steps ? JSON.parse(row.steps) : []
+      steps: row.steps ? JSON.parse(row.steps) : [],
+      isScheduled: Boolean(row.isScheduled)
     }));
   },
-  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs),
+  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
   updateStatus: (id, status, errorMessage, durationMs) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, id);
@@ -1332,7 +1352,8 @@ async function createAndRunTest(formId, paymentMethodId) {
       logDetails: JSON.stringify([`Autopilot test started for ${form.name} with ${paymentMethod.name}`]),
       screenshotPath: void 0,
       errorMessage: void 0,
-      durationMs: void 0
+      durationMs: void 0,
+      isScheduled: true
     });
     const testRunId = testRun.lastInsertRowid;
     runSingleTest(testRunId, form, paymentMethod, settingsMap);
@@ -1588,7 +1609,8 @@ function setupIpcHandlers() {
             logDetails: JSON.stringify([`Test started for ${form.name} with ${paymentMethod.name}`]),
             screenshotPath: void 0,
             errorMessage: void 0,
-            durationMs: void 0
+            durationMs: void 0,
+            isScheduled: false
           });
           testRunIds.push(testRun.lastInsertRowid);
           setImmediate(async () => {

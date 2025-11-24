@@ -203,6 +203,7 @@ export function setupIpcHandlers(): void {
             screenshotPath: undefined,
             errorMessage: undefined,
             durationMs: undefined,
+            isScheduled: false,
           });
 
           testRunIds.push(testRun.lastInsertRowid as number);

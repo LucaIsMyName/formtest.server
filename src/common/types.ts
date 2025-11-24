@@ -70,6 +70,7 @@ export interface TestRun {
   logDetails?: string;
   steps?: TestStep[];
   durationMs?: number;
+  isScheduled?: boolean;
   runAt: Date;
 }
 
@@ -101,7 +102,7 @@ export interface FormSelectors {
 export interface TestConfig {
   headless: boolean;
   timeout: number;
-  retries: number;
+  number: number;
   parallel: boolean;
 }
 

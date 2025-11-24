@@ -7,7 +7,7 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
-import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2 } from "lucide-react";
+import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot } from "lucide-react";
 import type { TestStep } from '../../../common/types';
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
@@ -280,6 +280,27 @@ const TestResults: React.FC = () => {
     }
   };
 
+  const handleRunAgain = async (testRun: any) => {
+    try {
+      // Get the form and payment method for this test run
+      const form = forms.find(f => f.id === testRun.formId);
+      const paymentMethod = paymentMethods.find(pm => pm.id === testRun.paymentMethodId);
+      
+      if (!form || !paymentMethod) {
+        console.error("Form or payment method not found for re-run");
+        return;
+      }
+
+      // Run the test again using the same API as the TestRunDialog
+      await window.api.tests.run([form.id], [paymentMethod.id]);
+      
+      // Refresh the test runs list
+      await loadTestRuns();
+    } catch (error) {
+      console.error("Failed to run test again:", error);
+    }
+  };
+
   const handleCopyUuid = (e: React.MouseEvent, uuid: string) => {
     e.stopPropagation();
     navigator.clipboard.writeText(uuid);
@@ -383,8 +404,15 @@ const TestResults: React.FC = () => {
                         <TableCell className="px-4">
                           <div className="flex items-center gap-2 min-w-0">
                             <div className={`flex-shrink-0 ${testRun.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}>{getStatusIcon(testRun.status)}</div>
-                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                              {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                                {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
+                              </div>
+                              {testRun.isScheduled && (
+                                <div className="flex-shrink-0" title="Autopilot Test">
+                                  <Bot size={12} className="text-blue-600 dark:text-blue-400" />
+                                </div>
+                              )}
                             </div>
                           </div>
                         </TableCell>
@@ -394,17 +422,30 @@ const TestResults: React.FC = () => {
                           <span className={`inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`}>{testRun.status}</span>
                         </TableCell>
                         <TableCell className="px-4 text-right">
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteClick(testRun);
-                            }}
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
-                            title="Löschen">
-                            <Trash2 size={16} />
-                          </Button>
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRunAgain(testRun);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                              title="Test erneut ausführen">
+                              <Play size={16} />
+                            </Button>
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(testRun);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                              title="Löschen">
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
