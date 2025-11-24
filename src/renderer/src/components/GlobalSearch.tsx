@@ -36,7 +36,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-[20vh]">
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center pt-[20vh]">
       <Command
         className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
         shouldFilter={true}>

@@ -81,6 +81,10 @@
   text-rendering: optimizeLegibility;
 }
 
+.condensed {
+  font-stretch: 80% !important;
+}
+
 /* Global H1 style - Stretched */
 h1 {
   font-stretch: 115%; /* Expanded width */

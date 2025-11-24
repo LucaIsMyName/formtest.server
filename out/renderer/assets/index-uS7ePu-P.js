@@ -49211,8 +49211,9 @@ const useTestRunsStore = create((set2, get2) => ({
   }
 }));
 const Button = React$4.forwardRef((t02, ref) => {
-  const $2 = dist.c(20);
+  const $2 = dist.c(21);
   let children;
+  let condensed;
   let disabled;
   let props;
   let t12;
@@ -49227,31 +49228,34 @@ const Button = React$4.forwardRef((t02, ref) => {
       isLoading: t4,
       disabled,
       children,
+      condensed,
       ...props
     } = t02);
     $2[0] = t02;
     $2[1] = children;
-    $2[2] = disabled;
-    $2[3] = props;
-    $2[4] = t12;
-    $2[5] = t2;
-    $2[6] = t3;
-    $2[7] = t4;
+    $2[2] = condensed;
+    $2[3] = disabled;
+    $2[4] = props;
+    $2[5] = t12;
+    $2[6] = t2;
+    $2[7] = t3;
+    $2[8] = t4;
   } else {
     children = $2[1];
-    disabled = $2[2];
-    props = $2[3];
-    t12 = $2[4];
-    t2 = $2[5];
-    t3 = $2[6];
-    t4 = $2[7];
+    condensed = $2[2];
+    disabled = $2[3];
+    props = $2[4];
+    t12 = $2[5];
+    t2 = $2[6];
+    t3 = $2[7];
+    t4 = $2[8];
   }
   const className = t12 === void 0 ? "" : t12;
   const variant = t2 === void 0 ? "primary" : t2;
   const size2 = t3 === void 0 ? "md" : t3;
   const isLoading = t4 === void 0 ? false : t4;
   let t5;
-  if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
     t5 = {
       primary: "font-[700] text-white bg-blue-600 dark:bg-blue-700 border border-1 dark:border-blue-700 border-blue-800 hover:bg-blue-700",
       secondary: "font-[500] text-gray-800 dark:text-gray-200 bg-gray-50 border-1 dark:border-gray-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600",
@@ -49259,59 +49263,60 @@ const Button = React$4.forwardRef((t02, ref) => {
       ghost: "font-[500] text-gray-700 dark:text-gray-300 bg-transparent border-1 border-transparent",
       danger: "font-[700] text-white bg-red-600 dark:bg-red-700 border border-1 dark:border-red-800 border-red-700 hover:bg-red-700 focus:ring-red-500"
     };
-    $2[8] = t5;
+    $2[9] = t5;
   } else {
-    t5 = $2[8];
+    t5 = $2[9];
   }
   const variants = t5;
   let t6;
-  if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
     t6 = {
       sm: "px-2 py-1 text-xs",
       md: "px-3.5 py-1.5 text-sm",
       lg: "px-4 py-2 text-base"
     };
-    $2[9] = t6;
+    $2[10] = t6;
   } else {
-    t6 = $2[9];
+    t6 = $2[10];
   }
   const sizes = t6;
   const variantClasses = variants[variant];
   const sizeClasses = sizes[size2];
+  const condensedClasses = condensed ? "condensed" : null;
   let t7;
-  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
     t7 = {
       fontStretch: "115%"
     };
-    $2[10] = t7;
+    $2[11] = t7;
   } else {
-    t7 = $2[10];
+    t7 = $2[11];
   }
-  const t8 = `${"inline-flex items-center justify-center rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${variantClasses} ${sizeClasses} ${className}`;
+  const t8 = `${"inline-flex items-center justify-center rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
   const t9 = disabled || isLoading;
   let t10;
-  if ($2[11] !== isLoading) {
+  if ($2[12] !== isLoading) {
     t10 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
-    $2[11] = isLoading;
-    $2[12] = t10;
+    $2[12] = isLoading;
+    $2[13] = t10;
   } else {
-    t10 = $2[12];
+    t10 = $2[13];
   }
   let t11;
-  if ($2[13] !== children || $2[14] !== props || $2[15] !== ref || $2[16] !== t10 || $2[17] !== t8 || $2[18] !== t9) {
+  if ($2[14] !== children || $2[15] !== props || $2[16] !== ref || $2[17] !== t10 || $2[18] !== t8 || $2[19] !== t9) {
     t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { ref, style: t7, className: t8, disabled: t9, ...props, children: [
       t10,
       children
     ] });
-    $2[13] = children;
-    $2[14] = props;
-    $2[15] = ref;
-    $2[16] = t10;
-    $2[17] = t8;
-    $2[18] = t9;
-    $2[19] = t11;
+    $2[14] = children;
+    $2[15] = props;
+    $2[16] = ref;
+    $2[17] = t10;
+    $2[18] = t8;
+    $2[19] = t9;
+    $2[20] = t11;
   } else {
-    t11 = $2[19];
+    t11 = $2[20];
   }
   return t11;
 });
@@ -55776,7 +55781,7 @@ const GlobalSearch = (t02) => {
   }
   let t47;
   if ($2[96] !== t45 || $2[97] !== t46) {
-    t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-[20vh]", children: [
+    t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center pt-[20vh]", children: [
       t45,
       t46
     ] });
@@ -80238,7 +80243,7 @@ const Dashboard = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Dashboard" }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 flex flex-wrap items-center gap-4 mb-8", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("run-tests"), disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0, variant: "outline", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("run-tests"), disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0, variant: "outline", condensed: true, className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { className: "w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white", children: isRunning ? "Tests laufen..." : "Tests starten" })
       ] }),
@@ -80381,11 +80386,11 @@ const getDefaultPaymentIcon = (type) => {
 };
 const getDefaultScheduleIcon = (cronExpression) => {
   if (!cronExpression) return "Play";
-  if (cronExpression.includes("* * *")) return "Clock";
   if (cronExpression.includes("9 * * *")) return "Sun";
   if (cronExpression.includes("12 * * *")) return "Sun";
   if (cronExpression.includes("18 * * *")) return "Moon";
   if (cronExpression.includes("* * 1")) return "Calendar";
+  if (cronExpression.includes("* * *")) return "Clock";
   if (cronExpression.includes("0 0 ")) return "Clock";
   return "Play";
 };
@@ -85238,9 +85243,17 @@ const TestResults = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Test Resultate" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: loadTestRuns, variant: "secondary", size: "md", disabled: isLoading, className: "gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 16 }),
-        isLoading ? "Aktualisieren..." : "Aktualisieren"
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => {
+          window.location.href = "/#/";
+        }, variant: "primary", size: "md", className: "gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16 }),
+          "Run Test"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: loadTestRuns, variant: "secondary", size: "md", disabled: isLoading, className: "gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 16 }),
+          isLoading ? "Aktualisieren..." : "Aktualisieren"
+        ] })
       ] })
     ] }),
     error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
@@ -86049,25 +86062,186 @@ const useSchedulesStore = create((set2, get2) => ({
     }
   }
 }));
-const FREQUENCY_OPTIONS = [{
-  label: "Jede Stunde",
-  value: "0 0 * * * *"
-}, {
-  label: "Täglich um 09:00",
-  value: "0 0 9 * * *"
-}, {
-  label: "Täglich um 12:00",
-  value: "0 0 12 * * *"
-}, {
-  label: "Täglich um 18:00",
-  value: "0 0 18 * * *"
-}, {
-  label: "Wöchentlich (Mo 09:00)",
-  value: "0 0 9 * * 1"
-}, {
-  label: "Benutzerdefiniert",
-  value: "custom"
-}];
+const FREQUENCY_OPTIONS = [
+  // Frequent intervals
+  {
+    label: "Alle 5 Minuten",
+    value: "0 */5 * * * *"
+  },
+  {
+    label: "Alle 15 Minuten",
+    value: "0 */15 * * * *"
+  },
+  {
+    label: "Alle 30 Minuten",
+    value: "0 */30 * * * *"
+  },
+  {
+    label: "Jede Stunde",
+    value: "0 0 * * * *"
+  },
+  {
+    label: "Alle 2 Stunden",
+    value: "0 0 */2 * * *"
+  },
+  {
+    label: "Alle 4 Stunden",
+    value: "0 0 */4 * * *"
+  },
+  {
+    label: "Alle 6 Stunden",
+    value: "0 0 */6 * * *"
+  },
+  {
+    label: "Alle 12 Stunden",
+    value: "0 0 */12 * * *"
+  },
+  // Daily schedules - Morning
+  {
+    label: "Täglich um 06:00",
+    value: "0 0 6 * * *"
+  },
+  {
+    label: "Täglich um 07:00",
+    value: "0 0 7 * * *"
+  },
+  {
+    label: "Täglich um 08:00",
+    value: "0 0 8 * * *"
+  },
+  {
+    label: "Täglich um 09:00",
+    value: "0 0 9 * * *"
+  },
+  {
+    label: "Täglich um 10:00",
+    value: "0 0 10 * * *"
+  },
+  // Daily schedules - Afternoon
+  {
+    label: "Täglich um 12:00",
+    value: "0 0 12 * * *"
+  },
+  {
+    label: "Täglich um 14:00",
+    value: "0 0 14 * * *"
+  },
+  {
+    label: "Täglich um 15:00",
+    value: "0 0 15 * * *"
+  },
+  {
+    label: "Täglich um 16:00",
+    value: "0 0 16 * * *"
+  },
+  {
+    label: "Täglich um 17:00",
+    value: "0 0 17 * * *"
+  },
+  // Daily schedules - Evening
+  {
+    label: "Täglich um 18:00",
+    value: "0 0 18 * * *"
+  },
+  {
+    label: "Täglich um 19:00",
+    value: "0 0 19 * * *"
+  },
+  {
+    label: "Täglich um 20:00",
+    value: "0 0 20 * * *"
+  },
+  {
+    label: "Täglich um 21:00",
+    value: "0 0 21 * * *"
+  },
+  {
+    label: "Täglich um 22:00",
+    value: "0 0 22 * * *"
+  },
+  // Weekly schedules
+  {
+    label: "Montags um 09:00",
+    value: "0 0 9 * * 1"
+  },
+  {
+    label: "Dienstags um 09:00",
+    value: "0 0 9 * * 2"
+  },
+  {
+    label: "Mittwochs um 09:00",
+    value: "0 0 9 * * 3"
+  },
+  {
+    label: "Donnerstags um 09:00",
+    value: "0 0 9 * * 4"
+  },
+  {
+    label: "Freitags um 09:00",
+    value: "0 0 9 * * 5"
+  },
+  {
+    label: "Samstags um 09:00",
+    value: "0 0 9 * * 6"
+  },
+  {
+    label: "Sonntags um 09:00",
+    value: "0 0 9 * * 0"
+  },
+  // Workday schedules
+  {
+    label: "Werktags um 08:00",
+    value: "0 0 8 * * 1-5"
+  },
+  {
+    label: "Werktags um 12:00",
+    value: "0 0 12 * * 1-5"
+  },
+  {
+    label: "Werktags um 17:00",
+    value: "0 0 17 * * 1-5"
+  },
+  // Weekend schedules
+  {
+    label: "Wochenende um 10:00",
+    value: "0 0 10 * * 0,6"
+  },
+  {
+    label: "Wochenende um 14:00",
+    value: "0 0 14 * * 0,6"
+  },
+  // Monthly schedules
+  {
+    label: "Monatlich am 1. um 09:00",
+    value: "0 0 9 1 * *"
+  },
+  {
+    label: "Monatlich am 15. um 09:00",
+    value: "0 0 9 15 * *"
+  },
+  {
+    label: "Monatlich am letzten Tag um 09:00",
+    value: "0 0 9 L * *"
+  },
+  // Multiple times per day
+  {
+    label: "3x täglich (08:00, 14:00, 20:00)",
+    value: "0 0 8,14,20 * * *"
+  },
+  {
+    label: "2x täglich (09:00, 18:00)",
+    value: "0 0 9,18 * * *"
+  },
+  {
+    label: "4x täglich (06:00, 12:00, 18:00, 23:00)",
+    value: "0 0 6,12,18,23 * * *"
+  },
+  // Custom option at the end
+  {
+    label: "Benutzerdefiniert",
+    value: "custom"
+  }
+];
 const ScheduleDialog = ({
   isOpen,
   onClose,

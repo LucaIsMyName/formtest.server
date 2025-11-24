@@ -19,11 +19,66 @@ interface ScheduleDialogProps {
 }
 
 const FREQUENCY_OPTIONS = [
+  // Frequent intervals
+  { label: "Alle 5 Minuten", value: "0 */5 * * * *" },
+  { label: "Alle 15 Minuten", value: "0 */15 * * * *" },
+  { label: "Alle 30 Minuten", value: "0 */30 * * * *" },
   { label: "Jede Stunde", value: "0 0 * * * *" },
+  { label: "Alle 2 Stunden", value: "0 0 */2 * * *" },
+  { label: "Alle 4 Stunden", value: "0 0 */4 * * *" },
+  { label: "Alle 6 Stunden", value: "0 0 */6 * * *" },
+  { label: "Alle 12 Stunden", value: "0 0 */12 * * *" },
+  
+  // Daily schedules - Morning
+  { label: "Täglich um 06:00", value: "0 0 6 * * *" },
+  { label: "Täglich um 07:00", value: "0 0 7 * * *" },
+  { label: "Täglich um 08:00", value: "0 0 8 * * *" },
   { label: "Täglich um 09:00", value: "0 0 9 * * *" },
+  { label: "Täglich um 10:00", value: "0 0 10 * * *" },
+  
+  // Daily schedules - Afternoon
   { label: "Täglich um 12:00", value: "0 0 12 * * *" },
+  { label: "Täglich um 14:00", value: "0 0 14 * * *" },
+  { label: "Täglich um 15:00", value: "0 0 15 * * *" },
+  { label: "Täglich um 16:00", value: "0 0 16 * * *" },
+  { label: "Täglich um 17:00", value: "0 0 17 * * *" },
+  
+  // Daily schedules - Evening
   { label: "Täglich um 18:00", value: "0 0 18 * * *" },
-  { label: "Wöchentlich (Mo 09:00)", value: "0 0 9 * * 1" },
+  { label: "Täglich um 19:00", value: "0 0 19 * * *" },
+  { label: "Täglich um 20:00", value: "0 0 20 * * *" },
+  { label: "Täglich um 21:00", value: "0 0 21 * * *" },
+  { label: "Täglich um 22:00", value: "0 0 22 * * *" },
+  
+  // Weekly schedules
+  { label: "Montags um 09:00", value: "0 0 9 * * 1" },
+  { label: "Dienstags um 09:00", value: "0 0 9 * * 2" },
+  { label: "Mittwochs um 09:00", value: "0 0 9 * * 3" },
+  { label: "Donnerstags um 09:00", value: "0 0 9 * * 4" },
+  { label: "Freitags um 09:00", value: "0 0 9 * * 5" },
+  { label: "Samstags um 09:00", value: "0 0 9 * * 6" },
+  { label: "Sonntags um 09:00", value: "0 0 9 * * 0" },
+  
+  // Workday schedules
+  { label: "Werktags um 08:00", value: "0 0 8 * * 1-5" },
+  { label: "Werktags um 12:00", value: "0 0 12 * * 1-5" },
+  { label: "Werktags um 17:00", value: "0 0 17 * * 1-5" },
+  
+  // Weekend schedules
+  { label: "Wochenende um 10:00", value: "0 0 10 * * 0,6" },
+  { label: "Wochenende um 14:00", value: "0 0 14 * * 0,6" },
+  
+  // Monthly schedules
+  { label: "Monatlich am 1. um 09:00", value: "0 0 9 1 * *" },
+  { label: "Monatlich am 15. um 09:00", value: "0 0 9 15 * *" },
+  { label: "Monatlich am letzten Tag um 09:00", value: "0 0 9 L * *" },
+  
+  // Multiple times per day
+  { label: "3x täglich (08:00, 14:00, 20:00)", value: "0 0 8,14,20 * * *" },
+  { label: "2x täglich (09:00, 18:00)", value: "0 0 9,18 * * *" },
+  { label: "4x täglich (06:00, 12:00, 18:00, 23:00)", value: "0 0 6,12,18,23 * * *" },
+  
+  // Custom option at the end
   { label: "Benutzerdefiniert", value: "custom" },
 ];
 

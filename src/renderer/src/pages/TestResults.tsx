@@ -5,9 +5,10 @@ import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+// TODO: Fix TestRunDialog import issue
 import Button from "../components/ui/Button";
 import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2 } from "lucide-react";
-import type { TestRun, TestStep } from '../../../common/types';
+import type { TestStep } from '../../../common/types';
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../components/ui/Drawer";
@@ -301,15 +302,28 @@ const TestResults: React.FC = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className={CONFIG.style.title.className}>Test Resultate</h1>
-        <Button
-          onClick={loadTestRuns}
-          variant="secondary"
-          size="md"
-          disabled={isLoading}
-          className="gap-2">
-          <RefreshCw size={16} />
-          {isLoading ? "Aktualisieren..." : "Aktualisieren"}
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => {
+              // Navigate to dashboard or show simple alert for now
+              window.location.href = '/#/';
+            }}
+            variant="primary"
+            size="md"
+            className="gap-2">
+            <Play size={16} />
+            Run Test
+          </Button>
+          <Button
+            onClick={loadTestRuns}
+            variant="secondary"
+            size="md"
+            disabled={isLoading}
+            className="gap-2">
+            <RefreshCw size={16} />
+            {isLoading ? "Aktualisieren..." : "Aktualisieren"}
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -508,6 +522,8 @@ const TestResults: React.FC = () => {
         itemName={showDeleteConfirm?.name}
         isLoading={isLoading}
       />
+
+      {/* TODO: Add TestRunDialog back when import issue is resolved */}
     </div>
   );
 };

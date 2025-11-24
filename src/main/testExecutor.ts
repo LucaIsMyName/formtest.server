@@ -44,7 +44,7 @@ export async function createAndRunTest(formId: number, paymentMethodId: number) 
       formId: form.id,
       paymentMethodId: paymentMethod.id,
       status: "RUNNING",
-      logDetails: JSON.stringify([`Scheduled test started for ${form.name} with ${paymentMethod.name}`]),
+      logDetails: JSON.stringify([`Autopilot test started for ${form.name} with ${paymentMethod.name}`]),
       screenshotPath: undefined,
       errorMessage: undefined,
       durationMs: undefined,

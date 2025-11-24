@@ -6,9 +6,10 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   children: React.ReactNode;
+  condensed?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "", variant = "primary", size = "md", isLoading = false, disabled, children, ...props }, ref) => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "", variant = "primary", size = "md", isLoading = false, disabled, children, condensed, ...props }, ref) => {
   const baseClasses = "inline-flex items-center justify-center rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
   const variants = {
@@ -27,12 +28,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "
 
   const variantClasses = variants[variant];
   const sizeClasses = sizes[size];
+  const condensedClasses = condensed ? "condensed" : null;
 
   return (
     <button
       ref={ref}
       style={{fontStretch: "115%"}}
-      className={`${baseClasses} ${variantClasses} ${sizeClasses} ${className}`}
+      className={`${baseClasses} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`}
       disabled={disabled || isLoading}
       {...props}>
       {isLoading && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /></>}

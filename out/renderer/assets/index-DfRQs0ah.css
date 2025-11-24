@@ -492,6 +492,9 @@ video {
 .z-50 {
   z-index: 50;
 }
+.z-\[9999\] {
+  z-index: 9999;
+}
 .-mx-1 {
   margin-left: -0.25rem;
   margin-right: -0.25rem;
@@ -1685,6 +1688,10 @@ video {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+.condensed {
+  font-stretch: 80% !important;
 }
 
 /* Global H1 style - Stretched */
