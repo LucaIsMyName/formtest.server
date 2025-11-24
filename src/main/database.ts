@@ -44,6 +44,31 @@ function migrateTestRunUuid(): void {
 }
 
 /**
+ * Migrate test_runs table to add steps column
+ */
+function migrateTestRunSteps(): void {
+  console.log("Database: Checking for test_runs steps column...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasSteps = columns.some(col => col.name === 'steps');
+    
+    if (!hasSteps) {
+      console.log("Database: Adding steps column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN steps TEXT DEFAULT '[]'");
+      
+      // Initialize existing records with empty steps array
+      const updateStmt = db.prepare("UPDATE test_runs SET steps = '[]' WHERE steps IS NULL");
+      const result = updateStmt.run();
+      
+      console.log(`Database: Initialized steps column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Steps migration error:", error);
+  }
+}
+
+/**
  * Migrate existing tables to add icon columns
  */
 function migrateIconColumns(): void {
@@ -281,6 +306,9 @@ export function initDatabase(): void {
   
   // Migrate UUIDs
   migrateTestRunUuid();
+
+  // Migrate steps column
+  migrateTestRunSteps();
 
   // Migrate icon columns
   migrateIconColumns();
@@ -663,10 +691,29 @@ export const settingsQueries = {
 };
 
 export const testRunQueries = {
-  getAll: () => db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all() as TestRun[],
-  getById: (id: number) => db.prepare("SELECT * FROM test_runs WHERE id = ?").get(id) as TestRun | undefined,
-  getByForm: (formId: number) => db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId) as TestRun[],
-  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs),
+  getAll: () => {
+    const rows = db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all() as any[];
+    return rows.map(row => ({
+      ...row,
+      steps: row.steps ? JSON.parse(row.steps) : []
+    })) as TestRun[];
+  },
+  getById: (id: number) => {
+    const row = db.prepare("SELECT * FROM test_runs WHERE id = ?").get(id) as any;
+    if (!row) return undefined;
+    return {
+      ...row,
+      steps: row.steps ? JSON.parse(row.steps) : []
+    } as TestRun;
+  },
+  getByForm: (formId: number) => {
+    const rows = db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId) as any[];
+    return rows.map(row => ({
+      ...row,
+      steps: row.steps ? JSON.parse(row.steps) : []
+    })) as TestRun[];
+  },
+  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs),
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, id);

@@ -47,6 +47,18 @@ export interface GlobalSetting {
   description: string;
 }
 
+export interface TestStep {
+  id: string;
+  name: string;
+  status: 'pending' | 'running' | 'success' | 'error' | 'skipped';
+  startTime: string;
+  endTime?: string;
+  duration?: number;
+  message?: string;
+  metadata?: Record<string, any>;
+  error?: string;
+}
+
 export interface TestRun {
   id: number;
   uuid: string;
@@ -56,6 +68,7 @@ export interface TestRun {
   errorMessage?: string;
   screenshotPath?: string;
   logDetails?: string;
+  steps?: TestStep[];
   durationMs?: number;
   runAt: Date;
 }

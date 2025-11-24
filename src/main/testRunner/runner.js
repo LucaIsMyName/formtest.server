@@ -19,6 +19,8 @@ class TestRunner {
     this.page = null
     this.config = {}
     this.logs = []
+    this.steps = []
+    this.currentStep = null
 
     this.buffer = ''
 
@@ -32,6 +34,101 @@ class TestRunner {
     process.on('uncaughtException', this.handleError.bind(this))
 
     this.log('Test runner process started')
+  }
+
+  /**
+   * Start a new test step
+   * @param {string} stepId - Unique identifier for the step
+   * @param {string} stepName - Human-readable step name
+   * @param {Object} metadata - Additional step metadata
+   * @returns {Object} The created step object
+   */
+  startStep(stepId, stepName, metadata = {}) {
+    const step = {
+      id: stepId,
+      name: stepName,
+      status: 'running',
+      startTime: new Date().toISOString(),
+      metadata
+    }
+    
+    this.steps.push(step)
+    this.currentStep = step
+    this.log(`STEP_START: ${stepName}`, { stepId, metadata })
+    return step
+  }
+
+  /**
+   * Complete a test step
+   * @param {string} stepId - Step identifier
+   * @param {string} status - Final status (success, error, skipped)
+   * @param {string} message - Optional completion message
+   * @param {Object} metadata - Additional metadata to merge
+   */
+  completeStep(stepId, status = 'success', message = '', metadata = {}) {
+    const step = this.steps.find(s => s.id === stepId)
+    if (step) {
+      step.status = status
+      step.endTime = new Date().toISOString()
+      step.duration = new Date(step.endTime) - new Date(step.startTime)
+      step.message = message
+      step.metadata = { ...step.metadata, ...metadata }
+      
+      this.log(`STEP_COMPLETE: ${step.name} - ${status}`, { 
+        stepId, 
+        duration: step.duration,
+        message,
+        metadata 
+      })
+    }
+    
+    if (this.currentStep?.id === stepId) {
+      this.currentStep = null
+    }
+  }
+
+  /**
+   * Fail a test step with error
+   * @param {string} stepId - Step identifier
+   * @param {string} error - Error message
+   * @param {Object} metadata - Additional metadata
+   */
+  failStep(stepId, error, metadata = {}) {
+    const step = this.steps.find(s => s.id === stepId)
+    if (step) {
+      step.error = error
+    }
+    this.completeStep(stepId, 'error', error, metadata)
+  }
+
+  /**
+   * Skip a test step
+   * @param {string} stepId - Step identifier
+   * @param {string} reason - Reason for skipping
+   * @param {Object} metadata - Additional metadata
+   */
+  skipStep(stepId, reason, metadata = {}) {
+    this.completeStep(stepId, 'skipped', reason, metadata)
+  }
+
+  /**
+   * Detect payment provider from URL
+   * @param {string} url - The redirect URL
+   * @returns {string} The detected payment provider
+   */
+  detectPaymentProvider(url) {
+    const lowerUrl = url.toLowerCase()
+    if (lowerUrl.includes('paypal')) return 'PayPal'
+    if (lowerUrl.includes('stripe')) return 'Stripe'
+    if (lowerUrl.includes('klarna')) return 'Klarna'
+    if (lowerUrl.includes('sofort')) return 'Sofort'
+    if (lowerUrl.includes('giropay')) return 'Giropay'
+    if (lowerUrl.includes('eps')) return 'EPS'
+    if (lowerUrl.includes('sepa')) return 'SEPA'
+    if (lowerUrl.includes('visa')) return 'Visa'
+    if (lowerUrl.includes('mastercard')) return 'Mastercard'
+    if (lowerUrl.includes('amex')) return 'American Express'
+    return 'Unknown'
   }
 
   handleData(chunk) {
@@ -148,13 +245,31 @@ class TestRunner {
   async runFormTest(form, paymentMethod) {
     const startTime = Date.now()
 
+    // Step 1: Browser Initialization (if needed)
     if (!this.page) {
-      throw new Error('Browser not initialized')
+      const browserStep = this.startStep('browser-init', 'Initialize Browser', {
+        browserType: 'chromium',
+        headless: this.config.headless
+      })
+      
+      try {
+        await this.initializeBrowser()
+        this.completeStep('browser-init', 'success', 'Browser initialized successfully')
+      } catch (error) {
+        this.failStep('browser-init', error.message)
+        throw error
+      }
     }
+
+    // Step 2: Page Navigation
+    const navStep = this.startStep('page-navigation', 'Navigate to URL', {
+      url: form.url
+    })
 
     this.log(`Navigating to: ${form.url}`)
 
     // Try multiple navigation strategies for better reliability
+    const navStartTime = Date.now()
     try {
       await this.page.goto(form.url, {
         waitUntil: 'domcontentloaded',
@@ -164,6 +279,12 @@ class TestRunner {
 
       // Wait a bit more for dynamic content
       await this.page.waitForTimeout(2000)
+
+      const loadTime = Date.now() - navStartTime
+      this.completeStep('page-navigation', 'success', `Page loaded in ${loadTime}ms`, {
+        loadTime,
+        strategy: 'domcontentloaded'
+      })
 
     } catch (error) {
       this.log(`Navigation with domcontentloaded failed: ${error.message}`)
@@ -175,25 +296,45 @@ class TestRunner {
           timeout: 20000
         })
         this.log('Page loaded with load event')
+        
+        const loadTime = Date.now() - navStartTime
+        this.completeStep('page-navigation', 'success', `Page loaded in ${loadTime}ms (fallback)`, {
+          loadTime,
+          strategy: 'load'
+        })
       } catch (fallbackError) {
         this.log(`Navigation with load failed: ${fallbackError.message}`)
+        this.failStep('page-navigation', `Failed to navigate: ${fallbackError.message}`)
         throw new Error(`Failed to navigate to ${form.url}: ${fallbackError.message}`)
       }
     }
 
-    // Handle cookie consent first
+    // Step 3: Cookie Handling
+    const cookieStep = this.startStep('cookie-handling', 'Handle Cookie Banner')
     await this.handleCookieConsent()
 
     // Take initial screenshot
     const screenshotPath = await this.takeScreenshot('initial')
 
-    // Analyze and fill form
+    // Step 4: Form Analysis
+    const analysisStep = this.startStep('form-analysis', 'Analyze Form Structure')
     const formAnalysis = await this.analyzeAndFillForm()
+    this.completeStep('form-analysis', 'success', `Found ${formAnalysis.fields?.length || 0} form fields`, {
+      fieldsFound: formAnalysis.fields?.length || 0,
+      formType: 'donation'
+    })
 
-    // Handle payment method
+    // Step 5: Payment Method Selection
+    const paymentStep = this.startStep('payment-selection', 'Select Payment Method', {
+      paymentMethod: paymentMethod.type
+    })
     await this.handlePaymentMethod(paymentMethod, formAnalysis)
+    this.completeStep('payment-selection', 'success', `Selected payment method: ${paymentMethod.type}`, {
+      paymentMethod: paymentMethod.type
+    })
 
-    // Check for invalid interval/payment combination
+    // Step 6: Validation Check
+    const validationStep = this.startStep('validation-check', 'Validate Form Data')
     const interval = parseInt(this.config.defaultInterval || '0')
     const isRecurring = interval > 0
     const isSepa = paymentMethod.type.toLowerCase() === 'sepa'
@@ -202,14 +343,28 @@ class TestRunner {
       this.log(`VALIDATION: Recurring payment (interval=${interval}) requires SEPA. Found: ${paymentMethod.type}`)
       this.log('Skipping submission as this combination should not be submitted.')
       
-      // Take final screenshot (skipped submission)
+      this.completeStep('validation-check', 'success', 'Invalid recurring payment combination detected', {
+        isValid: false,
+        validationRules: ['recurring_requires_sepa'],
+        interval,
+        paymentMethod: paymentMethod.type
+      })
+
+      // Step 7: Screenshot Capture (skipped)
+      const screenshotStep = this.startStep('screenshot-capture', 'Capture Screenshot')
       const finalScreenshotPath = await this.takeScreenshot('final_skipped')
+      this.completeStep('screenshot-capture', 'success', 'Screenshot captured (test skipped)', {
+        screenshotPath: finalScreenshotPath,
+        screenshotType: 'final_skipped'
+      })
+
       const duration = Date.now() - startTime
 
       return {
         success: true,
         duration,
         logs: [...this.logs],
+        steps: [...this.steps],
         screenshot: finalScreenshotPath,
         formAnalysis,
         skippedSubmission: true,
@@ -217,24 +372,61 @@ class TestRunner {
       }
     }
 
-    // Submit form
-    await this.submitForm()
+    this.completeStep('validation-check', 'success', 'Form data validation passed', {
+      isValid: true,
+      validationRules: ['recurring_requires_sepa'],
+      interval,
+      paymentMethod: paymentMethod.type
+    })
 
-    // Wait for success redirect
-    const successResult = await this.waitForSuccessRedirect()
+    // Step 7: Form Submission
+    const submissionStep = this.startStep('form-submission', 'Submit Form')
+    try {
+      await this.submitForm()
+      this.completeStep('form-submission', 'success', 'Form submitted successfully')
+    } catch (error) {
+      this.failStep('form-submission', `Form submission failed: ${error.message}`)
+      throw error
+    }
 
-    // Take final screenshot
-    const finalScreenshotPath = await this.takeScreenshot('final')
+    // Step 8: Success Detection
+    const successStep = this.startStep('redirect-detection', 'Detect Payment Redirect')
+    try {
+      const successResult = await this.waitForSuccessRedirect()
+      this.completeStep('redirect-detection', 'success', `Redirected to payment provider`, {
+        redirectUrl: successResult.url,
+        paymentProvider: this.detectPaymentProvider(successResult.url)
+      })
 
-    const duration = Date.now() - startTime
+      // Step 9: Success Confirmation
+      const confirmationStep = this.startStep('success-confirmation', 'Confirm Test Success')
+      this.completeStep('success-confirmation', 'success', 'Test completed successfully', {
+        successType: 'redirect',
+        finalUrl: successResult.url
+      })
 
-    return {
-      success: true,
-      duration,
-      logs: [...this.logs],
-      screenshot: finalScreenshotPath,
-      formAnalysis,
-      redirectUrl: successResult.url
+      // Step 10: Screenshot Capture
+      const screenshotStep = this.startStep('screenshot-capture', 'Capture Screenshot')
+      const finalScreenshotPath = await this.takeScreenshot('final')
+      this.completeStep('screenshot-capture', 'success', 'Final screenshot captured', {
+        screenshotPath: finalScreenshotPath,
+        screenshotType: 'final'
+      })
+
+      const duration = Date.now() - startTime
+
+      return {
+        success: true,
+        duration,
+        logs: [...this.logs],
+        steps: [...this.steps],
+        screenshot: finalScreenshotPath,
+        formAnalysis,
+        redirectUrl: successResult.url
+      }
+    } catch (error) {
+      this.failStep('redirect-detection', `Success detection failed: ${error.message}`)
+      throw error
     }
   }
 
@@ -542,6 +734,11 @@ class TestRunner {
                 this.log('Cookie banner handling completed')
               })
 
+              this.completeStep('cookie-handling', 'success', 'Cookie banner accepted', {
+                cookieBannerFound: true,
+                action: 'accepted',
+                buttonSelector: selector
+              })
               return
             }
           } catch (error) {
@@ -550,9 +747,17 @@ class TestRunner {
         }
 
         this.log('Could not find accept button, trying to close banner')
+        this.completeStep('cookie-handling', 'success', 'Cookie banner found but could not accept', {
+          cookieBannerFound: true,
+          action: 'none'
+        })
       }
     } catch (error) {
       this.log('No cookie banner found or timeout - continuing with form')
+      this.completeStep('cookie-handling', 'success', 'No cookie banner detected', {
+        cookieBannerFound: false,
+        action: 'none'
+      })
     }
   }
 

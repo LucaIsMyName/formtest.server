@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
 import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
-import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Clock } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Play } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
 
 interface LayoutProps {
@@ -72,8 +72,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Formulare", href: "/forms", icon: FileText },
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
+    { name: "Autopilot", href: "/schedules", icon: Play },
     { name: "Test Resultate", href: "/test-results", icon: BarChart3 },
-    { name: "Zeitpläne", href: "/schedules", icon: Clock },
     { name: "Einstellungen", href: "/settings", icon: Settings },
     { name: "Info & Doku", href: "/info-doku", icon: BookOpen },
   ];

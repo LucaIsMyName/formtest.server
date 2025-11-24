@@ -71,7 +71,8 @@ const Schedules: React.FC = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className={CONFIG.style.title.className}>Zeitpläne</h1>
+        <h1 className={CONFIG.style.title.className}>Autopilot</h1>
+        
         <Button
           onClick={() => setIsCreateOpen(true)}
           className="gap-2">
@@ -79,7 +80,6 @@ const Schedules: React.FC = () => {
           Neuer Zeitplan
         </Button>
       </div>
-
       {error && <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800">{error}</div>}
 
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">

@@ -7,9 +7,10 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
 import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2 } from "lucide-react";
+import type { TestRun, TestStep } from '../../../common/types';
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "../components/ui/Drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../components/ui/Drawer";
 
 const TestResultsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
@@ -65,7 +66,7 @@ interface TimelineStep {
   type: "info" | "success" | "error" | "warning";
 }
 
-const TestTimeline: React.FC<{ logDetails?: string; status: string }> = ({ logDetails, status }) => {
+const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: string }> = ({ steps: structuredSteps, logDetails, status }) => {
   const parseLogDetails = (logs?: string): TimelineStep[] => {
     if (!logs) return [];
 
@@ -105,7 +106,20 @@ const TestTimeline: React.FC<{ logDetails?: string; status: string }> = ({ logDe
     return { timestamp, message, type };
   };
 
-  const steps = parseLogDetails(logDetails);
+  // Convert structured steps to timeline format or fallback to log parsing
+  const convertStructuredSteps = (steps: TestStep[]): TimelineStep[] => {
+    return steps.map(step => ({
+      timestamp: step.startTime,
+      message: step.message || step.name,
+      type: step.status === 'success' ? 'success' : 
+            step.status === 'error' ? 'error' : 
+            step.status === 'skipped' ? 'warning' : 'info'
+    }));
+  };
+
+  const timelineSteps = structuredSteps?.length ? 
+    convertStructuredSteps(structuredSteps) : 
+    parseLogDetails(logDetails);
 
   // Add final status step
   const finalStep: TimelineStep = {
@@ -113,7 +127,7 @@ const TestTimeline: React.FC<{ logDetails?: string; status: string }> = ({ logDe
     type: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "warning" : "info",
   };
 
-  const allSteps = [...steps, finalStep];
+  const allSteps = [...timelineSteps, finalStep];
 
   const getStepIcon = (type: TimelineStep["type"]) => {
     switch (type) {
@@ -393,16 +407,15 @@ const TestResults: React.FC = () => {
         open={!!selectedTestRun}
         onOpenChange={(open) => !open && handleSelectTestRun(null)}>
         <DrawerContent className="w-full max-w-2xl">
-          <DrawerHeader>
-            <DrawerTitle>Test Details</DrawerTitle>
-            <DrawerDescription>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerDescription>
+          <DrawerHeader className="mb-6 pb-6 border-b dark:border-gray-700">
+            <DrawerTitle className={CONFIG.style.title.className}>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerTitle>
           </DrawerHeader>
 
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto space-y-6">
             {selectedTestRunData ? (
               <>
                 {/* Basic Info */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b dark:border-gray-700">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">ID</label>
                     <div className="flex items-center gap-2">
@@ -438,15 +451,16 @@ const TestResults: React.FC = () => {
 
                 {/* Error Message */}
                 {selectedTestRunData.errorMessage && (
-                  <div>
+                  <div className="mb-6 pb-6 border-b dark:border-gray-700 ">
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Error Message</label>
                     <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-800 dark:text-red-200 font-mono">{selectedTestRunData.errorMessage}</div>
                   </div>
                 )}
 
                 {/* Test Timeline */}
-                {selectedTestRunData.logDetails && (
+                {(selectedTestRunData.steps?.length || selectedTestRunData.logDetails) && (
                   <TestTimeline
+                    steps={selectedTestRunData.steps}
                     logDetails={selectedTestRunData.logDetails}
                     status={selectedTestRunData.status}
                   />

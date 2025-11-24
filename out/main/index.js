@@ -129,6 +129,22 @@ function migrateTestRunUuid() {
     console.error("Database: UUID migration error:", error);
   }
 }
+function migrateTestRunSteps() {
+  console.log("Database: Checking for test_runs steps column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasSteps = columns.some((col) => col.name === "steps");
+    if (!hasSteps) {
+      console.log("Database: Adding steps column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN steps TEXT DEFAULT '[]'");
+      const updateStmt = db.prepare("UPDATE test_runs SET steps = '[]' WHERE steps IS NULL");
+      const result = updateStmt.run();
+      console.log(`Database: Initialized steps column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Steps migration error:", error);
+  }
+}
 function migrateIconColumns() {
   console.log("Database: Checking for icon columns...");
   try {
@@ -317,6 +333,7 @@ function initDatabase() {
   }
   console.log("Database: Tables created and default settings inserted");
   migrateTestRunUuid();
+  migrateTestRunSteps();
   migrateIconColumns();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
@@ -623,10 +640,29 @@ const settingsQueries = {
   set: (key, value, description) => db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(key, value, description)
 };
 const testRunQueries = {
-  getAll: () => db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all(),
-  getById: (id) => db.prepare("SELECT * FROM test_runs WHERE id = ?").get(id),
-  getByForm: (formId) => db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId),
-  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, testRun.durationMs),
+  getAll: () => {
+    const rows = db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all();
+    return rows.map((row) => ({
+      ...row,
+      steps: row.steps ? JSON.parse(row.steps) : []
+    }));
+  },
+  getById: (id) => {
+    const row = db.prepare("SELECT * FROM test_runs WHERE id = ?").get(id);
+    if (!row) return void 0;
+    return {
+      ...row,
+      steps: row.steps ? JSON.parse(row.steps) : []
+    };
+  },
+  getByForm: (formId) => {
+    const rows = db.prepare("SELECT * FROM test_runs WHERE formId = ? ORDER BY runAt DESC").all(formId);
+    return rows.map((row) => ({
+      ...row,
+      steps: row.steps ? JSON.parse(row.steps) : []
+    }));
+  },
+  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs),
   updateStatus: (id, status, errorMessage, durationMs) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, id);
