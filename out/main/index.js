@@ -1271,7 +1271,7 @@ async function createAndRunTest(formId, paymentMethodId) {
       formId: form.id,
       paymentMethodId: paymentMethod.id,
       status: "RUNNING",
-      logDetails: JSON.stringify([`Scheduled test started for ${form.name} with ${paymentMethod.name}`]),
+      logDetails: JSON.stringify([`Autopilot test started for ${form.name} with ${paymentMethod.name}`]),
       screenshotPath: void 0,
       errorMessage: void 0,
       durationMs: void 0

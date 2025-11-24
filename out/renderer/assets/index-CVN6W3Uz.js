@@ -55912,8 +55912,15 @@ const Layout = (t02) => {
           setShowSearch(false);
         }
       };
+      const handleOpenTestDialog = () => {
+        setShowTestDialog(true);
+      };
       window.addEventListener("keydown", handleKeyDown);
-      return () => window.removeEventListener("keydown", handleKeyDown);
+      window.addEventListener("openTestDialog", handleOpenTestDialog);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("openTestDialog", handleOpenTestDialog);
+      };
     };
     t11 = [];
     $2[15] = t10;
@@ -80243,10 +80250,19 @@ const Dashboard = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Dashboard" }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 flex flex-wrap items-center gap-4 mb-8", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("run-tests"), disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0, variant: "outline", condensed: true, className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { className: "w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white", children: isRunning ? "Tests laufen..." : "Tests starten" })
-      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        Button,
+        {
+          onClick: () => handleQuickAction("run-tests"),
+          disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0,
+          variant: "outline",
+          className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300",
+          children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { className: "w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white", children: isRunning ? "Tests laufen..." : "Tests starten" })
+          ]
+        }
+      ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("add-form"), variant: "outline", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-5 h-5 text-blue-500 dark:text-blue-400 mr-2 group-hover:scale-110 transition-transform" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white", children: "Formular" })
@@ -85245,7 +85261,7 @@ const TestResults = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Test Resultate" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => {
-          window.location.href = "/#/";
+          window.dispatchEvent(new Event("openTestDialog"));
         }, variant: "primary", size: "md", className: "gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16 }),
           "Run Test"

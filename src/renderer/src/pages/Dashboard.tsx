@@ -231,7 +231,7 @@ const Dashboard: React.FC = () => {
           onClick={() => handleQuickAction("run-tests")}
           disabled={stats.activeForms === 0 || stats.activePaymentMethods === 0}
           variant="outline"
-          condensed={true}
+          // condensed={true}
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <Terminal className="w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" />
           <span className="text-sm text-gray-900 dark:text-white">{isRunning ? "Tests laufen..." : "Tests starten"}</span>

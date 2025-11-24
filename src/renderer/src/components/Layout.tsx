@@ -64,8 +64,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     };
 
+    // Global event listener for opening test dialog from any page
+    const handleOpenTestDialog = () => {
+      setShowTestDialog(true);
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("openTestDialog", handleOpenTestDialog);
+    
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("openTestDialog", handleOpenTestDialog);
+    };
   }, []);
 
   const navigation = [
