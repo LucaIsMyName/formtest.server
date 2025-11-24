@@ -101,9 +101,9 @@ const Schedules: React.FC = () => {
               <TableRow>
                 <TableHead className="w-12"></TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Test Konfiguration</TableHead>
-                <TableHead>Häufigkeit (Cron)</TableHead>
-                <TableHead>Letzte Ausführung</TableHead>
+                <TableHead>Konfiguration</TableHead>
+                <TableHead>Cron</TableHead>
+                <TableHead>Ausgeführt</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>

@@ -84340,6 +84340,7 @@ const Settings = () => {
     includeForms: true,
     includePaymentMethods: true,
     includeTestRuns: true,
+    includeSchedules: true,
     includeSettings: true
   });
   const [importMode, setImportMode] = reactExports.useState("merge");
@@ -84577,9 +84578,16 @@ const Settings = () => {
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-runs", children: "Test Resultate" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_2) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-schedules", checked: exportOptions.includeSchedules, onCheckedChange: (checked_2) => setExportOptions({
                   ...exportOptions,
-                  includeSettings: checked_2 === true
+                  includeSchedules: checked_2 === true
+                }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-schedules", children: "Autopilot (Zeitpläne)" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_3) => setExportOptions({
+                  ...exportOptions,
+                  includeSettings: checked_3 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-settings", children: "Einstellungen" })
               ] })
@@ -84599,7 +84607,7 @@ const Settings = () => {
               } finally {
                 setIsExporting(false);
               }
-            }, variant: "primary", size: "md", disabled: isExporting || !exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings, isLoading: isExporting, className: "flex items-center gap-2", children: [
+            }, variant: "primary", size: "md", disabled: isExporting || !exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSchedules && !exportOptions.includeSettings, isLoading: isExporting, className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Download, { size: 16 }),
               isExporting ? "Exportiere..." : "Daten exportieren"
             ] }),
@@ -84628,30 +84636,37 @@ const Settings = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3 mb-4", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Zu importierende Daten:" }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-forms", checked: exportOptions.includeForms, onCheckedChange: (checked_3) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-forms", checked: exportOptions.includeForms, onCheckedChange: (checked_4) => setExportOptions({
                   ...exportOptions,
-                  includeForms: checked_3 === true
+                  includeForms: checked_4 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-forms", children: "Formulare" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-payment", checked: exportOptions.includePaymentMethods, onCheckedChange: (checked_4) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-payment", checked: exportOptions.includePaymentMethods, onCheckedChange: (checked_5) => setExportOptions({
                   ...exportOptions,
-                  includePaymentMethods: checked_4 === true
+                  includePaymentMethods: checked_5 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-payment", children: "Bezahlmethoden" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-runs", checked: exportOptions.includeTestRuns, onCheckedChange: (checked_5) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-runs", checked: exportOptions.includeTestRuns, onCheckedChange: (checked_6) => setExportOptions({
                   ...exportOptions,
-                  includeTestRuns: checked_5 === true
+                  includeTestRuns: checked_6 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-runs", children: "Test Resultate" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_6) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-schedules", checked: exportOptions.includeSchedules, onCheckedChange: (checked_7) => setExportOptions({
                   ...exportOptions,
-                  includeSettings: checked_6 === true
+                  includeSchedules: checked_7 === true
+                }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-schedules", children: "Autopilot (Zeitpläne)" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_8) => setExportOptions({
+                  ...exportOptions,
+                  includeSettings: checked_8 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-settings", children: "Einstellungen" })
               ] })
@@ -84669,12 +84684,14 @@ const Settings = () => {
                     forms: 0,
                     paymentMethods: 0,
                     testRuns: 0,
+                    schedules: 0,
                     settings: 0
                   },
                   skipped: {
                     forms: 0,
                     paymentMethods: 0,
                     testRuns: 0,
+                    schedules: 0,
                     settings: 0
                   },
                   errors: [`Import fehlgeschlagen: ${error_2.message}`],
@@ -84683,7 +84700,7 @@ const Settings = () => {
               } finally {
                 setIsImporting(false);
               }
-            }, variant: "secondary", size: "md", disabled: isImporting || !exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings, isLoading: isImporting, className: "flex items-center gap-2", children: [
+            }, variant: "secondary", size: "md", disabled: isImporting || !exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSchedules && !exportOptions.includeSettings, isLoading: isImporting, className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Upload, { size: 16 }),
               isImporting ? "Importiere..." : "Daten importieren"
             ] }),
@@ -84712,12 +84729,17 @@ const Settings = () => {
                         importResult.imported.testRuns,
                         " Test Resultate"
                       ] }),
+                      importResult.imported.schedules > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.imported.schedules,
+                        " Autopilot (Zeitpläne)"
+                      ] }),
                       importResult.imported.settings > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
                         "• ",
                         importResult.imported.settings,
                         " Einstellungen"
                       ] }),
-                      importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.settings === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "italic text-gray-500", children: "Keine Daten importiert" })
+                      importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.schedules === 0 && importResult.imported.settings === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "italic text-gray-500", children: "Keine Daten importiert" })
                     ] })
                   ] }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -84738,12 +84760,17 @@ const Settings = () => {
                         importResult.skipped.testRuns,
                         " Test Resultate"
                       ] }),
+                      importResult.skipped.schedules > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                        "• ",
+                        importResult.skipped.schedules,
+                        " Autopilot (Zeitpläne)"
+                      ] }),
                       importResult.skipped.settings > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
                         "• ",
                         importResult.skipped.settings,
                         " Einstellungen"
                       ] }),
-                      importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.settings === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "italic text-gray-500", children: "Keine Daten übersprungen" })
+                      importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.schedules === 0 && importResult.skipped.settings === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "italic text-gray-500", children: "Keine Daten übersprungen" })
                     ] })
                   ] })
                 ] }),
@@ -85264,7 +85291,7 @@ const TestResults = () => {
           window.dispatchEvent(new Event("openTestDialog"));
         }, variant: "primary", size: "md", className: "gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16 }),
-          "Run Test"
+          "Testen"
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: loadTestRuns, variant: "secondary", size: "md", disabled: isLoading, className: "gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 16 }),
@@ -86505,9 +86532,9 @@ const Schedules = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-12" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Name" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Test Konfiguration" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Häufigkeit (Cron)" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Letzte Ausführung" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Konfiguration" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Cron" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Ausgeführt" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Status" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
       ] }) }),

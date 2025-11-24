@@ -780,6 +780,10 @@ const exportQueries = {
         exportData.data.testRuns = testRunQueries.getAll();
         console.log(`Database: Exported ${exportData.data.testRuns.length} test runs`);
       }
+      if (options.includeSchedules) {
+        exportData.data.testSchedules = testScheduleQueries.getAll();
+        console.log(`Database: Exported ${exportData.data.testSchedules.length} schedules`);
+      }
       if (options.includeSettings) {
         exportData.data.settings = settingsQueries.getAll();
         console.log(`Database: Exported ${exportData.data.settings.length} settings`);
@@ -796,8 +800,8 @@ const importQueries = {
     console.log("Database: Starting overwrite import");
     const result = {
       success: true,
-      imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
-      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      imported: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 },
+      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 },
       errors: [],
       warnings: []
     };
@@ -814,6 +818,10 @@ const importQueries = {
       if (options.includeTestRuns && data.data.testRuns) {
         db.exec("DELETE FROM test_runs");
         console.log("Database: Cleared test_runs table");
+      }
+      if (options.includeSchedules && data.data.testSchedules) {
+        db.exec("DELETE FROM test_schedules");
+        console.log("Database: Cleared test_schedules table");
       }
       if (options.includeSettings && data.data.settings) {
         db.exec("DELETE FROM global_settings WHERE key != 'theme'");
@@ -873,6 +881,23 @@ const importQueries = {
           }
         }
       }
+      if (options.includeSchedules && data.data.testSchedules) {
+        for (const schedule of data.data.testSchedules) {
+          try {
+            testScheduleQueries.create({
+              name: schedule.name,
+              formId: schedule.formId,
+              paymentMethodId: schedule.paymentMethodId,
+              cronExpression: schedule.cronExpression,
+              isActive: schedule.isActive,
+              icon: schedule.icon
+            });
+            result.imported.schedules++;
+          } catch (error) {
+            result.errors.push(`Failed to import schedule "${schedule.name}": ${error.message}`);
+          }
+        }
+      }
       if (options.includeSettings && data.data.settings) {
         for (const setting of data.data.settings) {
           try {
@@ -899,8 +924,8 @@ const importQueries = {
     console.log("Database: Starting merge import");
     const result = {
       success: true,
-      imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
-      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+      imported: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 },
+      skipped: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 },
       errors: [],
       warnings: []
     };
@@ -1006,6 +1031,39 @@ const importQueries = {
             }
           } catch (error) {
             result.errors.push(`Failed to merge test run: ${error.message}`);
+          }
+        }
+      }
+      if (options.includeSchedules && data.data.testSchedules) {
+        const existingSchedules = testScheduleQueries.getAll();
+        for (const schedule of data.data.testSchedules) {
+          try {
+            const newFormId = idMap.forms.get(schedule.formId) || schedule.formId;
+            const newPaymentMethodId = idMap.paymentMethods.get(schedule.paymentMethodId) || schedule.paymentMethodId;
+            const existing = existingSchedules.find((s) => s.name === schedule.name);
+            if (existing) {
+              testScheduleQueries.update(existing.id, {
+                formId: newFormId,
+                paymentMethodId: newPaymentMethodId,
+                cronExpression: schedule.cronExpression,
+                isActive: schedule.isActive,
+                icon: schedule.icon
+              });
+              result.imported.schedules++;
+              result.warnings.push(`Updated schedule "${schedule.name}"`);
+            } else {
+              testScheduleQueries.create({
+                name: schedule.name,
+                formId: newFormId,
+                paymentMethodId: newPaymentMethodId,
+                cronExpression: schedule.cronExpression,
+                isActive: schedule.isActive,
+                icon: schedule.icon
+              });
+              result.imported.schedules++;
+            }
+          } catch (error) {
+            result.errors.push(`Failed to merge schedule "${schedule.name}": ${error.message}`);
           }
         }
       }

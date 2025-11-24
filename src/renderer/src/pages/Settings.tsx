@@ -58,6 +58,7 @@ const Settings: React.FC = () => {
     includeForms: true,
     includePaymentMethods: true,
     includeTestRuns: true,
+    includeSchedules: true,
     includeSettings: true,
   });
   const [importMode, setImportMode] = useState<"overwrite" | "merge">("merge");
@@ -475,6 +476,19 @@ const Settings: React.FC = () => {
 
                   <div className="flex items-center space-x-2">
                     <Checkbox
+                      id="export-schedules"
+                      checked={exportOptions.includeSchedules}
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeSchedules: checked === true })}
+                    />
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="export-schedules">
+                      Autopilot (Zeitpläne)
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
                       id="export-settings"
                       checked={exportOptions.includeSettings}
                       onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeSettings: checked === true })}
@@ -506,7 +520,7 @@ const Settings: React.FC = () => {
                   }}
                   variant="primary"
                   size="md"
-                  disabled={isExporting || (!exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings)}
+                  disabled={isExporting || (!exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSchedules && !exportOptions.includeSettings)}
                   isLoading={isExporting}
                   className="flex items-center gap-2">
                   <Download size={16} />
@@ -607,6 +621,19 @@ const Settings: React.FC = () => {
 
                   <div className="flex items-center space-x-2">
                     <Checkbox
+                      id="import-schedules"
+                      checked={exportOptions.includeSchedules}
+                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeSchedules: checked === true })}
+                    />
+                    <Label
+                      className="font-normal cursor-pointer text-gray-800 dark:text-gray-400"
+                      htmlFor="import-schedules">
+                      Autopilot (Zeitpläne)
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
                       id="import-settings"
                       checked={exportOptions.includeSettings}
                       onCheckedChange={(checked) => setExportOptions({ ...exportOptions, includeSettings: checked === true })}
@@ -629,8 +656,8 @@ const Settings: React.FC = () => {
                     } catch (error: any) {
                       setImportResult({
                         success: false,
-                        imported: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
-                        skipped: { forms: 0, paymentMethods: 0, testRuns: 0, settings: 0 },
+                        imported: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 },
+                        skipped: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 },
                         errors: [`Import fehlgeschlagen: ${error.message}`],
                         warnings: [],
                       });
@@ -640,7 +667,7 @@ const Settings: React.FC = () => {
                   }}
                   variant="secondary"
                   size="md"
-                  disabled={isImporting || (!exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSettings)}
+                  disabled={isImporting || (!exportOptions.includeForms && !exportOptions.includePaymentMethods && !exportOptions.includeTestRuns && !exportOptions.includeSchedules && !exportOptions.includeSettings)}
                   isLoading={isImporting}
                   className="flex items-center gap-2">
                   <Upload size={16} />
@@ -674,8 +701,9 @@ const Settings: React.FC = () => {
                             {importResult.imported.forms > 0 && <li>• {importResult.imported.forms} Formulare</li>}
                             {importResult.imported.paymentMethods > 0 && <li>• {importResult.imported.paymentMethods} Bezahlmethoden</li>}
                             {importResult.imported.testRuns > 0 && <li>• {importResult.imported.testRuns} Test Resultate</li>}
+                            {importResult.imported.schedules > 0 && <li>• {importResult.imported.schedules} Autopilot (Zeitpläne)</li>}
                             {importResult.imported.settings > 0 && <li>• {importResult.imported.settings} Einstellungen</li>}
-                            {importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.settings === 0 && <li className="italic text-gray-500">Keine Daten importiert</li>}
+                            {importResult.imported.forms === 0 && importResult.imported.paymentMethods === 0 && importResult.imported.testRuns === 0 && importResult.imported.schedules === 0 && importResult.imported.settings === 0 && <li className="italic text-gray-500">Keine Daten importiert</li>}
                           </ul>
                         </div>
                         <div>
@@ -684,8 +712,9 @@ const Settings: React.FC = () => {
                             {importResult.skipped.forms > 0 && <li>• {importResult.skipped.forms} Formulare</li>}
                             {importResult.skipped.paymentMethods > 0 && <li>• {importResult.skipped.paymentMethods} Bezahlmethoden</li>}
                             {importResult.skipped.testRuns > 0 && <li>• {importResult.skipped.testRuns} Test Resultate</li>}
+                            {importResult.skipped.schedules > 0 && <li>• {importResult.skipped.schedules} Autopilot (Zeitpläne)</li>}
                             {importResult.skipped.settings > 0 && <li>• {importResult.skipped.settings} Einstellungen</li>}
-                            {importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.settings === 0 && <li className="italic text-gray-500">Keine Daten übersprungen</li>}
+                            {importResult.skipped.forms === 0 && importResult.skipped.paymentMethods === 0 && importResult.skipped.testRuns === 0 && importResult.skipped.schedules === 0 && importResult.skipped.settings === 0 && <li className="italic text-gray-500">Keine Daten übersprungen</li>}
                           </ul>
                         </div>
                       </div>

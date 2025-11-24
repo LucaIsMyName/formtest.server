@@ -123,6 +123,7 @@ export interface ExportData {
     forms?: Form[];
     paymentMethods?: PaymentMethod[];
     testRuns?: TestRun[];
+    testSchedules?: TestSchedule[];
     settings?: GlobalSetting[];
   };
 }
@@ -131,6 +132,7 @@ export interface ImportOptions {
   includeForms: boolean;
   includePaymentMethods: boolean;
   includeTestRuns: boolean;
+  includeSchedules: boolean;
   includeSettings: boolean;
 }
 
@@ -140,12 +142,14 @@ export interface ImportResult {
     forms: number;
     paymentMethods: number;
     testRuns: number;
+    schedules: number;
     settings: number;
   };
   skipped: {
     forms: number;
     paymentMethods: number;
     testRuns: number;
+    schedules: number;
     settings: number;
   };
   errors: string[];
