@@ -3,6 +3,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as Select from "@radix-ui/react-select";
 import { X, ChevronDown, Check } from "lucide-react";
 import Button from "./ui/Button";
+import IconPicker from "./IconPicker";
+import { renderIcon, getDefaultScheduleIcon } from "../utils/iconHelper";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
@@ -11,7 +13,7 @@ import { TestSchedule } from "../../../common/types";
 interface ScheduleDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => Promise<void>;
+  onSave: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon?: string }) => Promise<void>;
   initialData?: TestSchedule;
   title: string;
 }
@@ -35,6 +37,8 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({ isOpen, onClose, onSave
   const [frequency, setFrequency] = useState(FREQUENCY_OPTIONS[1].value);
   const [customCron, setCustomCron] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [icon, setIcon] = useState("Play");
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,6 +51,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({ isOpen, onClose, onSave
         setFormId(String(initialData.formId));
         setPaymentMethodId(String(initialData.paymentMethodId));
         setIsActive(initialData.isActive);
+        setIcon(initialData.icon || getDefaultScheduleIcon(initialData.cronExpression));
         
         const knownFreq = FREQUENCY_OPTIONS.find(f => f.value === initialData.cronExpression);
         if (knownFreq) {
@@ -63,6 +68,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({ isOpen, onClose, onSave
         setFrequency(FREQUENCY_OPTIONS[1].value);
         setCustomCron("");
         setIsActive(true);
+        setIcon("Play");
       }
       setError(null);
     }
@@ -91,6 +97,7 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({ isOpen, onClose, onSave
         paymentMethodId: parseInt(paymentMethodId),
         cronExpression,
         isActive,
+        icon,
       });
       onClose();
     } catch (err) {
@@ -243,6 +250,21 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({ isOpen, onClose, onSave
               </div>
             )}
 
+            {/* Icon Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Icon
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowIconPicker(true)}
+                disabled={isSubmitting}
+                className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+                {renderIcon(icon, 20, "text-blue-600 dark:text-blue-400")}
+                <span className="text-sm text-gray-700 dark:text-gray-300">{icon}</span>
+              </button>
+            </div>
+
             {/* Active Toggle */}
             <div className="flex items-center gap-2">
               <input
@@ -275,6 +297,17 @@ const ScheduleDialog: React.FC<ScheduleDialogProps> = ({ isOpen, onClose, onSave
           </form>
         </Dialog.Content>
       </Dialog.Portal>
+      
+      {showIconPicker && (
+        <IconPicker
+          value={icon}
+          onChange={(selectedIcon) => {
+            setIcon(selectedIcon);
+            setShowIconPicker(false);
+          }}
+          onClose={() => setShowIconPicker(false)}
+        />
+      )}
     </Dialog.Root>
   );
 };

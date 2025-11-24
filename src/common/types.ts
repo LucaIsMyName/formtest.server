@@ -80,6 +80,7 @@ export interface TestSchedule {
   paymentMethodId: number;
   cronExpression: string;
   isActive: boolean;
+  icon?: string;
   lastRun?: Date;
   nextRun?: Date; // Computed property, not in DB
   createdAt: Date;

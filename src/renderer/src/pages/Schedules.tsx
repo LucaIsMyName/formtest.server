@@ -9,6 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from ".
 import { Skeleton } from "../components/ui/Skeleton";
 import ScheduleDialog from "../components/ScheduleDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import { renderIcon } from "../utils/iconHelper";
 import { TestSchedule } from "../../../common/types";
 
 const Schedules: React.FC = () => {
@@ -77,7 +78,7 @@ const Schedules: React.FC = () => {
           onClick={() => setIsCreateOpen(true)}
           className="gap-2">
           <Plus size={16} />
-          Neuer Zeitplan
+          Neuer Autopilot
         </Button>
       </div>
       {error && <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800">{error}</div>}
@@ -98,6 +99,7 @@ const Schedules: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12"></TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Test Konfiguration</TableHead>
                 <TableHead>Häufigkeit (Cron)</TableHead>
@@ -109,6 +111,11 @@ const Schedules: React.FC = () => {
             <TableBody>
               {schedules.map((schedule) => (
                 <TableRow key={schedule.id}>
+                  <TableCell>
+                    <div className="flex items-center justify-center">
+                      {renderIcon(schedule.icon || 'Play', 16, "text-gray-600 dark:text-gray-400")}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <div className="font-medium text-xs text-gray-900 dark:text-white">{schedule.name}</div>
                   </TableCell>

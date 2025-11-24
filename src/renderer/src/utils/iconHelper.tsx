@@ -41,3 +41,20 @@ export const getDefaultPaymentIcon = (type: string): string => {
     default: return 'CreditCard';
   }
 };
+
+/**
+ * Get default icon for schedule based on cron expression
+ */
+export const getDefaultScheduleIcon = (cronExpression?: string): string => {
+  if (!cronExpression) return 'Play';
+  
+  // Parse common cron patterns - order matters for specificity
+  if (cronExpression.includes('9 * * *')) return 'Sun'; // Morning
+  if (cronExpression.includes('12 * * *')) return 'Sun'; // Noon
+  if (cronExpression.includes('18 * * *')) return 'Moon'; // Evening
+  if (cronExpression.includes('* * 1')) return 'Calendar'; // Weekly
+  if (cronExpression.includes('* * *')) return 'Clock'; // Hourly
+  if (cronExpression.includes('0 0 ')) return 'Clock'; // Daily
+  
+  return 'Play'; // Default
+};

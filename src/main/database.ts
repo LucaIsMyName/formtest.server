@@ -69,6 +69,31 @@ function migrateTestRunSteps(): void {
 }
 
 /**
+ * Migrate test_schedules table to add icon column
+ */
+function migrateTestScheduleIcon(): void {
+  console.log("Database: Checking for test_schedules icon column...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_schedules)").all() as Array<{name: string}>;
+    const hasIcon = columns.some(col => col.name === 'icon');
+    
+    if (!hasIcon) {
+      console.log("Database: Adding icon column to test_schedules...");
+      db.exec("ALTER TABLE test_schedules ADD COLUMN icon TEXT DEFAULT 'Play'");
+      
+      // Initialize existing records with default icon
+      const updateStmt = db.prepare("UPDATE test_schedules SET icon = 'Play' WHERE icon IS NULL");
+      const result = updateStmt.run();
+      
+      console.log(`Database: Initialized icon column for ${result.changes} existing schedules`);
+    }
+  } catch (error) {
+    console.error("Database: Schedule icon migration error:", error);
+  }
+}
+
+/**
  * Migrate existing tables to add icon columns
  */
 function migrateIconColumns(): void {
@@ -309,6 +334,9 @@ export function initDatabase(): void {
 
   // Migrate steps column
   migrateTestRunSteps();
+
+  // Migrate schedule icon column
+  migrateTestScheduleIcon();
 
   // Migrate icon columns
   migrateIconColumns();
@@ -747,10 +775,10 @@ export const testScheduleQueries = {
       createdAt: new Date(s.createdAt),
     };
   },
-  create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => {
-    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive) VALUES (?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0);
+  create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon?: string }) => {
+    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive, icon) VALUES (?, ?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0, schedule.icon || 'Play');
   },
-  update: (id: number, schedule: Partial<{ name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; lastRun: Date }>) => {
+  update: (id: number, schedule: Partial<{ name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon: string; lastRun: Date }>) => {
     const updates: string[] = [];
     const values: any[] = [];
 
@@ -759,6 +787,7 @@ export const testScheduleQueries = {
     if (schedule.paymentMethodId !== undefined) { updates.push("paymentMethodId = ?"); values.push(schedule.paymentMethodId); }
     if (schedule.cronExpression !== undefined) { updates.push("cronExpression = ?"); values.push(schedule.cronExpression); }
     if (schedule.isActive !== undefined) { updates.push("isActive = ?"); values.push(schedule.isActive ? 1 : 0); }
+    if (schedule.icon !== undefined) { updates.push("icon = ?"); values.push(schedule.icon); }
     if (schedule.lastRun !== undefined) { updates.push("lastRun = ?"); values.push(schedule.lastRun.toISOString()); }
 
     if (updates.length === 0) return { changes: 0 };

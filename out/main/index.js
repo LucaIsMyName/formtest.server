@@ -145,6 +145,22 @@ function migrateTestRunSteps() {
     console.error("Database: Steps migration error:", error);
   }
 }
+function migrateTestScheduleIcon() {
+  console.log("Database: Checking for test_schedules icon column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_schedules)").all();
+    const hasIcon = columns.some((col) => col.name === "icon");
+    if (!hasIcon) {
+      console.log("Database: Adding icon column to test_schedules...");
+      db.exec("ALTER TABLE test_schedules ADD COLUMN icon TEXT DEFAULT 'Play'");
+      const updateStmt = db.prepare("UPDATE test_schedules SET icon = 'Play' WHERE icon IS NULL");
+      const result = updateStmt.run();
+      console.log(`Database: Initialized icon column for ${result.changes} existing schedules`);
+    }
+  } catch (error) {
+    console.error("Database: Schedule icon migration error:", error);
+  }
+}
 function migrateIconColumns() {
   console.log("Database: Checking for icon columns...");
   try {
@@ -334,6 +350,7 @@ function initDatabase() {
   console.log("Database: Tables created and default settings inserted");
   migrateTestRunUuid();
   migrateTestRunSteps();
+  migrateTestScheduleIcon();
   migrateIconColumns();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
@@ -696,7 +713,7 @@ const testScheduleQueries = {
     };
   },
   create: (schedule) => {
-    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive) VALUES (?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0);
+    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive, icon) VALUES (?, ?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0, schedule.icon || "Play");
   },
   update: (id, schedule) => {
     const updates = [];
@@ -720,6 +737,10 @@ const testScheduleQueries = {
     if (schedule.isActive !== void 0) {
       updates.push("isActive = ?");
       values.push(schedule.isActive ? 1 : 0);
+    }
+    if (schedule.icon !== void 0) {
+      updates.push("icon = ?");
+      values.push(schedule.icon);
     }
     if (schedule.lastRun !== void 0) {
       updates.push("lastRun = ?");
