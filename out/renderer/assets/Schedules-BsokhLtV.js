@@ -1,10 +1,10 @@
-import { _ as create, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, N as Root, O as Portal, V as Overlay, Q as Content, U as Title, W as Close, X, K as Check, B as Button, $ as LoaderCircle, Z as Play } from "./index-CCajg8b6.js";
-import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, S as StatusBadge, T as Trash2 } from "./Table-BJBpbf69.js";
-import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
-import { R as Root2, T as Trigger, V as Value, e as Icon, a as ChevronDown, P as Portal$1, d as Content2, g as Viewport, I as Item, i as ItemText, h as ItemIndicator } from "./index-UprzNoc4.js";
-import { b as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Plus, a as Pen } from "./IconPicker-D3p5CfHr.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-4MOA1MUw.js";
+import { G as create, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, H as LoaderCircle, E as Play } from "./index-C8KwxcYM.js";
+import { C as CONFIG } from "./app.config-Cedwjkbe.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, l as formatDateTime, S as StatusBadge, T as Trash2 } from "./formatters-B-uHFVcx.js";
+import { S as Skeleton } from "./Skeleton-CSq5Hioy.js";
+import { b as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Plus, a as Pen } from "./IconPicker-BQ9hE3lq.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-ZcYhnf0H.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-yikz5a6p.js";
 const useSchedulesStore = create((set, get) => ({
   schedules: [],
   isLoading: false,
@@ -267,7 +267,7 @@ const FREQUENCY_OPTIONS = [
     value: "custom"
   }
 ];
-const ScheduleDialog = ({
+const ScheduleDrawer = ({
   isOpen,
   onClose,
   onSave,
@@ -351,84 +351,60 @@ const ScheduleDialog = ({
       setIsSubmitting(false);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Root, { open: isOpen, onOpenChange: onClose, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(Portal, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Overlay, { className: "fixed inset-0 bg-black/50 z-50 animate-fade-in" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Content, { className: "fixed left-[50%] top-[50%] z-50 max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white dark:bg-gray-800 p-6 shadow-lg focus:outline-none animate-scale-in border border-gray-200 dark:border-gray-700", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Title, { className: "text-lg font-semibold text-gray-900 dark:text-white", children: title }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Close, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 20 }) }) })
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: title }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
+        error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-200 rounded-md", children: error }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Name *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", type: "text", value: name, onChange: (e_0) => setName(e_0.target.value), placeholder: "z.B. Täglicher Health Check", disabled: isSubmitting })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
-          error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-200 rounded-md", children: error }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Name" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "text", value: name, onChange: (e_0) => setName(e_0.target.value), className: CONFIG.style.input.className, placeholder: "z.B. Täglicher Health Check" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Formular" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(Root2, { value: formId, onValueChange: setFormId, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(Trigger, { className: CONFIG.style.select.trigger, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Value, { placeholder: "Formular auswählen" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 16 }) })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Content2, { className: CONFIG.style.select.content, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Viewport, { className: "p-1", children: forms.map((form) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Item, { value: String(form.id), className: CONFIG.style.select.item, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ItemText, { children: form.name }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ItemIndicator, { className: "absolute left-2 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 16 }) })
-              ] }, form.id)) }) }) })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Bezahlmethode" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(Root2, { value: paymentMethodId, onValueChange: setPaymentMethodId, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(Trigger, { className: CONFIG.style.select.trigger, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Value, { placeholder: "Bezahlmethode auswählen" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 16 }) })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Content2, { className: CONFIG.style.select.content, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Viewport, { className: "p-1", children: paymentMethods.map((pm) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Item, { value: String(pm.id), className: CONFIG.style.select.item, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(ItemText, { children: [
-                  pm.name,
-                  " (",
-                  pm.type,
-                  ")"
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ItemIndicator, { className: "absolute left-2 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 16 }) })
-              ] }, pm.id)) }) }) })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Häufigkeit" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(Root2, { value: frequency, onValueChange: setFrequency, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(Trigger, { className: CONFIG.style.select.trigger, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Value, { placeholder: "Häufigkeit auswählen" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 16 }) })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Content2, { className: CONFIG.style.select.content, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Viewport, { className: "p-1", children: FREQUENCY_OPTIONS.map((opt) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Item, { value: opt.value, className: CONFIG.style.select.item, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ItemText, { children: opt.label }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(ItemIndicator, { className: "absolute left-2 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 16 }) })
-              ] }, opt.value)) }) }) })
-            ] })
-          ] }),
-          frequency === "custom" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Cron Ausdruck" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "text", value: customCron, onChange: (e_1) => setCustomCron(e_1.target.value), className: CONFIG.style.input.className, placeholder: "* * * * * *" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mt-1 text-xs text-gray-500", children: "Format: Sekunde Minute Stunde Tag Monat Wochentag" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1", children: "Icon" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: () => setShowIconPicker(true), disabled: isSubmitting, className: "flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start", children: [
-              renderIcon(icon, 20, "text-blue-600 dark:text-blue-400"),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700 dark:text-gray-300", children: icon })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", id: "isActive", checked: isActive, onChange: (e_2) => setIsActive(e_2.target.checked), className: "rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "isActive", className: "text-sm text-gray-700 dark:text-gray-300 select-none", children: "Zeitplan aktiv" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-end gap-3 mt-6", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", variant: "secondary", onClick: onClose, disabled: isSubmitting, children: "Abbrechen" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", disabled: isSubmitting, isLoading: isSubmitting, children: "Speichern" })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "formId", children: "Formular *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: formId, onValueChange: setFormId, disabled: isSubmitting, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "formId", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Formular auswählen" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: forms.map((form) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: String(form.id), children: form.name }, form.id)) })
           ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "paymentMethodId", children: "Bezahlmethode *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: paymentMethodId, onValueChange: setPaymentMethodId, disabled: isSubmitting, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "paymentMethodId", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Bezahlmethode auswählen" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: paymentMethods.map((pm) => /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectItem, { value: String(pm.id), children: [
+              pm.name,
+              " (",
+              pm.type,
+              ")"
+            ] }, pm.id)) })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "frequency", children: "Häufigkeit *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: frequency, onValueChange: setFrequency, disabled: isSubmitting, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "frequency", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Häufigkeit auswählen" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: FREQUENCY_OPTIONS.map((opt) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: opt.value, children: opt.label }, opt.value)) })
+          ] })
+        ] }),
+        frequency === "custom" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "customCron", children: "Cron Ausdruck *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "customCron", type: "text", value: customCron, onChange: (e_1) => setCustomCron(e_1.target.value), placeholder: "* * * * * *", disabled: isSubmitting }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Format: Sekunde Minute Stunde Tag Monat Wochentag" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "icon", children: "Icon" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: () => setShowIconPicker(true), disabled: isSubmitting, className: "flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start", children: [
+            renderIcon(icon, 20, "text-blue-600 dark:text-blue-400"),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-700 dark:text-gray-300", children: icon })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "isActive", checked: isActive, onCheckedChange: (checked) => setIsActive(checked === true), disabled: isSubmitting }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "isActive", className: "text-gray-600 dark:text-gray-400 font-normal cursor-pointer", children: "Zeitplan aktiv" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerFooter, { className: "pt-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", variant: "secondary", onClick: onClose, disabled: isSubmitting, children: "Abbrechen" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", disabled: isSubmitting, isLoading: isSubmitting, children: "Speichern" })
         ] })
       ] })
     ] }),
@@ -497,10 +473,6 @@ const Schedules = () => {
       }, 1e3);
     }
   };
-  const formatDate = (date) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString();
-  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Autopilot" }),
@@ -529,7 +501,7 @@ const Schedules = () => {
           getPaymentMethodName(schedule.paymentMethodId)
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule.cronExpression }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono", children: formatDate(schedule.lastRun) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule.lastRun) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule.isActive ? "active" : "inactive", children: schedule.isActive ? "Aktiv" : "Inaktiv" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => handleRunNow(schedule.id), disabled: runningSchedules.has(schedule.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
@@ -538,7 +510,7 @@ const Schedules = () => {
         ] }) })
       ] }, schedule.id)) })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleDialog, { isOpen: isCreateOpen || !!editingSchedule, onClose: () => {
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleDrawer, { isOpen: isCreateOpen || !!editingSchedule, onClose: () => {
       setIsCreateOpen(false);
       setEditingSchedule(void 0);
     }, onSave: handleSave, initialData: editingSchedule, title: editingSchedule ? "Zeitplan bearbeiten" : "Neuer Zeitplan" }),

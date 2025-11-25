@@ -1,11 +1,10 @@
-import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, b as useFormsStore } from "./index-CCajg8b6.js";
-import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-D3p5CfHr.js";
-import { I as Input, S as Select, a as SelectTrigger, b as SelectValue, c as SelectContent, d as SelectItem } from "./Select-DWNKbYVw.js";
-import { C as ChevronUp, a as ChevronDown } from "./index-UprzNoc4.js";
-import { T as Trash2, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, S as StatusBadge } from "./Table-BJBpbf69.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-4MOA1MUw.js";
-import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, b as useFormsStore } from "./index-C8KwxcYM.js";
+import { C as CONFIG } from "./app.config-Cedwjkbe.js";
+import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-BQ9hE3lq.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, k as formatDate } from "./formatters-B-uHFVcx.js";
+import { I as Input, C as ChevronUp, a as ChevronDown, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-ZcYhnf0H.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-yikz5a6p.js";
+import { S as Skeleton } from "./Skeleton-CSq5Hioy.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -68,7 +67,7 @@ const ACTION_OPTIONS = [{
   value: "waitAndClick",
   label: "Warten & Klicken"
 }];
-const FormDialog = ({
+const FormDrawer = ({
   isOpen,
   onClose,
   onSubmit,
@@ -134,15 +133,15 @@ const FormDialog = ({
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name.trim()) {
-      newErrors.name = "Form name is required";
+      newErrors.name = "Formularname ist erforderlich";
     }
     if (!formData.url.trim()) {
-      newErrors.url = "Form URL is required";
+      newErrors.url = "Formular-URL ist erforderlich";
     } else {
       try {
         new URL(formData.url);
       } catch {
-        newErrors.url = "Please enter a valid URL";
+        newErrors.url = "Bitte geben Sie eine gültige URL ein";
       }
     }
     setErrors(newErrors);
@@ -169,9 +168,9 @@ const FormDialog = ({
       console.error("Failed to submit form:", error);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "sm:max-w-[600px] max-h-[90vh] overflow-y-auto", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: editForm ? "Formular bearbeiten" : "Neues Formular" }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4 py-4", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: editForm ? "Formular bearbeiten" : "Neues Formular" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Formular Name *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: formData.name, onChange: (e_0) => setFormData({
@@ -273,7 +272,7 @@ const FormDialog = ({
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "pt-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerFooter, { className: "pt-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", onClick: onClose, variant: "secondary", size: "md", disabled: isLoading, children: "Abbrechen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", variant: "primary", size: "md", isLoading, disabled: isLoading, children: isLoading ? "Speichern..." : editForm ? "Formular aktualisieren" : "Formular hinzufügen" })
       ] })
@@ -439,7 +438,6 @@ const Forms = () => {
     t9 = $[20];
   }
   const confirmDelete = t9;
-  const formatDate = _temp2;
   let t10;
   if ($[21] === Symbol.for("react.memo_cache_sentinel")) {
     t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Formulare" });
@@ -515,7 +513,7 @@ const Forms = () => {
   }
   let t14;
   if ($[33] !== editingForm || $[34] !== handleCloseDialog || $[35] !== handleFormSubmit || $[36] !== isDialogOpen || $[37] !== isLoading) {
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDialog, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading });
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading });
     $[33] = editingForm;
     $[34] = handleCloseDialog;
     $[35] = handleFormSubmit;
@@ -576,15 +574,6 @@ function _temp(_, i) {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-20" })
     ] })
   ] }, i);
-}
-function _temp2(dateString) {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
 }
 export {
   Forms as default

@@ -1,5 +1,5 @@
-import { i as dist, j as jsxRuntimeExports } from "./index-CCajg8b6.js";
-import { C as CONFIG } from "./app.config-CIbseEfE.js";
+import { i as dist, j as jsxRuntimeExports } from "./index-C8KwxcYM.js";
+import { C as CONFIG } from "./app.config-Cedwjkbe.js";
 const InfoDoku = () => {
   const $ = dist.c(50);
   let t0;

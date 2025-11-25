@@ -1,4 +1,4 @@
-import { a0 as createLucideIcon, i as dist, j as jsxRuntimeExports, r as reactExports, G as cn, an as cva, a9 as React } from "./index-CCajg8b6.js";
+import { I as createLucideIcon, af as Root, r as reactExports, i as dist, y as cn, j as jsxRuntimeExports, ag as Portal, ah as Content, ai as Title, aj as Overlay, ak as Close, X, al as Description, am as cva, a1 as React } from "./index-C8KwxcYM.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -89,6 +89,256 @@ const __iconNode = [
   ["path", { d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", key: "e791ji" }]
 ];
 const Trash2 = createLucideIcon("trash-2", __iconNode);
+const Drawer = Root;
+const DrawerPortal = Portal;
+const DrawerOverlay = reactExports.forwardRef((t0, ref) => {
+  const $ = dist.c(9);
+  let className;
+  let props;
+  if ($[0] !== t0) {
+    ({
+      className,
+      ...props
+    } = t0);
+    $[0] = t0;
+    $[1] = className;
+    $[2] = props;
+  } else {
+    className = $[1];
+    props = $[2];
+  }
+  let t1;
+  if ($[3] !== className) {
+    t1 = cn("fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className);
+    $[3] = className;
+    $[4] = t1;
+  } else {
+    t1 = $[4];
+  }
+  let t2;
+  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(Overlay, { ref, className: t1, ...props });
+    $[5] = props;
+    $[6] = ref;
+    $[7] = t1;
+    $[8] = t2;
+  } else {
+    t2 = $[8];
+  }
+  return t2;
+});
+DrawerOverlay.displayName = "DrawerOverlay";
+const DrawerContent = reactExports.forwardRef((t0, ref) => {
+  const $ = dist.c(13);
+  let children;
+  let className;
+  let props;
+  if ($[0] !== t0) {
+    ({
+      className,
+      children,
+      ...props
+    } = t0);
+    $[0] = t0;
+    $[1] = children;
+    $[2] = className;
+    $[3] = props;
+  } else {
+    children = $[1];
+    className = $[2];
+    props = $[3];
+  }
+  let t1;
+  if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
+    t1 = /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerOverlay, {});
+    $[4] = t1;
+  } else {
+    t1 = $[4];
+  }
+  let t2;
+  if ($[5] !== className) {
+    t2 = cn("fixed inset-y-0 right-0 z-50 h-full w-3/4 border-l border-gray-200 bg-white p-6 shadow-lg overflow-y-auto transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-full md:max-w-[678px] dark:border-gray-700 dark:bg-gray-800", className);
+    $[5] = className;
+    $[6] = t2;
+  } else {
+    t2 = $[6];
+  }
+  let t3;
+  if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t3 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-gray-100 data-[state=open]:text-gray-500 dark:ring-offset-gray-950 dark:focus:ring-gray-300 dark:data-[state=open]:bg-gray-800 dark:data-[state=open]:text-gray-400", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "h-4 w-4 text-gray-500 dark:text-gray-400" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sr-only", children: "Close" })
+    ] });
+    $[7] = t3;
+  } else {
+    t3 = $[7];
+  }
+  let t4;
+  if ($[8] !== children || $[9] !== props || $[10] !== ref || $[11] !== t2) {
+    t4 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerPortal, { children: [
+      t1,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Content, { ref, className: t2, ...props, children: [
+        children,
+        t3
+      ] })
+    ] });
+    $[8] = children;
+    $[9] = props;
+    $[10] = ref;
+    $[11] = t2;
+    $[12] = t4;
+  } else {
+    t4 = $[12];
+  }
+  return t4;
+});
+DrawerContent.displayName = "DrawerContent";
+const DrawerHeader = (t0) => {
+  const $ = dist.c(8);
+  let className;
+  let props;
+  if ($[0] !== t0) {
+    ({
+      className,
+      ...props
+    } = t0);
+    $[0] = t0;
+    $[1] = className;
+    $[2] = props;
+  } else {
+    className = $[1];
+    props = $[2];
+  }
+  let t1;
+  if ($[3] !== className) {
+    t1 = cn("flex flex-col space-y-2 text-center sm:text-left", className);
+    $[3] = className;
+    $[4] = t1;
+  } else {
+    t1 = $[4];
+  }
+  let t2;
+  if ($[5] !== props || $[6] !== t1) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t1, ...props });
+    $[5] = props;
+    $[6] = t1;
+    $[7] = t2;
+  } else {
+    t2 = $[7];
+  }
+  return t2;
+};
+DrawerHeader.displayName = "DrawerHeader";
+const DrawerFooter = (t0) => {
+  const $ = dist.c(8);
+  let className;
+  let props;
+  if ($[0] !== t0) {
+    ({
+      className,
+      ...props
+    } = t0);
+    $[0] = t0;
+    $[1] = className;
+    $[2] = props;
+  } else {
+    className = $[1];
+    props = $[2];
+  }
+  let t1;
+  if ($[3] !== className) {
+    t1 = cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className);
+    $[3] = className;
+    $[4] = t1;
+  } else {
+    t1 = $[4];
+  }
+  let t2;
+  if ($[5] !== props || $[6] !== t1) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t1, ...props });
+    $[5] = props;
+    $[6] = t1;
+    $[7] = t2;
+  } else {
+    t2 = $[7];
+  }
+  return t2;
+};
+DrawerFooter.displayName = "DrawerFooter";
+const DrawerTitle = reactExports.forwardRef((t0, ref) => {
+  const $ = dist.c(9);
+  let className;
+  let props;
+  if ($[0] !== t0) {
+    ({
+      className,
+      ...props
+    } = t0);
+    $[0] = t0;
+    $[1] = className;
+    $[2] = props;
+  } else {
+    className = $[1];
+    props = $[2];
+  }
+  let t1;
+  if ($[3] !== className) {
+    t1 = cn("text-lg font-semibold leading-none tracking-tight text-gray-900 dark:text-gray-50", className);
+    $[3] = className;
+    $[4] = t1;
+  } else {
+    t1 = $[4];
+  }
+  let t2;
+  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(Title, { ref, className: t1, ...props });
+    $[5] = props;
+    $[6] = ref;
+    $[7] = t1;
+    $[8] = t2;
+  } else {
+    t2 = $[8];
+  }
+  return t2;
+});
+DrawerTitle.displayName = "DrawerTitle";
+const DrawerDescription = reactExports.forwardRef((t0, ref) => {
+  const $ = dist.c(9);
+  let className;
+  let props;
+  if ($[0] !== t0) {
+    ({
+      className,
+      ...props
+    } = t0);
+    $[0] = t0;
+    $[1] = className;
+    $[2] = props;
+  } else {
+    className = $[1];
+    props = $[2];
+  }
+  let t1;
+  if ($[3] !== className) {
+    t1 = cn("text-sm text-gray-500 dark:text-gray-400", className);
+    $[3] = className;
+    $[4] = t1;
+  } else {
+    t1 = $[4];
+  }
+  let t2;
+  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(Description, { ref, className: t1, ...props });
+    $[5] = props;
+    $[6] = ref;
+    $[7] = t1;
+    $[8] = t2;
+  } else {
+    t2 = $[8];
+  }
+  return t2;
+});
+DrawerDescription.displayName = "DrawerDescription";
 const badgeVariants = cva("inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-medium font-mono rounded-full border transition-colors", {
   variants: {
     variant: {
@@ -505,18 +755,58 @@ const TableCell = React.forwardRef((t0, ref) => {
   return t2;
 });
 TableCell.displayName = "TableCell";
+const formatDateTime = (date) => {
+  if (!date) return "-";
+  try {
+    return new Date(date).toLocaleString("de-DE", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
+  } catch {
+    return "-";
+  }
+};
+const formatDate = (date) => {
+  if (!date) return "-";
+  try {
+    return new Date(date).toLocaleDateString("de-DE", {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+  } catch {
+    return "-";
+  }
+};
+const formatDuration = (durationMs) => {
+  if (!durationMs && durationMs !== 0) return "-";
+  if (durationMs < 1e3) return `${durationMs}ms`;
+  return `${(durationMs / 1e3).toFixed(1)}s`;
+};
 export {
   Bot as B,
   Copy as C,
+  Drawer as D,
   FileBraces as F,
   RefreshCw as R,
   StatusBadge as S,
   Trash2 as T,
-  Table as a,
-  TableHeader as b,
-  TableRow as c,
-  TableHead as d,
-  TableBody as e,
-  TableCell as f,
-  CircleX as g
+  DrawerContent as a,
+  DrawerHeader as b,
+  DrawerTitle as c,
+  DrawerFooter as d,
+  Table as e,
+  TableHeader as f,
+  TableRow as g,
+  TableHead as h,
+  TableBody as i,
+  TableCell as j,
+  formatDate as k,
+  formatDateTime as l,
+  formatDuration as m,
+  CircleX as n
 };

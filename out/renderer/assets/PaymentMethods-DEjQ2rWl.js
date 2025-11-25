@@ -1,12 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, d as usePaymentMethodsStore } from "./index-CCajg8b6.js";
-import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-D3p5CfHr.js";
-import { I as Input, S as Select, a as SelectTrigger, b as SelectValue, c as SelectContent, d as SelectItem } from "./Select-DWNKbYVw.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-4MOA1MUw.js";
-import { a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, S as StatusBadge, T as Trash2 } from "./Table-BJBpbf69.js";
-import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
-import "./index-UprzNoc4.js";
-const PaymentMethodDialog = ({
+import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, d as usePaymentMethodsStore } from "./index-C8KwxcYM.js";
+import { C as CONFIG } from "./app.config-Cedwjkbe.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-BQ9hE3lq.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, k as formatDate, T as Trash2 } from "./formatters-B-uHFVcx.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-ZcYhnf0H.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-yikz5a6p.js";
+import { S as Skeleton } from "./Skeleton-CSq5Hioy.js";
+const PaymentMethodDrawer = ({
   isOpen,
   onClose,
   onSubmit,
@@ -45,32 +44,32 @@ const PaymentMethodDialog = ({
   const validateForm = () => {
     const newErrors = {};
     if (!methodData.name.trim()) {
-      newErrors.name = "Payment method name is required";
+      newErrors.name = "Name der Bezahlmethode ist erforderlich";
     }
     if (methodData.type === "paypal") {
       if (!methodData.details.email) {
-        newErrors.email = "PayPal email is required";
+        newErrors.email = "PayPal E-Mail ist erforderlich";
       }
     } else if (methodData.type === "sepa") {
       if (!methodData.details.iban) {
-        newErrors.iban = "IBAN is required for SEPA";
+        newErrors.iban = "IBAN ist erforderlich";
       }
       if (!methodData.details.bic) {
-        newErrors.bic = "BIC is required for SEPA";
+        newErrors.bic = "BIC ist erforderlich";
       }
     } else if (methodData.type === "creditcard") {
       if (!methodData.details.cardNumber) {
-        newErrors.cardNumber = "Card number is required";
+        newErrors.cardNumber = "Kartennummer ist erforderlich";
       }
       if (!methodData.details.expiryDate) {
-        newErrors.expiryDate = "Expiry date is required";
+        newErrors.expiryDate = "Ablaufdatum ist erforderlich";
       }
       if (!methodData.details.cvv) {
-        newErrors.cvv = "CVV is required";
+        newErrors.cvv = "CVV ist erforderlich";
       }
     } else if (methodData.type === "eps") {
       if (!methodData.details.bankCode) {
-        newErrors.bankCode = "Bank code is required for EPS";
+        newErrors.bankCode = "Bankcode ist erforderlich";
       }
     }
     setErrors(newErrors);
@@ -108,7 +107,7 @@ const PaymentMethodDialog = ({
     switch (methodData.type) {
       case "paypal":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "email", children: "PayPal Email *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "email", children: "PayPal E-Mail *" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "email", id: "email", value: methodData.details.email || "", onChange: (e_5) => updateDetails("email", e_5.target.value), placeholder: "paypal@example.com", disabled: isLoading, className: errors.email ? "border-red-500 focus-visible:ring-red-500" : "" }),
           errors.email && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.email })
         ] });
@@ -128,28 +127,28 @@ const PaymentMethodDialog = ({
       case "creditcard":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "cardNumber", children: "Card Number *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "cardNumber", children: "Kartennummer *" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "cardNumber", value: methodData.details.cardNumber || "", onChange: (e_0) => updateDetails("cardNumber", e_0.target.value), placeholder: "4111 1111 1111 1111", disabled: isLoading, className: errors.cardNumber ? "border-red-500 focus-visible:ring-red-500" : "" }),
             errors.cardNumber && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.cardNumber })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "expiryDate", children: "Expiry Date *" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "expiryDate", children: "Ablaufdatum *" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "expiryDate", value: methodData.details.expiryDate || "", onChange: (e_1) => updateDetails("expiryDate", e_1.target.value), placeholder: "MM/YY", disabled: isLoading, className: errors.expiryDate ? "border-red-500 focus-visible:ring-red-500" : "" }),
               errors.expiryDate && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.expiryDate })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "cvv", children: "CVV *" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "cvv", value: methodData.details.cvv || "", onChange: (e_2) => updateDetails("cvv", e_2.target.value), placeholder: "123", disabled: isLoading, className: errors.cvv ? "border-red-500 focus-visible:ring-red-500" : "" }),
-              errors.cvv && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm", children: errors.cvv })
+              errors.cvv && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.cvv })
             ] })
           ] })
         ] });
       case "eps":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "bankCode", children: "Bank Code *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "bankCode", children: "Bank *" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: methodData.details.bankCode || "", onValueChange: (value_0) => updateDetails("bankCode", value_0), disabled: isLoading, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "bankCode", className: errors.bankCode ? "border-red-500 focus:ring-red-500" : "", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Select Bank" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "bankCode", className: errors.bankCode ? "border-red-500 focus:ring-red-500" : "", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Bank auswählen" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "BAWAATWW", children: "Bank Austria" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "RLNWATWW", children: "Raiffeisen Bank" }),
@@ -163,9 +162,9 @@ const PaymentMethodDialog = ({
         return null;
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "sm:max-w-[500px]", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: editMethod ? "Bezahlmethode bearbeiten" : "Neue Bezahlmethode" }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4 py-4", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: editMethod ? "Bezahlmethode bearbeiten" : "Neue Bezahlmethode" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Name der Bezahlmethode *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: methodData.name, onChange: (e_6) => setMethodData({
@@ -181,7 +180,7 @@ const PaymentMethodDialog = ({
           type: value_1,
           details: {}
         }), disabled: isLoading, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "type", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Wähle einen Typ" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "type", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Typ auswählen" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "paypal", children: "PayPal" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "sepa", children: "SEPA Lastschrift" }),
@@ -205,7 +204,7 @@ const PaymentMethodDialog = ({
         }), disabled: isLoading }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "isActive", className: "text-gray-600 dark:text-gray-400 font-normal cursor-pointer", children: "Aktiv (in Tests verwenden)" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "pt-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerFooter, { className: "pt-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", onClick: onClose, variant: "secondary", size: "md", disabled: isLoading, children: "Abbrechen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", variant: "primary", size: "md", isLoading, disabled: isLoading, children: isLoading ? "Speichern..." : editMethod ? "Bezahlmethode aktualisieren" : "Bezahlmethode hinzufügen" })
       ] })
@@ -371,10 +370,9 @@ const PaymentMethods = () => {
     t9 = $[20];
   }
   const confirmDelete = t9;
-  const formatDate = _temp2;
-  const getPaymentTypeLabel = _temp3;
-  const getPaymentMethodIcon = _temp4;
-  const maskSensitiveData = _temp5;
+  const getPaymentTypeLabel = _temp2;
+  const getPaymentMethodIcon = _temp3;
+  const maskSensitiveData = _temp4;
   let t10;
   if ($[21] === Symbol.for("react.memo_cache_sentinel")) {
     t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Bezahlmethoden" });
@@ -446,7 +444,7 @@ const PaymentMethods = () => {
   }
   let t14;
   if ($[33] !== editingMethod || $[34] !== handleCloseDialog || $[35] !== handleMethodSubmit || $[36] !== isDialogOpen || $[37] !== isLoading) {
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDialog, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading });
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading });
     $[33] = editingMethod;
     $[34] = handleCloseDialog;
     $[35] = handleMethodSubmit;
@@ -509,16 +507,7 @@ function _temp(_, i) {
     ] })
   ] }, i);
 }
-function _temp2(dateString) {
-  return new Date(dateString).toLocaleDateString("de-AT", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
-function _temp3(type) {
+function _temp2(type) {
   switch (type) {
     case "paypal": {
       return "PayPal";
@@ -537,12 +526,12 @@ function _temp3(type) {
     }
   }
 }
-function _temp4(method_2) {
+function _temp3(method_2) {
   const iconName = method_2.icon || getDefaultPaymentIcon(method_2.type);
   const colorClass = method_2.type === "paypal" ? "text-blue-600 dark:text-blue-400" : method_2.type === "sepa" ? "text-green-600 dark:text-green-400" : method_2.type === "creditcard" ? "text-purple-600 dark:text-purple-400" : method_2.type === "eps" ? "text-orange-600 dark:text-orange-400" : "text-gray-600 dark:text-gray-400";
   return renderIcon(iconName, 14, colorClass);
 }
-function _temp5(method_3) {
+function _temp4(method_3) {
   switch (method_3.type) {
     case "paypal": {
       return method_3.details.email ? `${method_3.details.email.substring(0, 3)}***@***.com` : "No email";

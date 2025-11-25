@@ -1,222 +1,8 @@
-import { N as Root, r as reactExports, i as dist, G as cn, j as jsxRuntimeExports, O as Portal, Q as Content, U as Title, V as Overlay, W as Close, X, Y as Description, p as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, B as Button, Z as Play } from "./index-CCajg8b6.js";
-import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { D as DeleteConfirmDialog, a as CircleAlert, C as CircleCheck } from "./DeleteConfirmDialog-4MOA1MUw.js";
-import { R as RefreshCw, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, C as Copy, B as Bot, S as StatusBadge, T as Trash2, F as FileBraces, g as CircleX } from "./Table-BJBpbf69.js";
-import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
-const Drawer = Root;
-const DrawerPortal = Portal;
-const DrawerOverlay = reactExports.forwardRef((t0, ref) => {
-  const $ = dist.c(9);
-  let className;
-  let props;
-  if ($[0] !== t0) {
-    ({
-      className,
-      ...props
-    } = t0);
-    $[0] = t0;
-    $[1] = className;
-    $[2] = props;
-  } else {
-    className = $[1];
-    props = $[2];
-  }
-  let t1;
-  if ($[3] !== className) {
-    t1 = cn("fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className);
-    $[3] = className;
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
-  let t2;
-  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(Overlay, { ref, className: t1, ...props });
-    $[5] = props;
-    $[6] = ref;
-    $[7] = t1;
-    $[8] = t2;
-  } else {
-    t2 = $[8];
-  }
-  return t2;
-});
-DrawerOverlay.displayName = "DrawerOverlay";
-const DrawerContent = reactExports.forwardRef((t0, ref) => {
-  const $ = dist.c(13);
-  let children;
-  let className;
-  let props;
-  if ($[0] !== t0) {
-    ({
-      className,
-      children,
-      ...props
-    } = t0);
-    $[0] = t0;
-    $[1] = children;
-    $[2] = className;
-    $[3] = props;
-  } else {
-    children = $[1];
-    className = $[2];
-    props = $[3];
-  }
-  let t1;
-  if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
-    t1 = /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerOverlay, {});
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
-  let t2;
-  if ($[5] !== className) {
-    t2 = cn("fixed inset-y-0 right-0 z-50 h-full w-3/4 border-l border-gray-200 bg-white p-6 shadow-lg overflow-y-auto transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-full md:max-w-[678px] dark:border-gray-700 dark:bg-gray-800", className);
-    $[5] = className;
-    $[6] = t2;
-  } else {
-    t2 = $[6];
-  }
-  let t3;
-  if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
-    t3 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-gray-100 data-[state=open]:text-gray-500 dark:ring-offset-gray-950 dark:focus:ring-gray-300 dark:data-[state=open]:bg-gray-800 dark:data-[state=open]:text-gray-400", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(X, { className: "h-4 w-4 text-gray-500 dark:text-gray-400" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sr-only", children: "Close" })
-    ] });
-    $[7] = t3;
-  } else {
-    t3 = $[7];
-  }
-  let t4;
-  if ($[8] !== children || $[9] !== props || $[10] !== ref || $[11] !== t2) {
-    t4 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerPortal, { children: [
-      t1,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Content, { ref, className: t2, ...props, children: [
-        children,
-        t3
-      ] })
-    ] });
-    $[8] = children;
-    $[9] = props;
-    $[10] = ref;
-    $[11] = t2;
-    $[12] = t4;
-  } else {
-    t4 = $[12];
-  }
-  return t4;
-});
-DrawerContent.displayName = "DrawerContent";
-const DrawerHeader = (t0) => {
-  const $ = dist.c(8);
-  let className;
-  let props;
-  if ($[0] !== t0) {
-    ({
-      className,
-      ...props
-    } = t0);
-    $[0] = t0;
-    $[1] = className;
-    $[2] = props;
-  } else {
-    className = $[1];
-    props = $[2];
-  }
-  let t1;
-  if ($[3] !== className) {
-    t1 = cn("flex flex-col space-y-2 text-center sm:text-left", className);
-    $[3] = className;
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
-  let t2;
-  if ($[5] !== props || $[6] !== t1) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t1, ...props });
-    $[5] = props;
-    $[6] = t1;
-    $[7] = t2;
-  } else {
-    t2 = $[7];
-  }
-  return t2;
-};
-DrawerHeader.displayName = "DrawerHeader";
-const DrawerTitle = reactExports.forwardRef((t0, ref) => {
-  const $ = dist.c(9);
-  let className;
-  let props;
-  if ($[0] !== t0) {
-    ({
-      className,
-      ...props
-    } = t0);
-    $[0] = t0;
-    $[1] = className;
-    $[2] = props;
-  } else {
-    className = $[1];
-    props = $[2];
-  }
-  let t1;
-  if ($[3] !== className) {
-    t1 = cn("text-lg font-semibold leading-none tracking-tight text-gray-900 dark:text-gray-50", className);
-    $[3] = className;
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
-  let t2;
-  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(Title, { ref, className: t1, ...props });
-    $[5] = props;
-    $[6] = ref;
-    $[7] = t1;
-    $[8] = t2;
-  } else {
-    t2 = $[8];
-  }
-  return t2;
-});
-DrawerTitle.displayName = "DrawerTitle";
-const DrawerDescription = reactExports.forwardRef((t0, ref) => {
-  const $ = dist.c(9);
-  let className;
-  let props;
-  if ($[0] !== t0) {
-    ({
-      className,
-      ...props
-    } = t0);
-    $[0] = t0;
-    $[1] = className;
-    $[2] = props;
-  } else {
-    className = $[1];
-    props = $[2];
-  }
-  let t1;
-  if ($[3] !== className) {
-    t1 = cn("text-sm text-gray-500 dark:text-gray-400", className);
-    $[3] = className;
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
-  let t2;
-  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(Description, { ref, className: t1, ...props });
-    $[5] = props;
-    $[6] = ref;
-    $[7] = t1;
-    $[8] = t2;
-  } else {
-    t2 = $[8];
-  }
-  return t2;
-});
-DrawerDescription.displayName = "DrawerDescription";
+import { l as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, B as Button, E as Play, i as dist } from "./index-C8KwxcYM.js";
+import { C as CONFIG } from "./app.config-Cedwjkbe.js";
+import { D as DeleteConfirmDialog, a as CircleAlert, C as CircleCheck } from "./DeleteConfirmDialog-yikz5a6p.js";
+import { R as RefreshCw, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, C as Copy, B as Bot, l as formatDateTime, m as formatDuration, S as StatusBadge, T as Trash2, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces, n as CircleX } from "./formatters-B-uHFVcx.js";
+import { S as Skeleton } from "./Skeleton-CSq5Hioy.js";
 const TestResultsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
@@ -403,14 +189,6 @@ const TestResults = () => {
     const pm = paymentMethods.find((p) => p.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
-  const formatDuration = (durationMs) => {
-    if (!durationMs) return "N/A";
-    if (durationMs < 1e3) return `${durationMs}ms`;
-    return `${(durationMs / 1e3).toFixed(1)}s`;
-  };
-  const formatDate = (date) => {
-    return new Date(date).toLocaleString();
-  };
   const handleDeleteClick = (testRun) => {
     const formName = getFormName(testRun.formId);
     const paymentMethodName = getPaymentMethodName(testRun.paymentMethodId);
@@ -513,7 +291,7 @@ const TestResults = () => {
             ] }),
             testRun_1.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-blue-600 dark:text-blue-400" }) })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDate(testRun_1.runAt) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDateTime(testRun_1.runAt) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDuration(testRun_1.durationMs) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: testRun_1.status }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-1", children: [
@@ -550,7 +328,7 @@ const TestResults = () => {
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Run At" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white font-mono", children: formatDate(selectedTestRunData.runAt) })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white font-mono", children: formatDateTime(selectedTestRunData.runAt) })
           ] })
         ] }),
         selectedTestRunData.errorMessage && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 pb-6 border-b dark:border-gray-700 ", children: [
