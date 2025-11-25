@@ -1,4 +1,4 @@
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries } from "./database";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, notificationQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
 import type { Form, PaymentMethod } from "../common/types";
 import { randomUUID } from "crypto";
@@ -20,15 +20,19 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
 
     console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps`);
 
-    // Send toast notification for scheduled test completion
+    // Create notification for scheduled test completion
     if (isScheduled) {
+      notificationQueries.create({
+        type: result.success ? 'test_complete' : 'test_failed',
+        title: result.success ? 'Autopilot Test erfolgreich' : 'Autopilot Test fehlgeschlagen',
+        message: `${form.name} × ${paymentMethod.name}`,
+        testRunId: testRunId
+      });
+      
+      // Notify renderer to refresh notifications
       const allWindows = BrowserWindow.getAllWindows();
       allWindows.forEach(window => {
-        window.webContents.send('toast:display', {
-          type: result.success ? 'success' : 'error',
-          message: result.success ? 'Autopilot Test Succeeded' : 'Autopilot Test Failed',
-          description: `${form.name} × ${paymentMethod.name}`
-        });
+        window.webContents.send('notifications:updated');
       });
     }
   } catch (error) {
@@ -37,15 +41,19 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
     // Update test run with error
     await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
 
-    // Send toast notification for scheduled test failure
+    // Create notification for scheduled test failure
     if (isScheduled) {
+      notificationQueries.create({
+        type: 'test_failed',
+        title: 'Autopilot Test fehlgeschlagen',
+        message: `${form.name} × ${paymentMethod.name}`,
+        testRunId: testRunId
+      });
+      
+      // Notify renderer to refresh notifications
       const allWindows = BrowserWindow.getAllWindows();
       allWindows.forEach(window => {
-        window.webContents.send('toast:display', {
-          type: 'error',
-          message: 'Autopilot Test Failed',
-          description: `${form.name} × ${paymentMethod.name}`
-        });
+        window.webContents.send('notifications:updated');
       });
     }
   }
@@ -81,16 +89,6 @@ export async function createAndRunTest(formId: number, paymentMethodId: number) 
     });
 
     const testRunId = testRun.lastInsertRowid as number;
-
-    // Send toast notification for test start
-    const allWindows = BrowserWindow.getAllWindows();
-    allWindows.forEach(window => {
-      window.webContents.send('toast:display', {
-        type: 'info',
-        message: 'Autopilot Test Started',
-        description: `${form.name} × ${paymentMethod.name}`
-      });
-    });
 
     // Run asynchronously
     runSingleTest(testRunId, form, paymentMethod, settingsMap);

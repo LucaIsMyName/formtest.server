@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, Suspense, lazy } from "react";
-import { Toaster, toast } from "sonner";
 import { useSettingsStore } from "./store/useSettingsStore";
 import Layout from "./components/Layout";
 
@@ -20,30 +19,6 @@ function App() {
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
-
-  // Set up toast event listener
-  useEffect(() => {
-    const cleanup = window.api?.toast?.onDisplay?.((data: { type: string; message: string; description?: string }) => {
-      switch (data.type) {
-        case 'success':
-          toast.success(data.message, { description: data.description });
-          break;
-        case 'error':
-          toast.error(data.message, { description: data.description });
-          break;
-        case 'info':
-          toast.info(data.message, { description: data.description });
-          break;
-        case 'warning':
-          toast.warning(data.message, { description: data.description });
-          break;
-        default:
-          toast(data.message, { description: data.description });
-      }
-    });
-
-    return cleanup;
-  }, []);
 
   // Apply theme whenever settings change
   useEffect(() => {
@@ -108,24 +83,6 @@ function App() {
           </Routes>
         </Suspense>
       </Layout>
-      <Toaster 
-        position="bottom-right"
-        expand={false}
-        richColors
-        closeButton
-        toastOptions={{
-          style: {
-            background: 'var(--toast-bg)',
-            color: 'var(--toast-text)',
-            border: '1px solid var(--toast-border)',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-          },
-          className: 'custom-toast',
-        }}
-        theme="system"
-      />
     </>
   );
 }

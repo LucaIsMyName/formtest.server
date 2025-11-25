@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TrafficLights from "./TrafficLights";
+import NotificationButton from "./NotificationButton";
 import { Terminal, Search, Sun, Moon, Monitor, Settings } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
@@ -116,6 +117,9 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
             <div
               className="flex items-center gap-2 flex-shrink-0"
               style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+              {/* Notifications */}
+              <NotificationButton />
+
               {/* Run All Tests */}
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>

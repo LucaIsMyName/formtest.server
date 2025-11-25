@@ -337,9 +337,22 @@ function initDatabase() {
       FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL CHECK (type IN ('test_complete', 'test_failed', 'info')),
+      title TEXT NOT NULL,
+      message TEXT,
+      testRunId INTEGER,
+      isRead BOOLEAN DEFAULT 0,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (testRunId) REFERENCES test_runs (id) ON DELETE CASCADE
+    );
+
     CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
+    CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(isRead);
+    CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(createdAt);
   `);
   try {
     const backupExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='test_runs_backup'").get();
@@ -1143,6 +1156,49 @@ const importQueries = {
     return result;
   }
 };
+const notificationQueries = {
+  getAll: () => {
+    const notifications = db.prepare("SELECT * FROM notifications ORDER BY createdAt DESC").all();
+    return notifications.map((n) => ({
+      ...n,
+      isRead: Boolean(n.isRead),
+      createdAt: new Date(n.createdAt)
+    }));
+  },
+  getUnread: () => {
+    const notifications = db.prepare("SELECT * FROM notifications WHERE isRead = 0 ORDER BY createdAt DESC").all();
+    return notifications.map((n) => ({
+      ...n,
+      isRead: Boolean(n.isRead),
+      createdAt: new Date(n.createdAt)
+    }));
+  },
+  getUnreadCount: () => {
+    const result = db.prepare("SELECT COUNT(*) as count FROM notifications WHERE isRead = 0").get();
+    return result.count;
+  },
+  create: (notification) => {
+    const stmt = db.prepare("INSERT INTO notifications (type, title, message, testRunId) VALUES (?, ?, ?, ?)");
+    const result = stmt.run(notification.type, notification.title, notification.message || null, notification.testRunId || null);
+    return result.lastInsertRowid;
+  },
+  markAsRead: (id) => {
+    const stmt = db.prepare("UPDATE notifications SET isRead = 1 WHERE id = ?");
+    stmt.run(id);
+  },
+  markAllAsRead: () => {
+    const stmt = db.prepare("UPDATE notifications SET isRead = 1 WHERE isRead = 0");
+    stmt.run();
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM notifications WHERE id = ?");
+    stmt.run(id);
+  },
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM notifications");
+    stmt.run();
+  }
+};
 class TestProcessManager extends events.EventEmitter {
   constructor() {
     super();
@@ -1355,26 +1411,30 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
     await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps);
     console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps`);
     if (isScheduled) {
+      notificationQueries.create({
+        type: result.success ? "test_complete" : "test_failed",
+        title: result.success ? "Autopilot Test erfolgreich" : "Autopilot Test fehlgeschlagen",
+        message: `${form.name} × ${paymentMethod.name}`,
+        testRunId
+      });
       const allWindows = electron.BrowserWindow.getAllWindows();
       allWindows.forEach((window) => {
-        window.webContents.send("toast:display", {
-          type: result.success ? "success" : "error",
-          message: result.success ? "Autopilot Test Succeeded" : "Autopilot Test Failed",
-          description: `${form.name} × ${paymentMethod.name}`
-        });
+        window.webContents.send("notifications:updated");
       });
     }
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
     await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
     if (isScheduled) {
+      notificationQueries.create({
+        type: "test_failed",
+        title: "Autopilot Test fehlgeschlagen",
+        message: `${form.name} × ${paymentMethod.name}`,
+        testRunId
+      });
       const allWindows = electron.BrowserWindow.getAllWindows();
       allWindows.forEach((window) => {
-        window.webContents.send("toast:display", {
-          type: "error",
-          message: "Autopilot Test Failed",
-          description: `${form.name} × ${paymentMethod.name}`
-        });
+        window.webContents.send("notifications:updated");
       });
     }
   }
@@ -1403,14 +1463,6 @@ async function createAndRunTest(formId, paymentMethodId) {
       isScheduled: true
     });
     const testRunId = testRun.lastInsertRowid;
-    const allWindows = electron.BrowserWindow.getAllWindows();
-    allWindows.forEach((window) => {
-      window.webContents.send("toast:display", {
-        type: "info",
-        message: "Autopilot Test Started",
-        description: `${form.name} × ${paymentMethod.name}`
-      });
-    });
     runSingleTest(testRunId, form, paymentMethod, settingsMap);
     return testRunId;
   } catch (error) {
@@ -1798,6 +1850,27 @@ function setupIpcHandlers() {
       scheduler.stopJob(schedule.id);
     }
     return testScheduleQueries.deleteAll();
+  });
+  electron.ipcMain.handle("notifications:getAll", () => {
+    return notificationQueries.getAll();
+  });
+  electron.ipcMain.handle("notifications:getUnread", () => {
+    return notificationQueries.getUnread();
+  });
+  electron.ipcMain.handle("notifications:getUnreadCount", () => {
+    return notificationQueries.getUnreadCount();
+  });
+  electron.ipcMain.handle("notifications:markAsRead", (_, id) => {
+    return notificationQueries.markAsRead(id);
+  });
+  electron.ipcMain.handle("notifications:markAllAsRead", () => {
+    return notificationQueries.markAllAsRead();
+  });
+  electron.ipcMain.handle("notifications:delete", (_, id) => {
+    return notificationQueries.delete(id);
+  });
+  electron.ipcMain.handle("notifications:deleteAll", () => {
+    return notificationQueries.deleteAll();
   });
 }
 let mainWindow;

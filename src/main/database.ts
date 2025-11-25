@@ -325,9 +325,22 @@ export function initDatabase(): void {
       FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
     );
 
+    CREATE TABLE IF NOT EXISTS notifications (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL CHECK (type IN ('test_complete', 'test_failed', 'info')),
+      title TEXT NOT NULL,
+      message TEXT,
+      testRunId INTEGER,
+      isRead BOOLEAN DEFAULT 0,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (testRunId) REFERENCES test_runs (id) ON DELETE CASCADE
+    );
+
     CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
     CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
+    CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(isRead);
+    CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(createdAt);
   `);
 
   // Restore backed up data if migration occurred
@@ -1281,5 +1294,68 @@ export const importQueries = {
     }
 
     return result;
+  }
+};
+
+// Notification type
+export interface Notification {
+  id: number;
+  type: 'test_complete' | 'test_failed' | 'info';
+  title: string;
+  message?: string;
+  testRunId?: number;
+  isRead: boolean;
+  createdAt: Date;
+}
+
+// Notification operations
+export const notificationQueries = {
+  getAll: () => {
+    const notifications = db.prepare("SELECT * FROM notifications ORDER BY createdAt DESC").all() as any[];
+    return notifications.map((n) => ({
+      ...n,
+      isRead: Boolean(n.isRead),
+      createdAt: new Date(n.createdAt),
+    })) as Notification[];
+  },
+  
+  getUnread: () => {
+    const notifications = db.prepare("SELECT * FROM notifications WHERE isRead = 0 ORDER BY createdAt DESC").all() as any[];
+    return notifications.map((n) => ({
+      ...n,
+      isRead: Boolean(n.isRead),
+      createdAt: new Date(n.createdAt),
+    })) as Notification[];
+  },
+  
+  getUnreadCount: () => {
+    const result = db.prepare("SELECT COUNT(*) as count FROM notifications WHERE isRead = 0").get() as { count: number };
+    return result.count;
+  },
+  
+  create: (notification: Omit<Notification, 'id' | 'isRead' | 'createdAt'>) => {
+    const stmt = db.prepare("INSERT INTO notifications (type, title, message, testRunId) VALUES (?, ?, ?, ?)");
+    const result = stmt.run(notification.type, notification.title, notification.message || null, notification.testRunId || null);
+    return result.lastInsertRowid as number;
+  },
+  
+  markAsRead: (id: number) => {
+    const stmt = db.prepare("UPDATE notifications SET isRead = 1 WHERE id = ?");
+    stmt.run(id);
+  },
+  
+  markAllAsRead: () => {
+    const stmt = db.prepare("UPDATE notifications SET isRead = 1 WHERE isRead = 0");
+    stmt.run();
+  },
+  
+  delete: (id: number) => {
+    const stmt = db.prepare("DELETE FROM notifications WHERE id = ?");
+    stmt.run(id);
+  },
+  
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM notifications");
+    stmt.run();
   }
 };

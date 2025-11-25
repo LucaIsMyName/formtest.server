@@ -62,12 +62,18 @@ const api = {
     export: (options) => electron.ipcRenderer.invoke("database:export", options),
     import: (mode, options) => electron.ipcRenderer.invoke("database:import", mode, options)
   },
-  // Toast notifications
-  toast: {
-    show: (type, message, description) => electron.ipcRenderer.invoke("toast:show", type, message, description),
-    onDisplay: (callback) => {
-      electron.ipcRenderer.on("toast:display", (_, data) => callback(data));
-      return () => electron.ipcRenderer.removeAllListeners("toast:display");
+  // Notifications (in-app notification system)
+  notifications: {
+    getAll: () => electron.ipcRenderer.invoke("notifications:getAll"),
+    getUnread: () => electron.ipcRenderer.invoke("notifications:getUnread"),
+    getUnreadCount: () => electron.ipcRenderer.invoke("notifications:getUnreadCount"),
+    markAsRead: (id) => electron.ipcRenderer.invoke("notifications:markAsRead", id),
+    markAllAsRead: () => electron.ipcRenderer.invoke("notifications:markAllAsRead"),
+    delete: (id) => electron.ipcRenderer.invoke("notifications:delete", id),
+    deleteAll: () => electron.ipcRenderer.invoke("notifications:deleteAll"),
+    onUpdated: (callback) => {
+      electron.ipcRenderer.on("notifications:updated", () => callback());
+      return () => electron.ipcRenderer.removeAllListeners("notifications:updated");
     }
   }
 };

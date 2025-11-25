@@ -51,9 +51,15 @@ declare global {
         export: (options: ImportOptions) => Promise<{ success: boolean; message: string; filePath?: string }>
         import: (mode: 'overwrite' | 'merge', options: ImportOptions) => Promise<ImportResult>
       }
-      toast: {
-        show: (type: 'success' | 'error' | 'info' | 'warning', message: string, description?: string) => Promise<void>
-        onDisplay: (callback: (data: { type: string; message: string; description?: string }) => void) => () => void
+      notifications: {
+        getAll: () => Promise<any[]>
+        getUnread: () => Promise<any[]>
+        getUnreadCount: () => Promise<number>
+        markAsRead: (id: number) => Promise<void>
+        markAllAsRead: () => Promise<void>
+        delete: (id: number) => Promise<void>
+        deleteAll: () => Promise<void>
+        onUpdated: (callback: () => void) => () => void
       }
     }
   }

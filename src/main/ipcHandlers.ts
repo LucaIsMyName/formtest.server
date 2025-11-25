@@ -1,7 +1,7 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries } from "./database";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries } from "./database";
 import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule } from "../common/types";
 import { runSingleTest } from "./testExecutor";
 import { scheduler } from "./schedulerService";
@@ -380,5 +380,34 @@ export function setupIpcHandlers(): void {
       scheduler.stopJob(schedule.id);
     }
     return testScheduleQueries.deleteAll();
+  });
+
+  // Notification handlers
+  ipcMain.handle("notifications:getAll", () => {
+    return notificationQueries.getAll();
+  });
+
+  ipcMain.handle("notifications:getUnread", () => {
+    return notificationQueries.getUnread();
+  });
+
+  ipcMain.handle("notifications:getUnreadCount", () => {
+    return notificationQueries.getUnreadCount();
+  });
+
+  ipcMain.handle("notifications:markAsRead", (_, id: number) => {
+    return notificationQueries.markAsRead(id);
+  });
+
+  ipcMain.handle("notifications:markAllAsRead", () => {
+    return notificationQueries.markAllAsRead();
+  });
+
+  ipcMain.handle("notifications:delete", (_, id: number) => {
+    return notificationQueries.delete(id);
+  });
+
+  ipcMain.handle("notifications:deleteAll", () => {
+    return notificationQueries.deleteAll();
   });
 }

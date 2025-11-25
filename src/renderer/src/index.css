@@ -61,10 +61,6 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Toast styling variables - Light mode */
-  --toast-bg: #ffffff;
-  --toast-text: #000000;
-  --toast-border: #e5e5e5;
 }
 
 /* Reset and base styles */
@@ -284,36 +280,3 @@ select.input {
   }
 }
 
-/* Dark mode toast variables */
-.dark {
-  --toast-bg: var(--color-background);
-  --toast-text: var(--color-text);
-  --toast-border: var(--color-border);
-}
-
-/* Custom toast styling */
-.custom-toast {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  backdrop-filter: blur(8px);
-}
-
-.dark .custom-toast {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* Toast content styling */
-[data-sonner-toast] {
-  border-radius: 8px !important;
-}
-
-[data-sonner-toast] {
-  --toast-bg: var(--color-background-secondary) !important;
-  --toast-text: var(--color-text) !important;
-  --toast-border: var(--color-border) !important;
-}
-
-.dark [data-sonner-toast] {
-   --toast-bg: var(--color-background-secondary) !important;
-  --toast-text: var(--color-text) !important;
-  --toast-border: var(--color-border) !important;
-}

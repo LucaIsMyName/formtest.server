@@ -73,13 +73,18 @@ const api = {
     import: (mode: 'overwrite' | 'merge', options: ImportOptions) => ipcRenderer.invoke('database:import', mode, options)
   },
 
-  // Toast notifications
-  toast: {
-    show: (type: 'success' | 'error' | 'info' | 'warning', message: string, description?: string) => 
-      ipcRenderer.invoke('toast:show', type, message, description),
-    onDisplay: (callback: (data: { type: string; message: string; description?: string }) => void) => {
-      ipcRenderer.on('toast:display', (_, data) => callback(data));
-      return () => ipcRenderer.removeAllListeners('toast:display');
+  // Notifications (in-app notification system)
+  notifications: {
+    getAll: () => ipcRenderer.invoke('notifications:getAll'),
+    getUnread: () => ipcRenderer.invoke('notifications:getUnread'),
+    getUnreadCount: () => ipcRenderer.invoke('notifications:getUnreadCount'),
+    markAsRead: (id: number) => ipcRenderer.invoke('notifications:markAsRead', id),
+    markAllAsRead: () => ipcRenderer.invoke('notifications:markAllAsRead'),
+    delete: (id: number) => ipcRenderer.invoke('notifications:delete', id),
+    deleteAll: () => ipcRenderer.invoke('notifications:deleteAll'),
+    onUpdated: (callback: () => void) => {
+      ipcRenderer.on('notifications:updated', () => callback());
+      return () => ipcRenderer.removeAllListeners('notifications:updated');
     }
   }
 }
