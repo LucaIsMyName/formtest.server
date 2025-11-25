@@ -5,6 +5,7 @@ import { CONFIG } from "../app.config";
 import PaymentMethodDialog from "../components/PaymentMethodDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
+import { StatusBadge } from "../components/ui/Badge";
 import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Skeleton } from "../components/ui/Skeleton";
@@ -211,9 +212,11 @@ const PaymentMethods: React.FC = () => {
                   <TableCell>
                     <button
                       onClick={() => togglePaymentMethodActive(method.id)}
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${method.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`}
+                      className="border-none bg-transparent cursor-pointer p-0"
                       disabled={isLoading}>
-                      {method.isActive ? "Active" : "Inactive"}
+                      <StatusBadge status={method.isActive ? "active" : "inactive"}>
+                        {method.isActive ? "Aktiv" : "Inaktiv"}
+                      </StatusBadge>
                     </button>
                   </TableCell>
                   <TableCell className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</TableCell>

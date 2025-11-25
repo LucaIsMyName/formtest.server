@@ -7,7 +7,8 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
-import { CheckCircle, XCircle, Clock, SkipForward, RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot } from "lucide-react";
+import { StatusBadge } from "../components/ui/Badge";
+import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle } from "lucide-react";
 import type { TestStep } from '../../../common/types';
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
@@ -229,21 +230,6 @@ const TestResults: React.FC = () => {
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
 
-  const getStatusIcon = (status: string) => {
-    const iconProps = { size: 16 };
-    switch (status) {
-      case "SUCCESS":
-        return <CheckCircle {...iconProps} />;
-      case "FAILURE":
-        return <XCircle {...iconProps} />;
-      case "RUNNING":
-        return <Clock {...iconProps} />;
-      case "SKIPPED":
-        return <SkipForward {...iconProps} />;
-      default:
-        return <Clock {...iconProps} />;
-    }
-  };
 
   const formatDuration = (durationMs?: number) => {
     if (!durationMs) return "N/A";
@@ -402,24 +388,21 @@ const TestResults: React.FC = () => {
                           </div>
                         </TableCell>
                         <TableCell className="px-4">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div className={`flex-shrink-0 ${testRun.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`}>{getStatusIcon(testRun.status)}</div>
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                                {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
-                              </div>
-                              {testRun.isScheduled && (
-                                <div className="flex-shrink-0" title="Autopilot Test">
-                                  <Bot size={12} className="text-blue-600 dark:text-blue-400" />
-                                </div>
-                              )}
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                              {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
                             </div>
+                            {testRun.isScheduled && (
+                              <div className="flex-shrink-0" title="Autopilot Test">
+                                <Bot size={12} className="text-blue-600 dark:text-blue-400" />
+                              </div>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(testRun.runAt)}</TableCell>
                         <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
                         <TableCell className="px-4">
-                          <span className={`inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`}>{testRun.status}</span>
+                          <StatusBadge status={testRun.status} />
                         </TableCell>
                         <TableCell className="px-4 text-right">
                           <div className="flex items-center justify-end gap-1">
@@ -488,9 +471,7 @@ const TestResults: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
-                    <div className={`border inline-flex items-center gap-2 px-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : selectedTestRunData.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400" : selectedTestRunData.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"}`}>
-                       {selectedTestRunData.status}
-                    </div>
+                    <StatusBadge status={selectedTestRunData.status} />
                   </div>
 
                   <div>

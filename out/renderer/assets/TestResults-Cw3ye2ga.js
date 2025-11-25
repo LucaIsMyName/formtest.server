@@ -1,8 +1,8 @@
-import { N as Root, r as reactExports, i as dist, G as cn, j as jsxRuntimeExports, O as Portal, Q as Content, U as Title, V as Overlay, W as Close, X, Y as Description, p as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, B as Button, Z as Play } from "./index-Ch-o-UTP.js";
+import { N as Root, r as reactExports, i as dist, G as cn, j as jsxRuntimeExports, O as Portal, Q as Content, U as Title, V as Overlay, W as Close, X, Y as Description, p as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, B as Button, Z as Play } from "./index-CCajg8b6.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { D as DeleteConfirmDialog, a as CircleAlert, C as CircleCheck } from "./DeleteConfirmDialog-DfYvwzrV.js";
-import { S as Skeleton } from "./Skeleton-Cw50pXiE.js";
-import { R as RefreshCw, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, C as Copy, B as Bot, T as Trash2, F as FileBraces, g as Clock, S as SkipForward, h as CircleX, i as CircleCheckBig } from "./Table-DcUbmILX.js";
+import { D as DeleteConfirmDialog, a as CircleAlert, C as CircleCheck } from "./DeleteConfirmDialog-4MOA1MUw.js";
+import { R as RefreshCw, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, C as Copy, B as Bot, S as StatusBadge, T as Trash2, F as FileBraces, g as CircleX } from "./Table-BJBpbf69.js";
+import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
 const Drawer = Root;
 const DrawerPortal = Portal;
 const DrawerOverlay = reactExports.forwardRef((t0, ref) => {
@@ -403,23 +403,6 @@ const TestResults = () => {
     const pm = paymentMethods.find((p) => p.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
-  const getStatusIcon = (status) => {
-    const iconProps = {
-      size: 16
-    };
-    switch (status) {
-      case "SUCCESS":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheckBig, { ...iconProps });
-      case "FAILURE":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { ...iconProps });
-      case "RUNNING":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { ...iconProps });
-      case "SKIPPED":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(SkipForward, { ...iconProps });
-      default:
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { ...iconProps });
-    }
-  };
   const formatDuration = (durationMs) => {
     if (!durationMs) return "N/A";
     if (durationMs < 1e3) return `${durationMs}ms`;
@@ -522,20 +505,17 @@ const TestResults = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: testRun_1.uuid ? testRun_1.uuid.substring(0, 8) : `ID:${testRun_1.id}` }),
             testRun_1.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => handleCopyUuid(e_0, testRun_1.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 min-w-0", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `flex-shrink-0 ${testRun_1.status === "SUCCESS" ? "text-green-600 dark:text-green-400" : testRun_1.status === "FAILURE" ? "text-red-600 dark:text-red-400" : testRun_1.status === "RUNNING" ? "text-blue-600 dark:text-blue-400" : "text-gray-600 dark:text-gray-400"}`, children: getStatusIcon(testRun_1.status) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
-                getFormName(testRun_1.formId),
-                " × ",
-                getPaymentMethodName(testRun_1.paymentMethodId)
-              ] }),
-              testRun_1.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-blue-600 dark:text-blue-400" }) })
-            ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
+              getFormName(testRun_1.formId),
+              " × ",
+              getPaymentMethodName(testRun_1.paymentMethodId)
+            ] }),
+            testRun_1.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-blue-600 dark:text-blue-400" }) })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDate(testRun_1.runAt) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDuration(testRun_1.durationMs) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono font-medium rounded-full ${testRun_1.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" : testRun_1.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" : testRun_1.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-800"}`, children: testRun_1.status }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: testRun_1.status }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-1", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
               e_1.stopPropagation();
@@ -562,7 +542,7 @@ const TestResults = () => {
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Status" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `border inline-flex items-center gap-2 px-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : selectedTestRunData.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400" : selectedTestRunData.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"}`, children: selectedTestRunData.status })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: selectedTestRunData.status })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Duration" }),

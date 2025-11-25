@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, d as usePaymentMethodsStore } from "./index-Ch-o-UTP.js";
+import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, d as usePaymentMethodsStore } from "./index-CCajg8b6.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-BPJIlBaB.js";
-import { I as Input, S as Select, a as SelectTrigger, b as SelectValue, c as SelectContent, d as SelectItem } from "./Select-7Rdp6qtj.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-DfYvwzrV.js";
-import { S as Skeleton } from "./Skeleton-Cw50pXiE.js";
-import { a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, T as Trash2 } from "./Table-DcUbmILX.js";
-import "./index-CoqBMRIG.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-D3p5CfHr.js";
+import { I as Input, S as Select, a as SelectTrigger, b as SelectValue, c as SelectContent, d as SelectItem } from "./Select-DWNKbYVw.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-4MOA1MUw.js";
+import { a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, S as StatusBadge, T as Trash2 } from "./Table-BJBpbf69.js";
+import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
+import "./index-UprzNoc4.js";
 const PaymentMethodDialog = ({
   isOpen,
   onClose,
@@ -427,7 +427,7 @@ const PaymentMethods = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-mono text-gray-900 dark:text-gray-300", children: getPaymentTypeLabel(method_4.type) })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: maskSensitiveData(method_4) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => togglePaymentMethodActive(method_4.id), className: `inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${method_4.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`, disabled: isLoading, children: method_4.isActive ? "Active" : "Inactive" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => togglePaymentMethodActive(method_4.id), className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: method_4.isActive ? "active" : "inactive", children: method_4.isActive ? "Aktiv" : "Inaktiv" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(method_4.createdAt) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => handleEditMethod(method_4), variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-D7KF2fxi.js","./app.config-CIbseEfE.js","./Skeleton-Cw50pXiE.js","./Forms-BcQ9sqG6.js","./IconPicker-BPJIlBaB.js","./Table-DcUbmILX.js","./index-CoqBMRIG.js","./DeleteConfirmDialog-DfYvwzrV.js","./Select-7Rdp6qtj.js","./PaymentMethods-CJWlJOeG.js","./Settings-Ca1OWKQ0.js","./TestResults-C0xWTQRa.js","./InfoDoku-lxikfZ3P.js","./Schedules-D69Mh79S.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-C-ldC8n6.js","./app.config-CIbseEfE.js","./Skeleton-CsSSvzmZ.js","./Forms-B2moEmuM.js","./IconPicker-D3p5CfHr.js","./Table-BJBpbf69.js","./index-UprzNoc4.js","./DeleteConfirmDialog-4MOA1MUw.js","./Select-DWNKbYVw.js","./PaymentMethods-CHXmvJcF.js","./Settings-C0YloMEn.js","./TestResults-Cw3ye2ga.js","./InfoDoku-Di09zwIR.js","./Schedules-DVgiRz8_.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -28024,9 +28024,45 @@ var Label$1 = reactExports.forwardRef((props, forwardedRef) => {
 });
 Label$1.displayName = NAME;
 var Root = Label$1;
+const falsyToString = (value) => typeof value === "boolean" ? `${value}` : value === 0 ? "0" : value;
 const cx = clsx;
 const cva = (base, config) => (props) => {
-  return cx(base, props === null || props === void 0 ? void 0 : props.class, props === null || props === void 0 ? void 0 : props.className);
+  var _config_compoundVariants;
+  if ((config === null || config === void 0 ? void 0 : config.variants) == null) return cx(base, props === null || props === void 0 ? void 0 : props.class, props === null || props === void 0 ? void 0 : props.className);
+  const { variants, defaultVariants } = config;
+  const getVariantClassNames = Object.keys(variants).map((variant) => {
+    const variantProp = props === null || props === void 0 ? void 0 : props[variant];
+    const defaultVariantProp = defaultVariants === null || defaultVariants === void 0 ? void 0 : defaultVariants[variant];
+    if (variantProp === null) return null;
+    const variantKey = falsyToString(variantProp) || falsyToString(defaultVariantProp);
+    return variants[variant][variantKey];
+  });
+  const propsWithoutUndefined = props && Object.entries(props).reduce((acc, param) => {
+    let [key, value] = param;
+    if (value === void 0) {
+      return acc;
+    }
+    acc[key] = value;
+    return acc;
+  }, {});
+  const getCompoundVariantClassNames = config === null || config === void 0 ? void 0 : (_config_compoundVariants = config.compoundVariants) === null || _config_compoundVariants === void 0 ? void 0 : _config_compoundVariants.reduce((acc, param) => {
+    let { class: cvClass, className: cvClassName, ...compoundVariantOptions } = param;
+    return Object.entries(compoundVariantOptions).every((param2) => {
+      let [key, value] = param2;
+      return Array.isArray(value) ? value.includes({
+        ...defaultVariants,
+        ...propsWithoutUndefined
+      }[key]) : {
+        ...defaultVariants,
+        ...propsWithoutUndefined
+      }[key] === value;
+    }) ? [
+      ...acc,
+      cvClass,
+      cvClassName
+    ] : acc;
+  }, []);
+  return cx(base, getVariantClassNames, getCompoundVariantClassNames, props === null || props === void 0 ? void 0 : props.class, props === null || props === void 0 ? void 0 : props.className);
 };
 const labelVariants = cva("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70");
 const Label = reactExports.forwardRef((t0, ref) => {
@@ -29583,8 +29619,8 @@ const Layout = (t0) => {
     t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t14, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
       const IconComponent = item.icon;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: item.href, className: `flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"}`, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-blue-600 dark:stroke-blue-400 scale-[115%]" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-stretched", children: item.name })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-blue-600 dark:stroke-blue-400" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `font-stretched transition-all ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-semibold" : ""}`, children: item.name })
       ] }, item.name);
     }) }) });
     $2[23] = location.pathname;
@@ -29667,13 +29703,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-D7KF2fxi.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BcQ9sqG6.js"), true ? __vite__mapDeps([3,1,4,5,6,7,8,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-CJWlJOeG.js"), true ? __vite__mapDeps([9,1,4,5,6,7,8,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-Ca1OWKQ0.js"), true ? __vite__mapDeps([10,1,7,8,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-C0xWTQRa.js"), true ? __vite__mapDeps([11,1,7,2,5]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-lxikfZ3P.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-D69Mh79S.js"), true ? __vite__mapDeps([13,1,5,2,6,4,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-C-ldC8n6.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-B2moEmuM.js"), true ? __vite__mapDeps([3,1,4,5,6,7,8,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-CHXmvJcF.js"), true ? __vite__mapDeps([9,1,4,5,6,7,8,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-C0YloMEn.js"), true ? __vite__mapDeps([10,1,7,8,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-Cw3ye2ga.js"), true ? __vite__mapDeps([11,1,7,5,2]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-Di09zwIR.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DVgiRz8_.js"), true ? __vite__mapDeps([13,1,5,2,6,4,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -29809,7 +29845,8 @@ export {
   DismissableLayer as ak,
   Content$1 as al,
   Arrow as am,
-  DialogDescription as an,
+  cva as an,
+  DialogDescription as ao,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,

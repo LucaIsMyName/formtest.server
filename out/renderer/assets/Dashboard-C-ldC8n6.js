@@ -1,6 +1,6 @@
-import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, S as Settings, h as TestRunDialog, i as dist } from "./index-Ch-o-UTP.js";
+import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, S as Settings, h as TestRunDialog, i as dist } from "./index-CCajg8b6.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { S as Skeleton } from "./Skeleton-Cw50pXiE.js";
+import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
 var EventKeys = ["dangerouslySetInnerHTML", "onCopy", "onCopyCapture", "onCut", "onCutCapture", "onPaste", "onPasteCapture", "onCompositionEnd", "onCompositionEndCapture", "onCompositionStart", "onCompositionStartCapture", "onCompositionUpdate", "onCompositionUpdateCapture", "onFocus", "onFocusCapture", "onBlur", "onBlurCapture", "onChange", "onChangeCapture", "onBeforeInput", "onBeforeInputCapture", "onInput", "onInputCapture", "onReset", "onResetCapture", "onSubmit", "onSubmitCapture", "onInvalid", "onInvalidCapture", "onLoad", "onLoadCapture", "onError", "onErrorCapture", "onKeyDown", "onKeyDownCapture", "onKeyPress", "onKeyPressCapture", "onKeyUp", "onKeyUpCapture", "onAbort", "onAbortCapture", "onCanPlay", "onCanPlayCapture", "onCanPlayThrough", "onCanPlayThroughCapture", "onDurationChange", "onDurationChangeCapture", "onEmptied", "onEmptiedCapture", "onEncrypted", "onEncryptedCapture", "onEnded", "onEndedCapture", "onLoadedData", "onLoadedDataCapture", "onLoadedMetadata", "onLoadedMetadataCapture", "onLoadStart", "onLoadStartCapture", "onPause", "onPauseCapture", "onPlay", "onPlayCapture", "onPlaying", "onPlayingCapture", "onProgress", "onProgressCapture", "onRateChange", "onRateChangeCapture", "onSeeked", "onSeekedCapture", "onSeeking", "onSeekingCapture", "onStalled", "onStalledCapture", "onSuspend", "onSuspendCapture", "onTimeUpdate", "onTimeUpdateCapture", "onVolumeChange", "onVolumeChangeCapture", "onWaiting", "onWaitingCapture", "onAuxClick", "onAuxClickCapture", "onClick", "onClickCapture", "onContextMenu", "onContextMenuCapture", "onDoubleClick", "onDoubleClickCapture", "onDrag", "onDragCapture", "onDragEnd", "onDragEndCapture", "onDragEnter", "onDragEnterCapture", "onDragExit", "onDragExitCapture", "onDragLeave", "onDragLeaveCapture", "onDragOver", "onDragOverCapture", "onDragStart", "onDragStartCapture", "onDrop", "onDropCapture", "onMouseDown", "onMouseDownCapture", "onMouseEnter", "onMouseLeave", "onMouseMove", "onMouseMoveCapture", "onMouseOut", "onMouseOutCapture", "onMouseOver", "onMouseOverCapture", "onMouseUp", "onMouseUpCapture", "onSelect", "onSelectCapture", "onTouchCancel", "onTouchCancelCapture", "onTouchEnd", "onTouchEndCapture", "onTouchMove", "onTouchMoveCapture", "onTouchStart", "onTouchStartCapture", "onPointerDown", "onPointerDownCapture", "onPointerMove", "onPointerMoveCapture", "onPointerUp", "onPointerUpCapture", "onPointerCancel", "onPointerCancelCapture", "onPointerEnter", "onPointerEnterCapture", "onPointerLeave", "onPointerLeaveCapture", "onPointerOver", "onPointerOverCapture", "onPointerOut", "onPointerOutCapture", "onGotPointerCapture", "onGotPointerCaptureCapture", "onLostPointerCapture", "onLostPointerCaptureCapture", "onScroll", "onScrollCapture", "onWheel", "onWheelCapture", "onAnimationStart", "onAnimationStartCapture", "onAnimationEnd", "onAnimationEndCapture", "onAnimationIteration", "onAnimationIterationCapture", "onTransitionEnd", "onTransitionEndCapture"];
 function isEventKey(key) {
   if (typeof key !== "string") {
@@ -24133,45 +24133,46 @@ const Dashboard = () => {
           onClick: () => handleQuickAction("run-tests"),
           disabled: stats.activeForms === 0 || stats.activePaymentMethods === 0,
           variant: "outline",
+          size: "sm",
           className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300",
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { className: "w-5 h-5 text-purple-500 dark:text-purple-400 mr-2 group-hover:scale-110 transition-transform" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white", children: isRunning ? "Tests laufen..." : "Tests starten" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { className: "w-4 h-4 text-purple-500 dark:text-purple-400 mr-2 transition-transform" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: isRunning ? "Tests laufen..." : "Tests starten" })
           ]
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("add-form"), variant: "outline", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-5 h-5 text-blue-500 dark:text-blue-400 mr-2 group-hover:scale-110 transition-transform" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-900 dark:text-white", children: "Formular" })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("add-form"), variant: "outline", size: "sm", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(FileText, { className: "w-4 h-4 text-blue-500 dark:text-blue-400 mr-2 transition-transform" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: "Formulare" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("add-payment"), variant: "outline", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { className: "w-5 h-5 text-green-500 dark:text-green-400 mr-2 group-hover:scale-110 transition-transform" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-smtext-gray-900 dark:text-white", children: "Bezahlmethode" })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("add-payment"), variant: "outline", size: "sm", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { className: "w-4 h-4 text-green-500 dark:text-green-400 mr-2 transition-transform" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: "Bezahlmethoden" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("view-results"), variant: "outline", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ChartColumn, { className: "w-5 h-5 text-yellow-500 dark:text-yellow-400 mr-2 group-hover:scale-110 transition-transform" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-smtext-gray-900 dark:text-white", children: "Ergebnisse" })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("view-results"), variant: "outline", size: "sm", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ChartColumn, { className: "w-4 h-4 text-yellow-500 dark:text-yellow-400 mr-2 transition-transform" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: "Ergebnisse" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("settings"), variant: "outline", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-5 h-5 text-gray-500 dark:text-gray-400 mr-2 group-hover:scale-110 transition-transform" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-smtext-gray-900 dark:text-white", children: "Einstellungen" })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("settings"), variant: "outline", size: "sm", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-4 h-4 text-gray-500 dark:text-gray-400 mr-2 transition-transform" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: "Einstellungen" })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-smtext-gray-500 dark:text-gray-400", children: "Gesamt Tests" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Gesamt Tests" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-semibold text-gray-900 dark:text-white mt-2", style: {
           fontStretch: "125%"
         }, children: stats.totalTestRuns })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-smtext-gray-500 dark:text-gray-400", children: "Bezahlmethoden" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Bezahlmethoden" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-semibold text-gray-900 dark:text-white mt-2", style: {
           fontStretch: "125%"
         }, children: stats.totalPaymentMethods })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-smtext-gray-500 dark:text-gray-400", children: "Erfolgreich" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Erfolgreich" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-semibold text-green-600 dark:text-green-400 mt-2", style: {
           fontStretch: "125%"
         }, children: stats.successfulTests })

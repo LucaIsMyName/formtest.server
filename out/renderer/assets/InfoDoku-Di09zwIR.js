@@ -1,4 +1,4 @@
-import { i as dist, j as jsxRuntimeExports } from "./index-Ch-o-UTP.js";
+import { i as dist, j as jsxRuntimeExports } from "./index-CCajg8b6.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
 const InfoDoku = () => {
   const $ = dist.c(50);
@@ -540,7 +540,7 @@ const InfoDoku = () => {
       t0,
       t7,
       t45,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         t46,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: [
           t47,

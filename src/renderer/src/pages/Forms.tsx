@@ -5,6 +5,7 @@ import { CONFIG } from "../app.config";
 import FormDialog from "../components/FormDialog";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
+import { StatusBadge } from "../components/ui/Badge";
 import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
@@ -177,9 +178,11 @@ const Forms: React.FC = () => {
                   <TableCell>
                     <button
                       onClick={() => toggleFormActive(form.id)}
-                      className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${form.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`}
+                      className="border-none bg-transparent cursor-pointer p-0"
                       disabled={isLoading}>
-                      {form.isActive ? "Active" : "Inactive"}
+                      <StatusBadge status={form.isActive ? "active" : "inactive"}>
+                        {form.isActive ? "Aktiv" : "Inaktiv"}
+                      </StatusBadge>
                     </button>
                   </TableCell>
                   <TableCell className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</TableCell>

@@ -5,6 +5,7 @@ import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
+import { StatusBadge } from "../components/ui/Badge";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Skeleton } from "../components/ui/Skeleton";
 import ScheduleDialog from "../components/ScheduleDialog";
@@ -135,7 +136,9 @@ const Schedules: React.FC = () => {
                     <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono">{formatDate(schedule.lastRun)}</div>
                   </TableCell>
                   <TableCell>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${schedule.isActive ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"}`}>{schedule.isActive ? "Aktiv" : "Inaktiv"}</span>
+                    <StatusBadge status={schedule.isActive ? "active" : "inactive"}>
+                      {schedule.isActive ? "Aktiv" : "Inaktiv"}
+                    </StatusBadge>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">

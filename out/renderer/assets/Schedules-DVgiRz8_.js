@@ -1,10 +1,10 @@
-import { _ as create, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, N as Root, O as Portal, V as Overlay, Q as Content, U as Title, W as Close, X, K as Check, B as Button, $ as LoaderCircle, Z as Play } from "./index-Ch-o-UTP.js";
+import { _ as create, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, N as Root, O as Portal, V as Overlay, Q as Content, U as Title, W as Close, X, K as Check, B as Button, $ as LoaderCircle, Z as Play } from "./index-CCajg8b6.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, T as Trash2 } from "./Table-DcUbmILX.js";
-import { S as Skeleton } from "./Skeleton-Cw50pXiE.js";
-import { R as Root2, T as Trigger, V as Value, e as Icon, a as ChevronDown, P as Portal$1, d as Content2, g as Viewport, I as Item, i as ItemText, h as ItemIndicator } from "./index-CoqBMRIG.js";
-import { b as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Plus, a as Pen } from "./IconPicker-BPJIlBaB.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-DfYvwzrV.js";
+import { a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, S as StatusBadge, T as Trash2 } from "./Table-BJBpbf69.js";
+import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
+import { R as Root2, T as Trigger, V as Value, e as Icon, a as ChevronDown, P as Portal$1, d as Content2, g as Viewport, I as Item, i as ItemText, h as ItemIndicator } from "./index-UprzNoc4.js";
+import { b as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Plus, a as Pen } from "./IconPicker-D3p5CfHr.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-4MOA1MUw.js";
 const useSchedulesStore = create((set, get) => ({
   schedules: [],
   isLoading: false,
@@ -530,7 +530,7 @@ const Schedules = () => {
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule.cronExpression }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono", children: formatDate(schedule.lastRun) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${schedule.isActive ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200" : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"}`, children: schedule.isActive ? "Aktiv" : "Inaktiv" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule.isActive ? "active" : "inactive", children: schedule.isActive ? "Aktiv" : "Inaktiv" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => handleRunNow(schedule.id), disabled: runningSchedules.has(schedule.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setEditingSchedule(schedule), title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),

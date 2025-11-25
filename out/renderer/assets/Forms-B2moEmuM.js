@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, b as useFormsStore } from "./index-Ch-o-UTP.js";
+import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, b as useFormsStore } from "./index-CCajg8b6.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-BPJIlBaB.js";
-import { I as Input, S as Select, a as SelectTrigger, b as SelectValue, c as SelectContent, d as SelectItem } from "./Select-7Rdp6qtj.js";
-import { C as ChevronUp, a as ChevronDown } from "./index-CoqBMRIG.js";
-import { T as Trash2, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell } from "./Table-DcUbmILX.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-DfYvwzrV.js";
-import { S as Skeleton } from "./Skeleton-Cw50pXiE.js";
+import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-D3p5CfHr.js";
+import { I as Input, S as Select, a as SelectTrigger, b as SelectValue, c as SelectContent, d as SelectItem } from "./Select-DWNKbYVw.js";
+import { C as ChevronUp, a as ChevronDown } from "./index-UprzNoc4.js";
+import { T as Trash2, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, S as StatusBadge } from "./Table-BJBpbf69.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-4MOA1MUw.js";
+import { S as Skeleton } from "./Skeleton-CsSSvzmZ.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -496,7 +496,7 @@ const Forms = () => {
           ] })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all", children: form_2.url }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => toggleFormActive(form_2.id), className: `inline-flex px-2 py-1 text-xs font-medium rounded-full border-none cursor-pointer ${form_2.isActive ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"}`, disabled: isLoading, children: form_2.isActive ? "Active" : "Inactive" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => toggleFormActive(form_2.id), className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => handleEditForm(form_2), variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
