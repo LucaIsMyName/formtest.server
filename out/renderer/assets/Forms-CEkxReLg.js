@@ -1,10 +1,10 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, b as useFormsStore } from "./index-C8KwxcYM.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, b as useFormsStore, m as formatDate } from "./index-B0dQkDNJ.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-BQ9hE3lq.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, k as formatDate } from "./formatters-B-uHFVcx.js";
-import { I as Input, C as ChevronUp, a as ChevronDown, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-ZcYhnf0H.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-yikz5a6p.js";
-import { S as Skeleton } from "./Skeleton-CSq5Hioy.js";
+import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-BdcbyRSI.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge } from "./Table-D1_5Q1o2.js";
+import { I as Input, C as ChevronUp, a as ChevronDown, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-B5GKSzaS.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CBUbwYun.js";
+import { S as Skeleton } from "./Skeleton-C0b1ewQQ.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -482,7 +482,7 @@ const Forms = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Erstellt" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: forms.map((form_2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: forms.map((form_2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50", onClick: () => handleEditForm(form_2), children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2.5", children: [
           renderIcon(form_2.icon || "FileText", 16, "text-gray-500 dark:text-gray-400"),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -493,12 +493,21 @@ const Forms = () => {
             ] })
           ] })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all", children: form_2.url }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => toggleFormActive(form_2.id), className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all", children: form_2.url }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
+          e_0.stopPropagation();
+          toggleFormActive(form_2.id);
+        }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => handleEditForm(form_2), variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => handleDeleteForm(form_2), variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
+            e_1.stopPropagation();
+            handleEditForm(form_2);
+          }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_2) => {
+            e_2.stopPropagation();
+            handleDeleteForm(form_2);
+          }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
         ] }) })
       ] }, form_2.id)) })
     ] }) });
@@ -574,6 +583,9 @@ function _temp(_, i) {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-20" })
     ] })
   ] }, i);
+}
+function _temp2(e) {
+  return e.stopPropagation();
 }
 export {
   Forms as default

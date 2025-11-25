@@ -1,10 +1,10 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, d as usePaymentMethodsStore } from "./index-C8KwxcYM.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, d as usePaymentMethodsStore, m as formatDate } from "./index-B0dQkDNJ.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-BQ9hE3lq.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, k as formatDate, T as Trash2 } from "./formatters-B-uHFVcx.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-ZcYhnf0H.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-yikz5a6p.js";
-import { S as Skeleton } from "./Skeleton-CSq5Hioy.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-BdcbyRSI.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, T as Trash2 } from "./Table-D1_5Q1o2.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-B5GKSzaS.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CBUbwYun.js";
+import { S as Skeleton } from "./Skeleton-C0b1ewQQ.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -418,18 +418,27 @@ const PaymentMethods = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Erstellt" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: paymentMethods.map((method_4) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: paymentMethods.map((method_4) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50", onClick: () => handleEditMethod(method_4), children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: method_4.name }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
           getPaymentMethodIcon(method_4),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-mono text-gray-900 dark:text-gray-300", children: getPaymentTypeLabel(method_4.type) })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: maskSensitiveData(method_4) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => togglePaymentMethodActive(method_4.id), className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: method_4.isActive ? "active" : "inactive", children: method_4.isActive ? "Aktiv" : "Inaktiv" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e) => {
+          e.stopPropagation();
+          togglePaymentMethodActive(method_4.id);
+        }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: method_4.isActive ? "active" : "inactive", children: method_4.isActive ? "Aktiv" : "Inaktiv" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(method_4.createdAt) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => handleEditMethod(method_4), variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: () => handleDeleteMethod(method_4), variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_0) => {
+            e_0.stopPropagation();
+            handleEditMethod(method_4);
+          }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
+            e_1.stopPropagation();
+            handleDeleteMethod(method_4);
+          }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
         ] }) })
       ] }, method_4.id)) })
     ] }) });

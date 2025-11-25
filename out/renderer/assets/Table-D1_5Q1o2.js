@@ -1,19 +1,4 @@
-import { I as createLucideIcon, af as Root, r as reactExports, i as dist, y as cn, j as jsxRuntimeExports, ag as Portal, ah as Content, ai as Title, aj as Overlay, ak as Close, X, al as Description, am as cva, a1 as React } from "./index-C8KwxcYM.js";
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$5 = [
-  ["path", { d: "M12 8V4H8", key: "hb8ula" }],
-  ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
-  ["path", { d: "M2 14h2", key: "vft8re" }],
-  ["path", { d: "M20 14h2", key: "4cs60a" }],
-  ["path", { d: "M15 13v2", key: "1xurst" }],
-  ["path", { d: "M9 13v2", key: "rq6x2g" }]
-];
-const Bot = createLucideIcon("bot", __iconNode$5);
+import { V as createLucideIcon, ar as Root, r as reactExports, i as dist, A as cn, j as jsxRuntimeExports, as as Portal, at as Content, au as Title, av as Overlay, aw as Close, a5 as X, ax as Description, ay as cva, az as React } from "./index-B0dQkDNJ.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -21,11 +6,14 @@ const Bot = createLucideIcon("bot", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+  ["path", { d: "M12 8V4H8", key: "hb8ula" }],
+  ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
+  ["path", { d: "M2 14h2", key: "vft8re" }],
+  ["path", { d: "M20 14h2", key: "4cs60a" }],
+  ["path", { d: "M15 13v2", key: "1xurst" }],
+  ["path", { d: "M9 13v2", key: "rq6x2g" }]
 ];
-const CircleX = createLucideIcon("circle-x", __iconNode$4);
+const Bot = createLucideIcon("bot", __iconNode$4);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -755,38 +743,6 @@ const TableCell = React.forwardRef((t0, ref) => {
   return t2;
 });
 TableCell.displayName = "TableCell";
-const formatDateTime = (date) => {
-  if (!date) return "-";
-  try {
-    return new Date(date).toLocaleString("de-DE", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
-  } catch {
-    return "-";
-  }
-};
-const formatDate = (date) => {
-  if (!date) return "-";
-  try {
-    return new Date(date).toLocaleDateString("de-DE", {
-      year: "numeric",
-      month: "short",
-      day: "numeric"
-    });
-  } catch {
-    return "-";
-  }
-};
-const formatDuration = (durationMs) => {
-  if (!durationMs && durationMs !== 0) return "-";
-  if (durationMs < 1e3) return `${durationMs}ms`;
-  return `${(durationMs / 1e3).toFixed(1)}s`;
-};
 export {
   Bot as B,
   Copy as C,
@@ -804,9 +760,5 @@ export {
   TableRow as g,
   TableHead as h,
   TableBody as i,
-  TableCell as j,
-  formatDate as k,
-  formatDateTime as l,
-  formatDuration as m,
-  CircleX as n
+  TableCell as j
 };

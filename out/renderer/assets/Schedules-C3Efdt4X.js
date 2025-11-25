@@ -1,10 +1,10 @@
-import { G as create, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, H as LoaderCircle, E as Play } from "./index-C8KwxcYM.js";
+import { Q as create, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, K as formatDateTime, U as LoaderCircle, J as Play } from "./index-B0dQkDNJ.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, l as formatDateTime, S as StatusBadge, T as Trash2 } from "./formatters-B-uHFVcx.js";
-import { S as Skeleton } from "./Skeleton-CSq5Hioy.js";
-import { b as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Plus, a as Pen } from "./IconPicker-BQ9hE3lq.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-ZcYhnf0H.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-yikz5a6p.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, T as Trash2 } from "./Table-D1_5Q1o2.js";
+import { S as Skeleton } from "./Skeleton-C0b1ewQQ.js";
+import { b as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Plus, a as Pen } from "./IconPicker-BdcbyRSI.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-B5GKSzaS.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CBUbwYun.js";
 const useSchedulesStore = create((set, get) => ({
   schedules: [],
   isLoading: false,
@@ -492,7 +492,7 @@ const Schedules = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Status" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: schedules.map((schedule) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: schedules.map((schedule) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50", onClick: () => setEditingSchedule(schedule), children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center", children: renderIcon(schedule.icon || "Play", 16, "text-gray-600 dark:text-gray-400") }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-xs text-gray-900 dark:text-white", children: schedule.name }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 dark:text-gray-300", children: [
@@ -504,9 +504,18 @@ const Schedules = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule.lastRun) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule.isActive ? "active" : "inactive", children: schedule.isActive ? "Aktiv" : "Inaktiv" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => handleRunNow(schedule.id), disabled: runningSchedules.has(schedule.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setEditingSchedule(schedule), title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setDeletingSchedule(schedule), title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e) => {
+            e.stopPropagation();
+            handleRunNow(schedule.id);
+          }, disabled: runningSchedules.has(schedule.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_0) => {
+            e_0.stopPropagation();
+            setEditingSchedule(schedule);
+          }, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_1) => {
+            e_1.stopPropagation();
+            setDeletingSchedule(schedule);
+          }, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
         ] }) })
       ] }, schedule.id)) })
     ] }) }),

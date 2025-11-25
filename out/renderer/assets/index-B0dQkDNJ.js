@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-IiSGLDfl.js","./app.config-Cedwjkbe.js","./Skeleton-CSq5Hioy.js","./Forms-D0vY5lMS.js","./IconPicker-BQ9hE3lq.js","./formatters-B-uHFVcx.js","./Select-ZcYhnf0H.js","./DeleteConfirmDialog-yikz5a6p.js","./PaymentMethods-DEjQ2rWl.js","./Settings-BkVgMijt.js","./TestResults-ChKcdXpI.js","./InfoDoku-BIDtvvji.js","./Schedules-BsokhLtV.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-CvzC09bZ.js","./app.config-Cedwjkbe.js","./Skeleton-C0b1ewQQ.js","./Forms-CEkxReLg.js","./IconPicker-BdcbyRSI.js","./Table-D1_5Q1o2.js","./Select-B5GKSzaS.js","./DeleteConfirmDialog-CBUbwYun.js","./PaymentMethods-FNI_-LMn.js","./Settings-BwLkaDLk.js","./TestResults-sQ8R-SZ_.js","./InfoDoku-3__QU9cg.js","./Schedules-C3Efdt4X.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -9705,7 +9705,7 @@ function on() {
 l$3.event = function(n2) {
   return en && (n2 = en(n2)), n2.persist = rn, n2.isPropagationStopped = un, n2.isDefaultPrevented = on, n2.nativeEvent = n2;
 };
-var cn$3 = { enumerable: false, configurable: true, get: function() {
+var cn$2 = { enumerable: false, configurable: true, get: function() {
   return this.class;
 } }, fn = l$3.vnode;
 l$3.vnode = function(n2) {
@@ -9722,7 +9722,7 @@ l$3.vnode = function(n2) {
       n4.props.selected = -1 != u2.value.indexOf(n4.props.value);
     })), "select" == e2 && null != u2.defaultValue && (u2.value = H$2(t2.children).forEach(function(n4) {
       n4.props.selected = u2.multiple ? -1 != u2.defaultValue.indexOf(n4.props.value) : u2.defaultValue == n4.props.value;
-    })), t2.class && !t2.className ? (u2.class = t2.class, Object.defineProperty(u2, "className", cn$3)) : (t2.className && !t2.class || t2.class && t2.className) && (u2.class = u2.className = t2.className), n3.props = u2;
+    })), t2.class && !t2.className ? (u2.class = t2.class, Object.defineProperty(u2, "className", cn$2)) : (t2.className && !t2.class || t2.class && t2.className) && (u2.class = u2.className = t2.className), n3.props = u2;
   }(n2), n2.$$typeof = q, fn && fn(n2);
 };
 var an = l$3.__r;
@@ -12302,7 +12302,7 @@ var getDefaultConfig$1 = () => {
   };
 };
 var twMerge$1 = /* @__PURE__ */ createTailwindMerge$1(getDefaultConfig$1);
-var cn$2 = (...inputs) => {
+var cn$1 = (...inputs) => {
   return twMerge$1(clsx$1(inputs));
 };
 typeof navigator !== "undefined" && navigator.userAgent.includes("Firefox");
@@ -12475,18 +12475,18 @@ M(() => {
     "button",
     {
       type: "button",
-      className: cn$2(
+      className: cn$1(
         "react-section-header",
         "overflow-hidden",
         "max-h-0",
         "transition-[max-height]"
       ),
-      children: /* @__PURE__ */ u$1("div", { className: cn$2("flex-1 react-scan-expandable"), children: /* @__PURE__ */ u$1("div", { className: "overflow-hidden", children: /* @__PURE__ */ u$1("div", { className: "flex items-center whitespace-nowrap", children: [
+      children: /* @__PURE__ */ u$1("div", { className: cn$1("flex-1 react-scan-expandable"), children: /* @__PURE__ */ u$1("div", { className: "overflow-hidden", children: /* @__PURE__ */ u$1("div", { className: "flex items-center whitespace-nowrap", children: [
         /* @__PURE__ */ u$1("div", { className: "flex items-center gap-x-2", children: "What changed?" }),
         /* @__PURE__ */ u$1(
           "div",
           {
-            className: cn$2(
+            className: cn$1(
               "ml-auto",
               "change-scope",
               "transition-opacity duration-300 delay-150"
@@ -12503,7 +12503,7 @@ M(() => {
   );
 });
 w(
-  () => cn$2(
+  () => cn$1(
     "react-scan-inspector",
     "flex-1",
     "opacity-0",
@@ -12579,7 +12579,7 @@ var getBatchedRectMap = async function* (elements) {
   }
 };
 w(
-  () => cn$2(
+  () => cn$1(
     "absolute inset-0 flex items-center gap-x-2",
     "translate-y-0",
     "transition-transform duration-300",
@@ -12590,7 +12590,7 @@ var Toggle = ({
   className,
   ...props
 }) => {
-  return /* @__PURE__ */ u$1("div", { className: cn$2("react-scan-toggle", className), children: [
+  return /* @__PURE__ */ u$1("div", { className: cn$1("react-scan-toggle", className), children: [
     /* @__PURE__ */ u$1(
       "input",
       {
@@ -12610,7 +12610,7 @@ var FpsMeterInner = ({ fps: fps2 }) => {
   return /* @__PURE__ */ u$1(
     "div",
     {
-      className: cn$2(
+      className: cn$1(
         "flex items-center gap-x-1 px-2 w-full",
         "h-6",
         "rounded-md",
@@ -12643,7 +12643,7 @@ var FPSMeter = () => {
   return /* @__PURE__ */ u$1(
     "div",
     {
-      className: cn$2(
+      className: cn$1(
         "flex items-center justify-end gap-x-2 px-1 ml-1 w-[72px]",
         "whitespace-nowrap text-sm text-white"
       ),
@@ -12912,7 +12912,7 @@ var ChevronRight$1 = ({
     "stroke-width": "2",
     "stroke-linecap": "round",
     "stroke-linejoin": "round",
-    className: cn$2(["lucide lucide-chevron-right", className]),
+    className: cn$1(["lucide lucide-chevron-right", className]),
     children: /* @__PURE__ */ u$1("path", { d: "m9 18 6-6-6-6" })
   }
 );
@@ -12948,7 +12948,7 @@ var Notification = ({
     events.length > 0 && totalSevere > 0 && ReactScanInternals.options.value.showNotificationCount && /* @__PURE__ */ u$1(
       "div",
       {
-        className: cn$2([
+        className: cn$1([
           "absolute",
           hasHighSeverity ? "-top-2.5 -right-2.5" : "-top-1 -right-1",
           "rounded-full",
@@ -12967,7 +12967,7 @@ var Notification = ({
     )
   ] });
 };
-var CloseIcon$1 = ({
+var CloseIcon = ({
   className = "",
   size: size2 = 24
 }) => /* @__PURE__ */ u$1(
@@ -13052,7 +13052,7 @@ var ArrowLeft = ({
     "stroke-width": "2",
     "stroke-linecap": "round",
     "stroke-linejoin": "round",
-    className: cn$2(["lucide lucide-arrow-left", className]),
+    className: cn$1(["lucide lucide-arrow-left", className]),
     children: [
       /* @__PURE__ */ u$1("path", { d: "m12 19-7-7 7-7" }),
       /* @__PURE__ */ u$1("path", { d: "M19 12H5" })
@@ -13260,7 +13260,7 @@ var Popover = ({
         "div",
         {
           ref: popoverRef,
-          className: cn$2([
+          className: cn$1([
             "absolute z-100 bg-white text-black rounded-lg px-3 py-2 shadow-lg",
             "transform transition-all duration-120 ease-[cubic-bezier(0.23,1,0.32,1)]",
             'after:content-[""] after:absolute after:top-[100%]',
@@ -13302,14 +13302,14 @@ var NotificationTabs = ({
   return /* @__PURE__ */ u$1(
     "div",
     {
-      className: cn$2([
+      className: cn$1([
         "flex w-full justify-between items-center px-3 py-2 text-xs"
       ]),
       children: [
         /* @__PURE__ */ u$1(
           "div",
           {
-            className: cn$2([
+            className: cn$1([
               "bg-[#18181B] flex items-center gap-x-1 p-1 rounded-sm"
             ]),
             children: [
@@ -13322,7 +13322,7 @@ var NotificationTabs = ({
                       routeMessage: null
                     });
                   },
-                  className: cn$2([
+                  className: cn$1([
                     "w-1/2 flex items-center justify-center whitespace-nowrap py-[5px] px-1 gap-x-1",
                     notificationState.route === "render-visualization" || notificationState.route === "render-explanation" ? "text-white bg-[#7521c8] rounded-sm" : "text-[#6E6E77] bg-[#18181B] rounded-sm"
                   ]),
@@ -13338,7 +13338,7 @@ var NotificationTabs = ({
                       routeMessage: null
                     });
                   },
-                  className: cn$2([
+                  className: cn$1([
                     "w-1/2 flex items-center justify-center whitespace-nowrap py-[5px] px-1 gap-x-1",
                     notificationState.route === "other-visualization" ? "text-white bg-[#7521c8] rounded-sm" : "text-[#6E6E77] bg-[#18181B] rounded-sm"
                   ]),
@@ -13354,7 +13354,7 @@ var NotificationTabs = ({
                       routeMessage: null
                     });
                   },
-                  className: cn$2([
+                  className: cn$1([
                     "w-1/2 flex items-center justify-center whitespace-nowrap py-[5px] px-1 gap-x-1",
                     notificationState.route === "optimize" ? "text-white bg-[#7521c8] rounded-sm" : "text-[#6E6E77] bg-[#18181B] rounded-sm"
                   ]),
@@ -13403,7 +13403,7 @@ var NotificationTabs = ({
                 children: /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex gap-x-2 justify-center items-center text-[#6E6E77]"
                     ]),
                     children: [
@@ -13799,20 +13799,20 @@ var Optimize = ({
     "fix"
   );
   const [copying, setCopying] = d$2(false);
-  return /* @__PURE__ */ u$1("div", { className: cn$2(["w-full h-full"]), children: [
+  return /* @__PURE__ */ u$1("div", { className: cn$1(["w-full h-full"]), children: [
     /* @__PURE__ */ u$1(
       "div",
       {
-        className: cn$2([
+        className: cn$1([
           "border border-[#27272A] rounded-sm h-4/5 text-xs overflow-hidden"
         ]),
         children: [
-          /* @__PURE__ */ u$1("div", { className: cn$2(["bg-[#18181B] p-1 rounded-t-sm"]), children: /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-1"]), children: [
+          /* @__PURE__ */ u$1("div", { className: cn$1(["bg-[#18181B] p-1 rounded-t-sm"]), children: /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-1"]), children: [
             /* @__PURE__ */ u$1(
               "button",
               {
                 onClick: () => setActiveTab("fix"),
-                className: cn$2([
+                className: cn$1([
                   "flex items-center justify-center whitespace-nowrap py-1.5 px-3 rounded-sm",
                   activeTab === "fix" ? "text-white bg-[#7521c8]" : "text-[#6E6E77] hover:text-white"
                 ]),
@@ -13823,7 +13823,7 @@ var Optimize = ({
               "button",
               {
                 onClick: () => setActiveTab("explanation"),
-                className: cn$2([
+                className: cn$1([
                   "flex items-center justify-center whitespace-nowrap py-1.5 px-3 rounded-sm",
                   activeTab === "explanation" ? "text-white bg-[#7521c8]" : "text-[#6E6E77] hover:text-white"
                 ]),
@@ -13834,7 +13834,7 @@ var Optimize = ({
               "button",
               {
                 onClick: () => setActiveTab("data"),
-                className: cn$2([
+                className: cn$1([
                   "flex items-center justify-center whitespace-nowrap py-1.5 px-3 rounded-sm",
                   activeTab === "data" ? "text-white bg-[#7521c8]" : "text-[#6E6E77] hover:text-white"
                 ]),
@@ -13842,10 +13842,10 @@ var Optimize = ({
               }
             )
           ] }) }),
-          /* @__PURE__ */ u$1("div", { className: cn$2(["overflow-y-auto h-full"]), children: /* @__PURE__ */ u$1(
+          /* @__PURE__ */ u$1("div", { className: cn$1(["overflow-y-auto h-full"]), children: /* @__PURE__ */ u$1(
             "pre",
             {
-              className: cn$2([
+              className: cn$1([
                 "p-2 h-full",
                 "whitespace-pre-wrap break-words",
                 "text-gray-300 font-mono "
@@ -13865,7 +13865,7 @@ var Optimize = ({
           setCopying(true);
           setTimeout(() => setCopying(false), 1e3);
         },
-        className: cn$2([
+        className: cn$1([
           "mt-4 px-4 py-2 bg-[#18181B] text-[#6E6E77] rounded-sm",
           "hover:text-white transition-colors duration-200",
           "flex items-center justify-center gap-x-2 text-xs"
@@ -13884,7 +13884,7 @@ var Optimize = ({
               strokeWidth: "2",
               strokeLinecap: "round",
               strokeLinejoin: "round",
-              className: cn$2([
+              className: cn$1([
                 "transition-transform duration-200",
                 copying && "scale-110"
               ]),
@@ -14184,7 +14184,7 @@ var CopyPromptButton = () => {
             strokeWidth: "2",
             strokeLinecap: "round",
             strokeLinejoin: "round",
-            className: cn$2([
+            className: cn$1([
               "transition-transform duration-200",
               copying && "scale-110"
             ]),
@@ -14256,7 +14256,7 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
@@ -14280,12 +14280,12 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
             /* @__PURE__ */ u$1("p", { children: "This is the time it took React to run components, and internal logic to handle the output of your component." }),
-            /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col"]), children: [
+            /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col"]), children: [
               /* @__PURE__ */ u$1("p", { children: "The slowest components for this time period were:" }),
               input.data.topByTime.map((item) => /* @__PURE__ */ u$1("div", { children: [
                 /* @__PURE__ */ u$1("strong", { children: item.name }),
@@ -14307,7 +14307,7 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
@@ -14336,7 +14336,7 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
@@ -14357,7 +14357,7 @@ var Explanation = ({ input }) => {
                 /* @__PURE__ */ u$1("code", { children: "useEffects" }),
                 "."
               ] }),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col"]), children: [
                 /* @__PURE__ */ u$1("p", { children: "You should try optimizing the renders of:" }),
                 input.data.topByCount.map((item) => /* @__PURE__ */ u$1("div", { children: [
                   "- ",
@@ -14383,7 +14383,7 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
@@ -14412,7 +14412,7 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
@@ -14444,7 +14444,7 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
@@ -14462,7 +14462,7 @@ var Explanation = ({ input }) => {
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([
+          className: cn$1([
             "text-[#E4E4E7] text-[10px] leading-6 flex flex-col gap-y-2"
           ]),
           children: [
@@ -14532,7 +14532,7 @@ var RenderBarChart = ({
   const nonRender = totalInteractionTime - selectedEvent.timing.renderTime;
   const [isProduction2] = d$2(getIsProduction());
   const events = selectedEvent.groupedFiberRenders;
-  const bars2 = events.map((event) => ({
+  const bars = events.map((event) => ({
     event,
     kind: "render",
     totalTime: isProduction2 ? event.count : event.totalTime
@@ -14548,19 +14548,19 @@ var RenderBarChart = ({
     }
   });
   if (selectedEvent.kind === "interaction" && !isProduction2) {
-    bars2.push({
+    bars.push({
       kind: "other-javascript",
       totalTime: selectedEvent.timing.otherJSTime
     });
   }
   if (isShowingExtraInfo && !isProduction2) {
     if (selectedEvent.kind === "interaction") {
-      bars2.push({
+      bars.push({
         kind: "other-not-javascript",
         totalTime: getTotalTime(selectedEvent.timing) - selectedEvent.timing.renderTime - selectedEvent.timing.otherJSTime
       });
     } else {
-      bars2.push({
+      bars.push({
         kind: "other-frame-drop",
         totalTime: nonRender
       });
@@ -14570,26 +14570,26 @@ var RenderBarChart = ({
     lastCallAt: null,
     timer: null
   });
-  const totalBarTime = bars2.reduce((prev, curr) => prev + curr.totalTime, 0);
-  return /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col h-full w-full gap-y-1"]), children: [
+  const totalBarTime = bars.reduce((prev, curr) => prev + curr.totalTime, 0);
+  return /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col h-full w-full gap-y-1"]), children: [
     iife(() => {
-      if (isProduction2 && bars2.length === 0) {
+      if (isProduction2 && bars.length === 0) {
         return /* @__PURE__ */ u$1("div", { className: "flex flex-col items-center justify-center h-full text-zinc-400", children: [
           /* @__PURE__ */ u$1("p", { className: "text-sm w-full text-left text-white mb-1.5", children: "No data available" }),
           /* @__PURE__ */ u$1("p", { className: "text-x w-full text-lefts", children: "No data was collected during this period" })
         ] });
       }
-      if (bars2.length === 0) {
+      if (bars.length === 0) {
         return /* @__PURE__ */ u$1("div", { className: "flex flex-col items-center justify-center h-full text-zinc-400", children: [
           /* @__PURE__ */ u$1("p", { className: "text-sm w-full text-left text-white mb-1.5", children: "No renders collected" }),
           /* @__PURE__ */ u$1("p", { className: "text-x w-full text-lefts", children: "There were no renders during this period" })
         ] });
       }
     }),
-    bars2.toSorted((a2, b2) => b2.totalTime - a2.totalTime).map((bar) => /* @__PURE__ */ u$1(
+    bars.toSorted((a2, b2) => b2.totalTime - a2.totalTime).map((bar) => /* @__PURE__ */ u$1(
       RenderBar,
       {
-        bars: bars2,
+        bars,
         bar,
         debouncedMouseEnter,
         totalBarTime,
@@ -14613,17 +14613,17 @@ var RenderBar = ({
   debouncedMouseEnter,
   totalBarTime,
   isProduction: isProduction2,
-  bars: bars2,
+  bars,
   depth = 0
 }) => {
   const { setNotificationState, setRoute } = useNotificationsContext();
   const [isExpanded, setIsExpanded] = d$2(false);
   const isLeaf = bar.kind === "render" ? bar.event.parents.size === 0 : true;
-  const parentBars = bars2.filter(
+  const parentBars = bars.filter(
     (otherBar) => otherBar.kind === "render" && bar.kind === "render" ? bar.event.parents.has(otherBar.event.name) && otherBar.event.name !== bar.event.name : false
   );
   const missingParentNames = bar.kind === "render" ? Array.from(bar.event.parents).filter(
-    (parentName) => !bars2.some(
+    (parentName) => !bars.some(
       (b2) => b2.kind === "render" && b2.event.name === parentName
     )
   ) : [];
@@ -14651,7 +14651,7 @@ var RenderBar = ({
     /* @__PURE__ */ u$1(
       "div",
       {
-        className: cn$2(["w-full flex items-center relative text-xs min-w-0"]),
+        className: cn$1(["w-full flex items-center relative text-xs min-w-0"]),
         children: [
           /* @__PURE__ */ u$1(
             "button",
@@ -14761,7 +14761,7 @@ var RenderBar = ({
                 highlightBars();
               },
               onClick: handleBarClick,
-              className: cn$2([
+              className: cn$1([
                 "h-full w-[90%] flex items-center hover:bg-[#0f0f0f] rounded-l-md min-w-0 relative"
               ]),
               children: [
@@ -14772,7 +14772,7 @@ var RenderBar = ({
                       minWidth: "fit-content",
                       width: `${bar.totalTime / totalBarTime * 100}%`
                     },
-                    className: cn$2([
+                    className: cn$1([
                       "flex items-center rounded-sm text-white text-xs h-[28px] shrink-0",
                       bar.kind === "render" && "bg-[#412162] group-hover:bg-[#5b2d89]",
                       bar.kind === "other-frame-drop" && "bg-[#44444a] group-hover:bg-[#6a6a6a]",
@@ -14784,12 +14784,12 @@ var RenderBar = ({
                 /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "absolute inset-0 flex items-center px-2",
                       "min-w-0"
                     ]),
                     children: /* @__PURE__ */ u$1("div", { className: "flex items-center gap-x-2 min-w-0 w-full", children: [
-                      /* @__PURE__ */ u$1("span", { className: cn$2(["truncate"]), children: iife(() => {
+                      /* @__PURE__ */ u$1("span", { className: cn$1(["truncate"]), children: iife(() => {
                         switch (bar.kind) {
                           case "other-frame-drop": {
                             return "JavaScript, DOM updates, Draw Frame";
@@ -14811,7 +14811,7 @@ var RenderBar = ({
                           style: {
                             lineHeight: "10px"
                           },
-                          className: cn$2([
+                          className: cn$1([
                             "px-1 py-0.5 bg-[#6a369e] flex items-center rounded-sm font-semibold text-[8px] shrink-0"
                           ]),
                           children: "Memoizable"
@@ -14827,7 +14827,7 @@ var RenderBar = ({
             "button",
             {
               onClick: () => bar.kind === "render" && !isLeaf && setIsExpanded(!isExpanded),
-              className: cn$2([
+              className: cn$1([
                 "flex items-center min-w-fit shrink-0 rounded-r-md h-[28px]",
                 !isLeaf && "hover:bg-[#0f0f0f]",
                 bar.kind === "render" && !isLeaf ? "cursor-pointer" : "cursor-default"
@@ -14836,7 +14836,7 @@ var RenderBar = ({
                 /* @__PURE__ */ u$1("div", { className: "w-[20px] flex items-center justify-center", children: bar.kind === "render" && !isLeaf && /* @__PURE__ */ u$1(
                   ChevronRight$1,
                   {
-                    className: cn$2(
+                    className: cn$1(
                       "transition-transform",
                       isExpanded && "rotate-90"
                     ),
@@ -14851,7 +14851,7 @@ var RenderBar = ({
                     },
                     className: "flex items-center justify-end gap-x-1",
                     children: [
-                      bar.kind === "render" && /* @__PURE__ */ u$1("span", { className: cn$2(["text-[10px]"]), children: [
+                      bar.kind === "render" && /* @__PURE__ */ u$1("span", { className: cn$1(["text-[10px]"]), children: [
                         "x",
                         bar.event.count
                       ] }),
@@ -14868,7 +14868,7 @@ var RenderBar = ({
           depth === 0 && /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "absolute right-0 top-1/2 transition-none -translate-y-1/2 bg-white text-black px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity mr-16",
                 "pointer-events-none"
               ]),
@@ -14887,7 +14887,7 @@ var RenderBar = ({
           debouncedMouseEnter,
           totalBarTime,
           isProduction: isProduction2,
-          bars: bars2
+          bars
         },
         i2
       )),
@@ -14921,11 +14921,11 @@ var RenderExplanation = ({
   return /* @__PURE__ */ u$1(
     "div",
     {
-      className: cn$2([
+      className: cn$1([
         "w-full min-h-fit h-full flex flex-col py-4 pt-0 rounded-sm"
       ]),
       children: [
-        /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-start gap-x-4 "]), children: [
+        /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-start gap-x-4 "]), children: [
           /* @__PURE__ */ u$1(
             "button",
             {
@@ -14935,7 +14935,7 @@ var RenderExplanation = ({
                   routeMessage: null
                 });
               },
-              className: cn$2([
+              className: cn$1([
                 "text-white hover:bg-[#34343b] flex gap-x-1 justify-center items-center mb-4 w-fit px-2.5 py-1.5 text-xs rounded-sm bg-[#18181B]"
               ]),
               children: [
@@ -14945,21 +14945,21 @@ var RenderExplanation = ({
               ]
             }
           ),
-          /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col gap-y-1"]), children: [
+          /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col gap-y-1"]), children: [
             /* @__PURE__ */ u$1(
               "div",
               {
-                className: cn$2(["text-sm font-bold text-white overflow-x-hidden"]),
+                className: cn$1(["text-sm font-bold text-white overflow-x-hidden"]),
                 children: /* @__PURE__ */ u$1("div", { className: "flex items-center gap-x-2 truncate", children: selectedFiber.name })
               }
             ),
-            /* @__PURE__ */ u$1("div", { className: cn$2(["flex gap-x-2"]), children: [
-              !isProduction2 && /* @__PURE__ */ u$1(k$3, { children: /* @__PURE__ */ u$1("div", { className: cn$2(["text-xs text-gray-400"]), children: [
+            /* @__PURE__ */ u$1("div", { className: cn$1(["flex gap-x-2"]), children: [
+              !isProduction2 && /* @__PURE__ */ u$1(k$3, { children: /* @__PURE__ */ u$1("div", { className: cn$1(["text-xs text-gray-400"]), children: [
                 "• Render time: ",
                 selectedFiber.totalTime.toFixed(0),
                 "ms"
               ] }) }),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["text-xs text-gray-400 mb-4"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["text-xs text-gray-400 mb-4"]), children: [
                 "• Renders: ",
                 selectedFiber.count,
                 "x"
@@ -14970,7 +14970,7 @@ var RenderExplanation = ({
         tipisShown && !isMemoizable && /* @__PURE__ */ u$1(
           "div",
           {
-            className: cn$2([
+            className: cn$1([
               "w-full mb-4 bg-[#0A0A0A] border border-[#27272A] rounded-sm overflow-hidden flex relative"
             ]),
             children: [
@@ -14981,22 +14981,22 @@ var RenderExplanation = ({
                     setTipIsShown(false);
                     localStorage.setItem("react-scan-tip-shown", "false");
                   },
-                  className: cn$2([
+                  className: cn$1([
                     "absolute right-2 top-2 rounded-sm p-1 hover:bg-[#18181B]"
                   ]),
-                  children: /* @__PURE__ */ u$1(CloseIcon$1, { size: 12 })
+                  children: /* @__PURE__ */ u$1(CloseIcon, { size: 12 })
                 }
               ),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["w-1 bg-[#d36cff]"]) }),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex-1"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["w-1 bg-[#d36cff]"]) }),
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex-1"]), children: [
                 /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2(["px-3 py-2 text-gray-100 text-xs font-semibold"]),
+                    className: cn$1(["px-3 py-2 text-gray-100 text-xs font-semibold"]),
                     children: "How to stop renders"
                   }
                 ),
-                /* @__PURE__ */ u$1("div", { className: cn$2(["px-3 pb-2 text-gray-400 text-[10px]"]), children: "Stop the following props, state and context from changing between renders, and wrap the component in React.memo if not already" })
+                /* @__PURE__ */ u$1("div", { className: cn$1(["px-3 pb-2 text-gray-400 text-[10px]"]), children: "Stop the following props, state and context from changing between renders, and wrap the component in React.memo if not already" })
               ] })
             ]
           }
@@ -15004,36 +15004,36 @@ var RenderExplanation = ({
         isMemoizable && /* @__PURE__ */ u$1(
           "div",
           {
-            className: cn$2([
+            className: cn$1([
               "w-full mb-4 bg-[#0A0A0A] border border-[#27272A] rounded-sm overflow-hidden flex"
             ]),
             children: [
-              /* @__PURE__ */ u$1("div", { className: cn$2(["w-1 bg-[#d36cff]"]) }),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex-1"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["w-1 bg-[#d36cff]"]) }),
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex-1"]), children: [
                 /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2(["px-3 py-2 text-gray-100 text-sm font-semibold"]),
+                    className: cn$1(["px-3 py-2 text-gray-100 text-sm font-semibold"]),
                     children: "No changes detected"
                   }
                 ),
-                /* @__PURE__ */ u$1("div", { className: cn$2(["px-3 pb-2 text-gray-400 text-xs"]), children: "This component would not of rendered if it was memoized" })
+                /* @__PURE__ */ u$1("div", { className: cn$1(["px-3 pb-2 text-gray-400 text-xs"]), children: "This component would not of rendered if it was memoized" })
               ] })
             ]
           }
         ),
-        /* @__PURE__ */ u$1("div", { className: cn$2(["flex w-full"]), children: [
+        /* @__PURE__ */ u$1("div", { className: cn$1(["flex w-full"]), children: [
           /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "flex flex-col border border-[#27272A] rounded-l-sm overflow-hidden w-1/3"
               ]),
               children: [
                 /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "text-[14px] font-semibold px-2 py-2 bg-[#18181B] text-white flex justify-center"
                     ]),
                     children: "Changed Props"
@@ -15042,15 +15042,15 @@ var RenderExplanation = ({
                 selectedFiber.changes.props.length > 0 ? selectedFiber.changes.props.toSorted((a2, b2) => b2.count - a2.count).map((change) => /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex flex-col justify-between items-center border-t overflow-x-auto border-[#27272A] px-1 py-1 text-wrap bg-[#0A0A0A] text-[10px]"
                     ]),
                     children: [
-                      /* @__PURE__ */ u$1("span", { className: cn$2(["text-white "]), children: change.name }),
+                      /* @__PURE__ */ u$1("span", { className: cn$1(["text-white "]), children: change.name }),
                       /* @__PURE__ */ u$1(
                         "div",
                         {
-                          className: cn$2([" text-[8px]  text-[#d36cff] pl-1 py-1 "]),
+                          className: cn$1([" text-[8px]  text-[#d36cff] pl-1 py-1 "]),
                           children: [
                             change.count,
                             "/",
@@ -15065,7 +15065,7 @@ var RenderExplanation = ({
                 )) : /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex items-center justify-center h-full bg-[#0A0A0A] text-[#A1A1AA] border-t border-[#27272A]"
                     ]),
                     children: "No changes"
@@ -15077,14 +15077,14 @@ var RenderExplanation = ({
           /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "flex flex-col border border-[#27272A] border-l-0 overflow-hidden w-1/3"
               ]),
               children: [
                 /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       " text-[14px] font-semibold px-2 py-2 bg-[#18181B] text-white flex justify-center"
                     ]),
                     children: "Changed State"
@@ -15093,18 +15093,18 @@ var RenderExplanation = ({
                 selectedFiber.changes.state.length > 0 ? selectedFiber.changes.state.toSorted((a2, b2) => b2.count - a2.count).map((change) => /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex flex-col justify-between items-center border-t overflow-x-auto border-[#27272A] px-1 py-1 text-wrap bg-[#0A0A0A] text-[10px]"
                     ]),
                     children: [
-                      /* @__PURE__ */ u$1("span", { className: cn$2(["text-white "]), children: [
+                      /* @__PURE__ */ u$1("span", { className: cn$1(["text-white "]), children: [
                         "index ",
                         change.index
                       ] }),
                       /* @__PURE__ */ u$1(
                         "div",
                         {
-                          className: cn$2([
+                          className: cn$1([
                             "rounded-full  text-[#d36cff] pl-1 py-1 text-[8px]"
                           ]),
                           children: [
@@ -15121,7 +15121,7 @@ var RenderExplanation = ({
                 )) : /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex items-center justify-center h-full bg-[#0A0A0A] text-[#A1A1AA] border-t border-[#27272A]"
                     ]),
                     children: "No changes"
@@ -15133,14 +15133,14 @@ var RenderExplanation = ({
           /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "flex flex-col border border-[#27272A] border-l-0 rounded-r-sm overflow-hidden w-1/3"
               ]),
               children: [
                 /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       " text-[14px] font-semibold px-2 py-2 bg-[#18181B] text-white flex justify-center"
                     ]),
                     children: "Changed Context"
@@ -15149,15 +15149,15 @@ var RenderExplanation = ({
                 selectedFiber.changes.context.length > 0 ? selectedFiber.changes.context.toSorted((a2, b2) => b2.count - a2.count).map((change) => /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex flex-col justify-between items-center border-t  border-[#27272A] px-1 py-1 bg-[#0A0A0A] text-[10px] overflow-x-auto"
                     ]),
                     children: [
-                      /* @__PURE__ */ u$1("span", { className: cn$2(["text-white "]), children: change.name }),
+                      /* @__PURE__ */ u$1("span", { className: cn$1(["text-white "]), children: change.name }),
                       /* @__PURE__ */ u$1(
                         "div",
                         {
-                          className: cn$2([
+                          className: cn$1([
                             "rounded-full text-[#d36cff] pl-1 py-1 text-[8px] text-wrap"
                           ]),
                           children: [
@@ -15174,7 +15174,7 @@ var RenderExplanation = ({
                 )) : /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex items-center justify-center h-full bg-[#0A0A0A] text-[#A1A1AA] border-t border-[#27272A] py-2"
                     ]),
                     children: "No changes"
@@ -15206,14 +15206,14 @@ var DetailsRoutes = () => {
       "div",
       {
         ref: containerRef,
-        className: cn$2([
+        className: cn$1([
           "h-full w-full flex flex-col items-center justify-center relative py-2 px-4"
         ]),
         children: [
           /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "p-2 flex justify-center items-center border-[#27272A] absolute top-0 right-0"
               ]),
               children: /* @__PURE__ */ u$1(
@@ -15224,7 +15224,7 @@ var DetailsRoutes = () => {
                       view: "none"
                     };
                   },
-                  children: /* @__PURE__ */ u$1(CloseIcon$1, { size: 18, className: "text-[#6F6F78]" })
+                  children: /* @__PURE__ */ u$1(CloseIcon, { size: 18, className: "text-[#6F6F78]" })
                 }
               )
             }
@@ -15232,23 +15232,23 @@ var DetailsRoutes = () => {
           /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "flex flex-col items-start pt-5 bg-[#0A0A0A] p-5 rounded-sm max-w-md",
                 " shadow-lg"
               ]),
-              children: /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col items-start gap-y-4"]), children: [
-                /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center"]), children: /* @__PURE__ */ u$1("span", { className: cn$2(["text-zinc-400 font-medium text-[17px]"]), children: [
+              children: /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col items-start gap-y-4"]), children: [
+                /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center"]), children: /* @__PURE__ */ u$1("span", { className: cn$1(["text-zinc-400 font-medium text-[17px]"]), children: [
                   "Scanning for slowdowns",
                   dots
                 ] }) }),
-                notificationState.events.length !== 0 && /* @__PURE__ */ u$1("p", { className: cn$2(["text-xs"]), children: [
+                notificationState.events.length !== 0 && /* @__PURE__ */ u$1("p", { className: cn$1(["text-xs"]), children: [
                   "Click on an item in the",
                   " ",
-                  /* @__PURE__ */ u$1("span", { className: cn$2(["text-purple-400"]), children: "History" }),
+                  /* @__PURE__ */ u$1("span", { className: cn$1(["text-purple-400"]), children: "History" }),
                   " list to get started"
                 ] }),
-                /* @__PURE__ */ u$1("p", { className: cn$2(["text-zinc-600 text-xs"]), children: "You don't need to keep this panel open for React Scan to record slowdowns" }),
-                /* @__PURE__ */ u$1("p", { className: cn$2(["text-zinc-600 text-xs"]), children: "Enable audio alerts to hear a delightful ding every time a large slowdown is recorded" }),
+                /* @__PURE__ */ u$1("p", { className: cn$1(["text-zinc-600 text-xs"]), children: "You don't need to keep this panel open for React Scan to record slowdowns" }),
+                /* @__PURE__ */ u$1("p", { className: cn$1(["text-zinc-600 text-xs"]), children: "Enable audio alerts to hear a delightful ding every time a large slowdown is recorded" }),
                 /* @__PURE__ */ u$1(
                   "button",
                   {
@@ -15280,7 +15280,7 @@ var DetailsRoutes = () => {
                         }
                       }));
                     },
-                    className: cn$2([
+                    className: cn$1([
                       "px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-sm w-full",
                       " text-sm flex items-center gap-x-2 justify-center"
                     ]),
@@ -15316,7 +15316,7 @@ var DetailsRoutes = () => {
       return /* @__PURE__ */ u$1(TabLayout, { children: /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2(["flex w-full h-full flex-col overflow-y-auto"]),
+          className: cn$1(["flex w-full h-full flex-col overflow-y-auto"]),
           id: "overview-scroll-container",
           children: /* @__PURE__ */ u$1(
             OtherVisualization,
@@ -15340,12 +15340,12 @@ var TabLayout = ({ children }) => {
       "Invariant: d must have selected event when viewing render explanation"
     );
   }
-  return /* @__PURE__ */ u$1("div", { className: cn$2([`w-full h-full flex flex-col gap-y-2`]), children: [
-    /* @__PURE__ */ u$1("div", { className: cn$2(["h-[50px] w-full"]), children: /* @__PURE__ */ u$1(NotificationTabs, { selectedEvent: notificationState.selectedEvent }) }),
+  return /* @__PURE__ */ u$1("div", { className: cn$1([`w-full h-full flex flex-col gap-y-2`]), children: [
+    /* @__PURE__ */ u$1("div", { className: cn$1(["h-[50px] w-full"]), children: /* @__PURE__ */ u$1(NotificationTabs, { selectedEvent: notificationState.selectedEvent }) }),
     /* @__PURE__ */ u$1(
       "div",
       {
-        className: cn$2(["h-calc(100%-50px) flex flex-col overflow-y-auto px-3"]),
+        className: cn$1(["h-calc(100%-50px) flex flex-col overflow-y-auto px-3"]),
         children
       }
     )
@@ -15362,21 +15362,21 @@ var NotificationHeader = ({
         /* @__PURE__ */ u$1(
           "div",
           {
-            className: cn$2([`w-full flex border-b border-[#27272A] min-h-[48px]`]),
+            className: cn$1([`w-full flex border-b border-[#27272A] min-h-[48px]`]),
             children: /* @__PURE__ */ u$1(
               "div",
               {
-                className: cn$2([
+                className: cn$1([
                   "min-w-fit w-full justify-start flex items-center border-r border-[#27272A] pl-5 pr-2 text-sm gap-x-4"
                 ]),
                 children: [
-                  /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-2 "]), children: [
-                    /* @__PURE__ */ u$1("span", { className: cn$2(["text-[#5a5a5a] mr-0.5"]), children: selectedEvent.type === "click" ? "Clicked " : "Typed in " }),
+                  /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-2 "]), children: [
+                    /* @__PURE__ */ u$1("span", { className: cn$1(["text-[#5a5a5a] mr-0.5"]), children: selectedEvent.type === "click" ? "Clicked " : "Typed in " }),
                     /* @__PURE__ */ u$1("span", { children: getComponentName(selectedEvent.componentPath) }),
                     /* @__PURE__ */ u$1(
                       "div",
                       {
-                        className: cn$2([
+                        className: cn$1([
                           "w-fit flex items-center justify-center h-fit text-white px-1 rounded-sm font-semibold text-[10px] whitespace-nowrap",
                           severity === "low" && "bg-green-500/50",
                           severity === "needs-improvement" && "bg-[#b77116]",
@@ -15392,11 +15392,11 @@ var NotificationHeader = ({
                   /* @__PURE__ */ u$1(
                     "div",
                     {
-                      className: cn$2(["flex items-center gap-x-2  justify-end ml-auto"]),
+                      className: cn$1(["flex items-center gap-x-2  justify-end ml-auto"]),
                       children: /* @__PURE__ */ u$1(
                         "div",
                         {
-                          className: cn$2([
+                          className: cn$1([
                             "p-2 flex justify-center items-center border-[#27272A]"
                           ]),
                           children: /* @__PURE__ */ u$1(
@@ -15408,7 +15408,7 @@ var NotificationHeader = ({
                                 };
                               },
                               title: "Close",
-                              children: /* @__PURE__ */ u$1(CloseIcon$1, { size: 18, className: "text-[#6F6F78]" })
+                              children: /* @__PURE__ */ u$1(CloseIcon, { size: 18, className: "text-[#6F6F78]" })
                             }
                           )
                         }
@@ -15426,20 +15426,20 @@ var NotificationHeader = ({
       return /* @__PURE__ */ u$1(
         "div",
         {
-          className: cn$2([`w-full flex border-b border-[#27272A] min-h-[48px]`]),
+          className: cn$1([`w-full flex border-b border-[#27272A] min-h-[48px]`]),
           children: /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "min-w-fit w-full justify-start flex items-center border-r border-[#27272A] pl-5 pr-2 text-sm gap-x-4"
               ]),
               children: [
-                /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-2 "]), children: [
+                /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-2 "]), children: [
                   "FPS Drop",
                   /* @__PURE__ */ u$1(
                     "div",
                     {
-                      className: cn$2([
+                      className: cn$1([
                         "w-fit flex items-center justify-center h-fit text-white px-1 rounded-sm font-semibold text-[10px] whitespace-nowrap",
                         severity === "low" && "bg-green-500/50",
                         severity === "needs-improvement" && "bg-[#b77116]",
@@ -15456,13 +15456,13 @@ var NotificationHeader = ({
                 /* @__PURE__ */ u$1(
                   "div",
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "flex items-center gap-x-2 w-2/4 justify-end ml-auto"
                     ]),
                     children: /* @__PURE__ */ u$1(
                       "div",
                       {
-                        className: cn$2([
+                        className: cn$1([
                           "p-2 flex justify-center items-center border-[#27272A]"
                         ]),
                         children: /* @__PURE__ */ u$1(
@@ -15473,7 +15473,7 @@ var NotificationHeader = ({
                                 view: "none"
                               };
                             },
-                            children: /* @__PURE__ */ u$1(CloseIcon$1, { size: 18, className: "text-[#6F6F78]" })
+                            children: /* @__PURE__ */ u$1(CloseIcon, { size: 18, className: "text-[#6F6F78]" })
                           }
                         )
                       }
@@ -15557,12 +15557,12 @@ var CollapsedItem = ({
     flashingItemsCount,
     totalEvents: item.events.length
   });
-  return /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col gap-y-0.5"]), children: [
+  return /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col gap-y-0.5"]), children: [
     /* @__PURE__ */ u$1(
       "button",
       {
         onClick: () => setExpanded((expanded2) => !expanded2),
-        className: cn$2([
+        className: cn$1([
           "pl-2 py-1.5  text-sm flex items-center rounded-sm hover:bg-[#18181B] relative overflow-hidden",
           shouldFlashAgain && !expanded && "after:absolute after:inset-0 after:bg-purple-500/30 after:animate-[fadeOut_1s_ease-out_forwards]"
         ]),
@@ -15570,14 +15570,14 @@ var CollapsedItem = ({
           /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "w-4/5 flex items-center justify-start h-full text-xs truncate gap-x-1.5"
               ]),
               children: [
-                /* @__PURE__ */ u$1("span", { className: cn$2(["min-w-fit"]), children: /* @__PURE__ */ u$1(
+                /* @__PURE__ */ u$1("span", { className: cn$1(["min-w-fit"]), children: /* @__PURE__ */ u$1(
                   ChevronRight$1,
                   {
-                    className: cn$2([
+                    className: cn$1([
                       "text-[#A1A1AA] transition-transform",
                       expanded ? "rotate-90" : ""
                     ]),
@@ -15585,21 +15585,21 @@ var CollapsedItem = ({
                   },
                   `chevron-${item.timestamp}`
                 ) }),
-                /* @__PURE__ */ u$1("span", { className: cn$2(["text-xs"]), children: item.kind === "collapsed-frame-drops" ? "FPS Drops" : getComponentName(item.events.at(0)?.componentPath ?? []) })
+                /* @__PURE__ */ u$1("span", { className: cn$1(["text-xs"]), children: item.kind === "collapsed-frame-drops" ? "FPS Drops" : getComponentName(item.events.at(0)?.componentPath ?? []) })
               ]
             }
           ),
           /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2(["ml-auto min-w-fit flex justify-end items-center"]),
+              className: cn$1(["ml-auto min-w-fit flex justify-end items-center"]),
               children: /* @__PURE__ */ u$1(
                 "div",
                 {
                   style: {
                     lineHeight: "10px"
                   },
-                  className: cn$2([
+                  className: cn$1([
                     "w-fit flex items-center text-[10px] justify-center h-full text-white px-1 py-1 rounded-sm font-semibold",
                     severity === "low" && "bg-green-500/60",
                     severity === "needs-improvement" && "bg-[#b77116] text-[10px]",
@@ -15692,7 +15692,7 @@ var SlowdownHistoryItem = ({
               selectedFiber: null
             }));
           },
-          className: cn$2([
+          className: cn$1([
             "pl-2 py-1.5  text-sm flex w-full items-center rounded-sm hover:bg-[#18181B] relative overflow-hidden",
             event.id === notificationState.selectedEvent?.id && "bg-[#18181B]",
             isFlashing && "after:absolute after:inset-0 after:bg-purple-500/30 after:animate-[fadeOut_1s_ease-out_forwards]"
@@ -15701,11 +15701,11 @@ var SlowdownHistoryItem = ({
             /* @__PURE__ */ u$1(
               "div",
               {
-                className: cn$2([
+                className: cn$1([
                   "w-4/5 flex items-center justify-start h-full gap-x-1.5"
                 ]),
                 children: [
-                  /* @__PURE__ */ u$1("span", { className: cn$2(["min-w-fit text-xs"]), children: iife(() => {
+                  /* @__PURE__ */ u$1("span", { className: cn$1(["min-w-fit text-xs"]), children: iife(() => {
                     switch (event.type) {
                       case "click": {
                         return /* @__PURE__ */ u$1(PointerIcon, { size: 14 });
@@ -15715,21 +15715,21 @@ var SlowdownHistoryItem = ({
                       }
                     }
                   }) }),
-                  /* @__PURE__ */ u$1("span", { className: cn$2(["text-xs pr-1 truncate"]), children: getComponentName(event.componentPath) })
+                  /* @__PURE__ */ u$1("span", { className: cn$1(["text-xs pr-1 truncate"]), children: getComponentName(event.componentPath) })
                 ]
               }
             ),
             /* @__PURE__ */ u$1(
               "div",
               {
-                className: cn$2([" min-w-fit flex justify-end items-center ml-auto"]),
+                className: cn$1([" min-w-fit flex justify-end items-center ml-auto"]),
                 children: /* @__PURE__ */ u$1(
                   "div",
                   {
                     style: {
                       lineHeight: "10px"
                     },
-                    className: cn$2([
+                    className: cn$1([
                       "gap-x-0.5 w-fit flex items-end justify-center h-full text-white px-1 py-1 rounded-sm font-semibold text-[10px]",
                       severity === "low" && "bg-green-500/50",
                       severity === "needs-improvement" && "bg-[#b77116] text-[10px]",
@@ -15741,7 +15741,7 @@ var SlowdownHistoryItem = ({
                         style: {
                           lineHeight: "10px"
                         },
-                        className: cn$2(["text-[10px] text-white flex items-end"]),
+                        className: cn$1(["text-[10px] text-white flex items-end"]),
                         children: [
                           getTotalTime(event.timing).toFixed(0),
                           "ms"
@@ -15769,7 +15769,7 @@ var SlowdownHistoryItem = ({
               selectedFiber: null
             }));
           },
-          className: cn$2([
+          className: cn$1([
             "pl-2 py-1.5  w-full text-sm flex items-center rounded-sm hover:bg-[#18181B] relative overflow-hidden",
             event.id === notificationState.selectedEvent?.id && "bg-[#18181B]",
             isFlashing && "after:absolute after:inset-0 after:bg-purple-500/30 after:animate-[fadeOut_1s_ease-out_forwards]"
@@ -15778,7 +15778,7 @@ var SlowdownHistoryItem = ({
             /* @__PURE__ */ u$1(
               "div",
               {
-                className: cn$2([
+                className: cn$1([
                   "w-4/5 flex items-center justify-start h-full text-xs truncate"
                 ]),
                 children: [
@@ -15790,14 +15790,14 @@ var SlowdownHistoryItem = ({
             /* @__PURE__ */ u$1(
               "div",
               {
-                className: cn$2([" min-w-fit flex justify-end items-center ml-auto"]),
+                className: cn$1([" min-w-fit flex justify-end items-center ml-auto"]),
                 children: /* @__PURE__ */ u$1(
                   "div",
                   {
                     style: {
                       lineHeight: "10px"
                     },
-                    className: cn$2([
+                    className: cn$1([
                       "w-fit flex items-center justify-center h-full text-white px-1 py-1 rounded-sm text-[10px] font-bold",
                       severity === "low" && "bg-green-500/60",
                       severity === "needs-improvement" && "bg-[#b77116] text-[10px]",
@@ -15933,14 +15933,14 @@ var SlowdownHistory = () => {
   return /* @__PURE__ */ u$1(
     "div",
     {
-      className: cn$2([
+      className: cn$1([
         `w-full h-full gap-y-2 flex flex-col border-r border-[#27272A] overflow-y-auto`
       ]),
       children: [
         /* @__PURE__ */ u$1(
           "div",
           {
-            className: cn$2([
+            className: cn$1([
               "text-sm text-[#65656D] pl-3 pr-1 w-full flex items-center justify-between"
             ]),
             children: [
@@ -15954,7 +15954,7 @@ var SlowdownHistory = () => {
                   triggerContent: /* @__PURE__ */ u$1(
                     "button",
                     {
-                      className: cn$2(["hover:bg-[#18181B] rounded-full p-2"]),
+                      className: cn$1(["hover:bg-[#18181B] rounded-full p-2"]),
                       title: "Clear all events",
                       onClick: () => {
                         toolbarEventStore.getState().actions.clear();
@@ -15966,20 +15966,20 @@ var SlowdownHistory = () => {
                         }));
                         setLaggedEvents([]);
                       },
-                      children: /* @__PURE__ */ u$1(ClearIcon, { className: cn$2([""]), size: 16 })
+                      children: /* @__PURE__ */ u$1(ClearIcon, { className: cn$1([""]), size: 16 })
                     }
                   ),
-                  children: /* @__PURE__ */ u$1("div", { className: cn$2(["w-full flex justify-center"]), children: "Clear all events" })
+                  children: /* @__PURE__ */ u$1("div", { className: cn$1(["w-full flex justify-center"]), children: "Clear all events" })
                 }
               )
             ]
           }
         ),
-        /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col px-1 gap-y-1"]), children: [
+        /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col px-1 gap-y-1"]), children: [
           collapsedEvents.length === 0 && /* @__PURE__ */ u$1(
             "div",
             {
-              className: cn$2([
+              className: cn$1([
                 "flex items-center justify-center text-zinc-500 text-sm py-4"
               ]),
               children: "No Events"
@@ -16276,11 +16276,11 @@ D$1((_2, ref) => {
 });
 var Notifications = D$1((_2, ref) => {
   const { notificationState } = useNotificationsContext();
-  return /* @__PURE__ */ u$1("div", { ref, className: cn$2(["h-full w-full flex flex-col"]), children: [
+  return /* @__PURE__ */ u$1("div", { ref, className: cn$1(["h-full w-full flex flex-col"]), children: [
     notificationState.selectedEvent && /* @__PURE__ */ u$1(
       "div",
       {
-        className: cn$2([
+        className: cn$1([
           "w-full h-[48px] flex flex-col",
           notificationState.moreInfoExpanded && "h-[235px]",
           notificationState.moreInfoExpanded && notificationState.selectedEvent.kind === "dropped-frames" && "h-[150px]"
@@ -16294,15 +16294,15 @@ var Notifications = D$1((_2, ref) => {
     /* @__PURE__ */ u$1(
       "div",
       {
-        className: cn$2([
+        className: cn$1([
           "flex ",
           notificationState.selectedEvent ? "h-[calc(100%-48px)]" : "h-full",
           notificationState.moreInfoExpanded && "h-[calc(100%-200px)]",
           notificationState.moreInfoExpanded && notificationState.selectedEvent?.kind === "dropped-frames" && "h-[calc(100%-150px)]"
         ]),
         children: [
-          /* @__PURE__ */ u$1("div", { className: cn$2(["h-full min-w-[200px]"]), children: /* @__PURE__ */ u$1(SlowdownHistory, {}) }),
-          /* @__PURE__ */ u$1("div", { className: cn$2(["w-[calc(100%-200px)] h-full overflow-y-auto"]), children: /* @__PURE__ */ u$1(DetailsRoutes, {}) })
+          /* @__PURE__ */ u$1("div", { className: cn$1(["h-full min-w-[200px]"]), children: /* @__PURE__ */ u$1(SlowdownHistory, {}) }),
+          /* @__PURE__ */ u$1("div", { className: cn$1(["w-[calc(100%-200px)] h-full overflow-y-auto"]), children: /* @__PURE__ */ u$1(DetailsRoutes, {}) })
         ]
       }
     )
@@ -16317,15 +16317,15 @@ var MoreInfo = () => {
   return /* @__PURE__ */ u$1(
     "div",
     {
-      className: cn$2([
+      className: cn$1([
         "px-4 py-2 border-b border-[#27272A] bg-[#18181B]/50 h-[calc(100%-40px)]",
         event.kind === "dropped-frames" && `h-[calc(100%-25px)]`
       ]),
-      children: /* @__PURE__ */ u$1("div", { className: cn$2(["flex flex-col gap-y-4 h-full"]), children: iife(() => {
+      children: /* @__PURE__ */ u$1("div", { className: cn$1(["flex flex-col gap-y-4 h-full"]), children: iife(() => {
         switch (event.kind) {
           case "interaction": {
             return /* @__PURE__ */ u$1(k$3, { children: [
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-3"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-3"]), children: [
                 /* @__PURE__ */ u$1("span", { className: "text-[#6F6F78] text-xs font-medium", children: event.type === "click" ? "Clicked component location" : "Typed in component location" }),
                 /* @__PURE__ */ u$1("div", { className: "font-mono text-[#E4E4E7] flex items-center bg-[#27272A] pl-2 py-1 rounded-sm overflow-x-auto", children: event.componentPath.toReversed().map((part, i2) => /* @__PURE__ */ u$1(k$3, { children: [
                   /* @__PURE__ */ u$1(
@@ -16342,14 +16342,14 @@ var MoreInfo = () => {
                   i2 < event.componentPath.length - 1 && /* @__PURE__ */ u$1("span", { className: "text-[#6F6F78] mx-0.5", children: "‹" })
                 ] })) })
               ] }),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-3"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-3"]), children: [
                 /* @__PURE__ */ u$1("span", { className: "text-[#6F6F78] text-xs font-medium", children: "Total Time" }),
                 /* @__PURE__ */ u$1("span", { className: "text-[#E4E4E7] bg-[#27272A] px-1.5 py-1 rounded-sm text-xs", children: [
                   getTotalTime(event.timing).toFixed(0),
                   "ms"
                 ] })
               ] }),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-3"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-3"]), children: [
                 /* @__PURE__ */ u$1("span", { className: "text-[#6F6F78] text-xs font-medium", children: "Occurred" }),
                 /* @__PURE__ */ u$1("span", { className: "text-[#E4E4E7] bg-[#27272A] px-1.5 py-1 rounded-sm text-xs", children: `${((Date.now() - event.timestamp) / 1e3).toFixed(0)}s ago` })
               ] })
@@ -16357,14 +16357,14 @@ var MoreInfo = () => {
           }
           case "dropped-frames": {
             return /* @__PURE__ */ u$1(k$3, { children: [
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-3"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-3"]), children: [
                 /* @__PURE__ */ u$1("span", { className: "text-[#6F6F78] text-xs font-medium", children: "Total Time" }),
                 /* @__PURE__ */ u$1("span", { className: "text-[#E4E4E7] bg-[#27272A] px-1.5 py-1 rounded-sm text-xs", children: [
                   getTotalTime(event.timing).toFixed(0),
                   "ms"
                 ] })
               ] }),
-              /* @__PURE__ */ u$1("div", { className: cn$2(["flex items-center gap-x-3"]), children: [
+              /* @__PURE__ */ u$1("div", { className: cn$1(["flex items-center gap-x-3"]), children: [
                 /* @__PURE__ */ u$1("span", { className: "text-[#6F6F78] text-xs font-medium", children: "Occurred" }),
                 /* @__PURE__ */ u$1("span", { className: "text-[#E4E4E7] bg-[#27272A] px-1.5 py-1 rounded-sm text-xs", children: `${((Date.now() - event.timestamp) / 1e3).toFixed(0)}s ago` })
               ] })
@@ -16521,7 +16521,7 @@ constant(() => {
           {
             events: laggedEvents.filter((event) => !seenEvents.includes(event.id)).map((event) => getEventSeverity(event) === "high"),
             size: 16,
-            className: cn$2([
+            className: cn$1([
               "text-[#999]",
               signalWidgetViews.value.view === "notifications" && "text-[#8E61E3]"
             ])
@@ -16545,7 +16545,7 @@ var isInspecting = w(
   () => Store.inspectState.value.kind === "inspecting"
 );
 w(
-  () => cn$2(
+  () => cn$1(
     "relative",
     "flex-1",
     "flex flex-col",
@@ -16688,1086 +16688,6 @@ const __vitePreload = function preload(baseModule, deps, importerUrl) {
     return baseModule().catch(handlePreloadError);
   });
 };
-function __insertCSS(code) {
-  if (typeof document == "undefined") return;
-  let head = document.head || document.getElementsByTagName("head")[0];
-  let style = document.createElement("style");
-  style.type = "text/css";
-  head.appendChild(style);
-  style.styleSheet ? style.styleSheet.cssText = code : style.appendChild(document.createTextNode(code));
-}
-const getAsset = (type) => {
-  switch (type) {
-    case "success":
-      return SuccessIcon;
-    case "info":
-      return InfoIcon;
-    case "warning":
-      return WarningIcon;
-    case "error":
-      return ErrorIcon;
-    default:
-      return null;
-  }
-};
-const bars = Array(12).fill(0);
-const Loader = ({ visible, className }) => {
-  return /* @__PURE__ */ React$3.createElement("div", {
-    className: [
-      "sonner-loading-wrapper",
-      className
-    ].filter(Boolean).join(" "),
-    "data-visible": visible
-  }, /* @__PURE__ */ React$3.createElement("div", {
-    className: "sonner-spinner"
-  }, bars.map((_2, i2) => /* @__PURE__ */ React$3.createElement("div", {
-    className: "sonner-loading-bar",
-    key: `spinner-bar-${i2}`
-  }))));
-};
-const SuccessIcon = /* @__PURE__ */ React$3.createElement("svg", {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  fill: "currentColor",
-  height: "20",
-  width: "20"
-}, /* @__PURE__ */ React$3.createElement("path", {
-  fillRule: "evenodd",
-  d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
-  clipRule: "evenodd"
-}));
-const WarningIcon = /* @__PURE__ */ React$3.createElement("svg", {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 24 24",
-  fill: "currentColor",
-  height: "20",
-  width: "20"
-}, /* @__PURE__ */ React$3.createElement("path", {
-  fillRule: "evenodd",
-  d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
-  clipRule: "evenodd"
-}));
-const InfoIcon = /* @__PURE__ */ React$3.createElement("svg", {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  fill: "currentColor",
-  height: "20",
-  width: "20"
-}, /* @__PURE__ */ React$3.createElement("path", {
-  fillRule: "evenodd",
-  d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z",
-  clipRule: "evenodd"
-}));
-const ErrorIcon = /* @__PURE__ */ React$3.createElement("svg", {
-  xmlns: "http://www.w3.org/2000/svg",
-  viewBox: "0 0 20 20",
-  fill: "currentColor",
-  height: "20",
-  width: "20"
-}, /* @__PURE__ */ React$3.createElement("path", {
-  fillRule: "evenodd",
-  d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z",
-  clipRule: "evenodd"
-}));
-const CloseIcon = /* @__PURE__ */ React$3.createElement("svg", {
-  xmlns: "http://www.w3.org/2000/svg",
-  width: "12",
-  height: "12",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: "1.5",
-  strokeLinecap: "round",
-  strokeLinejoin: "round"
-}, /* @__PURE__ */ React$3.createElement("line", {
-  x1: "18",
-  y1: "6",
-  x2: "6",
-  y2: "18"
-}), /* @__PURE__ */ React$3.createElement("line", {
-  x1: "6",
-  y1: "6",
-  x2: "18",
-  y2: "18"
-}));
-const useIsDocumentHidden = () => {
-  const [isDocumentHidden, setIsDocumentHidden] = React$3.useState(document.hidden);
-  React$3.useEffect(() => {
-    const callback = () => {
-      setIsDocumentHidden(document.hidden);
-    };
-    document.addEventListener("visibilitychange", callback);
-    return () => window.removeEventListener("visibilitychange", callback);
-  }, []);
-  return isDocumentHidden;
-};
-let toastsCounter = 1;
-class Observer {
-  constructor() {
-    this.subscribe = (subscriber) => {
-      this.subscribers.push(subscriber);
-      return () => {
-        const index2 = this.subscribers.indexOf(subscriber);
-        this.subscribers.splice(index2, 1);
-      };
-    };
-    this.publish = (data) => {
-      this.subscribers.forEach((subscriber) => subscriber(data));
-    };
-    this.addToast = (data) => {
-      this.publish(data);
-      this.toasts = [
-        ...this.toasts,
-        data
-      ];
-    };
-    this.create = (data) => {
-      var _data_id;
-      const { message, ...rest } = data;
-      const id2 = typeof (data == null ? void 0 : data.id) === "number" || ((_data_id = data.id) == null ? void 0 : _data_id.length) > 0 ? data.id : toastsCounter++;
-      const alreadyExists = this.toasts.find((toast2) => {
-        return toast2.id === id2;
-      });
-      const dismissible = data.dismissible === void 0 ? true : data.dismissible;
-      if (this.dismissedToasts.has(id2)) {
-        this.dismissedToasts.delete(id2);
-      }
-      if (alreadyExists) {
-        this.toasts = this.toasts.map((toast2) => {
-          if (toast2.id === id2) {
-            this.publish({
-              ...toast2,
-              ...data,
-              id: id2,
-              title: message
-            });
-            return {
-              ...toast2,
-              ...data,
-              id: id2,
-              dismissible,
-              title: message
-            };
-          }
-          return toast2;
-        });
-      } else {
-        this.addToast({
-          title: message,
-          ...rest,
-          dismissible,
-          id: id2
-        });
-      }
-      return id2;
-    };
-    this.dismiss = (id2) => {
-      if (id2) {
-        this.dismissedToasts.add(id2);
-        requestAnimationFrame(() => this.subscribers.forEach((subscriber) => subscriber({
-          id: id2,
-          dismiss: true
-        })));
-      } else {
-        this.toasts.forEach((toast2) => {
-          this.subscribers.forEach((subscriber) => subscriber({
-            id: toast2.id,
-            dismiss: true
-          }));
-        });
-      }
-      return id2;
-    };
-    this.message = (message, data) => {
-      return this.create({
-        ...data,
-        message
-      });
-    };
-    this.error = (message, data) => {
-      return this.create({
-        ...data,
-        message,
-        type: "error"
-      });
-    };
-    this.success = (message, data) => {
-      return this.create({
-        ...data,
-        type: "success",
-        message
-      });
-    };
-    this.info = (message, data) => {
-      return this.create({
-        ...data,
-        type: "info",
-        message
-      });
-    };
-    this.warning = (message, data) => {
-      return this.create({
-        ...data,
-        type: "warning",
-        message
-      });
-    };
-    this.loading = (message, data) => {
-      return this.create({
-        ...data,
-        type: "loading",
-        message
-      });
-    };
-    this.promise = (promise, data) => {
-      if (!data) {
-        return;
-      }
-      let id2 = void 0;
-      if (data.loading !== void 0) {
-        id2 = this.create({
-          ...data,
-          promise,
-          type: "loading",
-          message: data.loading,
-          description: typeof data.description !== "function" ? data.description : void 0
-        });
-      }
-      const p2 = Promise.resolve(promise instanceof Function ? promise() : promise);
-      let shouldDismiss = id2 !== void 0;
-      let result;
-      const originalPromise = p2.then(async (response) => {
-        result = [
-          "resolve",
-          response
-        ];
-        const isReactElementResponse = React$3.isValidElement(response);
-        if (isReactElementResponse) {
-          shouldDismiss = false;
-          this.create({
-            id: id2,
-            type: "default",
-            message: response
-          });
-        } else if (isHttpResponse(response) && !response.ok) {
-          shouldDismiss = false;
-          const promiseData = typeof data.error === "function" ? await data.error(`HTTP error! status: ${response.status}`) : data.error;
-          const description = typeof data.description === "function" ? await data.description(`HTTP error! status: ${response.status}`) : data.description;
-          const isExtendedResult = typeof promiseData === "object" && !React$3.isValidElement(promiseData);
-          const toastSettings = isExtendedResult ? promiseData : {
-            message: promiseData
-          };
-          this.create({
-            id: id2,
-            type: "error",
-            description,
-            ...toastSettings
-          });
-        } else if (response instanceof Error) {
-          shouldDismiss = false;
-          const promiseData = typeof data.error === "function" ? await data.error(response) : data.error;
-          const description = typeof data.description === "function" ? await data.description(response) : data.description;
-          const isExtendedResult = typeof promiseData === "object" && !React$3.isValidElement(promiseData);
-          const toastSettings = isExtendedResult ? promiseData : {
-            message: promiseData
-          };
-          this.create({
-            id: id2,
-            type: "error",
-            description,
-            ...toastSettings
-          });
-        } else if (data.success !== void 0) {
-          shouldDismiss = false;
-          const promiseData = typeof data.success === "function" ? await data.success(response) : data.success;
-          const description = typeof data.description === "function" ? await data.description(response) : data.description;
-          const isExtendedResult = typeof promiseData === "object" && !React$3.isValidElement(promiseData);
-          const toastSettings = isExtendedResult ? promiseData : {
-            message: promiseData
-          };
-          this.create({
-            id: id2,
-            type: "success",
-            description,
-            ...toastSettings
-          });
-        }
-      }).catch(async (error) => {
-        result = [
-          "reject",
-          error
-        ];
-        if (data.error !== void 0) {
-          shouldDismiss = false;
-          const promiseData = typeof data.error === "function" ? await data.error(error) : data.error;
-          const description = typeof data.description === "function" ? await data.description(error) : data.description;
-          const isExtendedResult = typeof promiseData === "object" && !React$3.isValidElement(promiseData);
-          const toastSettings = isExtendedResult ? promiseData : {
-            message: promiseData
-          };
-          this.create({
-            id: id2,
-            type: "error",
-            description,
-            ...toastSettings
-          });
-        }
-      }).finally(() => {
-        if (shouldDismiss) {
-          this.dismiss(id2);
-          id2 = void 0;
-        }
-        data.finally == null ? void 0 : data.finally.call(data);
-      });
-      const unwrap = () => new Promise((resolve, reject) => originalPromise.then(() => result[0] === "reject" ? reject(result[1]) : resolve(result[1])).catch(reject));
-      if (typeof id2 !== "string" && typeof id2 !== "number") {
-        return {
-          unwrap
-        };
-      } else {
-        return Object.assign(id2, {
-          unwrap
-        });
-      }
-    };
-    this.custom = (jsx, data) => {
-      const id2 = (data == null ? void 0 : data.id) || toastsCounter++;
-      this.create({
-        jsx: jsx(id2),
-        id: id2,
-        ...data
-      });
-      return id2;
-    };
-    this.getActiveToasts = () => {
-      return this.toasts.filter((toast2) => !this.dismissedToasts.has(toast2.id));
-    };
-    this.subscribers = [];
-    this.toasts = [];
-    this.dismissedToasts = /* @__PURE__ */ new Set();
-  }
-}
-const ToastState = new Observer();
-const toastFunction = (message, data) => {
-  const id2 = (data == null ? void 0 : data.id) || toastsCounter++;
-  ToastState.addToast({
-    title: message,
-    ...data,
-    id: id2
-  });
-  return id2;
-};
-const isHttpResponse = (data) => {
-  return data && typeof data === "object" && "ok" in data && typeof data.ok === "boolean" && "status" in data && typeof data.status === "number";
-};
-const basicToast = toastFunction;
-const getHistory = () => ToastState.toasts;
-const getToasts = () => ToastState.getActiveToasts();
-const toast = Object.assign(basicToast, {
-  success: ToastState.success,
-  info: ToastState.info,
-  warning: ToastState.warning,
-  error: ToastState.error,
-  custom: ToastState.custom,
-  message: ToastState.message,
-  promise: ToastState.promise,
-  dismiss: ToastState.dismiss,
-  loading: ToastState.loading
-}, {
-  getHistory,
-  getToasts
-});
-__insertCSS("[data-sonner-toaster][dir=ltr],html[dir=ltr]{--toast-icon-margin-start:-3px;--toast-icon-margin-end:4px;--toast-svg-margin-start:-1px;--toast-svg-margin-end:0px;--toast-button-margin-start:auto;--toast-button-margin-end:0;--toast-close-button-start:0;--toast-close-button-end:unset;--toast-close-button-transform:translate(-35%, -35%)}[data-sonner-toaster][dir=rtl],html[dir=rtl]{--toast-icon-margin-start:4px;--toast-icon-margin-end:-3px;--toast-svg-margin-start:0px;--toast-svg-margin-end:-1px;--toast-button-margin-start:0;--toast-button-margin-end:auto;--toast-close-button-start:unset;--toast-close-button-end:0;--toast-close-button-transform:translate(35%, -35%)}[data-sonner-toaster]{position:fixed;width:var(--width);font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;--gray1:hsl(0, 0%, 99%);--gray2:hsl(0, 0%, 97.3%);--gray3:hsl(0, 0%, 95.1%);--gray4:hsl(0, 0%, 93%);--gray5:hsl(0, 0%, 90.9%);--gray6:hsl(0, 0%, 88.7%);--gray7:hsl(0, 0%, 85.8%);--gray8:hsl(0, 0%, 78%);--gray9:hsl(0, 0%, 56.1%);--gray10:hsl(0, 0%, 52.3%);--gray11:hsl(0, 0%, 43.5%);--gray12:hsl(0, 0%, 9%);--border-radius:8px;box-sizing:border-box;padding:0;margin:0;list-style:none;outline:0;z-index:999999999;transition:transform .4s ease}@media (hover:none) and (pointer:coarse){[data-sonner-toaster][data-lifted=true]{transform:none}}[data-sonner-toaster][data-x-position=right]{right:var(--offset-right)}[data-sonner-toaster][data-x-position=left]{left:var(--offset-left)}[data-sonner-toaster][data-x-position=center]{left:50%;transform:translateX(-50%)}[data-sonner-toaster][data-y-position=top]{top:var(--offset-top)}[data-sonner-toaster][data-y-position=bottom]{bottom:var(--offset-bottom)}[data-sonner-toast]{--y:translateY(100%);--lift-amount:calc(var(--lift) * var(--gap));z-index:var(--z-index);position:absolute;opacity:0;transform:var(--y);touch-action:none;transition:transform .4s,opacity .4s,height .4s,box-shadow .2s;box-sizing:border-box;outline:0;overflow-wrap:anywhere}[data-sonner-toast][data-styled=true]{padding:16px;background:var(--normal-bg);border:1px solid var(--normal-border);color:var(--normal-text);border-radius:var(--border-radius);box-shadow:0 4px 12px rgba(0,0,0,.1);width:var(--width);font-size:13px;display:flex;align-items:center;gap:6px}[data-sonner-toast]:focus-visible{box-shadow:0 4px 12px rgba(0,0,0,.1),0 0 0 2px rgba(0,0,0,.2)}[data-sonner-toast][data-y-position=top]{top:0;--y:translateY(-100%);--lift:1;--lift-amount:calc(1 * var(--gap))}[data-sonner-toast][data-y-position=bottom]{bottom:0;--y:translateY(100%);--lift:-1;--lift-amount:calc(var(--lift) * var(--gap))}[data-sonner-toast][data-styled=true] [data-description]{font-weight:400;line-height:1.4;color:#3f3f3f}[data-rich-colors=true][data-sonner-toast][data-styled=true] [data-description]{color:inherit}[data-sonner-toaster][data-sonner-theme=dark] [data-description]{color:#e8e8e8}[data-sonner-toast][data-styled=true] [data-title]{font-weight:500;line-height:1.5;color:inherit}[data-sonner-toast][data-styled=true] [data-icon]{display:flex;height:16px;width:16px;position:relative;justify-content:flex-start;align-items:center;flex-shrink:0;margin-left:var(--toast-icon-margin-start);margin-right:var(--toast-icon-margin-end)}[data-sonner-toast][data-promise=true] [data-icon]>svg{opacity:0;transform:scale(.8);transform-origin:center;animation:sonner-fade-in .3s ease forwards}[data-sonner-toast][data-styled=true] [data-icon]>*{flex-shrink:0}[data-sonner-toast][data-styled=true] [data-icon] svg{margin-left:var(--toast-svg-margin-start);margin-right:var(--toast-svg-margin-end)}[data-sonner-toast][data-styled=true] [data-content]{display:flex;flex-direction:column;gap:2px}[data-sonner-toast][data-styled=true] [data-button]{border-radius:4px;padding-left:8px;padding-right:8px;height:24px;font-size:12px;color:var(--normal-bg);background:var(--normal-text);margin-left:var(--toast-button-margin-start);margin-right:var(--toast-button-margin-end);border:none;font-weight:500;cursor:pointer;outline:0;display:flex;align-items:center;flex-shrink:0;transition:opacity .4s,box-shadow .2s}[data-sonner-toast][data-styled=true] [data-button]:focus-visible{box-shadow:0 0 0 2px rgba(0,0,0,.4)}[data-sonner-toast][data-styled=true] [data-button]:first-of-type{margin-left:var(--toast-button-margin-start);margin-right:var(--toast-button-margin-end)}[data-sonner-toast][data-styled=true] [data-cancel]{color:var(--normal-text);background:rgba(0,0,0,.08)}[data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast][data-styled=true] [data-cancel]{background:rgba(255,255,255,.3)}[data-sonner-toast][data-styled=true] [data-close-button]{position:absolute;left:var(--toast-close-button-start);right:var(--toast-close-button-end);top:0;height:20px;width:20px;display:flex;justify-content:center;align-items:center;padding:0;color:var(--gray12);background:var(--normal-bg);border:1px solid var(--gray4);transform:var(--toast-close-button-transform);border-radius:50%;cursor:pointer;z-index:1;transition:opacity .1s,background .2s,border-color .2s}[data-sonner-toast][data-styled=true] [data-close-button]:focus-visible{box-shadow:0 4px 12px rgba(0,0,0,.1),0 0 0 2px rgba(0,0,0,.2)}[data-sonner-toast][data-styled=true] [data-disabled=true]{cursor:not-allowed}[data-sonner-toast][data-styled=true]:hover [data-close-button]:hover{background:var(--gray2);border-color:var(--gray5)}[data-sonner-toast][data-swiping=true]::before{content:'';position:absolute;left:-100%;right:-100%;height:100%;z-index:-1}[data-sonner-toast][data-y-position=top][data-swiping=true]::before{bottom:50%;transform:scaleY(3) translateY(50%)}[data-sonner-toast][data-y-position=bottom][data-swiping=true]::before{top:50%;transform:scaleY(3) translateY(-50%)}[data-sonner-toast][data-swiping=false][data-removed=true]::before{content:'';position:absolute;inset:0;transform:scaleY(2)}[data-sonner-toast][data-expanded=true]::after{content:'';position:absolute;left:0;height:calc(var(--gap) + 1px);bottom:100%;width:100%}[data-sonner-toast][data-mounted=true]{--y:translateY(0);opacity:1}[data-sonner-toast][data-expanded=false][data-front=false]{--scale:var(--toasts-before) * 0.05 + 1;--y:translateY(calc(var(--lift-amount) * var(--toasts-before))) scale(calc(-1 * var(--scale)));height:var(--front-toast-height)}[data-sonner-toast]>*{transition:opacity .4s}[data-sonner-toast][data-x-position=right]{right:0}[data-sonner-toast][data-x-position=left]{left:0}[data-sonner-toast][data-expanded=false][data-front=false][data-styled=true]>*{opacity:0}[data-sonner-toast][data-visible=false]{opacity:0;pointer-events:none}[data-sonner-toast][data-mounted=true][data-expanded=true]{--y:translateY(calc(var(--lift) * var(--offset)));height:var(--initial-height)}[data-sonner-toast][data-removed=true][data-front=true][data-swipe-out=false]{--y:translateY(calc(var(--lift) * -100%));opacity:0}[data-sonner-toast][data-removed=true][data-front=false][data-swipe-out=false][data-expanded=true]{--y:translateY(calc(var(--lift) * var(--offset) + var(--lift) * -100%));opacity:0}[data-sonner-toast][data-removed=true][data-front=false][data-swipe-out=false][data-expanded=false]{--y:translateY(40%);opacity:0;transition:transform .5s,opacity .2s}[data-sonner-toast][data-removed=true][data-front=false]::before{height:calc(var(--initial-height) + 20%)}[data-sonner-toast][data-swiping=true]{transform:var(--y) translateY(var(--swipe-amount-y,0)) translateX(var(--swipe-amount-x,0));transition:none}[data-sonner-toast][data-swiped=true]{user-select:none}[data-sonner-toast][data-swipe-out=true][data-y-position=bottom],[data-sonner-toast][data-swipe-out=true][data-y-position=top]{animation-duration:.2s;animation-timing-function:ease-out;animation-fill-mode:forwards}[data-sonner-toast][data-swipe-out=true][data-swipe-direction=left]{animation-name:swipe-out-left}[data-sonner-toast][data-swipe-out=true][data-swipe-direction=right]{animation-name:swipe-out-right}[data-sonner-toast][data-swipe-out=true][data-swipe-direction=up]{animation-name:swipe-out-up}[data-sonner-toast][data-swipe-out=true][data-swipe-direction=down]{animation-name:swipe-out-down}@keyframes swipe-out-left{from{transform:var(--y) translateX(var(--swipe-amount-x));opacity:1}to{transform:var(--y) translateX(calc(var(--swipe-amount-x) - 100%));opacity:0}}@keyframes swipe-out-right{from{transform:var(--y) translateX(var(--swipe-amount-x));opacity:1}to{transform:var(--y) translateX(calc(var(--swipe-amount-x) + 100%));opacity:0}}@keyframes swipe-out-up{from{transform:var(--y) translateY(var(--swipe-amount-y));opacity:1}to{transform:var(--y) translateY(calc(var(--swipe-amount-y) - 100%));opacity:0}}@keyframes swipe-out-down{from{transform:var(--y) translateY(var(--swipe-amount-y));opacity:1}to{transform:var(--y) translateY(calc(var(--swipe-amount-y) + 100%));opacity:0}}@media (max-width:600px){[data-sonner-toaster]{position:fixed;right:var(--mobile-offset-right);left:var(--mobile-offset-left);width:100%}[data-sonner-toaster][dir=rtl]{left:calc(var(--mobile-offset-left) * -1)}[data-sonner-toaster] [data-sonner-toast]{left:0;right:0;width:calc(100% - var(--mobile-offset-left) * 2)}[data-sonner-toaster][data-x-position=left]{left:var(--mobile-offset-left)}[data-sonner-toaster][data-y-position=bottom]{bottom:var(--mobile-offset-bottom)}[data-sonner-toaster][data-y-position=top]{top:var(--mobile-offset-top)}[data-sonner-toaster][data-x-position=center]{left:var(--mobile-offset-left);right:var(--mobile-offset-right);transform:none}}[data-sonner-toaster][data-sonner-theme=light]{--normal-bg:#fff;--normal-border:var(--gray4);--normal-text:var(--gray12);--success-bg:hsl(143, 85%, 96%);--success-border:hsl(145, 92%, 87%);--success-text:hsl(140, 100%, 27%);--info-bg:hsl(208, 100%, 97%);--info-border:hsl(221, 91%, 93%);--info-text:hsl(210, 92%, 45%);--warning-bg:hsl(49, 100%, 97%);--warning-border:hsl(49, 91%, 84%);--warning-text:hsl(31, 92%, 45%);--error-bg:hsl(359, 100%, 97%);--error-border:hsl(359, 100%, 94%);--error-text:hsl(360, 100%, 45%)}[data-sonner-toaster][data-sonner-theme=light] [data-sonner-toast][data-invert=true]{--normal-bg:#000;--normal-border:hsl(0, 0%, 20%);--normal-text:var(--gray1)}[data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast][data-invert=true]{--normal-bg:#fff;--normal-border:var(--gray3);--normal-text:var(--gray12)}[data-sonner-toaster][data-sonner-theme=dark]{--normal-bg:#000;--normal-bg-hover:hsl(0, 0%, 12%);--normal-border:hsl(0, 0%, 20%);--normal-border-hover:hsl(0, 0%, 25%);--normal-text:var(--gray1);--success-bg:hsl(150, 100%, 6%);--success-border:hsl(147, 100%, 12%);--success-text:hsl(150, 86%, 65%);--info-bg:hsl(215, 100%, 6%);--info-border:hsl(223, 43%, 17%);--info-text:hsl(216, 87%, 65%);--warning-bg:hsl(64, 100%, 6%);--warning-border:hsl(60, 100%, 9%);--warning-text:hsl(46, 87%, 65%);--error-bg:hsl(358, 76%, 10%);--error-border:hsl(357, 89%, 16%);--error-text:hsl(358, 100%, 81%)}[data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast] [data-close-button]{background:var(--normal-bg);border-color:var(--normal-border);color:var(--normal-text)}[data-sonner-toaster][data-sonner-theme=dark] [data-sonner-toast] [data-close-button]:hover{background:var(--normal-bg-hover);border-color:var(--normal-border-hover)}[data-rich-colors=true][data-sonner-toast][data-type=success]{background:var(--success-bg);border-color:var(--success-border);color:var(--success-text)}[data-rich-colors=true][data-sonner-toast][data-type=success] [data-close-button]{background:var(--success-bg);border-color:var(--success-border);color:var(--success-text)}[data-rich-colors=true][data-sonner-toast][data-type=info]{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}[data-rich-colors=true][data-sonner-toast][data-type=info] [data-close-button]{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}[data-rich-colors=true][data-sonner-toast][data-type=warning]{background:var(--warning-bg);border-color:var(--warning-border);color:var(--warning-text)}[data-rich-colors=true][data-sonner-toast][data-type=warning] [data-close-button]{background:var(--warning-bg);border-color:var(--warning-border);color:var(--warning-text)}[data-rich-colors=true][data-sonner-toast][data-type=error]{background:var(--error-bg);border-color:var(--error-border);color:var(--error-text)}[data-rich-colors=true][data-sonner-toast][data-type=error] [data-close-button]{background:var(--error-bg);border-color:var(--error-border);color:var(--error-text)}.sonner-loading-wrapper{--size:16px;height:var(--size);width:var(--size);position:absolute;inset:0;z-index:10}.sonner-loading-wrapper[data-visible=false]{transform-origin:center;animation:sonner-fade-out .2s ease forwards}.sonner-spinner{position:relative;top:50%;left:50%;height:var(--size);width:var(--size)}.sonner-loading-bar{animation:sonner-spin 1.2s linear infinite;background:var(--gray11);border-radius:6px;height:8%;left:-10%;position:absolute;top:-3.9%;width:24%}.sonner-loading-bar:first-child{animation-delay:-1.2s;transform:rotate(.0001deg) translate(146%)}.sonner-loading-bar:nth-child(2){animation-delay:-1.1s;transform:rotate(30deg) translate(146%)}.sonner-loading-bar:nth-child(3){animation-delay:-1s;transform:rotate(60deg) translate(146%)}.sonner-loading-bar:nth-child(4){animation-delay:-.9s;transform:rotate(90deg) translate(146%)}.sonner-loading-bar:nth-child(5){animation-delay:-.8s;transform:rotate(120deg) translate(146%)}.sonner-loading-bar:nth-child(6){animation-delay:-.7s;transform:rotate(150deg) translate(146%)}.sonner-loading-bar:nth-child(7){animation-delay:-.6s;transform:rotate(180deg) translate(146%)}.sonner-loading-bar:nth-child(8){animation-delay:-.5s;transform:rotate(210deg) translate(146%)}.sonner-loading-bar:nth-child(9){animation-delay:-.4s;transform:rotate(240deg) translate(146%)}.sonner-loading-bar:nth-child(10){animation-delay:-.3s;transform:rotate(270deg) translate(146%)}.sonner-loading-bar:nth-child(11){animation-delay:-.2s;transform:rotate(300deg) translate(146%)}.sonner-loading-bar:nth-child(12){animation-delay:-.1s;transform:rotate(330deg) translate(146%)}@keyframes sonner-fade-in{0%{opacity:0;transform:scale(.8)}100%{opacity:1;transform:scale(1)}}@keyframes sonner-fade-out{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}@keyframes sonner-spin{0%{opacity:1}100%{opacity:.15}}@media (prefers-reduced-motion){.sonner-loading-bar,[data-sonner-toast],[data-sonner-toast]>*{transition:none!important;animation:none!important}}.sonner-loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);transform-origin:center;transition:opacity .2s,transform .2s}.sonner-loader[data-visible=false]{opacity:0;transform:scale(.8) translate(-50%,-50%)}");
-function isAction(action) {
-  return action.label !== void 0;
-}
-const VISIBLE_TOASTS_AMOUNT = 3;
-const VIEWPORT_OFFSET = "24px";
-const MOBILE_VIEWPORT_OFFSET = "16px";
-const TOAST_LIFETIME = 4e3;
-const TOAST_WIDTH = 356;
-const GAP = 14;
-const SWIPE_THRESHOLD = 45;
-const TIME_BEFORE_UNMOUNT = 200;
-function cn$1(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-function getDefaultSwipeDirections(position) {
-  const [y2, x2] = position.split("-");
-  const directions = [];
-  if (y2) {
-    directions.push(y2);
-  }
-  if (x2) {
-    directions.push(x2);
-  }
-  return directions;
-}
-const Toast = (props) => {
-  var _toast_classNames, _toast_classNames1, _toast_classNames2, _toast_classNames3, _toast_classNames4, _toast_classNames5, _toast_classNames6, _toast_classNames7, _toast_classNames8;
-  const { invert: ToasterInvert, toast: toast2, unstyled, interacting, setHeights, visibleToasts, heights, index: index2, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style, cancelButtonStyle, actionButtonStyle, className = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
-  const [swipeDirection, setSwipeDirection] = React$3.useState(null);
-  const [swipeOutDirection, setSwipeOutDirection] = React$3.useState(null);
-  const [mounted, setMounted] = React$3.useState(false);
-  const [removed, setRemoved] = React$3.useState(false);
-  const [swiping, setSwiping] = React$3.useState(false);
-  const [swipeOut, setSwipeOut] = React$3.useState(false);
-  const [isSwiped, setIsSwiped] = React$3.useState(false);
-  const [offsetBeforeRemove, setOffsetBeforeRemove] = React$3.useState(0);
-  const [initialHeight, setInitialHeight] = React$3.useState(0);
-  const remainingTime = React$3.useRef(toast2.duration || durationFromToaster || TOAST_LIFETIME);
-  const dragStartTime = React$3.useRef(null);
-  const toastRef = React$3.useRef(null);
-  const isFront = index2 === 0;
-  const isVisible = index2 + 1 <= visibleToasts;
-  const toastType = toast2.type;
-  const dismissible = toast2.dismissible !== false;
-  const toastClassname = toast2.className || "";
-  const toastDescriptionClassname = toast2.descriptionClassName || "";
-  const heightIndex = React$3.useMemo(() => heights.findIndex((height) => height.toastId === toast2.id) || 0, [
-    heights,
-    toast2.id
-  ]);
-  const closeButton = React$3.useMemo(() => {
-    var _toast_closeButton;
-    return (_toast_closeButton = toast2.closeButton) != null ? _toast_closeButton : closeButtonFromToaster;
-  }, [
-    toast2.closeButton,
-    closeButtonFromToaster
-  ]);
-  const duration = React$3.useMemo(() => toast2.duration || durationFromToaster || TOAST_LIFETIME, [
-    toast2.duration,
-    durationFromToaster
-  ]);
-  const closeTimerStartTimeRef = React$3.useRef(0);
-  const offset2 = React$3.useRef(0);
-  const lastCloseTimerStartTimeRef = React$3.useRef(0);
-  const pointerStartRef = React$3.useRef(null);
-  const [y2, x2] = position.split("-");
-  const toastsHeightBefore = React$3.useMemo(() => {
-    return heights.reduce((prev, curr, reducerIndex) => {
-      if (reducerIndex >= heightIndex) {
-        return prev;
-      }
-      return prev + curr.height;
-    }, 0);
-  }, [
-    heights,
-    heightIndex
-  ]);
-  const isDocumentHidden = useIsDocumentHidden();
-  const invert = toast2.invert || ToasterInvert;
-  const disabled = toastType === "loading";
-  offset2.current = React$3.useMemo(() => heightIndex * gap + toastsHeightBefore, [
-    heightIndex,
-    toastsHeightBefore
-  ]);
-  React$3.useEffect(() => {
-    remainingTime.current = duration;
-  }, [
-    duration
-  ]);
-  React$3.useEffect(() => {
-    setMounted(true);
-  }, []);
-  React$3.useEffect(() => {
-    const toastNode = toastRef.current;
-    if (toastNode) {
-      const height = toastNode.getBoundingClientRect().height;
-      setInitialHeight(height);
-      setHeights((h2) => [
-        {
-          toastId: toast2.id,
-          height,
-          position: toast2.position
-        },
-        ...h2
-      ]);
-      return () => setHeights((h2) => h2.filter((height2) => height2.toastId !== toast2.id));
-    }
-  }, [
-    setHeights,
-    toast2.id
-  ]);
-  React$3.useLayoutEffect(() => {
-    if (!mounted) return;
-    const toastNode = toastRef.current;
-    const originalHeight = toastNode.style.height;
-    toastNode.style.height = "auto";
-    const newHeight = toastNode.getBoundingClientRect().height;
-    toastNode.style.height = originalHeight;
-    setInitialHeight(newHeight);
-    setHeights((heights2) => {
-      const alreadyExists = heights2.find((height) => height.toastId === toast2.id);
-      if (!alreadyExists) {
-        return [
-          {
-            toastId: toast2.id,
-            height: newHeight,
-            position: toast2.position
-          },
-          ...heights2
-        ];
-      } else {
-        return heights2.map((height) => height.toastId === toast2.id ? {
-          ...height,
-          height: newHeight
-        } : height);
-      }
-    });
-  }, [
-    mounted,
-    toast2.title,
-    toast2.description,
-    setHeights,
-    toast2.id,
-    toast2.jsx,
-    toast2.action,
-    toast2.cancel
-  ]);
-  const deleteToast = React$3.useCallback(() => {
-    setRemoved(true);
-    setOffsetBeforeRemove(offset2.current);
-    setHeights((h2) => h2.filter((height) => height.toastId !== toast2.id));
-    setTimeout(() => {
-      removeToast(toast2);
-    }, TIME_BEFORE_UNMOUNT);
-  }, [
-    toast2,
-    removeToast,
-    setHeights,
-    offset2
-  ]);
-  React$3.useEffect(() => {
-    if (toast2.promise && toastType === "loading" || toast2.duration === Infinity || toast2.type === "loading") return;
-    let timeoutId;
-    const pauseTimer = () => {
-      if (lastCloseTimerStartTimeRef.current < closeTimerStartTimeRef.current) {
-        const elapsedTime = (/* @__PURE__ */ new Date()).getTime() - closeTimerStartTimeRef.current;
-        remainingTime.current = remainingTime.current - elapsedTime;
-      }
-      lastCloseTimerStartTimeRef.current = (/* @__PURE__ */ new Date()).getTime();
-    };
-    const startTimer = () => {
-      if (remainingTime.current === Infinity) return;
-      closeTimerStartTimeRef.current = (/* @__PURE__ */ new Date()).getTime();
-      timeoutId = setTimeout(() => {
-        toast2.onAutoClose == null ? void 0 : toast2.onAutoClose.call(toast2, toast2);
-        deleteToast();
-      }, remainingTime.current);
-    };
-    if (expanded || interacting || isDocumentHidden) {
-      pauseTimer();
-    } else {
-      startTimer();
-    }
-    return () => clearTimeout(timeoutId);
-  }, [
-    expanded,
-    interacting,
-    toast2,
-    toastType,
-    isDocumentHidden,
-    deleteToast
-  ]);
-  React$3.useEffect(() => {
-    if (toast2.delete) {
-      deleteToast();
-      toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
-    }
-  }, [
-    deleteToast,
-    toast2.delete
-  ]);
-  function getLoadingIcon() {
-    var _toast_classNames9;
-    if (icons == null ? void 0 : icons.loading) {
-      var _toast_classNames12;
-      return /* @__PURE__ */ React$3.createElement("div", {
-        className: cn$1(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames12 = toast2.classNames) == null ? void 0 : _toast_classNames12.loader, "sonner-loader"),
-        "data-visible": toastType === "loading"
-      }, icons.loading);
-    }
-    return /* @__PURE__ */ React$3.createElement(Loader, {
-      className: cn$1(classNames == null ? void 0 : classNames.loader, toast2 == null ? void 0 : (_toast_classNames9 = toast2.classNames) == null ? void 0 : _toast_classNames9.loader),
-      visible: toastType === "loading"
-    });
-  }
-  const icon = toast2.icon || (icons == null ? void 0 : icons[toastType]) || getAsset(toastType);
-  var _toast_richColors, _icons_close;
-  return /* @__PURE__ */ React$3.createElement("li", {
-    tabIndex: 0,
-    ref: toastRef,
-    className: cn$1(className, toastClassname, classNames == null ? void 0 : classNames.toast, toast2 == null ? void 0 : (_toast_classNames = toast2.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames.default, classNames == null ? void 0 : classNames[toastType], toast2 == null ? void 0 : (_toast_classNames1 = toast2.classNames) == null ? void 0 : _toast_classNames1[toastType]),
-    "data-sonner-toast": "",
-    "data-rich-colors": (_toast_richColors = toast2.richColors) != null ? _toast_richColors : defaultRichColors,
-    "data-styled": !Boolean(toast2.jsx || toast2.unstyled || unstyled),
-    "data-mounted": mounted,
-    "data-promise": Boolean(toast2.promise),
-    "data-swiped": isSwiped,
-    "data-removed": removed,
-    "data-visible": isVisible,
-    "data-y-position": y2,
-    "data-x-position": x2,
-    "data-index": index2,
-    "data-front": isFront,
-    "data-swiping": swiping,
-    "data-dismissible": dismissible,
-    "data-type": toastType,
-    "data-invert": invert,
-    "data-swipe-out": swipeOut,
-    "data-swipe-direction": swipeOutDirection,
-    "data-expanded": Boolean(expanded || expandByDefault && mounted),
-    "data-testid": toast2.testId,
-    style: {
-      "--index": index2,
-      "--toasts-before": index2,
-      "--z-index": toasts.length - index2,
-      "--offset": `${removed ? offsetBeforeRemove : offset2.current}px`,
-      "--initial-height": expandByDefault ? "auto" : `${initialHeight}px`,
-      ...style,
-      ...toast2.style
-    },
-    onDragEnd: () => {
-      setSwiping(false);
-      setSwipeDirection(null);
-      pointerStartRef.current = null;
-    },
-    onPointerDown: (event) => {
-      if (event.button === 2) return;
-      if (disabled || !dismissible) return;
-      dragStartTime.current = /* @__PURE__ */ new Date();
-      setOffsetBeforeRemove(offset2.current);
-      event.target.setPointerCapture(event.pointerId);
-      if (event.target.tagName === "BUTTON") return;
-      setSwiping(true);
-      pointerStartRef.current = {
-        x: event.clientX,
-        y: event.clientY
-      };
-    },
-    onPointerUp: () => {
-      var _toastRef_current, _toastRef_current1, _dragStartTime_current;
-      if (swipeOut || !dismissible) return;
-      pointerStartRef.current = null;
-      const swipeAmountX = Number(((_toastRef_current = toastRef.current) == null ? void 0 : _toastRef_current.style.getPropertyValue("--swipe-amount-x").replace("px", "")) || 0);
-      const swipeAmountY = Number(((_toastRef_current1 = toastRef.current) == null ? void 0 : _toastRef_current1.style.getPropertyValue("--swipe-amount-y").replace("px", "")) || 0);
-      const timeTaken = (/* @__PURE__ */ new Date()).getTime() - ((_dragStartTime_current = dragStartTime.current) == null ? void 0 : _dragStartTime_current.getTime());
-      const swipeAmount = swipeDirection === "x" ? swipeAmountX : swipeAmountY;
-      const velocity = Math.abs(swipeAmount) / timeTaken;
-      if (Math.abs(swipeAmount) >= SWIPE_THRESHOLD || velocity > 0.11) {
-        setOffsetBeforeRemove(offset2.current);
-        toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
-        if (swipeDirection === "x") {
-          setSwipeOutDirection(swipeAmountX > 0 ? "right" : "left");
-        } else {
-          setSwipeOutDirection(swipeAmountY > 0 ? "down" : "up");
-        }
-        deleteToast();
-        setSwipeOut(true);
-        return;
-      } else {
-        var _toastRef_current2, _toastRef_current3;
-        (_toastRef_current2 = toastRef.current) == null ? void 0 : _toastRef_current2.style.setProperty("--swipe-amount-x", `0px`);
-        (_toastRef_current3 = toastRef.current) == null ? void 0 : _toastRef_current3.style.setProperty("--swipe-amount-y", `0px`);
-      }
-      setIsSwiped(false);
-      setSwiping(false);
-      setSwipeDirection(null);
-    },
-    onPointerMove: (event) => {
-      var _window_getSelection, _toastRef_current, _toastRef_current1;
-      if (!pointerStartRef.current || !dismissible) return;
-      const isHighlighted = ((_window_getSelection = window.getSelection()) == null ? void 0 : _window_getSelection.toString().length) > 0;
-      if (isHighlighted) return;
-      const yDelta = event.clientY - pointerStartRef.current.y;
-      const xDelta = event.clientX - pointerStartRef.current.x;
-      var _props_swipeDirections;
-      const swipeDirections = (_props_swipeDirections = props.swipeDirections) != null ? _props_swipeDirections : getDefaultSwipeDirections(position);
-      if (!swipeDirection && (Math.abs(xDelta) > 1 || Math.abs(yDelta) > 1)) {
-        setSwipeDirection(Math.abs(xDelta) > Math.abs(yDelta) ? "x" : "y");
-      }
-      let swipeAmount = {
-        x: 0,
-        y: 0
-      };
-      const getDampening = (delta) => {
-        const factor = Math.abs(delta) / 20;
-        return 1 / (1.5 + factor);
-      };
-      if (swipeDirection === "y") {
-        if (swipeDirections.includes("top") || swipeDirections.includes("bottom")) {
-          if (swipeDirections.includes("top") && yDelta < 0 || swipeDirections.includes("bottom") && yDelta > 0) {
-            swipeAmount.y = yDelta;
-          } else {
-            const dampenedDelta = yDelta * getDampening(yDelta);
-            swipeAmount.y = Math.abs(dampenedDelta) < Math.abs(yDelta) ? dampenedDelta : yDelta;
-          }
-        }
-      } else if (swipeDirection === "x") {
-        if (swipeDirections.includes("left") || swipeDirections.includes("right")) {
-          if (swipeDirections.includes("left") && xDelta < 0 || swipeDirections.includes("right") && xDelta > 0) {
-            swipeAmount.x = xDelta;
-          } else {
-            const dampenedDelta = xDelta * getDampening(xDelta);
-            swipeAmount.x = Math.abs(dampenedDelta) < Math.abs(xDelta) ? dampenedDelta : xDelta;
-          }
-        }
-      }
-      if (Math.abs(swipeAmount.x) > 0 || Math.abs(swipeAmount.y) > 0) {
-        setIsSwiped(true);
-      }
-      (_toastRef_current = toastRef.current) == null ? void 0 : _toastRef_current.style.setProperty("--swipe-amount-x", `${swipeAmount.x}px`);
-      (_toastRef_current1 = toastRef.current) == null ? void 0 : _toastRef_current1.style.setProperty("--swipe-amount-y", `${swipeAmount.y}px`);
-    }
-  }, closeButton && !toast2.jsx && toastType !== "loading" ? /* @__PURE__ */ React$3.createElement("button", {
-    "aria-label": closeButtonAriaLabel,
-    "data-disabled": disabled,
-    "data-close-button": true,
-    onClick: disabled || !dismissible ? () => {
-    } : () => {
-      deleteToast();
-      toast2.onDismiss == null ? void 0 : toast2.onDismiss.call(toast2, toast2);
-    },
-    className: cn$1(classNames == null ? void 0 : classNames.closeButton, toast2 == null ? void 0 : (_toast_classNames2 = toast2.classNames) == null ? void 0 : _toast_classNames2.closeButton)
-  }, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast2.icon || toast2.promise) && toast2.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast2.icon) ? /* @__PURE__ */ React$3.createElement("div", {
-    "data-icon": "",
-    className: cn$1(classNames == null ? void 0 : classNames.icon, toast2 == null ? void 0 : (_toast_classNames3 = toast2.classNames) == null ? void 0 : _toast_classNames3.icon)
-  }, toast2.promise || toast2.type === "loading" && !toast2.icon ? toast2.icon || getLoadingIcon() : null, toast2.type !== "loading" ? icon : null) : null, /* @__PURE__ */ React$3.createElement("div", {
-    "data-content": "",
-    className: cn$1(classNames == null ? void 0 : classNames.content, toast2 == null ? void 0 : (_toast_classNames4 = toast2.classNames) == null ? void 0 : _toast_classNames4.content)
-  }, /* @__PURE__ */ React$3.createElement("div", {
-    "data-title": "",
-    className: cn$1(classNames == null ? void 0 : classNames.title, toast2 == null ? void 0 : (_toast_classNames5 = toast2.classNames) == null ? void 0 : _toast_classNames5.title)
-  }, toast2.jsx ? toast2.jsx : typeof toast2.title === "function" ? toast2.title() : toast2.title), toast2.description ? /* @__PURE__ */ React$3.createElement("div", {
-    "data-description": "",
-    className: cn$1(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast2 == null ? void 0 : (_toast_classNames6 = toast2.classNames) == null ? void 0 : _toast_classNames6.description)
-  }, typeof toast2.description === "function" ? toast2.description() : toast2.description) : null), /* @__PURE__ */ React$3.isValidElement(toast2.cancel) ? toast2.cancel : toast2.cancel && isAction(toast2.cancel) ? /* @__PURE__ */ React$3.createElement("button", {
-    "data-button": true,
-    "data-cancel": true,
-    style: toast2.cancelButtonStyle || cancelButtonStyle,
-    onClick: (event) => {
-      if (!isAction(toast2.cancel)) return;
-      if (!dismissible) return;
-      toast2.cancel.onClick == null ? void 0 : toast2.cancel.onClick.call(toast2.cancel, event);
-      deleteToast();
-    },
-    className: cn$1(classNames == null ? void 0 : classNames.cancelButton, toast2 == null ? void 0 : (_toast_classNames7 = toast2.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
-  }, toast2.cancel.label) : null, /* @__PURE__ */ React$3.isValidElement(toast2.action) ? toast2.action : toast2.action && isAction(toast2.action) ? /* @__PURE__ */ React$3.createElement("button", {
-    "data-button": true,
-    "data-action": true,
-    style: toast2.actionButtonStyle || actionButtonStyle,
-    onClick: (event) => {
-      if (!isAction(toast2.action)) return;
-      toast2.action.onClick == null ? void 0 : toast2.action.onClick.call(toast2.action, event);
-      if (event.defaultPrevented) return;
-      deleteToast();
-    },
-    className: cn$1(classNames == null ? void 0 : classNames.actionButton, toast2 == null ? void 0 : (_toast_classNames8 = toast2.classNames) == null ? void 0 : _toast_classNames8.actionButton)
-  }, toast2.action.label) : null);
-};
-function getDocumentDirection() {
-  if (typeof window === "undefined") return "ltr";
-  if (typeof document === "undefined") return "ltr";
-  const dirAttribute = document.documentElement.getAttribute("dir");
-  if (dirAttribute === "auto" || !dirAttribute) {
-    return window.getComputedStyle(document.documentElement).direction;
-  }
-  return dirAttribute;
-}
-function assignOffset(defaultOffset, mobileOffset) {
-  const styles = {};
-  [
-    defaultOffset,
-    mobileOffset
-  ].forEach((offset2, index2) => {
-    const isMobile = index2 === 1;
-    const prefix = isMobile ? "--mobile-offset" : "--offset";
-    const defaultValue = isMobile ? MOBILE_VIEWPORT_OFFSET : VIEWPORT_OFFSET;
-    function assignAll(offset3) {
-      [
-        "top",
-        "right",
-        "bottom",
-        "left"
-      ].forEach((key) => {
-        styles[`${prefix}-${key}`] = typeof offset3 === "number" ? `${offset3}px` : offset3;
-      });
-    }
-    if (typeof offset2 === "number" || typeof offset2 === "string") {
-      assignAll(offset2);
-    } else if (typeof offset2 === "object") {
-      [
-        "top",
-        "right",
-        "bottom",
-        "left"
-      ].forEach((key) => {
-        if (offset2[key] === void 0) {
-          styles[`${prefix}-${key}`] = defaultValue;
-        } else {
-          styles[`${prefix}-${key}`] = typeof offset2[key] === "number" ? `${offset2[key]}px` : offset2[key];
-        }
-      });
-    } else {
-      assignAll(defaultValue);
-    }
-  });
-  return styles;
-}
-const Toaster = /* @__PURE__ */ React$3.forwardRef(function Toaster2(props, ref) {
-  const { id: id2, invert, position = "bottom-right", hotkey = [
-    "altKey",
-    "KeyT"
-  ], expand, closeButton, className, offset: offset2, mobileOffset, theme = "light", richColors, duration, style, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, containerAriaLabel = "Notifications" } = props;
-  const [toasts, setToasts] = React$3.useState([]);
-  const filteredToasts = React$3.useMemo(() => {
-    if (id2) {
-      return toasts.filter((toast2) => toast2.toasterId === id2);
-    }
-    return toasts.filter((toast2) => !toast2.toasterId);
-  }, [
-    toasts,
-    id2
-  ]);
-  const possiblePositions = React$3.useMemo(() => {
-    return Array.from(new Set([
-      position
-    ].concat(filteredToasts.filter((toast2) => toast2.position).map((toast2) => toast2.position))));
-  }, [
-    filteredToasts,
-    position
-  ]);
-  const [heights, setHeights] = React$3.useState([]);
-  const [expanded, setExpanded] = React$3.useState(false);
-  const [interacting, setInteracting] = React$3.useState(false);
-  const [actualTheme, setActualTheme] = React$3.useState(theme !== "system" ? theme : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
-  const listRef = React$3.useRef(null);
-  const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
-  const lastFocusedElementRef = React$3.useRef(null);
-  const isFocusWithinRef = React$3.useRef(false);
-  const removeToast = React$3.useCallback((toastToRemove) => {
-    setToasts((toasts2) => {
-      var _toasts_find;
-      if (!((_toasts_find = toasts2.find((toast2) => toast2.id === toastToRemove.id)) == null ? void 0 : _toasts_find.delete)) {
-        ToastState.dismiss(toastToRemove.id);
-      }
-      return toasts2.filter(({ id: id3 }) => id3 !== toastToRemove.id);
-    });
-  }, []);
-  React$3.useEffect(() => {
-    return ToastState.subscribe((toast2) => {
-      if (toast2.dismiss) {
-        requestAnimationFrame(() => {
-          setToasts((toasts2) => toasts2.map((t2) => t2.id === toast2.id ? {
-            ...t2,
-            delete: true
-          } : t2));
-        });
-        return;
-      }
-      setTimeout(() => {
-        ReactDOM.flushSync(() => {
-          setToasts((toasts2) => {
-            const indexOfExistingToast = toasts2.findIndex((t2) => t2.id === toast2.id);
-            if (indexOfExistingToast !== -1) {
-              return [
-                ...toasts2.slice(0, indexOfExistingToast),
-                {
-                  ...toasts2[indexOfExistingToast],
-                  ...toast2
-                },
-                ...toasts2.slice(indexOfExistingToast + 1)
-              ];
-            }
-            return [
-              toast2,
-              ...toasts2
-            ];
-          });
-        });
-      });
-    });
-  }, [
-    toasts
-  ]);
-  React$3.useEffect(() => {
-    if (theme !== "system") {
-      setActualTheme(theme);
-      return;
-    }
-    if (theme === "system") {
-      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        setActualTheme("dark");
-      } else {
-        setActualTheme("light");
-      }
-    }
-    if (typeof window === "undefined") return;
-    const darkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    try {
-      darkMediaQuery.addEventListener("change", ({ matches }) => {
-        if (matches) {
-          setActualTheme("dark");
-        } else {
-          setActualTheme("light");
-        }
-      });
-    } catch (error) {
-      darkMediaQuery.addListener(({ matches }) => {
-        try {
-          if (matches) {
-            setActualTheme("dark");
-          } else {
-            setActualTheme("light");
-          }
-        } catch (e2) {
-          console.error(e2);
-        }
-      });
-    }
-  }, [
-    theme
-  ]);
-  React$3.useEffect(() => {
-    if (toasts.length <= 1) {
-      setExpanded(false);
-    }
-  }, [
-    toasts
-  ]);
-  React$3.useEffect(() => {
-    const handleKeyDown = (event) => {
-      var _listRef_current;
-      const isHotkeyPressed = hotkey.every((key) => event[key] || event.code === key);
-      if (isHotkeyPressed) {
-        var _listRef_current1;
-        setExpanded(true);
-        (_listRef_current1 = listRef.current) == null ? void 0 : _listRef_current1.focus();
-      }
-      if (event.code === "Escape" && (document.activeElement === listRef.current || ((_listRef_current = listRef.current) == null ? void 0 : _listRef_current.contains(document.activeElement)))) {
-        setExpanded(false);
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [
-    hotkey
-  ]);
-  React$3.useEffect(() => {
-    if (listRef.current) {
-      return () => {
-        if (lastFocusedElementRef.current) {
-          lastFocusedElementRef.current.focus({
-            preventScroll: true
-          });
-          lastFocusedElementRef.current = null;
-          isFocusWithinRef.current = false;
-        }
-      };
-    }
-  }, [
-    listRef.current
-  ]);
-  return (
-    // Remove item from normal navigation flow, only available via hotkey
-    /* @__PURE__ */ React$3.createElement("section", {
-      ref,
-      "aria-label": `${containerAriaLabel} ${hotkeyLabel}`,
-      tabIndex: -1,
-      "aria-live": "polite",
-      "aria-relevant": "additions text",
-      "aria-atomic": "false",
-      suppressHydrationWarning: true
-    }, possiblePositions.map((position2, index2) => {
-      var _heights_;
-      const [y2, x2] = position2.split("-");
-      if (!filteredToasts.length) return null;
-      return /* @__PURE__ */ React$3.createElement("ol", {
-        key: position2,
-        dir: dir === "auto" ? getDocumentDirection() : dir,
-        tabIndex: -1,
-        ref: listRef,
-        className,
-        "data-sonner-toaster": true,
-        "data-sonner-theme": actualTheme,
-        "data-y-position": y2,
-        "data-x-position": x2,
-        style: {
-          "--front-toast-height": `${((_heights_ = heights[0]) == null ? void 0 : _heights_.height) || 0}px`,
-          "--width": `${TOAST_WIDTH}px`,
-          "--gap": `${gap}px`,
-          ...style,
-          ...assignOffset(offset2, mobileOffset)
-        },
-        onBlur: (event) => {
-          if (isFocusWithinRef.current && !event.currentTarget.contains(event.relatedTarget)) {
-            isFocusWithinRef.current = false;
-            if (lastFocusedElementRef.current) {
-              lastFocusedElementRef.current.focus({
-                preventScroll: true
-              });
-              lastFocusedElementRef.current = null;
-            }
-          }
-        },
-        onFocus: (event) => {
-          const isNotDismissible = event.target instanceof HTMLElement && event.target.dataset.dismissible === "false";
-          if (isNotDismissible) return;
-          if (!isFocusWithinRef.current) {
-            isFocusWithinRef.current = true;
-            lastFocusedElementRef.current = event.relatedTarget;
-          }
-        },
-        onMouseEnter: () => setExpanded(true),
-        onMouseMove: () => setExpanded(true),
-        onMouseLeave: () => {
-          if (!interacting) {
-            setExpanded(false);
-          }
-        },
-        onDragEnd: () => setExpanded(false),
-        onPointerDown: (event) => {
-          const isNotDismissible = event.target instanceof HTMLElement && event.target.dataset.dismissible === "false";
-          if (isNotDismissible) return;
-          setInteracting(true);
-        },
-        onPointerUp: () => setInteracting(false)
-      }, filteredToasts.filter((toast2) => !toast2.position && index2 === 0 || toast2.position === position2).map((toast2, index3) => {
-        var _toastOptions_duration, _toastOptions_closeButton;
-        return /* @__PURE__ */ React$3.createElement(Toast, {
-          key: toast2.id,
-          icons,
-          index: index3,
-          toast: toast2,
-          defaultRichColors: richColors,
-          duration: (_toastOptions_duration = toastOptions == null ? void 0 : toastOptions.duration) != null ? _toastOptions_duration : duration,
-          className: toastOptions == null ? void 0 : toastOptions.className,
-          descriptionClassName: toastOptions == null ? void 0 : toastOptions.descriptionClassName,
-          invert,
-          visibleToasts,
-          closeButton: (_toastOptions_closeButton = toastOptions == null ? void 0 : toastOptions.closeButton) != null ? _toastOptions_closeButton : closeButton,
-          interacting,
-          position: position2,
-          style: toastOptions == null ? void 0 : toastOptions.style,
-          unstyled: toastOptions == null ? void 0 : toastOptions.unstyled,
-          classNames: toastOptions == null ? void 0 : toastOptions.classNames,
-          cancelButtonStyle: toastOptions == null ? void 0 : toastOptions.cancelButtonStyle,
-          actionButtonStyle: toastOptions == null ? void 0 : toastOptions.actionButtonStyle,
-          closeButtonAriaLabel: toastOptions == null ? void 0 : toastOptions.closeButtonAriaLabel,
-          removeToast,
-          toasts: filteredToasts.filter((t2) => t2.position == toast2.position),
-          heights: heights.filter((h2) => h2.position == toast2.position),
-          setHeights,
-          expandByDefault: expand,
-          gap,
-          expanded,
-          swipeDirections: props.swipeDirections
-        });
-      }));
-    }))
-  );
-});
 const __vite_import_meta_env__$1 = {};
 const createStoreImpl = (createState) => {
   let state;
@@ -18569,7 +17489,24 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$i = [
+const __iconNode$n = [
+  ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
+  [
+    "path",
+    {
+      d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+      key: "11g9vi"
+    }
+  ]
+];
+const Bell = createLucideIcon("bell", __iconNode$n);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$m = [
   ["path", { d: "M12 7v14", key: "1akyts" }],
   [
     "path",
@@ -18579,14 +17516,14 @@ const __iconNode$i = [
     }
   ]
 ];
-const BookOpen = createLucideIcon("book-open", __iconNode$i);
+const BookOpen = createLucideIcon("book-open", __iconNode$m);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$h = [
+const __iconNode$l = [
   ["path", { d: "M10 12h4", key: "a56b0p" }],
   ["path", { d: "M10 8h4", key: "1sr2af" }],
   ["path", { d: "M14 21v-3a2 2 0 0 0-4 0v3", key: "1rgiei" }],
@@ -18599,7 +17536,47 @@ const __iconNode$h = [
   ],
   ["path", { d: "M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16", key: "16ra0t" }]
 ];
-const Building2 = createLucideIcon("building-2", __iconNode$h);
+const Building2 = createLucideIcon("building-2", __iconNode$l);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$k = [
+  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
+  ["path", { d: "M18 17V9", key: "2bz60n" }],
+  ["path", { d: "M13 17V5", key: "1frdt8" }],
+  ["path", { d: "M8 17v-3", key: "17ska0" }]
+];
+const ChartColumn = createLucideIcon("chart-column", __iconNode$k);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$j = [
+  ["path", { d: "M18 6 7 17l-5-5", key: "116fxf" }],
+  ["path", { d: "m22 10-7.5 7.5L13 16", key: "ke71qq" }]
+];
+const CheckCheck = createLucideIcon("check-check", __iconNode$j);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$i = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$i);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$h = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$h);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -18607,28 +17584,33 @@ const Building2 = createLucideIcon("building-2", __iconNode$h);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$g = [
-  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
-  ["path", { d: "M18 17V9", key: "2bz60n" }],
-  ["path", { d: "M13 17V5", key: "1frdt8" }],
-  ["path", { d: "M8 17v-3", key: "17ska0" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$g);
+const CircleCheck = createLucideIcon("circle-check", __iconNode$g);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$f = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$f);
+const __iconNode$f = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+];
+const CircleX = createLucideIcon("circle-x", __iconNode$f);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$e = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$e);
+const __iconNode$e = [
+  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
+  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
+];
+const CreditCard = createLucideIcon("credit-card", __iconNode$e);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -18636,17 +17618,6 @@ const ChevronRight = createLucideIcon("chevron-right", __iconNode$e);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$d = [
-  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
-  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
-];
-const CreditCard = createLucideIcon("credit-card", __iconNode$d);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$c = [
   [
     "path",
     {
@@ -18659,7 +17630,19 @@ const __iconNode$c = [
   ["path", { d: "M16 13H8", key: "t4e002" }],
   ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileText = createLucideIcon("file-text", __iconNode$c);
+const FileText = createLucideIcon("file-text", __iconNode$d);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$c = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
+];
+const Info = createLucideIcon("info", __iconNode$c);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -18826,6 +17809,142 @@ const __iconNode = [
   ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ];
 const X$1 = createLucideIcon("x", __iconNode);
+const useNotificationsStore = create((set, get) => ({
+  notifications: [],
+  unreadCount: 0,
+  isLoading: false,
+  error: null,
+  loadNotifications: async () => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) throw new Error("API not available");
+      const notifications = await window.api.notifications.getAll();
+      const unreadCount = await window.api.notifications.getUnreadCount();
+      set({
+        notifications: notifications.map((n2) => ({
+          ...n2,
+          createdAt: new Date(n2.createdAt)
+        })),
+        unreadCount,
+        isLoading: false
+      });
+    } catch (error) {
+      set({
+        error: error.message,
+        isLoading: false
+      });
+    }
+  },
+  loadUnreadCount: async () => {
+    try {
+      if (!window.api) return;
+      const unreadCount = await window.api.notifications.getUnreadCount();
+      set({
+        unreadCount
+      });
+    } catch (error) {
+      console.error("Failed to load unread count:", error);
+    }
+  },
+  markAsRead: async (id2) => {
+    try {
+      if (!window.api) throw new Error("API not available");
+      await window.api.notifications.markAsRead(id2);
+      set((state) => ({
+        notifications: state.notifications.map((n2) => n2.id === id2 ? {
+          ...n2,
+          isRead: true
+        } : n2),
+        unreadCount: Math.max(0, state.unreadCount - 1)
+      }));
+    } catch (error) {
+      set({
+        error: error.message
+      });
+    }
+  },
+  markAllAsRead: async () => {
+    try {
+      if (!window.api) throw new Error("API not available");
+      await window.api.notifications.markAllAsRead();
+      set((state) => ({
+        notifications: state.notifications.map((n2) => ({
+          ...n2,
+          isRead: true
+        })),
+        unreadCount: 0
+      }));
+    } catch (error) {
+      set({
+        error: error.message
+      });
+    }
+  },
+  deleteNotification: async (id2) => {
+    try {
+      if (!window.api) throw new Error("API not available");
+      await window.api.notifications.delete(id2);
+      const notification = get().notifications.find((n2) => n2.id === id2);
+      set((state) => ({
+        notifications: state.notifications.filter((n2) => n2.id !== id2),
+        unreadCount: notification && !notification.isRead ? Math.max(0, state.unreadCount - 1) : state.unreadCount
+      }));
+    } catch (error) {
+      set({
+        error: error.message
+      });
+    }
+  },
+  deleteAll: async () => {
+    try {
+      if (!window.api) throw new Error("API not available");
+      await window.api.notifications.deleteAll();
+      set({
+        notifications: [],
+        unreadCount: 0
+      });
+    } catch (error) {
+      set({
+        error: error.message
+      });
+    }
+  }
+}));
+const formatDateTime = (date) => {
+  if (!date) return "-";
+  try {
+    return new Date(date).toLocaleString("de-DE", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
+  } catch {
+    return "-";
+  }
+};
+const formatDate = (date) => {
+  if (!date) return "-";
+  try {
+    return new Date(date).toLocaleDateString("de-DE", {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+  } catch {
+    return "-";
+  }
+};
+const formatDuration = (durationMs) => {
+  if (!durationMs && durationMs !== 0) return "-";
+  if (durationMs < 1e3) return `${durationMs}ms`;
+  return `${(durationMs / 1e3).toFixed(1)}s`;
+};
 function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
   return function handleEvent(event) {
     originalEventHandler?.(event);
@@ -18941,13 +18060,79 @@ function composeContextScopes(...scopes) {
   createScope.scopeName = baseScope.scopeName;
   return createScope;
 }
+var useLayoutEffect2 = globalThis?.document ? reactExports.useLayoutEffect : () => {
+};
+var useInsertionEffect = React$4[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
+function useControllableState({
+  prop,
+  defaultProp,
+  onChange = () => {
+  },
+  caller
+}) {
+  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
+    defaultProp,
+    onChange
+  });
+  const isControlled = prop !== void 0;
+  const value = isControlled ? prop : uncontrolledProp;
+  {
+    const isControlledRef = reactExports.useRef(prop !== void 0);
+    reactExports.useEffect(() => {
+      const wasControlled = isControlledRef.current;
+      if (wasControlled !== isControlled) {
+        const from = wasControlled ? "controlled" : "uncontrolled";
+        const to = isControlled ? "controlled" : "uncontrolled";
+        console.warn(
+          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
+        );
+      }
+      isControlledRef.current = isControlled;
+    }, [isControlled, caller]);
+  }
+  const setValue = reactExports.useCallback(
+    (nextValue) => {
+      if (isControlled) {
+        const value2 = isFunction$1(nextValue) ? nextValue(prop) : nextValue;
+        if (value2 !== prop) {
+          onChangeRef.current?.(value2);
+        }
+      } else {
+        setUncontrolledProp(nextValue);
+      }
+    },
+    [isControlled, prop, setUncontrolledProp, onChangeRef]
+  );
+  return [value, setValue];
+}
+function useUncontrolledState({
+  defaultProp,
+  onChange
+}) {
+  const [value, setValue] = reactExports.useState(defaultProp);
+  const prevValueRef = reactExports.useRef(value);
+  const onChangeRef = reactExports.useRef(onChange);
+  useInsertionEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+  reactExports.useEffect(() => {
+    if (prevValueRef.current !== value) {
+      onChangeRef.current?.(value);
+      prevValueRef.current = value;
+    }
+  }, [value, prevValueRef]);
+  return [value, setValue, onChangeRef];
+}
+function isFunction$1(value) {
+  return typeof value === "function";
+}
 // @__NO_SIDE_EFFECTS__
-function createSlot$2(ownerName) {
-  const SlotClone = /* @__PURE__ */ createSlotClone$2(ownerName);
+function createSlot$4(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$4(ownerName);
   const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     const childrenArray = reactExports.Children.toArray(children);
-    const slottable = childrenArray.find(isSlottable$2);
+    const slottable = childrenArray.find(isSlottable$4);
     if (slottable) {
       const newElement = slottable.props.children;
       const newChildren = childrenArray.map((child) => {
@@ -18966,12 +18151,12 @@ function createSlot$2(ownerName) {
   return Slot2;
 }
 // @__NO_SIDE_EFFECTS__
-function createSlotClone$2(ownerName) {
+function createSlotClone$4(ownerName) {
   const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
     const { children, ...slotProps } = props;
     if (reactExports.isValidElement(children)) {
-      const childrenRef = getElementRef$3(children);
-      const props2 = mergeProps$2(slotProps, children.props);
+      const childrenRef = getElementRef$5(children);
+      const props2 = mergeProps$4(slotProps, children.props);
       if (children.type !== reactExports.Fragment) {
         props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
       }
@@ -18982,11 +18167,11 @@ function createSlotClone$2(ownerName) {
   SlotClone.displayName = `${ownerName}.SlotClone`;
   return SlotClone;
 }
-var SLOTTABLE_IDENTIFIER$3 = Symbol("radix.slottable");
-function isSlottable$2(child) {
-  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$3;
+var SLOTTABLE_IDENTIFIER$5 = Symbol("radix.slottable");
+function isSlottable$4(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$5;
 }
-function mergeProps$2(slotProps, childProps) {
+function mergeProps$4(slotProps, childProps) {
   const overrideProps = { ...childProps };
   for (const propName in childProps) {
     const slotPropValue = slotProps[propName];
@@ -19010,7 +18195,7 @@ function mergeProps$2(slotProps, childProps) {
   }
   return { ...slotProps, ...overrideProps };
 }
-function getElementRef$3(element) {
+function getElementRef$5(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
@@ -19043,7 +18228,7 @@ var NODES$1 = [
   "ul"
 ];
 var Primitive$1 = NODES$1.reduce((primitive, node) => {
-  const Slot2 = /* @__PURE__ */ createSlot$2(`Primitive.${node}`);
+  const Slot2 = /* @__PURE__ */ createSlot$4(`Primitive.${node}`);
   const Node2 = reactExports.forwardRef((props, forwardedRef) => {
     const { asChild, ...primitiveProps } = props;
     const Comp = asChild ? Slot2 : node;
@@ -19057,6 +18242,155 @@ var Primitive$1 = NODES$1.reduce((primitive, node) => {
 }, {});
 function dispatchDiscreteCustomEvent(target, event) {
   if (target) reactDomExports.flushSync(() => target.dispatchEvent(event));
+}
+// @__NO_SIDE_EFFECTS__
+function createSlot$3(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$3(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable$3);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+// @__NO_SIDE_EFFECTS__
+function createSlotClone$3(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$4(children);
+      const props2 = mergeProps$3(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER$4 = Symbol("radix.slottable");
+function isSlottable$3(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$4;
+}
+function mergeProps$3(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
+function getElementRef$4(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+function createCollection(name) {
+  const PROVIDER_NAME2 = name + "CollectionProvider";
+  const [createCollectionContext, createCollectionScope2] = createContextScope(PROVIDER_NAME2);
+  const [CollectionProviderImpl, useCollectionContext] = createCollectionContext(
+    PROVIDER_NAME2,
+    { collectionRef: { current: null }, itemMap: /* @__PURE__ */ new Map() }
+  );
+  const CollectionProvider = (props) => {
+    const { scope, children } = props;
+    const ref = React$3.useRef(null);
+    const itemMap = React$3.useRef(/* @__PURE__ */ new Map()).current;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
+  };
+  CollectionProvider.displayName = PROVIDER_NAME2;
+  const COLLECTION_SLOT_NAME = name + "CollectionSlot";
+  const CollectionSlotImpl = /* @__PURE__ */ createSlot$3(COLLECTION_SLOT_NAME);
+  const CollectionSlot = React$3.forwardRef(
+    (props, forwardedRef) => {
+      const { scope, children } = props;
+      const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
+      const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionSlotImpl, { ref: composedRefs, children });
+    }
+  );
+  CollectionSlot.displayName = COLLECTION_SLOT_NAME;
+  const ITEM_SLOT_NAME = name + "CollectionItemSlot";
+  const ITEM_DATA_ATTR = "data-radix-collection-item";
+  const CollectionItemSlotImpl = /* @__PURE__ */ createSlot$3(ITEM_SLOT_NAME);
+  const CollectionItemSlot = React$3.forwardRef(
+    (props, forwardedRef) => {
+      const { scope, children, ...itemData } = props;
+      const ref = React$3.useRef(null);
+      const composedRefs = useComposedRefs(forwardedRef, ref);
+      const context = useCollectionContext(ITEM_SLOT_NAME, scope);
+      React$3.useEffect(() => {
+        context.itemMap.set(ref, { ref, ...itemData });
+        return () => void context.itemMap.delete(ref);
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
+    }
+  );
+  CollectionItemSlot.displayName = ITEM_SLOT_NAME;
+  function useCollection2(scope) {
+    const context = useCollectionContext(name + "CollectionConsumer", scope);
+    const getItems = React$3.useCallback(() => {
+      const collectionNode = context.collectionRef.current;
+      if (!collectionNode) return [];
+      const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
+      const items = Array.from(context.itemMap.values());
+      const orderedItems = items.sort(
+        (a2, b2) => orderedNodes.indexOf(a2.ref.current) - orderedNodes.indexOf(b2.ref.current)
+      );
+      return orderedItems;
+    }, [context.collectionRef, context.itemMap]);
+    return getItems;
+  }
+  return [
+    { Provider: CollectionProvider, Slot: CollectionSlot, ItemSlot: CollectionItemSlot },
+    useCollection2,
+    createCollectionScope2
+  ];
+}
+var DirectionContext = reactExports.createContext(void 0);
+function useDirection(localDir) {
+  const globalDir = reactExports.useContext(DirectionContext);
+  return localDir || globalDir || "ltr";
 }
 function useCallbackRef$1(callback) {
   const callbackRef = reactExports.useRef(callback);
@@ -19278,14 +18612,236 @@ function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
     target.dispatchEvent(event);
   }
 }
-var useLayoutEffect2 = globalThis?.document ? reactExports.useLayoutEffect : () => {
-};
-var useReactId = React$4[" useId ".trim().toString()] || (() => void 0);
 var count$1 = 0;
+function useFocusGuards() {
+  reactExports.useEffect(() => {
+    const edgeGuards = document.querySelectorAll("[data-radix-focus-guard]");
+    document.body.insertAdjacentElement("afterbegin", edgeGuards[0] ?? createFocusGuard());
+    document.body.insertAdjacentElement("beforeend", edgeGuards[1] ?? createFocusGuard());
+    count$1++;
+    return () => {
+      if (count$1 === 1) {
+        document.querySelectorAll("[data-radix-focus-guard]").forEach((node) => node.remove());
+      }
+      count$1--;
+    };
+  }, []);
+}
+function createFocusGuard() {
+  const element = document.createElement("span");
+  element.setAttribute("data-radix-focus-guard", "");
+  element.tabIndex = 0;
+  element.style.outline = "none";
+  element.style.opacity = "0";
+  element.style.position = "fixed";
+  element.style.pointerEvents = "none";
+  return element;
+}
+var AUTOFOCUS_ON_MOUNT = "focusScope.autoFocusOnMount";
+var AUTOFOCUS_ON_UNMOUNT = "focusScope.autoFocusOnUnmount";
+var EVENT_OPTIONS$1 = { bubbles: false, cancelable: true };
+var FOCUS_SCOPE_NAME = "FocusScope";
+var FocusScope = reactExports.forwardRef((props, forwardedRef) => {
+  const {
+    loop = false,
+    trapped = false,
+    onMountAutoFocus: onMountAutoFocusProp,
+    onUnmountAutoFocus: onUnmountAutoFocusProp,
+    ...scopeProps
+  } = props;
+  const [container, setContainer] = reactExports.useState(null);
+  const onMountAutoFocus = useCallbackRef$1(onMountAutoFocusProp);
+  const onUnmountAutoFocus = useCallbackRef$1(onUnmountAutoFocusProp);
+  const lastFocusedElementRef = reactExports.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, (node) => setContainer(node));
+  const focusScope = reactExports.useRef({
+    paused: false,
+    pause() {
+      this.paused = true;
+    },
+    resume() {
+      this.paused = false;
+    }
+  }).current;
+  reactExports.useEffect(() => {
+    if (trapped) {
+      let handleFocusIn2 = function(event) {
+        if (focusScope.paused || !container) return;
+        const target = event.target;
+        if (container.contains(target)) {
+          lastFocusedElementRef.current = target;
+        } else {
+          focus(lastFocusedElementRef.current, { select: true });
+        }
+      }, handleFocusOut2 = function(event) {
+        if (focusScope.paused || !container) return;
+        const relatedTarget = event.relatedTarget;
+        if (relatedTarget === null) return;
+        if (!container.contains(relatedTarget)) {
+          focus(lastFocusedElementRef.current, { select: true });
+        }
+      }, handleMutations2 = function(mutations) {
+        const focusedElement = document.activeElement;
+        if (focusedElement !== document.body) return;
+        for (const mutation of mutations) {
+          if (mutation.removedNodes.length > 0) focus(container);
+        }
+      };
+      document.addEventListener("focusin", handleFocusIn2);
+      document.addEventListener("focusout", handleFocusOut2);
+      const mutationObserver = new MutationObserver(handleMutations2);
+      if (container) mutationObserver.observe(container, { childList: true, subtree: true });
+      return () => {
+        document.removeEventListener("focusin", handleFocusIn2);
+        document.removeEventListener("focusout", handleFocusOut2);
+        mutationObserver.disconnect();
+      };
+    }
+  }, [trapped, container, focusScope.paused]);
+  reactExports.useEffect(() => {
+    if (container) {
+      focusScopesStack.add(focusScope);
+      const previouslyFocusedElement = document.activeElement;
+      const hasFocusedCandidate = container.contains(previouslyFocusedElement);
+      if (!hasFocusedCandidate) {
+        const mountEvent = new CustomEvent(AUTOFOCUS_ON_MOUNT, EVENT_OPTIONS$1);
+        container.addEventListener(AUTOFOCUS_ON_MOUNT, onMountAutoFocus);
+        container.dispatchEvent(mountEvent);
+        if (!mountEvent.defaultPrevented) {
+          focusFirst$2(removeLinks(getTabbableCandidates(container)), { select: true });
+          if (document.activeElement === previouslyFocusedElement) {
+            focus(container);
+          }
+        }
+      }
+      return () => {
+        container.removeEventListener(AUTOFOCUS_ON_MOUNT, onMountAutoFocus);
+        setTimeout(() => {
+          const unmountEvent = new CustomEvent(AUTOFOCUS_ON_UNMOUNT, EVENT_OPTIONS$1);
+          container.addEventListener(AUTOFOCUS_ON_UNMOUNT, onUnmountAutoFocus);
+          container.dispatchEvent(unmountEvent);
+          if (!unmountEvent.defaultPrevented) {
+            focus(previouslyFocusedElement ?? document.body, { select: true });
+          }
+          container.removeEventListener(AUTOFOCUS_ON_UNMOUNT, onUnmountAutoFocus);
+          focusScopesStack.remove(focusScope);
+        }, 0);
+      };
+    }
+  }, [container, onMountAutoFocus, onUnmountAutoFocus, focusScope]);
+  const handleKeyDown = reactExports.useCallback(
+    (event) => {
+      if (!loop && !trapped) return;
+      if (focusScope.paused) return;
+      const isTabKey = event.key === "Tab" && !event.altKey && !event.ctrlKey && !event.metaKey;
+      const focusedElement = document.activeElement;
+      if (isTabKey && focusedElement) {
+        const container2 = event.currentTarget;
+        const [first, last] = getTabbableEdges(container2);
+        const hasTabbableElementsInside = first && last;
+        if (!hasTabbableElementsInside) {
+          if (focusedElement === container2) event.preventDefault();
+        } else {
+          if (!event.shiftKey && focusedElement === last) {
+            event.preventDefault();
+            if (loop) focus(first, { select: true });
+          } else if (event.shiftKey && focusedElement === first) {
+            event.preventDefault();
+            if (loop) focus(last, { select: true });
+          }
+        }
+      }
+    },
+    [loop, trapped, focusScope.paused]
+  );
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$1.div, { tabIndex: -1, ...scopeProps, ref: composedRefs, onKeyDown: handleKeyDown });
+});
+FocusScope.displayName = FOCUS_SCOPE_NAME;
+function focusFirst$2(candidates, { select = false } = {}) {
+  const previouslyFocusedElement = document.activeElement;
+  for (const candidate of candidates) {
+    focus(candidate, { select });
+    if (document.activeElement !== previouslyFocusedElement) return;
+  }
+}
+function getTabbableEdges(container) {
+  const candidates = getTabbableCandidates(container);
+  const first = findVisible(candidates, container);
+  const last = findVisible(candidates.reverse(), container);
+  return [first, last];
+}
+function getTabbableCandidates(container) {
+  const nodes = [];
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, {
+    acceptNode: (node) => {
+      const isHiddenInput = node.tagName === "INPUT" && node.type === "hidden";
+      if (node.disabled || node.hidden || isHiddenInput) return NodeFilter.FILTER_SKIP;
+      return node.tabIndex >= 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+    }
+  });
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  return nodes;
+}
+function findVisible(elements, container) {
+  for (const element of elements) {
+    if (!isHidden(element, { upTo: container })) return element;
+  }
+}
+function isHidden(node, { upTo }) {
+  if (getComputedStyle(node).visibility === "hidden") return true;
+  while (node) {
+    if (upTo !== void 0 && node === upTo) return false;
+    if (getComputedStyle(node).display === "none") return true;
+    node = node.parentElement;
+  }
+  return false;
+}
+function isSelectableInput(element) {
+  return element instanceof HTMLInputElement && "select" in element;
+}
+function focus(element, { select = false } = {}) {
+  if (element && element.focus) {
+    const previouslyFocusedElement = document.activeElement;
+    element.focus({ preventScroll: true });
+    if (element !== previouslyFocusedElement && isSelectableInput(element) && select)
+      element.select();
+  }
+}
+var focusScopesStack = createFocusScopesStack();
+function createFocusScopesStack() {
+  let stack = [];
+  return {
+    add(focusScope) {
+      const activeFocusScope = stack[0];
+      if (focusScope !== activeFocusScope) {
+        activeFocusScope?.pause();
+      }
+      stack = arrayRemove(stack, focusScope);
+      stack.unshift(focusScope);
+    },
+    remove(focusScope) {
+      stack = arrayRemove(stack, focusScope);
+      stack[0]?.resume();
+    }
+  };
+}
+function arrayRemove(array, item) {
+  const updatedArray = [...array];
+  const index2 = updatedArray.indexOf(item);
+  if (index2 !== -1) {
+    updatedArray.splice(index2, 1);
+  }
+  return updatedArray;
+}
+function removeLinks(items) {
+  return items.filter((item) => item.tagName !== "A");
+}
+var useReactId = React$4[" useId ".trim().toString()] || (() => void 0);
+var count = 0;
 function useId(deterministicId) {
   const [id2, setId] = reactExports.useState(useReactId());
   useLayoutEffect2(() => {
-    setId((reactId) => reactId ?? String(count$1++));
+    setId((reactId) => reactId ?? String(count++));
   }, [deterministicId]);
   return deterministicId || (id2 ? `radix-${id2}` : "");
 }
@@ -21183,7 +20739,7 @@ var Arrow$1 = reactExports.forwardRef((props, forwardedRef) => {
   );
 });
 Arrow$1.displayName = NAME$2;
-var Root$3 = Arrow$1;
+var Root$4 = Arrow$1;
 function useSize(element) {
   const [size2, setSize] = reactExports.useState(void 0);
   useLayoutEffect2(() => {
@@ -21227,11 +20783,11 @@ var Popper = (props) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
 };
 Popper.displayName = POPPER_NAME;
-var ANCHOR_NAME = "PopperAnchor";
+var ANCHOR_NAME$1 = "PopperAnchor";
 var PopperAnchor = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopePopper, virtualRef, ...anchorProps } = props;
-    const context = usePopperContext(ANCHOR_NAME, __scopePopper);
+    const context = usePopperContext(ANCHOR_NAME$1, __scopePopper);
     const ref = reactExports.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref);
     const anchorRef = reactExports.useRef(null);
@@ -21245,9 +20801,9 @@ var PopperAnchor = reactExports.forwardRef(
     return virtualRef ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$1.div, { ...anchorProps, ref: composedRefs });
   }
 );
-PopperAnchor.displayName = ANCHOR_NAME;
-var CONTENT_NAME$2 = "PopperContent";
-var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$2);
+PopperAnchor.displayName = ANCHOR_NAME$1;
+var CONTENT_NAME$4 = "PopperContent";
+var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$4);
 var PopperContent = reactExports.forwardRef(
   (props, forwardedRef) => {
     const {
@@ -21266,7 +20822,7 @@ var PopperContent = reactExports.forwardRef(
       onPlaced,
       ...contentProps
     } = props;
-    const context = usePopperContext(CONTENT_NAME$2, __scopePopper);
+    const context = usePopperContext(CONTENT_NAME$4, __scopePopper);
     const [content, setContent] = reactExports.useState(null);
     const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
     const [arrow$12, setArrow] = reactExports.useState(null);
@@ -21389,8 +20945,8 @@ var PopperContent = reactExports.forwardRef(
     );
   }
 );
-PopperContent.displayName = CONTENT_NAME$2;
-var ARROW_NAME$1 = "PopperArrow";
+PopperContent.displayName = CONTENT_NAME$4;
+var ARROW_NAME$3 = "PopperArrow";
 var OPPOSITE_SIDE = {
   top: "bottom",
   right: "left",
@@ -21399,7 +20955,7 @@ var OPPOSITE_SIDE = {
 };
 var PopperArrow = reactExports.forwardRef(function PopperArrow2(props, forwardedRef) {
   const { __scopePopper, ...arrowProps } = props;
-  const contentContext = useContentContext(ARROW_NAME$1, __scopePopper);
+  const contentContext = useContentContext(ARROW_NAME$3, __scopePopper);
   const baseSide = OPPOSITE_SIDE[contentContext.placedSide];
   return (
     // we have to use an extra wrapper because `ResizeObserver` (used by `useSize`)
@@ -21429,7 +20985,7 @@ var PopperArrow = reactExports.forwardRef(function PopperArrow2(props, forwarded
           visibility: contentContext.shouldHideArrow ? "hidden" : void 0
         },
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Root$3,
+          Root$4,
           {
             ...arrowProps,
             ref: forwardedRef,
@@ -21444,7 +21000,7 @@ var PopperArrow = reactExports.forwardRef(function PopperArrow2(props, forwarded
     )
   );
 });
-PopperArrow.displayName = ARROW_NAME$1;
+PopperArrow.displayName = ARROW_NAME$3;
 function isNotNull(value) {
   return value !== null;
 }
@@ -21483,19 +21039,19 @@ function getSideAndAlignFromPlacement(placement) {
   const [side, align = "center"] = placement.split("-");
   return [side, align];
 }
-var Root2 = Popper;
+var Root2$1 = Popper;
 var Anchor = PopperAnchor;
 var Content$1 = PopperContent;
 var Arrow = PopperArrow;
-var PORTAL_NAME$2 = "Portal";
-var Portal$2 = reactExports.forwardRef((props, forwardedRef) => {
+var PORTAL_NAME$4 = "Portal";
+var Portal$3 = reactExports.forwardRef((props, forwardedRef) => {
   const { container: containerProp, ...portalProps } = props;
   const [mounted, setMounted] = reactExports.useState(false);
   useLayoutEffect2(() => setMounted(true), []);
   const container = containerProp || mounted && globalThis?.document?.body;
   return container ? ReactDOM.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$1.div, { ...portalProps, ref: forwardedRef }), container) : null;
 });
-Portal$2.displayName = PORTAL_NAME$2;
+Portal$3.displayName = PORTAL_NAME$4;
 function useStateMachine(initialState, machine) {
   return reactExports.useReducer((state, event) => {
     const nextState = machine[state][event];
@@ -21506,7 +21062,7 @@ var Presence = (props) => {
   const { present, children } = props;
   const presence = usePresence(present);
   const child = typeof children === "function" ? children({ present: presence.isPresent }) : reactExports.Children.only(children);
-  const ref = useComposedRefs(presence.ref, getElementRef$2(child));
+  const ref = useComposedRefs(presence.ref, getElementRef$3(child));
   const forceMount = typeof children === "function";
   return forceMount || presence.isPresent ? reactExports.cloneElement(child, { ref }) : null;
 };
@@ -21605,6 +21161,297 @@ function usePresence(present) {
 function getAnimationName(styles) {
   return styles?.animationName || "none";
 }
+function getElementRef$3(element) {
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
+  let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.ref;
+  }
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
+  mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
+  if (mayWarn) {
+    return element.props.ref;
+  }
+  return element.props.ref || element.ref;
+}
+var ENTRY_FOCUS = "rovingFocusGroup.onEntryFocus";
+var EVENT_OPTIONS = { bubbles: false, cancelable: true };
+var GROUP_NAME$2 = "RovingFocusGroup";
+var [Collection$1, useCollection$1, createCollectionScope$1] = createCollection(GROUP_NAME$2);
+var [createRovingFocusGroupContext, createRovingFocusGroupScope] = createContextScope(
+  GROUP_NAME$2,
+  [createCollectionScope$1]
+);
+var [RovingFocusProvider, useRovingFocusContext] = createRovingFocusGroupContext(GROUP_NAME$2);
+var RovingFocusGroup = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Collection$1.Provider, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection$1.Slot, { scope: props.__scopeRovingFocusGroup, children: /* @__PURE__ */ jsxRuntimeExports.jsx(RovingFocusGroupImpl, { ...props, ref: forwardedRef }) }) });
+  }
+);
+RovingFocusGroup.displayName = GROUP_NAME$2;
+var RovingFocusGroupImpl = reactExports.forwardRef((props, forwardedRef) => {
+  const {
+    __scopeRovingFocusGroup,
+    orientation,
+    loop = false,
+    dir,
+    currentTabStopId: currentTabStopIdProp,
+    defaultCurrentTabStopId,
+    onCurrentTabStopIdChange,
+    onEntryFocus,
+    preventScrollOnEntryFocus = false,
+    ...groupProps
+  } = props;
+  const ref = reactExports.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  const direction = useDirection(dir);
+  const [currentTabStopId, setCurrentTabStopId] = useControllableState({
+    prop: currentTabStopIdProp,
+    defaultProp: defaultCurrentTabStopId ?? null,
+    onChange: onCurrentTabStopIdChange,
+    caller: GROUP_NAME$2
+  });
+  const [isTabbingBackOut, setIsTabbingBackOut] = reactExports.useState(false);
+  const handleEntryFocus = useCallbackRef$1(onEntryFocus);
+  const getItems = useCollection$1(__scopeRovingFocusGroup);
+  const isClickFocusRef = reactExports.useRef(false);
+  const [focusableItemsCount, setFocusableItemsCount] = reactExports.useState(0);
+  reactExports.useEffect(() => {
+    const node = ref.current;
+    if (node) {
+      node.addEventListener(ENTRY_FOCUS, handleEntryFocus);
+      return () => node.removeEventListener(ENTRY_FOCUS, handleEntryFocus);
+    }
+  }, [handleEntryFocus]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    RovingFocusProvider,
+    {
+      scope: __scopeRovingFocusGroup,
+      orientation,
+      dir: direction,
+      loop,
+      currentTabStopId,
+      onItemFocus: reactExports.useCallback(
+        (tabStopId) => setCurrentTabStopId(tabStopId),
+        [setCurrentTabStopId]
+      ),
+      onItemShiftTab: reactExports.useCallback(() => setIsTabbingBackOut(true), []),
+      onFocusableItemAdd: reactExports.useCallback(
+        () => setFocusableItemsCount((prevCount) => prevCount + 1),
+        []
+      ),
+      onFocusableItemRemove: reactExports.useCallback(
+        () => setFocusableItemsCount((prevCount) => prevCount - 1),
+        []
+      ),
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        Primitive$1.div,
+        {
+          tabIndex: isTabbingBackOut || focusableItemsCount === 0 ? -1 : 0,
+          "data-orientation": orientation,
+          ...groupProps,
+          ref: composedRefs,
+          style: { outline: "none", ...props.style },
+          onMouseDown: composeEventHandlers(props.onMouseDown, () => {
+            isClickFocusRef.current = true;
+          }),
+          onFocus: composeEventHandlers(props.onFocus, (event) => {
+            const isKeyboardFocus = !isClickFocusRef.current;
+            if (event.target === event.currentTarget && isKeyboardFocus && !isTabbingBackOut) {
+              const entryFocusEvent = new CustomEvent(ENTRY_FOCUS, EVENT_OPTIONS);
+              event.currentTarget.dispatchEvent(entryFocusEvent);
+              if (!entryFocusEvent.defaultPrevented) {
+                const items = getItems().filter((item) => item.focusable);
+                const activeItem = items.find((item) => item.active);
+                const currentItem = items.find((item) => item.id === currentTabStopId);
+                const candidateItems = [activeItem, currentItem, ...items].filter(
+                  Boolean
+                );
+                const candidateNodes = candidateItems.map((item) => item.ref.current);
+                focusFirst$1(candidateNodes, preventScrollOnEntryFocus);
+              }
+            }
+            isClickFocusRef.current = false;
+          }),
+          onBlur: composeEventHandlers(props.onBlur, () => setIsTabbingBackOut(false))
+        }
+      )
+    }
+  );
+});
+var ITEM_NAME$2 = "RovingFocusGroupItem";
+var RovingFocusGroupItem = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopeRovingFocusGroup,
+      focusable = true,
+      active = false,
+      tabStopId,
+      children,
+      ...itemProps
+    } = props;
+    const autoId = useId();
+    const id2 = tabStopId || autoId;
+    const context = useRovingFocusContext(ITEM_NAME$2, __scopeRovingFocusGroup);
+    const isCurrentTabStop = context.currentTabStopId === id2;
+    const getItems = useCollection$1(__scopeRovingFocusGroup);
+    const { onFocusableItemAdd, onFocusableItemRemove, currentTabStopId } = context;
+    reactExports.useEffect(() => {
+      if (focusable) {
+        onFocusableItemAdd();
+        return () => onFocusableItemRemove();
+      }
+    }, [focusable, onFocusableItemAdd, onFocusableItemRemove]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Collection$1.ItemSlot,
+      {
+        scope: __scopeRovingFocusGroup,
+        id: id2,
+        focusable,
+        active,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Primitive$1.span,
+          {
+            tabIndex: isCurrentTabStop ? 0 : -1,
+            "data-orientation": context.orientation,
+            ...itemProps,
+            ref: forwardedRef,
+            onMouseDown: composeEventHandlers(props.onMouseDown, (event) => {
+              if (!focusable) event.preventDefault();
+              else context.onItemFocus(id2);
+            }),
+            onFocus: composeEventHandlers(props.onFocus, () => context.onItemFocus(id2)),
+            onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
+              if (event.key === "Tab" && event.shiftKey) {
+                context.onItemShiftTab();
+                return;
+              }
+              if (event.target !== event.currentTarget) return;
+              const focusIntent = getFocusIntent(event, context.orientation, context.dir);
+              if (focusIntent !== void 0) {
+                if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+                event.preventDefault();
+                const items = getItems().filter((item) => item.focusable);
+                let candidateNodes = items.map((item) => item.ref.current);
+                if (focusIntent === "last") candidateNodes.reverse();
+                else if (focusIntent === "prev" || focusIntent === "next") {
+                  if (focusIntent === "prev") candidateNodes.reverse();
+                  const currentIndex = candidateNodes.indexOf(event.currentTarget);
+                  candidateNodes = context.loop ? wrapArray$1(candidateNodes, currentIndex + 1) : candidateNodes.slice(currentIndex + 1);
+                }
+                setTimeout(() => focusFirst$1(candidateNodes));
+              }
+            }),
+            children: typeof children === "function" ? children({ isCurrentTabStop, hasTabStop: currentTabStopId != null }) : children
+          }
+        )
+      }
+    );
+  }
+);
+RovingFocusGroupItem.displayName = ITEM_NAME$2;
+var MAP_KEY_TO_FOCUS_INTENT = {
+  ArrowLeft: "prev",
+  ArrowUp: "prev",
+  ArrowRight: "next",
+  ArrowDown: "next",
+  PageUp: "first",
+  Home: "first",
+  PageDown: "last",
+  End: "last"
+};
+function getDirectionAwareKey(key, dir) {
+  if (dir !== "rtl") return key;
+  return key === "ArrowLeft" ? "ArrowRight" : key === "ArrowRight" ? "ArrowLeft" : key;
+}
+function getFocusIntent(event, orientation, dir) {
+  const key = getDirectionAwareKey(event.key, dir);
+  if (orientation === "vertical" && ["ArrowLeft", "ArrowRight"].includes(key)) return void 0;
+  if (orientation === "horizontal" && ["ArrowUp", "ArrowDown"].includes(key)) return void 0;
+  return MAP_KEY_TO_FOCUS_INTENT[key];
+}
+function focusFirst$1(candidates, preventScroll = false) {
+  const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
+  for (const candidate of candidates) {
+    if (candidate === PREVIOUSLY_FOCUSED_ELEMENT) return;
+    candidate.focus({ preventScroll });
+    if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
+  }
+}
+function wrapArray$1(array, startIndex) {
+  return array.map((_2, index2) => array[(startIndex + index2) % array.length]);
+}
+var Root$3 = RovingFocusGroup;
+var Item = RovingFocusGroupItem;
+// @__NO_SIDE_EFFECTS__
+function createSlot$2(ownerName) {
+  const SlotClone = /* @__PURE__ */ createSlotClone$2(ownerName);
+  const Slot2 = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    const childrenArray = reactExports.Children.toArray(children);
+    const slottable = childrenArray.find(isSlottable$2);
+    if (slottable) {
+      const newElement = slottable.props.children;
+      const newChildren = childrenArray.map((child) => {
+        if (child === slottable) {
+          if (reactExports.Children.count(newElement) > 1) return reactExports.Children.only(null);
+          return reactExports.isValidElement(newElement) ? newElement.props.children : null;
+        } else {
+          return child;
+        }
+      });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: reactExports.isValidElement(newElement) ? reactExports.cloneElement(newElement, void 0, newChildren) : null });
+    }
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+  });
+  Slot2.displayName = `${ownerName}.Slot`;
+  return Slot2;
+}
+// @__NO_SIDE_EFFECTS__
+function createSlotClone$2(ownerName) {
+  const SlotClone = reactExports.forwardRef((props, forwardedRef) => {
+    const { children, ...slotProps } = props;
+    if (reactExports.isValidElement(children)) {
+      const childrenRef = getElementRef$2(children);
+      const props2 = mergeProps$2(slotProps, children.props);
+      if (children.type !== reactExports.Fragment) {
+        props2.ref = forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef;
+      }
+      return reactExports.cloneElement(children, props2);
+    }
+    return reactExports.Children.count(children) > 1 ? reactExports.Children.only(null) : null;
+  });
+  SlotClone.displayName = `${ownerName}.SlotClone`;
+  return SlotClone;
+}
+var SLOTTABLE_IDENTIFIER$3 = Symbol("radix.slottable");
+function isSlottable$2(child) {
+  return reactExports.isValidElement(child) && typeof child.type === "function" && "__radixId" in child.type && child.type.__radixId === SLOTTABLE_IDENTIFIER$3;
+}
+function mergeProps$2(slotProps, childProps) {
+  const overrideProps = { ...childProps };
+  for (const propName in childProps) {
+    const slotPropValue = slotProps[propName];
+    const childPropValue = childProps[propName];
+    const isHandler = /^on[A-Z]/.test(propName);
+    if (isHandler) {
+      if (slotPropValue && childPropValue) {
+        overrideProps[propName] = (...args) => {
+          const result = childPropValue(...args);
+          slotPropValue(...args);
+          return result;
+        };
+      } else if (slotPropValue) {
+        overrideProps[propName] = slotPropValue;
+      }
+    } else if (propName === "style") {
+      overrideProps[propName] = { ...slotPropValue, ...childPropValue };
+    } else if (propName === "className") {
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
+    }
+  }
+  return { ...slotProps, ...overrideProps };
+}
 function getElementRef$2(element) {
   let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
@@ -21618,1526 +21465,125 @@ function getElementRef$2(element) {
   }
   return element.props.ref || element.ref;
 }
-var SLOTTABLE_IDENTIFIER$2 = Symbol("radix.slottable");
-// @__NO_SIDE_EFFECTS__
-function createSlottable(ownerName) {
-  const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+var getDefaultParent = function(originalTarget) {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  var sampleTarget = Array.isArray(originalTarget) ? originalTarget[0] : originalTarget;
+  return sampleTarget.ownerDocument.body;
+};
+var counterMap = /* @__PURE__ */ new WeakMap();
+var uncontrolledNodes = /* @__PURE__ */ new WeakMap();
+var markerMap = {};
+var lockCount = 0;
+var unwrapHost = function(node) {
+  return node && (node.host || unwrapHost(node.parentNode));
+};
+var correctTargets = function(parent, targets) {
+  return targets.map(function(target) {
+    if (parent.contains(target)) {
+      return target;
+    }
+    var correctedTarget = unwrapHost(target);
+    if (correctedTarget && parent.contains(correctedTarget)) {
+      return correctedTarget;
+    }
+    console.error("aria-hidden", target, "in not contained inside", parent, ". Doing nothing");
+    return null;
+  }).filter(function(x2) {
+    return Boolean(x2);
+  });
+};
+var applyAttributeToOthers = function(originalTarget, parentNode, markerName, controlAttribute) {
+  var targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget]);
+  if (!markerMap[markerName]) {
+    markerMap[markerName] = /* @__PURE__ */ new WeakMap();
+  }
+  var markerCounter = markerMap[markerName];
+  var hiddenNodes = [];
+  var elementsToKeep = /* @__PURE__ */ new Set();
+  var elementsToStop = new Set(targets);
+  var keep = function(el2) {
+    if (!el2 || elementsToKeep.has(el2)) {
+      return;
+    }
+    elementsToKeep.add(el2);
+    keep(el2.parentNode);
   };
-  Slottable2.displayName = `${ownerName}.Slottable`;
-  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$2;
-  return Slottable2;
-}
-var useInsertionEffect = React$4[" useInsertionEffect ".trim().toString()] || useLayoutEffect2;
-function useControllableState({
-  prop,
-  defaultProp,
-  onChange = () => {
-  },
-  caller
-}) {
-  const [uncontrolledProp, setUncontrolledProp, onChangeRef] = useUncontrolledState({
-    defaultProp,
-    onChange
-  });
-  const isControlled = prop !== void 0;
-  const value = isControlled ? prop : uncontrolledProp;
-  {
-    const isControlledRef = reactExports.useRef(prop !== void 0);
-    reactExports.useEffect(() => {
-      const wasControlled = isControlledRef.current;
-      if (wasControlled !== isControlled) {
-        const from = wasControlled ? "controlled" : "uncontrolled";
-        const to = isControlled ? "controlled" : "uncontrolled";
-        console.warn(
-          `${caller} is changing from ${from} to ${to}. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.`
-        );
-      }
-      isControlledRef.current = isControlled;
-    }, [isControlled, caller]);
-  }
-  const setValue = reactExports.useCallback(
-    (nextValue) => {
-      if (isControlled) {
-        const value2 = isFunction$1(nextValue) ? nextValue(prop) : nextValue;
-        if (value2 !== prop) {
-          onChangeRef.current?.(value2);
-        }
+  targets.forEach(keep);
+  var deep = function(parent) {
+    if (!parent || elementsToStop.has(parent)) {
+      return;
+    }
+    Array.prototype.forEach.call(parent.children, function(node) {
+      if (elementsToKeep.has(node)) {
+        deep(node);
       } else {
-        setUncontrolledProp(nextValue);
-      }
-    },
-    [isControlled, prop, setUncontrolledProp, onChangeRef]
-  );
-  return [value, setValue];
-}
-function useUncontrolledState({
-  defaultProp,
-  onChange
-}) {
-  const [value, setValue] = reactExports.useState(defaultProp);
-  const prevValueRef = reactExports.useRef(value);
-  const onChangeRef = reactExports.useRef(onChange);
-  useInsertionEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
-  reactExports.useEffect(() => {
-    if (prevValueRef.current !== value) {
-      onChangeRef.current?.(value);
-      prevValueRef.current = value;
-    }
-  }, [value, prevValueRef]);
-  return [value, setValue, onChangeRef];
-}
-function isFunction$1(value) {
-  return typeof value === "function";
-}
-var VISUALLY_HIDDEN_STYLES = Object.freeze({
-  // See: https://github.com/twbs/bootstrap/blob/main/scss/mixins/_visually-hidden.scss
-  position: "absolute",
-  border: 0,
-  width: 1,
-  height: 1,
-  padding: 0,
-  margin: -1,
-  overflow: "hidden",
-  clip: "rect(0, 0, 0, 0)",
-  whiteSpace: "nowrap",
-  wordWrap: "normal"
-});
-var NAME$1 = "VisuallyHidden";
-var VisuallyHidden = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$1.span,
-      {
-        ...props,
-        ref: forwardedRef,
-        style: { ...VISUALLY_HIDDEN_STYLES, ...props.style }
-      }
-    );
-  }
-);
-VisuallyHidden.displayName = NAME$1;
-var Root$2 = VisuallyHidden;
-var [createTooltipContext] = createContextScope("Tooltip", [
-  createPopperScope
-]);
-var usePopperScope = createPopperScope();
-var PROVIDER_NAME = "TooltipProvider";
-var DEFAULT_DELAY_DURATION = 700;
-var TOOLTIP_OPEN = "tooltip.open";
-var [TooltipProviderContextProvider, useTooltipProviderContext] = createTooltipContext(PROVIDER_NAME);
-var TooltipProvider = (props) => {
-  const {
-    __scopeTooltip,
-    delayDuration = DEFAULT_DELAY_DURATION,
-    skipDelayDuration = 300,
-    disableHoverableContent = false,
-    children
-  } = props;
-  const isOpenDelayedRef = reactExports.useRef(true);
-  const isPointerInTransitRef = reactExports.useRef(false);
-  const skipDelayTimerRef = reactExports.useRef(0);
-  reactExports.useEffect(() => {
-    const skipDelayTimer = skipDelayTimerRef.current;
-    return () => window.clearTimeout(skipDelayTimer);
-  }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    TooltipProviderContextProvider,
-    {
-      scope: __scopeTooltip,
-      isOpenDelayedRef,
-      delayDuration,
-      onOpen: reactExports.useCallback(() => {
-        window.clearTimeout(skipDelayTimerRef.current);
-        isOpenDelayedRef.current = false;
-      }, []),
-      onClose: reactExports.useCallback(() => {
-        window.clearTimeout(skipDelayTimerRef.current);
-        skipDelayTimerRef.current = window.setTimeout(
-          () => isOpenDelayedRef.current = true,
-          skipDelayDuration
-        );
-      }, [skipDelayDuration]),
-      isPointerInTransitRef,
-      onPointerInTransitChange: reactExports.useCallback((inTransit) => {
-        isPointerInTransitRef.current = inTransit;
-      }, []),
-      disableHoverableContent,
-      children
-    }
-  );
-};
-TooltipProvider.displayName = PROVIDER_NAME;
-var TOOLTIP_NAME = "Tooltip";
-var [TooltipContextProvider, useTooltipContext] = createTooltipContext(TOOLTIP_NAME);
-var Tooltip = (props) => {
-  const {
-    __scopeTooltip,
-    children,
-    open: openProp,
-    defaultOpen,
-    onOpenChange,
-    disableHoverableContent: disableHoverableContentProp,
-    delayDuration: delayDurationProp
-  } = props;
-  const providerContext = useTooltipProviderContext(TOOLTIP_NAME, props.__scopeTooltip);
-  const popperScope = usePopperScope(__scopeTooltip);
-  const [trigger, setTrigger] = reactExports.useState(null);
-  const contentId = useId();
-  const openTimerRef = reactExports.useRef(0);
-  const disableHoverableContent = disableHoverableContentProp ?? providerContext.disableHoverableContent;
-  const delayDuration = delayDurationProp ?? providerContext.delayDuration;
-  const wasOpenDelayedRef = reactExports.useRef(false);
-  const [open, setOpen] = useControllableState({
-    prop: openProp,
-    defaultProp: defaultOpen ?? false,
-    onChange: (open2) => {
-      if (open2) {
-        providerContext.onOpen();
-        document.dispatchEvent(new CustomEvent(TOOLTIP_OPEN));
-      } else {
-        providerContext.onClose();
-      }
-      onOpenChange?.(open2);
-    },
-    caller: TOOLTIP_NAME
-  });
-  const stateAttribute = reactExports.useMemo(() => {
-    return open ? wasOpenDelayedRef.current ? "delayed-open" : "instant-open" : "closed";
-  }, [open]);
-  const handleOpen = reactExports.useCallback(() => {
-    window.clearTimeout(openTimerRef.current);
-    openTimerRef.current = 0;
-    wasOpenDelayedRef.current = false;
-    setOpen(true);
-  }, [setOpen]);
-  const handleClose = reactExports.useCallback(() => {
-    window.clearTimeout(openTimerRef.current);
-    openTimerRef.current = 0;
-    setOpen(false);
-  }, [setOpen]);
-  const handleDelayedOpen = reactExports.useCallback(() => {
-    window.clearTimeout(openTimerRef.current);
-    openTimerRef.current = window.setTimeout(() => {
-      wasOpenDelayedRef.current = true;
-      setOpen(true);
-      openTimerRef.current = 0;
-    }, delayDuration);
-  }, [delayDuration, setOpen]);
-  reactExports.useEffect(() => {
-    return () => {
-      if (openTimerRef.current) {
-        window.clearTimeout(openTimerRef.current);
-        openTimerRef.current = 0;
-      }
-    };
-  }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root2, { ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-    TooltipContextProvider,
-    {
-      scope: __scopeTooltip,
-      contentId,
-      open,
-      stateAttribute,
-      trigger,
-      onTriggerChange: setTrigger,
-      onTriggerEnter: reactExports.useCallback(() => {
-        if (providerContext.isOpenDelayedRef.current) handleDelayedOpen();
-        else handleOpen();
-      }, [providerContext.isOpenDelayedRef, handleDelayedOpen, handleOpen]),
-      onTriggerLeave: reactExports.useCallback(() => {
-        if (disableHoverableContent) {
-          handleClose();
-        } else {
-          window.clearTimeout(openTimerRef.current);
-          openTimerRef.current = 0;
-        }
-      }, [handleClose, disableHoverableContent]),
-      onOpen: handleOpen,
-      onClose: handleClose,
-      disableHoverableContent,
-      children
-    }
-  ) });
-};
-Tooltip.displayName = TOOLTIP_NAME;
-var TRIGGER_NAME$2 = "TooltipTrigger";
-var TooltipTrigger = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const { __scopeTooltip, ...triggerProps } = props;
-    const context = useTooltipContext(TRIGGER_NAME$2, __scopeTooltip);
-    const providerContext = useTooltipProviderContext(TRIGGER_NAME$2, __scopeTooltip);
-    const popperScope = usePopperScope(__scopeTooltip);
-    const ref = reactExports.useRef(null);
-    const composedRefs = useComposedRefs(forwardedRef, ref, context.onTriggerChange);
-    const isPointerDownRef = reactExports.useRef(false);
-    const hasPointerMoveOpenedRef = reactExports.useRef(false);
-    const handlePointerUp = reactExports.useCallback(() => isPointerDownRef.current = false, []);
-    reactExports.useEffect(() => {
-      return () => document.removeEventListener("pointerup", handlePointerUp);
-    }, [handlePointerUp]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$1.button,
-      {
-        "aria-describedby": context.open ? context.contentId : void 0,
-        "data-state": context.stateAttribute,
-        ...triggerProps,
-        ref: composedRefs,
-        onPointerMove: composeEventHandlers(props.onPointerMove, (event) => {
-          if (event.pointerType === "touch") return;
-          if (!hasPointerMoveOpenedRef.current && !providerContext.isPointerInTransitRef.current) {
-            context.onTriggerEnter();
-            hasPointerMoveOpenedRef.current = true;
+        try {
+          var attr = node.getAttribute(controlAttribute);
+          var alreadyHidden = attr !== null && attr !== "false";
+          var counterValue = (counterMap.get(node) || 0) + 1;
+          var markerValue = (markerCounter.get(node) || 0) + 1;
+          counterMap.set(node, counterValue);
+          markerCounter.set(node, markerValue);
+          hiddenNodes.push(node);
+          if (counterValue === 1 && alreadyHidden) {
+            uncontrolledNodes.set(node, true);
           }
-        }),
-        onPointerLeave: composeEventHandlers(props.onPointerLeave, () => {
-          context.onTriggerLeave();
-          hasPointerMoveOpenedRef.current = false;
-        }),
-        onPointerDown: composeEventHandlers(props.onPointerDown, () => {
-          if (context.open) {
-            context.onClose();
+          if (markerValue === 1) {
+            node.setAttribute(markerName, "true");
           }
-          isPointerDownRef.current = true;
-          document.addEventListener("pointerup", handlePointerUp, { once: true });
-        }),
-        onFocus: composeEventHandlers(props.onFocus, () => {
-          if (!isPointerDownRef.current) context.onOpen();
-        }),
-        onBlur: composeEventHandlers(props.onBlur, context.onClose),
-        onClick: composeEventHandlers(props.onClick, context.onClose)
-      }
-    ) });
-  }
-);
-TooltipTrigger.displayName = TRIGGER_NAME$2;
-var PORTAL_NAME$1 = "TooltipPortal";
-var [PortalProvider$1, usePortalContext$1] = createTooltipContext(PORTAL_NAME$1, {
-  forceMount: void 0
-});
-var TooltipPortal = (props) => {
-  const { __scopeTooltip, forceMount, children, container } = props;
-  const context = useTooltipContext(PORTAL_NAME$1, __scopeTooltip);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider$1, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { asChild: true, container, children }) }) });
-};
-TooltipPortal.displayName = PORTAL_NAME$1;
-var CONTENT_NAME$1 = "TooltipContent";
-var TooltipContent = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const portalContext = usePortalContext$1(CONTENT_NAME$1, props.__scopeTooltip);
-    const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
-    const context = useTooltipContext(CONTENT_NAME$1, props.__scopeTooltip);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
-  }
-);
-var TooltipContentHoverable = reactExports.forwardRef((props, forwardedRef) => {
-  const context = useTooltipContext(CONTENT_NAME$1, props.__scopeTooltip);
-  const providerContext = useTooltipProviderContext(CONTENT_NAME$1, props.__scopeTooltip);
-  const ref = reactExports.useRef(null);
-  const composedRefs = useComposedRefs(forwardedRef, ref);
-  const [pointerGraceArea, setPointerGraceArea] = reactExports.useState(null);
-  const { trigger, onClose } = context;
-  const content = ref.current;
-  const { onPointerInTransitChange } = providerContext;
-  const handleRemoveGraceArea = reactExports.useCallback(() => {
-    setPointerGraceArea(null);
-    onPointerInTransitChange(false);
-  }, [onPointerInTransitChange]);
-  const handleCreateGraceArea = reactExports.useCallback(
-    (event, hoverTarget) => {
-      const currentTarget = event.currentTarget;
-      const exitPoint = { x: event.clientX, y: event.clientY };
-      const exitSide = getExitSideFromRect(exitPoint, currentTarget.getBoundingClientRect());
-      const paddedExitPoints = getPaddedExitPoints(exitPoint, exitSide);
-      const hoverTargetPoints = getPointsFromRect(hoverTarget.getBoundingClientRect());
-      const graceArea = getHull([...paddedExitPoints, ...hoverTargetPoints]);
-      setPointerGraceArea(graceArea);
-      onPointerInTransitChange(true);
-    },
-    [onPointerInTransitChange]
-  );
-  reactExports.useEffect(() => {
-    return () => handleRemoveGraceArea();
-  }, [handleRemoveGraceArea]);
-  reactExports.useEffect(() => {
-    if (trigger && content) {
-      const handleTriggerLeave = (event) => handleCreateGraceArea(event, content);
-      const handleContentLeave = (event) => handleCreateGraceArea(event, trigger);
-      trigger.addEventListener("pointerleave", handleTriggerLeave);
-      content.addEventListener("pointerleave", handleContentLeave);
-      return () => {
-        trigger.removeEventListener("pointerleave", handleTriggerLeave);
-        content.removeEventListener("pointerleave", handleContentLeave);
-      };
-    }
-  }, [trigger, content, handleCreateGraceArea, handleRemoveGraceArea]);
-  reactExports.useEffect(() => {
-    if (pointerGraceArea) {
-      const handleTrackPointerGrace = (event) => {
-        const target = event.target;
-        const pointerPosition = { x: event.clientX, y: event.clientY };
-        const hasEnteredTarget = trigger?.contains(target) || content?.contains(target);
-        const isPointerOutsideGraceArea = !isPointInPolygon(pointerPosition, pointerGraceArea);
-        if (hasEnteredTarget) {
-          handleRemoveGraceArea();
-        } else if (isPointerOutsideGraceArea) {
-          handleRemoveGraceArea();
-          onClose();
-        }
-      };
-      document.addEventListener("pointermove", handleTrackPointerGrace);
-      return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
-    }
-  }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { ...props, ref: composedRefs });
-});
-var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
-var Slottable = /* @__PURE__ */ createSlottable("TooltipContent");
-var TooltipContentImpl = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const {
-      __scopeTooltip,
-      children,
-      "aria-label": ariaLabel,
-      onEscapeKeyDown,
-      onPointerDownOutside,
-      ...contentProps
-    } = props;
-    const context = useTooltipContext(CONTENT_NAME$1, __scopeTooltip);
-    const popperScope = usePopperScope(__scopeTooltip);
-    const { onClose } = context;
-    reactExports.useEffect(() => {
-      document.addEventListener(TOOLTIP_OPEN, onClose);
-      return () => document.removeEventListener(TOOLTIP_OPEN, onClose);
-    }, [onClose]);
-    reactExports.useEffect(() => {
-      if (context.trigger) {
-        const handleScroll2 = (event) => {
-          const target = event.target;
-          if (target?.contains(context.trigger)) onClose();
-        };
-        window.addEventListener("scroll", handleScroll2, { capture: true });
-        return () => window.removeEventListener("scroll", handleScroll2, { capture: true });
-      }
-    }, [context.trigger, onClose]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      DismissableLayer,
-      {
-        asChild: true,
-        disableOutsidePointerEvents: false,
-        onEscapeKeyDown,
-        onPointerDownOutside,
-        onFocusOutside: (event) => event.preventDefault(),
-        onDismiss: onClose,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          Content$1,
-          {
-            "data-state": context.stateAttribute,
-            ...popperScope,
-            ...contentProps,
-            ref: forwardedRef,
-            style: {
-              ...contentProps.style,
-              // re-namespace exposed content custom properties
-              ...{
-                "--radix-tooltip-content-transform-origin": "var(--radix-popper-transform-origin)",
-                "--radix-tooltip-content-available-width": "var(--radix-popper-available-width)",
-                "--radix-tooltip-content-available-height": "var(--radix-popper-available-height)",
-                "--radix-tooltip-trigger-width": "var(--radix-popper-anchor-width)",
-                "--radix-tooltip-trigger-height": "var(--radix-popper-anchor-height)"
-              }
-            },
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Slottable, { children }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root$2, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
-            ]
+          if (!alreadyHidden) {
+            node.setAttribute(controlAttribute, "true");
           }
-        )
-      }
-    );
-  }
-);
-TooltipContent.displayName = CONTENT_NAME$1;
-var ARROW_NAME = "TooltipArrow";
-var TooltipArrow = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const { __scopeTooltip, ...arrowProps } = props;
-    const popperScope = usePopperScope(__scopeTooltip);
-    const visuallyHiddenContentContext = useVisuallyHiddenContentContext(
-      ARROW_NAME,
-      __scopeTooltip
-    );
-    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
-  }
-);
-TooltipArrow.displayName = ARROW_NAME;
-function getExitSideFromRect(point, rect) {
-  const top = Math.abs(rect.top - point.y);
-  const bottom = Math.abs(rect.bottom - point.y);
-  const right = Math.abs(rect.right - point.x);
-  const left = Math.abs(rect.left - point.x);
-  switch (Math.min(top, bottom, right, left)) {
-    case left:
-      return "left";
-    case right:
-      return "right";
-    case top:
-      return "top";
-    case bottom:
-      return "bottom";
-    default:
-      throw new Error("unreachable");
-  }
-}
-function getPaddedExitPoints(exitPoint, exitSide, padding = 5) {
-  const paddedExitPoints = [];
-  switch (exitSide) {
-    case "top":
-      paddedExitPoints.push(
-        { x: exitPoint.x - padding, y: exitPoint.y + padding },
-        { x: exitPoint.x + padding, y: exitPoint.y + padding }
-      );
-      break;
-    case "bottom":
-      paddedExitPoints.push(
-        { x: exitPoint.x - padding, y: exitPoint.y - padding },
-        { x: exitPoint.x + padding, y: exitPoint.y - padding }
-      );
-      break;
-    case "left":
-      paddedExitPoints.push(
-        { x: exitPoint.x + padding, y: exitPoint.y - padding },
-        { x: exitPoint.x + padding, y: exitPoint.y + padding }
-      );
-      break;
-    case "right":
-      paddedExitPoints.push(
-        { x: exitPoint.x - padding, y: exitPoint.y - padding },
-        { x: exitPoint.x - padding, y: exitPoint.y + padding }
-      );
-      break;
-  }
-  return paddedExitPoints;
-}
-function getPointsFromRect(rect) {
-  const { top, right, bottom, left } = rect;
-  return [
-    { x: left, y: top },
-    { x: right, y: top },
-    { x: right, y: bottom },
-    { x: left, y: bottom }
-  ];
-}
-function isPointInPolygon(point, polygon) {
-  const { x: x2, y: y2 } = point;
-  let inside = false;
-  for (let i2 = 0, j2 = polygon.length - 1; i2 < polygon.length; j2 = i2++) {
-    const ii2 = polygon[i2];
-    const jj2 = polygon[j2];
-    const xi2 = ii2.x;
-    const yi2 = ii2.y;
-    const xj2 = jj2.x;
-    const yj2 = jj2.y;
-    const intersect = yi2 > y2 !== yj2 > y2 && x2 < (xj2 - xi2) * (y2 - yi2) / (yj2 - yi2) + xi2;
-    if (intersect) inside = !inside;
-  }
-  return inside;
-}
-function getHull(points) {
-  const newPoints = points.slice();
-  newPoints.sort((a2, b2) => {
-    if (a2.x < b2.x) return -1;
-    else if (a2.x > b2.x) return 1;
-    else if (a2.y < b2.y) return -1;
-    else if (a2.y > b2.y) return 1;
-    else return 0;
-  });
-  return getHullPresorted(newPoints);
-}
-function getHullPresorted(points) {
-  if (points.length <= 1) return points.slice();
-  const upperHull = [];
-  for (let i2 = 0; i2 < points.length; i2++) {
-    const p2 = points[i2];
-    while (upperHull.length >= 2) {
-      const q2 = upperHull[upperHull.length - 1];
-      const r2 = upperHull[upperHull.length - 2];
-      if ((q2.x - r2.x) * (p2.y - r2.y) >= (q2.y - r2.y) * (p2.x - r2.x)) upperHull.pop();
-      else break;
-    }
-    upperHull.push(p2);
-  }
-  upperHull.pop();
-  const lowerHull = [];
-  for (let i2 = points.length - 1; i2 >= 0; i2--) {
-    const p2 = points[i2];
-    while (lowerHull.length >= 2) {
-      const q2 = lowerHull[lowerHull.length - 1];
-      const r2 = lowerHull[lowerHull.length - 2];
-      if ((q2.x - r2.x) * (p2.y - r2.y) >= (q2.y - r2.y) * (p2.x - r2.x)) lowerHull.pop();
-      else break;
-    }
-    lowerHull.push(p2);
-  }
-  lowerHull.pop();
-  if (upperHull.length === 1 && lowerHull.length === 1 && upperHull[0].x === lowerHull[0].x && upperHull[0].y === lowerHull[0].y) {
-    return upperHull;
-  } else {
-    return upperHull.concat(lowerHull);
-  }
-}
-var Provider = TooltipProvider;
-var Root3 = Tooltip;
-var Trigger = TooltipTrigger;
-var Portal$1 = TooltipPortal;
-var Content2 = TooltipContent;
-var Arrow2 = TooltipArrow;
-const CustomTitleBar = (t0) => {
-  const $2 = dist.c(54);
-  const {
-    onRunAllTests,
-    onOpenSearch,
-    onToggleTheme,
-    onOpenSettings,
-    currentTheme: t1
-  } = t0;
-  const currentTheme = t1 === void 0 ? "system" : t1;
-  const [isMaximized, setIsMaximized] = reactExports.useState(false);
-  let t2;
-  let t3;
-  if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = () => {
-      const checkMaximized = async () => {
-        if (window.api?.windowControls) {
-          const maximized = await window.api.windowControls.isMaximized();
-          setIsMaximized(maximized);
-        }
-      };
-      checkMaximized();
-    };
-    t3 = [];
-    $2[0] = t2;
-    $2[1] = t3;
-  } else {
-    t2 = $2[0];
-    t3 = $2[1];
-  }
-  reactExports.useEffect(t2, t3);
-  const handleClose = _temp$2;
-  const handleMinimize = _temp2$1;
-  let t4;
-  if ($2[2] === Symbol.for("react.memo_cache_sentinel")) {
-    t4 = async () => {
-      if (window.api?.windowControls) {
-        await window.api.windowControls.maximize();
-        const maximized_0 = await window.api.windowControls.isMaximized();
-        setIsMaximized(maximized_0);
-      }
-    };
-    $2[2] = t4;
-  } else {
-    t4 = $2[2];
-  }
-  const handleMaximize = t4;
-  let t5;
-  if ($2[3] !== currentTheme) {
-    t5 = () => {
-      switch (currentTheme) {
-        case "light": {
-          return /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { size: 14 });
-        }
-        case "dark": {
-          return /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { size: 14 });
-        }
-        default: {
-          return /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { size: 14 });
+        } catch (e2) {
+          console.error("aria-hidden: cannot operate on ", node, e2);
         }
       }
-    };
-    $2[3] = currentTheme;
-    $2[4] = t5;
-  } else {
-    t5 = $2[4];
-  }
-  const getThemeIcon = t5;
-  let t6;
-  if ($2[5] !== currentTheme) {
-    t6 = () => {
-      switch (currentTheme) {
-        case "light": {
-          return "Theme: Hell";
-        }
-        case "dark": {
-          return "Theme: Dunkel";
-        }
-        default: {
-          return "Theme: System";
-        }
-      }
-    };
-    $2[5] = currentTheme;
-    $2[6] = t6;
-  } else {
-    t6 = $2[6];
-  }
-  const getThemeLabel = t6;
-  let t7;
-  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = {
-      WebkitAppRegion: "drag"
-    };
-    $2[7] = t7;
-  } else {
-    t7 = $2[7];
-  }
-  let t8;
-  if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = {
-      width: "clamp(16rem, 22.5vw, 40rem)",
-      minWidth: "fit-content"
-    };
-    $2[8] = t8;
-  } else {
-    t8 = $2[8];
-  }
-  let t9;
-  if ($2[9] !== isMaximized) {
-    t9 = /* @__PURE__ */ jsxRuntimeExports.jsx(TrafficLights, { onClose: handleClose, onMinimize: handleMinimize, onMaximize: handleMaximize, isMaximized });
-    $2[9] = isMaximized;
-    $2[10] = t9;
-  } else {
-    t9 = $2[10];
-  }
-  let t10;
-  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "cursor-grabbing  text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-mono uppercase  cursor-grabbing ", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Formtest" }),
-      ".Server"
-    ] }) });
-    $2[11] = t10;
-  } else {
-    t10 = $2[11];
-  }
-  let t11;
-  if ($2[12] !== t9) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center px-5 pl-6 h-full", style: t8, children: [
-      t9,
-      t10
-    ] });
-    $2[12] = t9;
-    $2[13] = t11;
-  } else {
-    t11 = $2[13];
-  }
-  let t12;
-  if ($2[14] === Symbol.for("react.memo_cache_sentinel")) {
-    t12 = {
-      WebkitAppRegion: "no-drag"
-    };
-    $2[14] = t12;
-  } else {
-    t12 = $2[14];
-  }
-  let t13;
-  let t14;
-  if ($2[15] === Symbol.for("react.memo_cache_sentinel")) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 14, className: "ml-2 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors" });
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[12px] text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors", children: "Suche..." });
-    $2[15] = t13;
-    $2[16] = t14;
-  } else {
-    t13 = $2[15];
-    t14 = $2[16];
-  }
-  let t15;
-  if ($2[17] === Symbol.for("react.memo_cache_sentinel")) {
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsxs("kbd", { className: "ml-auto font-mono px-1.5 py-0.5 mr-1 text-gray-400 flex items-center gap-1", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg leading-[1]", children: "⌘" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs leading-[1]", children: "K" })
-    ] });
-    $2[17] = t15;
-  } else {
-    t15 = $2[17];
-  }
-  let t16;
-  if ($2[18] !== onOpenSearch) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", style: t12, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: onOpenSearch, className: "w-full max-w-[100%] px-0.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 group", children: [
-      t13,
-      t14,
-      t15
-    ] }) });
-    $2[18] = onOpenSearch;
-    $2[19] = t16;
-  } else {
-    t16 = $2[19];
-  }
-  let t17;
-  if ($2[20] === Symbol.for("react.memo_cache_sentinel")) {
-    t17 = {
-      WebkitAppRegion: "no-drag"
-    };
-    $2[20] = t17;
-  } else {
-    t17 = $2[20];
-  }
-  let t18;
-  if ($2[21] === Symbol.for("react.memo_cache_sentinel")) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { size: 14 });
-    $2[21] = t18;
-  } else {
-    t18 = $2[21];
-  }
-  let t19;
-  if ($2[22] !== onRunAllTests) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onRunAllTests, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Alle Tests ausführen", children: t18 }) });
-    $2[22] = onRunAllTests;
-    $2[23] = t19;
-  } else {
-    t19 = $2[23];
-  }
-  let t20;
-  if ($2[24] === Symbol.for("react.memo_cache_sentinel")) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
-      "Alle Tests ausführen",
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
-    ] }) });
-    $2[24] = t20;
-  } else {
-    t20 = $2[24];
-  }
-  let t21;
-  if ($2[25] !== t19) {
-    t21 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-      t19,
-      t20
-    ] });
-    $2[25] = t19;
-    $2[26] = t21;
-  } else {
-    t21 = $2[26];
-  }
-  let t22;
-  if ($2[27] !== getThemeIcon) {
-    t22 = getThemeIcon();
-    $2[27] = getThemeIcon;
-    $2[28] = t22;
-  } else {
-    t22 = $2[28];
-  }
-  let t23;
-  if ($2[29] !== onToggleTheme || $2[30] !== t22) {
-    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onToggleTheme, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Theme wechseln", children: t22 }) });
-    $2[29] = onToggleTheme;
-    $2[30] = t22;
-    $2[31] = t23;
-  } else {
-    t23 = $2[31];
-  }
-  const t24 = getThemeLabel();
-  let t25;
-  if ($2[32] === Symbol.for("react.memo_cache_sentinel")) {
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" });
-    $2[32] = t25;
-  } else {
-    t25 = $2[32];
-  }
-  let t26;
-  if ($2[33] !== t24) {
-    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
-      t24,
-      t25
-    ] }) });
-    $2[33] = t24;
-    $2[34] = t26;
-  } else {
-    t26 = $2[34];
-  }
-  let t27;
-  if ($2[35] !== t23 || $2[36] !== t26) {
-    t27 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-      t23,
-      t26
-    ] });
-    $2[35] = t23;
-    $2[36] = t26;
-    $2[37] = t27;
-  } else {
-    t27 = $2[37];
-  }
-  let t28;
-  if ($2[38] === Symbol.for("react.memo_cache_sentinel")) {
-    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx(Settings$1, { size: 14 });
-    $2[38] = t28;
-  } else {
-    t28 = $2[38];
-  }
-  let t29;
-  if ($2[39] !== onOpenSettings) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onOpenSettings, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Einstellungen öffnen", children: t28 }) });
-    $2[39] = onOpenSettings;
-    $2[40] = t29;
-  } else {
-    t29 = $2[40];
-  }
-  let t30;
-  if ($2[41] === Symbol.for("react.memo_cache_sentinel")) {
-    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
-      "Einstellungen öffnen",
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
-    ] }) });
-    $2[41] = t30;
-  } else {
-    t30 = $2[41];
-  }
-  let t31;
-  if ($2[42] !== t29) {
-    t31 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-      t29,
-      t30
-    ] });
-    $2[42] = t29;
-    $2[43] = t31;
-  } else {
-    t31 = $2[43];
-  }
-  let t32;
-  if ($2[44] !== t21 || $2[45] !== t27 || $2[46] !== t31) {
-    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", style: t17, children: [
-      t21,
-      t27,
-      t31
-    ] });
-    $2[44] = t21;
-    $2[45] = t27;
-    $2[46] = t31;
-    $2[47] = t32;
-  } else {
-    t32 = $2[47];
-  }
-  let t33;
-  if ($2[48] !== t16 || $2[49] !== t32) {
-    t33 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex items-center px-4 h-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[1040px] flex items-center gap-4", children: [
-      t16,
-      t32
-    ] }) });
-    $2[48] = t16;
-    $2[49] = t32;
-    $2[50] = t33;
-  } else {
-    t33 = $2[50];
-  }
-  let t34;
-  if ($2[51] !== t11 || $2[52] !== t33) {
-    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative h-14 bg-gray-50 backdrop-blur-sm dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800", style: t7, children: [
-      t11,
-      t33
-    ] }) });
-    $2[51] = t11;
-    $2[52] = t33;
-    $2[53] = t34;
-  } else {
-    t34 = $2[53];
-  }
-  return t34;
-};
-async function _temp$2() {
-  if (window.api?.windowControls) {
-    await window.api.windowControls.close();
-  }
-}
-async function _temp2$1() {
-  if (window.api?.windowControls) {
-    await window.api.windowControls.minimize();
-  }
-}
-const useFormsStore = create((set, get) => ({
-  forms: [],
-  isLoading: false,
-  error: null,
-  loadForms: async () => {
-    set({
-      isLoading: true,
-      error: null
     });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      const forms = await window.api.forms.getAll();
-      set({
-        forms,
-        isLoading: false
-      });
-    } catch (error) {
-      console.error("Failed to load forms:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to load forms",
-        isLoading: false
-      });
-    }
-  },
-  addForm: async (formData) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      console.log("Creating form:", formData);
-      await window.api.forms.create(formData);
-      await get().loadForms();
-    } catch (error) {
-      console.error("Failed to add form:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to add form",
-        isLoading: false
-      });
-    }
-  },
-  updateForm: async (id2, formData) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      await window.api.forms.update(id2, formData);
-      await get().loadForms();
-    } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : "Failed to update form",
-        isLoading: false
-      });
-    }
-  },
-  deleteForm: async (id2) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      await window.api.forms.delete(id2);
-      await get().loadForms();
-    } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : "Failed to delete form",
-        isLoading: false
-      });
-    }
-  },
-  toggleFormActive: async (id2) => {
-    const form = get().forms.find((f2) => f2.id === id2);
-    if (form) {
-      await get().updateForm(id2, {
-        isActive: !form.isActive
-      });
-    }
-  }
-}));
-const usePaymentMethodsStore = create((set, get) => ({
-  paymentMethods: [],
-  isLoading: false,
-  error: null,
-  loadPaymentMethods: async () => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      const paymentMethods = await window.api.paymentMethods.getAll();
-      set({
-        paymentMethods,
-        isLoading: false
-      });
-    } catch (error) {
-      console.error("Failed to load payment methods:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to load payment methods",
-        isLoading: false
-      });
-    }
-  },
-  addPaymentMethod: async (methodData) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      await window.api.paymentMethods.create(methodData);
-      await get().loadPaymentMethods();
-    } catch (error) {
-      console.error("Failed to add payment method:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to add payment method",
-        isLoading: false
-      });
-    }
-  },
-  updatePaymentMethod: async (id2, methodData) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      await window.api.paymentMethods.update(id2, methodData);
-      await get().loadPaymentMethods();
-    } catch (error) {
-      console.error("Failed to update payment method:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to update payment method",
-        isLoading: false
-      });
-    }
-  },
-  deletePaymentMethod: async (id2) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      await window.api.paymentMethods.delete(id2);
-      await get().loadPaymentMethods();
-    } catch (error) {
-      console.error("Failed to delete payment method:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to delete payment method",
-        isLoading: false
-      });
-    }
-  },
-  togglePaymentMethodActive: async (id2) => {
-    const method = get().paymentMethods.find((m2) => m2.id === id2);
-    if (method) {
-      await get().updatePaymentMethod(id2, {
-        isActive: !method.isActive
-      });
-    }
-  }
-}));
-const useTestRunsStore = create((set, get) => ({
-  testRuns: [],
-  isLoading: false,
-  error: null,
-  isRunning: false,
-  loadTestRuns: async () => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      const testRuns = await window.api.testRuns.getAll();
-      set({
-        testRuns,
-        isLoading: false
-      });
-    } catch (error) {
-      console.error("Failed to load test runs:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to load test runs",
-        isLoading: false
-      });
-    }
-  },
-  getTestRunsByForm: async (formId) => {
-    try {
-      if (!window.api) {
-        throw new Error("API not available");
-      }
-      return await window.api.testRuns.getByForm(formId);
-    } catch (error) {
-      console.error("Failed to load test runs for form:", error);
-      return [];
-    }
-  },
-  runTests: async (formIds, paymentMethodIds) => {
-    set({
-      isRunning: true,
-      error: null
-    });
-    try {
-      if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
-      }
-      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
-      const result = await window.api.tests.run(formIds, paymentMethodIds);
-      console.log("Test execution result:", result);
-      await get().loadTestRuns();
-      set({
-        isRunning: false
-      });
-    } catch (error) {
-      console.error("Failed to run tests:", error);
-      set({
-        error: error instanceof Error ? error.message : "Failed to run tests",
-        isRunning: false
-      });
-    }
-  },
-  getTestRunById: async (id2) => {
-    try {
-      if (!window.api) {
-        throw new Error("API not available");
-      }
-      return await window.api.testRuns.getById(id2);
-    } catch (error) {
-      console.error("Failed to get test run:", error);
-      return void 0;
-    }
-  }
-}));
-const Button = React$3.forwardRef((t0, ref) => {
-  const $2 = dist.c(21);
-  let children;
-  let condensed;
-  let disabled;
-  let props;
-  let t1;
-  let t2;
-  let t3;
-  let t4;
-  if ($2[0] !== t0) {
-    ({
-      className: t1,
-      variant: t2,
-      size: t3,
-      isLoading: t4,
-      disabled,
-      children,
-      condensed,
-      ...props
-    } = t0);
-    $2[0] = t0;
-    $2[1] = children;
-    $2[2] = condensed;
-    $2[3] = disabled;
-    $2[4] = props;
-    $2[5] = t1;
-    $2[6] = t2;
-    $2[7] = t3;
-    $2[8] = t4;
-  } else {
-    children = $2[1];
-    condensed = $2[2];
-    disabled = $2[3];
-    props = $2[4];
-    t1 = $2[5];
-    t2 = $2[6];
-    t3 = $2[7];
-    t4 = $2[8];
-  }
-  const className = t1 === void 0 ? "" : t1;
-  const variant = t2 === void 0 ? "primary" : t2;
-  const size2 = t3 === void 0 ? "md" : t3;
-  const isLoading = t4 === void 0 ? false : t4;
-  let t5;
-  if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = {
-      primary: "font-[700] text-white bg-blue-600 dark:bg-blue-700 border border-1 dark:border-blue-700 border-blue-800 hover:bg-blue-700",
-      secondary: "font-[500] text-gray-800 dark:text-gray-200 bg-gray-50 border-1 dark:border-gray-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600",
-      outline: "font-[500] text-blue-600 dark:text-blue-400 bg-transparent border-1 border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20",
-      ghost: "font-[500] text-gray-700 dark:text-gray-300 bg-transparent border-1 border-transparent",
-      danger: "font-[700] text-white bg-red-600 dark:bg-red-700 border border-1 dark:border-red-800 border-red-700 hover:bg-red-700 focus:ring-red-500"
-    };
-    $2[9] = t5;
-  } else {
-    t5 = $2[9];
-  }
-  const variants = t5;
-  let t6;
-  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = {
-      sm: "px-2 py-1 text-xs",
-      md: "px-3.5 py-1.5 text-sm",
-      lg: "px-4 py-2 text-base"
-    };
-    $2[10] = t6;
-  } else {
-    t6 = $2[10];
-  }
-  const sizes = t6;
-  const variantClasses = variants[variant];
-  const sizeClasses = sizes[size2];
-  const condensedClasses = condensed ? "condensed" : null;
-  let t7;
-  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = {
-      fontStretch: "115%"
-    };
-    $2[11] = t7;
-  } else {
-    t7 = $2[11];
-  }
-  const t8 = `${"inline-flex items-center justify-center rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
-  const t9 = disabled || isLoading;
-  let t10;
-  if ($2[12] !== isLoading) {
-    t10 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
-    $2[12] = isLoading;
-    $2[13] = t10;
-  } else {
-    t10 = $2[13];
-  }
-  let t11;
-  if ($2[14] !== children || $2[15] !== props || $2[16] !== ref || $2[17] !== t10 || $2[18] !== t8 || $2[19] !== t9) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { ref, style: t7, className: t8, disabled: t9, ...props, children: [
-      t10,
-      children
-    ] });
-    $2[14] = children;
-    $2[15] = props;
-    $2[16] = ref;
-    $2[17] = t10;
-    $2[18] = t8;
-    $2[19] = t9;
-    $2[20] = t11;
-  } else {
-    t11 = $2[20];
-  }
-  return t11;
-});
-Button.displayName = "Button";
-var AUTOFOCUS_ON_MOUNT = "focusScope.autoFocusOnMount";
-var AUTOFOCUS_ON_UNMOUNT = "focusScope.autoFocusOnUnmount";
-var EVENT_OPTIONS = { bubbles: false, cancelable: true };
-var FOCUS_SCOPE_NAME = "FocusScope";
-var FocusScope = reactExports.forwardRef((props, forwardedRef) => {
-  const {
-    loop = false,
-    trapped = false,
-    onMountAutoFocus: onMountAutoFocusProp,
-    onUnmountAutoFocus: onUnmountAutoFocusProp,
-    ...scopeProps
-  } = props;
-  const [container, setContainer] = reactExports.useState(null);
-  const onMountAutoFocus = useCallbackRef$1(onMountAutoFocusProp);
-  const onUnmountAutoFocus = useCallbackRef$1(onUnmountAutoFocusProp);
-  const lastFocusedElementRef = reactExports.useRef(null);
-  const composedRefs = useComposedRefs(forwardedRef, (node) => setContainer(node));
-  const focusScope = reactExports.useRef({
-    paused: false,
-    pause() {
-      this.paused = true;
-    },
-    resume() {
-      this.paused = false;
-    }
-  }).current;
-  reactExports.useEffect(() => {
-    if (trapped) {
-      let handleFocusIn2 = function(event) {
-        if (focusScope.paused || !container) return;
-        const target = event.target;
-        if (container.contains(target)) {
-          lastFocusedElementRef.current = target;
-        } else {
-          focus(lastFocusedElementRef.current, { select: true });
+  };
+  deep(parentNode);
+  elementsToKeep.clear();
+  lockCount++;
+  return function() {
+    hiddenNodes.forEach(function(node) {
+      var counterValue = counterMap.get(node) - 1;
+      var markerValue = markerCounter.get(node) - 1;
+      counterMap.set(node, counterValue);
+      markerCounter.set(node, markerValue);
+      if (!counterValue) {
+        if (!uncontrolledNodes.has(node)) {
+          node.removeAttribute(controlAttribute);
         }
-      }, handleFocusOut2 = function(event) {
-        if (focusScope.paused || !container) return;
-        const relatedTarget = event.relatedTarget;
-        if (relatedTarget === null) return;
-        if (!container.contains(relatedTarget)) {
-          focus(lastFocusedElementRef.current, { select: true });
-        }
-      }, handleMutations2 = function(mutations) {
-        const focusedElement = document.activeElement;
-        if (focusedElement !== document.body) return;
-        for (const mutation of mutations) {
-          if (mutation.removedNodes.length > 0) focus(container);
-        }
-      };
-      document.addEventListener("focusin", handleFocusIn2);
-      document.addEventListener("focusout", handleFocusOut2);
-      const mutationObserver = new MutationObserver(handleMutations2);
-      if (container) mutationObserver.observe(container, { childList: true, subtree: true });
-      return () => {
-        document.removeEventListener("focusin", handleFocusIn2);
-        document.removeEventListener("focusout", handleFocusOut2);
-        mutationObserver.disconnect();
-      };
-    }
-  }, [trapped, container, focusScope.paused]);
-  reactExports.useEffect(() => {
-    if (container) {
-      focusScopesStack.add(focusScope);
-      const previouslyFocusedElement = document.activeElement;
-      const hasFocusedCandidate = container.contains(previouslyFocusedElement);
-      if (!hasFocusedCandidate) {
-        const mountEvent = new CustomEvent(AUTOFOCUS_ON_MOUNT, EVENT_OPTIONS);
-        container.addEventListener(AUTOFOCUS_ON_MOUNT, onMountAutoFocus);
-        container.dispatchEvent(mountEvent);
-        if (!mountEvent.defaultPrevented) {
-          focusFirst(removeLinks(getTabbableCandidates(container)), { select: true });
-          if (document.activeElement === previouslyFocusedElement) {
-            focus(container);
-          }
-        }
+        uncontrolledNodes.delete(node);
       }
-      return () => {
-        container.removeEventListener(AUTOFOCUS_ON_MOUNT, onMountAutoFocus);
-        setTimeout(() => {
-          const unmountEvent = new CustomEvent(AUTOFOCUS_ON_UNMOUNT, EVENT_OPTIONS);
-          container.addEventListener(AUTOFOCUS_ON_UNMOUNT, onUnmountAutoFocus);
-          container.dispatchEvent(unmountEvent);
-          if (!unmountEvent.defaultPrevented) {
-            focus(previouslyFocusedElement ?? document.body, { select: true });
-          }
-          container.removeEventListener(AUTOFOCUS_ON_UNMOUNT, onUnmountAutoFocus);
-          focusScopesStack.remove(focusScope);
-        }, 0);
-      };
-    }
-  }, [container, onMountAutoFocus, onUnmountAutoFocus, focusScope]);
-  const handleKeyDown = reactExports.useCallback(
-    (event) => {
-      if (!loop && !trapped) return;
-      if (focusScope.paused) return;
-      const isTabKey = event.key === "Tab" && !event.altKey && !event.ctrlKey && !event.metaKey;
-      const focusedElement = document.activeElement;
-      if (isTabKey && focusedElement) {
-        const container2 = event.currentTarget;
-        const [first, last] = getTabbableEdges(container2);
-        const hasTabbableElementsInside = first && last;
-        if (!hasTabbableElementsInside) {
-          if (focusedElement === container2) event.preventDefault();
-        } else {
-          if (!event.shiftKey && focusedElement === last) {
-            event.preventDefault();
-            if (loop) focus(first, { select: true });
-          } else if (event.shiftKey && focusedElement === first) {
-            event.preventDefault();
-            if (loop) focus(last, { select: true });
-          }
-        }
+      if (!markerValue) {
+        node.removeAttribute(markerName);
       }
-    },
-    [loop, trapped, focusScope.paused]
-  );
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$1.div, { tabIndex: -1, ...scopeProps, ref: composedRefs, onKeyDown: handleKeyDown });
-});
-FocusScope.displayName = FOCUS_SCOPE_NAME;
-function focusFirst(candidates, { select = false } = {}) {
-  const previouslyFocusedElement = document.activeElement;
-  for (const candidate of candidates) {
-    focus(candidate, { select });
-    if (document.activeElement !== previouslyFocusedElement) return;
-  }
-}
-function getTabbableEdges(container) {
-  const candidates = getTabbableCandidates(container);
-  const first = findVisible(candidates, container);
-  const last = findVisible(candidates.reverse(), container);
-  return [first, last];
-}
-function getTabbableCandidates(container) {
-  const nodes = [];
-  const walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, {
-    acceptNode: (node) => {
-      const isHiddenInput = node.tagName === "INPUT" && node.type === "hidden";
-      if (node.disabled || node.hidden || isHiddenInput) return NodeFilter.FILTER_SKIP;
-      return node.tabIndex >= 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
-    }
-  });
-  while (walker.nextNode()) nodes.push(walker.currentNode);
-  return nodes;
-}
-function findVisible(elements, container) {
-  for (const element of elements) {
-    if (!isHidden(element, { upTo: container })) return element;
-  }
-}
-function isHidden(node, { upTo }) {
-  if (getComputedStyle(node).visibility === "hidden") return true;
-  while (node) {
-    if (upTo !== void 0 && node === upTo) return false;
-    if (getComputedStyle(node).display === "none") return true;
-    node = node.parentElement;
-  }
-  return false;
-}
-function isSelectableInput(element) {
-  return element instanceof HTMLInputElement && "select" in element;
-}
-function focus(element, { select = false } = {}) {
-  if (element && element.focus) {
-    const previouslyFocusedElement = document.activeElement;
-    element.focus({ preventScroll: true });
-    if (element !== previouslyFocusedElement && isSelectableInput(element) && select)
-      element.select();
-  }
-}
-var focusScopesStack = createFocusScopesStack();
-function createFocusScopesStack() {
-  let stack = [];
-  return {
-    add(focusScope) {
-      const activeFocusScope = stack[0];
-      if (focusScope !== activeFocusScope) {
-        activeFocusScope?.pause();
-      }
-      stack = arrayRemove(stack, focusScope);
-      stack.unshift(focusScope);
-    },
-    remove(focusScope) {
-      stack = arrayRemove(stack, focusScope);
-      stack[0]?.resume();
+    });
+    lockCount--;
+    if (!lockCount) {
+      counterMap = /* @__PURE__ */ new WeakMap();
+      counterMap = /* @__PURE__ */ new WeakMap();
+      uncontrolledNodes = /* @__PURE__ */ new WeakMap();
+      markerMap = {};
     }
   };
-}
-function arrayRemove(array, item) {
-  const updatedArray = [...array];
-  const index2 = updatedArray.indexOf(item);
-  if (index2 !== -1) {
-    updatedArray.splice(index2, 1);
+};
+var hideOthers = function(originalTarget, parentNode, markerName) {
+  if (markerName === void 0) {
+    markerName = "data-aria-hidden";
   }
-  return updatedArray;
-}
-function removeLinks(items) {
-  return items.filter((item) => item.tagName !== "A");
-}
-var count = 0;
-function useFocusGuards() {
-  reactExports.useEffect(() => {
-    const edgeGuards = document.querySelectorAll("[data-radix-focus-guard]");
-    document.body.insertAdjacentElement("afterbegin", edgeGuards[0] ?? createFocusGuard());
-    document.body.insertAdjacentElement("beforeend", edgeGuards[1] ?? createFocusGuard());
-    count++;
-    return () => {
-      if (count === 1) {
-        document.querySelectorAll("[data-radix-focus-guard]").forEach((node) => node.remove());
-      }
-      count--;
+  var targets = Array.from(Array.isArray(originalTarget) ? originalTarget : [originalTarget]);
+  var activeParentNode = getDefaultParent(originalTarget);
+  if (!activeParentNode) {
+    return function() {
+      return null;
     };
-  }, []);
-}
-function createFocusGuard() {
-  const element = document.createElement("span");
-  element.setAttribute("data-radix-focus-guard", "");
-  element.tabIndex = 0;
-  element.style.outline = "none";
-  element.style.opacity = "0";
-  element.style.position = "fixed";
-  element.style.pointerEvents = "none";
-  return element;
-}
+  }
+  targets.push.apply(targets, Array.from(activeParentNode.querySelectorAll("[aria-live], script")));
+  return applyAttributeToOthers(targets, activeParentNode, markerName, "aria-hidden");
+};
 var __assign = function() {
   __assign = Object.assign || function __assign2(t2) {
     for (var s2, i2 = 1, n2 = arguments.length; i2 < n2; i2++) {
@@ -23792,125 +22238,2463 @@ var ReactRemoveScroll = reactExports.forwardRef(function(props, ref) {
   return reactExports.createElement(RemoveScroll, __assign({}, props, { ref, sideCar: SideCar }));
 });
 ReactRemoveScroll.classNames = RemoveScroll.classNames;
-var getDefaultParent = function(originalTarget) {
-  if (typeof document === "undefined") {
-    return null;
-  }
-  var sampleTarget = Array.isArray(originalTarget) ? originalTarget[0] : originalTarget;
-  return sampleTarget.ownerDocument.body;
+var SELECTION_KEYS = ["Enter", " "];
+var FIRST_KEYS = ["ArrowDown", "PageUp", "Home"];
+var LAST_KEYS = ["ArrowUp", "PageDown", "End"];
+var FIRST_LAST_KEYS = [...FIRST_KEYS, ...LAST_KEYS];
+var SUB_OPEN_KEYS = {
+  ltr: [...SELECTION_KEYS, "ArrowRight"],
+  rtl: [...SELECTION_KEYS, "ArrowLeft"]
 };
-var counterMap = /* @__PURE__ */ new WeakMap();
-var uncontrolledNodes = /* @__PURE__ */ new WeakMap();
-var markerMap = {};
-var lockCount = 0;
-var unwrapHost = function(node) {
-  return node && (node.host || unwrapHost(node.parentNode));
+var SUB_CLOSE_KEYS = {
+  ltr: ["ArrowLeft"],
+  rtl: ["ArrowRight"]
 };
-var correctTargets = function(parent, targets) {
-  return targets.map(function(target) {
-    if (parent.contains(target)) {
-      return target;
-    }
-    var correctedTarget = unwrapHost(target);
-    if (correctedTarget && parent.contains(correctedTarget)) {
-      return correctedTarget;
-    }
-    console.error("aria-hidden", target, "in not contained inside", parent, ". Doing nothing");
-    return null;
-  }).filter(function(x2) {
-    return Boolean(x2);
-  });
-};
-var applyAttributeToOthers = function(originalTarget, parentNode, markerName, controlAttribute) {
-  var targets = correctTargets(parentNode, Array.isArray(originalTarget) ? originalTarget : [originalTarget]);
-  if (!markerMap[markerName]) {
-    markerMap[markerName] = /* @__PURE__ */ new WeakMap();
-  }
-  var markerCounter = markerMap[markerName];
-  var hiddenNodes = [];
-  var elementsToKeep = /* @__PURE__ */ new Set();
-  var elementsToStop = new Set(targets);
-  var keep = function(el2) {
-    if (!el2 || elementsToKeep.has(el2)) {
-      return;
-    }
-    elementsToKeep.add(el2);
-    keep(el2.parentNode);
-  };
-  targets.forEach(keep);
-  var deep = function(parent) {
-    if (!parent || elementsToStop.has(parent)) {
-      return;
-    }
-    Array.prototype.forEach.call(parent.children, function(node) {
-      if (elementsToKeep.has(node)) {
-        deep(node);
-      } else {
-        try {
-          var attr = node.getAttribute(controlAttribute);
-          var alreadyHidden = attr !== null && attr !== "false";
-          var counterValue = (counterMap.get(node) || 0) + 1;
-          var markerValue = (markerCounter.get(node) || 0) + 1;
-          counterMap.set(node, counterValue);
-          markerCounter.set(node, markerValue);
-          hiddenNodes.push(node);
-          if (counterValue === 1 && alreadyHidden) {
-            uncontrolledNodes.set(node, true);
-          }
-          if (markerValue === 1) {
-            node.setAttribute(markerName, "true");
-          }
-          if (!alreadyHidden) {
-            node.setAttribute(controlAttribute, "true");
-          }
-        } catch (e2) {
-          console.error("aria-hidden: cannot operate on ", node, e2);
-        }
-      }
-    });
-  };
-  deep(parentNode);
-  elementsToKeep.clear();
-  lockCount++;
-  return function() {
-    hiddenNodes.forEach(function(node) {
-      var counterValue = counterMap.get(node) - 1;
-      var markerValue = markerCounter.get(node) - 1;
-      counterMap.set(node, counterValue);
-      markerCounter.set(node, markerValue);
-      if (!counterValue) {
-        if (!uncontrolledNodes.has(node)) {
-          node.removeAttribute(controlAttribute);
-        }
-        uncontrolledNodes.delete(node);
-      }
-      if (!markerValue) {
-        node.removeAttribute(markerName);
-      }
-    });
-    lockCount--;
-    if (!lockCount) {
-      counterMap = /* @__PURE__ */ new WeakMap();
-      counterMap = /* @__PURE__ */ new WeakMap();
-      uncontrolledNodes = /* @__PURE__ */ new WeakMap();
-      markerMap = {};
-    }
-  };
-};
-var hideOthers = function(originalTarget, parentNode, markerName) {
-  if (markerName === void 0) {
-    markerName = "data-aria-hidden";
-  }
-  var targets = Array.from(Array.isArray(originalTarget) ? originalTarget : [originalTarget]);
-  var activeParentNode = getDefaultParent(originalTarget);
-  if (!activeParentNode) {
-    return function() {
-      return null;
+var MENU_NAME = "Menu";
+var [Collection, useCollection, createCollectionScope] = createCollection(MENU_NAME);
+var [createMenuContext, createMenuScope] = createContextScope(MENU_NAME, [
+  createCollectionScope,
+  createPopperScope,
+  createRovingFocusGroupScope
+]);
+var usePopperScope$1 = createPopperScope();
+var useRovingFocusGroupScope = createRovingFocusGroupScope();
+var [MenuProvider, useMenuContext] = createMenuContext(MENU_NAME);
+var [MenuRootProvider, useMenuRootContext] = createMenuContext(MENU_NAME);
+var Menu = (props) => {
+  const { __scopeMenu, open = false, children, dir, onOpenChange, modal = true } = props;
+  const popperScope = usePopperScope$1(__scopeMenu);
+  const [content, setContent] = reactExports.useState(null);
+  const isUsingKeyboardRef = reactExports.useRef(false);
+  const handleOpenChange = useCallbackRef$1(onOpenChange);
+  const direction = useDirection(dir);
+  reactExports.useEffect(() => {
+    const handleKeyDown = () => {
+      isUsingKeyboardRef.current = true;
+      document.addEventListener("pointerdown", handlePointer, { capture: true, once: true });
+      document.addEventListener("pointermove", handlePointer, { capture: true, once: true });
     };
-  }
-  targets.push.apply(targets, Array.from(activeParentNode.querySelectorAll("[aria-live], script")));
-  return applyAttributeToOthers(targets, activeParentNode, markerName, "aria-hidden");
+    const handlePointer = () => isUsingKeyboardRef.current = false;
+    document.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, { capture: true });
+      document.removeEventListener("pointerdown", handlePointer, { capture: true });
+      document.removeEventListener("pointermove", handlePointer, { capture: true });
+    };
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root2$1, { ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    MenuProvider,
+    {
+      scope: __scopeMenu,
+      open,
+      onOpenChange: handleOpenChange,
+      content,
+      onContentChange: setContent,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        MenuRootProvider,
+        {
+          scope: __scopeMenu,
+          onClose: reactExports.useCallback(() => handleOpenChange(false), [handleOpenChange]),
+          isUsingKeyboardRef,
+          dir: direction,
+          modal,
+          children
+        }
+      )
+    }
+  ) });
 };
+Menu.displayName = MENU_NAME;
+var ANCHOR_NAME = "MenuAnchor";
+var MenuAnchor = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeMenu, ...anchorProps } = props;
+    const popperScope = usePopperScope$1(__scopeMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { ...popperScope, ...anchorProps, ref: forwardedRef });
+  }
+);
+MenuAnchor.displayName = ANCHOR_NAME;
+var PORTAL_NAME$3 = "MenuPortal";
+var [PortalProvider$2, usePortalContext$2] = createMenuContext(PORTAL_NAME$3, {
+  forceMount: void 0
+});
+var MenuPortal = (props) => {
+  const { __scopeMenu, forceMount, children, container } = props;
+  const context = useMenuContext(PORTAL_NAME$3, __scopeMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider$2, { scope: __scopeMenu, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$3, { asChild: true, container, children }) }) });
+};
+MenuPortal.displayName = PORTAL_NAME$3;
+var CONTENT_NAME$3 = "MenuContent";
+var [MenuContentProvider, useMenuContentContext] = createMenuContext(CONTENT_NAME$3);
+var MenuContent = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const portalContext = usePortalContext$2(CONTENT_NAME$3, props.__scopeMenu);
+    const { forceMount = portalContext.forceMount, ...contentProps } = props;
+    const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
+    const rootContext = useMenuRootContext(CONTENT_NAME$3, props.__scopeMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Provider, { scope: props.__scopeMenu, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Slot, { scope: props.__scopeMenu, children: rootContext.modal ? /* @__PURE__ */ jsxRuntimeExports.jsx(MenuRootContentModal, { ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(MenuRootContentNonModal, { ...contentProps, ref: forwardedRef }) }) }) });
+  }
+);
+var MenuRootContentModal = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref);
+    reactExports.useEffect(() => {
+      const content = ref.current;
+      if (content) return hideOthers(content);
+    }, []);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MenuContentImpl,
+      {
+        ...props,
+        ref: composedRefs,
+        trapFocus: context.open,
+        disableOutsidePointerEvents: context.open,
+        disableOutsideScroll: true,
+        onFocusOutside: composeEventHandlers(
+          props.onFocusOutside,
+          (event) => event.preventDefault(),
+          { checkForDefaultPrevented: false }
+        ),
+        onDismiss: () => context.onOpenChange(false)
+      }
+    );
+  }
+);
+var MenuRootContentNonModal = reactExports.forwardRef((props, forwardedRef) => {
+  const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    MenuContentImpl,
+    {
+      ...props,
+      ref: forwardedRef,
+      trapFocus: false,
+      disableOutsidePointerEvents: false,
+      disableOutsideScroll: false,
+      onDismiss: () => context.onOpenChange(false)
+    }
+  );
+});
+var Slot$1 = /* @__PURE__ */ createSlot$2("MenuContent.ScrollLock");
+var MenuContentImpl = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopeMenu,
+      loop = false,
+      trapFocus,
+      onOpenAutoFocus,
+      onCloseAutoFocus,
+      disableOutsidePointerEvents,
+      onEntryFocus,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      onFocusOutside,
+      onInteractOutside,
+      onDismiss,
+      disableOutsideScroll,
+      ...contentProps
+    } = props;
+    const context = useMenuContext(CONTENT_NAME$3, __scopeMenu);
+    const rootContext = useMenuRootContext(CONTENT_NAME$3, __scopeMenu);
+    const popperScope = usePopperScope$1(__scopeMenu);
+    const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeMenu);
+    const getItems = useCollection(__scopeMenu);
+    const [currentItemId, setCurrentItemId] = reactExports.useState(null);
+    const contentRef = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, contentRef, context.onContentChange);
+    const timerRef = reactExports.useRef(0);
+    const searchRef = reactExports.useRef("");
+    const pointerGraceTimerRef = reactExports.useRef(0);
+    const pointerGraceIntentRef = reactExports.useRef(null);
+    const pointerDirRef = reactExports.useRef("right");
+    const lastPointerXRef = reactExports.useRef(0);
+    const ScrollLockWrapper = disableOutsideScroll ? ReactRemoveScroll : reactExports.Fragment;
+    const scrollLockWrapperProps = disableOutsideScroll ? { as: Slot$1, allowPinchZoom: true } : void 0;
+    const handleTypeaheadSearch = (key) => {
+      const search = searchRef.current + key;
+      const items = getItems().filter((item) => !item.disabled);
+      const currentItem = document.activeElement;
+      const currentMatch = items.find((item) => item.ref.current === currentItem)?.textValue;
+      const values = items.map((item) => item.textValue);
+      const nextMatch = getNextMatch(values, search, currentMatch);
+      const newItem = items.find((item) => item.textValue === nextMatch)?.ref.current;
+      (function updateSearch(value) {
+        searchRef.current = value;
+        window.clearTimeout(timerRef.current);
+        if (value !== "") timerRef.current = window.setTimeout(() => updateSearch(""), 1e3);
+      })(search);
+      if (newItem) {
+        setTimeout(() => newItem.focus());
+      }
+    };
+    reactExports.useEffect(() => {
+      return () => window.clearTimeout(timerRef.current);
+    }, []);
+    useFocusGuards();
+    const isPointerMovingToSubmenu = reactExports.useCallback((event) => {
+      const isMovingTowards = pointerDirRef.current === pointerGraceIntentRef.current?.side;
+      return isMovingTowards && isPointerInGraceArea(event, pointerGraceIntentRef.current?.area);
+    }, []);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MenuContentProvider,
+      {
+        scope: __scopeMenu,
+        searchRef,
+        onItemEnter: reactExports.useCallback(
+          (event) => {
+            if (isPointerMovingToSubmenu(event)) event.preventDefault();
+          },
+          [isPointerMovingToSubmenu]
+        ),
+        onItemLeave: reactExports.useCallback(
+          (event) => {
+            if (isPointerMovingToSubmenu(event)) return;
+            contentRef.current?.focus();
+            setCurrentItemId(null);
+          },
+          [isPointerMovingToSubmenu]
+        ),
+        onTriggerLeave: reactExports.useCallback(
+          (event) => {
+            if (isPointerMovingToSubmenu(event)) event.preventDefault();
+          },
+          [isPointerMovingToSubmenu]
+        ),
+        pointerGraceTimerRef,
+        onPointerGraceIntentChange: reactExports.useCallback((intent) => {
+          pointerGraceIntentRef.current = intent;
+        }, []),
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(ScrollLockWrapper, { ...scrollLockWrapperProps, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          FocusScope,
+          {
+            asChild: true,
+            trapped: trapFocus,
+            onMountAutoFocus: composeEventHandlers(onOpenAutoFocus, (event) => {
+              event.preventDefault();
+              contentRef.current?.focus({ preventScroll: true });
+            }),
+            onUnmountAutoFocus: onCloseAutoFocus,
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              DismissableLayer,
+              {
+                asChild: true,
+                disableOutsidePointerEvents,
+                onEscapeKeyDown,
+                onPointerDownOutside,
+                onFocusOutside,
+                onInteractOutside,
+                onDismiss,
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Root$3,
+                  {
+                    asChild: true,
+                    ...rovingFocusGroupScope,
+                    dir: rootContext.dir,
+                    orientation: "vertical",
+                    loop,
+                    currentTabStopId: currentItemId,
+                    onCurrentTabStopIdChange: setCurrentItemId,
+                    onEntryFocus: composeEventHandlers(onEntryFocus, (event) => {
+                      if (!rootContext.isUsingKeyboardRef.current) event.preventDefault();
+                    }),
+                    preventScrollOnEntryFocus: true,
+                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      Content$1,
+                      {
+                        role: "menu",
+                        "aria-orientation": "vertical",
+                        "data-state": getOpenState(context.open),
+                        "data-radix-menu-content": "",
+                        dir: rootContext.dir,
+                        ...popperScope,
+                        ...contentProps,
+                        ref: composedRefs,
+                        style: { outline: "none", ...contentProps.style },
+                        onKeyDown: composeEventHandlers(contentProps.onKeyDown, (event) => {
+                          const target = event.target;
+                          const isKeyDownInside = target.closest("[data-radix-menu-content]") === event.currentTarget;
+                          const isModifierKey = event.ctrlKey || event.altKey || event.metaKey;
+                          const isCharacterKey = event.key.length === 1;
+                          if (isKeyDownInside) {
+                            if (event.key === "Tab") event.preventDefault();
+                            if (!isModifierKey && isCharacterKey) handleTypeaheadSearch(event.key);
+                          }
+                          const content = contentRef.current;
+                          if (event.target !== content) return;
+                          if (!FIRST_LAST_KEYS.includes(event.key)) return;
+                          event.preventDefault();
+                          const items = getItems().filter((item) => !item.disabled);
+                          const candidateNodes = items.map((item) => item.ref.current);
+                          if (LAST_KEYS.includes(event.key)) candidateNodes.reverse();
+                          focusFirst(candidateNodes);
+                        }),
+                        onBlur: composeEventHandlers(props.onBlur, (event) => {
+                          if (!event.currentTarget.contains(event.target)) {
+                            window.clearTimeout(timerRef.current);
+                            searchRef.current = "";
+                          }
+                        }),
+                        onPointerMove: composeEventHandlers(
+                          props.onPointerMove,
+                          whenMouse((event) => {
+                            const target = event.target;
+                            const pointerXHasChanged = lastPointerXRef.current !== event.clientX;
+                            if (event.currentTarget.contains(target) && pointerXHasChanged) {
+                              const newDir = event.clientX > lastPointerXRef.current ? "right" : "left";
+                              pointerDirRef.current = newDir;
+                              lastPointerXRef.current = event.clientX;
+                            }
+                          })
+                        )
+                      }
+                    )
+                  }
+                )
+              }
+            )
+          }
+        ) })
+      }
+    );
+  }
+);
+MenuContent.displayName = CONTENT_NAME$3;
+var GROUP_NAME$1 = "MenuGroup";
+var MenuGroup = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeMenu, ...groupProps } = props;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$1.div, { role: "group", ...groupProps, ref: forwardedRef });
+  }
+);
+MenuGroup.displayName = GROUP_NAME$1;
+var LABEL_NAME$1 = "MenuLabel";
+var MenuLabel = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeMenu, ...labelProps } = props;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive$1.div, { ...labelProps, ref: forwardedRef });
+  }
+);
+MenuLabel.displayName = LABEL_NAME$1;
+var ITEM_NAME$1 = "MenuItem";
+var ITEM_SELECT = "menu.itemSelect";
+var MenuItem = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { disabled = false, onSelect, ...itemProps } = props;
+    const ref = reactExports.useRef(null);
+    const rootContext = useMenuRootContext(ITEM_NAME$1, props.__scopeMenu);
+    const contentContext = useMenuContentContext(ITEM_NAME$1, props.__scopeMenu);
+    const composedRefs = useComposedRefs(forwardedRef, ref);
+    const isPointerDownRef = reactExports.useRef(false);
+    const handleSelect = () => {
+      const menuItem = ref.current;
+      if (!disabled && menuItem) {
+        const itemSelectEvent = new CustomEvent(ITEM_SELECT, { bubbles: true, cancelable: true });
+        menuItem.addEventListener(ITEM_SELECT, (event) => onSelect?.(event), { once: true });
+        dispatchDiscreteCustomEvent(menuItem, itemSelectEvent);
+        if (itemSelectEvent.defaultPrevented) {
+          isPointerDownRef.current = false;
+        } else {
+          rootContext.onClose();
+        }
+      }
+    };
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MenuItemImpl,
+      {
+        ...itemProps,
+        ref: composedRefs,
+        disabled,
+        onClick: composeEventHandlers(props.onClick, handleSelect),
+        onPointerDown: (event) => {
+          props.onPointerDown?.(event);
+          isPointerDownRef.current = true;
+        },
+        onPointerUp: composeEventHandlers(props.onPointerUp, (event) => {
+          if (!isPointerDownRef.current) event.currentTarget?.click();
+        }),
+        onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
+          const isTypingAhead = contentContext.searchRef.current !== "";
+          if (disabled || isTypingAhead && event.key === " ") return;
+          if (SELECTION_KEYS.includes(event.key)) {
+            event.currentTarget.click();
+            event.preventDefault();
+          }
+        })
+      }
+    );
+  }
+);
+MenuItem.displayName = ITEM_NAME$1;
+var MenuItemImpl = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeMenu, disabled = false, textValue, ...itemProps } = props;
+    const contentContext = useMenuContentContext(ITEM_NAME$1, __scopeMenu);
+    const rovingFocusGroupScope = useRovingFocusGroupScope(__scopeMenu);
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref);
+    const [isFocused, setIsFocused] = reactExports.useState(false);
+    const [textContent, setTextContent] = reactExports.useState("");
+    reactExports.useEffect(() => {
+      const menuItem = ref.current;
+      if (menuItem) {
+        setTextContent((menuItem.textContent ?? "").trim());
+      }
+    }, [itemProps.children]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Collection.ItemSlot,
+      {
+        scope: __scopeMenu,
+        disabled,
+        textValue: textValue ?? textContent,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(Item, { asChild: true, ...rovingFocusGroupScope, focusable: !disabled, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Primitive$1.div,
+          {
+            role: "menuitem",
+            "data-highlighted": isFocused ? "" : void 0,
+            "aria-disabled": disabled || void 0,
+            "data-disabled": disabled ? "" : void 0,
+            ...itemProps,
+            ref: composedRefs,
+            onPointerMove: composeEventHandlers(
+              props.onPointerMove,
+              whenMouse((event) => {
+                if (disabled) {
+                  contentContext.onItemLeave(event);
+                } else {
+                  contentContext.onItemEnter(event);
+                  if (!event.defaultPrevented) {
+                    const item = event.currentTarget;
+                    item.focus({ preventScroll: true });
+                  }
+                }
+              })
+            ),
+            onPointerLeave: composeEventHandlers(
+              props.onPointerLeave,
+              whenMouse((event) => contentContext.onItemLeave(event))
+            ),
+            onFocus: composeEventHandlers(props.onFocus, () => setIsFocused(true)),
+            onBlur: composeEventHandlers(props.onBlur, () => setIsFocused(false))
+          }
+        ) })
+      }
+    );
+  }
+);
+var CHECKBOX_ITEM_NAME$1 = "MenuCheckboxItem";
+var MenuCheckboxItem = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { checked = false, onCheckedChange, ...checkboxItemProps } = props;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(ItemIndicatorProvider, { scope: props.__scopeMenu, checked, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MenuItem,
+      {
+        role: "menuitemcheckbox",
+        "aria-checked": isIndeterminate$1(checked) ? "mixed" : checked,
+        ...checkboxItemProps,
+        ref: forwardedRef,
+        "data-state": getCheckedState(checked),
+        onSelect: composeEventHandlers(
+          checkboxItemProps.onSelect,
+          () => onCheckedChange?.(isIndeterminate$1(checked) ? true : !checked),
+          { checkForDefaultPrevented: false }
+        )
+      }
+    ) });
+  }
+);
+MenuCheckboxItem.displayName = CHECKBOX_ITEM_NAME$1;
+var RADIO_GROUP_NAME$1 = "MenuRadioGroup";
+var [RadioGroupProvider, useRadioGroupContext] = createMenuContext(
+  RADIO_GROUP_NAME$1,
+  { value: void 0, onValueChange: () => {
+  } }
+);
+var MenuRadioGroup = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { value, onValueChange, ...groupProps } = props;
+    const handleValueChange = useCallbackRef$1(onValueChange);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(RadioGroupProvider, { scope: props.__scopeMenu, value, onValueChange: handleValueChange, children: /* @__PURE__ */ jsxRuntimeExports.jsx(MenuGroup, { ...groupProps, ref: forwardedRef }) });
+  }
+);
+MenuRadioGroup.displayName = RADIO_GROUP_NAME$1;
+var RADIO_ITEM_NAME$1 = "MenuRadioItem";
+var MenuRadioItem = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { value, ...radioItemProps } = props;
+    const context = useRadioGroupContext(RADIO_ITEM_NAME$1, props.__scopeMenu);
+    const checked = value === context.value;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(ItemIndicatorProvider, { scope: props.__scopeMenu, checked, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MenuItem,
+      {
+        role: "menuitemradio",
+        "aria-checked": checked,
+        ...radioItemProps,
+        ref: forwardedRef,
+        "data-state": getCheckedState(checked),
+        onSelect: composeEventHandlers(
+          radioItemProps.onSelect,
+          () => context.onValueChange?.(value),
+          { checkForDefaultPrevented: false }
+        )
+      }
+    ) });
+  }
+);
+MenuRadioItem.displayName = RADIO_ITEM_NAME$1;
+var ITEM_INDICATOR_NAME = "MenuItemIndicator";
+var [ItemIndicatorProvider, useItemIndicatorContext] = createMenuContext(
+  ITEM_INDICATOR_NAME,
+  { checked: false }
+);
+var MenuItemIndicator = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeMenu, forceMount, ...itemIndicatorProps } = props;
+    const indicatorContext = useItemIndicatorContext(ITEM_INDICATOR_NAME, __scopeMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Presence,
+      {
+        present: forceMount || isIndeterminate$1(indicatorContext.checked) || indicatorContext.checked === true,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          Primitive$1.span,
+          {
+            ...itemIndicatorProps,
+            ref: forwardedRef,
+            "data-state": getCheckedState(indicatorContext.checked)
+          }
+        )
+      }
+    );
+  }
+);
+MenuItemIndicator.displayName = ITEM_INDICATOR_NAME;
+var SEPARATOR_NAME$1 = "MenuSeparator";
+var MenuSeparator = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeMenu, ...separatorProps } = props;
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive$1.div,
+      {
+        role: "separator",
+        "aria-orientation": "horizontal",
+        ...separatorProps,
+        ref: forwardedRef
+      }
+    );
+  }
+);
+MenuSeparator.displayName = SEPARATOR_NAME$1;
+var ARROW_NAME$2 = "MenuArrow";
+var MenuArrow = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeMenu, ...arrowProps } = props;
+    const popperScope = usePopperScope$1(__scopeMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+  }
+);
+MenuArrow.displayName = ARROW_NAME$2;
+var SUB_NAME = "MenuSub";
+var [MenuSubProvider, useMenuSubContext] = createMenuContext(SUB_NAME);
+var SUB_TRIGGER_NAME$1 = "MenuSubTrigger";
+var MenuSubTrigger = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const context = useMenuContext(SUB_TRIGGER_NAME$1, props.__scopeMenu);
+    const rootContext = useMenuRootContext(SUB_TRIGGER_NAME$1, props.__scopeMenu);
+    const subContext = useMenuSubContext(SUB_TRIGGER_NAME$1, props.__scopeMenu);
+    const contentContext = useMenuContentContext(SUB_TRIGGER_NAME$1, props.__scopeMenu);
+    const openTimerRef = reactExports.useRef(null);
+    const { pointerGraceTimerRef, onPointerGraceIntentChange } = contentContext;
+    const scope = { __scopeMenu: props.__scopeMenu };
+    const clearOpenTimer = reactExports.useCallback(() => {
+      if (openTimerRef.current) window.clearTimeout(openTimerRef.current);
+      openTimerRef.current = null;
+    }, []);
+    reactExports.useEffect(() => clearOpenTimer, [clearOpenTimer]);
+    reactExports.useEffect(() => {
+      const pointerGraceTimer = pointerGraceTimerRef.current;
+      return () => {
+        window.clearTimeout(pointerGraceTimer);
+        onPointerGraceIntentChange(null);
+      };
+    }, [pointerGraceTimerRef, onPointerGraceIntentChange]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(MenuAnchor, { asChild: true, ...scope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MenuItemImpl,
+      {
+        id: subContext.triggerId,
+        "aria-haspopup": "menu",
+        "aria-expanded": context.open,
+        "aria-controls": subContext.contentId,
+        "data-state": getOpenState(context.open),
+        ...props,
+        ref: composeRefs(forwardedRef, subContext.onTriggerChange),
+        onClick: (event) => {
+          props.onClick?.(event);
+          if (props.disabled || event.defaultPrevented) return;
+          event.currentTarget.focus();
+          if (!context.open) context.onOpenChange(true);
+        },
+        onPointerMove: composeEventHandlers(
+          props.onPointerMove,
+          whenMouse((event) => {
+            contentContext.onItemEnter(event);
+            if (event.defaultPrevented) return;
+            if (!props.disabled && !context.open && !openTimerRef.current) {
+              contentContext.onPointerGraceIntentChange(null);
+              openTimerRef.current = window.setTimeout(() => {
+                context.onOpenChange(true);
+                clearOpenTimer();
+              }, 100);
+            }
+          })
+        ),
+        onPointerLeave: composeEventHandlers(
+          props.onPointerLeave,
+          whenMouse((event) => {
+            clearOpenTimer();
+            const contentRect = context.content?.getBoundingClientRect();
+            if (contentRect) {
+              const side = context.content?.dataset.side;
+              const rightSide = side === "right";
+              const bleed = rightSide ? -5 : 5;
+              const contentNearEdge = contentRect[rightSide ? "left" : "right"];
+              const contentFarEdge = contentRect[rightSide ? "right" : "left"];
+              contentContext.onPointerGraceIntentChange({
+                area: [
+                  // Apply a bleed on clientX to ensure that our exit point is
+                  // consistently within polygon bounds
+                  { x: event.clientX + bleed, y: event.clientY },
+                  { x: contentNearEdge, y: contentRect.top },
+                  { x: contentFarEdge, y: contentRect.top },
+                  { x: contentFarEdge, y: contentRect.bottom },
+                  { x: contentNearEdge, y: contentRect.bottom }
+                ],
+                side
+              });
+              window.clearTimeout(pointerGraceTimerRef.current);
+              pointerGraceTimerRef.current = window.setTimeout(
+                () => contentContext.onPointerGraceIntentChange(null),
+                300
+              );
+            } else {
+              contentContext.onTriggerLeave(event);
+              if (event.defaultPrevented) return;
+              contentContext.onPointerGraceIntentChange(null);
+            }
+          })
+        ),
+        onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
+          const isTypingAhead = contentContext.searchRef.current !== "";
+          if (props.disabled || isTypingAhead && event.key === " ") return;
+          if (SUB_OPEN_KEYS[rootContext.dir].includes(event.key)) {
+            context.onOpenChange(true);
+            context.content?.focus();
+            event.preventDefault();
+          }
+        })
+      }
+    ) });
+  }
+);
+MenuSubTrigger.displayName = SUB_TRIGGER_NAME$1;
+var SUB_CONTENT_NAME$1 = "MenuSubContent";
+var MenuSubContent = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const portalContext = usePortalContext$2(CONTENT_NAME$3, props.__scopeMenu);
+    const { forceMount = portalContext.forceMount, ...subContentProps } = props;
+    const context = useMenuContext(CONTENT_NAME$3, props.__scopeMenu);
+    const rootContext = useMenuRootContext(CONTENT_NAME$3, props.__scopeMenu);
+    const subContext = useMenuSubContext(SUB_CONTENT_NAME$1, props.__scopeMenu);
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Provider, { scope: props.__scopeMenu, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Slot, { scope: props.__scopeMenu, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      MenuContentImpl,
+      {
+        id: subContext.contentId,
+        "aria-labelledby": subContext.triggerId,
+        ...subContentProps,
+        ref: composedRefs,
+        align: "start",
+        side: rootContext.dir === "rtl" ? "left" : "right",
+        disableOutsidePointerEvents: false,
+        disableOutsideScroll: false,
+        trapFocus: false,
+        onOpenAutoFocus: (event) => {
+          if (rootContext.isUsingKeyboardRef.current) ref.current?.focus();
+          event.preventDefault();
+        },
+        onCloseAutoFocus: (event) => event.preventDefault(),
+        onFocusOutside: composeEventHandlers(props.onFocusOutside, (event) => {
+          if (event.target !== subContext.trigger) context.onOpenChange(false);
+        }),
+        onEscapeKeyDown: composeEventHandlers(props.onEscapeKeyDown, (event) => {
+          rootContext.onClose();
+          event.preventDefault();
+        }),
+        onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
+          const isKeyDownInside = event.currentTarget.contains(event.target);
+          const isCloseKey = SUB_CLOSE_KEYS[rootContext.dir].includes(event.key);
+          if (isKeyDownInside && isCloseKey) {
+            context.onOpenChange(false);
+            subContext.trigger?.focus();
+            event.preventDefault();
+          }
+        })
+      }
+    ) }) }) });
+  }
+);
+MenuSubContent.displayName = SUB_CONTENT_NAME$1;
+function getOpenState(open) {
+  return open ? "open" : "closed";
+}
+function isIndeterminate$1(checked) {
+  return checked === "indeterminate";
+}
+function getCheckedState(checked) {
+  return isIndeterminate$1(checked) ? "indeterminate" : checked ? "checked" : "unchecked";
+}
+function focusFirst(candidates) {
+  const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
+  for (const candidate of candidates) {
+    if (candidate === PREVIOUSLY_FOCUSED_ELEMENT) return;
+    candidate.focus();
+    if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
+  }
+}
+function wrapArray(array, startIndex) {
+  return array.map((_2, index2) => array[(startIndex + index2) % array.length]);
+}
+function getNextMatch(values, search, currentMatch) {
+  const isRepeated = search.length > 1 && Array.from(search).every((char) => char === search[0]);
+  const normalizedSearch = isRepeated ? search[0] : search;
+  const currentMatchIndex = currentMatch ? values.indexOf(currentMatch) : -1;
+  let wrappedValues = wrapArray(values, Math.max(currentMatchIndex, 0));
+  const excludeCurrentMatch = normalizedSearch.length === 1;
+  if (excludeCurrentMatch) wrappedValues = wrappedValues.filter((v2) => v2 !== currentMatch);
+  const nextMatch = wrappedValues.find(
+    (value) => value.toLowerCase().startsWith(normalizedSearch.toLowerCase())
+  );
+  return nextMatch !== currentMatch ? nextMatch : void 0;
+}
+function isPointInPolygon$1(point, polygon) {
+  const { x: x2, y: y2 } = point;
+  let inside = false;
+  for (let i2 = 0, j2 = polygon.length - 1; i2 < polygon.length; j2 = i2++) {
+    const ii2 = polygon[i2];
+    const jj2 = polygon[j2];
+    const xi2 = ii2.x;
+    const yi2 = ii2.y;
+    const xj2 = jj2.x;
+    const yj2 = jj2.y;
+    const intersect = yi2 > y2 !== yj2 > y2 && x2 < (xj2 - xi2) * (y2 - yi2) / (yj2 - yi2) + xi2;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+function isPointerInGraceArea(event, area) {
+  if (!area) return false;
+  const cursorPos = { x: event.clientX, y: event.clientY };
+  return isPointInPolygon$1(cursorPos, area);
+}
+function whenMouse(handler) {
+  return (event) => event.pointerType === "mouse" ? handler(event) : void 0;
+}
+var Root3$1 = Menu;
+var Anchor2 = MenuAnchor;
+var Portal$2 = MenuPortal;
+var Content2$2 = MenuContent;
+var Group = MenuGroup;
+var Label$2 = MenuLabel;
+var Item2$1 = MenuItem;
+var CheckboxItem = MenuCheckboxItem;
+var RadioGroup = MenuRadioGroup;
+var RadioItem = MenuRadioItem;
+var ItemIndicator = MenuItemIndicator;
+var Separator = MenuSeparator;
+var Arrow2$1 = MenuArrow;
+var SubTrigger = MenuSubTrigger;
+var SubContent = MenuSubContent;
+var DROPDOWN_MENU_NAME = "DropdownMenu";
+var [createDropdownMenuContext] = createContextScope(
+  DROPDOWN_MENU_NAME,
+  [createMenuScope]
+);
+var useMenuScope = createMenuScope();
+var [DropdownMenuProvider, useDropdownMenuContext] = createDropdownMenuContext(DROPDOWN_MENU_NAME);
+var DropdownMenu = (props) => {
+  const {
+    __scopeDropdownMenu,
+    children,
+    dir,
+    open: openProp,
+    defaultOpen,
+    onOpenChange,
+    modal = true
+  } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  const triggerRef = reactExports.useRef(null);
+  const [open, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen ?? false,
+    onChange: onOpenChange,
+    caller: DROPDOWN_MENU_NAME
+  });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    DropdownMenuProvider,
+    {
+      scope: __scopeDropdownMenu,
+      triggerId: useId(),
+      triggerRef,
+      contentId: useId(),
+      open,
+      onOpenChange: setOpen,
+      onOpenToggle: reactExports.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
+      modal,
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root3$1, { ...menuScope, open, onOpenChange: setOpen, dir, modal, children })
+    }
+  );
+};
+DropdownMenu.displayName = DROPDOWN_MENU_NAME;
+var TRIGGER_NAME$3 = "DropdownMenuTrigger";
+var DropdownMenuTrigger = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeDropdownMenu, disabled = false, ...triggerProps } = props;
+    const context = useDropdownMenuContext(TRIGGER_NAME$3, __scopeDropdownMenu);
+    const menuScope = useMenuScope(__scopeDropdownMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor2, { asChild: true, ...menuScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive$1.button,
+      {
+        type: "button",
+        id: context.triggerId,
+        "aria-haspopup": "menu",
+        "aria-expanded": context.open,
+        "aria-controls": context.open ? context.contentId : void 0,
+        "data-state": context.open ? "open" : "closed",
+        "data-disabled": disabled ? "" : void 0,
+        disabled,
+        ...triggerProps,
+        ref: composeRefs(forwardedRef, context.triggerRef),
+        onPointerDown: composeEventHandlers(props.onPointerDown, (event) => {
+          if (!disabled && event.button === 0 && event.ctrlKey === false) {
+            context.onOpenToggle();
+            if (!context.open) event.preventDefault();
+          }
+        }),
+        onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
+          if (disabled) return;
+          if (["Enter", " "].includes(event.key)) context.onOpenToggle();
+          if (event.key === "ArrowDown") context.onOpenChange(true);
+          if (["Enter", " ", "ArrowDown"].includes(event.key)) event.preventDefault();
+        })
+      }
+    ) });
+  }
+);
+DropdownMenuTrigger.displayName = TRIGGER_NAME$3;
+var PORTAL_NAME$2 = "DropdownMenuPortal";
+var DropdownMenuPortal = (props) => {
+  const { __scopeDropdownMenu, ...portalProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { ...menuScope, ...portalProps });
+};
+DropdownMenuPortal.displayName = PORTAL_NAME$2;
+var CONTENT_NAME$2 = "DropdownMenuContent";
+var DropdownMenuContent = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeDropdownMenu, ...contentProps } = props;
+    const context = useDropdownMenuContext(CONTENT_NAME$2, __scopeDropdownMenu);
+    const menuScope = useMenuScope(__scopeDropdownMenu);
+    const hasInteractedOutsideRef = reactExports.useRef(false);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Content2$2,
+      {
+        id: context.contentId,
+        "aria-labelledby": context.triggerId,
+        ...menuScope,
+        ...contentProps,
+        ref: forwardedRef,
+        onCloseAutoFocus: composeEventHandlers(props.onCloseAutoFocus, (event) => {
+          if (!hasInteractedOutsideRef.current) context.triggerRef.current?.focus();
+          hasInteractedOutsideRef.current = false;
+          event.preventDefault();
+        }),
+        onInteractOutside: composeEventHandlers(props.onInteractOutside, (event) => {
+          const originalEvent = event.detail.originalEvent;
+          const ctrlLeftClick = originalEvent.button === 0 && originalEvent.ctrlKey === true;
+          const isRightClick = originalEvent.button === 2 || ctrlLeftClick;
+          if (!context.modal || isRightClick) hasInteractedOutsideRef.current = true;
+        }),
+        style: {
+          ...props.style,
+          // re-namespace exposed content custom properties
+          ...{
+            "--radix-dropdown-menu-content-transform-origin": "var(--radix-popper-transform-origin)",
+            "--radix-dropdown-menu-content-available-width": "var(--radix-popper-available-width)",
+            "--radix-dropdown-menu-content-available-height": "var(--radix-popper-available-height)",
+            "--radix-dropdown-menu-trigger-width": "var(--radix-popper-anchor-width)",
+            "--radix-dropdown-menu-trigger-height": "var(--radix-popper-anchor-height)"
+          }
+        }
+      }
+    );
+  }
+);
+DropdownMenuContent.displayName = CONTENT_NAME$2;
+var GROUP_NAME = "DropdownMenuGroup";
+var DropdownMenuGroup = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeDropdownMenu, ...groupProps } = props;
+    const menuScope = useMenuScope(__scopeDropdownMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Group, { ...menuScope, ...groupProps, ref: forwardedRef });
+  }
+);
+DropdownMenuGroup.displayName = GROUP_NAME;
+var LABEL_NAME = "DropdownMenuLabel";
+var DropdownMenuLabel = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeDropdownMenu, ...labelProps } = props;
+    const menuScope = useMenuScope(__scopeDropdownMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Label$2, { ...menuScope, ...labelProps, ref: forwardedRef });
+  }
+);
+DropdownMenuLabel.displayName = LABEL_NAME;
+var ITEM_NAME = "DropdownMenuItem";
+var DropdownMenuItem = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeDropdownMenu, ...itemProps } = props;
+    const menuScope = useMenuScope(__scopeDropdownMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Item2$1, { ...menuScope, ...itemProps, ref: forwardedRef });
+  }
+);
+DropdownMenuItem.displayName = ITEM_NAME;
+var CHECKBOX_ITEM_NAME = "DropdownMenuCheckboxItem";
+var DropdownMenuCheckboxItem = reactExports.forwardRef((props, forwardedRef) => {
+  const { __scopeDropdownMenu, ...checkboxItemProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxItem, { ...menuScope, ...checkboxItemProps, ref: forwardedRef });
+});
+DropdownMenuCheckboxItem.displayName = CHECKBOX_ITEM_NAME;
+var RADIO_GROUP_NAME = "DropdownMenuRadioGroup";
+var DropdownMenuRadioGroup = reactExports.forwardRef((props, forwardedRef) => {
+  const { __scopeDropdownMenu, ...radioGroupProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(RadioGroup, { ...menuScope, ...radioGroupProps, ref: forwardedRef });
+});
+DropdownMenuRadioGroup.displayName = RADIO_GROUP_NAME;
+var RADIO_ITEM_NAME = "DropdownMenuRadioItem";
+var DropdownMenuRadioItem = reactExports.forwardRef((props, forwardedRef) => {
+  const { __scopeDropdownMenu, ...radioItemProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(RadioItem, { ...menuScope, ...radioItemProps, ref: forwardedRef });
+});
+DropdownMenuRadioItem.displayName = RADIO_ITEM_NAME;
+var INDICATOR_NAME$1 = "DropdownMenuItemIndicator";
+var DropdownMenuItemIndicator = reactExports.forwardRef((props, forwardedRef) => {
+  const { __scopeDropdownMenu, ...itemIndicatorProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(ItemIndicator, { ...menuScope, ...itemIndicatorProps, ref: forwardedRef });
+});
+DropdownMenuItemIndicator.displayName = INDICATOR_NAME$1;
+var SEPARATOR_NAME = "DropdownMenuSeparator";
+var DropdownMenuSeparator = reactExports.forwardRef((props, forwardedRef) => {
+  const { __scopeDropdownMenu, ...separatorProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Separator, { ...menuScope, ...separatorProps, ref: forwardedRef });
+});
+DropdownMenuSeparator.displayName = SEPARATOR_NAME;
+var ARROW_NAME$1 = "DropdownMenuArrow";
+var DropdownMenuArrow = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeDropdownMenu, ...arrowProps } = props;
+    const menuScope = useMenuScope(__scopeDropdownMenu);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2$1, { ...menuScope, ...arrowProps, ref: forwardedRef });
+  }
+);
+DropdownMenuArrow.displayName = ARROW_NAME$1;
+var SUB_TRIGGER_NAME = "DropdownMenuSubTrigger";
+var DropdownMenuSubTrigger = reactExports.forwardRef((props, forwardedRef) => {
+  const { __scopeDropdownMenu, ...subTriggerProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SubTrigger, { ...menuScope, ...subTriggerProps, ref: forwardedRef });
+});
+DropdownMenuSubTrigger.displayName = SUB_TRIGGER_NAME;
+var SUB_CONTENT_NAME = "DropdownMenuSubContent";
+var DropdownMenuSubContent = reactExports.forwardRef((props, forwardedRef) => {
+  const { __scopeDropdownMenu, ...subContentProps } = props;
+  const menuScope = useMenuScope(__scopeDropdownMenu);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    SubContent,
+    {
+      ...menuScope,
+      ...subContentProps,
+      ref: forwardedRef,
+      style: {
+        ...props.style,
+        // re-namespace exposed content custom properties
+        ...{
+          "--radix-dropdown-menu-content-transform-origin": "var(--radix-popper-transform-origin)",
+          "--radix-dropdown-menu-content-available-width": "var(--radix-popper-available-width)",
+          "--radix-dropdown-menu-content-available-height": "var(--radix-popper-available-height)",
+          "--radix-dropdown-menu-trigger-width": "var(--radix-popper-anchor-width)",
+          "--radix-dropdown-menu-trigger-height": "var(--radix-popper-anchor-height)"
+        }
+      }
+    }
+  );
+});
+DropdownMenuSubContent.displayName = SUB_CONTENT_NAME;
+var Root2 = DropdownMenu;
+var Trigger$1 = DropdownMenuTrigger;
+var Portal2 = DropdownMenuPortal;
+var Content2$1 = DropdownMenuContent;
+var Item2 = DropdownMenuItem;
+const NotificationButton = () => {
+  const $2 = dist.c(38);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    notifications,
+    unreadCount,
+    loadNotifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification
+  } = useNotificationsStore();
+  let t0;
+  let t1;
+  if ($2[0] !== loadNotifications) {
+    t0 = () => {
+      loadNotifications();
+      const cleanup = window.api?.notifications?.onUpdated?.(() => {
+        loadNotifications();
+      });
+      return cleanup;
+    };
+    t1 = [loadNotifications];
+    $2[0] = loadNotifications;
+    $2[1] = t0;
+    $2[2] = t1;
+  } else {
+    t0 = $2[1];
+    t1 = $2[2];
+  }
+  reactExports.useEffect(t0, t1);
+  let t2;
+  let t3;
+  if ($2[3] !== location.pathname || $2[4] !== markAllAsRead || $2[5] !== unreadCount) {
+    t2 = () => {
+      if (location.pathname === "/test-results" && unreadCount > 0) {
+        markAllAsRead();
+      }
+    };
+    t3 = [location.pathname, unreadCount, markAllAsRead];
+    $2[3] = location.pathname;
+    $2[4] = markAllAsRead;
+    $2[5] = unreadCount;
+    $2[6] = t2;
+    $2[7] = t3;
+  } else {
+    t2 = $2[6];
+    t3 = $2[7];
+  }
+  reactExports.useEffect(t2, t3);
+  const getNotificationIcon = _temp$3;
+  let t4;
+  if ($2[8] !== markAsRead || $2[9] !== navigate) {
+    t4 = (notification) => {
+      if (!notification.isRead) {
+        markAsRead(notification.id);
+      }
+      if (notification.testRunId) {
+        navigate(`/test-results?highlight=${notification.testRunId}`);
+      }
+    };
+    $2[8] = markAsRead;
+    $2[9] = navigate;
+    $2[10] = t4;
+  } else {
+    t4 = $2[10];
+  }
+  const handleNotificationClick = t4;
+  let t5;
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(Bell, { size: 14 });
+    $2[11] = t5;
+  } else {
+    t5 = $2[11];
+  }
+  let t6;
+  if ($2[12] !== unreadCount) {
+    t6 = unreadCount > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center", children: unreadCount > 9 ? "9+" : unreadCount });
+    $2[12] = unreadCount;
+    $2[13] = t6;
+  } else {
+    t6 = $2[13];
+  }
+  let t7;
+  if ($2[14] !== t6) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "relative p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Benachrichtigungen", children: [
+      t5,
+      t6
+    ] }) });
+    $2[14] = t6;
+    $2[15] = t7;
+  } else {
+    t7 = $2[15];
+  }
+  let t8;
+  if ($2[16] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Benachrichtigungen" });
+    $2[16] = t8;
+  } else {
+    t8 = $2[16];
+  }
+  let t9;
+  if ($2[17] !== markAllAsRead || $2[18] !== unreadCount) {
+    t9 = unreadCount > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e2) => {
+      e2.preventDefault();
+      markAllAsRead();
+    }, className: "p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors", title: "Alle als gelesen markieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCheck, { size: 14 }) });
+    $2[17] = markAllAsRead;
+    $2[18] = unreadCount;
+    $2[19] = t9;
+  } else {
+    t9 = $2[19];
+  }
+  let t10;
+  if ($2[20] !== t9) {
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: [
+      t8,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-1", children: t9 })
+    ] });
+    $2[20] = t9;
+    $2[21] = t10;
+  } else {
+    t10 = $2[21];
+  }
+  let t11;
+  if ($2[22] !== deleteNotification || $2[23] !== handleNotificationClick || $2[24] !== notifications) {
+    t11 = notifications.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400", children: "Keine Benachrichtigungen" }) : notifications.slice(0, 10).map((notification_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Item2, { className: `flex items-start gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors outline-none ${!notification_0.isRead ? "bg-blue-50/50 dark:bg-blue-900/10" : ""}`, onSelect: () => handleNotificationClick(notification_0), children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 mt-0.5", children: getNotificationIcon(notification_0.type) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: `text-sm ${!notification_0.isRead ? "font-medium" : ""} text-gray-900 dark:text-white truncate`, children: notification_0.title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
+            e_0.stopPropagation();
+            e_0.preventDefault();
+            deleteNotification(notification_0.id);
+          }, className: "flex-shrink-0 p-0.5 text-gray-400 hover:text-red-500 transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X$1, { size: 12 }) })
+        ] }),
+        notification_0.message && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5", children: notification_0.message }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-gray-400 dark:text-gray-500 mt-1", children: formatDateTime(notification_0.createdAt) })
+      ] }),
+      !notification_0.isRead && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-1.5" })
+    ] }, notification_0.id));
+    $2[22] = deleteNotification;
+    $2[23] = handleNotificationClick;
+    $2[24] = notifications;
+    $2[25] = t11;
+  } else {
+    t11 = $2[25];
+  }
+  let t12;
+  if ($2[26] !== t11) {
+    t12 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-80 overflow-y-auto", children: t11 });
+    $2[26] = t11;
+    $2[27] = t12;
+  } else {
+    t12 = $2[27];
+  }
+  let t13;
+  if ($2[28] !== navigate || $2[29] !== notifications.length) {
+    t13 = notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Item2, { className: "w-full text-center text-xs text-blue-600 dark:text-blue-400 hover:underline cursor-pointer outline-none", onSelect: () => navigate("/test-results"), children: "Alle Testergebnisse anzeigen" }) });
+    $2[28] = navigate;
+    $2[29] = notifications.length;
+    $2[30] = t13;
+  } else {
+    t13 = $2[30];
+  }
+  let t14;
+  if ($2[31] !== t10 || $2[32] !== t12 || $2[33] !== t13) {
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden animate-in fade-in-0 zoom-in-95", sideOffset: 8, align: "end", children: [
+      t10,
+      t12,
+      t13
+    ] }) });
+    $2[31] = t10;
+    $2[32] = t12;
+    $2[33] = t13;
+    $2[34] = t14;
+  } else {
+    t14 = $2[34];
+  }
+  let t15;
+  if ($2[35] !== t14 || $2[36] !== t7) {
+    t15 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root2, { children: [
+      t7,
+      t14
+    ] });
+    $2[35] = t14;
+    $2[36] = t7;
+    $2[37] = t15;
+  } else {
+    t15 = $2[37];
+  }
+  return t15;
+};
+function _temp$3(type) {
+  switch (type) {
+    case "test_complete": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-green-500" });
+    }
+    case "test_failed": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 14, className: "text-red-500" });
+    }
+    default: {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { size: 14, className: "text-blue-500" });
+    }
+  }
+}
+var SLOTTABLE_IDENTIFIER$2 = Symbol("radix.slottable");
+// @__NO_SIDE_EFFECTS__
+function createSlottable(ownerName) {
+  const Slottable2 = ({ children }) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+  };
+  Slottable2.displayName = `${ownerName}.Slottable`;
+  Slottable2.__radixId = SLOTTABLE_IDENTIFIER$2;
+  return Slottable2;
+}
+var VISUALLY_HIDDEN_STYLES = Object.freeze({
+  // See: https://github.com/twbs/bootstrap/blob/main/scss/mixins/_visually-hidden.scss
+  position: "absolute",
+  border: 0,
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+  wordWrap: "normal"
+});
+var NAME$1 = "VisuallyHidden";
+var VisuallyHidden = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive$1.span,
+      {
+        ...props,
+        ref: forwardedRef,
+        style: { ...VISUALLY_HIDDEN_STYLES, ...props.style }
+      }
+    );
+  }
+);
+VisuallyHidden.displayName = NAME$1;
+var Root$2 = VisuallyHidden;
+var [createTooltipContext] = createContextScope("Tooltip", [
+  createPopperScope
+]);
+var usePopperScope = createPopperScope();
+var PROVIDER_NAME = "TooltipProvider";
+var DEFAULT_DELAY_DURATION = 700;
+var TOOLTIP_OPEN = "tooltip.open";
+var [TooltipProviderContextProvider, useTooltipProviderContext] = createTooltipContext(PROVIDER_NAME);
+var TooltipProvider = (props) => {
+  const {
+    __scopeTooltip,
+    delayDuration = DEFAULT_DELAY_DURATION,
+    skipDelayDuration = 300,
+    disableHoverableContent = false,
+    children
+  } = props;
+  const isOpenDelayedRef = reactExports.useRef(true);
+  const isPointerInTransitRef = reactExports.useRef(false);
+  const skipDelayTimerRef = reactExports.useRef(0);
+  reactExports.useEffect(() => {
+    const skipDelayTimer = skipDelayTimerRef.current;
+    return () => window.clearTimeout(skipDelayTimer);
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    TooltipProviderContextProvider,
+    {
+      scope: __scopeTooltip,
+      isOpenDelayedRef,
+      delayDuration,
+      onOpen: reactExports.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        isOpenDelayedRef.current = false;
+      }, []),
+      onClose: reactExports.useCallback(() => {
+        window.clearTimeout(skipDelayTimerRef.current);
+        skipDelayTimerRef.current = window.setTimeout(
+          () => isOpenDelayedRef.current = true,
+          skipDelayDuration
+        );
+      }, [skipDelayDuration]),
+      isPointerInTransitRef,
+      onPointerInTransitChange: reactExports.useCallback((inTransit) => {
+        isPointerInTransitRef.current = inTransit;
+      }, []),
+      disableHoverableContent,
+      children
+    }
+  );
+};
+TooltipProvider.displayName = PROVIDER_NAME;
+var TOOLTIP_NAME = "Tooltip";
+var [TooltipContextProvider, useTooltipContext] = createTooltipContext(TOOLTIP_NAME);
+var Tooltip = (props) => {
+  const {
+    __scopeTooltip,
+    children,
+    open: openProp,
+    defaultOpen,
+    onOpenChange,
+    disableHoverableContent: disableHoverableContentProp,
+    delayDuration: delayDurationProp
+  } = props;
+  const providerContext = useTooltipProviderContext(TOOLTIP_NAME, props.__scopeTooltip);
+  const popperScope = usePopperScope(__scopeTooltip);
+  const [trigger, setTrigger] = reactExports.useState(null);
+  const contentId = useId();
+  const openTimerRef = reactExports.useRef(0);
+  const disableHoverableContent = disableHoverableContentProp ?? providerContext.disableHoverableContent;
+  const delayDuration = delayDurationProp ?? providerContext.delayDuration;
+  const wasOpenDelayedRef = reactExports.useRef(false);
+  const [open, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen ?? false,
+    onChange: (open2) => {
+      if (open2) {
+        providerContext.onOpen();
+        document.dispatchEvent(new CustomEvent(TOOLTIP_OPEN));
+      } else {
+        providerContext.onClose();
+      }
+      onOpenChange?.(open2);
+    },
+    caller: TOOLTIP_NAME
+  });
+  const stateAttribute = reactExports.useMemo(() => {
+    return open ? wasOpenDelayedRef.current ? "delayed-open" : "instant-open" : "closed";
+  }, [open]);
+  const handleOpen = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    wasOpenDelayedRef.current = false;
+    setOpen(true);
+  }, [setOpen]);
+  const handleClose = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = 0;
+    setOpen(false);
+  }, [setOpen]);
+  const handleDelayedOpen = reactExports.useCallback(() => {
+    window.clearTimeout(openTimerRef.current);
+    openTimerRef.current = window.setTimeout(() => {
+      wasOpenDelayedRef.current = true;
+      setOpen(true);
+      openTimerRef.current = 0;
+    }, delayDuration);
+  }, [delayDuration, setOpen]);
+  reactExports.useEffect(() => {
+    return () => {
+      if (openTimerRef.current) {
+        window.clearTimeout(openTimerRef.current);
+        openTimerRef.current = 0;
+      }
+    };
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root2$1, { ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    TooltipContextProvider,
+    {
+      scope: __scopeTooltip,
+      contentId,
+      open,
+      stateAttribute,
+      trigger,
+      onTriggerChange: setTrigger,
+      onTriggerEnter: reactExports.useCallback(() => {
+        if (providerContext.isOpenDelayedRef.current) handleDelayedOpen();
+        else handleOpen();
+      }, [providerContext.isOpenDelayedRef, handleDelayedOpen, handleOpen]),
+      onTriggerLeave: reactExports.useCallback(() => {
+        if (disableHoverableContent) {
+          handleClose();
+        } else {
+          window.clearTimeout(openTimerRef.current);
+          openTimerRef.current = 0;
+        }
+      }, [handleClose, disableHoverableContent]),
+      onOpen: handleOpen,
+      onClose: handleClose,
+      disableHoverableContent,
+      children
+    }
+  ) });
+};
+Tooltip.displayName = TOOLTIP_NAME;
+var TRIGGER_NAME$2 = "TooltipTrigger";
+var TooltipTrigger = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...triggerProps } = props;
+    const context = useTooltipContext(TRIGGER_NAME$2, __scopeTooltip);
+    const providerContext = useTooltipProviderContext(TRIGGER_NAME$2, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const ref = reactExports.useRef(null);
+    const composedRefs = useComposedRefs(forwardedRef, ref, context.onTriggerChange);
+    const isPointerDownRef = reactExports.useRef(false);
+    const hasPointerMoveOpenedRef = reactExports.useRef(false);
+    const handlePointerUp = reactExports.useCallback(() => isPointerDownRef.current = false, []);
+    reactExports.useEffect(() => {
+      return () => document.removeEventListener("pointerup", handlePointerUp);
+    }, [handlePointerUp]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      Primitive$1.button,
+      {
+        "aria-describedby": context.open ? context.contentId : void 0,
+        "data-state": context.stateAttribute,
+        ...triggerProps,
+        ref: composedRefs,
+        onPointerMove: composeEventHandlers(props.onPointerMove, (event) => {
+          if (event.pointerType === "touch") return;
+          if (!hasPointerMoveOpenedRef.current && !providerContext.isPointerInTransitRef.current) {
+            context.onTriggerEnter();
+            hasPointerMoveOpenedRef.current = true;
+          }
+        }),
+        onPointerLeave: composeEventHandlers(props.onPointerLeave, () => {
+          context.onTriggerLeave();
+          hasPointerMoveOpenedRef.current = false;
+        }),
+        onPointerDown: composeEventHandlers(props.onPointerDown, () => {
+          if (context.open) {
+            context.onClose();
+          }
+          isPointerDownRef.current = true;
+          document.addEventListener("pointerup", handlePointerUp, { once: true });
+        }),
+        onFocus: composeEventHandlers(props.onFocus, () => {
+          if (!isPointerDownRef.current) context.onOpen();
+        }),
+        onBlur: composeEventHandlers(props.onBlur, context.onClose),
+        onClick: composeEventHandlers(props.onClick, context.onClose)
+      }
+    ) });
+  }
+);
+TooltipTrigger.displayName = TRIGGER_NAME$2;
+var PORTAL_NAME$1 = "TooltipPortal";
+var [PortalProvider$1, usePortalContext$1] = createTooltipContext(PORTAL_NAME$1, {
+  forceMount: void 0
+});
+var TooltipPortal = (props) => {
+  const { __scopeTooltip, forceMount, children, container } = props;
+  const context = useTooltipContext(PORTAL_NAME$1, __scopeTooltip);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider$1, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$3, { asChild: true, container, children }) }) });
+};
+TooltipPortal.displayName = PORTAL_NAME$1;
+var CONTENT_NAME$1 = "TooltipContent";
+var TooltipContent = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const portalContext = usePortalContext$1(CONTENT_NAME$1, props.__scopeTooltip);
+    const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
+    const context = useTooltipContext(CONTENT_NAME$1, props.__scopeTooltip);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
+  }
+);
+var TooltipContentHoverable = reactExports.forwardRef((props, forwardedRef) => {
+  const context = useTooltipContext(CONTENT_NAME$1, props.__scopeTooltip);
+  const providerContext = useTooltipProviderContext(CONTENT_NAME$1, props.__scopeTooltip);
+  const ref = reactExports.useRef(null);
+  const composedRefs = useComposedRefs(forwardedRef, ref);
+  const [pointerGraceArea, setPointerGraceArea] = reactExports.useState(null);
+  const { trigger, onClose } = context;
+  const content = ref.current;
+  const { onPointerInTransitChange } = providerContext;
+  const handleRemoveGraceArea = reactExports.useCallback(() => {
+    setPointerGraceArea(null);
+    onPointerInTransitChange(false);
+  }, [onPointerInTransitChange]);
+  const handleCreateGraceArea = reactExports.useCallback(
+    (event, hoverTarget) => {
+      const currentTarget = event.currentTarget;
+      const exitPoint = { x: event.clientX, y: event.clientY };
+      const exitSide = getExitSideFromRect(exitPoint, currentTarget.getBoundingClientRect());
+      const paddedExitPoints = getPaddedExitPoints(exitPoint, exitSide);
+      const hoverTargetPoints = getPointsFromRect(hoverTarget.getBoundingClientRect());
+      const graceArea = getHull([...paddedExitPoints, ...hoverTargetPoints]);
+      setPointerGraceArea(graceArea);
+      onPointerInTransitChange(true);
+    },
+    [onPointerInTransitChange]
+  );
+  reactExports.useEffect(() => {
+    return () => handleRemoveGraceArea();
+  }, [handleRemoveGraceArea]);
+  reactExports.useEffect(() => {
+    if (trigger && content) {
+      const handleTriggerLeave = (event) => handleCreateGraceArea(event, content);
+      const handleContentLeave = (event) => handleCreateGraceArea(event, trigger);
+      trigger.addEventListener("pointerleave", handleTriggerLeave);
+      content.addEventListener("pointerleave", handleContentLeave);
+      return () => {
+        trigger.removeEventListener("pointerleave", handleTriggerLeave);
+        content.removeEventListener("pointerleave", handleContentLeave);
+      };
+    }
+  }, [trigger, content, handleCreateGraceArea, handleRemoveGraceArea]);
+  reactExports.useEffect(() => {
+    if (pointerGraceArea) {
+      const handleTrackPointerGrace = (event) => {
+        const target = event.target;
+        const pointerPosition = { x: event.clientX, y: event.clientY };
+        const hasEnteredTarget = trigger?.contains(target) || content?.contains(target);
+        const isPointerOutsideGraceArea = !isPointInPolygon(pointerPosition, pointerGraceArea);
+        if (hasEnteredTarget) {
+          handleRemoveGraceArea();
+        } else if (isPointerOutsideGraceArea) {
+          handleRemoveGraceArea();
+          onClose();
+        }
+      };
+      document.addEventListener("pointermove", handleTrackPointerGrace);
+      return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
+    }
+  }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { ...props, ref: composedRefs });
+});
+var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
+var Slottable = /* @__PURE__ */ createSlottable("TooltipContent");
+var TooltipContentImpl = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const {
+      __scopeTooltip,
+      children,
+      "aria-label": ariaLabel,
+      onEscapeKeyDown,
+      onPointerDownOutside,
+      ...contentProps
+    } = props;
+    const context = useTooltipContext(CONTENT_NAME$1, __scopeTooltip);
+    const popperScope = usePopperScope(__scopeTooltip);
+    const { onClose } = context;
+    reactExports.useEffect(() => {
+      document.addEventListener(TOOLTIP_OPEN, onClose);
+      return () => document.removeEventListener(TOOLTIP_OPEN, onClose);
+    }, [onClose]);
+    reactExports.useEffect(() => {
+      if (context.trigger) {
+        const handleScroll2 = (event) => {
+          const target = event.target;
+          if (target?.contains(context.trigger)) onClose();
+        };
+        window.addEventListener("scroll", handleScroll2, { capture: true });
+        return () => window.removeEventListener("scroll", handleScroll2, { capture: true });
+      }
+    }, [context.trigger, onClose]);
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      DismissableLayer,
+      {
+        asChild: true,
+        disableOutsidePointerEvents: false,
+        onEscapeKeyDown,
+        onPointerDownOutside,
+        onFocusOutside: (event) => event.preventDefault(),
+        onDismiss: onClose,
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          Content$1,
+          {
+            "data-state": context.stateAttribute,
+            ...popperScope,
+            ...contentProps,
+            ref: forwardedRef,
+            style: {
+              ...contentProps.style,
+              // re-namespace exposed content custom properties
+              ...{
+                "--radix-tooltip-content-transform-origin": "var(--radix-popper-transform-origin)",
+                "--radix-tooltip-content-available-width": "var(--radix-popper-available-width)",
+                "--radix-tooltip-content-available-height": "var(--radix-popper-available-height)",
+                "--radix-tooltip-trigger-width": "var(--radix-popper-anchor-width)",
+                "--radix-tooltip-trigger-height": "var(--radix-popper-anchor-height)"
+              }
+            },
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Slottable, { children }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root$2, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
+            ]
+          }
+        )
+      }
+    );
+  }
+);
+TooltipContent.displayName = CONTENT_NAME$1;
+var ARROW_NAME = "TooltipArrow";
+var TooltipArrow = reactExports.forwardRef(
+  (props, forwardedRef) => {
+    const { __scopeTooltip, ...arrowProps } = props;
+    const popperScope = usePopperScope(__scopeTooltip);
+    const visuallyHiddenContentContext = useVisuallyHiddenContentContext(
+      ARROW_NAME,
+      __scopeTooltip
+    );
+    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+  }
+);
+TooltipArrow.displayName = ARROW_NAME;
+function getExitSideFromRect(point, rect) {
+  const top = Math.abs(rect.top - point.y);
+  const bottom = Math.abs(rect.bottom - point.y);
+  const right = Math.abs(rect.right - point.x);
+  const left = Math.abs(rect.left - point.x);
+  switch (Math.min(top, bottom, right, left)) {
+    case left:
+      return "left";
+    case right:
+      return "right";
+    case top:
+      return "top";
+    case bottom:
+      return "bottom";
+    default:
+      throw new Error("unreachable");
+  }
+}
+function getPaddedExitPoints(exitPoint, exitSide, padding = 5) {
+  const paddedExitPoints = [];
+  switch (exitSide) {
+    case "top":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y + padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "bottom":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y - padding }
+      );
+      break;
+    case "left":
+      paddedExitPoints.push(
+        { x: exitPoint.x + padding, y: exitPoint.y - padding },
+        { x: exitPoint.x + padding, y: exitPoint.y + padding }
+      );
+      break;
+    case "right":
+      paddedExitPoints.push(
+        { x: exitPoint.x - padding, y: exitPoint.y - padding },
+        { x: exitPoint.x - padding, y: exitPoint.y + padding }
+      );
+      break;
+  }
+  return paddedExitPoints;
+}
+function getPointsFromRect(rect) {
+  const { top, right, bottom, left } = rect;
+  return [
+    { x: left, y: top },
+    { x: right, y: top },
+    { x: right, y: bottom },
+    { x: left, y: bottom }
+  ];
+}
+function isPointInPolygon(point, polygon) {
+  const { x: x2, y: y2 } = point;
+  let inside = false;
+  for (let i2 = 0, j2 = polygon.length - 1; i2 < polygon.length; j2 = i2++) {
+    const ii2 = polygon[i2];
+    const jj2 = polygon[j2];
+    const xi2 = ii2.x;
+    const yi2 = ii2.y;
+    const xj2 = jj2.x;
+    const yj2 = jj2.y;
+    const intersect = yi2 > y2 !== yj2 > y2 && x2 < (xj2 - xi2) * (y2 - yi2) / (yj2 - yi2) + xi2;
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+function getHull(points) {
+  const newPoints = points.slice();
+  newPoints.sort((a2, b2) => {
+    if (a2.x < b2.x) return -1;
+    else if (a2.x > b2.x) return 1;
+    else if (a2.y < b2.y) return -1;
+    else if (a2.y > b2.y) return 1;
+    else return 0;
+  });
+  return getHullPresorted(newPoints);
+}
+function getHullPresorted(points) {
+  if (points.length <= 1) return points.slice();
+  const upperHull = [];
+  for (let i2 = 0; i2 < points.length; i2++) {
+    const p2 = points[i2];
+    while (upperHull.length >= 2) {
+      const q2 = upperHull[upperHull.length - 1];
+      const r2 = upperHull[upperHull.length - 2];
+      if ((q2.x - r2.x) * (p2.y - r2.y) >= (q2.y - r2.y) * (p2.x - r2.x)) upperHull.pop();
+      else break;
+    }
+    upperHull.push(p2);
+  }
+  upperHull.pop();
+  const lowerHull = [];
+  for (let i2 = points.length - 1; i2 >= 0; i2--) {
+    const p2 = points[i2];
+    while (lowerHull.length >= 2) {
+      const q2 = lowerHull[lowerHull.length - 1];
+      const r2 = lowerHull[lowerHull.length - 2];
+      if ((q2.x - r2.x) * (p2.y - r2.y) >= (q2.y - r2.y) * (p2.x - r2.x)) lowerHull.pop();
+      else break;
+    }
+    lowerHull.push(p2);
+  }
+  lowerHull.pop();
+  if (upperHull.length === 1 && lowerHull.length === 1 && upperHull[0].x === lowerHull[0].x && upperHull[0].y === lowerHull[0].y) {
+    return upperHull;
+  } else {
+    return upperHull.concat(lowerHull);
+  }
+}
+var Provider = TooltipProvider;
+var Root3 = Tooltip;
+var Trigger = TooltipTrigger;
+var Portal$1 = TooltipPortal;
+var Content2 = TooltipContent;
+var Arrow2 = TooltipArrow;
+const CustomTitleBar = (t0) => {
+  const $2 = dist.c(55);
+  const {
+    onRunAllTests,
+    onOpenSearch,
+    onToggleTheme,
+    onOpenSettings,
+    currentTheme: t1
+  } = t0;
+  const currentTheme = t1 === void 0 ? "system" : t1;
+  const [isMaximized, setIsMaximized] = reactExports.useState(false);
+  let t2;
+  let t3;
+  if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t2 = () => {
+      const checkMaximized = async () => {
+        if (window.api?.windowControls) {
+          const maximized = await window.api.windowControls.isMaximized();
+          setIsMaximized(maximized);
+        }
+      };
+      checkMaximized();
+    };
+    t3 = [];
+    $2[0] = t2;
+    $2[1] = t3;
+  } else {
+    t2 = $2[0];
+    t3 = $2[1];
+  }
+  reactExports.useEffect(t2, t3);
+  const handleClose = _temp$2;
+  const handleMinimize = _temp2$1;
+  let t4;
+  if ($2[2] === Symbol.for("react.memo_cache_sentinel")) {
+    t4 = async () => {
+      if (window.api?.windowControls) {
+        await window.api.windowControls.maximize();
+        const maximized_0 = await window.api.windowControls.isMaximized();
+        setIsMaximized(maximized_0);
+      }
+    };
+    $2[2] = t4;
+  } else {
+    t4 = $2[2];
+  }
+  const handleMaximize = t4;
+  let t5;
+  if ($2[3] !== currentTheme) {
+    t5 = () => {
+      switch (currentTheme) {
+        case "light": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { size: 14 });
+        }
+        case "dark": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { size: 14 });
+        }
+        default: {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { size: 14 });
+        }
+      }
+    };
+    $2[3] = currentTheme;
+    $2[4] = t5;
+  } else {
+    t5 = $2[4];
+  }
+  const getThemeIcon = t5;
+  let t6;
+  if ($2[5] !== currentTheme) {
+    t6 = () => {
+      switch (currentTheme) {
+        case "light": {
+          return "Theme: Hell";
+        }
+        case "dark": {
+          return "Theme: Dunkel";
+        }
+        default: {
+          return "Theme: System";
+        }
+      }
+    };
+    $2[5] = currentTheme;
+    $2[6] = t6;
+  } else {
+    t6 = $2[6];
+  }
+  const getThemeLabel = t6;
+  let t7;
+  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = {
+      WebkitAppRegion: "drag"
+    };
+    $2[7] = t7;
+  } else {
+    t7 = $2[7];
+  }
+  let t8;
+  if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = {
+      width: "clamp(16rem, 22.5vw, 40rem)",
+      minWidth: "fit-content"
+    };
+    $2[8] = t8;
+  } else {
+    t8 = $2[8];
+  }
+  let t9;
+  if ($2[9] !== isMaximized) {
+    t9 = /* @__PURE__ */ jsxRuntimeExports.jsx(TrafficLights, { onClose: handleClose, onMinimize: handleMinimize, onMaximize: handleMaximize, isMaximized });
+    $2[9] = isMaximized;
+    $2[10] = t9;
+  } else {
+    t9 = $2[10];
+  }
+  let t10;
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "cursor-grabbing  text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-mono uppercase  cursor-grabbing ", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Formtest" }),
+      ".Server"
+    ] }) });
+    $2[11] = t10;
+  } else {
+    t10 = $2[11];
+  }
+  let t11;
+  if ($2[12] !== t9) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center px-5 pl-6 h-full", style: t8, children: [
+      t9,
+      t10
+    ] });
+    $2[12] = t9;
+    $2[13] = t11;
+  } else {
+    t11 = $2[13];
+  }
+  let t12;
+  if ($2[14] === Symbol.for("react.memo_cache_sentinel")) {
+    t12 = {
+      WebkitAppRegion: "no-drag"
+    };
+    $2[14] = t12;
+  } else {
+    t12 = $2[14];
+  }
+  let t13;
+  let t14;
+  if ($2[15] === Symbol.for("react.memo_cache_sentinel")) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 14, className: "ml-2 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors" });
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[12px] text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors", children: "Suche..." });
+    $2[15] = t13;
+    $2[16] = t14;
+  } else {
+    t13 = $2[15];
+    t14 = $2[16];
+  }
+  let t15;
+  if ($2[17] === Symbol.for("react.memo_cache_sentinel")) {
+    t15 = /* @__PURE__ */ jsxRuntimeExports.jsxs("kbd", { className: "ml-auto font-mono px-1.5 py-0.5 mr-1 text-gray-400 flex items-center gap-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg leading-[1]", children: "⌘" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs leading-[1]", children: "K" })
+    ] });
+    $2[17] = t15;
+  } else {
+    t15 = $2[17];
+  }
+  let t16;
+  if ($2[18] !== onOpenSearch) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", style: t12, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: onOpenSearch, className: "w-full max-w-[100%] px-0.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 group", children: [
+      t13,
+      t14,
+      t15
+    ] }) });
+    $2[18] = onOpenSearch;
+    $2[19] = t16;
+  } else {
+    t16 = $2[19];
+  }
+  let t17;
+  if ($2[20] === Symbol.for("react.memo_cache_sentinel")) {
+    t17 = {
+      WebkitAppRegion: "no-drag"
+    };
+    $2[20] = t17;
+  } else {
+    t17 = $2[20];
+  }
+  let t18;
+  if ($2[21] === Symbol.for("react.memo_cache_sentinel")) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(NotificationButton, {});
+    $2[21] = t18;
+  } else {
+    t18 = $2[21];
+  }
+  let t19;
+  if ($2[22] === Symbol.for("react.memo_cache_sentinel")) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { size: 14 });
+    $2[22] = t19;
+  } else {
+    t19 = $2[22];
+  }
+  let t20;
+  if ($2[23] !== onRunAllTests) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onRunAllTests, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Alle Tests ausführen", children: t19 }) });
+    $2[23] = onRunAllTests;
+    $2[24] = t20;
+  } else {
+    t20 = $2[24];
+  }
+  let t21;
+  if ($2[25] === Symbol.for("react.memo_cache_sentinel")) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+      "Alle Tests ausführen",
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
+    ] }) });
+    $2[25] = t21;
+  } else {
+    t21 = $2[25];
+  }
+  let t22;
+  if ($2[26] !== t20) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t20,
+      t21
+    ] });
+    $2[26] = t20;
+    $2[27] = t22;
+  } else {
+    t22 = $2[27];
+  }
+  let t23;
+  if ($2[28] !== getThemeIcon) {
+    t23 = getThemeIcon();
+    $2[28] = getThemeIcon;
+    $2[29] = t23;
+  } else {
+    t23 = $2[29];
+  }
+  let t24;
+  if ($2[30] !== onToggleTheme || $2[31] !== t23) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onToggleTheme, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Theme wechseln", children: t23 }) });
+    $2[30] = onToggleTheme;
+    $2[31] = t23;
+    $2[32] = t24;
+  } else {
+    t24 = $2[32];
+  }
+  const t25 = getThemeLabel();
+  let t26;
+  if ($2[33] === Symbol.for("react.memo_cache_sentinel")) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" });
+    $2[33] = t26;
+  } else {
+    t26 = $2[33];
+  }
+  let t27;
+  if ($2[34] !== t25) {
+    t27 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+      t25,
+      t26
+    ] }) });
+    $2[34] = t25;
+    $2[35] = t27;
+  } else {
+    t27 = $2[35];
+  }
+  let t28;
+  if ($2[36] !== t24 || $2[37] !== t27) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t24,
+      t27
+    ] });
+    $2[36] = t24;
+    $2[37] = t27;
+    $2[38] = t28;
+  } else {
+    t28 = $2[38];
+  }
+  let t29;
+  if ($2[39] === Symbol.for("react.memo_cache_sentinel")) {
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx(Settings$1, { size: 14 });
+    $2[39] = t29;
+  } else {
+    t29 = $2[39];
+  }
+  let t30;
+  if ($2[40] !== onOpenSettings) {
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onOpenSettings, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Einstellungen öffnen", children: t29 }) });
+    $2[40] = onOpenSettings;
+    $2[41] = t30;
+  } else {
+    t30 = $2[41];
+  }
+  let t31;
+  if ($2[42] === Symbol.for("react.memo_cache_sentinel")) {
+    t31 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+      "Einstellungen öffnen",
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
+    ] }) });
+    $2[42] = t31;
+  } else {
+    t31 = $2[42];
+  }
+  let t32;
+  if ($2[43] !== t30) {
+    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t30,
+      t31
+    ] });
+    $2[43] = t30;
+    $2[44] = t32;
+  } else {
+    t32 = $2[44];
+  }
+  let t33;
+  if ($2[45] !== t22 || $2[46] !== t28 || $2[47] !== t32) {
+    t33 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", style: t17, children: [
+      t18,
+      t22,
+      t28,
+      t32
+    ] });
+    $2[45] = t22;
+    $2[46] = t28;
+    $2[47] = t32;
+    $2[48] = t33;
+  } else {
+    t33 = $2[48];
+  }
+  let t34;
+  if ($2[49] !== t16 || $2[50] !== t33) {
+    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex items-center px-4 h-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[1040px] flex items-center gap-4", children: [
+      t16,
+      t33
+    ] }) });
+    $2[49] = t16;
+    $2[50] = t33;
+    $2[51] = t34;
+  } else {
+    t34 = $2[51];
+  }
+  let t35;
+  if ($2[52] !== t11 || $2[53] !== t34) {
+    t35 = /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative h-14 bg-gray-50 backdrop-blur-sm dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800", style: t7, children: [
+      t11,
+      t34
+    ] }) });
+    $2[52] = t11;
+    $2[53] = t34;
+    $2[54] = t35;
+  } else {
+    t35 = $2[54];
+  }
+  return t35;
+};
+async function _temp$2() {
+  if (window.api?.windowControls) {
+    await window.api.windowControls.close();
+  }
+}
+async function _temp2$1() {
+  if (window.api?.windowControls) {
+    await window.api.windowControls.minimize();
+  }
+}
+const useFormsStore = create((set, get) => ({
+  forms: [],
+  isLoading: false,
+  error: null,
+  loadForms: async () => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      const forms = await window.api.forms.getAll();
+      set({
+        forms,
+        isLoading: false
+      });
+    } catch (error) {
+      console.error("Failed to load forms:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to load forms",
+        isLoading: false
+      });
+    }
+  },
+  addForm: async (formData) => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      console.log("Creating form:", formData);
+      await window.api.forms.create(formData);
+      await get().loadForms();
+    } catch (error) {
+      console.error("Failed to add form:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to add form",
+        isLoading: false
+      });
+    }
+  },
+  updateForm: async (id2, formData) => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      await window.api.forms.update(id2, formData);
+      await get().loadForms();
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : "Failed to update form",
+        isLoading: false
+      });
+    }
+  },
+  deleteForm: async (id2) => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      await window.api.forms.delete(id2);
+      await get().loadForms();
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : "Failed to delete form",
+        isLoading: false
+      });
+    }
+  },
+  toggleFormActive: async (id2) => {
+    const form = get().forms.find((f2) => f2.id === id2);
+    if (form) {
+      await get().updateForm(id2, {
+        isActive: !form.isActive
+      });
+    }
+  }
+}));
+const usePaymentMethodsStore = create((set, get) => ({
+  paymentMethods: [],
+  isLoading: false,
+  error: null,
+  loadPaymentMethods: async () => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      const paymentMethods = await window.api.paymentMethods.getAll();
+      set({
+        paymentMethods,
+        isLoading: false
+      });
+    } catch (error) {
+      console.error("Failed to load payment methods:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to load payment methods",
+        isLoading: false
+      });
+    }
+  },
+  addPaymentMethod: async (methodData) => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      await window.api.paymentMethods.create(methodData);
+      await get().loadPaymentMethods();
+    } catch (error) {
+      console.error("Failed to add payment method:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to add payment method",
+        isLoading: false
+      });
+    }
+  },
+  updatePaymentMethod: async (id2, methodData) => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      await window.api.paymentMethods.update(id2, methodData);
+      await get().loadPaymentMethods();
+    } catch (error) {
+      console.error("Failed to update payment method:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to update payment method",
+        isLoading: false
+      });
+    }
+  },
+  deletePaymentMethod: async (id2) => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      await window.api.paymentMethods.delete(id2);
+      await get().loadPaymentMethods();
+    } catch (error) {
+      console.error("Failed to delete payment method:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to delete payment method",
+        isLoading: false
+      });
+    }
+  },
+  togglePaymentMethodActive: async (id2) => {
+    const method = get().paymentMethods.find((m2) => m2.id === id2);
+    if (method) {
+      await get().updatePaymentMethod(id2, {
+        isActive: !method.isActive
+      });
+    }
+  }
+}));
+const useTestRunsStore = create((set, get) => ({
+  testRuns: [],
+  isLoading: false,
+  error: null,
+  isRunning: false,
+  loadTestRuns: async () => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      const testRuns = await window.api.testRuns.getAll();
+      set({
+        testRuns,
+        isLoading: false
+      });
+    } catch (error) {
+      console.error("Failed to load test runs:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to load test runs",
+        isLoading: false
+      });
+    }
+  },
+  getTestRunsByForm: async (formId) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      return await window.api.testRuns.getByForm(formId);
+    } catch (error) {
+      console.error("Failed to load test runs for form:", error);
+      return [];
+    }
+  },
+  runTests: async (formIds, paymentMethodIds) => {
+    set({
+      isRunning: true,
+      error: null
+    });
+    try {
+      if (!window.api) {
+        throw new Error("API not available - make sure you are running in Electron");
+      }
+      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
+      const result = await window.api.tests.run(formIds, paymentMethodIds);
+      console.log("Test execution result:", result);
+      await get().loadTestRuns();
+      set({
+        isRunning: false
+      });
+    } catch (error) {
+      console.error("Failed to run tests:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to run tests",
+        isRunning: false
+      });
+    }
+  },
+  getTestRunById: async (id2) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      return await window.api.testRuns.getById(id2);
+    } catch (error) {
+      console.error("Failed to get test run:", error);
+      return void 0;
+    }
+  }
+}));
+const Button = React$3.forwardRef((t0, ref) => {
+  const $2 = dist.c(21);
+  let children;
+  let condensed;
+  let disabled;
+  let props;
+  let t1;
+  let t2;
+  let t3;
+  let t4;
+  if ($2[0] !== t0) {
+    ({
+      className: t1,
+      variant: t2,
+      size: t3,
+      isLoading: t4,
+      disabled,
+      children,
+      condensed,
+      ...props
+    } = t0);
+    $2[0] = t0;
+    $2[1] = children;
+    $2[2] = condensed;
+    $2[3] = disabled;
+    $2[4] = props;
+    $2[5] = t1;
+    $2[6] = t2;
+    $2[7] = t3;
+    $2[8] = t4;
+  } else {
+    children = $2[1];
+    condensed = $2[2];
+    disabled = $2[3];
+    props = $2[4];
+    t1 = $2[5];
+    t2 = $2[6];
+    t3 = $2[7];
+    t4 = $2[8];
+  }
+  const className = t1 === void 0 ? "" : t1;
+  const variant = t2 === void 0 ? "primary" : t2;
+  const size2 = t3 === void 0 ? "md" : t3;
+  const isLoading = t4 === void 0 ? false : t4;
+  let t5;
+  if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
+    t5 = {
+      primary: "font-[700] text-white bg-blue-600 dark:bg-blue-700 border border-1 dark:border-blue-700 border-blue-800 hover:bg-blue-700",
+      secondary: "font-[500] text-gray-800 dark:text-gray-200 bg-gray-50 border-1 dark:border-gray-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600",
+      outline: "font-[500] text-blue-600 dark:text-blue-400 bg-transparent border-1 border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20",
+      ghost: "font-[500] text-gray-700 dark:text-gray-300 bg-transparent border-1 border-transparent",
+      danger: "font-[700] text-white bg-red-600 dark:bg-red-700 border border-1 dark:border-red-800 border-red-700 hover:bg-red-700 focus:ring-red-500"
+    };
+    $2[9] = t5;
+  } else {
+    t5 = $2[9];
+  }
+  const variants = t5;
+  let t6;
+  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = {
+      sm: "px-2 py-1 text-xs",
+      md: "px-3.5 py-1.5 text-sm",
+      lg: "px-4 py-2 text-base"
+    };
+    $2[10] = t6;
+  } else {
+    t6 = $2[10];
+  }
+  const sizes = t6;
+  const variantClasses = variants[variant];
+  const sizeClasses = sizes[size2];
+  const condensedClasses = condensed ? "condensed" : null;
+  let t7;
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = {
+      fontStretch: "115%"
+    };
+    $2[11] = t7;
+  } else {
+    t7 = $2[11];
+  }
+  const t8 = `${"inline-flex items-center justify-center rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+  const t9 = disabled || isLoading;
+  let t10;
+  if ($2[12] !== isLoading) {
+    t10 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
+    $2[12] = isLoading;
+    $2[13] = t10;
+  } else {
+    t10 = $2[13];
+  }
+  let t11;
+  if ($2[14] !== children || $2[15] !== props || $2[16] !== ref || $2[17] !== t10 || $2[18] !== t8 || $2[19] !== t9) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { ref, style: t7, className: t8, disabled: t9, ...props, children: [
+      t10,
+      children
+    ] });
+    $2[14] = children;
+    $2[15] = props;
+    $2[16] = ref;
+    $2[17] = t10;
+    $2[18] = t8;
+    $2[19] = t9;
+    $2[20] = t11;
+  } else {
+    t11 = $2[20];
+  }
+  return t11;
+});
+Button.displayName = "Button";
 // @__NO_SIDE_EFFECTS__
 function createSlot$1(ownerName) {
   const SlotClone = /* @__PURE__ */ createSlotClone$1(ownerName);
@@ -24060,7 +24844,7 @@ var [PortalProvider, usePortalContext] = createDialogContext(PORTAL_NAME, {
 var DialogPortal$1 = (props) => {
   const { __scopeDialog, forceMount, children, container } = props;
   const context = useDialogContext(PORTAL_NAME, __scopeDialog);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider, { scope: __scopeDialog, forceMount, children: reactExports.Children.map(children, (child) => /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { asChild: true, container, children: child }) })) });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider, { scope: __scopeDialog, forceMount, children: reactExports.Children.map(children, (child) => /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$3, { asChild: true, container, children: child }) })) });
 };
 DialogPortal$1.displayName = PORTAL_NAME;
 var OVERLAY_NAME = "DialogOverlay";
@@ -29703,13 +30487,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-IiSGLDfl.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-D0vY5lMS.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-DEjQ2rWl.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BkVgMijt.js"), true ? __vite__mapDeps([9,1,7,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-ChKcdXpI.js"), true ? __vite__mapDeps([10,1,7,5,2]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-BIDtvvji.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-BsokhLtV.js"), true ? __vite__mapDeps([12,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-CvzC09bZ.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-CEkxReLg.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-FNI_-LMn.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BwLkaDLk.js"), true ? __vite__mapDeps([9,1,7,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-sQ8R-SZ_.js"), true ? __vite__mapDeps([10,1,7,5,2]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-3__QU9cg.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-C3Efdt4X.js"), true ? __vite__mapDeps([12,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -29718,37 +30502,6 @@ function App() {
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
-  reactExports.useEffect(() => {
-    const cleanup = window.api?.toast?.onDisplay?.((data) => {
-      switch (data.type) {
-        case "success":
-          toast.success(data.message, {
-            description: data.description
-          });
-          break;
-        case "error":
-          toast.error(data.message, {
-            description: data.description
-          });
-          break;
-        case "info":
-          toast.info(data.message, {
-            description: data.description
-          });
-          break;
-        case "warning":
-          toast.warning(data.message, {
-            description: data.description
-          });
-          break;
-        default:
-          toast(data.message, {
-            description: data.description
-          });
-      }
-    });
-    return cleanup;
-  }, []);
   reactExports.useEffect(() => {
     const themeSetting = settings.find((s2) => s2.key === "theme");
     if (themeSetting) {
@@ -29765,88 +30518,88 @@ function App() {
       root.classList.add(themeValue);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center min-h-[400px]", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center gap-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Loading..." })
-    ] }) }), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Dashboard, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/forms", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Forms, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/payment-methods", element: /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethods, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/settings", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/test-results", element: /* @__PURE__ */ jsxRuntimeExports.jsx(TestResults, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/schedules", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Schedules, {}) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/info-doku", element: /* @__PURE__ */ jsxRuntimeExports.jsx(InfoDoku, {}) })
-    ] }) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Toaster, { position: "bottom-right", expand: false, richColors: true, closeButton: true, toastOptions: {
-      style: {
-        background: "var(--toast-bg)",
-        color: "var(--toast-text)",
-        border: "1px solid var(--toast-border)",
-        borderRadius: "8px",
-        fontSize: "14px",
-        fontFamily: "system-ui, -apple-system, sans-serif"
-      },
-      className: "custom-toast"
-    }, theme: "system" })
-  ] });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center min-h-[400px]", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center gap-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Loading..." })
+  ] }) }), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Dashboard, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/forms", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Forms, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/payment-methods", element: /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethods, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/settings", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/test-results", element: /* @__PURE__ */ jsxRuntimeExports.jsx(TestResults, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/schedules", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Schedules, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/info-doku", element: /* @__PURE__ */ jsxRuntimeExports.jsx(InfoDoku, {}) })
+  ] }) }) }) });
 }
 client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsxRuntimeExports.jsx(React$3.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) }));
 export {
-  Dialog as $,
-  Sun as A,
+  ChevronRight as $,
+  cn as A,
   Button as B,
   CreditCard as C,
-  Moon as D,
-  Play as E,
+  useSettingsStore as D,
+  Sun as E,
   FileText as F,
-  create as G,
-  LoaderCircle as H,
-  createLucideIcon as I,
-  BookOpen as J,
-  Building2 as K,
+  Moon as G,
+  CircleCheck as H,
+  Item as I,
+  Play as J,
+  formatDateTime as K,
   Label as L,
   Monitor as M,
-  Check as N,
-  ChevronRight as O,
+  formatDuration as N,
+  CircleX as O,
   Primitive$1 as P,
-  Landmark as Q,
+  create as Q,
   React$4 as R,
   Settings$1 as S,
   Terminal as T,
-  LayoutDashboard as U,
-  Search as V,
-  TestTube as W,
-  X$1 as X,
-  DialogHeader as Y,
-  DialogTitle as Z,
-  DialogContent as _,
+  LoaderCircle as U,
+  createLucideIcon as V,
+  Bell as W,
+  BookOpen as X,
+  Building2 as Y,
+  Check as Z,
+  CheckCheck as _,
   reactDomExports as a,
-  composeRefs as a0,
-  React$3 as a1,
-  createPopperScope as a2,
-  Root2 as a3,
-  useLayoutEffect2 as a4,
-  VISUALLY_HIDDEN_STYLES as a5,
-  Anchor as a6,
-  Portal$2 as a7,
-  hideOthers as a8,
-  useFocusGuards as a9,
-  ReactRemoveScroll as aa,
-  FocusScope as ab,
-  DismissableLayer as ac,
-  Content$1 as ad,
-  Arrow as ae,
-  Root$1 as af,
-  Portal as ag,
-  Content as ah,
-  Title as ai,
-  Overlay as aj,
-  Close as ak,
-  Description as al,
-  cva as am,
-  DialogDescription as an,
-  DialogFooter as ao,
+  Info as a0,
+  Landmark as a1,
+  LayoutDashboard as a2,
+  Search as a3,
+  TestTube as a4,
+  X$1 as a5,
+  DialogHeader as a6,
+  DialogTitle as a7,
+  DialogContent as a8,
+  Dialog as a9,
+  DialogDescription as aA,
+  DialogFooter as aB,
+  composeRefs as aa,
+  createPopperScope as ab,
+  Root2$1 as ac,
+  useId as ad,
+  createCollection as ae,
+  useLayoutEffect2 as af,
+  VISUALLY_HIDDEN_STYLES as ag,
+  Anchor as ah,
+  Portal$3 as ai,
+  useCallbackRef$1 as aj,
+  hideOthers as ak,
+  useFocusGuards as al,
+  ReactRemoveScroll as am,
+  FocusScope as an,
+  DismissableLayer as ao,
+  Content$1 as ap,
+  Arrow as aq,
+  Root$1 as ar,
+  Portal as as,
+  Content as at,
+  Title as au,
+  Overlay as av,
+  Close as aw,
+  Description as ax,
+  cva as ay,
+  React$3 as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,
@@ -29858,18 +30611,18 @@ export {
   jsxRuntimeExports as j,
   Checkbox as k,
   useSearchParams as l,
-  createContextScope as m,
-  useId as n,
-  composeEventHandlers as o,
-  useComposedRefs as p,
-  useControllableState as q,
+  formatDate as m,
+  createRovingFocusGroupScope as n,
+  useDirection as o,
+  useControllableState as p,
+  createContextScope as q,
   reactExports as r,
-  useCallbackRef$1 as s,
-  usePrevious as t,
+  Root$3 as s,
+  useComposedRefs as t,
   useNavigate as u,
-  useSize as v,
+  composeEventHandlers as v,
   withSelectorExports as w,
-  Presence as x,
-  cn as y,
-  useSettingsStore as z
+  usePrevious as x,
+  useSize as y,
+  Presence as z
 };
