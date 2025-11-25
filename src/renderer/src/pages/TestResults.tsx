@@ -342,7 +342,7 @@ const TestResults: React.FC = () => {
             disabled={isLoading}
             className="gap-2">
             <RefreshCw size={16} />
-            {isLoading ? "Aktualisieren..." : "Aktualisieren"}
+            Aktualisieren
           </Button>
         </div>
       </div>
@@ -488,8 +488,8 @@ const TestResults: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
-                    <div className={`border inline-flex items-center gap-2 pl-1 pr-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : selectedTestRunData.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400" : selectedTestRunData.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"}`}>
-                      {getStatusIcon(selectedTestRunData.status)} {selectedTestRunData.status}
+                    <div className={`border inline-flex items-center gap-2 px-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : selectedTestRunData.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400" : selectedTestRunData.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"}`}>
+                       {selectedTestRunData.status}
                     </div>
                   </div>
 

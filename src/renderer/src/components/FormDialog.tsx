@@ -13,6 +13,13 @@ import {
 import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/Select";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 
 interface FormDialogProps {
@@ -285,31 +292,39 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                      <div>
+                      <div className="space-y-1">
                         <label className="text-xs text-gray-500 dark:text-gray-400">Feldtyp</label>
-                        <select
+                        <Select
                           value={mapping.fieldType}
-                          onChange={(e) => updateFieldMapping(mapping.id, { fieldType: e.target.value as FieldMappingType })}
-                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
+                          onValueChange={(value) => updateFieldMapping(mapping.id, { fieldType: value as FieldMappingType })}
                           disabled={isLoading}
                         >
-                          {FIELD_TYPE_OPTIONS.map(opt => (
-                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                          ))}
-                        </select>
+                          <SelectTrigger className="h-8 text-sm">
+                            <SelectValue placeholder="Feldtyp wählen" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {FIELD_TYPE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <div>
+                      <div className="space-y-1">
                         <label className="text-xs text-gray-500 dark:text-gray-400">Aktion</label>
-                        <select
+                        <Select
                           value={mapping.action}
-                          onChange={(e) => updateFieldMapping(mapping.id, { action: e.target.value as FieldMappingAction })}
-                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
+                          onValueChange={(value) => updateFieldMapping(mapping.id, { action: value as FieldMappingAction })}
                           disabled={isLoading}
                         >
-                          {ACTION_OPTIONS.map(opt => (
-                            <option key={opt.value} value={opt.value}>{opt.label}</option>
-                          ))}
-                        </select>
+                          <SelectTrigger className="h-8 text-sm">
+                            <SelectValue placeholder="Aktion wählen" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ACTION_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 

@@ -724,9 +724,9 @@ const testRunQueries = {
     }));
   },
   create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
-  updateStatus: (id, status, errorMessage, durationMs) => {
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
-    return stmt.run(status, errorMessage, durationMs, id);
+  updateStatus: (id, status, errorMessage, durationMs, steps) => {
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ?");
+    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
   },
   delete: (id) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
@@ -1253,6 +1253,7 @@ class TestProcessManager extends events.EventEmitter {
           success: true,
           duration: response.payload.result?.duration || 0,
           logs: response.payload.result?.logs || [],
+          steps: response.payload.result?.steps || [],
           screenshot: response.payload.result?.screenshot,
           formAnalysis: response.payload.result?.formAnalysis
         };
@@ -1351,8 +1352,8 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
   try {
     const processManager2 = getTestProcessManager();
     const result = await processManager2.runTest(testRunId, form, paymentMethod, settings);
-    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration);
-    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"}`);
+    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps);
+    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps`);
     if (isScheduled) {
       const allWindows = electron.BrowserWindow.getAllWindows();
       allWindows.forEach((window) => {

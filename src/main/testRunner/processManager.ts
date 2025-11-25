@@ -1,7 +1,7 @@
 import { spawn, ChildProcess } from "child_process";
 import { join } from "path";
 import { EventEmitter } from "events";
-import type { Form, PaymentMethod } from "../../common/types";
+import type { Form, PaymentMethod, TestStep } from "../../common/types";
 
 export interface TestMessage {
   id: string;
@@ -23,6 +23,7 @@ export interface TestResult {
   error?: string;
   duration: number;
   logs: string[];
+  steps?: TestStep[];
   screenshot?: string;
   formAnalysis?: any;
 }
@@ -178,6 +179,7 @@ export class TestProcessManager extends EventEmitter {
           success: true,
           duration: response.payload.result?.duration || 0,
           logs: response.payload.result?.logs || [],
+          steps: response.payload.result?.steps || [],
           screenshot: response.payload.result?.screenshot,
           formAnalysis: response.payload.result?.formAnalysis,
         };

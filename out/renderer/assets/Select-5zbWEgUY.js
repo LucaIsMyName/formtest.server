@@ -1,6 +1,47 @@
-import { r as reactExports, i as dist, G as cn, j as jsxRuntimeExports, K as Check } from "./index-BnaULI5R.js";
-import { R as Root2, V as Value, T as Trigger, P as Portal, C as Content2, I as Item, a as Icon, S as ScrollUpButton, b as ScrollDownButton, d as Viewport, L as Label, e as ItemIndicator, f as ItemText, g as Separator } from "./index-C7jbatmH.js";
-import { a as ChevronDown, C as ChevronUp } from "./upload-DEpDzBiy.js";
+import { r as reactExports, i as dist, G as cn, j as jsxRuntimeExports, K as Check } from "./index-DDj25ZFk.js";
+import { R as Root2, V as Value, T as Trigger, P as Portal, d as Content2, I as Item, e as Icon, a as ChevronDown, S as ScrollUpButton, f as ScrollDownButton, g as Viewport, L as Label, h as ItemIndicator, i as ItemText, j as Separator, C as ChevronUp } from "./index-D14GfV1l.js";
+const Input = reactExports.forwardRef((t0, ref) => {
+  const $ = dist.c(11);
+  let className;
+  let props;
+  let type;
+  if ($[0] !== t0) {
+    ({
+      className,
+      type,
+      ...props
+    } = t0);
+    $[0] = t0;
+    $[1] = className;
+    $[2] = props;
+    $[3] = type;
+  } else {
+    className = $[1];
+    props = $[2];
+    type = $[3];
+  }
+  let t1;
+  if ($[4] !== className) {
+    t1 = cn("flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-300 dark:text-white", className);
+    $[4] = className;
+    $[5] = t1;
+  } else {
+    t1 = $[5];
+  }
+  let t2;
+  if ($[6] !== props || $[7] !== ref || $[8] !== t1 || $[9] !== type) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type, className: t1, ref, ...props });
+    $[6] = props;
+    $[7] = ref;
+    $[8] = t1;
+    $[9] = type;
+    $[10] = t2;
+  } else {
+    t2 = $[10];
+  }
+  return t2;
+});
+Input.displayName = "Input";
 const Select = Root2;
 const SelectValue = Value;
 const SelectTrigger = reactExports.forwardRef((t0, ref) => {
@@ -364,6 +405,7 @@ const SelectSeparator = reactExports.forwardRef((t0, ref) => {
 });
 SelectSeparator.displayName = Separator.displayName;
 export {
+  Input as I,
   Select as S,
   SelectTrigger as a,
   SelectValue as b,

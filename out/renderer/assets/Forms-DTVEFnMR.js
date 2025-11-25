@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, b as useFormsStore } from "./index-BnaULI5R.js";
+import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, b as useFormsStore } from "./index-DDj25ZFk.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-BMPuaJF8.js";
-import { I as Input } from "./Input-BWZ0ogeH.js";
-import { C as ChevronUp, a as ChevronDown } from "./upload-DEpDzBiy.js";
-import { T as Trash2, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell } from "./Table-mS8y5IvR.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CzeUsttT.js";
-import { S as Skeleton } from "./Skeleton-BKG-IWE-.js";
+import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-CqZDfG6v.js";
+import { I as Input, S as Select, a as SelectTrigger, b as SelectValue, c as SelectContent, d as SelectItem } from "./Select-5zbWEgUY.js";
+import { C as ChevronUp, a as ChevronDown } from "./index-D14GfV1l.js";
+import { T as Trash2, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell } from "./Table-zxF4d6DN.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-9OOCZ4Bu.js";
+import { S as Skeleton } from "./Skeleton-j2lBfk0O.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -229,35 +229,41 @@ const FormDialog = ({
               /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => removeFieldMapping(mapping.id), className: "p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }) })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Feldtyp" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: mapping.fieldType, onChange: (e_3) => updateFieldMapping(mapping.id, {
-                  fieldType: e_3.target.value
-                }), className: "w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900", disabled: isLoading, children: FIELD_TYPE_OPTIONS.map((opt) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: opt.value, children: opt.label }, opt.value)) })
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: mapping.fieldType, onValueChange: (value) => updateFieldMapping(mapping.id, {
+                  fieldType: value
+                }), disabled: isLoading, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "h-8 text-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Feldtyp wählen" }) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: FIELD_TYPE_OPTIONS.map((opt) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: opt.value, children: opt.label }, opt.value)) })
+                ] })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Aktion" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: mapping.action, onChange: (e_4) => updateFieldMapping(mapping.id, {
-                  action: e_4.target.value
-                }), className: "w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900", disabled: isLoading, children: ACTION_OPTIONS.map((opt_0) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: opt_0.value, children: opt_0.label }, opt_0.value)) })
+                /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: mapping.action, onValueChange: (value_0) => updateFieldMapping(mapping.id, {
+                  action: value_0
+                }), disabled: isLoading, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "h-8 text-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Aktion wählen" }) }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: ACTION_OPTIONS.map((opt_0) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: opt_0.value, children: opt_0.label }, opt_0.value)) })
+                ] })
               ] })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "CSS Selektor *" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.selector, onChange: (e_5) => updateFieldMapping(mapping.id, {
-                selector: e_5.target.value
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.selector, onChange: (e_3) => updateFieldMapping(mapping.id, {
+                selector: e_3.target.value
               }), placeholder: "#payment_first_name", className: "h-8 text-sm", disabled: isLoading })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Wert (optional)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.value || "", onChange: (e_6) => updateFieldMapping(mapping.id, {
-                value: e_6.target.value
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.value || "", onChange: (e_4) => updateFieldMapping(mapping.id, {
+                value: e_4.target.value
               }), placeholder: "Leer = automatisch generiert", className: "h-8 text-sm", disabled: isLoading })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Beschreibung (optional)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.description || "", onChange: (e_7) => updateFieldMapping(mapping.id, {
-                description: e_7.target.value
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.description || "", onChange: (e_5) => updateFieldMapping(mapping.id, {
+                description: e_5.target.value
               }), placeholder: "z.B. Vorname-Feld", className: "h-8 text-sm", disabled: isLoading })
             ] })
           ] }, mapping.id)),

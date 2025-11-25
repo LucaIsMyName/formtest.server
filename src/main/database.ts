@@ -808,9 +808,9 @@ export const testRunQueries = {
     })) as TestRun[];
   },
   create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
-  updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number) => {
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ? WHERE id = ?");
-    return stmt.run(status, errorMessage, durationMs, id);
+  updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"]) => {
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ?");
+    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
   },
   delete: (id: number) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");

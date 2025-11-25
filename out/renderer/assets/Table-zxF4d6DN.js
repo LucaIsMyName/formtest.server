@@ -1,4 +1,4 @@
-import { a0 as createLucideIcon, a9 as React2, i as dist, G as cn, j as jsxRuntimeExports } from "./index-BnaULI5R.js";
+import { a0 as createLucideIcon, a9 as React, i as dist, G as cn, j as jsxRuntimeExports } from "./index-DDj25ZFk.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -128,7 +128,7 @@ const __iconNode = [
   ["path", { d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", key: "e791ji" }]
 ];
 const Trash2 = createLucideIcon("trash-2", __iconNode);
-const Table = React2.forwardRef((t0, ref) => {
+const Table = React.forwardRef((t0, ref) => {
   const $ = dist.c(9);
   let className;
   let props;
@@ -165,7 +165,7 @@ const Table = React2.forwardRef((t0, ref) => {
   return t2;
 });
 Table.displayName = "Table";
-const TableHeader = React2.forwardRef((t0, ref) => {
+const TableHeader = React.forwardRef((t0, ref) => {
   const $ = dist.c(9);
   let className;
   let props;
@@ -202,7 +202,7 @@ const TableHeader = React2.forwardRef((t0, ref) => {
   return t2;
 });
 TableHeader.displayName = "TableHeader";
-const TableBody = React2.forwardRef((t0, ref) => {
+const TableBody = React.forwardRef((t0, ref) => {
   const $ = dist.c(9);
   let className;
   let props;
@@ -239,7 +239,7 @@ const TableBody = React2.forwardRef((t0, ref) => {
   return t2;
 });
 TableBody.displayName = "TableBody";
-const TableRow = React2.forwardRef((t0, ref) => {
+const TableRow = React.forwardRef((t0, ref) => {
   const $ = dist.c(9);
   let className;
   let props;
@@ -276,7 +276,7 @@ const TableRow = React2.forwardRef((t0, ref) => {
   return t2;
 });
 TableRow.displayName = "TableRow";
-const TableHead = React2.forwardRef((t0, ref) => {
+const TableHead = React.forwardRef((t0, ref) => {
   const $ = dist.c(9);
   let className;
   let props;
@@ -313,7 +313,7 @@ const TableHead = React2.forwardRef((t0, ref) => {
   return t2;
 });
 TableHead.displayName = "TableHead";
-const TableCell = React2.forwardRef((t0, ref) => {
+const TableCell = React.forwardRef((t0, ref) => {
   const $ = dist.c(9);
   let className;
   let props;
