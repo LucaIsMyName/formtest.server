@@ -108,7 +108,10 @@ const Schedules: React.FC = () => {
             </TableHeader>
             <TableBody>
               {schedules.map((schedule) => (
-                <TableRow key={schedule.id}>
+                <TableRow 
+                  key={schedule.id}
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  onClick={() => setEditingSchedule(schedule)}>
                   <TableCell>
                     <div className="flex items-center justify-center">
                       {renderIcon(schedule.icon || 'Play', 16, "text-gray-600 dark:text-gray-400")}
@@ -142,7 +145,7 @@ const Schedules: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => handleRunNow(schedule.id)}
+                        onClick={(e) => { e.stopPropagation(); handleRunNow(schedule.id); }}
                         disabled={runningSchedules.has(schedule.id)}
                         title="Jetzt ausführen">
                         {runningSchedules.has(schedule.id) ? (
@@ -160,7 +163,7 @@ const Schedules: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setEditingSchedule(schedule)}
+                        onClick={(e) => { e.stopPropagation(); setEditingSchedule(schedule); }}
                         title="Bearbeiten">
                         <Edit2
                           size={16}
@@ -170,7 +173,7 @@ const Schedules: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setDeletingSchedule(schedule)}
+                        onClick={(e) => { e.stopPropagation(); setDeletingSchedule(schedule); }}
                         title="Löschen">
                         <Trash2
                           size={16}

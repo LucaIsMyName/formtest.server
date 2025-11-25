@@ -148,7 +148,10 @@ const Forms: React.FC = () => {
             </TableHeader>
             <TableBody>
               {forms.map((form) => (
-                <TableRow key={form.id}>
+                <TableRow 
+                  key={form.id} 
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  onClick={() => handleEditForm(form)}>
                   <TableCell>
                     <div className="flex items-center gap-2.5">
                       {renderIcon(form.icon || "FileText", 16, "text-gray-500 dark:text-gray-400")}
@@ -163,13 +166,14 @@ const Forms: React.FC = () => {
                       href={form.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
                       className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all">
                       {form.url}
                     </a>
                   </TableCell>
                   <TableCell>
                     <button
-                      onClick={() => toggleFormActive(form.id)}
+                      onClick={(e) => { e.stopPropagation(); toggleFormActive(form.id); }}
                       className="border-none bg-transparent cursor-pointer p-0"
                       disabled={isLoading}>
                       <StatusBadge status={form.isActive ? "active" : "inactive"}>
@@ -181,7 +185,7 @@ const Forms: React.FC = () => {
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <Button
-                        onClick={() => handleEditForm(form)}
+                        onClick={(e) => { e.stopPropagation(); handleEditForm(form); }}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
@@ -189,7 +193,7 @@ const Forms: React.FC = () => {
                         <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
                       </Button>
                       <Button
-                        onClick={() => handleDeleteForm(form)}
+                        onClick={(e) => { e.stopPropagation(); handleDeleteForm(form); }}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}

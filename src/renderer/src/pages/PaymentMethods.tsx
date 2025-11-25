@@ -188,7 +188,10 @@ const PaymentMethods: React.FC = () => {
             </TableHeader>
             <TableBody>
               {paymentMethods.map((method) => (
-                <TableRow key={method.id}>
+                <TableRow 
+                  key={method.id}
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  onClick={() => handleEditMethod(method)}>
                   <TableCell>
                     <div className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</div>
                   </TableCell>
@@ -203,7 +206,7 @@ const PaymentMethods: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     <button
-                      onClick={() => togglePaymentMethodActive(method.id)}
+                      onClick={(e) => { e.stopPropagation(); togglePaymentMethodActive(method.id); }}
                       className="border-none bg-transparent cursor-pointer p-0"
                       disabled={isLoading}>
                       <StatusBadge status={method.isActive ? "active" : "inactive"}>
@@ -215,7 +218,7 @@ const PaymentMethods: React.FC = () => {
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <Button
-                        onClick={() => handleEditMethod(method)}
+                        onClick={(e) => { e.stopPropagation(); handleEditMethod(method); }}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
@@ -223,7 +226,7 @@ const PaymentMethods: React.FC = () => {
                         <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
                       </Button>
                       <Button
-                        onClick={() => handleDeleteMethod(method)}
+                        onClick={(e) => { e.stopPropagation(); handleDeleteMethod(method); }}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
