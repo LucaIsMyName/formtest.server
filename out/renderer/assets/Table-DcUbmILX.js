@@ -1,4 +1,4 @@
-import { a0 as createLucideIcon, a9 as React, i as dist, G as cn, j as jsxRuntimeExports } from "./index-DDj25ZFk.js";
+import { a0 as createLucideIcon, a9 as React, i as dist, G as cn, j as jsxRuntimeExports } from "./index-Ch-o-UTP.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -294,7 +294,7 @@ const TableHead = React.forwardRef((t0, ref) => {
   }
   let t1;
   if ($[3] !== className) {
-    t1 = cn("px-6 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", className);
+    t1 = cn("px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", className);
     $[3] = className;
     $[4] = t1;
   } else {

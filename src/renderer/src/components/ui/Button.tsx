@@ -33,11 +33,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "
   return (
     <button
       ref={ref}
-      style={{fontStretch: "115%"}}
+      style={{ fontStretch: "115%" }}
       className={`${baseClasses} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`}
       disabled={disabled || isLoading}
       {...props}>
-      {isLoading && <><Loader2 className="w-4 h-4 mr-2 animate-spin" /></>}
+      {isLoading && (
+        <>
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        </>
+      )}
       {children}
     </button>
   );

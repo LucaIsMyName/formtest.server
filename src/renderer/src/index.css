@@ -286,9 +286,9 @@ select.input {
 
 /* Dark mode toast variables */
 .dark {
-  --toast-bg: #1f2937;
-  --toast-text: #f9fafb;
-  --toast-border: #374151;
+  --toast-bg: var(--color-background);
+  --toast-text: var(--color-text);
+  --toast-border: var(--color-border);
 }
 
 /* Custom toast styling */
@@ -306,38 +306,14 @@ select.input {
   border-radius: 8px !important;
 }
 
-[data-sonner-toast][data-type="success"] {
-  --toast-bg: #dcfce7 !important;
-  --toast-text: #166534 !important;
-  --toast-border: #bbf7d0 !important;
+[data-sonner-toast] {
+  --toast-bg: var(--color-background-secondary) !important;
+  --toast-text: var(--color-text) !important;
+  --toast-border: var(--color-border) !important;
 }
 
-.dark [data-sonner-toast][data-type="success"] {
-  --toast-bg: #064e3b !important;
-  --toast-text: #a7f3d0 !important;
-  --toast-border: #047857 !important;
-}
-
-[data-sonner-toast][data-type="error"] {
-  --toast-bg: #fef2f2 !important;
-  --toast-text: #dc2626 !important;
-  --toast-border: #fecaca !important;
-}
-
-.dark [data-sonner-toast][data-type="error"] {
-  --toast-bg: #7f1d1d !important;
-  --toast-text: #fca5a5 !important;
-  --toast-border: #dc2626 !important;
-}
-
-[data-sonner-toast][data-type="info"] {
-  --toast-bg: #eff6ff !important;
-  --toast-text: #1d4ed8 !important;
-  --toast-border: #bfdbfe !important;
-}
-
-.dark [data-sonner-toast][data-type="info"] {
-  --toast-bg: #1e3a8a !important;
-  --toast-text: #93c5fd !important;
-  --toast-border: #3b82f6 !important;
+.dark [data-sonner-toast] {
+   --toast-bg: var(--color-background-secondary) !important;
+  --toast-text: var(--color-text) !important;
+  --toast-border: var(--color-border) !important;
 }

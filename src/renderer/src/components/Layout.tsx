@@ -112,11 +112,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   to={item.href}
                   className={`flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"}`}>
                   <IconComponent
-                    className={`${location.pathname === item.href ? ` stroke-blue-600 dark:stroke-blue-400 scale-[115%]` : ""} text-gray-700 dark:text-gray-400 transition-all`}
+                    className={`${location.pathname === item.href ? ` stroke-blue-600 dark:stroke-blue-400` : ""} text-gray-700 dark:text-gray-400 transition-all`}
                     size={18}
                     strokeWidth={location.pathname === item.href ? 2 : 2}
                   />
-                  <span className="font-stretched">{item.name}</span>
+                  <span className={`font-stretched transition-all ${location.pathname === item.href ? `text-blue-600 dark:text-blue-400 font-semibold` : ``}`}>{item.name}</span>
                 </Link>
               );
             })}

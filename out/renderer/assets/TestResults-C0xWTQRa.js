@@ -1,8 +1,8 @@
-import { N as Root, r as reactExports, i as dist, G as cn, j as jsxRuntimeExports, O as Portal, Q as Content, U as Title, V as Overlay, W as Close, X, Y as Description, p as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, B as Button, Z as Play } from "./index-DDj25ZFk.js";
+import { N as Root, r as reactExports, i as dist, G as cn, j as jsxRuntimeExports, O as Portal, Q as Content, U as Title, V as Overlay, W as Close, X, Y as Description, p as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, B as Button, Z as Play } from "./index-Ch-o-UTP.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { D as DeleteConfirmDialog, a as CircleAlert, C as CircleCheck } from "./DeleteConfirmDialog-9OOCZ4Bu.js";
-import { S as Skeleton } from "./Skeleton-j2lBfk0O.js";
-import { R as RefreshCw, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, C as Copy, B as Bot, T as Trash2, F as FileBraces, g as Clock, S as SkipForward, h as CircleX, i as CircleCheckBig } from "./Table-zxF4d6DN.js";
+import { D as DeleteConfirmDialog, a as CircleAlert, C as CircleCheck } from "./DeleteConfirmDialog-DfYvwzrV.js";
+import { S as Skeleton } from "./Skeleton-Cw50pXiE.js";
+import { R as RefreshCw, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, C as Copy, B as Bot, T as Trash2, F as FileBraces, g as Clock, S as SkipForward, h as CircleX, i as CircleCheckBig } from "./Table-DcUbmILX.js";
 const Drawer = Root;
 const DrawerPortal = Portal;
 const DrawerOverlay = reactExports.forwardRef((t0, ref) => {
@@ -71,7 +71,7 @@ const DrawerContent = reactExports.forwardRef((t0, ref) => {
   }
   let t2;
   if ($[5] !== className) {
-    t2 = cn("fixed inset-y-0 right-0 z-50 h-full w-3/4 border-l border-gray-200 bg-white p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-full md:max-w-[678px] dark:border-gray-700 dark:bg-gray-800", className);
+    t2 = cn("fixed inset-y-0 right-0 z-50 h-full w-3/4 border-l border-gray-200 bg-white p-6 shadow-lg overflow-y-auto transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-full md:max-w-[678px] dark:border-gray-700 dark:bg-gray-800", className);
     $[5] = className;
     $[6] = t2;
   } else {
@@ -494,7 +494,7 @@ const TestResults = () => {
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: loadTestRuns, variant: "secondary", size: "md", disabled: isLoading, className: "gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 16 }),
-          isLoading ? "Aktualisieren..." : "Aktualisieren"
+          "Aktualisieren"
         ] })
       ] })
     ] }),
@@ -562,11 +562,7 @@ const TestResults = () => {
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Status" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `border inline-flex items-center gap-2 pl-1 pr-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : selectedTestRunData.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400" : selectedTestRunData.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"}`, children: [
-              getStatusIcon(selectedTestRunData.status),
-              " ",
-              selectedTestRunData.status
-            ] })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `border inline-flex items-center gap-2 px-2 py-1 text-[11px] font-medium font-mono rounded-full ${selectedTestRunData.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200 dark:border-green-700 border-green-400" : selectedTestRunData.status === "FAILURE" ? "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200 dark:border-red-700 border-red-400" : selectedTestRunData.status === "RUNNING" ? "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 dark:border-blue-700 border-blue-400" : "bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200 dark:border-gray-700 border-gray-400"}`, children: selectedTestRunData.status })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Duration" }),

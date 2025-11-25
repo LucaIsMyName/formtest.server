@@ -21,6 +21,11 @@ class TestRunner {
     this.logs = []
     this.steps = []
     this.currentStep = null
+    this.fieldMappings = []
+    
+    // URL prefill flags - track what's already set via URL params
+    this.prefilledAmount = false
+    this.prefilledInterval = false
 
     this.buffer = ''
 
@@ -242,8 +247,73 @@ class TestRunner {
     this.log('Browser initialized successfully')
   }
 
+  /**
+   * Build URL with prefilled parameters for donation forms
+   * Supports: amount, interval
+   * Priority: Field mappings (override) > Settings (default)
+   * 
+   * ALWAYS prefills amount and interval from Settings for ALL forms.
+   * Field mappings can override these values if specified.
+   */
+  buildPrefilledUrl(form) {
+    const url = new URL(form.url)
+    
+    this.log('Adding prefill parameters to URL')
+    
+    // Mark that we're prefilling - so form filling can skip these fields
+    this.prefilledAmount = true
+    this.prefilledInterval = true
+
+    // Get amount from field mapping or settings
+    const amountMapping = this.fieldMappings?.find(m => m.fieldType === 'amount' || m.fieldType === 'customAmount')
+    let amount = amountMapping?.value || this.config.defaultDonationAmount || '50'
+    
+    // Get interval from field mapping or settings
+    // FundraisingBox intervals: 0=one-time, 1=monthly, 4=quarterly, 12=yearly
+    const intervalMapping = this.fieldMappings?.find(m => m.fieldType === 'interval')
+    let interval = intervalMapping?.value || this.config.defaultInterval || '0'
+    
+    // Map interval names to FundraisingBox values if needed
+    const intervalMap = {
+      'einmalig': '0',
+      'one-time': '0',
+      'onetime': '0',
+      'monatlich': '1',
+      'monthly': '1',
+      'quartal': '4',
+      'quarterly': '4',
+      'jährlich': '12',
+      'yearly': '12',
+      'annual': '12'
+    }
+    
+    // Convert named interval to number if needed
+    if (isNaN(parseInt(interval))) {
+      interval = intervalMap[interval.toLowerCase()] || '0'
+    }
+
+    // Add parameters (only if not already present)
+    if (!url.searchParams.has('amount')) {
+      url.searchParams.set('amount', amount)
+      this.log(`Prefilling amount: ${amount}`)
+    }
+    
+    if (!url.searchParams.has('interval')) {
+      url.searchParams.set('interval', interval)
+      this.log(`Prefilling interval: ${interval}`)
+    }
+
+    const prefilledUrl = url.toString()
+    this.log(`Prefilled URL: ${prefilledUrl}`)
+    return prefilledUrl
+  }
+
   async runFormTest(form, paymentMethod) {
     const startTime = Date.now()
+    
+    // Reset prefill flags for new test
+    this.prefilledAmount = false
+    this.prefilledInterval = false
     
     // Store form field mappings for use during form filling
     this.fieldMappings = form.fieldMappings || []
@@ -265,17 +335,21 @@ class TestRunner {
       }
     }
 
+    // Build prefilled URL for FundraisingBox forms
+    const targetUrl = this.buildPrefilledUrl(form)
+
     // Step 2: Page Navigation
     const navStep = this.startStep('page-navigation', 'Navigate to URL', {
-      url: form.url
+      url: targetUrl,
+      originalUrl: form.url
     })
 
-    this.log(`Navigating to: ${form.url}`)
+    this.log(`Navigating to: ${targetUrl}`)
 
     // Try multiple navigation strategies for better reliability
     const navStartTime = Date.now()
     try {
-      await this.page.goto(form.url, {
+      await this.page.goto(targetUrl, {
         waitUntil: 'domcontentloaded',
         timeout: 30000
       })
@@ -295,7 +369,7 @@ class TestRunner {
 
       // Fallback: try with load event
       try {
-        await this.page.goto(form.url, {
+        await this.page.goto(targetUrl, {
           waitUntil: 'load',
           timeout: 20000
         })
@@ -309,7 +383,7 @@ class TestRunner {
       } catch (fallbackError) {
         this.log(`Navigation with load failed: ${fallbackError.message}`)
         this.failStep('page-navigation', `Failed to navigate: ${fallbackError.message}`)
-        throw new Error(`Failed to navigate to ${form.url}: ${fallbackError.message}`)
+        throw new Error(`Failed to navigate to ${targetUrl}: ${fallbackError.message}`)
       }
     }
 
@@ -745,6 +819,12 @@ class TestRunner {
   async handleFBAmountSelection() {
     this.log('Handling FB amount selection...')
 
+    // Skip if already prefilled via URL params
+    if (this.prefilledAmount) {
+      this.log('Amount already prefilled via URL params, skipping')
+      return
+    }
+
     // Check if already handled by field mapping
     const amountMapping = this.fieldMappings?.find(m => m.fieldType === 'amount' || m.fieldType === 'customAmount')
     if (amountMapping) {
@@ -795,6 +875,12 @@ class TestRunner {
    */
   async handleFBIntervalSelection() {
     this.log('Handling FB interval selection...')
+
+    // Skip if already prefilled via URL params
+    if (this.prefilledInterval) {
+      this.log('Interval already prefilled via URL params, skipping')
+      return
+    }
 
     // Check if already handled by field mapping
     const intervalMapping = this.fieldMappings?.find(m => m.fieldType === 'interval')
