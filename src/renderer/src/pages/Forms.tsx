@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
-import FormDialog from "../components/FormDialog";
+import FormDrawer from "../components/FormDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
@@ -10,6 +10,7 @@ import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { renderIcon } from "../utils/iconHelper";
+import { formatDate } from "../utils/formatters";
 import { Edit2, Trash2 } from "lucide-react";
 
 const FormsSkeleton = () => (
@@ -94,15 +95,6 @@ const Forms: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string | Date) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   return (
     <div>
@@ -213,7 +205,7 @@ const Forms: React.FC = () => {
         </div>
       )}
 
-      <FormDialog
+      <FormDrawer
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         onSubmit={handleFormSubmit}

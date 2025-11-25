@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
-import PaymentMethodDialog from "../components/PaymentMethodDialog";
+import PaymentMethodDrawer from "../components/PaymentMethodDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
+import { formatDate } from "../utils/formatters";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Edit2, Trash2 } from "lucide-react";
@@ -97,15 +98,6 @@ const PaymentMethods: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string | Date) => {
-    return new Date(dateString).toLocaleDateString("de-AT", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   const getPaymentTypeLabel = (type: PaymentMethod["type"]) => {
     switch (type) {
@@ -247,7 +239,7 @@ const PaymentMethods: React.FC = () => {
         </div>
       )}
 
-      <PaymentMethodDialog
+      <PaymentMethodDrawer
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         onSubmit={handleMethodSubmit}

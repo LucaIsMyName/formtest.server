@@ -13,6 +13,7 @@ import type { TestStep } from '../../../common/types';
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../components/ui/Drawer";
+import { formatDateTime, formatDuration } from "../utils/formatters";
 
 const TestResultsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
@@ -231,15 +232,6 @@ const TestResults: React.FC = () => {
   };
 
 
-  const formatDuration = (durationMs?: number) => {
-    if (!durationMs) return "N/A";
-    if (durationMs < 1000) return `${durationMs}ms`;
-    return `${(durationMs / 1000).toFixed(1)}s`;
-  };
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleString();
-  };
 
   const handleDeleteClick = (testRun: any) => {
     const formName = getFormName(testRun.formId);
@@ -399,7 +391,7 @@ const TestResults: React.FC = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
@@ -481,7 +473,7 @@ const TestResults: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Run At</label>
-                    <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDate(selectedTestRunData.runAt)}</div>
+                    <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(selectedTestRunData.runAt)}</div>
                   </div>
                 </div>
 

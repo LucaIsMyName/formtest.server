@@ -8,9 +8,10 @@ import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Skeleton } from "../components/ui/Skeleton";
-import ScheduleDialog from "../components/ScheduleDialog";
+import ScheduleDrawer from "../components/ScheduleDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import { renderIcon } from "../utils/iconHelper";
+import { formatDateTime } from "../utils/formatters";
 import { TestSchedule } from "../../../common/types";
 
 const Schedules: React.FC = () => {
@@ -65,10 +66,6 @@ const Schedules: React.FC = () => {
     }
   };
 
-  const formatDate = (date?: Date) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleString();
-  };
 
   return (
     <div>
@@ -133,7 +130,7 @@ const Schedules: React.FC = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400 font-mono">{formatDate(schedule.lastRun)}</div>
+                    <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDateTime(schedule.lastRun)}</div>
                   </TableCell>
                   <TableCell>
                     <StatusBadge status={schedule.isActive ? "active" : "inactive"}>
@@ -189,7 +186,7 @@ const Schedules: React.FC = () => {
         )}
       </div>
 
-      <ScheduleDialog
+      <ScheduleDrawer
         isOpen={isCreateOpen || !!editingSchedule}
         onClose={() => {
           setIsCreateOpen(false);
