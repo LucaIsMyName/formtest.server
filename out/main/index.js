@@ -177,6 +177,22 @@ function migrateTestRunScheduled() {
     console.error("Database: Test run scheduled migration error:", error);
   }
 }
+function migrateFormFieldMappings() {
+  console.log("Database: Checking for forms fieldMappings column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(forms)").all();
+    const hasFieldMappings = columns.some((col) => col.name === "fieldMappings");
+    if (!hasFieldMappings) {
+      console.log("Database: Adding fieldMappings column to forms...");
+      db.exec("ALTER TABLE forms ADD COLUMN fieldMappings TEXT DEFAULT '[]'");
+      const updateStmt = db.prepare("UPDATE forms SET fieldMappings = '[]' WHERE fieldMappings IS NULL");
+      const result = updateStmt.run();
+      console.log(`Database: Initialized fieldMappings column for ${result.changes} existing forms`);
+    }
+  } catch (error) {
+    console.error("Database: Form fieldMappings migration error:", error);
+  }
+}
 function migrateIconColumns() {
   console.log("Database: Checking for icon columns...");
   try {
@@ -369,6 +385,7 @@ function initDatabase() {
   migrateTestRunScheduled();
   migrateTestScheduleIcon();
   migrateIconColumns();
+  migrateFormFieldMappings();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
   });
@@ -380,6 +397,7 @@ const formQueries = {
     return forms.map((form) => ({
       ...form,
       isActive: Boolean(form.isActive),
+      fieldMappings: form.fieldMappings ? JSON.parse(form.fieldMappings) : [],
       createdAt: new Date(form.createdAt),
       updatedAt: new Date(form.updatedAt)
     }));
@@ -390,6 +408,7 @@ const formQueries = {
     return {
       ...form,
       isActive: Boolean(form.isActive),
+      fieldMappings: form.fieldMappings ? JSON.parse(form.fieldMappings) : [],
       createdAt: new Date(form.createdAt),
       updatedAt: new Date(form.updatedAt)
     };
@@ -437,8 +456,9 @@ const formQueries = {
         isActive: typeof isActive
       });
       const icon = form.icon ? String(form.icon) : "FileText";
-      const stmt = db.prepare("INSERT INTO forms (name, url, hash, icon, isActive) VALUES (?, ?, ?, ?, ?)");
-      const result = stmt.run(name, url, hash, icon, isActive);
+      const fieldMappings = form.fieldMappings ? JSON.stringify(form.fieldMappings) : "[]";
+      const stmt = db.prepare("INSERT INTO forms (name, url, hash, icon, isActive, fieldMappings) VALUES (?, ?, ?, ?, ?, ?)");
+      const result = stmt.run(name, url, hash, icon, isActive, fieldMappings);
       console.log("Database: Insert result:", result);
       return result;
     } catch (error) {
@@ -478,6 +498,10 @@ const formQueries = {
     if (isActive !== void 0) {
       updates.push("isActive = ?");
       values.push(isActive);
+    }
+    if (form.fieldMappings !== void 0) {
+      updates.push("fieldMappings = ?");
+      values.push(JSON.stringify(form.fieldMappings));
     }
     updates.push("updatedAt = CURRENT_TIMESTAMP");
     values.push(id);

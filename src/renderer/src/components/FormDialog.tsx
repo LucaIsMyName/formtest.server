@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "./ui/Button";
 import IconPicker from "./IconPicker";
 import { renderIcon } from "../utils/iconHelper";
-import type { Form } from "../../../common/types";
+import type { Form, FormFieldMapping, FieldMappingType, FieldMappingAction } from "../../../common/types";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import {
 import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
+import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 
 interface FormDialogProps {
   isOpen: boolean;
@@ -22,6 +23,34 @@ interface FormDialogProps {
   isLoading?: boolean;
 }
 
+// Field type options for dropdown
+const FIELD_TYPE_OPTIONS: { value: FieldMappingType; label: string }[] = [
+  { value: 'amount', label: 'Betrag (Preset)' },
+  { value: 'customAmount', label: 'Betrag (Freier)' },
+  { value: 'interval', label: 'Intervall/Rhythmus' },
+  { value: 'firstName', label: 'Vorname' },
+  { value: 'lastName', label: 'Nachname' },
+  { value: 'email', label: 'E-Mail' },
+  { value: 'salutation', label: 'Anrede' },
+  { value: 'country', label: 'Land' },
+  { value: 'paymentMethod', label: 'Zahlungsmethode' },
+  { value: 'checkbox', label: 'Checkbox' },
+  { value: 'radio', label: 'Radio Button' },
+  { value: 'iban', label: 'IBAN' },
+  { value: 'accountHolder', label: 'Kontoinhaber' },
+  { value: 'birthday', label: 'Geburtstag' },
+  { value: 'custom', label: 'Benutzerdefiniert' },
+];
+
+// Action options for dropdown
+const ACTION_OPTIONS: { value: FieldMappingAction; label: string }[] = [
+  { value: 'type', label: 'Text eingeben' },
+  { value: 'click', label: 'Klicken' },
+  { value: 'select', label: 'Auswählen (Dropdown)' },
+  { value: 'check', label: 'Checkbox aktivieren' },
+  { value: 'waitAndClick', label: 'Warten & Klicken' },
+];
+
 const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, editForm, isLoading = false }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -30,6 +59,8 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
     icon: "FileText",
     isActive: true,
   });
+  const [fieldMappings, setFieldMappings] = useState<FormFieldMapping[]>([]);
+  const [showFieldMappings, setShowFieldMappings] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showIconPicker, setShowIconPicker] = useState(false);
 
@@ -42,6 +73,9 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
         icon: editForm.icon || "FileText",
         isActive: editForm.isActive,
       });
+      setFieldMappings(editForm.fieldMappings || []);
+      // Auto-expand if there are existing mappings
+      setShowFieldMappings((editForm.fieldMappings?.length || 0) > 0);
     } else {
       setFormData({
         name: "",
@@ -50,9 +84,39 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
         icon: "FileText",
         isActive: true,
       });
+      setFieldMappings([]);
+      setShowFieldMappings(false);
     }
     setErrors({});
   }, [editForm, isOpen]);
+
+  // Generate unique ID for new mappings
+  const generateId = () => crypto.randomUUID();
+
+  // Add new field mapping
+  const addFieldMapping = () => {
+    const newMapping: FormFieldMapping = {
+      id: generateId(),
+      fieldType: 'custom',
+      selector: '',
+      value: '',
+      action: 'type',
+      description: '',
+    };
+    setFieldMappings([...fieldMappings, newMapping]);
+  };
+
+  // Update a field mapping
+  const updateFieldMapping = (id: string, updates: Partial<FormFieldMapping>) => {
+    setFieldMappings(fieldMappings.map(m => 
+      m.id === id ? { ...m, ...updates } : m
+    ));
+  };
+
+  // Remove a field mapping
+  const removeFieldMapping = (id: string) => {
+    setFieldMappings(fieldMappings.filter(m => m.id !== id));
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -83,12 +147,16 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
     }
 
     try {
+      // Filter out empty mappings
+      const validMappings = fieldMappings.filter(m => m.selector.trim() !== '');
+      
       const submitData = {
         name: formData.name.trim(),
         url: formData.url.trim(),
         hash: formData.hash.trim() || null,
         icon: formData.icon,
         isActive: formData.isActive,
+        fieldMappings: validMappings,
       };
 
       await onSubmit(submitData);
@@ -100,7 +168,7 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{editForm ? "Formular bearbeiten" : "Neues Formular"}</DialogTitle>
         </DialogHeader>
@@ -167,6 +235,131 @@ const FormDialog: React.FC<FormDialogProps> = ({ isOpen, onClose, onSubmit, edit
             <Label htmlFor="isActive" className="text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
               Aktiv (in Tests einbeziehen)
             </Label>
+          </div>
+
+          {/* Field Mappings Section */}
+          <div className="border border-gray-200 dark:border-gray-700 rounded-md">
+            <button
+              type="button"
+              onClick={() => setShowFieldMappings(!showFieldMappings)}
+              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Feld-Mappings
+                </span>
+                {fieldMappings.length > 0 && (
+                  <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full">
+                    {fieldMappings.length}
+                  </span>
+                )}
+              </div>
+              {showFieldMappings ? (
+                <ChevronUp size={16} className="text-gray-500" />
+              ) : (
+                <ChevronDown size={16} className="text-gray-500" />
+              )}
+            </button>
+
+            {showFieldMappings && (
+              <div className="px-4 pb-4 space-y-3 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-xs text-gray-500 dark:text-gray-400 pt-3">
+                  Definieren Sie benutzerdefinierte Selektoren und Werte für Formularfelder.
+                  Diese überschreiben die automatische Erkennung.
+                </p>
+
+                {/* Existing mappings */}
+                {fieldMappings.map((mapping, index) => (
+                  <div key={mapping.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                        Mapping #{index + 1}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeFieldMapping(mapping.id)}
+                        className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-xs text-gray-500 dark:text-gray-400">Feldtyp</label>
+                        <select
+                          value={mapping.fieldType}
+                          onChange={(e) => updateFieldMapping(mapping.id, { fieldType: e.target.value as FieldMappingType })}
+                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
+                          disabled={isLoading}
+                        >
+                          {FIELD_TYPE_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-500 dark:text-gray-400">Aktion</label>
+                        <select
+                          value={mapping.action}
+                          onChange={(e) => updateFieldMapping(mapping.id, { action: e.target.value as FieldMappingAction })}
+                          className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900"
+                          disabled={isLoading}
+                        >
+                          {ACTION_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-500 dark:text-gray-400">CSS Selektor *</label>
+                      <Input
+                        value={mapping.selector}
+                        onChange={(e) => updateFieldMapping(mapping.id, { selector: e.target.value })}
+                        placeholder="#payment_first_name"
+                        className="h-8 text-sm"
+                        disabled={isLoading}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-500 dark:text-gray-400">Wert (optional)</label>
+                      <Input
+                        value={mapping.value || ''}
+                        onChange={(e) => updateFieldMapping(mapping.id, { value: e.target.value })}
+                        placeholder="Leer = automatisch generiert"
+                        className="h-8 text-sm"
+                        disabled={isLoading}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-500 dark:text-gray-400">Beschreibung (optional)</label>
+                      <Input
+                        value={mapping.description || ''}
+                        onChange={(e) => updateFieldMapping(mapping.id, { description: e.target.value })}
+                        placeholder="z.B. Vorname-Feld"
+                        className="h-8 text-sm"
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                {/* Add new mapping button */}
+                <button
+                  type="button"
+                  onClick={addFieldMapping}
+                  disabled={isLoading}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 border border-dashed border-blue-300 dark:border-blue-700 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50"
+                >
+                  <Plus size={16} />
+                  Neues Mapping hinzufügen
+                </button>
+              </div>
+            )}
           </div>
 
           <DialogFooter className="pt-4">

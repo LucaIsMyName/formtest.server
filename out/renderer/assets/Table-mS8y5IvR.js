@@ -1,4 +1,4 @@
-import { a0 as createLucideIcon, a9 as React2, i as dist, G as cn, j as jsxRuntimeExports } from "./index-D2jlI7ut.js";
+import { a0 as createLucideIcon, a9 as React2, i as dist, G as cn, j as jsxRuntimeExports } from "./index-BnaULI5R.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -356,13 +356,13 @@ export {
   FileBraces as F,
   RefreshCw as R,
   SkipForward as S,
-  Table as T,
-  TableHeader as a,
-  TableRow as b,
-  TableHead as c,
-  TableBody as d,
-  TableCell as e,
-  Trash2 as f,
+  Trash2 as T,
+  Table as a,
+  TableHeader as b,
+  TableRow as c,
+  TableHead as d,
+  TableBody as e,
+  TableCell as f,
   Clock as g,
   CircleX as h,
   CircleCheckBig as i

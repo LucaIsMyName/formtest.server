@@ -244,6 +244,10 @@ class TestRunner {
 
   async runFormTest(form, paymentMethod) {
     const startTime = Date.now()
+    
+    // Store form field mappings for use during form filling
+    this.fieldMappings = form.fieldMappings || []
+    this.log(`Form has ${this.fieldMappings.length} custom field mappings`)
 
     // Step 1: Browser Initialization (if needed)
     if (!this.page) {
@@ -432,15 +436,28 @@ class TestRunner {
 
   async submitForm() {
     this.log('Submitting form...')
+
+    // Check for validation errors before submitting
+    const errorBanner = await this.page.$('.form-error-message:visible, .error-banner:visible, .alert-danger:visible')
+    if (errorBanner) {
+      const errorText = await errorBanner.textContent()
+      this.log(`Form has validation errors: ${errorText}`)
+    }
     
+    // FundraisingBox-specific submit selectors first
     const submitSelectors = [
+      '#submitForm',                           // FundraisingBox specific
+      'input#submitForm',                      // FundraisingBox input
+      'input[type="submit"][value*="spenden"]', // German donate buttons
+      'input[type="submit"][value*="Spenden"]',
       'button[type="submit"]',
       'input[type="submit"]',
-      'button:has-text("Spenden")',
       'button:has-text("Jetzt spenden")',
+      'button:has-text("Spenden")',
       'button:has-text("Weiter")',
       'button:has-text("Donate")',
       'button:has-text("Pay")',
+      'button:has-text("Submit")',
       '.submit-button',
       '#submit',
       '[data-testid="submit"]'
@@ -449,16 +466,25 @@ class TestRunner {
     for (const selector of submitSelectors) {
       try {
         const button = await this.page.$(selector)
-        if (button && await button.isVisible() && await button.isEnabled()) {
-          // Scroll into view if needed
-          await button.scrollIntoViewIfNeeded()
+        if (button) {
+          const isVisible = await button.isVisible()
+          const isEnabled = await button.isEnabled()
           
-          // Click with navigation wait
-          // We don't wait for navigation here specifically because some forms use AJAX
-          // The waitForSuccessRedirect will handle the waiting
-          await button.click()
-          this.log(`Clicked submit button: ${selector}`)
-          return
+          if (isVisible && isEnabled) {
+            // Scroll into view if needed
+            await button.scrollIntoViewIfNeeded()
+            
+            // Small delay before clicking
+            await this.page.waitForTimeout(300)
+            
+            // Click the button
+            await button.click()
+            this.log(`Clicked submit button: ${selector}`)
+            
+            // Wait a moment for form processing
+            await this.page.waitForTimeout(1000)
+            return
+          }
         }
       } catch (error) {
         // Continue trying other selectors
@@ -530,14 +556,393 @@ class TestRunner {
   async analyzeAndFillForm() {
     this.log('Analyzing form structure...')
 
-    // Detect form fields
-    const fields = await this.detectFormFields()
-    this.log(`Found ${fields.length} form fields`)
+    // Step 1: Apply user-defined field mappings FIRST (highest priority)
+    if (this.fieldMappings && this.fieldMappings.length > 0) {
+      this.log(`Applying ${this.fieldMappings.length} custom field mappings...`)
+      await this.applyFieldMappings()
+    }
 
-    // Fill form with test data
+    // Step 2: Handle FundraisingBox-specific elements
+    await this.handleFundraisingBoxForm()
+
+    // Step 3: Detect and fill remaining form fields
+    const fields = await this.detectFormFields()
+    this.log(`Found ${fields.length} additional form fields`)
+
+    // Fill form with test data (for fields not handled by mappings)
     await this.fillFormFields(fields)
 
     return { fields }
+  }
+
+  /**
+   * Apply user-defined field mappings from form configuration
+   * These take priority over automatic field detection
+   */
+  async applyFieldMappings() {
+    for (const mapping of this.fieldMappings) {
+      try {
+        this.log(`Applying mapping: ${mapping.fieldType} -> ${mapping.selector}`)
+        
+        // Wait if specified
+        if (mapping.waitMs) {
+          await this.page.waitForTimeout(mapping.waitMs)
+        }
+
+        // Wait for element to be available
+        const element = await this.waitForElement(mapping.selector, 5000)
+        if (!element) {
+          this.log(`Mapping element not found: ${mapping.selector}`)
+          continue
+        }
+
+        // Perform the action
+        switch (mapping.action) {
+          case 'type':
+            const typeValue = mapping.value || this.getDefaultValueForFieldType(mapping.fieldType)
+            await element.fill(typeValue)
+            this.log(`Typed "${this.maskSensitiveValue(typeValue, mapping.fieldType)}" into ${mapping.selector}`)
+            break
+
+          case 'click':
+            await element.scrollIntoViewIfNeeded()
+            await element.click()
+            this.log(`Clicked ${mapping.selector}`)
+            break
+
+          case 'waitAndClick':
+            await this.page.waitForTimeout(500)
+            await element.scrollIntoViewIfNeeded()
+            await element.click()
+            this.log(`Wait-clicked ${mapping.selector}`)
+            break
+
+          case 'select':
+            const selectValue = mapping.value || this.getDefaultValueForFieldType(mapping.fieldType)
+            await element.selectOption(selectValue)
+            this.log(`Selected "${selectValue}" in ${mapping.selector}`)
+            break
+
+          case 'check':
+            const isChecked = await element.isChecked()
+            if (!isChecked) {
+              await element.check()
+              this.log(`Checked ${mapping.selector}`)
+            }
+            break
+
+          default:
+            this.log(`Unknown action: ${mapping.action}`)
+        }
+
+        // Small delay between actions for stability
+        await this.page.waitForTimeout(100)
+
+      } catch (error) {
+        this.log(`Failed to apply mapping ${mapping.fieldType}: ${error.message}`)
+      }
+    }
+  }
+
+  /**
+   * Get default value for a field type (used when no custom value provided)
+   */
+  getDefaultValueForFieldType(fieldType) {
+    switch (fieldType) {
+      case 'firstName':
+        return faker.person.firstName()
+      case 'lastName':
+        return faker.person.lastName()
+      case 'email':
+        return faker.internet.email()
+      case 'amount':
+      case 'customAmount':
+        return this.config.defaultAmount || '50'
+      case 'interval':
+        return this.config.defaultInterval || '0'
+      case 'salutation':
+        return 'Mr.'
+      case 'country':
+        return 'AT' // Austria for FundraisingBox
+      case 'iban':
+        return 'AT89370400440532013000' // Test IBAN
+      case 'accountHolder':
+        return `${faker.person.firstName()} ${faker.person.lastName()}`
+      case 'birthday':
+        return '01.01.1980'
+      default:
+        return faker.lorem.words(2)
+    }
+  }
+
+  /**
+   * Mask sensitive values in logs
+   */
+  maskSensitiveValue(value, fieldType) {
+    const sensitiveTypes = ['iban', 'accountHolder', 'email']
+    if (sensitiveTypes.includes(fieldType) && value && value.length > 4) {
+      return value.substring(0, 4) + '****'
+    }
+    return value
+  }
+
+  /**
+   * Wait for an element with retry logic
+   */
+  async waitForElement(selector, timeout = 5000) {
+    try {
+      await this.page.waitForSelector(selector, { timeout, state: 'visible' })
+      return await this.page.$(selector)
+    } catch (error) {
+      // Try without visibility requirement
+      try {
+        return await this.page.$(selector)
+      } catch {
+        return null
+      }
+    }
+  }
+
+  /**
+   * Handle FundraisingBox-specific form elements
+   * These forms have unique patterns that need special handling
+   */
+  async handleFundraisingBoxForm() {
+    this.log('Checking for FundraisingBox form patterns...')
+
+    // Detect if this is a FundraisingBox form
+    const isFundraisingBox = await this.page.$('#fbPaymentForm, [class*="fundraisingbox"]')
+    
+    if (!isFundraisingBox) {
+      this.log('Not a FundraisingBox form, skipping special handling')
+      return
+    }
+
+    this.log('FundraisingBox form detected, applying special handling...')
+
+    // 1. Handle amount selection (card-style radio buttons)
+    await this.handleFBAmountSelection()
+
+    // 2. Handle interval selection
+    await this.handleFBIntervalSelection()
+
+    // 3. Handle salutation dropdown
+    await this.handleFBSalutation()
+
+    // 4. Handle country/residence dropdown
+    await this.handleFBCountry()
+
+    // 5. Handle required checkboxes (privacy, newsletter)
+    await this.handleFBRequiredCheckboxes()
+
+    // 6. Fill personal data fields
+    await this.handleFBPersonalData()
+  }
+
+  /**
+   * Handle FundraisingBox amount selection (card-style buttons)
+   */
+  async handleFBAmountSelection() {
+    this.log('Handling FB amount selection...')
+
+    // Check if already handled by field mapping
+    const amountMapping = this.fieldMappings?.find(m => m.fieldType === 'amount' || m.fieldType === 'customAmount')
+    if (amountMapping) {
+      this.log('Amount already handled by field mapping')
+      return
+    }
+
+    try {
+      // Try to click a preset amount button (card-style)
+      const amountSelectors = [
+        '#payment_amount_suggestion-0',  // First preset (usually 50€)
+        'label.choice input[name="amountChoice"]',
+        '.choices-grid label.choice:first-child'
+      ]
+
+      for (const selector of amountSelectors) {
+        const element = await this.page.$(selector)
+        if (element) {
+          // For radio inputs inside labels, click the parent label
+          const tagName = await element.evaluate(el => el.tagName.toLowerCase())
+          if (tagName === 'input') {
+            const label = await this.page.$(`label[for="${await element.getAttribute('id')}"]`)
+            if (label) {
+              await label.click()
+              this.log(`Clicked amount label for: ${selector}`)
+              return
+            }
+          }
+          await element.click()
+          this.log(`Selected amount: ${selector}`)
+          return
+        }
+      }
+
+      // Fallback: try custom amount field
+      const customAmount = await this.page.$('#payment_customAmount')
+      if (customAmount) {
+        await customAmount.fill(this.config.defaultAmount || '50')
+        this.log(`Filled custom amount: ${this.config.defaultAmount || '50'}`)
+      }
+    } catch (error) {
+      this.log(`FB amount selection error: ${error.message}`)
+    }
+  }
+
+  /**
+   * Handle FundraisingBox interval/frequency selection
+   */
+  async handleFBIntervalSelection() {
+    this.log('Handling FB interval selection...')
+
+    // Check if already handled by field mapping
+    const intervalMapping = this.fieldMappings?.find(m => m.fieldType === 'interval')
+    if (intervalMapping) {
+      this.log('Interval already handled by field mapping')
+      return
+    }
+
+    try {
+      const intervalSelect = await this.page.$('#payment_interval')
+      if (intervalSelect) {
+        const interval = this.config.defaultInterval || '0'
+        await intervalSelect.selectOption(interval)
+        this.log(`Selected interval: ${interval}`)
+      }
+    } catch (error) {
+      this.log(`FB interval selection error: ${error.message}`)
+    }
+  }
+
+  /**
+   * Handle FundraisingBox salutation dropdown
+   */
+  async handleFBSalutation() {
+    this.log('Handling FB salutation...')
+
+    // Check if already handled by field mapping
+    const salutationMapping = this.fieldMappings?.find(m => m.fieldType === 'salutation')
+    if (salutationMapping) {
+      this.log('Salutation already handled by field mapping')
+      return
+    }
+
+    try {
+      const salutationSelect = await this.page.$('#payment_salutation')
+      if (salutationSelect) {
+        await salutationSelect.selectOption('Mr.')
+        this.log('Selected salutation: Mr.')
+      }
+    } catch (error) {
+      this.log(`FB salutation error: ${error.message}`)
+    }
+  }
+
+  /**
+   * Handle FundraisingBox country/residence dropdown
+   */
+  async handleFBCountry() {
+    this.log('Handling FB country selection...')
+
+    // Check if already handled by field mapping
+    const countryMapping = this.fieldMappings?.find(m => m.fieldType === 'country')
+    if (countryMapping) {
+      this.log('Country already handled by field mapping')
+      return
+    }
+
+    try {
+      // FundraisingBox uses custom field for country
+      const countrySelectors = [
+        '#payment_donation_custom_field_8542',  // Specific to Diakonie form
+        '#payment_country',
+        'select[name*="country"]',
+        'select[name*="land"]'
+      ]
+
+      for (const selector of countrySelectors) {
+        const countrySelect = await this.page.$(selector)
+        if (countrySelect) {
+          // Try Austria first (AT), then Germany (DE)
+          try {
+            await countrySelect.selectOption('AT')
+            this.log('Selected country: AT (Austria)')
+            return
+          } catch {
+            try {
+              await countrySelect.selectOption('DE')
+              this.log('Selected country: DE (Germany)')
+              return
+            } catch {
+              this.log('Could not select country option')
+            }
+          }
+        }
+      }
+    } catch (error) {
+      this.log(`FB country selection error: ${error.message}`)
+    }
+  }
+
+  /**
+   * Handle FundraisingBox required checkboxes
+   */
+  async handleFBRequiredCheckboxes() {
+    this.log('Handling FB required checkboxes...')
+
+    try {
+      // Privacy checkbox
+      const privacyCheckbox = await this.page.$('#payment_is_privacy_accepted')
+      if (privacyCheckbox) {
+        const isChecked = await privacyCheckbox.isChecked()
+        if (!isChecked) {
+          await privacyCheckbox.check()
+          this.log('Checked privacy checkbox')
+        }
+      }
+
+      // Newsletter radio (select "Nein" / No)
+      const newsletterNo = await this.page.$('#payment_donation_custom_field_8543_Nein')
+      if (newsletterNo) {
+        await newsletterNo.click()
+        this.log('Selected newsletter: Nein')
+      }
+    } catch (error) {
+      this.log(`FB checkbox handling error: ${error.message}`)
+    }
+  }
+
+  /**
+   * Handle FundraisingBox personal data fields
+   */
+  async handleFBPersonalData() {
+    this.log('Handling FB personal data...')
+
+    const personalFields = [
+      { selector: '#payment_first_name', value: faker.person.firstName(), type: 'firstName' },
+      { selector: '#payment_last_name', value: faker.person.lastName(), type: 'lastName' },
+      { selector: '#payment_email', value: faker.internet.email(), type: 'email' }
+    ]
+
+    for (const field of personalFields) {
+      // Skip if handled by field mapping
+      const mapping = this.fieldMappings?.find(m => m.fieldType === field.type)
+      if (mapping) {
+        this.log(`${field.type} already handled by field mapping`)
+        continue
+      }
+
+      try {
+        const element = await this.page.$(field.selector)
+        if (element) {
+          await element.fill(field.value)
+          this.log(`Filled ${field.type}: ${this.maskSensitiveValue(field.value, field.type)}`)
+        }
+      } catch (error) {
+        this.log(`FB personal data error for ${field.type}: ${error.message}`)
+      }
+    }
   }
 
   async detectFormFields() {
@@ -764,6 +1169,25 @@ class TestRunner {
   async handlePaymentMethod(paymentMethod, formAnalysis) {
     this.log(`Handling payment method: ${paymentMethod.type}`)
 
+    // Check if already handled by field mapping
+    const paymentMapping = this.fieldMappings?.find(m => m.fieldType === 'paymentMethod')
+    if (paymentMapping) {
+      this.log('Payment method already handled by field mapping')
+      // Still need to fill payment-specific fields
+      let paymentDetails = {}
+      try {
+        if (typeof paymentMethod.details === 'string') {
+          paymentDetails = JSON.parse(paymentMethod.details)
+        } else {
+          paymentDetails = paymentMethod.details || {}
+        }
+      } catch (error) {
+        paymentDetails = {}
+      }
+      await this.fillPaymentFields(paymentMethod.type, paymentDetails)
+      return
+    }
+
     // Parse payment method details
     let paymentDetails = {}
     try {
@@ -777,15 +1201,54 @@ class TestRunner {
       paymentDetails = {}
     }
 
-    // Try to select payment method
-    const paymentSelectors = [
+    // Map payment types to FundraisingBox IDs
+    const fbPaymentMap = {
+      'paypal': 'paypal',
+      'sepa': 'sepa_direct_debit',
+      'creditcard': 'stripe_credit_card',
+      'eps': 'eps'
+    }
+
+    const fbPaymentId = fbPaymentMap[paymentMethod.type.toLowerCase()] || paymentMethod.type.toLowerCase()
+
+    // FundraisingBox-specific payment selectors (card-style labels with radio inputs)
+    const fbPaymentSelectors = [
+      `#paymentmethods label[for="${fbPaymentId}"]`,  // Click the label
+      `#paymentmethods input#${fbPaymentId}`,         // Or the input directly
+      `label.paymentmethod[for="${fbPaymentId}"]`,
+      `input[name="paymentmethods"][id="${fbPaymentId}"]`
+    ]
+
+    // Try FundraisingBox selectors first
+    for (const selector of fbPaymentSelectors) {
+      try {
+        const element = await this.page.$(selector)
+        if (element) {
+          await element.scrollIntoViewIfNeeded()
+          await element.click()
+          this.log(`Selected FB payment method: ${fbPaymentId} via ${selector}`)
+          
+          // Wait for payment form to appear
+          await this.page.waitForTimeout(500)
+          
+          // Fill payment-specific fields
+          await this.fillPaymentFields(paymentMethod.type, paymentDetails)
+          return
+        }
+      } catch (error) {
+        // Continue trying other selectors
+      }
+    }
+
+    // Fallback: generic payment selectors
+    const genericPaymentSelectors = [
       `input[value*="${paymentMethod.type.toLowerCase()}"]`,
       `button[data-payment*="${paymentMethod.type.toLowerCase()}"]`,
       `input[name*="payment"][value*="${paymentMethod.type.toLowerCase()}"]`,
       `label:has-text("${paymentMethod.type}")`
     ]
 
-    for (const selector of paymentSelectors) {
+    for (const selector of genericPaymentSelectors) {
       try {
         const element = await this.page.$(selector)
         if (element) {
@@ -794,12 +1257,14 @@ class TestRunner {
 
           // Fill payment-specific fields
           await this.fillPaymentFields(paymentMethod.type, paymentDetails)
-          break
+          return
         }
       } catch (error) {
         // Continue trying other selectors
       }
     }
+
+    this.log(`Could not find payment method selector for: ${paymentMethod.type}`)
   }
 
   async fillPaymentFields(paymentType, paymentDetails) {
@@ -863,20 +1328,45 @@ class TestRunner {
   async fillSepaFields(details) {
     this.log('Filling SEPA fields...')
 
+    // Wait for SEPA form to appear (FundraisingBox shows it dynamically)
+    await this.page.waitForTimeout(500)
+
+    // Check if handled by field mapping
+    const ibanMapping = this.fieldMappings?.find(m => m.fieldType === 'iban')
+    const accountHolderMapping = this.fieldMappings?.find(m => m.fieldType === 'accountHolder')
+
+    // FundraisingBox-specific SEPA selectors
     const sepaFields = [
       {
-        selectors: ['input[name*="account"][name*="holder"]', 'input[name*="kontoinhaber"]', 'input[placeholder*="Kontoinhaber"]'],
-        value: details.accountHolder || 'Max Mustermann',
-        name: 'account holder'
+        selectors: [
+          '#payment_bank_account_owner',  // FundraisingBox
+          'input[name*="bank_account_owner"]',
+          'input[name*="account"][name*="holder"]', 
+          'input[name*="kontoinhaber"]', 
+          'input[placeholder*="Kontoinhaber"]'
+        ],
+        value: accountHolderMapping?.value || details.accountHolder || `${faker.person.firstName()} ${faker.person.lastName()}`,
+        name: 'account holder',
+        skip: !!accountHolderMapping
       },
       {
-        selectors: ['input[name*="iban"]', 'input[placeholder*="IBAN"]'],
-        value: details.iban || 'DE89370400440532013000',
-        name: 'IBAN'
+        selectors: [
+          '#payment_bank_iban',  // FundraisingBox
+          'input[name*="bank_iban"]',
+          'input[name*="iban"]', 
+          'input[placeholder*="IBAN"]'
+        ],
+        value: ibanMapping?.value || details.iban || 'AT89370400440532013000',
+        name: 'IBAN',
+        skip: !!ibanMapping
       }
     ]
 
     for (const field of sepaFields) {
+      if (field.skip) {
+        this.log(`${field.name} already handled by field mapping`)
+        continue
+      }
       await this.tryFillField(field.selectors, field.value, field.name)
     }
   }
@@ -884,23 +1374,36 @@ class TestRunner {
   async fillEpsFields(details) {
     this.log('Filling EPS fields...')
 
-    // Try to select bank from dropdown
+    // Wait for EPS form to appear (FundraisingBox shows it dynamically)
+    await this.page.waitForTimeout(500)
+
+    // FundraisingBox-specific EPS selectors
     const bankSelectors = [
+      '#payment_eps_bank',  // FundraisingBox
+      'select[name*="eps_bank"]',
       'select[name*="bank"]',
-      'select[name*="eps"]',
-      'select[placeholder*="Bank"]'
+      'select[name*="eps"]'
     ]
 
-    const bankName = details.bankName || 'Erste Bank'
+    // Default to Erste Bank (common Austrian bank)
+    const bankCode = details.bankCode || 'ASPKAT2LXXX'  // Erste Bank und Sparkassen
 
     for (const selector of bankSelectors) {
       try {
         const selectElement = await this.page.$(selector)
         if (selectElement) {
-          // Try to select by text content
-          await selectElement.selectOption({ label: bankName })
-          this.log(`Selected bank: ${bankName}`)
-          return
+          // Try to select by value (bank code)
+          try {
+            await selectElement.selectOption(bankCode)
+            this.log(`Selected bank by code: ${bankCode}`)
+            return
+          } catch {
+            // Try by label
+            const bankName = details.bankName || 'Erste Bank und Sparkassen'
+            await selectElement.selectOption({ label: bankName })
+            this.log(`Selected bank by name: ${bankName}`)
+            return
+          }
         }
       } catch (error) {
         // Try next selector

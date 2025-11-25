@@ -1,11 +1,73 @@
-import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, b as useFormsStore } from "./index-D2jlI7ut.js";
+import { r as reactExports, j as jsxRuntimeExports, D as Dialog, k as DialogContent, l as DialogHeader, m as DialogTitle, L as Label, n as Checkbox, o as DialogFooter, B as Button, i as dist, p as useSearchParams, b as useFormsStore } from "./index-BnaULI5R.js";
 import { C as CONFIG } from "./app.config-CIbseEfE.js";
-import { r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-Dk1M31co.js";
-import { I as Input } from "./Input-BAEjCgO9.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-BoKcAKt_.js";
-import { S as Skeleton } from "./Skeleton-DmsM7fob.js";
-import { T as Table, a as TableHeader, b as TableRow, c as TableHead, d as TableBody, e as TableCell, f as Trash2 } from "./Table-DAwkEYt-.js";
-import "./upload-qBI3jaMr.js";
+import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-BMPuaJF8.js";
+import { I as Input } from "./Input-BWZ0ogeH.js";
+import { C as ChevronUp, a as ChevronDown } from "./upload-DEpDzBiy.js";
+import { T as Trash2, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell } from "./Table-mS8y5IvR.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CzeUsttT.js";
+import { S as Skeleton } from "./Skeleton-BKG-IWE-.js";
+const FIELD_TYPE_OPTIONS = [{
+  value: "amount",
+  label: "Betrag (Preset)"
+}, {
+  value: "customAmount",
+  label: "Betrag (Freier)"
+}, {
+  value: "interval",
+  label: "Intervall/Rhythmus"
+}, {
+  value: "firstName",
+  label: "Vorname"
+}, {
+  value: "lastName",
+  label: "Nachname"
+}, {
+  value: "email",
+  label: "E-Mail"
+}, {
+  value: "salutation",
+  label: "Anrede"
+}, {
+  value: "country",
+  label: "Land"
+}, {
+  value: "paymentMethod",
+  label: "Zahlungsmethode"
+}, {
+  value: "checkbox",
+  label: "Checkbox"
+}, {
+  value: "radio",
+  label: "Radio Button"
+}, {
+  value: "iban",
+  label: "IBAN"
+}, {
+  value: "accountHolder",
+  label: "Kontoinhaber"
+}, {
+  value: "birthday",
+  label: "Geburtstag"
+}, {
+  value: "custom",
+  label: "Benutzerdefiniert"
+}];
+const ACTION_OPTIONS = [{
+  value: "type",
+  label: "Text eingeben"
+}, {
+  value: "click",
+  label: "Klicken"
+}, {
+  value: "select",
+  label: "Auswählen (Dropdown)"
+}, {
+  value: "check",
+  label: "Checkbox aktivieren"
+}, {
+  value: "waitAndClick",
+  label: "Warten & Klicken"
+}];
 const FormDialog = ({
   isOpen,
   onClose,
@@ -20,6 +82,8 @@ const FormDialog = ({
     icon: "FileText",
     isActive: true
   });
+  const [fieldMappings, setFieldMappings] = reactExports.useState([]);
+  const [showFieldMappings, setShowFieldMappings] = reactExports.useState(false);
   const [errors, setErrors] = reactExports.useState({});
   const [showIconPicker, setShowIconPicker] = reactExports.useState(false);
   reactExports.useEffect(() => {
@@ -31,6 +95,8 @@ const FormDialog = ({
         icon: editForm.icon || "FileText",
         isActive: editForm.isActive
       });
+      setFieldMappings(editForm.fieldMappings || []);
+      setShowFieldMappings((editForm.fieldMappings?.length || 0) > 0);
     } else {
       setFormData({
         name: "",
@@ -39,9 +105,32 @@ const FormDialog = ({
         icon: "FileText",
         isActive: true
       });
+      setFieldMappings([]);
+      setShowFieldMappings(false);
     }
     setErrors({});
   }, [editForm, isOpen]);
+  const generateId = () => crypto.randomUUID();
+  const addFieldMapping = () => {
+    const newMapping = {
+      id: generateId(),
+      fieldType: "custom",
+      selector: "",
+      value: "",
+      action: "type",
+      description: ""
+    };
+    setFieldMappings([...fieldMappings, newMapping]);
+  };
+  const updateFieldMapping = (id, updates) => {
+    setFieldMappings(fieldMappings.map((m) => m.id === id ? {
+      ...m,
+      ...updates
+    } : m));
+  };
+  const removeFieldMapping = (id_0) => {
+    setFieldMappings(fieldMappings.filter((m_0) => m_0.id !== id_0));
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name.trim()) {
@@ -65,12 +154,14 @@ const FormDialog = ({
       return;
     }
     try {
+      const validMappings = fieldMappings.filter((m_1) => m_1.selector.trim() !== "");
       const submitData = {
         name: formData.name.trim(),
         url: formData.url.trim(),
         hash: formData.hash.trim() || null,
         icon: formData.icon,
-        isActive: formData.isActive
+        isActive: formData.isActive,
+        fieldMappings: validMappings
       };
       await onSubmit(submitData);
       onClose();
@@ -78,7 +169,7 @@ const FormDialog = ({
       console.error("Failed to submit form:", error);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "sm:max-w-[500px]", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "sm:max-w-[600px] max-h-[90vh] overflow-y-auto", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: editForm ? "Formular bearbeiten" : "Neues Formular" }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4 py-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
@@ -118,6 +209,63 @@ const FormDialog = ({
           isActive: checked === true
         }), disabled: isLoading }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "isActive", className: "text-gray-600 dark:text-gray-400 font-normal cursor-pointer", children: "Aktiv (in Tests einbeziehen)" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: () => setShowFieldMappings(!showFieldMappings), className: "w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-700 dark:text-gray-300", children: "Feld-Mappings" }),
+            fieldMappings.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full", children: fieldMappings.length })
+          ] }),
+          showFieldMappings ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronUp, { size: 16, className: "text-gray-500" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 16, className: "text-gray-500" })
+        ] }),
+        showFieldMappings && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-4 pb-4 space-y-3 border-t border-gray-200 dark:border-gray-700", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 pt-3", children: "Definieren Sie benutzerdefinierte Selektoren und Werte für Formularfelder. Diese überschreiben die automatische Erkennung." }),
+          fieldMappings.map((mapping, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 bg-gray-50 dark:bg-gray-800 rounded-md space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: [
+                "Mapping #",
+                index + 1
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => removeFieldMapping(mapping.id), className: "p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Feldtyp" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: mapping.fieldType, onChange: (e_3) => updateFieldMapping(mapping.id, {
+                  fieldType: e_3.target.value
+                }), className: "w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900", disabled: isLoading, children: FIELD_TYPE_OPTIONS.map((opt) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: opt.value, children: opt.label }, opt.value)) })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Aktion" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("select", { value: mapping.action, onChange: (e_4) => updateFieldMapping(mapping.id, {
+                  action: e_4.target.value
+                }), className: "w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-900", disabled: isLoading, children: ACTION_OPTIONS.map((opt_0) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: opt_0.value, children: opt_0.label }, opt_0.value)) })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "CSS Selektor *" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.selector, onChange: (e_5) => updateFieldMapping(mapping.id, {
+                selector: e_5.target.value
+              }), placeholder: "#payment_first_name", className: "h-8 text-sm", disabled: isLoading })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Wert (optional)" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.value || "", onChange: (e_6) => updateFieldMapping(mapping.id, {
+                value: e_6.target.value
+              }), placeholder: "Leer = automatisch generiert", className: "h-8 text-sm", disabled: isLoading })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Beschreibung (optional)" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: mapping.description || "", onChange: (e_7) => updateFieldMapping(mapping.id, {
+                description: e_7.target.value
+              }), placeholder: "z.B. Vorname-Feld", className: "h-8 text-sm", disabled: isLoading })
+            ] })
+          ] }, mapping.id)),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", onClick: addFieldMapping, disabled: isLoading, className: "w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 border border-dashed border-blue-300 dark:border-blue-700 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 }),
+            "Neues Mapping hinzufügen"
+          ] })
+        ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "pt-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "button", onClick: onClose, variant: "secondary", size: "md", disabled: isLoading, children: "Abbrechen" }),

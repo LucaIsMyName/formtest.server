@@ -313,7 +313,94 @@ The enhanced browser automation system now includes:
 - **💳 Payment Methods**: Full VISA, SEPA, EPS support  
 - **🔄 Navigation**: Robust timeout handling and fallbacks
 - **🧪 Testing**: Comprehensive test coverage
-- **� Logging**: Detailed execution traces
+- **📝 Logging**: Detailed execution traces
+
+---
+
+## 🎯 **FIELD MAPPINGS FEATURE**
+
+### **Overview**
+Custom field mappings allow users to define specific CSS selectors and values for form fields, overriding the automatic detection. This is especially useful for FundraisingBox forms with custom styling.
+
+### **How It Works**
+1. **Edit a Form** → Open the form dialog
+2. **Expand "Feld-Mappings"** → Click to show the mappings section
+3. **Add Mappings** → Define custom selectors for specific fields
+4. **Priority**: User-defined mappings are applied BEFORE automatic detection
+
+### **Field Mapping Options**
+
+| Field Type | Description | Example Selector |
+|------------|-------------|------------------|
+| `amount` | Preset amount button | `#payment_amount_suggestion-0` |
+| `customAmount` | Free amount input | `#payment_customAmount` |
+| `interval` | Payment frequency | `#payment_interval` |
+| `firstName` | First name field | `#payment_first_name` |
+| `lastName` | Last name field | `#payment_last_name` |
+| `email` | Email field | `#payment_email` |
+| `salutation` | Salutation dropdown | `#payment_salutation` |
+| `country` | Country dropdown | `#payment_donation_custom_field_8542` |
+| `paymentMethod` | Payment method selector | `#paymentmethods label[for="sepa_direct_debit"]` |
+| `checkbox` | Checkbox field | `#payment_is_privacy_accepted` |
+| `radio` | Radio button | `#payment_donation_custom_field_8543_Nein` |
+| `iban` | IBAN field | `#payment_bank_iban` |
+| `accountHolder` | Account holder field | `#payment_bank_account_owner` |
+| `birthday` | Birthday field | `#payment_birthday` |
+| `custom` | Any custom field | Any CSS selector |
+
+### **Actions**
+
+| Action | Description |
+|--------|-------------|
+| `type` | Type text into an input field |
+| `click` | Click an element |
+| `select` | Select an option from a dropdown |
+| `check` | Check a checkbox |
+| `waitAndClick` | Wait 500ms then click |
+
+### **Example: FundraisingBox Form**
+
+```json
+[
+  {
+    "fieldType": "amount",
+    "selector": "#payment_amount_suggestion-0",
+    "action": "click",
+    "description": "50€ preset button"
+  },
+  {
+    "fieldType": "country",
+    "selector": "#payment_donation_custom_field_8542",
+    "value": "AT",
+    "action": "select",
+    "description": "Austria"
+  },
+  {
+    "fieldType": "paymentMethod",
+    "selector": "#paymentmethods label[for=\"sepa_direct_debit\"]",
+    "action": "click",
+    "description": "SEPA payment"
+  },
+  {
+    "fieldType": "checkbox",
+    "selector": "#payment_is_privacy_accepted",
+    "action": "check",
+    "description": "Privacy acceptance"
+  }
+]
+```
+
+### **FundraisingBox Auto-Detection**
+
+The runner automatically detects FundraisingBox forms (`#fbPaymentForm`) and applies special handling for:
+
+- **Card-style amount buttons** - Clicks the label, not the hidden input
+- **Interval dropdown** - Selects from `#payment_interval`
+- **Salutation dropdown** - Auto-selects "Herr"
+- **Country dropdown** - Tries Austria (AT) first, then Germany (DE)
+- **Privacy checkbox** - Auto-checks `#payment_is_privacy_accepted`
+- **Newsletter radio** - Selects "Nein" (No)
+- **Payment methods** - Maps to FundraisingBox-specific IDs (`sepa_direct_debit`, `stripe_credit_card`, etc.)
 
 ---
   - [ ] Log viewer with syntax highlighting
