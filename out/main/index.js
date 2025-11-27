@@ -383,6 +383,7 @@ function initDatabase() {
     { key: "default_interval", value: "0", description: "Default donation interval (0=once, 1=monthly)" },
     { key: "test_timeout", value: "30000", description: "Test timeout in milliseconds" },
     { key: "headless_mode", value: "true", description: "Run tests in headless mode" },
+    { key: "slow_motion", value: "0", description: "Slow motion delay in ms (0=off, 500=slow, 1000=very slow)" },
     { key: "theme", value: "system", description: "UI theme preference (system, light, dark)" }
   ];
   const insertSetting = db.prepare(`

@@ -183,6 +183,7 @@ class TestRunner {
       this.config = {
         headless: settings.headless_mode === 'true',
         timeout: parseInt(settings.test_timeout || '30000'),
+        slowMo: parseInt(settings.slow_motion || '0'),
         browser: 'chromium',
         viewport: { width: 1280, height: 720 },
         defaultAmount: settings.default_donation_amount || '50',
@@ -227,10 +228,12 @@ class TestRunner {
 
   async initializeBrowser() {
     this.log('Initializing browser...')
+    this.log(`Config: headless=${this.config.headless}, slowMo=${this.config.slowMo}ms`)
 
-    // Launch browser
+    // Launch browser with slow motion for debugging
     this.browser = await chromium.launch({
       headless: this.config.headless,
+      slowMo: this.config.slowMo,
       args: ['--disable-web-security', '--disable-features=VizDisplayCompositor']
     })
 

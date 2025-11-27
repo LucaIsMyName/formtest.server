@@ -1,8 +1,8 @@
-import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-B0dQkDNJ.js";
+import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-Bv3hspjm.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { T as TriangleAlert, C as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CBUbwYun.js";
-import { f as Circle, I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as Download, U as Upload } from "./Select-B5GKSzaS.js";
-import { S as Skeleton } from "./Skeleton-C0b1ewQQ.js";
+import { T as TriangleAlert, C as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CcPKwpsq.js";
+import { f as Circle, I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as Download, U as Upload } from "./Select-D9dRYDSx.js";
+import { S as Skeleton } from "./Skeleton-Csi-UCTq.js";
 var RADIO_NAME = "Radio";
 var [createRadioContext, createRadioScope] = createContextScope(RADIO_NAME);
 var [RadioProvider, useRadioContext] = createRadioContext(RADIO_NAME);
@@ -418,6 +418,7 @@ const Settings = () => {
   const [donationInterval, setDonationInterval] = reactExports.useState("0");
   const [testTimeout, setTestTimeout] = reactExports.useState("30000");
   const [headlessMode, setHeadlessMode] = reactExports.useState("true");
+  const [slowMotion, setSlowMotion] = reactExports.useState("0");
   const [theme, setTheme] = reactExports.useState("system");
   const [exportOptions, setExportOptions] = reactExports.useState({
     includeForms: true,
@@ -461,6 +462,9 @@ const Settings = () => {
         case "headless_mode":
           setHeadlessMode(setting.value);
           break;
+        case "slow_motion":
+          setSlowMotion(setting.value);
+          break;
         case "theme":
           setTheme(setting.value);
           break;
@@ -487,10 +491,14 @@ const Settings = () => {
     setHeadlessMode(value_2);
     await updateSetting("headless_mode", value_2, "Tests im Headless-Modus ausführen");
   };
-  const handleThemeChange = async (value_3) => {
-    setTheme(value_3);
-    await updateSetting("theme", value_3, "UI-Theme-Präferenz (system, light, dark)");
-    applyTheme(value_3);
+  const handleSlowMotionChange = async (value_3) => {
+    setSlowMotion(value_3);
+    await updateSetting("slow_motion", value_3, "Slow Motion Verzögerung in ms (0=aus, 500=langsam, 1000=sehr langsam)");
+  };
+  const handleThemeChange = async (value_4) => {
+    setTheme(value_4);
+    await updateSetting("theme", value_4, "UI-Theme-Präferenz (system, light, dark)");
+    applyTheme(value_4);
   };
   const handleDelete = async () => {
     if (!deleteConfirmation) return;
@@ -593,6 +601,20 @@ const Settings = () => {
               ] })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Browser-Tests ohne sichtbares Fenster ausführen" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "slow-motion", children: "Slow Motion (Debugging)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: slowMotion, onValueChange: handleSlowMotionChange, disabled: isLoading, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "slow-motion", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Slow Motion" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Aus (Normal)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "250", children: "250ms (Schnell)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "500", children: "500ms (Langsam)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1000", children: "1000ms (Sehr langsam)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "2000", children: "2000ms (Debug)" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen." })
           ] })
         ] })
       ] }),

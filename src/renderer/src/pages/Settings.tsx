@@ -51,6 +51,7 @@ const Settings: React.FC = () => {
   const [donationInterval, setDonationInterval] = useState("0");
   const [testTimeout, setTestTimeout] = useState("30000");
   const [headlessMode, setHeadlessMode] = useState("true");
+  const [slowMotion, setSlowMotion] = useState("0");
   const [theme, setTheme] = useState("system");
 
   // Import/Export state
@@ -108,6 +109,9 @@ const Settings: React.FC = () => {
         case "headless_mode":
           setHeadlessMode(setting.value);
           break;
+        case "slow_motion":
+          setSlowMotion(setting.value);
+          break;
         case "theme":
           setTheme(setting.value);
           break;
@@ -140,6 +144,11 @@ const Settings: React.FC = () => {
   const handleHeadlessModeChange = async (value: string) => {
     setHeadlessMode(value);
     await updateSetting("headless_mode", value, "Tests im Headless-Modus ausführen");
+  };
+
+  const handleSlowMotionChange = async (value: string) => {
+    setSlowMotion(value);
+    await updateSetting("slow_motion", value, "Slow Motion Verzögerung in ms (0=aus, 500=langsam, 1000=sehr langsam)");
   };
 
   const handleThemeChange = async (value: string) => {
@@ -333,6 +342,31 @@ const Settings: React.FC = () => {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Browser-Tests ohne sichtbares Fenster ausführen</p>
+              </div>
+
+              {/* Slow Motion */}
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="slow-motion">
+                  Slow Motion (Debugging)
+                </Label>
+                <Select
+                  value={slowMotion}
+                  onValueChange={handleSlowMotionChange}
+                  disabled={isLoading}>
+                  <SelectTrigger id="slow-motion">
+                    <SelectValue placeholder="Slow Motion" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Aus (Normal)</SelectItem>
+                    <SelectItem value="250">250ms (Schnell)</SelectItem>
+                    <SelectItem value="500">500ms (Langsam)</SelectItem>
+                    <SelectItem value="1000">1000ms (Sehr langsam)</SelectItem>
+                    <SelectItem value="2000">2000ms (Debug)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen.</p>
               </div>
             </div>
           </div>
