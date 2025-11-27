@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-D35BHMjV.js","./app.config-Cedwjkbe.js","./Skeleton-BcTffddW.js","./Forms-D1Wb7hc0.js","./IconPicker-BHt3CTT9.js","./Table-f_Mn0kr1.js","./Select-BUtbiaV_.js","./DeleteConfirmDialog-B-5CaEvw.js","./PaymentMethods-CCmvJ2ji.js","./Settings-FiTv0HeB.js","./TestResults-C9jDMvHH.js","./InfoDoku-C1FoEoPD.js","./Schedules-Ds5bcpu7.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DDR_OqG-.js","./app.config-Cedwjkbe.js","./Skeleton-DskK8jEP.js","./Forms-DlHx8-sL.js","./IconPicker-BLb8MfiY.js","./Table-BPhaeuhe.js","./Select-Dp8hNGQe.js","./DeleteConfirmDialog-CmP1PaxP.js","./PaymentMethods-0P2O9_oM.js","./Settings-B4Lf-Re_.js","./TestResults-DJuDlboG.js","./InfoDoku-BLWppy7B.js","./Schedules-Bt1wLryd.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -30487,13 +30487,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-D35BHMjV.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-D1Wb7hc0.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-CCmvJ2ji.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-FiTv0HeB.js"), true ? __vite__mapDeps([9,1,7,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-C9jDMvHH.js"), true ? __vite__mapDeps([10,1,7,5,2]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-C1FoEoPD.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-Ds5bcpu7.js"), true ? __vite__mapDeps([12,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DDR_OqG-.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DlHx8-sL.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-0P2O9_oM.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-B4Lf-Re_.js"), true ? __vite__mapDeps([9,1,7,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DJuDlboG.js"), true ? __vite__mapDeps([10,1,7,5,2]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-BLWppy7B.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-Bt1wLryd.js"), true ? __vite__mapDeps([12,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,

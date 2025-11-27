@@ -1,8 +1,8 @@
-import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-DT77chWV.js";
+import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-Beoo-wk9.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { T as TriangleAlert, C as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-B-5CaEvw.js";
-import { f as Circle, I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as Download, U as Upload } from "./Select-BUtbiaV_.js";
-import { S as Skeleton } from "./Skeleton-BcTffddW.js";
+import { T as TriangleAlert, C as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CmP1PaxP.js";
+import { f as Circle, I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as Download, U as Upload } from "./Select-Dp8hNGQe.js";
+import { S as Skeleton } from "./Skeleton-DskK8jEP.js";
 var RADIO_NAME = "Radio";
 var [createRadioContext, createRadioScope] = createContextScope(RADIO_NAME);
 var [RadioProvider, useRadioContext] = createRadioContext(RADIO_NAME);
@@ -569,58 +569,54 @@ const Settings = () => {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Test-Einstellungen" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "donation-amount", children: "Standard-Spendenbetrag (EUR)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "donation-amount", type: "number", value: donationAmount, onChange: (e) => handleDonationAmountChange(e.target.value), onBlur: saveDonationAmount, disabled: isLoading }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "donation-interval", children: "Standard-Spendenintervall" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: donationInterval, onValueChange: handleDonationIntervalChange, disabled: isLoading, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "donation-interval", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Wähle ein Intervall" }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Einmalig" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1", children: "Monatlich" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "3", children: "Vierteljährlich" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "12", children: "Jährlich" })
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Das Standard-Spendenintervall für Tests" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "test-timeout", children: "Test-Timeout (Millisekunden)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "test-timeout", type: "number", value: testTimeout, onChange: (e_0) => handleTestTimeoutChange(e_0.target.value), onBlur: saveTestTimeout, disabled: isLoading }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)" })
-            ] })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "donation-amount", children: "Standard-Spendenbetrag (EUR)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "donation-amount", type: "number", value: donationAmount, onChange: (e) => handleDonationAmountChange(e.target.value), onBlur: saveDonationAmount, disabled: isLoading }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "headless-mode", children: "Headless-Modus" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: headlessMode, onValueChange: handleHeadlessModeChange, disabled: isLoading, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "headless-mode", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Headless Modus" }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "true", children: "Aktiviert" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "false", children: "Deaktiviert" })
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Browser-Tests ohne sichtbares Fenster ausführen" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "headless-mode", children: "Headless-Modus" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: headlessMode, onValueChange: handleHeadlessModeChange, disabled: isLoading, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "headless-mode", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Headless Modus" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "true", children: "Aktiviert" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "false", children: "Deaktiviert" })
+              ] })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "slow-motion", children: "Slow Motion (Debugging)" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: slowMotion, onValueChange: handleSlowMotionChange, disabled: isLoading, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "slow-motion", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Slow Motion" }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Aus (Normal)" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "250", children: "250ms (Schnell)" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "500", children: "500ms (Langsam)" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1000", children: "1000ms (Sehr langsam)" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "2000", children: "2000ms (Debug)" })
-                ] })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen." })
-            ] })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Browser-Tests ohne sichtbares Fenster ausführen" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "donation-interval", children: "Standard-Spendenintervall" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: donationInterval, onValueChange: handleDonationIntervalChange, disabled: isLoading, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "donation-interval", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Wähle ein Intervall" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Einmalig" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1", children: "Monatlich" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "3", children: "Vierteljährlich" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "12", children: "Jährlich" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Das Standard-Spendenintervall für Tests" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "slow-motion", children: "Slow Motion (Debugging)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: slowMotion, onValueChange: handleSlowMotionChange, disabled: isLoading, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "slow-motion", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Slow Motion" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Aus (Normal)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "250", children: "250ms (Schnell)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "500", children: "500ms (Langsam)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1000", children: "1000ms (Sehr langsam)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "2000", children: "2000ms (Debug)" })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen." })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "test-timeout", children: "Test-Timeout (Millisekunden)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "test-timeout", type: "number", value: testTimeout, onChange: (e_0) => handleTestTimeoutChange(e_0.target.value), onBlur: saveTestTimeout, disabled: isLoading }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)" })
           ] })
         ] })
       ] }),

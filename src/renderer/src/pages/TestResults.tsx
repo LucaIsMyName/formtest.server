@@ -362,16 +362,102 @@ const TestResults: React.FC = () => {
         </div>
       )}
 
-      {/* Test Runs List - Full Width */}
+      {/* Running Tests Table */}
+      {testRuns.filter(tr => tr.status === 'RUNNING').length > 0 && (
+        <div className="mt-4 mb-6">
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+            Laufende Tests
+          </h2>
+          <div className="bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-lg shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="px-4">ID</TableHead>
+                    <TableHead className="px-4">Test</TableHead>
+                    <TableHead className="px-4">Gestartet</TableHead>
+                    <TableHead className="px-4">Dauer</TableHead>
+                    <TableHead className="px-4">Status</TableHead>
+                    <TableHead className="px-4 text-right">Aktionen</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {testRuns.filter(tr => tr.status === 'RUNNING').map((testRun) => {
+                    const isSelected = selectedTestRun === testRun.id;
+                    return (
+                      <TableRow
+                        key={testRun.id}
+                        className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
+                        onClick={() => handleSelectTestRun(testRun.id)}>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-1 group">
+                            <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                            {testRun.uuid && (
+                              <button
+                                onClick={(e) => handleCopyUuid(e, testRun.uuid)}
+                                className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="ID kopieren">
+                                <Copy size={10} />
+                              </button>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                              {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
+                            </div>
+                            {testRun.isScheduled && (
+                              <div className="flex-shrink-0" title="Autopilot Test">
+                                <Bot size={12} className="text-blue-600 dark:text-blue-400" />
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400">-</TableCell>
+                        <TableCell className="px-4">
+                          <StatusBadge status={testRun.status} />
+                        </TableCell>
+                        <TableCell className="px-4 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteClick(testRun);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                              title="Abbrechen">
+                              <Trash2 size={16} />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Finished Test Runs List */}
       <div className="mt-4">
+        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          Abgeschlossene Tests
+        </h2>
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
           {isLoading && testRuns.length === 0 ? (
             <TestResultsSkeleton />
-          ) : testRuns.length === 0 ? (
+          ) : testRuns.filter(tr => tr.status !== 'RUNNING').length === 0 ? (
             <div className="p-6">
               <div className="text-center py-8">
-                <div className="text-gray-500 dark:text-gray-400 mb-4">No test results yet.</div>
-                <p className="text-gray-500 dark:text-gray-400">Run some tests to see results here.</p>
+                <div className="text-gray-500 dark:text-gray-400 mb-4">Noch keine abgeschlossenen Tests.</div>
+                <p className="text-gray-500 dark:text-gray-400">Führe Tests aus, um Ergebnisse hier zu sehen.</p>
               </div>
             </div>
           ) : (
@@ -388,7 +474,7 @@ const TestResults: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {testRuns.map((testRun) => {
+                  {testRuns.filter(tr => tr.status !== 'RUNNING').map((testRun) => {
                     const isSelected = selectedTestRun === testRun.id;
                     return (
                       <TableRow
