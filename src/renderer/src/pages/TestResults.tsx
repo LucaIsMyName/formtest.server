@@ -306,8 +306,8 @@ const TestResults: React.FC = () => {
     setIsSavingNotes(true);
     try {
       await window.api.testRuns.updateNotes(selectedTestRunData.id, value);
-      // Optionally refresh to sync state
-      // await loadTestRuns();
+      // Refresh to sync state so notes persist when drawer reopens
+      await loadTestRuns();
     } catch (error) {
       console.error("Failed to save notes:", error);
     } finally {

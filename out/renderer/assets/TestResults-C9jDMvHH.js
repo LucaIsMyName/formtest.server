@@ -1,8 +1,8 @@
-import { l as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, B as Button, J as Play, K as formatDateTime, N as formatDuration, i as dist, O as CircleX, H as CircleCheck } from "./index-Bv3hspjm.js";
+import { l as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, B as Button, J as Play, K as formatDateTime, N as formatDuration, i as dist, O as CircleX, H as CircleCheck } from "./index-DT77chWV.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { D as DeleteConfirmDialog, C as CircleAlert } from "./DeleteConfirmDialog-CcPKwpsq.js";
-import { R as RefreshCw, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, C as Copy, B as Bot, S as StatusBadge, T as Trash2, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces } from "./Table-NA4D89-S.js";
-import { S as Skeleton } from "./Skeleton-Csi-UCTq.js";
+import { D as DeleteConfirmDialog, C as CircleAlert } from "./DeleteConfirmDialog-B-5CaEvw.js";
+import { R as RefreshCw, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, C as Copy, B as Bot, S as StatusBadge, T as Trash2, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces } from "./Table-f_Mn0kr1.js";
+import { S as Skeleton } from "./Skeleton-BcTffddW.js";
 const TestResultsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
@@ -154,6 +154,8 @@ const TestResults = () => {
   } = usePaymentMethodsStore();
   const [selectedTestRun, setSelectedTestRun] = reactExports.useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = reactExports.useState(null);
+  const [notes, setNotes] = reactExports.useState("");
+  const [isSavingNotes, setIsSavingNotes] = reactExports.useState(false);
   reactExports.useEffect(() => {
     loadTestRuns();
     loadForms();
@@ -233,6 +235,26 @@ const TestResults = () => {
     navigator.clipboard.writeText(uuid);
   };
   const selectedTestRunData = selectedTestRun ? testRuns.find((tr_0) => tr_0.id === selectedTestRun) : null;
+  reactExports.useEffect(() => {
+    if (selectedTestRunData) {
+      setNotes(selectedTestRunData.notes || "");
+    } else {
+      setNotes("");
+    }
+  }, [selectedTestRunData?.id, selectedTestRunData?.notes]);
+  const handleNotesChange = async (value) => {
+    setNotes(value);
+    if (!selectedTestRunData) return;
+    setIsSavingNotes(true);
+    try {
+      await window.api.testRuns.updateNotes(selectedTestRunData.id, value);
+      await loadTestRuns();
+    } catch (error_2) {
+      console.error("Failed to save notes:", error_2);
+    } finally {
+      setIsSavingNotes(false);
+    }
+  };
   const handleExportJson = () => {
     if (!selectedTestRunData) return;
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(selectedTestRunData, null, 2));
@@ -339,6 +361,13 @@ const TestResults = () => {
         selectedTestRunData.screenshotPath && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2", children: "Screenshot" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: selectedTestRunData.screenshotPath, alt: "Test screenshot", className: "w-full" }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 pb-6 border-b dark:border-gray-700", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2", children: [
+            "Notes",
+            isSavingNotes && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-xs text-gray-400", children: "(saving...)" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { value: notes, onChange: (e_4) => handleNotesChange(e_4.target.value), placeholder: "Add notes about this test run...", className: "w-full h-24 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pt-4 border-t border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "secondary", size: "sm", onClick: handleExportJson, className: "gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(FileBraces, { size: 16 }),

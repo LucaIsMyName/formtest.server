@@ -263,198 +263,199 @@ const Settings: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Test-Einstellungen</h2>
 
-            <div className="space-y-6">
-              {/* Donation Amount */}
-              <div className="space-y-2">
-                <Label
-                  className="text-gray-800 dark:text-gray-400"
-                  htmlFor="donation-amount">
-                  Standard-Spendenbetrag (EUR)
-                </Label>
-                <Input
-                  id="donation-amount"
-                  type="number"
-                  value={donationAmount}
-                  onChange={(e) => handleDonationAmountChange(e.target.value)}
-                  onBlur={saveDonationAmount}
-                  disabled={isLoading}
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400">Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* Donation Amount */}
+                <div className="space-y-2">
+                  <Label
+                    className="text-gray-800 dark:text-gray-400"
+                    htmlFor="donation-amount">
+                    Standard-Spendenbetrag (EUR)
+                  </Label>
+                  <Input
+                    id="donation-amount"
+                    type="number"
+                    value={donationAmount}
+                    onChange={(e) => handleDonationAmountChange(e.target.value)}
+                    onBlur={saveDonationAmount}
+                    disabled={isLoading}
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird</p>
+                </div>
+
+                {/* Donation Interval */}
+                <div className="space-y-2">
+                  <Label
+                    className="text-gray-800 dark:text-gray-400"
+                    htmlFor="donation-interval">
+                    Standard-Spendenintervall
+                  </Label>
+                  <Select
+                    value={donationInterval}
+                    onValueChange={handleDonationIntervalChange}
+                    disabled={isLoading}>
+                    <SelectTrigger id="donation-interval">
+                      <SelectValue placeholder="Wähle ein Intervall" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">Einmalig</SelectItem>
+                      <SelectItem value="1">Monatlich</SelectItem>
+                      <SelectItem value="3">Vierteljährlich</SelectItem>
+                      <SelectItem value="12">Jährlich</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Das Standard-Spendenintervall für Tests</p>
+                </div>
+
+                {/* Test Timeout */}
+                <div className="space-y-2">
+                  <Label
+                    className="text-gray-800 dark:text-gray-400"
+                    htmlFor="test-timeout">
+                    Test-Timeout (Millisekunden)
+                  </Label>
+                  <Input
+                    id="test-timeout"
+                    type="number"
+                    value={testTimeout}
+                    onChange={(e) => handleTestTimeoutChange(e.target.value)}
+                    onBlur={saveTestTimeout}
+                    disabled={isLoading}
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>
+                </div>
               </div>
 
-              {/* Donation Interval */}
-              <div className="space-y-2">
-                <Label
-                  className="text-gray-800 dark:text-gray-400"
-                  htmlFor="donation-interval">
-                  Standard-Spendenintervall
-                </Label>
-                <Select
-                  value={donationInterval}
-                  onValueChange={handleDonationIntervalChange}
-                  disabled={isLoading}>
-                  <SelectTrigger id="donation-interval">
-                    <SelectValue placeholder="Wähle ein Intervall" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">Einmalig</SelectItem>
-                    <SelectItem value="1">Monatlich</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Das Standard-Spendenintervall für Tests</p>
-              </div>
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Headless Mode */}
+                <div className="space-y-2">
+                  <Label
+                    className="text-gray-800 dark:text-gray-400"
+                    htmlFor="headless-mode">
+                    Headless-Modus
+                  </Label>
+                  <Select
+                    value={headlessMode}
+                    onValueChange={handleHeadlessModeChange}
+                    disabled={isLoading}>
+                    <SelectTrigger id="headless-mode">
+                      <SelectValue placeholder="Headless Modus" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="true">Aktiviert</SelectItem>
+                      <SelectItem value="false">Deaktiviert</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Browser-Tests ohne sichtbares Fenster ausführen</p>
+                </div>
 
-              {/* Test Timeout */}
-              <div className="space-y-2">
-                <Label
-                  className="text-gray-800 dark:text-gray-400"
-                  htmlFor="test-timeout">
-                  Test-Timeout (Millisekunden)
-                </Label>
-                <Input
-                  id="test-timeout"
-                  type="number"
-                  value={testTimeout}
-                  onChange={(e) => handleTestTimeoutChange(e.target.value)}
-                  onBlur={saveTestTimeout}
-                  disabled={isLoading}
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>
-              </div>
-
-              {/* Headless Mode */}
-              <div className="space-y-2">
-                <Label
-                  className="text-gray-800 dark:text-gray-400"
-                  htmlFor="headless-mode">
-                  Headless-Modus
-                </Label>
-                <Select
-                  value={headlessMode}
-                  onValueChange={handleHeadlessModeChange}
-                  disabled={isLoading}>
-                  <SelectTrigger id="headless-mode">
-                    <SelectValue placeholder="Headless Modus" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Aktiviert</SelectItem>
-                    <SelectItem value="false">Deaktiviert</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Browser-Tests ohne sichtbares Fenster ausführen</p>
-              </div>
-
-              {/* Slow Motion */}
-              <div className="space-y-2">
-                <Label
-                  className="text-gray-800 dark:text-gray-400"
-                  htmlFor="slow-motion">
-                  Slow Motion (Debugging)
-                </Label>
-                <Select
-                  value={slowMotion}
-                  onValueChange={handleSlowMotionChange}
-                  disabled={isLoading}>
-                  <SelectTrigger id="slow-motion">
-                    <SelectValue placeholder="Slow Motion" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">Aus (Normal)</SelectItem>
-                    <SelectItem value="250">250ms (Schnell)</SelectItem>
-                    <SelectItem value="500">500ms (Langsam)</SelectItem>
-                    <SelectItem value="1000">1000ms (Sehr langsam)</SelectItem>
-                    <SelectItem value="2000">2000ms (Debug)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen.</p>
+                {/* Slow Motion */}
+                <div className="space-y-2">
+                  <Label
+                    className="text-gray-800 dark:text-gray-400"
+                    htmlFor="slow-motion">
+                    Slow Motion (Debugging)
+                  </Label>
+                  <Select
+                    value={slowMotion}
+                    onValueChange={handleSlowMotionChange}
+                    disabled={isLoading}>
+                    <SelectTrigger id="slow-motion">
+                      <SelectValue placeholder="Slow Motion" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">Aus (Normal)</SelectItem>
+                      <SelectItem value="250">250ms (Schnell)</SelectItem>
+                      <SelectItem value="500">500ms (Langsam)</SelectItem>
+                      <SelectItem value="1000">1000ms (Sehr langsam)</SelectItem>
+                      <SelectItem value="2000">2000ms (Debug)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen.</p>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Data Management / Delete Section */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-            <h2 className="text-gray-900 dark:text-white  text-lg font-semibold  mb-4 flex items-center gap-2">Daten löschen</h2>
+            <h2 className="text-gray-900 dark:text-white text-lg font-semibold mb-4">Daten löschen</h2>
 
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400">Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden.</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden.</p>
 
-              <div className="flex flex-wrap gap-4">
-                <Button
-                  variant="secondary"
-                  size="md"
-                  onClick={() =>
-                    setDeleteConfirmation({
-                      type: "forms",
-                      title: "Alle Formulare löschen",
-                      message: "Sind Sie sicher, dass Sie ALLE Formulare löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne.",
-                    })
-                  }
-                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
-                  Alle Formulare löschen
-                </Button>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() =>
+                  setDeleteConfirmation({
+                    type: "forms",
+                    title: "Alle Formulare löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Formulare löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne.",
+                  })
+                }
+                className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                Alle Formulare löschen
+              </Button>
 
-                <Button
-                  variant="secondary"
-                  size="md"
-                  onClick={() =>
-                    setDeleteConfirmation({
-                      type: "paymentMethods",
-                      title: "Alle Bezahlmethoden löschen",
-                      message: "Sind Sie sicher, dass Sie ALLE Bezahlmethoden löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne.",
-                    })
-                  }
-                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
-                  Alle Bezahlmethoden löschen
-                </Button>
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() =>
+                  setDeleteConfirmation({
+                    type: "paymentMethods",
+                    title: "Alle Bezahlmethoden löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Bezahlmethoden löschen möchten? Dies löscht auch alle zugehörigen Test-Resultate und Zeitpläne.",
+                  })
+                }
+                className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                Alle Bezahlmethoden löschen
+              </Button>
 
-                <Button
-                  variant="secondary"
-                  size="md"
-                  onClick={() =>
-                    setDeleteConfirmation({
-                      type: "testRuns",
-                      title: "Alle Test-Resultate löschen",
-                      message: "Sind Sie sicher, dass Sie ALLE Test-Resultate löschen möchten?",
-                    })
-                  }
-                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
-                  Alle Test-Resultate löschen
-                </Button>
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() =>
+                  setDeleteConfirmation({
+                    type: "testRuns",
+                    title: "Alle Test-Resultate löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Test-Resultate löschen möchten?",
+                  })
+                }
+                className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                Alle Test-Resultate löschen
+              </Button>
 
-                <Button
-                  variant="secondary"
-                  size="md"
-                  onClick={() =>
-                    setDeleteConfirmation({
-                      type: "schedules",
-                      title: "Alle Zeitpläne löschen",
-                      message: "Sind Sie sicher, dass Sie ALLE Zeitpläne löschen möchten?",
-                    })
-                  }
-                  className="justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
-                  Alle Zeitpläne löschen
-                </Button>
-              </div>
+              <Button
+                variant="secondary"
+                size="md"
+                onClick={() =>
+                  setDeleteConfirmation({
+                    type: "schedules",
+                    title: "Alle Zeitpläne löschen",
+                    message: "Sind Sie sicher, dass Sie ALLE Zeitpläne löschen möchten?",
+                  })
+                }
+                className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20">
+                Alle Zeitpläne löschen
+              </Button>
 
-              <div className="">
-                <Button
-                  variant="danger"
-                  size="md"
-                  onClick={() =>
-                    setDeleteConfirmation({
-                      type: "all",
-                      title: "ALLES löschen (Factory Reset)",
-                      message: "ACHTUNG: Sind Sie sicher, dass Sie ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) löschen möchten? Die Anwendung wird auf den Ursprungszustand zurückgesetzt (außer Einstellungen).",
-                    })
-                  }
-                  className=" hover:bg-red-700 text-white border-none justify-center">
-                  <AlertTriangle
-                    size={18}
-                    className="mr-2"
-                  />
-                  Alle Daten löschen
-                </Button>
-              </div>
+              <Button
+                variant="danger"
+                size="md"
+                onClick={() =>
+                  setDeleteConfirmation({
+                    type: "all",
+                    title: "ALLES löschen (Factory Reset)",
+                    message: "ACHTUNG: Sind Sie sicher, dass Sie ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) löschen möchten? Die Anwendung wird auf den Ursprungszustand zurückgesetzt (außer Einstellungen).",
+                  })
+                }
+                className="hover:bg-red-700 text-white border-none gap-2">
+                <AlertTriangle size={18} />
+                Alle Daten löschen
+              </Button>
             </div>
           </div>
 

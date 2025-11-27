@@ -293,7 +293,7 @@ class TestRunner {
 
     // Get amount from field mapping or settings
     const amountMapping = this.fieldMappings?.find(m => m.fieldType === 'amount' || m.fieldType === 'customAmount')
-    let amount = amountMapping?.value || this.config.defaultDonationAmount || '50'
+    let amount = amountMapping?.value || this.config.defaultAmount || '50'
     
     // Get interval from field mapping or settings
     // FundraisingBox intervals: 0=one-time, 1=monthly, 4=quarterly, 12=yearly
