@@ -263,118 +263,110 @@ const Settings: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Test-Einstellungen</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left Column */}
-              <div className="space-y-6">
-                {/* Donation Amount */}
-                <div className="space-y-2">
-                  <Label
-                    className="text-gray-800 dark:text-gray-400"
-                    htmlFor="donation-amount">
-                    Standard-Spendenbetrag (EUR)
-                  </Label>
-                  <Input
-                    id="donation-amount"
-                    type="number"
-                    value={donationAmount}
-                    onChange={(e) => handleDonationAmountChange(e.target.value)}
-                    onBlur={saveDonationAmount}
-                    disabled={isLoading}
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird</p>
-                </div>
-
-                {/* Donation Interval */}
-                <div className="space-y-2">
-                  <Label
-                    className="text-gray-800 dark:text-gray-400"
-                    htmlFor="donation-interval">
-                    Standard-Spendenintervall
-                  </Label>
-                  <Select
-                    value={donationInterval}
-                    onValueChange={handleDonationIntervalChange}
-                    disabled={isLoading}>
-                    <SelectTrigger id="donation-interval">
-                      <SelectValue placeholder="Wähle ein Intervall" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">Einmalig</SelectItem>
-                      <SelectItem value="1">Monatlich</SelectItem>
-                      <SelectItem value="3">Vierteljährlich</SelectItem>
-                      <SelectItem value="12">Jährlich</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Das Standard-Spendenintervall für Tests</p>
-                </div>
-
-                {/* Test Timeout */}
-                <div className="space-y-2">
-                  <Label
-                    className="text-gray-800 dark:text-gray-400"
-                    htmlFor="test-timeout">
-                    Test-Timeout (Millisekunden)
-                  </Label>
-                  <Input
-                    id="test-timeout"
-                    type="number"
-                    value={testTimeout}
-                    onChange={(e) => handleTestTimeoutChange(e.target.value)}
-                    onBlur={saveTestTimeout}
-                    disabled={isLoading}
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+              {/* Row 1: Donation Amount | Headless Mode */}
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="donation-amount">
+                  Standard-Spendenbetrag (EUR)
+                </Label>
+                <Input
+                  id="donation-amount"
+                  type="number"
+                  value={donationAmount}
+                  onChange={(e) => handleDonationAmountChange(e.target.value)}
+                  onBlur={saveDonationAmount}
+                  disabled={isLoading}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400">Der Standardbetrag, der beim Testen von Spendenformularen verwendet wird</p>
               </div>
 
-              {/* Right Column */}
-              <div className="space-y-6">
-                {/* Headless Mode */}
-                <div className="space-y-2">
-                  <Label
-                    className="text-gray-800 dark:text-gray-400"
-                    htmlFor="headless-mode">
-                    Headless-Modus
-                  </Label>
-                  <Select
-                    value={headlessMode}
-                    onValueChange={handleHeadlessModeChange}
-                    disabled={isLoading}>
-                    <SelectTrigger id="headless-mode">
-                      <SelectValue placeholder="Headless Modus" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="true">Aktiviert</SelectItem>
-                      <SelectItem value="false">Deaktiviert</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Browser-Tests ohne sichtbares Fenster ausführen</p>
-                </div>
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="headless-mode">
+                  Headless-Modus
+                </Label>
+                <Select
+                  value={headlessMode}
+                  onValueChange={handleHeadlessModeChange}
+                  disabled={isLoading}>
+                  <SelectTrigger id="headless-mode">
+                    <SelectValue placeholder="Headless Modus" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Aktiviert</SelectItem>
+                    <SelectItem value="false">Deaktiviert</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Browser-Tests ohne sichtbares Fenster ausführen</p>
+              </div>
 
-                {/* Slow Motion */}
-                <div className="space-y-2">
-                  <Label
-                    className="text-gray-800 dark:text-gray-400"
-                    htmlFor="slow-motion">
-                    Slow Motion (Debugging)
-                  </Label>
-                  <Select
-                    value={slowMotion}
-                    onValueChange={handleSlowMotionChange}
-                    disabled={isLoading}>
-                    <SelectTrigger id="slow-motion">
-                      <SelectValue placeholder="Slow Motion" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">Aus (Normal)</SelectItem>
-                      <SelectItem value="250">250ms (Schnell)</SelectItem>
-                      <SelectItem value="500">500ms (Langsam)</SelectItem>
-                      <SelectItem value="1000">1000ms (Sehr langsam)</SelectItem>
-                      <SelectItem value="2000">2000ms (Debug)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen.</p>
-                </div>
+              {/* Row 2: Donation Interval | Slow Motion */}
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="donation-interval">
+                  Standard-Spendenintervall
+                </Label>
+                <Select
+                  value={donationInterval}
+                  onValueChange={handleDonationIntervalChange}
+                  disabled={isLoading}>
+                  <SelectTrigger id="donation-interval">
+                    <SelectValue placeholder="Wähle ein Intervall" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Einmalig</SelectItem>
+                    <SelectItem value="1">Monatlich</SelectItem>
+                    <SelectItem value="3">Vierteljährlich</SelectItem>
+                    <SelectItem value="12">Jährlich</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Das Standard-Spendenintervall für Tests</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="slow-motion">
+                  Slow Motion (Debugging)
+                </Label>
+                <Select
+                  value={slowMotion}
+                  onValueChange={handleSlowMotionChange}
+                  disabled={isLoading}>
+                  <SelectTrigger id="slow-motion">
+                    <SelectValue placeholder="Slow Motion" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Aus (Normal)</SelectItem>
+                    <SelectItem value="250">250ms (Schnell)</SelectItem>
+                    <SelectItem value="500">500ms (Langsam)</SelectItem>
+                    <SelectItem value="1000">1000ms (Sehr langsam)</SelectItem>
+                    <SelectItem value="2000">2000ms (Debug)</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Verzögerung zwischen Aktionen zum Debuggen. Deaktiviere Headless-Modus um den Browser zu sehen.</p>
+              </div>
+
+              {/* Row 3: Test Timeout (spans full width or left only) */}
+              <div className="space-y-2">
+                <Label
+                  className="text-gray-800 dark:text-gray-400"
+                  htmlFor="test-timeout">
+                  Test-Timeout (Millisekunden)
+                </Label>
+                <Input
+                  id="test-timeout"
+                  type="number"
+                  value={testTimeout}
+                  onChange={(e) => handleTestTimeoutChange(e.target.value)}
+                  onBlur={saveTestTimeout}
+                  disabled={isLoading}
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>
               </div>
             </div>
           </div>
