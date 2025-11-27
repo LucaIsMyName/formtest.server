@@ -29,6 +29,7 @@ declare global {
         create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => Promise<TestRun>
         updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => Promise<void>
         delete: (id: number) => Promise<void>
+        updateNotes: (id: number, notes: string) => Promise<void>
       }
       testSchedules: {
         getAll: () => Promise<TestSchedule[]>

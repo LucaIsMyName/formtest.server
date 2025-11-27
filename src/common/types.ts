@@ -101,6 +101,7 @@ export interface TestRun {
   steps?: TestStep[];
   durationMs?: number;
   isScheduled?: boolean;
+  notes?: string;
   runAt: Date;
 }
 

@@ -189,6 +189,8 @@ const TestResults: React.FC = () => {
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const [selectedTestRun, setSelectedTestRun] = useState<number | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
+  const [notes, setNotes] = useState<string>("");
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
 
   useEffect(() => {
     loadTestRuns();
@@ -285,6 +287,33 @@ const TestResults: React.FC = () => {
   };
 
   const selectedTestRunData = selectedTestRun ? testRuns.find((tr) => tr.id === selectedTestRun) : null;
+
+  // Sync notes when selected test run changes
+  useEffect(() => {
+    if (selectedTestRunData) {
+      setNotes(selectedTestRunData.notes || "");
+    } else {
+      setNotes("");
+    }
+  }, [selectedTestRunData?.id, selectedTestRunData?.notes]);
+
+  // Debounced save notes
+  const handleNotesChange = async (value: string) => {
+    setNotes(value);
+    
+    if (!selectedTestRunData) return;
+    
+    setIsSavingNotes(true);
+    try {
+      await window.api.testRuns.updateNotes(selectedTestRunData.id, value);
+      // Optionally refresh to sync state
+      // await loadTestRuns();
+    } catch (error) {
+      console.error("Failed to save notes:", error);
+    } finally {
+      setIsSavingNotes(false);
+    }
+  };
 
   const handleExportJson = () => {
     if (!selectedTestRunData) return;
@@ -507,6 +536,20 @@ const TestResults: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Notes */}
+                <div className="mb-6 pb-6 border-b dark:border-gray-700">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                    Notes
+                    {isSavingNotes && <span className="ml-2 text-xs text-gray-400">(saving...)</span>}
+                  </label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => handleNotesChange(e.target.value)}
+                    placeholder="Add notes about this test run..."
+                    className="w-full h-24 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                  />
+                </div>
 
                 {/* Export Button */}
                 <div className="pt-4 border-t border-gray-200 dark:border-gray-700">

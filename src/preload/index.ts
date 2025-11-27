@@ -40,7 +40,8 @@ const api = {
     updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => 
       ipcRenderer.invoke('testRuns:updateStatus', id, status, errorMessage, durationMs),
     delete: (id: number) => ipcRenderer.invoke('testRuns:delete', id),
-    deleteAll: () => ipcRenderer.invoke('testRuns:deleteAll')
+    deleteAll: () => ipcRenderer.invoke('testRuns:deleteAll'),
+    updateNotes: (id: number, notes: string) => ipcRenderer.invoke('testRuns:updateNotes', id, notes)
   },
 
   // Test execution

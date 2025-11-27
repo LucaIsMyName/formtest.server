@@ -164,6 +164,7 @@ export function setupIpcHandlers(): void {
   ipcMain.handle("testRuns:updateStatus", (_, id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
   ipcMain.handle("testRuns:delete", (_, id: number) => testRunQueries.delete(id));
   ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
+  ipcMain.handle("testRuns:updateNotes", (_, id: number, notes: string) => testRunQueries.updateNotes(id, notes));
 
   // Toast notification handlers
   ipcMain.handle("toast:show", (event, type: 'success' | 'error' | 'info' | 'warning', message: string, description?: string) => {

@@ -94,6 +94,31 @@ function migrateTestScheduleIcon(): void {
 }
 
 /**
+ * Migrate test_runs table to add notes column
+ */
+function migrateTestRunNotes(): void {
+  console.log("Database: Checking for test_runs notes column...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasNotes = columns.some(col => col.name === 'notes');
+    
+    if (!hasNotes) {
+      console.log("Database: Adding notes column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN notes TEXT DEFAULT ''");
+      
+      // Initialize existing records with empty notes
+      const updateStmt = db.prepare("UPDATE test_runs SET notes = '' WHERE notes IS NULL");
+      const result = updateStmt.run();
+      
+      console.log(`Database: Initialized notes column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run notes migration error:", error);
+  }
+}
+
+/**
  * Migrate test_runs table to add isScheduled column
  */
 function migrateTestRunScheduled(): void {
@@ -401,6 +426,9 @@ export function initDatabase(): void {
 
   // Migrate test run scheduled column
   migrateTestRunScheduled();
+
+  // Migrate test run notes column
+  migrateTestRunNotes();
 
   // Migrate schedule icon column
   migrateTestScheduleIcon();
@@ -825,6 +853,10 @@ export const testRunQueries = {
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"]) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
+  },
+  updateNotes: (id: number, notes: string) => {
+    const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
+    return stmt.run(notes, id);
   },
   delete: (id: number) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");

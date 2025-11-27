@@ -161,6 +161,22 @@ function migrateTestScheduleIcon() {
     console.error("Database: Schedule icon migration error:", error);
   }
 }
+function migrateTestRunNotes() {
+  console.log("Database: Checking for test_runs notes column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasNotes = columns.some((col) => col.name === "notes");
+    if (!hasNotes) {
+      console.log("Database: Adding notes column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN notes TEXT DEFAULT ''");
+      const updateStmt = db.prepare("UPDATE test_runs SET notes = '' WHERE notes IS NULL");
+      const result = updateStmt.run();
+      console.log(`Database: Initialized notes column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run notes migration error:", error);
+  }
+}
 function migrateTestRunScheduled() {
   console.log("Database: Checking for test_runs isScheduled column...");
   try {
@@ -397,6 +413,7 @@ function initDatabase() {
   migrateTestRunUuid();
   migrateTestRunSteps();
   migrateTestRunScheduled();
+  migrateTestRunNotes();
   migrateTestScheduleIcon();
   migrateIconColumns();
   migrateFormFieldMappings();
@@ -741,6 +758,10 @@ const testRunQueries = {
   updateStatus: (id, status, errorMessage, durationMs, steps) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ?");
     return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
+  },
+  updateNotes: (id, notes) => {
+    const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
+    return stmt.run(notes, id);
   },
   delete: (id) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
@@ -1699,6 +1720,7 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:updateStatus", (_, id, status, errorMessage, durationMs) => testRunQueries.updateStatus(id, status, errorMessage, durationMs));
   electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
   electron.ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
+  electron.ipcMain.handle("testRuns:updateNotes", (_, id, notes) => testRunQueries.updateNotes(id, notes));
   electron.ipcMain.handle("toast:show", (event, type, message, description) => {
     event.sender.send("toast:display", { type, message, description });
   });
