@@ -1315,7 +1315,14 @@ class TestProcessManager extends events.EventEmitter {
           formAnalysis: response.payload.result?.formAnalysis
         };
       } else {
-        throw new Error(response.payload?.error || "Test execution failed");
+        return {
+          success: false,
+          error: response.payload?.error || "Test execution failed",
+          duration: response.payload?.result?.duration || 0,
+          logs: response.payload?.result?.logs || response.payload?.logs || [],
+          steps: response.payload?.result?.steps || [],
+          screenshot: response.payload?.result?.screenshot
+        };
       }
     } catch (error) {
       console.error(`Test ${testRunId} attempt ${retryCount + 1} failed:`, error);

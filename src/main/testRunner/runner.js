@@ -17,6 +17,7 @@ class TestRunner {
     this.browser = null
     this.context = null
     this.page = null
+    this.mainPage = null  // Keep reference to main page for screenshots
     this.config = {}
     this.logs = []
     this.steps = []
@@ -176,6 +177,12 @@ class TestRunner {
     const { id, payload } = message
     const { testRunId, form, paymentMethod, settings } = payload
 
+    // IMPORTANT: Reset logs and steps for each new test run
+    // This prevents accumulation from previous test runs
+    this.logs = []
+    this.steps = []
+    this.currentStep = null
+
     try {
       this.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name}`)
 
@@ -210,7 +217,15 @@ class TestRunner {
     } catch (error) {
       this.log(`Test ${testRunId} failed: ${error.message}`)
 
-      // Send error result
+      // Take error screenshot before cleanup
+      let errorScreenshot = null
+      try {
+        errorScreenshot = await this.takeScreenshot('error')
+      } catch (screenshotError) {
+        this.log(`Failed to take error screenshot: ${screenshotError.message}`)
+      }
+
+      // Send error result WITH steps (important for debugging!)
       this.sendMessage({
         type: 'TEST_COMPLETE',
         id,
@@ -218,7 +233,15 @@ class TestRunner {
           testRunId,
           success: false,
           error: error.message,
-          logs: this.logs
+          logs: this.logs,
+          result: {
+            success: false,
+            duration: Date.now() - (this.testStartTime || Date.now()),
+            logs: [...this.logs],
+            steps: [...this.steps],
+            screenshot: errorScreenshot,
+            error: error.message
+          }
         }
       })
     } finally {
@@ -245,6 +268,7 @@ class TestRunner {
 
     // Create page
     this.page = await this.context.newPage()
+    this.mainPage = this.page  // Store reference to main page
     this.page.setDefaultTimeout(this.config.timeout)
 
     this.log('Browser initialized successfully')
@@ -313,6 +337,7 @@ class TestRunner {
 
   async runFormTest(form, paymentMethod) {
     const startTime = Date.now()
+    this.testStartTime = startTime
     
     // Reset prefill flags for new test
     this.prefilledAmount = false
@@ -394,16 +419,25 @@ class TestRunner {
     const cookieStep = this.startStep('cookie-handling', 'Handle Cookie Banner')
     await this.handleCookieConsent()
 
+    // Step 3.5: Switch to iframe if form is embedded
+    await this.switchToFormFrame()
+
     // Take initial screenshot
     const screenshotPath = await this.takeScreenshot('initial')
 
-    // Step 4: Form Analysis
-    const analysisStep = this.startStep('form-analysis', 'Analyze Form Structure')
-    const formAnalysis = await this.analyzeAndFillForm()
-    this.completeStep('form-analysis', 'success', `Found ${formAnalysis.fields?.length || 0} form fields`, {
-      fieldsFound: formAnalysis.fields?.length || 0,
-      formType: 'donation'
-    })
+    // Step 4: Form Analysis & Fill
+    const analysisStep = this.startStep('form-analysis', 'Analyze and Fill Form')
+    let formAnalysis
+    try {
+      formAnalysis = await this.analyzeAndFillForm()
+      this.completeStep('form-analysis', 'success', `Analyzed and filled ${formAnalysis.fields?.length || 0} form fields`, {
+        fieldsFound: formAnalysis.fields?.length || 0,
+        formType: 'donation'
+      })
+    } catch (error) {
+      this.failStep('form-analysis', `Form analysis/fill failed: ${error.message}`)
+      throw error
+    }
 
     // Step 5: Payment Method Selection
     const paymentStep = this.startStep('payment-selection', 'Select Payment Method', {
@@ -515,26 +549,29 @@ class TestRunner {
     this.log('Submitting form...')
 
     // Check for validation errors before submitting
-    const errorBanner = await this.page.$('.form-error-message:visible, .error-banner:visible, .alert-danger:visible')
-    if (errorBanner) {
-      const errorText = await errorBanner.textContent()
-      this.log(`Form has validation errors: ${errorText}`)
+    try {
+      const errorBanner = await this.page.$('.form-error-message:visible, .error-banner:visible, .alert-danger:visible')
+      if (errorBanner) {
+        const isVisible = await errorBanner.isVisible()
+        if (isVisible) {
+          const errorText = await errorBanner.textContent()
+          this.log(`Form has validation errors: ${errorText}`)
+        }
+      }
+    } catch (e) {
+      // Ignore error checking failures
     }
     
     // FundraisingBox-specific submit selectors first
     const submitSelectors = [
+      'input#submitForm',                      // FundraisingBox input (most specific)
       '#submitForm',                           // FundraisingBox specific
-      'input#submitForm',                      // FundraisingBox input
+      'input[type="submit"][value*="Jetzt spenden"]', // Exact match
       'input[type="submit"][value*="spenden"]', // German donate buttons
       'input[type="submit"][value*="Spenden"]',
+      'input.button[type="submit"]',          // FundraisingBox class
       'button[type="submit"]',
       'input[type="submit"]',
-      'button:has-text("Jetzt spenden")',
-      'button:has-text("Spenden")',
-      'button:has-text("Weiter")',
-      'button:has-text("Donate")',
-      'button:has-text("Pay")',
-      'button:has-text("Submit")',
       '.submit-button',
       '#submit',
       '[data-testid="submit"]'
@@ -547,28 +584,49 @@ class TestRunner {
           const isVisible = await button.isVisible()
           const isEnabled = await button.isEnabled()
           
+          this.log(`Found submit button: ${selector} (visible: ${isVisible}, enabled: ${isEnabled})`)
+          
           if (isVisible && isEnabled) {
             // Scroll into view if needed
             await button.scrollIntoViewIfNeeded()
             
             // Small delay before clicking
-            await this.page.waitForTimeout(300)
+            await this.page.waitForTimeout(500)
             
             // Click the button
             await button.click()
             this.log(`Clicked submit button: ${selector}`)
             
-            // Wait a moment for form processing
-            await this.page.waitForTimeout(1000)
+            // Wait for form processing/navigation
+            await this.page.waitForTimeout(2000)
             return
+          } else {
+            this.log(`Submit button ${selector} not clickable - trying next`)
           }
         }
       } catch (error) {
+        this.log(`Submit selector ${selector} error: ${error.message}`)
         // Continue trying other selectors
       }
     }
     
-    this.log('No submit button found or clickable')
+    // If no button found, try to find any submit element and log details
+    this.log('No standard submit button found, checking page for any submit elements...')
+    try {
+      const allSubmits = await this.page.$$('input[type="submit"], button[type="submit"]')
+      this.log(`Found ${allSubmits.length} submit elements on page`)
+      for (let i = 0; i < allSubmits.length; i++) {
+        const el = allSubmits[i]
+        const id = await el.getAttribute('id')
+        const value = await el.getAttribute('value')
+        const className = await el.getAttribute('class')
+        this.log(`Submit element ${i}: id=${id}, value=${value}, class=${className}`)
+      }
+    } catch (e) {
+      this.log(`Error listing submit elements: ${e.message}`)
+    }
+    
+    throw new Error('No submit button found or clickable')
   }
 
   async waitForSuccessRedirect() {
@@ -648,6 +706,9 @@ class TestRunner {
 
     // Fill form with test data (for fields not handled by mappings)
     await this.fillFormFields(fields)
+
+    // Step 4: Wait a moment for any dynamic validation
+    await this.page.waitForTimeout(500)
 
     return { fields }
   }
@@ -787,8 +848,30 @@ class TestRunner {
   async handleFundraisingBoxForm() {
     this.log('Checking for FundraisingBox form patterns...')
 
-    // Detect if this is a FundraisingBox form
-    const isFundraisingBox = await this.page.$('#fbPaymentForm, [class*="fundraisingbox"]')
+    // Detect if this is a FundraisingBox form - check multiple indicators
+    // The form may be embedded in an iframe or directly on the page
+    const fbIndicators = [
+      '#fbPaymentForm',
+      '[class*="fundraisingbox"]',
+      '#payment_first_name',  // FundraisingBox uses this ID pattern
+      '#payment_last_name',
+      '#payment_email',
+      '#paymentmethods',
+      'input#submitForm[value*="spenden"]',
+      'input#submitForm[value*="Spenden"]',
+      '#payment_salutation',
+      '#payment_interval'
+    ]
+    
+    let isFundraisingBox = false
+    for (const selector of fbIndicators) {
+      const element = await this.page.$(selector)
+      if (element) {
+        this.log(`FundraisingBox indicator found: ${selector}`)
+        isFundraisingBox = true
+        break
+      }
+    }
     
     if (!isFundraisingBox) {
       this.log('Not a FundraisingBox form, skipping special handling')
@@ -981,21 +1064,65 @@ class TestRunner {
     this.log('Handling FB required checkboxes...')
 
     try {
-      // Privacy checkbox
-      const privacyCheckbox = await this.page.$('#payment_is_privacy_accepted')
-      if (privacyCheckbox) {
-        const isChecked = await privacyCheckbox.isChecked()
-        if (!isChecked) {
-          await privacyCheckbox.check()
-          this.log('Checked privacy checkbox')
+      // Privacy checkbox - REQUIRED for form submission
+      const privacySelectors = [
+        '#payment_is_privacy_accepted',
+        'input[name="payment[is_privacy_accepted]"]',
+        'input[type="checkbox"][required]#payment_is_privacy_accepted',
+        '.input-is_privacy_accepted input[type="checkbox"]'
+      ]
+      
+      for (const selector of privacySelectors) {
+        try {
+          const privacyCheckbox = await this.page.$(selector)
+          if (privacyCheckbox) {
+            const isChecked = await privacyCheckbox.isChecked()
+            if (!isChecked) {
+              // Try clicking the checkbox directly
+              await privacyCheckbox.scrollIntoViewIfNeeded()
+              await privacyCheckbox.click({ force: true })
+              this.log(`Checked privacy checkbox via: ${selector}`)
+              
+              // Verify it's checked
+              const nowChecked = await privacyCheckbox.isChecked()
+              if (nowChecked) {
+                this.log('Privacy checkbox confirmed checked')
+                break
+              } else {
+                // Try using check() method as fallback
+                await privacyCheckbox.check()
+                this.log('Privacy checkbox checked via check() method')
+                break
+              }
+            } else {
+              this.log('Privacy checkbox already checked')
+              break
+            }
+          }
+        } catch (e) {
+          this.log(`Privacy checkbox selector ${selector} failed: ${e.message}`)
         }
       }
 
-      // Newsletter radio (select "Nein" / No)
-      const newsletterNo = await this.page.$('#payment_donation_custom_field_8543_Nein')
-      if (newsletterNo) {
-        await newsletterNo.click()
-        this.log('Selected newsletter: Nein')
+      // Newsletter radio (select "Nein" / No) - also required
+      const newsletterSelectors = [
+        '#payment_donation_custom_field_8543_Nein',
+        'input[name="payment[donation_custom_field_8543]"][value="Nein"]',
+        'input[type="radio"][value="Nein"]'
+      ]
+      
+      for (const selector of newsletterSelectors) {
+        try {
+          const newsletterNo = await this.page.$(selector)
+          if (newsletterNo) {
+            await newsletterNo.scrollIntoViewIfNeeded()
+            await newsletterNo.click({ force: true })
+            this.log(`Selected newsletter: Nein via ${selector}`)
+            break
+          }
+        } catch (e) {
+          this.log(`Newsletter selector ${selector} failed: ${e.message}`)
+        }
       }
     } catch (error) {
       this.log(`FB checkbox handling error: ${error.message}`)
@@ -1185,6 +1312,78 @@ class TestRunner {
       this.log(`Filled ${field.selector} with: ${value}`)
     } catch (error) {
       this.log(`Failed to fill ${field.selector}: ${error.message}`)
+    }
+  }
+
+  /**
+   * Switch to the iframe containing the donation form if present
+   * FundraisingBox forms are typically embedded in iframes
+   */
+  async switchToFormFrame() {
+    this.log('Checking for embedded form iframe...')
+
+    try {
+      // Common iframe selectors for donation forms
+      const iframeSelectors = [
+        'iframe[src*="fundraisingbox"]',
+        'iframe[src*="secure.fundraisingbox.com"]',
+        'iframe#fundraisingbox',
+        'iframe[name*="fundraising"]',
+        'iframe[src*="spenden"]',
+        'iframe[src*="donation"]',
+        // Generic fallback - look for any iframe that might contain a form
+        'iframe[src*="payment"]'
+      ]
+
+      for (const selector of iframeSelectors) {
+        try {
+          const iframe = await this.page.$(selector)
+          if (iframe) {
+            this.log(`Found iframe: ${selector}`)
+            
+            // Get the frame from the iframe element
+            const frame = await iframe.contentFrame()
+            if (frame) {
+              // Switch our page reference to the frame
+              this.page = frame
+              this.log('Switched to iframe context')
+              
+              // Wait for frame content to load
+              await frame.waitForLoadState('domcontentloaded')
+              await frame.waitForTimeout(1000)
+              
+              this.log('Iframe content loaded')
+              return
+            }
+          }
+        } catch (e) {
+          // Continue trying other selectors
+        }
+      }
+
+      // If no specific iframe found, check if there's any iframe with a form inside
+      const allFrames = this.page.frames()
+      this.log(`Found ${allFrames.length} frames on page`)
+      
+      for (const frame of allFrames) {
+        if (frame === this.page.mainFrame()) continue
+        
+        try {
+          // Check if this frame has form elements
+          const hasForm = await frame.$('#fbPaymentForm, #submitForm, input[name*="payment"]')
+          if (hasForm) {
+            this.log(`Found form in frame: ${frame.url()}`)
+            this.page = frame
+            return
+          }
+        } catch (e) {
+          // Frame might not be accessible
+        }
+      }
+
+      this.log('No iframe found, continuing with main page')
+    } catch (error) {
+      this.log(`Iframe detection error: ${error.message}`)
     }
   }
 
@@ -1526,7 +1725,9 @@ class TestRunner {
       const filename = `${type}-${timestamp}.png`
       const screenshotPath = path.join(process.cwd(), 'screenshots', type === 'final' ? 'success' : 'temp', filename)
 
-      await this.page.screenshot({
+      // Use mainPage for screenshots to capture the full page including iframe
+      const screenshotTarget = this.mainPage || this.page
+      await screenshotTarget.screenshot({
         path: screenshotPath,
         fullPage: true
       })
