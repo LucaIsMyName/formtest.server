@@ -1,0 +1,5 @@
+- make the `<Table />`Columns sort and filterable! -> store table state in DB for user, signal filter and sorting in UI
+- add auto-delete function for test eg. after 1 year of storage (make multiple options and user defined one)
+- make Formulare, Bezahlmethoden, Autopilot and Resulttate Table Searchable insde the page
+- in cmdk /search dialog: load all test, forms, autopiltos and payment methods, not just the last eg 5 from each (we assume the db will not be very big,. only the test will accumulate over time) 
+- lazy/ajax loading table resuluts?
