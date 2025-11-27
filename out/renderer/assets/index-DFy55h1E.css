@@ -477,6 +477,9 @@ video {
 .right-0 {
   right: 0px;
 }
+.right-3 {
+  right: 0.75rem;
+}
 .right-4 {
   right: 1rem;
 }
@@ -783,6 +786,9 @@ video {
 }
 .max-w-lg {
   max-width: 32rem;
+}
+.max-w-sm {
+  max-width: 24rem;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -1306,11 +1312,17 @@ video {
 .pl-8 {
   padding-left: 2rem;
 }
+.pl-9 {
+  padding-left: 2.25rem;
+}
 .pr-2 {
   padding-right: 0.5rem;
 }
 .pr-4 {
   padding-right: 1rem;
+}
+.pr-8 {
+  padding-right: 2rem;
 }
 .pt-3 {
   padding-top: 0.75rem;
@@ -2604,6 +2616,11 @@ select.input {
 .dark\:hover\:text-blue-300:hover:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(147 197 253 / var(--tw-text-opacity, 1));
+}
+
+.dark\:hover\:text-gray-200:hover:is(.dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(229 231 235 / var(--tw-text-opacity, 1));
 }
 
 .dark\:hover\:text-gray-300:hover:is(.dark *) {

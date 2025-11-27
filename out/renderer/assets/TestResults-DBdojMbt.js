@@ -1,8 +1,9 @@
-import { l as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, B as Button, J as Play, K as formatDateTime, N as formatDuration, i as dist, O as CircleX, H as CircleCheck } from "./index-Beoo-wk9.js";
+import { l as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, B as Button, J as Play, K as formatDateTime, N as formatDuration, i as dist, O as CircleX, H as CircleCheck } from "./index-ClXSKXcE.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { D as DeleteConfirmDialog, C as CircleAlert } from "./DeleteConfirmDialog-CmP1PaxP.js";
-import { R as RefreshCw, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, C as Copy, B as Bot, S as StatusBadge, T as Trash2, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces } from "./Table-BPhaeuhe.js";
-import { S as Skeleton } from "./Skeleton-DskK8jEP.js";
+import { D as DeleteConfirmDialog, f as CircleAlert } from "./DeleteConfirmDialog-DFl4UGYI.js";
+import { R as RefreshCw, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, C as Copy, B as Bot, S as StatusBadge, T as Trash2, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces } from "./Table-DP7sIPBh.js";
+import { S as Skeleton } from "./Skeleton-DVrMpaCl.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-BrcVvBCC.js";
 const TestResultsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
@@ -161,11 +162,57 @@ const TestResults = () => {
     loadForms();
     loadPaymentMethods();
   }, [loadTestRuns, loadForms, loadPaymentMethods]);
+  const testRunsWithNames = reactExports.useMemo(() => {
+    return testRuns.map((tr) => ({
+      ...tr,
+      formName: forms.find((f) => f.id === tr.formId)?.name || `Form #${tr.formId}`,
+      paymentMethodName: paymentMethods.find((p) => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`
+    }));
+  }, [testRuns, forms, paymentMethods]);
+  const runningTests = reactExports.useMemo(() => testRunsWithNames.filter((tr_0) => tr_0.status === "RUNNING"), [testRunsWithNames]);
+  const finishedTests = reactExports.useMemo(() => testRunsWithNames.filter((tr_1) => tr_1.status !== "RUNNING"), [testRunsWithNames]);
+  const {
+    filteredItems: filteredFinishedTests,
+    filterConfig,
+    setSearchTerm,
+    setStatusFilter,
+    clearFilters
+  } = useFilterableData(
+    finishedTests,
+    ["formName", "paymentMethodName", "uuid", "status"],
+    {
+      searchTerm: "",
+      statusFilter: void 0
+    },
+    "testResults"
+    // localStorage key
+  );
+  const {
+    sortedItems: sortedFinishedTests,
+    requestSort,
+    getSortDirection
+  } = useSortableData(
+    filteredFinishedTests,
+    {
+      key: "runAt",
+      direction: "desc"
+    },
+    // Default: newest first
+    "testResults"
+    // localStorage key
+  );
+  const statusOptions = [{
+    value: "SUCCESS",
+    label: "Erfolgreich"
+  }, {
+    value: "FAILURE",
+    label: "Fehlgeschlagen"
+  }];
   reactExports.useEffect(() => {
     if (testRuns.length > 0) {
       const paramId = searchParams.get("id");
       if (paramId) {
-        const found = testRuns.find((tr) => tr.uuid === paramId || String(tr.id) === paramId);
+        const found = testRuns.find((tr_2) => tr_2.uuid === paramId || String(tr_2.id) === paramId);
         if (found) {
           setSelectedTestRun(found.id);
           return;
@@ -184,11 +231,11 @@ const TestResults = () => {
     }
   };
   const getFormName = (formId) => {
-    const form = forms.find((f) => f.id === formId);
+    const form = forms.find((f_0) => f_0.id === formId);
     return form ? form.name : `Form #${formId}`;
   };
   const getPaymentMethodName = (pmId) => {
-    const pm = paymentMethods.find((p) => p.id === pmId);
+    const pm = paymentMethods.find((p_0) => p_0.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
   const handleDeleteClick = (testRun) => {
@@ -218,7 +265,7 @@ const TestResults = () => {
   };
   const handleRunAgain = async (testRun_0) => {
     try {
-      const form_0 = forms.find((f_0) => f_0.id === testRun_0.formId);
+      const form_0 = forms.find((f_1) => f_1.id === testRun_0.formId);
       const paymentMethod = paymentMethods.find((pm_0) => pm_0.id === testRun_0.paymentMethodId);
       if (!form_0 || !paymentMethod) {
         console.error("Form or payment method not found for re-run");
@@ -234,7 +281,7 @@ const TestResults = () => {
     e.stopPropagation();
     navigator.clipboard.writeText(uuid);
   };
-  const selectedTestRunData = selectedTestRun ? testRuns.find((tr_0) => tr_0.id === selectedTestRun) : null;
+  const selectedTestRunData = selectedTestRun ? testRuns.find((tr_3) => tr_3.id === selectedTestRun) : null;
   reactExports.useEffect(() => {
     if (selectedTestRunData) {
       setNotes(selectedTestRunData.notes || "");
@@ -286,10 +333,12 @@ const TestResults = () => {
       " ",
       error
     ] }) }),
-    testRuns.filter((tr_2) => tr_2.status === "RUNNING").length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 mb-6", children: [
+    runningTests.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4 mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-blue-500 rounded-full animate-pulse" }),
-        "Laufende Tests"
+        "Laufende Tests (",
+        runningTests.length,
+        ")"
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-lg shadow-sm overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
@@ -300,7 +349,7 @@ const TestResults = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4", children: "Status" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 text-right", children: "Aktionen" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: testRuns.filter((tr_1) => tr_1.status === "RUNNING").map((testRun_1) => {
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: runningTests.map((testRun_1) => {
           const isSelected = selectedTestRun === testRun_1.id;
           return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: `cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_1.id), children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 group", children: [
@@ -309,9 +358,9 @@ const TestResults = () => {
             ] }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
-                getFormName(testRun_1.formId),
+                testRun_1.formName,
                 " × ",
-                getPaymentMethodName(testRun_1.paymentMethodId)
+                testRun_1.paymentMethodName
               ] }),
               testRun_1.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-blue-600 dark:text-blue-400" }) })
             ] }) }),
@@ -327,20 +376,25 @@ const TestResults = () => {
       ] }) }) })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2", children: "Abgeschlossene Tests" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: isLoading && testRuns.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(TestResultsSkeleton, {}) : testRuns.filter((tr_4) => tr_4.status !== "RUNNING").length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine abgeschlossenen Tests." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Führe Tests aus, um Ergebnisse hier zu sehen." })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-sm font-semibold text-gray-700 dark:text-gray-300", children: [
+        "Abgeschlossene Tests (",
+        sortedFinishedTests.length,
+        ")"
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Tests durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: isLoading && testRuns.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(TestResultsSkeleton, {}) : sortedFinishedTests.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: finishedTests.length === 0 ? "Noch keine abgeschlossenen Tests." : "Keine Tests gefunden." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: finishedTests.length === 0 ? "Führe Tests aus, um Ergebnisse hier zu sehen." : "Versuche andere Suchbegriffe oder Filter." })
       ] }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4", children: "ID" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4", children: "Test" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4", children: "Datum" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4", children: "Dauer" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4", children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4", children: "ID" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4", sortDirection: getSortDirection("formName"), onSort: () => requestSort("formName"), children: "Test" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4", sortDirection: getSortDirection("runAt"), onSort: () => requestSort("runAt"), children: "Datum" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4", sortDirection: getSortDirection("durationMs"), onSort: () => requestSort("durationMs"), children: "Dauer" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4", sortDirection: getSortDirection("status"), onSort: () => requestSort("status"), children: "Status" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 text-right", children: "Aktionen" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: testRuns.filter((tr_3) => tr_3.status !== "RUNNING").map((testRun_2) => {
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: sortedFinishedTests.map((testRun_2) => {
           const isSelected_0 = selectedTestRun === testRun_2.id;
           return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: `cursor-pointer ${isSelected_0 ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_2.id), children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 group", children: [
@@ -349,9 +403,9 @@ const TestResults = () => {
             ] }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
-                getFormName(testRun_2.formId),
+                testRun_2.formName,
                 " × ",
-                getPaymentMethodName(testRun_2.paymentMethodId)
+                testRun_2.paymentMethodName
               ] }),
               testRun_2.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-blue-600 dark:text-blue-400" }) })
             ] }) }),

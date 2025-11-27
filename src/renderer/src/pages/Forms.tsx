@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
@@ -9,9 +9,13 @@ import { StatusBadge } from "../components/ui/Badge";
 import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { SortableTableHead } from "../components/ui/SortableTableHead";
+import { TableFilter } from "../components/ui/TableFilter";
 import { renderIcon } from "../utils/iconHelper";
 import { formatDate } from "../utils/formatters";
 import { Edit2, Trash2 } from "lucide-react";
+import { useSortableData } from "../hooks/useSortableData";
+import { useFilterableData } from "../hooks/useFilterableData";
 
 const FormsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
@@ -44,6 +48,47 @@ const Forms: React.FC = () => {
   useEffect(() => {
     loadForms();
   }, [loadForms]);
+
+  // Filtering (with localStorage persistence)
+  const { 
+    filteredItems: filteredForms, 
+    filterConfig, 
+    setSearchTerm, 
+    setStatusFilter, 
+    clearFilters 
+  } = useFilterableData<Form>(
+    forms,
+    ['name', 'url'] as (keyof Form)[],
+    { searchTerm: '', statusFilter: undefined },
+    'forms' // localStorage key
+  );
+
+  // Sorting (with localStorage persistence)
+  const { 
+    sortedItems: sortedForms, 
+    requestSort, 
+    getSortDirection 
+  } = useSortableData<Form>(
+    filteredForms,
+    { key: 'name', direction: 'asc' },
+    'forms' // localStorage key
+  );
+
+  // Status filter options
+  const statusOptions = [
+    { value: 'active', label: 'Aktiv' },
+    { value: 'inactive', label: 'Inaktiv' },
+  ];
+
+  // Custom status filter logic
+  const displayedForms = useMemo(() => {
+    if (!filterConfig.statusFilter || filterConfig.statusFilter === 'all') {
+      return sortedForms;
+    }
+    return sortedForms.filter(f => 
+      filterConfig.statusFilter === 'active' ? f.isActive : !f.isActive
+    );
+  }, [sortedForms, filterConfig.statusFilter]);
 
   // Handle URL params
   useEffect(() => {
@@ -117,20 +162,42 @@ const Forms: React.FC = () => {
         </div>
       )}
 
+      {/* Filter Bar */}
+      {forms.length > 0 && (
+        <TableFilter
+          searchTerm={filterConfig.searchTerm}
+          onSearchChange={setSearchTerm}
+          placeholder="Formulare durchsuchen..."
+          statusFilter={filterConfig.statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          statusOptions={statusOptions}
+          onClear={clearFilters}
+        />
+      )}
+
       {isLoading && forms.length === 0 ? (
         <FormsSkeleton />
       ) : forms.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-gray-500 dark:text-gray-400 mb-4">No forms configured yet.</div>
+              <div className="text-gray-500 dark:text-gray-400 mb-4">Noch keine Formulare konfiguriert.</div>
               <Button
                 onClick={handleAddForm}
                 variant="primary"
                 size="md"
                 disabled={isLoading}>
-                Add your first form
+                Erstes Formular hinzufügen
               </Button>
+            </div>
+          </div>
+        </div>
+      ) : displayedForms.length === 0 ? (
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          <div className="p-6">
+            <div className="text-center py-8">
+              <div className="text-gray-500 dark:text-gray-400 mb-4">Keine Formulare gefunden.</div>
+              <p className="text-gray-500 dark:text-gray-400">Versuche andere Suchbegriffe oder Filter.</p>
             </div>
           </div>
         </div>
@@ -139,15 +206,31 @@ const Forms: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>URL</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Erstellt</TableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('name')}
+                  onSort={() => requestSort('name')}>
+                  Name
+                </SortableTableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('url')}
+                  onSort={() => requestSort('url')}>
+                  URL
+                </SortableTableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('isActive')}
+                  onSort={() => requestSort('isActive')}>
+                  Status
+                </SortableTableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('createdAt')}
+                  onSort={() => requestSort('createdAt')}>
+                  Erstellt
+                </SortableTableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {forms.map((form) => (
+              {displayedForms.map((form) => (
                 <TableRow 
                   key={form.id} 
                   className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"

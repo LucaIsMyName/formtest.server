@@ -83,7 +83,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: "Formulare", href: "/forms", icon: FileText },
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
     { name: "Autopilot", href: "/schedules", icon: Play },
-    { name: "Test Resultate", href: "/test-results", icon: BarChart3 },
+    { name: "Tests", href: "/test-results", icon: BarChart3 },
     { name: "Einstellungen", href: "/settings", icon: Settings },
     { name: "Info & Doku", href: "/info-doku", icon: BookOpen },
   ];

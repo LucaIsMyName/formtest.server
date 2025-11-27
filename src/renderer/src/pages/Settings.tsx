@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, AlertTriangle } from "lucide-react";
 import { CONFIG } from "../app.config";
+import Badge from "../components/ui/Button";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import type { ImportOptions, ImportResult } from "../../../common/types";
@@ -587,7 +588,7 @@ const Settings: React.FC = () => {
                       <p className="text-xs text-gray-500 dark:text-gray-400">Bestehende Daten bleiben erhalten. Neue Einträge werden hinzugefügt, unterschiedliche Einträge werden aktualisiert.</p>
                     </div>
                   </div>
-                  <div className="flex items-start space-x-2 mt-2">
+                  <div className="pointer-none opacity-50 flex items-start space-x-2 mt-2">
                     <RadioGroupItem
                       value="overwrite"
                       id="import-overwrite"
@@ -597,7 +598,7 @@ const Settings: React.FC = () => {
                       <Label
                         htmlFor="import-overwrite"
                         className="cursor-pointer font-normal text-gray-800 dark:text-gray-400">
-                        Überschreiben (Vorsicht!)
+                        Überschreiben (In Development)
                       </Label>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Alle ausgewählten Daten werden gelöscht und durch die importierten Daten ersetzt.</p>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
@@ -11,7 +11,17 @@ import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { formatDate } from "../utils/formatters";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { SortableTableHead } from "../components/ui/SortableTableHead";
+import { TableFilter } from "../components/ui/TableFilter";
 import { Edit2, Trash2 } from "lucide-react";
+import { useSortableData } from "../hooks/useSortableData";
+import { useFilterableData } from "../hooks/useFilterableData";
+
+// Extended type for sorting with computed fields
+interface PaymentMethodWithComputed extends PaymentMethod {
+  typeLabel?: string;
+  detailsSummary?: string; // For sorting by details
+}
 
 const PaymentMethodsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
@@ -47,6 +57,82 @@ const PaymentMethods: React.FC = () => {
   useEffect(() => {
     loadPaymentMethods();
   }, [loadPaymentMethods]);
+
+  // Add type labels and details summary for sorting
+  const paymentMethodsWithComputed = useMemo((): PaymentMethodWithComputed[] => {
+    const getTypeLabel = (type: PaymentMethod["type"]) => {
+      switch (type) {
+        case "paypal": return "PayPal";
+        case "sepa": return "SEPA";
+        case "creditcard": return "Credit Card";
+        case "eps": return "EPS (Austria)";
+        default: return type;
+      }
+    };
+    
+    // Get sortable details string (decrypted data is already available)
+    const getDetailsSummary = (method: PaymentMethod): string => {
+      switch (method.type) {
+        case "paypal":
+          return method.details.email || '';
+        case "sepa":
+          return method.details.iban || '';
+        case "creditcard":
+          return method.details.cardNumber || '';
+        case "eps":
+          return method.details.bankCode || '';
+        default:
+          return '';
+      }
+    };
+    
+    return paymentMethods.map(pm => ({
+      ...pm,
+      typeLabel: getTypeLabel(pm.type),
+      detailsSummary: getDetailsSummary(pm),
+    }));
+  }, [paymentMethods]);
+
+  // Filtering (with localStorage persistence)
+  const { 
+    filteredItems: filteredMethods, 
+    filterConfig, 
+    setSearchTerm, 
+    setStatusFilter, 
+    clearFilters 
+  } = useFilterableData<PaymentMethodWithComputed>(
+    paymentMethodsWithComputed,
+    ['name', 'typeLabel', 'type', 'detailsSummary'] as (keyof PaymentMethodWithComputed)[],
+    { searchTerm: '', statusFilter: undefined },
+    'paymentMethods' // localStorage key
+  );
+
+  // Sorting (with localStorage persistence)
+  const { 
+    sortedItems: sortedMethods, 
+    requestSort, 
+    getSortDirection 
+  } = useSortableData<PaymentMethodWithComputed>(
+    filteredMethods,
+    { key: 'name', direction: 'asc' },
+    'paymentMethods' // localStorage key
+  );
+
+  // Status filter options
+  const statusOptions = [
+    { value: 'active', label: 'Aktiv' },
+    { value: 'inactive', label: 'Inaktiv' },
+  ];
+
+  // Custom status filter logic
+  const displayedMethods = useMemo((): PaymentMethodWithComputed[] => {
+    if (!filterConfig.statusFilter || filterConfig.statusFilter === 'all') {
+      return sortedMethods;
+    }
+    return sortedMethods.filter(m => 
+      filterConfig.statusFilter === 'active' ? m.isActive : !m.isActive
+    );
+  }, [sortedMethods, filterConfig.statusFilter]);
 
   // Handle URL params
   useEffect(() => {
@@ -99,21 +185,6 @@ const PaymentMethods: React.FC = () => {
   };
 
 
-  const getPaymentTypeLabel = (type: PaymentMethod["type"]) => {
-    switch (type) {
-      case "paypal":
-        return "PayPal";
-      case "sepa":
-        return "SEPA";
-      case "creditcard":
-        return "Credit Card";
-      case "eps":
-        return "EPS (Austria)";
-      default:
-        return type;
-    }
-  };
-
   const getPaymentMethodIcon = (method: PaymentMethod) => {
     const iconName = method.icon || getDefaultPaymentIcon(method.type);
     const colorClass = method.type === "paypal" ? "text-blue-600 dark:text-blue-400" : method.type === "sepa" ? "text-green-600 dark:text-green-400" : method.type === "creditcard" ? "text-purple-600 dark:text-purple-400" : method.type === "eps" ? "text-orange-600 dark:text-orange-400" : "text-gray-600 dark:text-gray-400";
@@ -156,20 +227,42 @@ const PaymentMethods: React.FC = () => {
         </div>
       )}
 
+      {/* Filter Bar */}
+      {paymentMethods.length > 0 && (
+        <TableFilter
+          searchTerm={filterConfig.searchTerm}
+          onSearchChange={setSearchTerm}
+          placeholder="Bezahlmethoden durchsuchen..."
+          statusFilter={filterConfig.statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          statusOptions={statusOptions}
+          onClear={clearFilters}
+        />
+      )}
+
       {isLoading && paymentMethods.length === 0 ? (
         <PaymentMethodsSkeleton />
       ) : paymentMethods.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-gray-500 dark:text-gray-400 mb-4">No payment methods configured yet.</div>
+              <div className="text-gray-500 dark:text-gray-400 mb-4">Noch keine Bezahlmethoden konfiguriert.</div>
               <Button
                 onClick={handleAddMethod}
                 variant="primary"
                 size="md"
                 disabled={isLoading}>
-                Add your first payment method
+                Erste Bezahlmethode hinzufügen
               </Button>
+            </div>
+          </div>
+        </div>
+      ) : displayedMethods.length === 0 ? (
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          <div className="p-6">
+            <div className="text-center py-8">
+              <div className="text-gray-500 dark:text-gray-400 mb-4">Keine Bezahlmethoden gefunden.</div>
+              <p className="text-gray-500 dark:text-gray-400">Versuche andere Suchbegriffe oder Filter.</p>
             </div>
           </div>
         </div>
@@ -178,16 +271,36 @@ const PaymentMethods: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Typ</TableHead>
-                <TableHead>Details</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Erstellt</TableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('name')}
+                  onSort={() => requestSort('name')}>
+                  Name
+                </SortableTableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('typeLabel')}
+                  onSort={() => requestSort('typeLabel')}>
+                  Typ
+                </SortableTableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('detailsSummary')}
+                  onSort={() => requestSort('detailsSummary')}>
+                  Details
+                </SortableTableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('isActive')}
+                  onSort={() => requestSort('isActive')}>
+                  Status
+                </SortableTableHead>
+                <SortableTableHead
+                  sortDirection={getSortDirection('createdAt')}
+                  onSort={() => requestSort('createdAt')}>
+                  Erstellt
+                </SortableTableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paymentMethods.map((method) => (
+              {displayedMethods.map((method) => (
                 <TableRow 
                   key={method.id}
                   className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
@@ -198,7 +311,7 @@ const PaymentMethods: React.FC = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getPaymentMethodIcon(method)}
-                      <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{getPaymentTypeLabel(method.type)}</span>
+                      <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{method.typeLabel}</span>
                     </div>
                   </TableCell>
                   <TableCell>

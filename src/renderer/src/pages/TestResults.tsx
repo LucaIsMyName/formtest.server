@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import { useFormsStore } from "../store/useFormsStore";
@@ -9,11 +9,15 @@ import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle } from "lucide-react";
-import type { TestStep } from '../../../common/types';
+import type { TestStep, TestRun } from '../../../common/types';
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { SortableTableHead } from "../components/ui/SortableTableHead";
+import { TableFilter } from "../components/ui/TableFilter";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../components/ui/Drawer";
 import { formatDateTime, formatDuration } from "../utils/formatters";
+import { useSortableData } from "../hooks/useSortableData";
+import { useFilterableData } from "../hooks/useFilterableData";
 
 const TestResultsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
@@ -182,6 +186,12 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   );
 };
 
+// Extended type for sorting with computed fields
+interface TestRunWithComputed extends TestRun {
+  formName?: string;
+  paymentMethodName?: string;
+}
+
 const TestResults: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { testRuns, loadTestRuns, isLoading, error } = useTestRunsStore();
@@ -197,6 +207,50 @@ const TestResults: React.FC = () => {
     loadForms();
     loadPaymentMethods();
   }, [loadTestRuns, loadForms, loadPaymentMethods]);
+
+  // Compute form/payment names for sorting
+  const testRunsWithNames = useMemo((): TestRunWithComputed[] => {
+    return testRuns.map(tr => ({
+      ...tr,
+      formName: forms.find(f => f.id === tr.formId)?.name || `Form #${tr.formId}`,
+      paymentMethodName: paymentMethods.find(p => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`,
+    }));
+  }, [testRuns, forms, paymentMethods]);
+
+  // Split into running and finished
+  const runningTests = useMemo(() => testRunsWithNames.filter(tr => tr.status === 'RUNNING'), [testRunsWithNames]);
+  const finishedTests = useMemo(() => testRunsWithNames.filter(tr => tr.status !== 'RUNNING'), [testRunsWithNames]);
+
+  // Filtering for finished tests (with localStorage persistence)
+  const { 
+    filteredItems: filteredFinishedTests, 
+    filterConfig, 
+    setSearchTerm, 
+    setStatusFilter, 
+    clearFilters 
+  } = useFilterableData<TestRunWithComputed>(
+    finishedTests,
+    ['formName', 'paymentMethodName', 'uuid', 'status'] as (keyof TestRunWithComputed)[],
+    { searchTerm: '', statusFilter: undefined },
+    'testResults' // localStorage key
+  );
+
+  // Sorting for finished tests (with localStorage persistence)
+  const { 
+    sortedItems: sortedFinishedTests, 
+    requestSort, 
+    getSortDirection 
+  } = useSortableData<TestRunWithComputed>(
+    filteredFinishedTests,
+    { key: 'runAt', direction: 'desc' }, // Default: newest first
+    'testResults' // localStorage key
+  );
+
+  // Status filter options
+  const statusOptions = [
+    { value: 'SUCCESS', label: 'Erfolgreich' },
+    { value: 'FAILURE', label: 'Fehlgeschlagen' },
+  ];
 
   // Handle URL params and selection
   useEffect(() => {
@@ -363,11 +417,11 @@ const TestResults: React.FC = () => {
       )}
 
       {/* Running Tests Table */}
-      {testRuns.filter(tr => tr.status === 'RUNNING').length > 0 && (
+      {runningTests.length > 0 && (
         <div className="mt-4 mb-6">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            Laufende Tests
+            Laufende Tests ({runningTests.length})
           </h2>
           <div className="bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-lg shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
@@ -383,7 +437,7 @@ const TestResults: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {testRuns.filter(tr => tr.status === 'RUNNING').map((testRun) => {
+                  {runningTests.map((testRun) => {
                     const isSelected = selectedTestRun === testRun.id;
                     return (
                       <TableRow
@@ -406,7 +460,7 @@ const TestResults: React.FC = () => {
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
                             <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                              {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
+                              {testRun.formName} × {testRun.paymentMethodName}
                             </div>
                             {testRun.isScheduled && (
                               <div className="flex-shrink-0" title="Autopilot Test">
@@ -447,17 +501,39 @@ const TestResults: React.FC = () => {
 
       {/* Finished Test Runs List */}
       <div className="mt-4">
-        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-          Abgeschlossene Tests
-        </h2>
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Abgeschlossene Tests ({sortedFinishedTests.length})
+          </h2>
+        </div>
+        
+        {/* Filter Bar */}
+        <TableFilter
+          searchTerm={filterConfig.searchTerm}
+          onSearchChange={setSearchTerm}
+          placeholder="Tests durchsuchen..."
+          statusFilter={filterConfig.statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          statusOptions={statusOptions}
+          onClear={clearFilters}
+        />
+
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
           {isLoading && testRuns.length === 0 ? (
             <TestResultsSkeleton />
-          ) : testRuns.filter(tr => tr.status !== 'RUNNING').length === 0 ? (
+          ) : sortedFinishedTests.length === 0 ? (
             <div className="p-6">
               <div className="text-center py-8">
-                <div className="text-gray-500 dark:text-gray-400 mb-4">Noch keine abgeschlossenen Tests.</div>
-                <p className="text-gray-500 dark:text-gray-400">Führe Tests aus, um Ergebnisse hier zu sehen.</p>
+                <div className="text-gray-500 dark:text-gray-400 mb-4">
+                  {finishedTests.length === 0 
+                    ? "Noch keine abgeschlossenen Tests." 
+                    : "Keine Tests gefunden."}
+                </div>
+                <p className="text-gray-500 dark:text-gray-400">
+                  {finishedTests.length === 0 
+                    ? "Führe Tests aus, um Ergebnisse hier zu sehen."
+                    : "Versuche andere Suchbegriffe oder Filter."}
+                </p>
               </div>
             </div>
           ) : (
@@ -465,16 +541,36 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="px-4">ID</TableHead>
-                    <TableHead className="px-4">Test</TableHead>
-                    <TableHead className="px-4">Datum</TableHead>
-                    <TableHead className="px-4">Dauer</TableHead>
-                    <TableHead className="px-4">Status</TableHead>
+                    <SortableTableHead className="px-4">ID</SortableTableHead>
+                    <SortableTableHead 
+                      className="px-4"
+                      sortDirection={getSortDirection('formName')}
+                      onSort={() => requestSort('formName')}>
+                      Test
+                    </SortableTableHead>
+                    <SortableTableHead 
+                      className="px-4"
+                      sortDirection={getSortDirection('runAt')}
+                      onSort={() => requestSort('runAt')}>
+                      Datum
+                    </SortableTableHead>
+                    <SortableTableHead 
+                      className="px-4"
+                      sortDirection={getSortDirection('durationMs')}
+                      onSort={() => requestSort('durationMs')}>
+                      Dauer
+                    </SortableTableHead>
+                    <SortableTableHead 
+                      className="px-4"
+                      sortDirection={getSortDirection('status')}
+                      onSort={() => requestSort('status')}>
+                      Status
+                    </SortableTableHead>
                     <TableHead className="px-4 text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {testRuns.filter(tr => tr.status !== 'RUNNING').map((testRun) => {
+                  {sortedFinishedTests.map((testRun) => {
                     const isSelected = selectedTestRun === testRun.id;
                     return (
                       <TableRow
@@ -497,7 +593,7 @@ const TestResults: React.FC = () => {
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
                             <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                              {getFormName(testRun.formId)} × {getPaymentMethodName(testRun.paymentMethodId)}
+                              {testRun.formName} × {testRun.paymentMethodName}
                             </div>
                             {testRun.isScheduled && (
                               <div className="flex-shrink-0" title="Autopilot Test">

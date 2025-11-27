@@ -1,10 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, d as usePaymentMethodsStore, m as formatDate } from "./index-Beoo-wk9.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, d as usePaymentMethodsStore, m as formatDate } from "./index-ClXSKXcE.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-BLb8MfiY.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, T as Trash2 } from "./Table-BPhaeuhe.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem } from "./Select-Dp8hNGQe.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CmP1PaxP.js";
-import { S as Skeleton } from "./Skeleton-DskK8jEP.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-BbNY8pku.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, T as Trash2 } from "./Table-DP7sIPBh.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-DFl4UGYI.js";
+import { S as Skeleton } from "./Skeleton-DVrMpaCl.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-BrcVvBCC.js";
+import "./upload-CgVuLTjE.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -230,7 +231,7 @@ const PaymentMethodsSkeleton = () => {
   return t0;
 };
 const PaymentMethods = () => {
-  const $ = dist.c(51);
+  const $ = dist.c(74);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     paymentMethods,
@@ -260,248 +261,369 @@ const PaymentMethods = () => {
     t1 = $[2];
   }
   reactExports.useEffect(t0, t1);
+  const getTypeLabel = _temp2;
+  const getDetailsSummary = _temp3;
   let t2;
+  if ($[3] !== paymentMethods) {
+    let t32;
+    if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
+      t32 = (pm) => ({
+        ...pm,
+        typeLabel: getTypeLabel(pm.type),
+        detailsSummary: getDetailsSummary(pm)
+      });
+      $[5] = t32;
+    } else {
+      t32 = $[5];
+    }
+    t2 = paymentMethods.map(t32);
+    $[3] = paymentMethods;
+    $[4] = t2;
+  } else {
+    t2 = $[4];
+  }
+  const paymentMethodsWithComputed = t2;
   let t3;
-  if ($[3] !== paymentMethods || $[4] !== searchParams) {
-    t2 = () => {
+  if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
+    t3 = ["name", "typeLabel", "type", "detailsSummary"];
+    $[6] = t3;
+  } else {
+    t3 = $[6];
+  }
+  let t4;
+  if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t4 = {
+      searchTerm: "",
+      statusFilter: void 0
+    };
+    $[7] = t4;
+  } else {
+    t4 = $[7];
+  }
+  const {
+    filteredItems: filteredMethods,
+    filterConfig,
+    setSearchTerm,
+    setStatusFilter,
+    clearFilters
+  } = useFilterableData(paymentMethodsWithComputed, t3, t4, "paymentMethods");
+  let t5;
+  if ($[8] === Symbol.for("react.memo_cache_sentinel")) {
+    t5 = {
+      key: "name",
+      direction: "asc"
+    };
+    $[8] = t5;
+  } else {
+    t5 = $[8];
+  }
+  const {
+    sortedItems: sortedMethods,
+    requestSort,
+    getSortDirection
+  } = useSortableData(filteredMethods, t5, "paymentMethods");
+  let t6;
+  if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = [{
+      value: "active",
+      label: "Aktiv"
+    }, {
+      value: "inactive",
+      label: "Inaktiv"
+    }];
+    $[9] = t6;
+  } else {
+    t6 = $[9];
+  }
+  const statusOptions = t6;
+  let t7;
+  bb0: {
+    if (!filterConfig.statusFilter || filterConfig.statusFilter === "all") {
+      t7 = sortedMethods;
+      break bb0;
+    }
+    let t82;
+    if ($[10] !== filterConfig.statusFilter || $[11] !== sortedMethods) {
+      let t92;
+      if ($[13] !== filterConfig.statusFilter) {
+        t92 = (m) => filterConfig.statusFilter === "active" ? m.isActive : !m.isActive;
+        $[13] = filterConfig.statusFilter;
+        $[14] = t92;
+      } else {
+        t92 = $[14];
+      }
+      t82 = sortedMethods.filter(t92);
+      $[10] = filterConfig.statusFilter;
+      $[11] = sortedMethods;
+      $[12] = t82;
+    } else {
+      t82 = $[12];
+    }
+    t7 = t82;
+  }
+  const displayedMethods = t7;
+  let t8;
+  let t9;
+  if ($[15] !== paymentMethods || $[16] !== searchParams) {
+    t8 = () => {
       if (paymentMethods.length > 0) {
         const paramId = searchParams.get("id");
         if (paramId) {
-          const method = paymentMethods.find((pm) => String(pm.id) === paramId || pm.name === paramId);
-          if (method) {
-            setEditingMethod(method);
+          const method_0 = paymentMethods.find((pm_0) => String(pm_0.id) === paramId || pm_0.name === paramId);
+          if (method_0) {
+            setEditingMethod(method_0);
             setIsDialogOpen(true);
           }
         }
       }
     };
-    t3 = [paymentMethods, searchParams];
-    $[3] = paymentMethods;
-    $[4] = searchParams;
-    $[5] = t2;
-    $[6] = t3;
+    t9 = [paymentMethods, searchParams];
+    $[15] = paymentMethods;
+    $[16] = searchParams;
+    $[17] = t8;
+    $[18] = t9;
   } else {
-    t2 = $[5];
-    t3 = $[6];
+    t8 = $[17];
+    t9 = $[18];
   }
-  reactExports.useEffect(t2, t3);
-  let t4;
-  if ($[7] !== setSearchParams) {
-    t4 = () => {
+  reactExports.useEffect(t8, t9);
+  let t10;
+  if ($[19] !== setSearchParams) {
+    t10 = () => {
       setEditingMethod(null);
       setIsDialogOpen(true);
       setSearchParams({});
     };
-    $[7] = setSearchParams;
-    $[8] = t4;
+    $[19] = setSearchParams;
+    $[20] = t10;
   } else {
-    t4 = $[8];
+    t10 = $[20];
   }
-  const handleAddMethod = t4;
-  let t5;
-  if ($[9] !== setSearchParams) {
-    t5 = (method_0) => {
-      setEditingMethod(method_0);
+  const handleAddMethod = t10;
+  let t11;
+  if ($[21] !== setSearchParams) {
+    t11 = (method_1) => {
+      setEditingMethod(method_1);
       setIsDialogOpen(true);
       setSearchParams({
-        id: String(method_0.id)
+        id: String(method_1.id)
       });
     };
-    $[9] = setSearchParams;
-    $[10] = t5;
+    $[21] = setSearchParams;
+    $[22] = t11;
   } else {
-    t5 = $[10];
+    t11 = $[22];
   }
-  const handleEditMethod = t5;
-  let t6;
-  if ($[11] !== setSearchParams) {
-    t6 = () => {
+  const handleEditMethod = t11;
+  let t12;
+  if ($[23] !== setSearchParams) {
+    t12 = () => {
       setIsDialogOpen(false);
       setSearchParams({});
     };
-    $[11] = setSearchParams;
-    $[12] = t6;
+    $[23] = setSearchParams;
+    $[24] = t12;
   } else {
-    t6 = $[12];
+    t12 = $[24];
   }
-  const handleCloseDialog = t6;
-  let t7;
-  if ($[13] !== addPaymentMethod || $[14] !== editingMethod || $[15] !== updatePaymentMethod) {
-    t7 = async (methodData) => {
+  const handleCloseDialog = t12;
+  let t13;
+  if ($[25] !== addPaymentMethod || $[26] !== editingMethod || $[27] !== updatePaymentMethod) {
+    t13 = async (methodData) => {
       if (editingMethod) {
         await updatePaymentMethod(editingMethod.id, methodData);
       } else {
         await addPaymentMethod(methodData);
       }
     };
-    $[13] = addPaymentMethod;
-    $[14] = editingMethod;
-    $[15] = updatePaymentMethod;
-    $[16] = t7;
+    $[25] = addPaymentMethod;
+    $[26] = editingMethod;
+    $[27] = updatePaymentMethod;
+    $[28] = t13;
   } else {
-    t7 = $[16];
+    t13 = $[28];
   }
-  const handleMethodSubmit = t7;
-  let t8;
-  if ($[17] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = (method_1) => {
+  const handleMethodSubmit = t13;
+  let t14;
+  if ($[29] === Symbol.for("react.memo_cache_sentinel")) {
+    t14 = (method_2) => {
       setDeleteConfirm({
-        id: method_1.id,
-        name: method_1.name
+        id: method_2.id,
+        name: method_2.name
       });
     };
-    $[17] = t8;
+    $[29] = t14;
   } else {
-    t8 = $[17];
+    t14 = $[29];
   }
-  const handleDeleteMethod = t8;
-  let t9;
-  if ($[18] !== deleteConfirm || $[19] !== deletePaymentMethod) {
-    t9 = async () => {
+  const handleDeleteMethod = t14;
+  let t15;
+  if ($[30] !== deleteConfirm || $[31] !== deletePaymentMethod) {
+    t15 = async () => {
       if (deleteConfirm) {
         await deletePaymentMethod(deleteConfirm.id);
         setDeleteConfirm(null);
       }
     };
-    $[18] = deleteConfirm;
-    $[19] = deletePaymentMethod;
-    $[20] = t9;
+    $[30] = deleteConfirm;
+    $[31] = deletePaymentMethod;
+    $[32] = t15;
   } else {
-    t9 = $[20];
+    t15 = $[32];
   }
-  const confirmDelete = t9;
-  const getPaymentTypeLabel = _temp2;
-  const getPaymentMethodIcon = _temp3;
-  const maskSensitiveData = _temp4;
-  let t10;
-  if ($[21] === Symbol.for("react.memo_cache_sentinel")) {
-    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Bezahlmethoden" });
-    $[21] = t10;
+  const confirmDelete = t15;
+  const getPaymentMethodIcon = _temp4;
+  const maskSensitiveData = _temp5;
+  let t16;
+  if ($[33] === Symbol.for("react.memo_cache_sentinel")) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Bezahlmethoden" });
+    $[33] = t16;
   } else {
-    t10 = $[21];
+    t16 = $[33];
   }
-  let t11;
-  if ($[22] !== handleAddMethod || $[23] !== isLoading) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
-      t10,
+  let t17;
+  if ($[34] !== handleAddMethod || $[35] !== isLoading) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
+      t16,
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddMethod, variant: "primary", size: "md", disabled: isLoading, children: "Neue Bezahlmethode" })
     ] });
-    $[22] = handleAddMethod;
-    $[23] = isLoading;
-    $[24] = t11;
+    $[34] = handleAddMethod;
+    $[35] = isLoading;
+    $[36] = t17;
   } else {
-    t11 = $[24];
+    t17 = $[36];
   }
-  let t12;
-  if ($[25] !== error) {
-    t12 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
+  let t18;
+  if ($[37] !== error) {
+    t18 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
       " ",
       error
     ] }) });
-    $[25] = error;
-    $[26] = t12;
+    $[37] = error;
+    $[38] = t18;
   } else {
-    t12 = $[26];
+    t18 = $[38];
   }
-  let t13;
-  if ($[27] !== handleAddMethod || $[28] !== handleEditMethod || $[29] !== isLoading || $[30] !== paymentMethods || $[31] !== togglePaymentMethodActive) {
-    t13 = isLoading && paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodsSkeleton, {}) : paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "No payment methods configured yet." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddMethod, variant: "primary", size: "md", disabled: isLoading, children: "Add your first payment method" })
+  let t19;
+  if ($[39] !== clearFilters || $[40] !== filterConfig.searchTerm || $[41] !== filterConfig.statusFilter || $[42] !== paymentMethods.length || $[43] !== setSearchTerm || $[44] !== setStatusFilter) {
+    t19 = paymentMethods.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Bezahlmethoden durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
+    $[39] = clearFilters;
+    $[40] = filterConfig.searchTerm;
+    $[41] = filterConfig.statusFilter;
+    $[42] = paymentMethods.length;
+    $[43] = setSearchTerm;
+    $[44] = setStatusFilter;
+    $[45] = t19;
+  } else {
+    t19 = $[45];
+  }
+  let t20;
+  if ($[46] !== displayedMethods || $[47] !== getSortDirection || $[48] !== handleAddMethod || $[49] !== handleEditMethod || $[50] !== isLoading || $[51] !== paymentMethods.length || $[52] !== requestSort || $[53] !== togglePaymentMethodActive) {
+    t20 = isLoading && paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodsSkeleton, {}) : paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Bezahlmethoden konfiguriert." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddMethod, variant: "primary", size: "md", disabled: isLoading, children: "Erste Bezahlmethode hinzufügen" })
+    ] }) }) }) : displayedMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Keine Bezahlmethoden gefunden." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Versuche andere Suchbegriffe oder Filter." })
     ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Name" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Typ" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Details" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Status" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Erstellt" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("typeLabel"), onSort: () => requestSort("typeLabel"), children: "Typ" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("detailsSummary"), onSort: () => requestSort("detailsSummary"), children: "Details" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("createdAt"), onSort: () => requestSort("createdAt"), children: "Erstellt" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: paymentMethods.map((method_4) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50", onClick: () => handleEditMethod(method_4), children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: method_4.name }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedMethods.map((method_5) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50", onClick: () => handleEditMethod(method_5), children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: method_5.name }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-          getPaymentMethodIcon(method_4),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-mono text-gray-900 dark:text-gray-300", children: getPaymentTypeLabel(method_4.type) })
+          getPaymentMethodIcon(method_5),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] font-mono text-gray-900 dark:text-gray-300", children: method_5.typeLabel })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: maskSensitiveData(method_4) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: maskSensitiveData(method_5) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e) => {
           e.stopPropagation();
-          togglePaymentMethodActive(method_4.id);
-        }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: method_4.isActive ? "active" : "inactive", children: method_4.isActive ? "Aktiv" : "Inaktiv" }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(method_4.createdAt) }),
+          togglePaymentMethodActive(method_5.id);
+        }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: method_5.isActive ? "active" : "inactive", children: method_5.isActive ? "Aktiv" : "Inaktiv" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(method_5.createdAt) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_0) => {
             e_0.stopPropagation();
-            handleEditMethod(method_4);
+            handleEditMethod(method_5);
           }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
             e_1.stopPropagation();
-            handleDeleteMethod(method_4);
+            handleDeleteMethod(method_5);
           }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
         ] }) })
-      ] }, method_4.id)) })
+      ] }, method_5.id)) })
     ] }) });
-    $[27] = handleAddMethod;
-    $[28] = handleEditMethod;
-    $[29] = isLoading;
-    $[30] = paymentMethods;
-    $[31] = togglePaymentMethodActive;
-    $[32] = t13;
+    $[46] = displayedMethods;
+    $[47] = getSortDirection;
+    $[48] = handleAddMethod;
+    $[49] = handleEditMethod;
+    $[50] = isLoading;
+    $[51] = paymentMethods.length;
+    $[52] = requestSort;
+    $[53] = togglePaymentMethodActive;
+    $[54] = t20;
   } else {
-    t13 = $[32];
+    t20 = $[54];
   }
-  let t14;
-  if ($[33] !== editingMethod || $[34] !== handleCloseDialog || $[35] !== handleMethodSubmit || $[36] !== isDialogOpen || $[37] !== isLoading) {
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading });
-    $[33] = editingMethod;
-    $[34] = handleCloseDialog;
-    $[35] = handleMethodSubmit;
-    $[36] = isDialogOpen;
-    $[37] = isLoading;
-    $[38] = t14;
+  let t21;
+  if ($[55] !== editingMethod || $[56] !== handleCloseDialog || $[57] !== handleMethodSubmit || $[58] !== isDialogOpen || $[59] !== isLoading) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading });
+    $[55] = editingMethod;
+    $[56] = handleCloseDialog;
+    $[57] = handleMethodSubmit;
+    $[58] = isDialogOpen;
+    $[59] = isLoading;
+    $[60] = t21;
   } else {
-    t14 = $[38];
+    t21 = $[60];
   }
-  const t15 = !!deleteConfirm;
-  let t16;
-  if ($[39] === Symbol.for("react.memo_cache_sentinel")) {
-    t16 = () => setDeleteConfirm(null);
-    $[39] = t16;
+  const t22 = !!deleteConfirm;
+  let t23;
+  if ($[61] === Symbol.for("react.memo_cache_sentinel")) {
+    t23 = () => setDeleteConfirm(null);
+    $[61] = t23;
   } else {
-    t16 = $[39];
+    t23 = $[61];
   }
-  const t17 = deleteConfirm?.name;
-  let t18;
-  if ($[40] !== confirmDelete || $[41] !== isLoading || $[42] !== t15 || $[43] !== t17) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t15, onClose: t16, onConfirm: confirmDelete, title: "Bezahlmethode löschen", message: "Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t17, isLoading });
-    $[40] = confirmDelete;
-    $[41] = isLoading;
-    $[42] = t15;
-    $[43] = t17;
-    $[44] = t18;
+  const t24 = deleteConfirm?.name;
+  let t25;
+  if ($[62] !== confirmDelete || $[63] !== isLoading || $[64] !== t22 || $[65] !== t24) {
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t22, onClose: t23, onConfirm: confirmDelete, title: "Bezahlmethode löschen", message: "Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t24, isLoading });
+    $[62] = confirmDelete;
+    $[63] = isLoading;
+    $[64] = t22;
+    $[65] = t24;
+    $[66] = t25;
   } else {
-    t18 = $[44];
+    t25 = $[66];
   }
-  let t19;
-  if ($[45] !== t11 || $[46] !== t12 || $[47] !== t13 || $[48] !== t14 || $[49] !== t18) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t11,
-      t12,
-      t13,
-      t14,
-      t18
+  let t26;
+  if ($[67] !== t17 || $[68] !== t18 || $[69] !== t19 || $[70] !== t20 || $[71] !== t21 || $[72] !== t25) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      t17,
+      t18,
+      t19,
+      t20,
+      t21,
+      t25
     ] });
-    $[45] = t11;
-    $[46] = t12;
-    $[47] = t13;
-    $[48] = t14;
-    $[49] = t18;
-    $[50] = t19;
+    $[67] = t17;
+    $[68] = t18;
+    $[69] = t19;
+    $[70] = t20;
+    $[71] = t21;
+    $[72] = t25;
+    $[73] = t26;
   } else {
-    t19 = $[50];
+    t26 = $[73];
   }
-  return t19;
+  return t26;
 };
 function _temp(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
@@ -535,24 +657,43 @@ function _temp2(type) {
     }
   }
 }
-function _temp3(method_2) {
-  const iconName = method_2.icon || getDefaultPaymentIcon(method_2.type);
-  const colorClass = method_2.type === "paypal" ? "text-blue-600 dark:text-blue-400" : method_2.type === "sepa" ? "text-green-600 dark:text-green-400" : method_2.type === "creditcard" ? "text-purple-600 dark:text-purple-400" : method_2.type === "eps" ? "text-orange-600 dark:text-orange-400" : "text-gray-600 dark:text-gray-400";
-  return renderIcon(iconName, 14, colorClass);
-}
-function _temp4(method_3) {
-  switch (method_3.type) {
+function _temp3(method) {
+  switch (method.type) {
     case "paypal": {
-      return method_3.details.email ? `${method_3.details.email.substring(0, 3)}***@***.com` : "No email";
+      return method.details.email || "";
     }
     case "sepa": {
-      return method_3.details.iban ? `***${method_3.details.iban.slice(-4)}` : "No IBAN";
+      return method.details.iban || "";
     }
     case "creditcard": {
-      return method_3.details.cardNumber ? `****-****-****-${method_3.details.cardNumber.slice(-4)}` : "No card number";
+      return method.details.cardNumber || "";
     }
     case "eps": {
-      return method_3.details.bankCode ? `Bank: ${method_3.details.bankCode}` : "No bank selected";
+      return method.details.bankCode || "";
+    }
+    default: {
+      return "";
+    }
+  }
+}
+function _temp4(method_3) {
+  const iconName = method_3.icon || getDefaultPaymentIcon(method_3.type);
+  const colorClass = method_3.type === "paypal" ? "text-blue-600 dark:text-blue-400" : method_3.type === "sepa" ? "text-green-600 dark:text-green-400" : method_3.type === "creditcard" ? "text-purple-600 dark:text-purple-400" : method_3.type === "eps" ? "text-orange-600 dark:text-orange-400" : "text-gray-600 dark:text-gray-400";
+  return renderIcon(iconName, 14, colorClass);
+}
+function _temp5(method_4) {
+  switch (method_4.type) {
+    case "paypal": {
+      return method_4.details.email ? `${method_4.details.email.substring(0, 3)}***@***.com` : "No email";
+    }
+    case "sepa": {
+      return method_4.details.iban ? `***${method_4.details.iban.slice(-4)}` : "No IBAN";
+    }
+    case "creditcard": {
+      return method_4.details.cardNumber ? `****-****-****-${method_4.details.cardNumber.slice(-4)}` : "No card number";
+    }
+    case "eps": {
+      return method_4.details.bankCode ? `Bank: ${method_4.details.bankCode}` : "No bank selected";
     }
     default: {
       return "Configured";
