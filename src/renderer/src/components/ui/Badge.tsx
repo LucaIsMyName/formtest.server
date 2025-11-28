@@ -16,6 +16,7 @@ const badgeVariants = cva(
         inactive: "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600",
         running: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700",
         pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-700",
+        stopped: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700",
       },
       size: {
         sm: "text-[10px] px-1.5 py-0.5",
@@ -54,7 +55,7 @@ Badge.displayName = "Badge";
 
 // Helper component for status badges with icons
 interface StatusBadgeProps extends Omit<BadgeProps, "variant"> {
-  status: "SUCCESS" | "FAILURE" | "RUNNING" | "PENDING" | "active" | "inactive" | string;
+  status: "SUCCESS" | "FAILURE" | "RUNNING" | "PENDING" | "STOPPED" | "active" | "inactive" | string;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status, children, ...props }) => {
@@ -70,6 +71,8 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, children, ...props })
         return "running";
       case "PENDING":
         return "pending";
+      case "STOPPED":
+        return "stopped";
       case "INACTIVE":
         return "inactive";
       default:
@@ -95,14 +98,21 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, children, ...props })
         );
       case "RUNNING":
         return (
-          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+          </span>
         );
       case "PENDING":
         return (
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case "STOPPED":
+        return (
+          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+            <rect x="6" y="6" width="12" height="12" rx="1" />
           </svg>
         );
       case "INACTIVE":

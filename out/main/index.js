@@ -763,6 +763,15 @@ const testRunQueries = {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
     return stmt.run(notes, id);
   },
+  stop: (id) => {
+    const testRun = db.prepare("SELECT runAt FROM test_runs WHERE id = ?").get(id);
+    let durationMs = 0;
+    if (testRun) {
+      durationMs = Date.now() - new Date(testRun.runAt).getTime();
+    }
+    const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status = 'RUNNING'");
+    return stmt.run(durationMs, id);
+  },
   delete: (id) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
     return stmt.run(id);
@@ -1721,6 +1730,7 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
   electron.ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
   electron.ipcMain.handle("testRuns:updateNotes", (_, id, notes) => testRunQueries.updateNotes(id, notes));
+  electron.ipcMain.handle("testRuns:stop", (_, id) => testRunQueries.stop(id));
   electron.ipcMain.handle("toast:show", (event, type, message, description) => {
     event.sender.send("toast:display", { type, message, description });
   });

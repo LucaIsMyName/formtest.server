@@ -8,8 +8,9 @@ import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
-import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle } from "lucide-react";
-import type { TestStep, TestRun } from '../../../common/types';
+import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle, Square } from "lucide-react";
+import { Link } from "react-router-dom";
+import type { TestStep, TestRun } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
@@ -115,18 +116,14 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
 
   // Convert structured steps to timeline format or fallback to log parsing
   const convertStructuredSteps = (steps: TestStep[]): TimelineStep[] => {
-    return steps.map(step => ({
+    return steps.map((step) => ({
       timestamp: step.startTime,
       message: step.message || step.name,
-      type: step.status === 'success' ? 'success' : 
-            step.status === 'error' ? 'error' : 
-            step.status === 'skipped' ? 'warning' : 'info'
+      type: step.status === "success" ? "success" : step.status === "error" ? "error" : step.status === "skipped" ? "warning" : "info",
     }));
   };
 
-  const timelineSteps = structuredSteps?.length ? 
-    convertStructuredSteps(structuredSteps) : 
-    parseLogDetails(logDetails);
+  const timelineSteps = structuredSteps?.length ? convertStructuredSteps(structuredSteps) : parseLogDetails(logDetails);
 
   // Add final status step
   const finalStep: TimelineStep = {
@@ -201,6 +198,7 @@ const TestResults: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
   const [notes, setNotes] = useState<string>("");
   const [isSavingNotes, setIsSavingNotes] = useState(false);
+  const [runningTimers, setRunningTimers] = useState<Record<number, number>>({});
 
   useEffect(() => {
     loadTestRuns();
@@ -210,46 +208,77 @@ const TestResults: React.FC = () => {
 
   // Compute form/payment names for sorting
   const testRunsWithNames = useMemo((): TestRunWithComputed[] => {
-    return testRuns.map(tr => ({
+    return testRuns.map((tr) => ({
       ...tr,
-      formName: forms.find(f => f.id === tr.formId)?.name || `Form #${tr.formId}`,
-      paymentMethodName: paymentMethods.find(p => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`,
+      formName: forms.find((f) => f.id === tr.formId)?.name || `Form #${tr.formId}`,
+      paymentMethodName: paymentMethods.find((p) => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`,
     }));
   }, [testRuns, forms, paymentMethods]);
 
   // Split into running and finished
-  const runningTests = useMemo(() => testRunsWithNames.filter(tr => tr.status === 'RUNNING'), [testRunsWithNames]);
-  const finishedTests = useMemo(() => testRunsWithNames.filter(tr => tr.status !== 'RUNNING'), [testRunsWithNames]);
+  const runningTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status === "RUNNING"), [testRunsWithNames]);
+  const finishedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status !== "RUNNING"), [testRunsWithNames]);
+
+  // Timer effect for running tests - updates every second
+  useEffect(() => {
+    if (runningTests.length === 0) {
+      setRunningTimers({});
+      return;
+    }
+
+    // Initialize timers for running tests
+    const initialTimers: Record<number, number> = {};
+    runningTests.forEach((test) => {
+      const startTime = new Date(test.runAt).getTime();
+      initialTimers[test.id] = Math.floor((Date.now() - startTime) / 1000);
+    });
+    setRunningTimers(initialTimers);
+
+    // Update every second
+    const interval = setInterval(() => {
+      setRunningTimers((prev) => {
+        const updated: Record<number, number> = {};
+        runningTests.forEach((test) => {
+          const startTime = new Date(test.runAt).getTime();
+          updated[test.id] = Math.floor((Date.now() - startTime) / 1000);
+        });
+        return updated;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [runningTests]);
 
   // Filtering for finished tests (with localStorage persistence)
-  const { 
-    filteredItems: filteredFinishedTests, 
-    filterConfig, 
-    setSearchTerm, 
-    setStatusFilter, 
-    clearFilters 
+  const {
+    filteredItems: filteredFinishedTests,
+    filterConfig,
+    setSearchTerm,
+    setStatusFilter,
+    clearFilters,
   } = useFilterableData<TestRunWithComputed>(
     finishedTests,
-    ['formName', 'paymentMethodName', 'uuid', 'status'] as (keyof TestRunWithComputed)[],
-    { searchTerm: '', statusFilter: undefined },
-    'testResults' // localStorage key
+    ["formName", "paymentMethodName", "uuid", "status"] as (keyof TestRunWithComputed)[],
+    { searchTerm: "", statusFilter: undefined },
+    "testResults" // localStorage key
   );
 
   // Sorting for finished tests (with localStorage persistence)
-  const { 
-    sortedItems: sortedFinishedTests, 
-    requestSort, 
-    getSortDirection 
+  const {
+    sortedItems: sortedFinishedTests,
+    requestSort,
+    getSortDirection,
   } = useSortableData<TestRunWithComputed>(
     filteredFinishedTests,
-    { key: 'runAt', direction: 'desc' }, // Default: newest first
-    'testResults' // localStorage key
+    { key: "runAt", direction: "desc" }, // Default: newest first
+    "testResults" // localStorage key
   );
 
   // Status filter options
   const statusOptions = [
-    { value: 'SUCCESS', label: 'Erfolgreich' },
-    { value: 'FAILURE', label: 'Fehlgeschlagen' },
+    { value: "SUCCESS", label: "Erfolgreich" },
+    { value: "FAILURE", label: "Fehlgeschlagen" },
+    { value: "STOPPED", label: "Gestoppt" },
   ];
 
   // Handle URL params and selection
@@ -287,13 +316,40 @@ const TestResults: React.FC = () => {
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
 
+  // Format elapsed time as MM:SS
+  const formatElapsedTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
+  // Get form details for drawer
+  const getFormDetails = (formId: number) => {
+    return forms.find((f) => f.id === formId);
+  };
+
+  // Get payment method details for drawer
+  const getPaymentMethodDetails = (pmId: number) => {
+    return paymentMethods.find((p) => p.id === pmId);
+  };
 
   const handleDeleteClick = (testRun: any) => {
     const formName = getFormName(testRun.formId);
     const paymentMethodName = getPaymentMethodName(testRun.paymentMethodId);
     const testRunName = `${formName} × ${paymentMethodName}`;
     setShowDeleteConfirm({ id: testRun.id, name: testRunName });
+  };
+
+  const handleStopTest = async (testRun: any) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      await window.api.testRuns.stop(testRun.id);
+      await loadTestRuns(); // Refresh the list
+    } catch (error) {
+      console.error("Failed to stop test run:", error);
+    }
   };
 
   const confirmDeleteTestRun = async () => {
@@ -317,9 +373,9 @@ const TestResults: React.FC = () => {
   const handleRunAgain = async (testRun: any) => {
     try {
       // Get the form and payment method for this test run
-      const form = forms.find(f => f.id === testRun.formId);
-      const paymentMethod = paymentMethods.find(pm => pm.id === testRun.paymentMethodId);
-      
+      const form = forms.find((f) => f.id === testRun.formId);
+      const paymentMethod = paymentMethods.find((pm) => pm.id === testRun.paymentMethodId);
+
       if (!form || !paymentMethod) {
         console.error("Form or payment method not found for re-run");
         return;
@@ -327,7 +383,7 @@ const TestResults: React.FC = () => {
 
       // Run the test again using the same API as the TestRunDialog
       await window.api.tests.run([form.id], [paymentMethod.id]);
-      
+
       // Refresh the test runs list
       await loadTestRuns();
     } catch (error) {
@@ -354,9 +410,9 @@ const TestResults: React.FC = () => {
   // Debounced save notes
   const handleNotesChange = async (value: string) => {
     setNotes(value);
-    
+
     if (!selectedTestRunData) return;
-    
+
     setIsSavingNotes(true);
     try {
       await window.api.testRuns.updateNotes(selectedTestRunData.id, value);
@@ -388,7 +444,7 @@ const TestResults: React.FC = () => {
           <Button
             onClick={() => {
               // Dispatch global event to open TestRunDialog
-              window.dispatchEvent(new Event('openTestDialog'));
+              window.dispatchEvent(new Event("openTestDialog"));
             }}
             variant="primary"
             size="md"
@@ -463,14 +519,21 @@ const TestResults: React.FC = () => {
                               {testRun.formName} × {testRun.paymentMethodName}
                             </div>
                             {testRun.isScheduled && (
-                              <div className="flex-shrink-0" title="Autopilot Test">
-                                <Bot size={12} className="text-blue-600 dark:text-blue-400" />
+                              <div
+                                className="flex-shrink-0"
+                                title="Autopilot Test">
+                                <Bot
+                                  size={12}
+                                  className="text-blue-600 dark:text-blue-400"
+                                />
                               </div>
                             )}
                           </div>
                         </TableCell>
                         <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400">-</TableCell>
+                        <TableCell className="px-4">
+                          <span className="text-[11px] font-mono text-blue-600 dark:text-blue-400 tabular-nums">{formatElapsedTime(runningTimers[testRun.id] || 0)}</span>
+                        </TableCell>
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
                         </TableCell>
@@ -479,13 +542,16 @@ const TestResults: React.FC = () => {
                             <Button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDeleteClick(testRun);
+                                handleStopTest(testRun);
                               }}
                               variant="ghost"
                               size="sm"
-                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
-                              title="Abbrechen">
-                              <Trash2 size={16} />
+                              className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                              title="Test stoppen">
+                              <Square
+                                size={16}
+                                fill="currentColor"
+                              />
                             </Button>
                           </div>
                         </TableCell>
@@ -502,11 +568,9 @@ const TestResults: React.FC = () => {
       {/* Finished Test Runs List */}
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-            Abgeschlossene Tests ({sortedFinishedTests.length})
-          </h2>
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Abgeschlossene Tests ({sortedFinishedTests.length})</h2>
         </div>
-        
+
         {/* Filter Bar */}
         <TableFilter
           searchTerm={filterConfig.searchTerm}
@@ -524,16 +588,8 @@ const TestResults: React.FC = () => {
           ) : sortedFinishedTests.length === 0 ? (
             <div className="p-6">
               <div className="text-center py-8">
-                <div className="text-gray-500 dark:text-gray-400 mb-4">
-                  {finishedTests.length === 0 
-                    ? "Noch keine abgeschlossenen Tests." 
-                    : "Keine Tests gefunden."}
-                </div>
-                <p className="text-gray-500 dark:text-gray-400">
-                  {finishedTests.length === 0 
-                    ? "Führe Tests aus, um Ergebnisse hier zu sehen."
-                    : "Versuche andere Suchbegriffe oder Filter."}
-                </p>
+                <div className="text-gray-500 dark:text-gray-400 mb-4">{finishedTests.length === 0 ? "Noch keine abgeschlossenen Tests." : "Keine Tests gefunden."}</div>
+                <p className="text-gray-500 dark:text-gray-400">{finishedTests.length === 0 ? "Führe Tests aus, um Ergebnisse hier zu sehen." : "Versuche andere Suchbegriffe oder Filter."}</p>
               </div>
             </div>
           ) : (
@@ -542,28 +598,28 @@ const TestResults: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <SortableTableHead className="px-4">ID</SortableTableHead>
-                    <SortableTableHead 
+                    <SortableTableHead
                       className="px-4"
-                      sortDirection={getSortDirection('formName')}
-                      onSort={() => requestSort('formName')}>
+                      sortDirection={getSortDirection("formName")}
+                      onSort={() => requestSort("formName")}>
                       Test
                     </SortableTableHead>
-                    <SortableTableHead 
+                    <SortableTableHead
                       className="px-4"
-                      sortDirection={getSortDirection('runAt')}
-                      onSort={() => requestSort('runAt')}>
+                      sortDirection={getSortDirection("runAt")}
+                      onSort={() => requestSort("runAt")}>
                       Datum
                     </SortableTableHead>
-                    <SortableTableHead 
+                    <SortableTableHead
                       className="px-4"
-                      sortDirection={getSortDirection('durationMs')}
-                      onSort={() => requestSort('durationMs')}>
+                      sortDirection={getSortDirection("durationMs")}
+                      onSort={() => requestSort("durationMs")}>
                       Dauer
                     </SortableTableHead>
-                    <SortableTableHead 
+                    <SortableTableHead
                       className="px-4"
-                      sortDirection={getSortDirection('status')}
-                      onSort={() => requestSort('status')}>
+                      sortDirection={getSortDirection("status")}
+                      onSort={() => requestSort("status")}>
                       Status
                     </SortableTableHead>
                     <TableHead className="px-4 text-right">Aktionen</TableHead>
@@ -596,8 +652,13 @@ const TestResults: React.FC = () => {
                               {testRun.formName} × {testRun.paymentMethodName}
                             </div>
                             {testRun.isScheduled && (
-                              <div className="flex-shrink-0" title="Autopilot Test">
-                                <Bot size={12} className="text-blue-600 dark:text-blue-400" />
+                              <div
+                                className="flex-shrink-0"
+                                title="Autopilot Test">
+                                <Bot
+                                  size={12}
+                                  className="text-blue-600 dark:text-blue-400"
+                                />
                               </div>
                             )}
                           </div>
@@ -679,7 +740,7 @@ const TestResults: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Duration</label>
-                    <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDuration(selectedTestRunData.durationMs)}</div>
+                    <div className="text-sm text-gray-900 dark:text-white font-mono">{selectedTestRunData.status === "RUNNING" ? formatElapsedTime(runningTimers[selectedTestRunData.id] || 0) : formatDuration(selectedTestRunData.durationMs)}</div>
                   </div>
 
                   <div>
@@ -687,6 +748,111 @@ const TestResults: React.FC = () => {
                     <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(selectedTestRunData.runAt)}</div>
                   </div>
                 </div>
+
+                {/* Form Details */}
+                {(() => {
+                  const formDetails = getFormDetails(selectedTestRunData.formId);
+                  return (
+                    formDetails && (
+                      <div className="mb-6 pb-6 border-b dark:border-gray-700">
+                        <div className="flex items-center justify-between mb-3">
+                          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">Formular</label>
+                          <Link
+                            to={`/forms?id=${formDetails.id}`}
+                            className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                            Öffnen
+                          </Link>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Name</label>
+                            <div className="text-sm text-gray-900 dark:text-white">{formDetails.name}</div>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Status</label>
+                            <StatusBadge status={formDetails.isActive ? "active" : "inactive"} />
+                          </div>
+                          <div className="col-span-2">
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">URL</label>
+                            <a
+                              href={formDetails.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate block">
+                              {formDetails.url}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  );
+                })()}
+
+                {/* Payment Method Details */}
+                {(() => {
+                  const pmDetails = getPaymentMethodDetails(selectedTestRunData.paymentMethodId);
+                  const getPaymentTypeLabel = (type: string) => {
+                    switch (type) {
+                      case "paypal":
+                        return "PayPal";
+                      case "sepa":
+                        return "SEPA Lastschrift";
+                      case "creditcard":
+                        return "Kreditkarte";
+                      case "eps":
+                        return "EPS";
+                      default:
+                        return type;
+                    }
+                  };
+                  const getMaskedDetails = (pm: typeof pmDetails) => {
+                    if (!pm) return "";
+                    switch (pm.type) {
+                      case "paypal":
+                        return pm.details.email || "";
+                      case "sepa":
+                        return pm.details.accountHolder || (pm.details.iban ? `***${pm.details.iban.slice(-4)}` : "");
+                      case "creditcard":
+                        return pm.details.cardNumber ? `****${pm.details.cardNumber.slice(-4)}` : "";
+                      case "eps":
+                        return pm.details.bankCode || "";
+                      default:
+                        return "";
+                    }
+                  };
+                  return (
+                    pmDetails && (
+                      <div className="mb-6 pb-6 border-b dark:border-gray-700">
+                        <div className="flex items-center justify-between mb-3">
+                          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">Bezahlmethode</label>
+                          <Link
+                            to={`/payment-methods?id=${pmDetails.id}`}
+                            className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                            Öffnen 
+                          </Link>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Name</label>
+                            <div className="text-sm text-gray-900 dark:text-white">{pmDetails.name}</div>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Typ</label>
+                            <div className="text-sm text-gray-900 dark:text-white">{getPaymentTypeLabel(pmDetails.type)}</div>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Status</label>
+                            <StatusBadge status={pmDetails.isActive ? "active" : "inactive"} />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Details</label>
+                            <div className="text-sm text-gray-900 dark:text-white font-mono">{getMaskedDetails(pmDetails)}</div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  );
+                })()}
 
                 {/* Error Message */}
                 {selectedTestRunData.errorMessage && (

@@ -332,13 +332,20 @@ const Dashboard: React.FC = () => {
               <LineChart data={prepareTimelineData()}>
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="#374151"
+                  stroke="#e5e7eb"
+                  strokeOpacity={0.5}
                 />
                 <XAxis
                   dataKey="date"
                   stroke="#9ca3af"
+                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
+                  tickLine={{ stroke: '#d1d5db' }}
                 />
-                <YAxis stroke="#9ca3af" />
+                <YAxis 
+                  stroke="#9ca3af" 
+                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
+                  tickLine={{ stroke: '#d1d5db' }}
+                />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
                 <Line
@@ -372,7 +379,24 @@ const Dashboard: React.FC = () => {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
+                    label={({ name, percent, cx, cy, midAngle = 0, innerRadius, outerRadius }) => {
+                      const RADIAN = Math.PI / 180;
+                      const radius = Number(innerRadius) + (Number(outerRadius) - Number(innerRadius)) * 1.4;
+                      const x = Number(cx) + radius * Math.cos(-(midAngle) * RADIAN);
+                      const y = Number(cy) + radius * Math.sin(-(midAngle) * RADIAN);
+                      return (
+                        <text 
+                          x={x} 
+                          y={y} 
+                          fill="#9ca3af" 
+                          textAnchor={x > Number(cx) ? 'start' : 'end'} 
+                          dominantBaseline="central"
+                          style={{ fontSize: '10px', fontFamily: 'JetBrains Mono, monospace' }}
+                        >
+                          {`${name}: ${((percent || 0) * 100).toFixed(0)}%`}
+                        </text>
+                      );
+                    }}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value">
@@ -397,13 +421,20 @@ const Dashboard: React.FC = () => {
                 <BarChart data={preparePaymentMethodData()}>
                   <CartesianGrid
                     strokeDasharray="3 3"
-                    stroke="#374151"
+                    stroke="#e5e7eb"
+                    strokeOpacity={0.5}
                   />
                   <XAxis
                     dataKey="name"
                     stroke="#9ca3af"
+                    tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
+                    tickLine={{ stroke: '#d1d5db' }}
                   />
-                  <YAxis stroke="#9ca3af" />
+                  <YAxis 
+                    stroke="#9ca3af" 
+                    tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
+                    tickLine={{ stroke: '#d1d5db' }}
+                  />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
                   <Bar
@@ -432,17 +463,22 @@ const Dashboard: React.FC = () => {
                 layout="horizontal">
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="#374151"
+                  stroke="#e5e7eb"
+                  strokeOpacity={0.5}
                 />
                 <XAxis
                   type="number"
                   stroke="#9ca3af"
+                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
+                  tickLine={{ stroke: '#d1d5db' }}
                 />
                 <YAxis
                   dataKey="name"
                   type="category"
                   stroke="#9ca3af"
                   width={150}
+                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
+                  tickLine={{ stroke: '#d1d5db' }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />

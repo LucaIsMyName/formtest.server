@@ -95,7 +95,7 @@ export interface TestRun {
   uuid: string;
   formId: number;
   paymentMethodId: number;
-  status: 'SUCCESS' | 'FAILURE' | 'SKIPPED' | 'RUNNING';
+  status: 'SUCCESS' | 'FAILURE' | 'SKIPPED' | 'RUNNING' | 'STOPPED';
   errorMessage?: string;
   screenshotPath?: string;
   logDetails?: string;

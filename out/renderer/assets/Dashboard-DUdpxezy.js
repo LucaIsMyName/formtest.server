@@ -1,6 +1,6 @@
-import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, S as Settings, h as TestRunDialog, i as dist } from "./index-kyJHC7IM.js";
+import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, S as Settings, h as TestRunDialog, i as dist } from "./index-Bnsbfs4A.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { S as Skeleton } from "./Skeleton-Tcw_7FCV.js";
+import { S as Skeleton } from "./Skeleton-7Hipq7nu.js";
 var EventKeys = ["dangerouslySetInnerHTML", "onCopy", "onCopyCapture", "onCut", "onCutCapture", "onPaste", "onPasteCapture", "onCompositionEnd", "onCompositionEndCapture", "onCompositionStart", "onCompositionStartCapture", "onCompositionUpdate", "onCompositionUpdateCapture", "onFocus", "onFocusCapture", "onBlur", "onBlurCapture", "onChange", "onChangeCapture", "onBeforeInput", "onBeforeInputCapture", "onInput", "onInputCapture", "onReset", "onResetCapture", "onSubmit", "onSubmitCapture", "onInvalid", "onInvalidCapture", "onLoad", "onLoadCapture", "onError", "onErrorCapture", "onKeyDown", "onKeyDownCapture", "onKeyPress", "onKeyPressCapture", "onKeyUp", "onKeyUpCapture", "onAbort", "onAbortCapture", "onCanPlay", "onCanPlayCapture", "onCanPlayThrough", "onCanPlayThroughCapture", "onDurationChange", "onDurationChangeCapture", "onEmptied", "onEmptiedCapture", "onEncrypted", "onEncryptedCapture", "onEnded", "onEndedCapture", "onLoadedData", "onLoadedDataCapture", "onLoadedMetadata", "onLoadedMetadataCapture", "onLoadStart", "onLoadStartCapture", "onPause", "onPauseCapture", "onPlay", "onPlayCapture", "onPlaying", "onPlayingCapture", "onProgress", "onProgressCapture", "onRateChange", "onRateChangeCapture", "onSeeked", "onSeekedCapture", "onSeeking", "onSeekingCapture", "onStalled", "onStalledCapture", "onSuspend", "onSuspendCapture", "onTimeUpdate", "onTimeUpdateCapture", "onVolumeChange", "onVolumeChangeCapture", "onWaiting", "onWaitingCapture", "onAuxClick", "onAuxClickCapture", "onClick", "onClickCapture", "onContextMenu", "onContextMenuCapture", "onDoubleClick", "onDoubleClickCapture", "onDrag", "onDragCapture", "onDragEnd", "onDragEndCapture", "onDragEnter", "onDragEnterCapture", "onDragExit", "onDragExitCapture", "onDragLeave", "onDragLeaveCapture", "onDragOver", "onDragOverCapture", "onDragStart", "onDragStartCapture", "onDrop", "onDropCapture", "onMouseDown", "onMouseDownCapture", "onMouseEnter", "onMouseLeave", "onMouseMove", "onMouseMoveCapture", "onMouseOut", "onMouseOutCapture", "onMouseOver", "onMouseOverCapture", "onMouseUp", "onMouseUpCapture", "onSelect", "onSelectCapture", "onTouchCancel", "onTouchCancelCapture", "onTouchEnd", "onTouchEndCapture", "onTouchMove", "onTouchMoveCapture", "onTouchStart", "onTouchStartCapture", "onPointerDown", "onPointerDownCapture", "onPointerMove", "onPointerMoveCapture", "onPointerUp", "onPointerUpCapture", "onPointerCancel", "onPointerCancelCapture", "onPointerEnter", "onPointerEnterCapture", "onPointerLeave", "onPointerLeaveCapture", "onPointerOver", "onPointerOverCapture", "onPointerOut", "onPointerOutCapture", "onGotPointerCapture", "onGotPointerCaptureCapture", "onLostPointerCapture", "onLostPointerCaptureCapture", "onScroll", "onScrollCapture", "onWheel", "onWheelCapture", "onAnimationStart", "onAnimationStartCapture", "onAnimationEnd", "onAnimationEndCapture", "onAnimationIteration", "onAnimationIterationCapture", "onTransitionEnd", "onTransitionEndCapture"];
 function isEventKey(key) {
   if (typeof key !== "string") {
@@ -24192,9 +24192,19 @@ const Dashboard = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lgtext-gray-900 dark:text-white mb-4", children: "Test-Verlauf" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 300, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(LineChart, { data: prepareTimelineData(), children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#374151" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "date", stroke: "#9ca3af" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { stroke: "#9ca3af" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#e5e7eb", strokeOpacity: 0.5 }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "date", stroke: "#9ca3af", tick: {
+            fontSize: 10,
+            fontFamily: "JetBrains Mono, monospace"
+          }, tickLine: {
+            stroke: "#d1d5db"
+          } }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { stroke: "#9ca3af", tick: {
+            fontSize: 10,
+            fontFamily: "JetBrains Mono, monospace"
+          }, tickLine: {
+            stroke: "#d1d5db"
+          } }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Legend, {}),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Line, { type: "monotone", dataKey: "success", stroke: "#10b981", name: "Erfolgreich", strokeWidth: 2 }),
@@ -24207,17 +24217,41 @@ const Dashboard = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 250, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(PieChart, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Pie, { data: prepareSuccessRateData(), cx: "50%", cy: "50%", labelLine: false, label: ({
               name: name_1,
-              percent
-            }) => `${name_1}: ${((percent || 0) * 100).toFixed(0)}%`, outerRadius: 80, fill: "#8884d8", dataKey: "value", children: prepareSuccessRateData().map((entry_0, index_0) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry_0.color }, `cell-${index_0}`)) }),
+              percent,
+              cx,
+              cy,
+              midAngle = 0,
+              innerRadius,
+              outerRadius
+            }) => {
+              const RADIAN2 = Math.PI / 180;
+              const radius = Number(innerRadius) + (Number(outerRadius) - Number(innerRadius)) * 1.4;
+              const x2 = Number(cx) + radius * Math.cos(-midAngle * RADIAN2);
+              const y2 = Number(cy) + radius * Math.sin(-midAngle * RADIAN2);
+              return /* @__PURE__ */ jsxRuntimeExports.jsx("text", { x: x2, y: y2, fill: "#9ca3af", textAnchor: x2 > Number(cx) ? "start" : "end", dominantBaseline: "central", style: {
+                fontSize: "10px",
+                fontFamily: "JetBrains Mono, monospace"
+              }, children: `${name_1}: ${((percent || 0) * 100).toFixed(0)}%` });
+            }, outerRadius: 80, fill: "#8884d8", dataKey: "value", children: prepareSuccessRateData().map((entry_0, index_0) => /* @__PURE__ */ jsxRuntimeExports.jsx(Cell, { fill: entry_0.color }, `cell-${index_0}`)) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}) })
           ] }) })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Bezahlmethoden Performance" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 250, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(BarChart, { data: preparePaymentMethodData(), children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#374151" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "name", stroke: "#9ca3af" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { stroke: "#9ca3af" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#e5e7eb", strokeOpacity: 0.5 }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "name", stroke: "#9ca3af", tick: {
+              fontSize: 10,
+              fontFamily: "JetBrains Mono, monospace"
+            }, tickLine: {
+              stroke: "#d1d5db"
+            } }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { stroke: "#9ca3af", tick: {
+              fontSize: 10,
+              fontFamily: "JetBrains Mono, monospace"
+            }, tickLine: {
+              stroke: "#d1d5db"
+            } }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Legend, {}),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "success", fill: "#10b981", name: "Erfolgreich" }),
@@ -24228,9 +24262,19 @@ const Dashboard = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Formular Performance" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 300, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(BarChart, { data: prepareFormData(), layout: "horizontal", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#374151" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { type: "number", stroke: "#9ca3af" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { dataKey: "name", type: "category", stroke: "#9ca3af", width: 150 }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#e5e7eb", strokeOpacity: 0.5 }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { type: "number", stroke: "#9ca3af", tick: {
+            fontSize: 10,
+            fontFamily: "JetBrains Mono, monospace"
+          }, tickLine: {
+            stroke: "#d1d5db"
+          } }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { dataKey: "name", type: "category", stroke: "#9ca3af", width: 150, tick: {
+            fontSize: 10,
+            fontFamily: "JetBrains Mono, monospace"
+          }, tickLine: {
+            stroke: "#d1d5db"
+          } }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Legend, {}),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "success", fill: "#10b981", name: "Erfolgreich" }),

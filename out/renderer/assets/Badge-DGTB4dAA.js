@@ -1,4 +1,4 @@
-import { W as createLucideIcon, r as reactExports, i as dist, A as cn, j as jsxRuntimeExports, ai as composeRefs, aj as createPopperScope, o as useDirection, p as useControllableState, ak as Root2$1, q as createContextScope, al as useId, am as createCollection, t as useComposedRefs, an as useLayoutEffect2, P as Primitive, x as usePrevious, ao as VISUALLY_HIDDEN_STYLES, ap as Anchor, v as composeEventHandlers, aq as Portal$1, a as reactDomExports, ar as useCallbackRef, as as hideOthers, at as useFocusGuards, au as ReactRemoveScroll, av as FocusScope, aw as DismissableLayer, ax as Content, ay as Arrow, $ as Check, a6 as DialogHeader, a7 as DialogTitle, az as DialogDescription, B as Button, aA as DialogFooter, a8 as DialogContent, a9 as Dialog, aB as cva } from "./index-kyJHC7IM.js";
+import { Y as createLucideIcon, r as reactExports, i as dist, A as cn, j as jsxRuntimeExports, aj as composeRefs, ak as createPopperScope, o as useDirection, p as useControllableState, al as Root2$1, q as createContextScope, am as useId, an as createCollection, t as useComposedRefs, ao as useLayoutEffect2, P as Primitive, x as usePrevious, ap as VISUALLY_HIDDEN_STYLES, aq as Anchor, v as composeEventHandlers, ar as Portal$1, a as reactDomExports, as as useCallbackRef, at as hideOthers, au as useFocusGuards, av as ReactRemoveScroll, aw as FocusScope, ax as DismissableLayer, ay as Content, az as Arrow, a0 as Check, a7 as DialogHeader, a8 as DialogTitle, aA as DialogDescription, B as Button, aB as DialogFooter, a9 as DialogContent, aa as Dialog, aC as cva } from "./index-Bnsbfs4A.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -1802,7 +1802,8 @@ const badgeVariants = cva("inline-flex items-center gap-1.5 px-2 py-0.5 text-[11
       active: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700",
       inactive: "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600",
       running: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700",
-      pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-700"
+      pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-700",
+      stopped: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700"
     },
     size: {
       sm: "text-[10px] px-1.5 py-0.5",
@@ -1916,6 +1917,9 @@ const StatusBadge = (t0) => {
         case "PENDING": {
           return "pending";
         }
+        case "STOPPED": {
+          return "stopped";
+        }
         case "INACTIVE": {
           return "inactive";
         }
@@ -1943,10 +1947,16 @@ const StatusBadge = (t0) => {
           return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M6 18L18 6M6 6l12 12" }) });
         }
         case "RUNNING": {
-          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3 animate-spin", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" }) });
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "relative flex h-3 w-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "relative inline-flex rounded-full h-3 w-3 bg-blue-500" })
+          ] });
         }
         case "PENDING": {
           return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" }) });
+        }
+        case "STOPPED": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "6", y: "6", width: "12", height: "12", rx: "1" }) });
         }
         case "INACTIVE": {
           return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" }) });

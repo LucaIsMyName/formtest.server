@@ -35,7 +35,8 @@ const api = {
     updateStatus: (id, status, errorMessage, durationMs) => electron.ipcRenderer.invoke("testRuns:updateStatus", id, status, errorMessage, durationMs),
     delete: (id) => electron.ipcRenderer.invoke("testRuns:delete", id),
     deleteAll: () => electron.ipcRenderer.invoke("testRuns:deleteAll"),
-    updateNotes: (id, notes) => electron.ipcRenderer.invoke("testRuns:updateNotes", id, notes)
+    updateNotes: (id, notes) => electron.ipcRenderer.invoke("testRuns:updateNotes", id, notes),
+    stop: (id) => electron.ipcRenderer.invoke("testRuns:stop", id)
   },
   // Test execution
   tests: {

@@ -1,8 +1,8 @@
-import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-kyJHC7IM.js";
+import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-Bnsbfs4A.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, T as TriangleAlert, f as StatusBadge, g as CircleAlert, D as DeleteConfirmDialog } from "./Badge-DCzudrr4.js";
-import { C as Circle, D as Download, U as Upload } from "./upload-DUtD1LCw.js";
-import { S as Skeleton } from "./Skeleton-Tcw_7FCV.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, T as TriangleAlert, f as StatusBadge, g as CircleAlert, D as DeleteConfirmDialog } from "./Badge-DGTB4dAA.js";
+import { C as Circle, D as Download, U as Upload } from "./upload-DuDXHf1S.js";
+import { S as Skeleton } from "./Skeleton-7Hipq7nu.js";
 var RADIO_NAME = "Radio";
 var [createRadioContext, createRadioScope] = createContextScope(RADIO_NAME);
 var [RadioProvider, useRadioContext] = createRadioContext(RADIO_NAME);
@@ -656,7 +656,7 @@ const Settings = () => {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Import / Export" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md font-medium text-gray-900 dark:text-white mb-3", children: "Daten exportieren" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-800 dark:text-gray-400 mb-4", children: "Wähle die Daten aus, die du exportieren möchtest:" }),
@@ -718,7 +718,6 @@ const Settings = () => {
             ] }),
             exportMessage && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `mt-3 p-3 rounded-md ${exportMessage.startsWith("✓") ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200"}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: exportMessage }) })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-t border-gray-200 dark:border-gray-700 my-6" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md font-medium text-gray-900 dark:text-white mb-3", children: "Daten importieren" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-800 dark:text-gray-400 mb-4", children: "Wähle den Import-Modus:" }),

@@ -858,6 +858,16 @@ export const testRunQueries = {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
     return stmt.run(notes, id);
   },
+  stop: (id: number) => {
+    // Get the test run to calculate duration
+    const testRun = db.prepare("SELECT runAt FROM test_runs WHERE id = ?").get(id) as { runAt: string } | undefined;
+    let durationMs = 0;
+    if (testRun) {
+      durationMs = Date.now() - new Date(testRun.runAt).getTime();
+    }
+    const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status = 'RUNNING'");
+    return stmt.run(durationMs, id);
+  },
   delete: (id: number) => {
     const stmt = db.prepare("DELETE FROM test_runs WHERE id = ?");
     return stmt.run(id);

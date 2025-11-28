@@ -30,6 +30,7 @@ declare global {
         updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => Promise<void>
         delete: (id: number) => Promise<void>
         updateNotes: (id: number, notes: string) => Promise<void>
+        stop: (id: number) => Promise<void>
       }
       testSchedules: {
         getAll: () => Promise<TestSchedule[]>
