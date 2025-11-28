@@ -177,6 +177,51 @@ function migrateTestRunNotes() {
     console.error("Database: Test run notes migration error:", error);
   }
 }
+function migrateTestRunStoppedStatus() {
+  console.log("Database: Checking for test_runs STOPPED status support...");
+  try {
+    const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get();
+    if (tableInfo && tableInfo.sql.includes("'RUNNING')") && !tableInfo.sql.includes("'STOPPED'")) {
+      console.log("Database: Migrating test_runs table to add STOPPED status...");
+      db.transaction(() => {
+        db.exec(`
+          CREATE TABLE test_runs_new (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uuid TEXT,
+            formId INTEGER NOT NULL,
+            paymentMethodId INTEGER NOT NULL,
+            status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
+            errorMessage TEXT,
+            screenshotPath TEXT,
+            logDetails TEXT,
+            steps TEXT DEFAULT '[]',
+            durationMs INTEGER,
+            isScheduled INTEGER DEFAULT 0,
+            notes TEXT DEFAULT '',
+            runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
+            FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+          );
+        `);
+        db.exec(`
+          INSERT INTO test_runs_new (id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt)
+          SELECT id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt
+          FROM test_runs;
+        `);
+        db.exec(`
+          DROP TABLE test_runs;
+          ALTER TABLE test_runs_new RENAME TO test_runs;
+        `);
+        db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid)");
+      })();
+      console.log("Database: Successfully migrated test_runs table to support STOPPED status");
+    } else {
+      console.log("Database: test_runs table already supports STOPPED status");
+    }
+  } catch (error) {
+    console.error("Database: STOPPED status migration error:", error);
+  }
+}
 function migrateTestRunScheduled() {
   console.log("Database: Checking for test_runs isScheduled column...");
   try {
@@ -330,7 +375,7 @@ function initDatabase() {
       uuid TEXT,
       formId INTEGER NOT NULL,
       paymentMethodId INTEGER NOT NULL,
-      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING')),
+      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
       errorMessage TEXT,
       screenshotPath TEXT,
       logDetails TEXT,
@@ -414,6 +459,7 @@ function initDatabase() {
   migrateTestRunSteps();
   migrateTestRunScheduled();
   migrateTestRunNotes();
+  migrateTestRunStoppedStatus();
   migrateTestScheduleIcon();
   migrateIconColumns();
   migrateFormFieldMappings();

@@ -1,30 +1,15 @@
-export type FieldMappingAction = 'type' | 'click' | 'select' | 'check' | 'waitAndClick';
+export type FieldMappingAction = "type" | "click" | "select" | "check" | "waitAndClick";
 
-export type FieldMappingType = 
-  | 'amount' 
-  | 'customAmount'
-  | 'interval' 
-  | 'firstName' 
-  | 'lastName' 
-  | 'email' 
-  | 'salutation'
-  | 'country' 
-  | 'paymentMethod' 
-  | 'checkbox' 
-  | 'radio'
-  | 'iban'
-  | 'accountHolder'
-  | 'birthday'
-  | 'custom';
+export type FieldMappingType = "amount" | "customAmount" | "interval" | "firstName" | "lastName" | "email" | "salutation" | "country" | "paymentMethod" | "checkbox" | "radio" | "iban" | "accountHolder" | "birthday" | "custom";
 
 export interface FormFieldMapping {
-  id: string;                    // UUID
-  fieldType: FieldMappingType;   // Type of field
-  selector: string;              // CSS selector
-  value?: string;                // Override faker value (optional)
-  action: FieldMappingAction;    // Action to perform
-  waitMs?: number;               // Wait before action (for dynamic content)
-  description?: string;          // User note
+  id: string; // UUID
+  fieldType: FieldMappingType; // Type of field
+  selector: string; // CSS selector
+  value?: string; // Override faker value (optional)
+  action: FieldMappingAction; // Action to perform
+  waitMs?: number; // Wait before action (for dynamic content)
+  description?: string; // User note
 }
 
 export interface Form {
@@ -34,7 +19,7 @@ export interface Form {
   hash?: string | null;
   icon?: string;
   isActive: boolean;
-  fieldMappings?: FormFieldMapping[];  // Custom field mappings for this form
+  fieldMappings?: FormFieldMapping[]; // Custom field mappings for this form
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,21 +27,21 @@ export interface Form {
 export interface PaymentMethodDetails {
   // PayPal
   email?: string;
-  
+
   // SEPA
   iban?: string;
-  bic?: string;              // Optional - kept for other form providers
-  accountHolder?: string;    // Kontoinhaber - required for FundraisingBox SEPA
-  
+  bic?: string; // Optional - kept for other form providers
+  accountHolder?: string; // Kontoinhaber - required for FundraisingBox SEPA
+
   // Credit Card
   cardNumber?: string;
   expiryDate?: string;
   cvv?: string;
   cardholderName?: string;
-  
+
   // EPS
   bankCode?: string;
-  
+
   // Common
   [key: string]: any;
 }
@@ -64,7 +49,7 @@ export interface PaymentMethodDetails {
 export interface PaymentMethod {
   id: number;
   name: string;
-  type: 'paypal' | 'sepa' | 'creditcard' | 'eps';
+  type: "paypal" | "sepa" | "creditcard" | "eps";
   icon?: string;
   isActive: boolean;
   details: PaymentMethodDetails; // Encrypted JSON data
@@ -81,7 +66,7 @@ export interface GlobalSetting {
 export interface TestStep {
   id: string;
   name: string;
-  status: 'pending' | 'running' | 'success' | 'error' | 'skipped';
+  status: "pending" | "running" | "success" | "error" | "skipped";
   startTime: string;
   endTime?: string;
   duration?: number;
@@ -95,7 +80,7 @@ export interface TestRun {
   uuid: string;
   formId: number;
   paymentMethodId: number;
-  status: 'SUCCESS' | 'FAILURE' | 'SKIPPED' | 'RUNNING' | 'STOPPED';
+  status: "SUCCESS" | "FAILURE" | "SKIPPED" | "RUNNING" | "STOPPED";
   errorMessage?: string;
   screenshotPath?: string;
   logDetails?: string;

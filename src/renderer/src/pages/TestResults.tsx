@@ -127,7 +127,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
 
   // Add final status step
   const finalStep: TimelineStep = {
-    message: status === "SUCCESS" ? "Test completed successfully" : status === "FAILURE" ? "Test failed" : status === "SKIPPED" ? "Test was skipped" : "Test is running",
+    message: status === "SUCCESS" ? "Test completed successfully" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : "Test läuft",
     type: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "warning" : "info",
   };
 
@@ -226,21 +226,40 @@ const TestResults: React.FC = () => {
       return;
     }
 
+    // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
+    const getStartTime = (runAt: Date | string): number => {
+      if (runAt instanceof Date) {
+        return runAt.getTime();
+      }
+      // SQLite stores as "YYYY-MM-DD HH:MM:SS" in UTC (CURRENT_TIMESTAMP)
+      // JavaScript parses strings without timezone as LOCAL time, but SQLite stores UTC
+      // So we need to parse it as UTC by adding 'Z'
+      const dateStr = String(runAt);
+      if (!dateStr.includes('T') && !dateStr.includes('Z')) {
+        // Add Z to indicate UTC
+        const utcDate = new Date(dateStr.replace(' ', 'T') + 'Z');
+        return utcDate.getTime();
+      }
+      return new Date(dateStr).getTime();
+    };
+
     // Initialize timers for running tests
     const initialTimers: Record<number, number> = {};
     runningTests.forEach((test) => {
-      const startTime = new Date(test.runAt).getTime();
-      initialTimers[test.id] = Math.floor((Date.now() - startTime) / 1000);
+      const startTime = getStartTime(test.runAt);
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      initialTimers[test.id] = Math.max(0, elapsed); // Ensure non-negative
     });
     setRunningTimers(initialTimers);
 
     // Update every second
     const interval = setInterval(() => {
-      setRunningTimers((prev) => {
+      setRunningTimers(() => {
         const updated: Record<number, number> = {};
         runningTests.forEach((test) => {
-          const startTime = new Date(test.runAt).getTime();
-          updated[test.id] = Math.floor((Date.now() - startTime) / 1000);
+          const startTime = getStartTime(test.runAt);
+          const elapsed = Math.floor((Date.now() - startTime) / 1000);
+          updated[test.id] = Math.max(0, elapsed); // Ensure non-negative
         });
         return updated;
       });

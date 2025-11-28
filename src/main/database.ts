@@ -119,6 +119,67 @@ function migrateTestRunNotes(): void {
 }
 
 /**
+ * Migrate test_runs table to add STOPPED status to CHECK constraint
+ */
+function migrateTestRunStoppedStatus(): void {
+  console.log("Database: Checking for test_runs STOPPED status support...");
+  
+  try {
+    // Check if the table has the old CHECK constraint (without STOPPED)
+    const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get() as { sql: string } | undefined;
+    
+    if (tableInfo && tableInfo.sql.includes("'RUNNING')") && !tableInfo.sql.includes("'STOPPED'")) {
+      console.log("Database: Migrating test_runs table to add STOPPED status...");
+      
+      db.transaction(() => {
+        // Create new table with updated CHECK constraint
+        db.exec(`
+          CREATE TABLE test_runs_new (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uuid TEXT,
+            formId INTEGER NOT NULL,
+            paymentMethodId INTEGER NOT NULL,
+            status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
+            errorMessage TEXT,
+            screenshotPath TEXT,
+            logDetails TEXT,
+            steps TEXT DEFAULT '[]',
+            durationMs INTEGER,
+            isScheduled INTEGER DEFAULT 0,
+            notes TEXT DEFAULT '',
+            runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
+            FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+          );
+        `);
+        
+        // Copy data from old table
+        db.exec(`
+          INSERT INTO test_runs_new (id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt)
+          SELECT id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt
+          FROM test_runs;
+        `);
+        
+        // Drop old table and rename new one
+        db.exec(`
+          DROP TABLE test_runs;
+          ALTER TABLE test_runs_new RENAME TO test_runs;
+        `);
+        
+        // Recreate index
+        db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid)");
+      })();
+      
+      console.log("Database: Successfully migrated test_runs table to support STOPPED status");
+    } else {
+      console.log("Database: test_runs table already supports STOPPED status");
+    }
+  } catch (error) {
+    console.error("Database: STOPPED status migration error:", error);
+  }
+}
+
+/**
  * Migrate test_runs table to add isScheduled column
  */
 function migrateTestRunScheduled(): void {
@@ -327,7 +388,7 @@ export function initDatabase(): void {
       uuid TEXT,
       formId INTEGER NOT NULL,
       paymentMethodId INTEGER NOT NULL,
-      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING')),
+      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
       errorMessage TEXT,
       screenshotPath TEXT,
       logDetails TEXT,
@@ -429,6 +490,9 @@ export function initDatabase(): void {
 
   // Migrate test run notes column
   migrateTestRunNotes();
+
+  // Migrate test_runs to support STOPPED status
+  migrateTestRunStoppedStatus();
 
   // Migrate schedule icon column
   migrateTestScheduleIcon();

@@ -1,5 +1,5 @@
-import { i as dist, j as jsxRuntimeExports } from "./index-Bnsbfs4A.js";
-import { C as CONFIG } from "./app.config-Cedwjkbe.js";
+import { i as dist, j as jsxRuntimeExports } from "./index-B6NKkVly.js";
+import { C as CONFIG } from "./app.config-CmoV5t6l.js";
 const InfoDoku = () => {
   const $ = dist.c(50);
   let t0;
@@ -70,13 +70,13 @@ const InfoDoku = () => {
   }
   let t7;
   if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "select-auto my-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700", children: [
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "select-auto my-6", children: [
       t4,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "my-6", children: [
         t5,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-4", children: [
           t6,
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-4 border-y border-gray-200 dark:border-gray-700", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-4 border-t border-gray-200 dark:border-gray-700", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2", children: "Haftungsausschluss" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed", children: "Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko." })
           ] })
@@ -525,7 +525,7 @@ const InfoDoku = () => {
   if ($[47] === Symbol.for("react.memo_cache_sentinel")) {
     t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
-      " 1.0.2"
+      " 1.0.8"
     ] });
     t48 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Technologie-Stack:" }) });
     $[47] = t47;
@@ -546,14 +546,13 @@ const InfoDoku = () => {
           t47,
           t48,
           /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-4 text-sm space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Electron - Desktop-Anwendungsframework" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "React - UI-Framework" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "TypeScript - Typsichere Entwicklung" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Tailwind CSS - Styling" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Playwright - Browser-Automatisierung" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "SQLite - Lokale Datenbank" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Recharts - Datenvisualisierung" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Keytar - Sichere Schlüsselspeicherung" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Electron" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "React" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "TypeScript" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Playwright" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "SQLite" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Recharts" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Keytar" })
           ] })
         ] })
       ] })

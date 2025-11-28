@@ -6,7 +6,7 @@ const InfoDoku: React.FC = () => {
     <div className="max-w-4xl">
       <h1 className={CONFIG.style.title.className}>Info & Doku</h1>
 
-      <section className="select-auto my-6 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+      <section className="select-auto my-6">
         {/* Impressum Section */}
         <div className="">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
@@ -34,7 +34,7 @@ const InfoDoku: React.FC = () => {
               <p className="text-sm leading-relaxed mt-2">The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
               <p className="text-sm leading-relaxed mt-2 font-semibold">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
             </div>
-            <div className="py-4 border-y border-gray-200 dark:border-gray-700">
+            <div className="py-4 border-t border-gray-200 dark:border-gray-700">
               <h3 className="font-semibold text-lg mb-2">Haftungsausschluss</h3>
               <p className="text-sm leading-relaxed">Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko.</p>
             </div>
@@ -255,20 +255,19 @@ const InfoDoku: React.FC = () => {
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Version & Technologie</h2>
         <div className="text-gray-700 dark:text-gray-300 space-y-2">
           <p>
-            <strong>Version:</strong> 1.0.2
+            <strong>Version:</strong> 1.0.8
           </p>
           <p>
-            <strong>Technologie-Stack:</strong>
+            <strong>Tech:</strong>
           </p>
           <ul className="list-disc list-inside ml-4 text-sm space-y-1">
-            <li>Electron - Desktop-Anwendungsframework</li>
-            <li>React - UI-Framework</li>
-            <li>TypeScript - Typsichere Entwicklung</li>
-            <li>Tailwind CSS - Styling</li>
-            <li>Playwright - Browser-Automatisierung</li>
-            <li>SQLite - Lokale Datenbank</li>
-            <li>Recharts - Datenvisualisierung</li>
-            <li>Keytar - Sichere Schlüsselspeicherung</li>
+            <li>Electron</li>
+            <li>React</li>
+            <li>TypeScript</li>
+            <li>Playwright</li>
+            <li>SQLite</li>
+            <li>Recharts</li>
+            <li>Keytar</li>
           </ul>
         </div>
       </div>
