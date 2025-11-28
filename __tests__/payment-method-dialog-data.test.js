@@ -33,8 +33,8 @@ describe('PaymentMethodDialog Data Structure', () => {
       type: 'sepa',
       isActive: true,
       details: {
-        iban: 'DE89370400440532013000',
-        bic: 'COBADEFFXXX'
+        accountHolder: 'Max Mustermann',
+        iban: 'DE89370400440532013000'
       }
     }
 
@@ -46,8 +46,8 @@ describe('PaymentMethodDialog Data Structure', () => {
     }
 
     expect(submitData.details).toEqual({
-      iban: 'DE89370400440532013000',
-      bic: 'COBADEFFXXX'
+      accountHolder: 'Max Mustermann',
+      iban: 'DE89370400440532013000'
     })
   })
 

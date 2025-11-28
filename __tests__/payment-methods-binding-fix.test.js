@@ -105,8 +105,8 @@ describe('Payment Methods SQLite Binding Fix', () => {
       type: 'sepa',
       isActive: true,
       details: {
-        iban: 'DE89370400440532013000',
-        bic: 'COBADEFFXXX'
+        accountHolder: 'Max Mustermann',
+        iban: 'DE89370400440532013000'
       }
     }
 

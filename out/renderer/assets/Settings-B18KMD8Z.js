@@ -1,8 +1,8 @@
-import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-ClXSKXcE.js";
+import { r as reactExports, n as createRovingFocusGroupScope, o as useDirection, p as useControllableState, j as jsxRuntimeExports, q as createContextScope, s as Root, P as Primitive, t as useComposedRefs, I as Item, v as composeEventHandlers, x as usePrevious, y as useSize, z as Presence, i as dist, A as cn, D as useSettingsStore, L as Label, M as Monitor, E as Sun, G as Moon, B as Button, k as Checkbox, H as CircleCheck } from "./index-kyJHC7IM.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, T as TriangleAlert, f as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-DFl4UGYI.js";
-import { C as Circle, D as Download, U as Upload } from "./upload-CgVuLTjE.js";
-import { S as Skeleton } from "./Skeleton-DVrMpaCl.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, T as TriangleAlert, f as StatusBadge, g as CircleAlert, D as DeleteConfirmDialog } from "./Badge-DCzudrr4.js";
+import { C as Circle, D as Download, U as Upload } from "./upload-DUtD1LCw.js";
+import { S as Skeleton } from "./Skeleton-Tcw_7FCV.js";
 var RADIO_NAME = "Radio";
 var [createRadioContext, createRadioScope] = createContextScope(RADIO_NAME);
 var [RadioProvider, useRadioContext] = createRadioContext(RADIO_NAME);
@@ -730,10 +730,13 @@ const Settings = () => {
                   /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Bestehende Daten bleiben erhalten. Neue Einträge werden hinzugefügt, unterschiedliche Einträge werden aktualisiert." })
                 ] })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start space-x-2 mt-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pointer-none opacity-50 flex items-start space-x-2 mt-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(RadioGroupItem, { value: "overwrite", id: "import-overwrite", className: "mt-1" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid gap-1.5 leading-none", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "import-overwrite", className: "cursor-pointer font-normal text-gray-800 dark:text-gray-400", children: "Überschreiben (Vorsicht!)" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs(Label, { htmlFor: "import-overwrite", className: "cursor-pointer font-normal text-gray-800 dark:text-gray-400", children: [
+                    "Überschreiben ",
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: "", children: "Development" })
+                  ] }),
                   /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Alle ausgewählten Daten werden gelöscht und durch die importierten Daten ersetzt." })
                 ] })
               ] })

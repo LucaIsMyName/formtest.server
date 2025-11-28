@@ -62,11 +62,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
         newErrors.email = "PayPal E-Mail ist erforderlich";
       }
     } else if (methodData.type === "sepa") {
+      if (!methodData.details.accountHolder) {
+        newErrors.accountHolder = "Kontoinhaber ist erforderlich";
+      }
       if (!methodData.details.iban) {
         newErrors.iban = "IBAN ist erforderlich";
-      }
-      if (!methodData.details.bic) {
-        newErrors.bic = "BIC ist erforderlich";
       }
     } else if (methodData.type === "creditcard") {
       if (!methodData.details.cardNumber) {
@@ -144,6 +144,19 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
         return (
           <>
             <div className="space-y-2">
+              <Label className="text-gray-600 dark:text-gray-400" htmlFor="accountHolder">Kontoinhaber *</Label>
+              <Input
+                type="text"
+                id="accountHolder"
+                value={methodData.details.accountHolder || ""}
+                onChange={(e) => updateDetails("accountHolder", e.target.value)}
+                placeholder="Max Mustermann"
+                disabled={isLoading}
+                className={errors.accountHolder ? "border-red-500 focus-visible:ring-red-500" : ""}
+              />
+              {errors.accountHolder && <p className="text-red-500 text-xs">{errors.accountHolder}</p>}
+            </div>
+            <div className="space-y-2">
               <Label className="text-gray-600 dark:text-gray-400" htmlFor="iban">IBAN *</Label>
               <Input
                 type="text"
@@ -155,19 +168,6 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 className={errors.iban ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
               {errors.iban && <p className="text-red-500 text-xs">{errors.iban}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label className="text-gray-600 dark:text-gray-400" htmlFor="bic">BIC *</Label>
-              <Input
-                type="text"
-                id="bic"
-                value={methodData.details.bic || ""}
-                onChange={(e) => updateDetails("bic", e.target.value)}
-                placeholder="COBADEFFXXX"
-                disabled={isLoading}
-                className={errors.bic ? "border-red-500 focus-visible:ring-red-500" : ""}
-              />
-              {errors.bic && <p className="text-red-500 text-xs">{errors.bic}</p>}
             </div>
           </>
         );

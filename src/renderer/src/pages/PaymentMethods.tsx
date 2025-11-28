@@ -76,7 +76,8 @@ const PaymentMethods: React.FC = () => {
         case "paypal":
           return method.details.email || '';
         case "sepa":
-          return method.details.iban || '';
+          // Use accountHolder for sorting, fallback to iban
+          return method.details.accountHolder || method.details.iban || '';
         case "creditcard":
           return method.details.cardNumber || '';
         case "eps":
@@ -194,15 +195,21 @@ const PaymentMethods: React.FC = () => {
   const maskSensitiveData = (method: PaymentMethod) => {
     switch (method.type) {
       case "paypal":
-        return method.details.email ? `${method.details.email.substring(0, 3)}***@***.com` : "No email";
+        return method.details.email ? `${method.details.email.substring(0, 3)}***@***.com` : "Keine E-Mail";
       case "sepa":
-        return method.details.iban ? `***${method.details.iban.slice(-4)}` : "No IBAN";
+        // Show account holder and masked IBAN
+        const holder = method.details.accountHolder || '';
+        const maskedIban = method.details.iban ? `***${method.details.iban.slice(-4)}` : '';
+        if (holder && maskedIban) return `${holder} (${maskedIban})`;
+        if (holder) return holder;
+        if (maskedIban) return maskedIban;
+        return "Keine SEPA-Daten";
       case "creditcard":
-        return method.details.cardNumber ? `****-****-****-${method.details.cardNumber.slice(-4)}` : "No card number";
+        return method.details.cardNumber ? `****-****-****-${method.details.cardNumber.slice(-4)}` : "Keine Kartennummer";
       case "eps":
-        return method.details.bankCode ? `Bank: ${method.details.bankCode}` : "No bank selected";
+        return method.details.bankCode ? `Bank: ${method.details.bankCode}` : "Keine Bank ausgewählt";
       default:
-        return "Configured";
+        return "Konfiguriert";
     }
   };
 

@@ -73,8 +73,8 @@ describe('Payment Methods Database Operations', () => {
       type: 'sepa',
       isActive: true,
       details: {
-        iban: 'DE89370400440532013000',
-        bic: 'COBADEFFXXX'
+        accountHolder: 'Max Mustermann',
+        iban: 'DE89370400440532013000'
       }
     }
 
@@ -125,7 +125,7 @@ describe('Payment Methods Database Operations', () => {
       name: 'SEPA Test',
       type: 'sepa',
       isActive: false,
-      details: { iban: 'DE89370400440532013000', bic: 'COBADEFFXXX' }
+      details: { accountHolder: 'Max Mustermann', iban: 'DE89370400440532013000' }
     })
 
     const methods = paymentMethodQueries.getAll()
@@ -136,7 +136,7 @@ describe('Payment Methods Database Operations', () => {
     expect(typeof methods[0].isActive).toBe('boolean')
     expect(typeof methods[1].isActive).toBe('boolean')
     expect(methods[0].details).toEqual({ email: 'test@paypal.com' })
-    expect(methods[1].details).toEqual({ iban: 'DE89370400440532013000', bic: 'COBADEFFXXX' })
+    expect(methods[1].details).toEqual({ accountHolder: 'Max Mustermann', iban: 'DE89370400440532013000' })
   })
 
   test('should handle empty details object', () => {

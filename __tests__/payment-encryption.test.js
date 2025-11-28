@@ -43,13 +43,12 @@ describe('Payment Method Encryption Integration', () => {
     it('should have correct SEPA structure', () => {
       const sepaDetails = {
         accountHolder: 'Max Mustermann',
-        iban: 'DE89370400440532013000',
-        bic: 'COBADEFFXXX'
+        iban: 'DE89370400440532013000'
+        // Note: bic is optional, kept for other form providers
       };
       
       expect(sepaDetails).toHaveProperty('accountHolder');
       expect(sepaDetails).toHaveProperty('iban');
-      expect(sepaDetails).toHaveProperty('bic');
     });
 
     it('should have correct Credit Card structure', () => {

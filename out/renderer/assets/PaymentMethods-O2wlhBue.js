@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, d as usePaymentMethodsStore, m as formatDate } from "./index-ClXSKXcE.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, d as usePaymentMethodsStore, m as formatDate } from "./index-kyJHC7IM.js";
 import { C as CONFIG } from "./app.config-Cedwjkbe.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-BbNY8pku.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, S as StatusBadge, T as Trash2 } from "./Table-DP7sIPBh.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-DFl4UGYI.js";
-import { S as Skeleton } from "./Skeleton-DVrMpaCl.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-BrcVvBCC.js";
-import "./upload-CgVuLTjE.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, a as Pen } from "./IconPicker-DOfPw_Fj.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2 } from "./Table-2nnPU_SM.js";
+import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, f as StatusBadge, D as DeleteConfirmDialog } from "./Badge-DCzudrr4.js";
+import { S as Skeleton } from "./Skeleton-Tcw_7FCV.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-C8FY30HW.js";
+import "./upload-DUtD1LCw.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -52,11 +52,11 @@ const PaymentMethodDrawer = ({
         newErrors.email = "PayPal E-Mail ist erforderlich";
       }
     } else if (methodData.type === "sepa") {
+      if (!methodData.details.accountHolder) {
+        newErrors.accountHolder = "Kontoinhaber ist erforderlich";
+      }
       if (!methodData.details.iban) {
         newErrors.iban = "IBAN ist erforderlich";
-      }
-      if (!methodData.details.bic) {
-        newErrors.bic = "BIC ist erforderlich";
       }
     } else if (methodData.type === "creditcard") {
       if (!methodData.details.cardNumber) {
@@ -115,14 +115,14 @@ const PaymentMethodDrawer = ({
       case "sepa":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "iban", children: "IBAN *" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "iban", value: methodData.details.iban || "", onChange: (e_3) => updateDetails("iban", e_3.target.value), placeholder: "DE89 3704 0044 0532 0130 00", disabled: isLoading, className: errors.iban ? "border-red-500 focus-visible:ring-red-500" : "" }),
-            errors.iban && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.iban })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "accountHolder", children: "Kontoinhaber *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "accountHolder", value: methodData.details.accountHolder || "", onChange: (e_3) => updateDetails("accountHolder", e_3.target.value), placeholder: "Max Mustermann", disabled: isLoading, className: errors.accountHolder ? "border-red-500 focus-visible:ring-red-500" : "" }),
+            errors.accountHolder && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.accountHolder })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "bic", children: "BIC *" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "bic", value: methodData.details.bic || "", onChange: (e_4) => updateDetails("bic", e_4.target.value), placeholder: "COBADEFFXXX", disabled: isLoading, className: errors.bic ? "border-red-500 focus-visible:ring-red-500" : "" }),
-            errors.bic && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.bic })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "iban", children: "IBAN *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "iban", value: methodData.details.iban || "", onChange: (e_4) => updateDetails("iban", e_4.target.value), placeholder: "DE89 3704 0044 0532 0130 00", disabled: isLoading, className: errors.iban ? "border-red-500 focus-visible:ring-red-500" : "" }),
+            errors.iban && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.iban })
           ] })
         ] });
       case "creditcard":
@@ -663,7 +663,7 @@ function _temp3(method) {
       return method.details.email || "";
     }
     case "sepa": {
-      return method.details.iban || "";
+      return method.details.accountHolder || method.details.iban || "";
     }
     case "creditcard": {
       return method.details.cardNumber || "";
@@ -684,19 +684,30 @@ function _temp4(method_3) {
 function _temp5(method_4) {
   switch (method_4.type) {
     case "paypal": {
-      return method_4.details.email ? `${method_4.details.email.substring(0, 3)}***@***.com` : "No email";
+      return method_4.details.email ? `${method_4.details.email.substring(0, 3)}***@***.com` : "Keine E-Mail";
     }
     case "sepa": {
-      return method_4.details.iban ? `***${method_4.details.iban.slice(-4)}` : "No IBAN";
+      const holder = method_4.details.accountHolder || "";
+      const maskedIban = method_4.details.iban ? `***${method_4.details.iban.slice(-4)}` : "";
+      if (holder && maskedIban) {
+        return `${holder} (${maskedIban})`;
+      }
+      if (holder) {
+        return holder;
+      }
+      if (maskedIban) {
+        return maskedIban;
+      }
+      return "Keine SEPA-Daten";
     }
     case "creditcard": {
-      return method_4.details.cardNumber ? `****-****-****-${method_4.details.cardNumber.slice(-4)}` : "No card number";
+      return method_4.details.cardNumber ? `****-****-****-${method_4.details.cardNumber.slice(-4)}` : "Keine Kartennummer";
     }
     case "eps": {
-      return method_4.details.bankCode ? `Bank: ${method_4.details.bankCode}` : "No bank selected";
+      return method_4.details.bankCode ? `Bank: ${method_4.details.bankCode}` : "Keine Bank ausgewählt";
     }
     default: {
-      return "Configured";
+      return "Konfiguriert";
     }
   }
 }

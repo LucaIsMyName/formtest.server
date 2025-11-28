@@ -45,7 +45,8 @@ export interface PaymentMethodDetails {
   
   // SEPA
   iban?: string;
-  bic?: string;
+  bic?: string;              // Optional - kept for other form providers
+  accountHolder?: string;    // Kontoinhaber - required for FundraisingBox SEPA
   
   // Credit Card
   cardNumber?: string;
