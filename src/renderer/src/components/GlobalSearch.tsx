@@ -5,6 +5,7 @@ import { LayoutDashboard, FileText, CreditCard, TestTube, Settings, BookOpen, Se
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
+import { StatusBadge } from "./ui/Badge";
 
 interface GlobalSearchProps {
   isOpen: boolean;
@@ -139,7 +140,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                     </span>
                     {uuid && <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">ID: {uuid.substring(0, 8)}...</span>}
                   </div>
-                  <span className={`text-xs ml-auto px-2 py-0.5 rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200"}`}>{testRun.status}</span>
+                  <StatusBadge status={testRun.status} size="sm" className="ml-auto" />
                 </Command.Item>
               );
             })}

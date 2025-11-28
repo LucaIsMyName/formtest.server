@@ -1,6 +1,6 @@
-import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, S as Settings, h as TestRunDialog, i as dist } from "./index-COXSkP6q.js";
+import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, P as Play, S as Settings, h as TestRunDialog, i as dist } from "./index-9PvzplFq.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { S as Skeleton } from "./Skeleton-DKWULUnj.js";
+import { S as Skeleton } from "./Skeleton-BMSp2vpZ.js";
 var EventKeys = ["dangerouslySetInnerHTML", "onCopy", "onCopyCapture", "onCut", "onCutCapture", "onPaste", "onPasteCapture", "onCompositionEnd", "onCompositionEndCapture", "onCompositionStart", "onCompositionStartCapture", "onCompositionUpdate", "onCompositionUpdateCapture", "onFocus", "onFocusCapture", "onBlur", "onBlurCapture", "onChange", "onChangeCapture", "onBeforeInput", "onBeforeInputCapture", "onInput", "onInputCapture", "onReset", "onResetCapture", "onSubmit", "onSubmitCapture", "onInvalid", "onInvalidCapture", "onLoad", "onLoadCapture", "onError", "onErrorCapture", "onKeyDown", "onKeyDownCapture", "onKeyPress", "onKeyPressCapture", "onKeyUp", "onKeyUpCapture", "onAbort", "onAbortCapture", "onCanPlay", "onCanPlayCapture", "onCanPlayThrough", "onCanPlayThroughCapture", "onDurationChange", "onDurationChangeCapture", "onEmptied", "onEmptiedCapture", "onEncrypted", "onEncryptedCapture", "onEnded", "onEndedCapture", "onLoadedData", "onLoadedDataCapture", "onLoadedMetadata", "onLoadedMetadataCapture", "onLoadStart", "onLoadStartCapture", "onPause", "onPauseCapture", "onPlay", "onPlayCapture", "onPlaying", "onPlayingCapture", "onProgress", "onProgressCapture", "onRateChange", "onRateChangeCapture", "onSeeked", "onSeekedCapture", "onSeeking", "onSeekingCapture", "onStalled", "onStalledCapture", "onSuspend", "onSuspendCapture", "onTimeUpdate", "onTimeUpdateCapture", "onVolumeChange", "onVolumeChangeCapture", "onWaiting", "onWaitingCapture", "onAuxClick", "onAuxClickCapture", "onClick", "onClickCapture", "onContextMenu", "onContextMenuCapture", "onDoubleClick", "onDoubleClickCapture", "onDrag", "onDragCapture", "onDragEnd", "onDragEndCapture", "onDragEnter", "onDragEnterCapture", "onDragExit", "onDragExitCapture", "onDragLeave", "onDragLeaveCapture", "onDragOver", "onDragOverCapture", "onDragStart", "onDragStartCapture", "onDrop", "onDropCapture", "onMouseDown", "onMouseDownCapture", "onMouseEnter", "onMouseLeave", "onMouseMove", "onMouseMoveCapture", "onMouseOut", "onMouseOutCapture", "onMouseOver", "onMouseOverCapture", "onMouseUp", "onMouseUpCapture", "onSelect", "onSelectCapture", "onTouchCancel", "onTouchCancelCapture", "onTouchEnd", "onTouchEndCapture", "onTouchMove", "onTouchMoveCapture", "onTouchStart", "onTouchStartCapture", "onPointerDown", "onPointerDownCapture", "onPointerMove", "onPointerMoveCapture", "onPointerUp", "onPointerUpCapture", "onPointerCancel", "onPointerCancelCapture", "onPointerEnter", "onPointerEnterCapture", "onPointerLeave", "onPointerLeaveCapture", "onPointerOver", "onPointerOverCapture", "onPointerOut", "onPointerOutCapture", "onGotPointerCapture", "onGotPointerCaptureCapture", "onLostPointerCapture", "onLostPointerCaptureCapture", "onScroll", "onScrollCapture", "onWheel", "onWheelCapture", "onAnimationStart", "onAnimationStartCapture", "onAnimationEnd", "onAnimationEndCapture", "onAnimationIteration", "onAnimationIterationCapture", "onTransitionEnd", "onTransitionEndCapture"];
 function isEventKey(key) {
   if (typeof key !== "string") {
@@ -23996,11 +23996,13 @@ const Dashboard = () => {
         acc[date2] = {
           date: date2,
           success: 0,
-          failure: 0
+          failure: 0,
+          stopped: 0
         };
       }
       if (run.status === "SUCCESS") acc[date2].success++;
       if (run.status === "FAILURE") acc[date2].failure++;
+      if (run.status === "STOPPED") acc[date2].stopped++;
       return acc;
     }, {});
     return Object.values(grouped);
@@ -24013,11 +24015,13 @@ const Dashboard = () => {
         acc_0[name] = {
           name,
           success: 0,
-          failure: 0
+          failure: 0,
+          stopped: 0
         };
       }
       if (run_0.status === "SUCCESS") acc_0[name].success++;
       if (run_0.status === "FAILURE") acc_0[name].failure++;
+      if (run_0.status === "STOPPED") acc_0[name].stopped++;
       return acc_0;
     }, {});
     return Object.values(grouped_0);
@@ -24030,11 +24034,13 @@ const Dashboard = () => {
         acc_1[name_0] = {
           name: name_0,
           success: 0,
-          failure: 0
+          failure: 0,
+          stopped: 0
         };
       }
       if (run_1.status === "SUCCESS") acc_1[name_0].success++;
       if (run_1.status === "FAILURE") acc_1[name_0].failure++;
+      if (run_1.status === "STOPPED") acc_1[name_0].stopped++;
       return acc_1;
     }, {});
     return Object.values(grouped_1);
@@ -24042,7 +24048,8 @@ const Dashboard = () => {
   const prepareSuccessRateData = () => {
     const successful = testRuns.filter((r) => r.status === "SUCCESS").length;
     const failed = testRuns.filter((r_0) => r_0.status === "FAILURE").length;
-    return [{
+    const stopped = testRuns.filter((r_1) => r_1.status === "STOPPED").length;
+    const data = [{
       name: "Erfolgreich",
       value: successful,
       color: "#10b981"
@@ -24051,6 +24058,14 @@ const Dashboard = () => {
       value: failed,
       color: "#ef4444"
     }];
+    if (stopped > 0) {
+      data.push({
+        name: "Gestoppt",
+        value: stopped,
+        color: "#a855f7"
+      });
+    }
+    return data;
   };
   reactExports.useEffect(() => {
     const loadDashboardData = async () => {
@@ -24096,6 +24111,9 @@ const Dashboard = () => {
         break;
       case "view-results":
         navigate("/test-results");
+        break;
+      case "autopilot":
+        navigate("/schedules");
         break;
       case "settings":
         navigate("/settings");
@@ -24153,6 +24171,10 @@ const Dashboard = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(ChartColumn, { className: "w-4 h-4 text-yellow-500 dark:text-yellow-400 mr-2 transition-transform" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: "Ergebnisse" })
       ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("autopilot"), variant: "outline", size: "sm", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { className: "w-4 h-4 text-cyan-500 dark:text-cyan-400 mr-2 transition-transform" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: "Autopilot" })
+      ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => handleQuickAction("settings"), variant: "outline", size: "sm", className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-4 h-4 text-gray-500 dark:text-gray-400 mr-2 transition-transform" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-900 dark:text-white", children: "Einstellungen" })
@@ -24208,7 +24230,8 @@ const Dashboard = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Legend, {}),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Line, { type: "monotone", dataKey: "success", stroke: "#10b981", name: "Erfolgreich", strokeWidth: 2 }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Line, { type: "monotone", dataKey: "failure", stroke: "#ef4444", name: "Fehlgeschlagen", strokeWidth: 2 })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Line, { type: "monotone", dataKey: "failure", stroke: "#ef4444", name: "Fehlgeschlagen", strokeWidth: 2 }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Line, { type: "monotone", dataKey: "stopped", stroke: "#a855f7", name: "Gestoppt", strokeWidth: 2 })
         ] }) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
@@ -24255,7 +24278,8 @@ const Dashboard = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Legend, {}),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "success", fill: "#10b981", name: "Erfolgreich" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "failure", fill: "#ef4444", name: "Fehlgeschlagen" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "failure", fill: "#ef4444", name: "Fehlgeschlagen" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "stopped", fill: "#a855f7", name: "Gestoppt" })
           ] }) })
         ] })
       ] }),
@@ -24278,7 +24302,8 @@ const Dashboard = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTooltip, {}) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Legend, {}),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "success", fill: "#10b981", name: "Erfolgreich" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "failure", fill: "#ef4444", name: "Fehlgeschlagen" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "failure", fill: "#ef4444", name: "Fehlgeschlagen" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "stopped", fill: "#a855f7", name: "Gestoppt" })
         ] }) })
       ] })
     ] }),

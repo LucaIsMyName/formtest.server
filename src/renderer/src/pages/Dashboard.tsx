@@ -6,7 +6,7 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/ui/Button";
-import { FileText, CreditCard, Terminal, BarChart3, Settings } from "lucide-react";
+import { FileText, CreditCard, Terminal, BarChart3, Settings, Play } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -93,12 +93,13 @@ const Dashboard: React.FC = () => {
     const grouped = sortedRuns.reduce((acc, run) => {
       const date = new Date(run.runAt).toLocaleDateString("de-DE");
       if (!acc[date]) {
-        acc[date] = { date, success: 0, failure: 0 };
+        acc[date] = { date, success: 0, failure: 0, stopped: 0 };
       }
       if (run.status === "SUCCESS") acc[date].success++;
       if (run.status === "FAILURE") acc[date].failure++;
+      if (run.status === "STOPPED") acc[date].stopped++;
       return acc;
-    }, {} as Record<string, { date: string; success: number; failure: number }>);
+    }, {} as Record<string, { date: string; success: number; failure: number; stopped: number }>);
     return Object.values(grouped);
   };
 
@@ -107,12 +108,13 @@ const Dashboard: React.FC = () => {
       const pm = paymentMethods.find((p) => p.id === run.paymentMethodId);
       const name = pm?.name || "Unknown";
       if (!acc[name]) {
-        acc[name] = { name, success: 0, failure: 0 };
+        acc[name] = { name, success: 0, failure: 0, stopped: 0 };
       }
       if (run.status === "SUCCESS") acc[name].success++;
       if (run.status === "FAILURE") acc[name].failure++;
+      if (run.status === "STOPPED") acc[name].stopped++;
       return acc;
-    }, {} as Record<string, { name: string; success: number; failure: number }>);
+    }, {} as Record<string, { name: string; success: number; failure: number; stopped: number }>);
     return Object.values(grouped);
   };
 
@@ -121,22 +123,28 @@ const Dashboard: React.FC = () => {
       const form = forms.find((f) => f.id === run.formId);
       const name = form?.name || "Unknown";
       if (!acc[name]) {
-        acc[name] = { name, success: 0, failure: 0 };
+        acc[name] = { name, success: 0, failure: 0, stopped: 0 };
       }
       if (run.status === "SUCCESS") acc[name].success++;
       if (run.status === "FAILURE") acc[name].failure++;
+      if (run.status === "STOPPED") acc[name].stopped++;
       return acc;
-    }, {} as Record<string, { name: string; success: number; failure: number }>);
+    }, {} as Record<string, { name: string; success: number; failure: number; stopped: number }>);
     return Object.values(grouped);
   };
 
   const prepareSuccessRateData = () => {
     const successful = testRuns.filter((r) => r.status === "SUCCESS").length;
     const failed = testRuns.filter((r) => r.status === "FAILURE").length;
-    return [
+    const stopped = testRuns.filter((r) => r.status === "STOPPED").length;
+    const data = [
       { name: "Erfolgreich", value: successful, color: "#10b981" },
       { name: "Fehlgeschlagen", value: failed, color: "#ef4444" },
     ];
+    if (stopped > 0) {
+      data.push({ name: "Gestoppt", value: stopped, color: "#a855f7" });
+    }
+    return data;
   };
 
   // Separate initial load from stats calculation to fix stale closure issue
@@ -191,6 +199,9 @@ const Dashboard: React.FC = () => {
         break;
       case "view-results":
         navigate("/test-results");
+        break;
+      case "autopilot":
+        navigate("/schedules");
         break;
       case "settings":
         navigate("/settings");
@@ -263,6 +274,15 @@ const Dashboard: React.FC = () => {
           className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <BarChart3 className="w-4 h-4 text-yellow-500 dark:text-yellow-400 mr-2 transition-transform" />
           <span className="text-gray-900 dark:text-white">Ergebnisse</span>
+        </Button>
+
+        <Button
+          onClick={() => handleQuickAction("autopilot")}
+          variant="outline"
+          size="sm"
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          <Play className="w-4 h-4 text-cyan-500 dark:text-cyan-400 mr-2 transition-transform" />
+          <span className="text-gray-900 dark:text-white">Autopilot</span>
         </Button>
 
         <Button
@@ -362,6 +382,13 @@ const Dashboard: React.FC = () => {
                   name="Fehlgeschlagen"
                   strokeWidth={2}
                 />
+                <Line
+                  type="monotone"
+                  dataKey="stopped"
+                  stroke="#a855f7"
+                  name="Gestoppt"
+                  strokeWidth={2}
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -447,6 +474,11 @@ const Dashboard: React.FC = () => {
                     fill="#ef4444"
                     name="Fehlgeschlagen"
                   />
+                  <Bar
+                    dataKey="stopped"
+                    fill="#a855f7"
+                    name="Gestoppt"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -491,6 +523,11 @@ const Dashboard: React.FC = () => {
                   dataKey="failure"
                   fill="#ef4444"
                   name="Fehlgeschlagen"
+                />
+                <Bar
+                  dataKey="stopped"
+                  fill="#a855f7"
+                  name="Gestoppt"
                 />
               </BarChart>
             </ResponsiveContainer>

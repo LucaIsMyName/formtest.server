@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-afu4Sk4T.js","./app.config-KSZPYlnw.js","./Skeleton-DKWULUnj.js","./Forms-ccKPoHAU.js","./IconPicker-Bq2NApGK.js","./Table-CET9ScV0.js","./Badge-D-nnZLTW.js","./upload-DTTmLK8T.js","./useFilterableData-D41UfpB_.js","./PaymentMethods-Bsbs6_NW.js","./Settings-BjMPnUWs.js","./TestResults-DnY-WvlE.js","./InfoDoku-CUQIEx6O.js","./Schedules--nmvc1lY.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-8XUsIka4.js","./app.config-KSZPYlnw.js","./Skeleton-BMSp2vpZ.js","./Forms-N060oYhj.js","./IconPicker-BooHE_W6.js","./Table-DnHrHGtZ.js","./DeleteConfirmDialog-HPDCok5b.js","./upload-v9bFGKTb.js","./useFilterableData-C8SGjDHA.js","./PaymentMethods-BHW9sJTW.js","./Settings-DUOYu8gf.js","./TestResults-DxJyIuS5.js","./InfoDoku-Cgcz-4y3.js","./Schedules-0R5_XvHj.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -29359,7 +29359,7 @@ const TestRunDialog = (t0) => {
   }
   let t41;
   if ($2[97] !== t31 || $2[98] !== t32 || $2[99] !== t40) {
-    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "!w-[calc(100vw-2rem)] !max-w-[calc(100vw-2rem)] !h-[calc(100vh-2rem)] !max-h-[calc(100vh-2rem)] flex flex-col p-0 gap-0", children: [
+    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "!w-[calc(100vw-8rem)] !max-w-[calc(100vw-8rem)] !h-[calc(100vh-8rem)] !max-h-[calc(100vh-8rem)] flex flex-col p-0 gap-0", children: [
       t16,
       t31,
       t32,
@@ -29715,6 +29715,210 @@ function B({ asChild: r2, children: o2 }, n2) {
   return r2 && reactExports.isValidElement(o2) ? reactExports.cloneElement(Me(o2), { ref: o2.ref }, n2(o2.props.children)) : n2(o2);
 }
 var Te = { position: "absolute", width: "1px", height: "1px", padding: "0", margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", borderWidth: "0" };
+const badgeVariants = cva("inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-medium font-mono rounded-full border transition-colors", {
+  variants: {
+    variant: {
+      default: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600",
+      success: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700",
+      error: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-300 dark:border-red-700",
+      warning: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-700",
+      info: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700",
+      active: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700",
+      inactive: "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600",
+      running: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700",
+      pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-700",
+      stopped: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700"
+    },
+    size: {
+      sm: "text-[10px] px-1.5 py-0.5",
+      md: "text-[11px] px-2 py-0.5",
+      lg: "text-xs px-2.5 py-1"
+    }
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "md"
+  }
+});
+const Badge = reactExports.forwardRef((t0, ref) => {
+  const $2 = dist.c(17);
+  let children;
+  let className;
+  let icon;
+  let props;
+  let size2;
+  let variant;
+  if ($2[0] !== t0) {
+    ({
+      className,
+      variant,
+      size: size2,
+      icon,
+      children,
+      ...props
+    } = t0);
+    $2[0] = t0;
+    $2[1] = children;
+    $2[2] = className;
+    $2[3] = icon;
+    $2[4] = props;
+    $2[5] = size2;
+    $2[6] = variant;
+  } else {
+    children = $2[1];
+    className = $2[2];
+    icon = $2[3];
+    props = $2[4];
+    size2 = $2[5];
+    variant = $2[6];
+  }
+  let t1;
+  if ($2[7] !== className || $2[8] !== size2 || $2[9] !== variant) {
+    t1 = cn(badgeVariants({
+      variant,
+      size: size2
+    }), className);
+    $2[7] = className;
+    $2[8] = size2;
+    $2[9] = variant;
+    $2[10] = t1;
+  } else {
+    t1 = $2[10];
+  }
+  let t2;
+  if ($2[11] !== children || $2[12] !== icon || $2[13] !== props || $2[14] !== ref || $2[15] !== t1) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { ref, className: t1, ...props, children: [
+      icon,
+      children
+    ] });
+    $2[11] = children;
+    $2[12] = icon;
+    $2[13] = props;
+    $2[14] = ref;
+    $2[15] = t1;
+    $2[16] = t2;
+  } else {
+    t2 = $2[16];
+  }
+  return t2;
+});
+Badge.displayName = "Badge";
+const StatusBadge = (t0) => {
+  const $2 = dist.c(15);
+  let children;
+  let props;
+  let status;
+  if ($2[0] !== t0) {
+    ({
+      status,
+      children,
+      ...props
+    } = t0);
+    $2[0] = t0;
+    $2[1] = children;
+    $2[2] = props;
+    $2[3] = status;
+  } else {
+    children = $2[1];
+    props = $2[2];
+    status = $2[3];
+  }
+  let t1;
+  if ($2[4] !== status) {
+    t1 = () => {
+      switch (status.toUpperCase()) {
+        case "SUCCESS":
+        case "ACTIVE": {
+          return "success";
+        }
+        case "FAILURE":
+        case "ERROR": {
+          return "error";
+        }
+        case "RUNNING": {
+          return "running";
+        }
+        case "PENDING": {
+          return "pending";
+        }
+        case "STOPPED": {
+          return "stopped";
+        }
+        case "INACTIVE": {
+          return "inactive";
+        }
+        default: {
+          return "default";
+        }
+      }
+    };
+    $2[4] = status;
+    $2[5] = t1;
+  } else {
+    t1 = $2[5];
+  }
+  const getVariant = t1;
+  let t2;
+  if ($2[6] !== status) {
+    t2 = () => {
+      switch (status.toUpperCase()) {
+        case "SUCCESS":
+        case "ACTIVE": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M5 13l4 4L19 7" }) });
+        }
+        case "FAILURE":
+        case "ERROR": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M6 18L18 6M6 6l12 12" }) });
+        }
+        case "RUNNING": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "relative flex h-3 w-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "relative inline-flex rounded-full h-3 w-3 bg-blue-500" })
+          ] });
+        }
+        case "PENDING": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" }) });
+        }
+        case "STOPPED": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "6", y: "6", width: "12", height: "12", rx: "1" }) });
+        }
+        case "INACTIVE": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" }) });
+        }
+        default: {
+          return null;
+        }
+      }
+    };
+    $2[6] = status;
+    $2[7] = t2;
+  } else {
+    t2 = $2[7];
+  }
+  const getIcon = t2;
+  const t3 = getVariant();
+  let t4;
+  if ($2[8] !== getIcon) {
+    t4 = getIcon();
+    $2[8] = getIcon;
+    $2[9] = t4;
+  } else {
+    t4 = $2[9];
+  }
+  const t5 = children || status;
+  let t6;
+  if ($2[10] !== props || $2[11] !== t3 || $2[12] !== t4 || $2[13] !== t5) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: t3, icon: t4, ...props, children: t5 });
+    $2[10] = props;
+    $2[11] = t3;
+    $2[12] = t4;
+    $2[13] = t5;
+    $2[14] = t6;
+  } else {
+    t6 = $2[14];
+  }
+  return t6;
+};
 const GlobalSearch = (t0) => {
   const $2 = dist.c(99);
   const {
@@ -30035,7 +30239,7 @@ const GlobalSearch = (t0) => {
               "..."
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs ml-auto px-2 py-0.5 rounded-full ${testRun.status === "SUCCESS" ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200" : "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200"}`, children: testRun.status })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: testRun.status, size: "sm", className: "ml-auto" })
         ] }, testRun.id);
       };
       $2[62] = forms;
@@ -30487,13 +30691,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-afu4Sk4T.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-ccKPoHAU.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-Bsbs6_NW.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BjMPnUWs.js"), true ? __vite__mapDeps([10,1,6,7,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DnY-WvlE.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-CUQIEx6O.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules--nmvc1lY.js"), true ? __vite__mapDeps([13,1,6,5,2,4,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-8XUsIka4.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-N060oYhj.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-BHW9sJTW.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-DUOYu8gf.js"), true ? __vite__mapDeps([10,1,6,7,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DxJyIuS5.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-Cgcz-4y3.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-0R5_XvHj.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -30533,74 +30737,74 @@ function App() {
 }
 client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsxRuntimeExports.jsx(React$3.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) }));
 export {
-  Building2 as $,
-  cn as A,
+  BookOpen as $,
+  useSize as A,
   Button as B,
   CreditCard as C,
-  useSettingsStore as D,
-  Sun as E,
+  Presence as D,
+  cn as E,
   FileText as F,
-  Moon as G,
-  CircleCheck as H,
+  useSettingsStore as G,
+  Sun as H,
   Item as I,
-  Play as J,
-  formatDateTime as K,
+  Moon as J,
+  CircleCheck as K,
   Label as L,
   Monitor as M,
-  formatDuration as N,
-  Link as O,
-  Primitive$1 as P,
-  CircleX as Q,
+  formatDateTime as N,
+  formatDuration as O,
+  Play as P,
+  Link as Q,
   React$4 as R,
   Settings$1 as S,
   Terminal as T,
-  Search as U,
-  create as V,
-  LoaderCircle as W,
+  CircleX as U,
+  Search as V,
+  create as W,
   X$1 as X,
-  createLucideIcon as Y,
-  Bell as Z,
-  BookOpen as _,
+  LoaderCircle as Y,
+  createLucideIcon as Z,
+  Bell as _,
   reactDomExports as a,
-  Check as a0,
-  CheckCheck as a1,
-  ChevronRight as a2,
-  Info as a3,
-  Landmark as a4,
-  LayoutDashboard as a5,
-  TestTube as a6,
-  DialogHeader as a7,
-  DialogTitle as a8,
-  DialogContent as a9,
-  DialogDescription as aA,
-  DialogFooter as aB,
-  cva as aC,
-  Dialog as aa,
-  Root$1 as ab,
-  Portal as ac,
-  Content as ad,
-  Title as ae,
-  Overlay as af,
-  Close as ag,
-  Description as ah,
-  React$3 as ai,
-  composeRefs as aj,
-  createPopperScope as ak,
-  Root2$1 as al,
-  useId as am,
-  createCollection as an,
-  useLayoutEffect2 as ao,
-  VISUALLY_HIDDEN_STYLES as ap,
-  Anchor as aq,
-  Portal$3 as ar,
-  useCallbackRef$1 as as,
-  hideOthers as at,
-  useFocusGuards as au,
-  ReactRemoveScroll as av,
-  FocusScope as aw,
-  DismissableLayer as ax,
-  Content$1 as ay,
-  Arrow as az,
+  Building2 as a0,
+  Check as a1,
+  CheckCheck as a2,
+  ChevronRight as a3,
+  Info as a4,
+  Landmark as a5,
+  LayoutDashboard as a6,
+  TestTube as a7,
+  DialogHeader as a8,
+  DialogTitle as a9,
+  Arrow as aA,
+  DialogDescription as aB,
+  DialogFooter as aC,
+  DialogContent as aa,
+  Dialog as ab,
+  Root$1 as ac,
+  Portal as ad,
+  Content as ae,
+  Title as af,
+  Overlay as ag,
+  Close as ah,
+  Description as ai,
+  React$3 as aj,
+  composeRefs as ak,
+  createPopperScope as al,
+  Root2$1 as am,
+  useId as an,
+  createCollection as ao,
+  useLayoutEffect2 as ap,
+  VISUALLY_HIDDEN_STYLES as aq,
+  Anchor as ar,
+  Portal$3 as as,
+  useCallbackRef$1 as at,
+  hideOthers as au,
+  useFocusGuards as av,
+  ReactRemoveScroll as aw,
+  FocusScope as ax,
+  DismissableLayer as ay,
+  Content$1 as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,
@@ -30612,18 +30816,18 @@ export {
   jsxRuntimeExports as j,
   Checkbox as k,
   useSearchParams as l,
-  formatDate as m,
-  createRovingFocusGroupScope as n,
-  useDirection as o,
-  useControllableState as p,
-  createContextScope as q,
+  StatusBadge as m,
+  formatDate as n,
+  createRovingFocusGroupScope as o,
+  useDirection as p,
+  useControllableState as q,
   reactExports as r,
-  Root$3 as s,
-  useComposedRefs as t,
+  createContextScope as s,
+  Root$3 as t,
   useNavigate as u,
-  composeEventHandlers as v,
+  Primitive$1 as v,
   withSelectorExports as w,
-  usePrevious as x,
-  useSize as y,
-  Presence as z
+  useComposedRefs as x,
+  composeEventHandlers as y,
+  usePrevious as z
 };
