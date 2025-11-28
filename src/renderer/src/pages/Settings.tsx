@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, AlertTriangle } from "lucide-react";
 import { CONFIG } from "../app.config";
-import Badge from "../components/ui/Button";
+import { StatusBadge } from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import type { ImportOptions, ImportResult } from "../../../common/types";
@@ -598,7 +598,7 @@ const Settings: React.FC = () => {
                       <Label
                         htmlFor="import-overwrite"
                         className="cursor-pointer font-normal text-gray-800 dark:text-gray-400">
-                        Überschreiben (In Development)
+                        Überschreiben <StatusBadge status="">Development</StatusBadge>
                       </Label>
                       <p className="text-xs text-gray-500 dark:text-gray-400">Alle ausgewählten Daten werden gelöscht und durch die importierten Daten ersetzt.</p>
                     </div>
