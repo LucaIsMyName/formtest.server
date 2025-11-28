@@ -100,12 +100,12 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && !isRunning && onClose()}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0 gap-0">
+      <DialogContent className="!w-[calc(100vw-8rem)] !max-w-[calc(100vw-8rem)] !h-[calc(100vh-8rem)] !max-h-[calc(100vh-8rem)] flex flex-col p-0 gap-0">
         <DialogHeader className="p-6 border-b border-gray-200 dark:border-gray-700">
           <DialogTitle>Tests ausführen</DialogTitle>
         </DialogHeader>
 
-        <div className="p-6 overflow-y-auto">
+        <div className="p-6 overflow-y-auto flex-1">
           {error && (
             <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
               <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
@@ -133,7 +133,7 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
                   <p className="text-sm">Erstelle und aktiviere zuerst Formulare</p>
                 </div>
               ) : (
-                <div className="space-y-2 max-h-64 overflow-y-auto">
+                <div className="space-y-2 overflow-y-auto">
                   {activeForms.map((form) => (
                     <div
                       key={form.id}
@@ -174,7 +174,7 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
                   <p className="text-sm">Erstelle und aktiviere zuerst Bezahlmethoden</p>
                 </div>
               ) : (
-                <div className="space-y-2 max-h-64 overflow-y-auto">
+                <div className="space-y-2 overflow-y-auto">
                   {activePaymentMethods.map((pm) => (
                     <div
                       key={pm.id}
@@ -202,28 +202,29 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
             </div>
           </div>
 
-          {/* Test Zusammenfassung */}
-          {totalTests > 0 && (
-            <div className="mt-6 flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-md">
-              <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
-                <span className="flex items-center gap-2">
-                  <span className="font-mono text-blue-600 dark:text-blue-400 font-medium">{selectedFormIds.length}</span>
-                  <span>Formular{selectedFormIds.length !== 1 ? 'e' : ''}</span>
-                </span>
-                <span className="text-gray-300 dark:text-gray-600">×</span>
-                <span className="flex items-center gap-2">
-                  <span className="font-mono text-purple-600 dark:text-purple-400 font-medium">{selectedPaymentMethodIds.length}</span>
-                  <span>Bezahlmethode{selectedPaymentMethodIds.length !== 1 ? 'n' : ''}</span>
-                </span>
-                <span className="text-gray-300 dark:text-gray-600">=</span>
-                <span className="flex items-center gap-2">
-                  <span className="font-mono text-gray-900 dark:text-white font-semibold">{totalTests}</span>
-                  <span>Test{totalTests !== 1 ? 's' : ''}</span>
-                </span>
-              </div>
-            </div>
-          )}
         </div>
+
+        {/* Test Zusammenfassung - Above Footer */}
+        {totalTests > 0 && (
+          <div className="px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
+            <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
+              <span className="flex items-center gap-2">
+                <span className="font-mono text-blue-600 dark:text-blue-400 font-medium">{selectedFormIds.length}</span>
+                <span>Formular{selectedFormIds.length !== 1 ? 'e' : ''}</span>
+              </span>
+              <span className="text-gray-300 dark:text-gray-600">×</span>
+              <span className="flex items-center gap-2">
+                <span className="font-mono text-purple-600 dark:text-purple-400 font-medium">{selectedPaymentMethodIds.length}</span>
+                <span>Bezahlmethode{selectedPaymentMethodIds.length !== 1 ? 'n' : ''}</span>
+              </span>
+              <span className="text-gray-300 dark:text-gray-600">=</span>
+              <span className="flex items-center gap-2">
+                <span className="font-mono text-gray-900 dark:text-white font-semibold">{totalTests}</span>
+                <span>Test{totalTests !== 1 ? 's' : ''}</span>
+              </span>
+            </div>
+          </div>
+        )}
 
         <DialogFooter className="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 sm:justify-between">
           <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center">

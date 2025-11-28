@@ -1,5 +1,5 @@
-import { i as dist, j as jsxRuntimeExports } from "./index-B6NKkVly.js";
-import { C as CONFIG } from "./app.config-CmoV5t6l.js";
+import { i as dist, j as jsxRuntimeExports } from "./index-COXSkP6q.js";
+import { C as CONFIG } from "./app.config-KSZPYlnw.js";
 const InfoDoku = () => {
   const $ = dist.c(50);
   let t0;
@@ -527,7 +527,7 @@ const InfoDoku = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
       " 1.0.8"
     ] });
-    t48 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Technologie-Stack:" }) });
+    t48 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Tech:" }) });
     $[47] = t47;
     $[48] = t48;
   } else {

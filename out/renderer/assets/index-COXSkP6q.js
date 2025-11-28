@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-D_4-Lss-.js","./app.config-CmoV5t6l.js","./Skeleton-tF4bq0fd.js","./Forms-Dpd7hkxA.js","./IconPicker-r7I3gDzh.js","./Table-D1OqQwad.js","./Badge-Bj6l6NVK.js","./upload-DhcSGkQC.js","./useFilterableData-CIzX1Mx3.js","./PaymentMethods-DXutYfzW.js","./Settings-CbH5_BSL.js","./TestResults-BOCawKhv.js","./InfoDoku-ByYZDVgE.js","./Schedules-B6ADXNwj.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-afu4Sk4T.js","./app.config-KSZPYlnw.js","./Skeleton-DKWULUnj.js","./Forms-ccKPoHAU.js","./IconPicker-Bq2NApGK.js","./Table-CET9ScV0.js","./Badge-D-nnZLTW.js","./upload-DTTmLK8T.js","./useFilterableData-D41UfpB_.js","./PaymentMethods-Bsbs6_NW.js","./Settings-BjMPnUWs.js","./TestResults-DnY-WvlE.js","./InfoDoku-CUQIEx6O.js","./Schedules--nmvc1lY.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -29135,7 +29135,7 @@ const TestRunDialog = (t0) => {
     t22 = activeForms_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8 text-gray-500 dark:text-gray-400", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Keine aktiven Formulare verfügbar" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Erstelle und aktiviere zuerst Formulare" })
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: activeForms_0.map((form_1) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700", children: [
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 overflow-y-auto", children: activeForms_0.map((form_1) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: `form-${form_1.id}`, checked: selectedFormIds.includes(form_1.id), onCheckedChange: () => handleFormToggle(form_1.id), disabled: isRunning }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Label, { htmlFor: `form-${form_1.id}`, className: "ml-3 flex-1 cursor-pointer font-normal", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900 dark:text-white", children: form_1.name }),
@@ -29201,7 +29201,7 @@ const TestRunDialog = (t0) => {
     t28 = activePaymentMethods_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8 text-gray-500 dark:text-gray-400", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Keine aktiven Bezahlmethoden verfügbar" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Erstelle und aktiviere zuerst Bezahlmethoden" })
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 max-h-64 overflow-y-auto", children: activePaymentMethods_0.map((pm_3) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700", children: [
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-2 overflow-y-auto", children: activePaymentMethods_0.map((pm_3) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: `pm-${pm_3.id}`, checked: selectedPaymentMethodIds.includes(pm_3.id), onCheckedChange: () => handlePaymentMethodToggle(pm_3.id), disabled: isRunning }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Label, { htmlFor: `pm-${pm_3.id}`, className: "ml-3 flex-1 cursor-pointer font-normal", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm font-medium text-gray-900 dark:text-white", children: pm_3.name }),
@@ -29246,8 +29246,20 @@ const TestRunDialog = (t0) => {
     t30 = $2[70];
   }
   let t31;
-  if ($2[71] !== selectedFormIds.length || $2[72] !== selectedPaymentMethodIds.length || $2[73] !== totalTests) {
-    t31 = totalTests > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400", children: [
+  if ($2[71] !== t17 || $2[72] !== t30) {
+    t31 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 overflow-y-auto flex-1", children: [
+      t17,
+      t30
+    ] });
+    $2[71] = t17;
+    $2[72] = t30;
+    $2[73] = t31;
+  } else {
+    t31 = $2[73];
+  }
+  let t32;
+  if ($2[74] !== selectedFormIds.length || $2[75] !== selectedPaymentMethodIds.length || $2[76] !== totalTests) {
+    t32 = totalTests > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-blue-600 dark:text-blue-400 font-medium", children: selectedFormIds.length }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
@@ -29272,100 +29284,88 @@ const TestRunDialog = (t0) => {
         ] })
       ] })
     ] }) });
-    $2[71] = selectedFormIds.length;
-    $2[72] = selectedPaymentMethodIds.length;
-    $2[73] = totalTests;
-    $2[74] = t31;
+    $2[74] = selectedFormIds.length;
+    $2[75] = selectedPaymentMethodIds.length;
+    $2[76] = totalTests;
+    $2[77] = t32;
   } else {
-    t31 = $2[74];
-  }
-  let t32;
-  if ($2[75] !== t17 || $2[76] !== t30 || $2[77] !== t31) {
-    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 overflow-y-auto", children: [
-      t17,
-      t30,
-      t31
-    ] });
-    $2[75] = t17;
-    $2[76] = t30;
-    $2[77] = t31;
-    $2[78] = t32;
-  } else {
-    t32 = $2[78];
+    t32 = $2[77];
   }
   let t33;
-  if ($2[79] !== isRunning || $2[80] !== totalTests) {
+  if ($2[78] !== isRunning || $2[79] !== totalTests) {
     t33 = isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" }),
       "Tests werden ausgeführt..."
     ] }) : `Bereit für ${totalTests} Test${totalTests !== 1 ? "s" : ""}`;
-    $2[79] = isRunning;
-    $2[80] = totalTests;
-    $2[81] = t33;
+    $2[78] = isRunning;
+    $2[79] = totalTests;
+    $2[80] = t33;
   } else {
-    t33 = $2[81];
+    t33 = $2[80];
   }
   let t34;
-  if ($2[82] !== t33) {
+  if ($2[81] !== t33) {
     t34 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400 flex items-center", children: t33 });
-    $2[82] = t33;
-    $2[83] = t34;
+    $2[81] = t33;
+    $2[82] = t34;
   } else {
-    t34 = $2[83];
+    t34 = $2[82];
   }
   let t35;
-  if ($2[84] !== isRunning || $2[85] !== onClose) {
+  if ($2[83] !== isRunning || $2[84] !== onClose) {
     t35 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: onClose, variant: "secondary", size: "md", disabled: isRunning, children: "Abbrechen" });
-    $2[84] = isRunning;
-    $2[85] = onClose;
-    $2[86] = t35;
+    $2[83] = isRunning;
+    $2[84] = onClose;
+    $2[85] = t35;
   } else {
-    t35 = $2[86];
+    t35 = $2[85];
   }
   const t36 = isRunning || totalTests === 0;
   const t37 = isRunning ? "Läuft..." : `${totalTests} Test${totalTests !== 1 ? "s" : ""} starten`;
   let t38;
-  if ($2[87] !== handleRunTests || $2[88] !== isRunning || $2[89] !== t36 || $2[90] !== t37) {
+  if ($2[86] !== handleRunTests || $2[87] !== isRunning || $2[88] !== t36 || $2[89] !== t37) {
     t38 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleRunTests, variant: "primary", size: "md", isLoading: isRunning, disabled: t36, children: t37 });
-    $2[87] = handleRunTests;
-    $2[88] = isRunning;
-    $2[89] = t36;
-    $2[90] = t37;
-    $2[91] = t38;
+    $2[86] = handleRunTests;
+    $2[87] = isRunning;
+    $2[88] = t36;
+    $2[89] = t37;
+    $2[90] = t38;
   } else {
-    t38 = $2[91];
+    t38 = $2[90];
   }
   let t39;
-  if ($2[92] !== t35 || $2[93] !== t38) {
+  if ($2[91] !== t35 || $2[92] !== t38) {
     t39 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
       t35,
       t38
     ] });
-    $2[92] = t35;
-    $2[93] = t38;
-    $2[94] = t39;
+    $2[91] = t35;
+    $2[92] = t38;
+    $2[93] = t39;
   } else {
-    t39 = $2[94];
+    t39 = $2[93];
   }
   let t40;
-  if ($2[95] !== t34 || $2[96] !== t39) {
+  if ($2[94] !== t34 || $2[95] !== t39) {
     t40 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 sm:justify-between", children: [
       t34,
       t39
     ] });
-    $2[95] = t34;
-    $2[96] = t39;
-    $2[97] = t40;
+    $2[94] = t34;
+    $2[95] = t39;
+    $2[96] = t40;
   } else {
-    t40 = $2[97];
+    t40 = $2[96];
   }
   let t41;
-  if ($2[98] !== t32 || $2[99] !== t40) {
-    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "sm:max-w-4xl max-h-[90vh] flex flex-col p-0 gap-0", children: [
+  if ($2[97] !== t31 || $2[98] !== t32 || $2[99] !== t40) {
+    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "!w-[calc(100vw-2rem)] !max-w-[calc(100vw-2rem)] !h-[calc(100vh-2rem)] !max-h-[calc(100vh-2rem)] flex flex-col p-0 gap-0", children: [
       t16,
+      t31,
       t32,
       t40
     ] });
+    $2[97] = t31;
     $2[98] = t32;
     $2[99] = t40;
     $2[100] = t41;
@@ -30487,13 +30487,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-D_4-Lss-.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Dpd7hkxA.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-DXutYfzW.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-CbH5_BSL.js"), true ? __vite__mapDeps([10,1,6,7,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-BOCawKhv.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-ByYZDVgE.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-B6ADXNwj.js"), true ? __vite__mapDeps([13,1,6,5,2,4,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-afu4Sk4T.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-ccKPoHAU.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-Bsbs6_NW.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BjMPnUWs.js"), true ? __vite__mapDeps([10,1,6,7,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DnY-WvlE.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-CUQIEx6O.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules--nmvc1lY.js"), true ? __vite__mapDeps([13,1,6,5,2,4,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
