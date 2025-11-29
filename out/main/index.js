@@ -2129,6 +2129,7 @@ class TestQueue {
     const waitTime = Date.now() - this.currentTest.addedAt;
     console.log(`[TestQueue] Starting test ${testRunId} (waited ${waitTime}ms in queue). Remaining in queue: ${this.queue.length}`);
     try {
+      testRunQueries.updateStatus(testRunId, "RUNNING");
       await runSingleTest(testRunId, form, paymentMethod, settings);
       console.log(`[TestQueue] Test ${testRunId} completed`);
     } catch (error) {
@@ -2161,11 +2162,16 @@ class TestQueue {
   }
   /**
    * Clear the queue (does not stop current test)
+   * Updates database status for cleared tests to STOPPED
    */
   clear() {
-    const cleared = this.queue.length;
+    const clearedIds = this.queue.map((t) => t.testRunId);
+    for (const testRunId of clearedIds) {
+      testRunQueries.updateStatus(testRunId, "STOPPED");
+    }
     this.queue = [];
-    console.log(`[TestQueue] Cleared ${cleared} tests from queue`);
+    console.log(`[TestQueue] Cleared ${clearedIds.length} tests from queue`);
+    return { clearedIds };
   }
 }
 let testQueueInstance = null;
@@ -2428,8 +2434,8 @@ function setupIpcHandlers() {
             uuid: crypto.randomUUID(),
             formId: form.id,
             paymentMethodId: paymentMethod.id,
-            status: "RUNNING",
-            logDetails: JSON.stringify([`Test started for ${form.name} with ${paymentMethod.name}`]),
+            status: "QUEUED",
+            logDetails: JSON.stringify([`Test queued for ${form.name} with ${paymentMethod.name}`]),
             screenshotPath: void 0,
             errorMessage: void 0,
             durationMs: void 0,
@@ -2449,6 +2455,15 @@ function setupIpcHandlers() {
       console.error("Test execution error:", error);
       throw error;
     }
+  });
+  electron.ipcMain.handle("testQueue:getStatus", () => {
+    const testQueue = getTestQueue();
+    return testQueue.getStatus();
+  });
+  electron.ipcMain.handle("testQueue:clear", () => {
+    const testQueue = getTestQueue();
+    testQueue.clear();
+    return { success: true };
   });
   electron.ipcMain.handle("database:export", async (_event, options) => {
     try {

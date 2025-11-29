@@ -216,9 +216,11 @@ const TestResults: React.FC = () => {
     }));
   }, [testRuns, forms, paymentMethods]);
 
-  // Split into running and finished
+  // Split into running/queued and finished
   const runningTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status === "RUNNING"), [testRunsWithNames]);
-  const finishedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status !== "RUNNING"), [testRunsWithNames]);
+  const queuedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status === "QUEUED"), [testRunsWithNames]);
+  const activeTests = useMemo(() => [...runningTests, ...queuedTests], [runningTests, queuedTests]);
+  const finishedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status !== "RUNNING" && tr.status !== "QUEUED"), [testRunsWithNames]);
 
   // Timer effect for running tests - updates every second
   useEffect(() => {
@@ -341,9 +343,10 @@ const TestResults: React.FC = () => {
   const handleSelectTestRun = (id: number | null) => {
     setSelectedTestRun(id);
     if (id) {
-      setSearchParams({ id: String(id) });
+      // Use replace to avoid polluting browser history with drawer state
+      setSearchParams({ id: String(id) }, { replace: true });
     } else {
-      setSearchParams({});
+      setSearchParams({}, { replace: true });
     }
   };
 
@@ -480,7 +483,7 @@ const TestResults: React.FC = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className={CONFIG.style.title.className}>Test Resultate</h1>
+        <h1 className={CONFIG.style.title.className}>Tests</h1>
         <div className="flex items-center gap-3">
           <Button
             onClick={loadTestRuns}
@@ -519,11 +522,11 @@ const TestResults: React.FC = () => {
       </div>
 
       {/* Running Tests Table */}
-      {runningTests.length > 0 && (
+      {activeTests.length > 0 && (
         <div className="mt-4 mb-6">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            Laufende Tests ({runningTests.length})
+            Laufende Tests ({runningTests.length}{queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
           </h2>
           <div className="bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-lg shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
@@ -539,12 +542,13 @@ const TestResults: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {runningTests.map((testRun) => {
+                  {activeTests.map((testRun) => {
                     const isSelected = selectedTestRun === testRun.id;
+                    const isQueued = testRun.status === "QUEUED";
                     return (
                       <TableRow
                         key={testRun.id}
-                        className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
+                        className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : isQueued ? "bg-amber-50/50 dark:bg-amber-900/10" : "bg-white dark:bg-gray-800"}`}
                         onClick={() => handleSelectTestRun(testRun.id)}>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1 group">

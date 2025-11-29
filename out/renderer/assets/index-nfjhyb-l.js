@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-tqn70r9v.js","./app.config-KSZPYlnw.js","./Skeleton-CzglAHl8.js","./Forms-BAbTNj5Y.js","./IconPicker-DExwtzAB.js","./Table-CKvJydMp.js","./DeleteConfirmDialog-B00geJkf.js","./upload-B-d2b6ZK.js","./useFilterableData-CYk0jbAY.js","./PaymentMethods-CKvi251q.js","./Settings-BdkQSi5q.js","./TestResults-CSlh5ztD.js","./InfoDoku-B59zWJ-J.js","./Schedules-UVInmvaE.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-KYk7jwRi.js","./app.config-KSZPYlnw.js","./Skeleton-B1jJRNkb.js","./Forms-Xf-IHZnK.js","./IconPicker-DcygsMqQ.js","./Table-CBBfXvNr.js","./DeleteConfirmDialog-BYc8nJOS.js","./upload-B0LzP2XK.js","./useFilterableData-CYyqvn4J.js","./PaymentMethods-Ci9vMJbu.js","./Settings-CaKy40DC.js","./TestResults-DHTLWTa5.js","./InfoDoku-9Px09evG.js","./Schedules-y1Nmsart.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -17489,18 +17489,18 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$r = [
+const __iconNode$s = [
   ["path", { d: "M5 12h14", key: "1ays0h" }],
   ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode$r);
+const ArrowRight = createLucideIcon("arrow-right", __iconNode$s);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$q = [
+const __iconNode$r = [
   ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
   [
     "path",
@@ -17510,14 +17510,14 @@ const __iconNode$q = [
     }
   ]
 ];
-const Bell = createLucideIcon("bell", __iconNode$q);
+const Bell = createLucideIcon("bell", __iconNode$r);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$p = [
+const __iconNode$q = [
   ["path", { d: "M12 7v14", key: "1akyts" }],
   [
     "path",
@@ -17527,14 +17527,14 @@ const __iconNode$p = [
     }
   ]
 ];
-const BookOpen = createLucideIcon("book-open", __iconNode$p);
+const BookOpen = createLucideIcon("book-open", __iconNode$q);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$o = [
+const __iconNode$p = [
   ["path", { d: "M10 12h4", key: "a56b0p" }],
   ["path", { d: "M10 8h4", key: "1sr2af" }],
   ["path", { d: "M14 21v-3a2 2 0 0 0-4 0v3", key: "1rgiei" }],
@@ -17547,7 +17547,20 @@ const __iconNode$o = [
   ],
   ["path", { d: "M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16", key: "16ra0t" }]
 ];
-const Building2 = createLucideIcon("building-2", __iconNode$o);
+const Building2 = createLucideIcon("building-2", __iconNode$p);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$o = [
+  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
+  ["path", { d: "M18 17V9", key: "2bz60n" }],
+  ["path", { d: "M13 17V5", key: "1frdt8" }],
+  ["path", { d: "M8 17v-3", key: "17ska0" }]
+];
+const ChartColumn = createLucideIcon("chart-column", __iconNode$o);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17555,39 +17568,34 @@ const Building2 = createLucideIcon("building-2", __iconNode$o);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$n = [
-  ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
-  ["path", { d: "M18 17V9", key: "2bz60n" }],
-  ["path", { d: "M13 17V5", key: "1frdt8" }],
-  ["path", { d: "M8 17v-3", key: "17ska0" }]
-];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$n);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$m = [
   ["path", { d: "M18 6 7 17l-5-5", key: "116fxf" }],
   ["path", { d: "m22 10-7.5 7.5L13 16", key: "ke71qq" }]
 ];
-const CheckCheck = createLucideIcon("check-check", __iconNode$m);
+const CheckCheck = createLucideIcon("check-check", __iconNode$n);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$l = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$l);
+const __iconNode$m = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$m);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$k = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$k);
+const __iconNode$l = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$l);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$k = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$k);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -24006,7 +24014,7 @@ var Portal$2 = TooltipPortal;
 var Content2$1 = TooltipContent;
 var Arrow2 = TooltipArrow;
 const CustomTitleBar = (t0) => {
-  const $2 = dist.c(55);
+  const $2 = dist.c(80);
   const {
     onRunAllTests,
     onOpenSearch,
@@ -24015,11 +24023,32 @@ const CustomTitleBar = (t0) => {
     currentTheme: t1
   } = t0;
   const currentTheme = t1 === void 0 ? "system" : t1;
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMaximized, setIsMaximized] = reactExports.useState(false);
+  const [canGoBack, setCanGoBack] = reactExports.useState(false);
   let t2;
-  let t3;
   if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
     t2 = () => {
+      setCanGoBack(window.history.length > 1);
+    };
+    $2[0] = t2;
+  } else {
+    t2 = $2[0];
+  }
+  let t3;
+  if ($2[1] !== location) {
+    t3 = [location];
+    $2[1] = location;
+    $2[2] = t3;
+  } else {
+    t3 = $2[2];
+  }
+  reactExports.useEffect(t2, t3);
+  let t4;
+  let t5;
+  if ($2[3] === Symbol.for("react.memo_cache_sentinel")) {
+    t4 = () => {
       const checkMaximized = async () => {
         if (window.api?.windowControls) {
           const maximized = await window.api.windowControls.isMaximized();
@@ -24028,33 +24057,33 @@ const CustomTitleBar = (t0) => {
       };
       checkMaximized();
     };
-    t3 = [];
-    $2[0] = t2;
-    $2[1] = t3;
+    t5 = [];
+    $2[3] = t4;
+    $2[4] = t5;
   } else {
-    t2 = $2[0];
-    t3 = $2[1];
+    t4 = $2[3];
+    t5 = $2[4];
   }
-  reactExports.useEffect(t2, t3);
+  reactExports.useEffect(t4, t5);
   const handleClose = _temp$2;
   const handleMinimize = _temp2$1;
-  let t4;
-  if ($2[2] === Symbol.for("react.memo_cache_sentinel")) {
-    t4 = async () => {
+  let t6;
+  if ($2[5] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = async () => {
       if (window.api?.windowControls) {
         await window.api.windowControls.maximize();
         const maximized_0 = await window.api.windowControls.isMaximized();
         setIsMaximized(maximized_0);
       }
     };
-    $2[2] = t4;
+    $2[5] = t6;
   } else {
-    t4 = $2[2];
+    t6 = $2[5];
   }
-  const handleMaximize = t4;
-  let t5;
-  if ($2[3] !== currentTheme) {
-    t5 = () => {
+  const handleMaximize = t6;
+  let t7;
+  if ($2[6] !== currentTheme) {
+    t7 = () => {
       switch (currentTheme) {
         case "light": {
           return /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { size: 14 });
@@ -24067,15 +24096,15 @@ const CustomTitleBar = (t0) => {
         }
       }
     };
-    $2[3] = currentTheme;
-    $2[4] = t5;
+    $2[6] = currentTheme;
+    $2[7] = t7;
   } else {
-    t5 = $2[4];
+    t7 = $2[7];
   }
-  const getThemeIcon = t5;
-  let t6;
-  if ($2[5] !== currentTheme) {
-    t6 = () => {
+  const getThemeIcon = t7;
+  let t8;
+  if ($2[8] !== currentTheme) {
+    t8 = () => {
       switch (currentTheme) {
         case "light": {
           return "Theme: Hell";
@@ -24088,56 +24117,35 @@ const CustomTitleBar = (t0) => {
         }
       }
     };
-    $2[5] = currentTheme;
-    $2[6] = t6;
+    $2[8] = currentTheme;
+    $2[9] = t8;
   } else {
-    t6 = $2[6];
+    t8 = $2[9];
   }
-  const getThemeLabel = t6;
-  let t7;
-  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = {
+  const getThemeLabel = t8;
+  let t9;
+  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
+    t9 = {
       WebkitAppRegion: "drag"
     };
-    $2[7] = t7;
-  } else {
-    t7 = $2[7];
-  }
-  let t8;
-  if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = {
-      width: "clamp(16rem, 22.5vw, 40rem)",
-      minWidth: "fit-content"
-    };
-    $2[8] = t8;
-  } else {
-    t8 = $2[8];
-  }
-  let t9;
-  if ($2[9] !== isMaximized) {
-    t9 = /* @__PURE__ */ jsxRuntimeExports.jsx(TrafficLights, { onClose: handleClose, onMinimize: handleMinimize, onMaximize: handleMaximize, isMaximized });
-    $2[9] = isMaximized;
     $2[10] = t9;
   } else {
     t9 = $2[10];
   }
   let t10;
   if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "cursor-grabbing  text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-mono uppercase  cursor-grabbing ", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Formtest" }),
-      ".Server"
-    ] }) });
+    t10 = {
+      width: "clamp(16rem, 22.5vw, 40rem)",
+      minWidth: "fit-content"
+    };
     $2[11] = t10;
   } else {
     t10 = $2[11];
   }
   let t11;
-  if ($2[12] !== t9) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center px-5 pl-6 h-full", style: t8, children: [
-      t9,
-      t10
-    ] });
-    $2[12] = t9;
+  if ($2[12] !== isMaximized) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsx(TrafficLights, { onClose: handleClose, onMinimize: handleMinimize, onMaximize: handleMaximize, isMaximized });
+    $2[12] = isMaximized;
     $2[13] = t11;
   } else {
     t11 = $2[13];
@@ -24152,214 +24160,348 @@ const CustomTitleBar = (t0) => {
     t12 = $2[14];
   }
   let t13;
-  let t14;
-  if ($2[15] === Symbol.for("react.memo_cache_sentinel")) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 14, className: "ml-2 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors" });
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[12px] text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors", children: "Suche..." });
-    $2[15] = t13;
-    $2[16] = t14;
+  if ($2[15] !== navigate) {
+    t13 = () => navigate(-1);
+    $2[15] = navigate;
+    $2[16] = t13;
   } else {
-    t13 = $2[15];
-    t14 = $2[16];
+    t13 = $2[16];
   }
+  const t14 = !canGoBack;
   let t15;
   if ($2[17] === Symbol.for("react.memo_cache_sentinel")) {
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsxs("kbd", { className: "ml-auto font-mono px-1.5 py-0.5 mr-1 text-gray-400 flex items-center gap-1", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg leading-[1]", children: "⌘" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs leading-[1]", children: "K" })
-    ] });
+    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { size: 14, strokeWidth: 2.5 });
     $2[17] = t15;
   } else {
     t15 = $2[17];
   }
   let t16;
-  if ($2[18] !== onOpenSearch) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", style: t12, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: onOpenSearch, className: "w-full max-w-[100%] px-0.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 group", children: [
-      t13,
-      t14,
-      t15
-    ] }) });
-    $2[18] = onOpenSearch;
-    $2[19] = t16;
+  if ($2[18] !== t13 || $2[19] !== t14) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: t13, disabled: t14, className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed", "aria-label": "Zurück", children: t15 }) });
+    $2[18] = t13;
+    $2[19] = t14;
+    $2[20] = t16;
   } else {
-    t16 = $2[19];
+    t16 = $2[20];
   }
   let t17;
-  if ($2[20] === Symbol.for("react.memo_cache_sentinel")) {
-    t17 = {
-      WebkitAppRegion: "no-drag"
-    };
-    $2[20] = t17;
+  if ($2[21] === Symbol.for("react.memo_cache_sentinel")) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+      "Zurück",
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
+    ] }) });
+    $2[21] = t17;
   } else {
-    t17 = $2[20];
+    t17 = $2[21];
   }
   let t18;
-  if ($2[21] === Symbol.for("react.memo_cache_sentinel")) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(NotificationButton, {});
-    $2[21] = t18;
+  if ($2[22] !== t16) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t16,
+      t17
+    ] });
+    $2[22] = t16;
+    $2[23] = t18;
   } else {
-    t18 = $2[21];
+    t18 = $2[23];
   }
   let t19;
-  if ($2[22] === Symbol.for("react.memo_cache_sentinel")) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { size: 14 });
-    $2[22] = t19;
+  if ($2[24] !== navigate) {
+    t19 = () => navigate(1);
+    $2[24] = navigate;
+    $2[25] = t19;
   } else {
-    t19 = $2[22];
+    t19 = $2[25];
   }
   let t20;
-  if ($2[23] !== onRunAllTests) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onRunAllTests, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Alle Tests ausführen", children: t19 }) });
-    $2[23] = onRunAllTests;
-    $2[24] = t20;
+  if ($2[26] === Symbol.for("react.memo_cache_sentinel")) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14, strokeWidth: 2.5 });
+    $2[26] = t20;
   } else {
-    t20 = $2[24];
+    t20 = $2[26];
   }
   let t21;
-  if ($2[25] === Symbol.for("react.memo_cache_sentinel")) {
-    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+  if ($2[27] !== t19) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: t19, className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed", "aria-label": "Vorwärts", children: t20 }) });
+    $2[27] = t19;
+    $2[28] = t21;
+  } else {
+    t21 = $2[28];
+  }
+  let t22;
+  if ($2[29] === Symbol.for("react.memo_cache_sentinel")) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+      "Vorwärts",
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
+    ] }) });
+    $2[29] = t22;
+  } else {
+    t22 = $2[29];
+  }
+  let t23;
+  if ($2[30] !== t21) {
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t21,
+      t22
+    ] });
+    $2[30] = t21;
+    $2[31] = t23;
+  } else {
+    t23 = $2[31];
+  }
+  let t24;
+  if ($2[32] !== t18 || $2[33] !== t23) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-0.5 ml-3", style: t12, children: [
+      t18,
+      t23
+    ] });
+    $2[32] = t18;
+    $2[33] = t23;
+    $2[34] = t24;
+  } else {
+    t24 = $2[34];
+  }
+  let t25;
+  if ($2[35] === Symbol.for("react.memo_cache_sentinel")) {
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "cursor-grabbing text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-3 leading-[0] whitespace-nowrap", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "font-mono uppercase cursor-grabbing", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "FT" }),
+      ".S"
+    ] }) });
+    $2[35] = t25;
+  } else {
+    t25 = $2[35];
+  }
+  let t26;
+  if ($2[36] !== t11 || $2[37] !== t24) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center px-5 pl-6 h-full", style: t10, children: [
+      t11,
+      t24,
+      t25
+    ] });
+    $2[36] = t11;
+    $2[37] = t24;
+    $2[38] = t26;
+  } else {
+    t26 = $2[38];
+  }
+  let t27;
+  if ($2[39] === Symbol.for("react.memo_cache_sentinel")) {
+    t27 = {
+      WebkitAppRegion: "no-drag"
+    };
+    $2[39] = t27;
+  } else {
+    t27 = $2[39];
+  }
+  let t28;
+  let t29;
+  if ($2[40] === Symbol.for("react.memo_cache_sentinel")) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 14, className: "ml-2 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors" });
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[12px] text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors", children: "Suche..." });
+    $2[40] = t28;
+    $2[41] = t29;
+  } else {
+    t28 = $2[40];
+    t29 = $2[41];
+  }
+  let t30;
+  if ($2[42] === Symbol.for("react.memo_cache_sentinel")) {
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsxs("kbd", { className: "ml-auto font-mono px-1.5 py-0.5 mr-1 text-gray-400 flex items-center gap-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-lg leading-[1]", children: "⌘" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs leading-[1]", children: "K" })
+    ] });
+    $2[42] = t30;
+  } else {
+    t30 = $2[42];
+  }
+  let t31;
+  if ($2[43] !== onOpenSearch) {
+    t31 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1", style: t27, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: onOpenSearch, className: "w-full max-w-[100%] px-0.5 py-0.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 group", children: [
+      t28,
+      t29,
+      t30
+    ] }) });
+    $2[43] = onOpenSearch;
+    $2[44] = t31;
+  } else {
+    t31 = $2[44];
+  }
+  let t32;
+  if ($2[45] === Symbol.for("react.memo_cache_sentinel")) {
+    t32 = {
+      WebkitAppRegion: "no-drag"
+    };
+    $2[45] = t32;
+  } else {
+    t32 = $2[45];
+  }
+  let t33;
+  if ($2[46] === Symbol.for("react.memo_cache_sentinel")) {
+    t33 = /* @__PURE__ */ jsxRuntimeExports.jsx(NotificationButton, {});
+    $2[46] = t33;
+  } else {
+    t33 = $2[46];
+  }
+  let t34;
+  if ($2[47] === Symbol.for("react.memo_cache_sentinel")) {
+    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx(Terminal, { size: 14 });
+    $2[47] = t34;
+  } else {
+    t34 = $2[47];
+  }
+  let t35;
+  if ($2[48] !== onRunAllTests) {
+    t35 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onRunAllTests, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Alle Tests ausführen", children: t34 }) });
+    $2[48] = onRunAllTests;
+    $2[49] = t35;
+  } else {
+    t35 = $2[49];
+  }
+  let t36;
+  if ($2[50] === Symbol.for("react.memo_cache_sentinel")) {
+    t36 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
       "Alle Tests ausführen",
       /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
     ] }) });
-    $2[25] = t21;
+    $2[50] = t36;
   } else {
-    t21 = $2[25];
+    t36 = $2[50];
   }
-  let t22;
-  if ($2[26] !== t20) {
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-      t20,
-      t21
+  let t37;
+  if ($2[51] !== t35) {
+    t37 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t35,
+      t36
     ] });
-    $2[26] = t20;
-    $2[27] = t22;
+    $2[51] = t35;
+    $2[52] = t37;
   } else {
-    t22 = $2[27];
+    t37 = $2[52];
   }
-  let t23;
-  if ($2[28] !== getThemeIcon) {
-    t23 = getThemeIcon();
-    $2[28] = getThemeIcon;
-    $2[29] = t23;
+  let t38;
+  if ($2[53] !== getThemeIcon) {
+    t38 = getThemeIcon();
+    $2[53] = getThemeIcon;
+    $2[54] = t38;
   } else {
-    t23 = $2[29];
+    t38 = $2[54];
   }
-  let t24;
-  if ($2[30] !== onToggleTheme || $2[31] !== t23) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onToggleTheme, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Theme wechseln", children: t23 }) });
-    $2[30] = onToggleTheme;
-    $2[31] = t23;
-    $2[32] = t24;
+  let t39;
+  if ($2[55] !== onToggleTheme || $2[56] !== t38) {
+    t39 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onToggleTheme, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Theme wechseln", children: t38 }) });
+    $2[55] = onToggleTheme;
+    $2[56] = t38;
+    $2[57] = t39;
   } else {
-    t24 = $2[32];
+    t39 = $2[57];
   }
-  const t25 = getThemeLabel();
-  let t26;
-  if ($2[33] === Symbol.for("react.memo_cache_sentinel")) {
-    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" });
-    $2[33] = t26;
+  const t40 = getThemeLabel();
+  let t41;
+  if ($2[58] === Symbol.for("react.memo_cache_sentinel")) {
+    t41 = /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" });
+    $2[58] = t41;
   } else {
-    t26 = $2[33];
+    t41 = $2[58];
   }
-  let t27;
-  if ($2[34] !== t25) {
-    t27 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
-      t25,
-      t26
+  let t42;
+  if ($2[59] !== t40) {
+    t42 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+      t40,
+      t41
     ] }) });
-    $2[34] = t25;
-    $2[35] = t27;
+    $2[59] = t40;
+    $2[60] = t42;
   } else {
-    t27 = $2[35];
+    t42 = $2[60];
   }
-  let t28;
-  if ($2[36] !== t24 || $2[37] !== t27) {
-    t28 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-      t24,
-      t27
+  let t43;
+  if ($2[61] !== t39 || $2[62] !== t42) {
+    t43 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t39,
+      t42
     ] });
-    $2[36] = t24;
-    $2[37] = t27;
-    $2[38] = t28;
+    $2[61] = t39;
+    $2[62] = t42;
+    $2[63] = t43;
   } else {
-    t28 = $2[38];
+    t43 = $2[63];
   }
-  let t29;
-  if ($2[39] === Symbol.for("react.memo_cache_sentinel")) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx(Settings$1, { size: 14 });
-    $2[39] = t29;
+  let t44;
+  if ($2[64] === Symbol.for("react.memo_cache_sentinel")) {
+    t44 = /* @__PURE__ */ jsxRuntimeExports.jsx(Settings$1, { size: 14 });
+    $2[64] = t44;
   } else {
-    t29 = $2[39];
+    t44 = $2[64];
   }
-  let t30;
-  if ($2[40] !== onOpenSettings) {
-    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onOpenSettings, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Einstellungen öffnen", children: t29 }) });
-    $2[40] = onOpenSettings;
-    $2[41] = t30;
+  let t45;
+  if ($2[65] !== onOpenSettings) {
+    t45 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onOpenSettings, className: "p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Einstellungen öffnen", children: t44 }) });
+    $2[65] = onOpenSettings;
+    $2[66] = t45;
   } else {
-    t30 = $2[41];
+    t45 = $2[66];
   }
-  let t31;
-  if ($2[42] === Symbol.for("react.memo_cache_sentinel")) {
-    t31 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+  let t46;
+  if ($2[67] === Symbol.for("react.memo_cache_sentinel")) {
+    t46 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
       "Einstellungen öffnen",
       /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
     ] }) });
-    $2[42] = t31;
+    $2[67] = t46;
   } else {
-    t31 = $2[42];
+    t46 = $2[67];
   }
-  let t32;
-  if ($2[43] !== t30) {
-    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-      t30,
-      t31
+  let t47;
+  if ($2[68] !== t45) {
+    t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t45,
+      t46
     ] });
-    $2[43] = t30;
-    $2[44] = t32;
+    $2[68] = t45;
+    $2[69] = t47;
   } else {
-    t32 = $2[44];
+    t47 = $2[69];
   }
-  let t33;
-  if ($2[45] !== t22 || $2[46] !== t28 || $2[47] !== t32) {
-    t33 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", style: t17, children: [
-      t18,
-      t22,
-      t28,
-      t32
+  let t48;
+  if ($2[70] !== t37 || $2[71] !== t43 || $2[72] !== t47) {
+    t48 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", style: t32, children: [
+      t33,
+      t37,
+      t43,
+      t47
     ] });
-    $2[45] = t22;
-    $2[46] = t28;
-    $2[47] = t32;
-    $2[48] = t33;
+    $2[70] = t37;
+    $2[71] = t43;
+    $2[72] = t47;
+    $2[73] = t48;
   } else {
-    t33 = $2[48];
+    t48 = $2[73];
   }
-  let t34;
-  if ($2[49] !== t16 || $2[50] !== t33) {
-    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex items-center px-4 h-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[1040px] flex items-center gap-4", children: [
-      t16,
-      t33
+  let t49;
+  if ($2[74] !== t31 || $2[75] !== t48) {
+    t49 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex items-center px-4 h-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[1040px] flex items-center gap-4", children: [
+      t31,
+      t48
     ] }) });
-    $2[49] = t16;
-    $2[50] = t33;
-    $2[51] = t34;
+    $2[74] = t31;
+    $2[75] = t48;
+    $2[76] = t49;
   } else {
-    t34 = $2[51];
+    t49 = $2[76];
   }
-  let t35;
-  if ($2[52] !== t11 || $2[53] !== t34) {
-    t35 = /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative h-14 bg-gray-50 backdrop-blur-sm dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800", style: t7, children: [
-      t11,
-      t34
+  let t50;
+  if ($2[77] !== t26 || $2[78] !== t49) {
+    t50 = /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative h-14 bg-gray-50 backdrop-blur-sm dark:bg-gray-900 flex items-center select-none border-b border-gray-200 dark:border-gray-800", style: t9, children: [
+      t26,
+      t49
     ] }) });
-    $2[52] = t11;
-    $2[53] = t34;
-    $2[54] = t35;
+    $2[77] = t26;
+    $2[78] = t49;
+    $2[79] = t50;
   } else {
-    t35 = $2[54];
+    t50 = $2[79];
   }
-  return t35;
+  return t50;
 };
 async function _temp$2() {
   if (window.api?.windowControls) {
@@ -24371,6 +24513,159 @@ async function _temp2$1() {
     await window.api.windowControls.minimize();
   }
 }
+const Button = React$3.forwardRef((t0, ref) => {
+  const $2 = dist.c(32);
+  let children;
+  let condensed;
+  let disabled;
+  let props;
+  let t1;
+  let t2;
+  let t3;
+  let t4;
+  let to;
+  if ($2[0] !== t0) {
+    ({
+      className: t1,
+      variant: t2,
+      size: t3,
+      isLoading: t4,
+      disabled,
+      children,
+      condensed,
+      to,
+      ...props
+    } = t0);
+    $2[0] = t0;
+    $2[1] = children;
+    $2[2] = condensed;
+    $2[3] = disabled;
+    $2[4] = props;
+    $2[5] = t1;
+    $2[6] = t2;
+    $2[7] = t3;
+    $2[8] = t4;
+    $2[9] = to;
+  } else {
+    children = $2[1];
+    condensed = $2[2];
+    disabled = $2[3];
+    props = $2[4];
+    t1 = $2[5];
+    t2 = $2[6];
+    t3 = $2[7];
+    t4 = $2[8];
+    to = $2[9];
+  }
+  const className = t1 === void 0 ? "" : t1;
+  const variant = t2 === void 0 ? "primary" : t2;
+  const size2 = t3 === void 0 ? "md" : t3;
+  const isLoading = t4 === void 0 ? false : t4;
+  let t5;
+  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
+    t5 = {
+      primary: "font-[700] text-white bg-blue-600 dark:bg-blue-700 border border-1 dark:border-blue-700 border-blue-800 hover:bg-blue-700",
+      secondary: "font-[500] text-gray-800 dark:text-gray-200 bg-gray-50 border-1 dark:border-gray-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600",
+      outline: "font-[500] text-blue-600 dark:text-blue-400 bg-transparent border-1 border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20",
+      ghost: "font-[500] text-gray-700 dark:text-gray-300 bg-transparent border-1 border-transparent",
+      danger: "font-[700] text-white bg-red-600 dark:bg-red-700 border border-1 dark:border-red-800 border-red-700 hover:bg-red-700 focus:ring-red-500"
+    };
+    $2[10] = t5;
+  } else {
+    t5 = $2[10];
+  }
+  const variants = t5;
+  let t6;
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = {
+      sm: "px-2 py-1 text-xs",
+      md: "px-3.5 py-1.5 text-sm",
+      lg: "px-4 py-2 text-base"
+    };
+    $2[11] = t6;
+  } else {
+    t6 = $2[11];
+  }
+  const sizes = t6;
+  const variantClasses = variants[variant];
+  const sizeClasses = sizes[size2];
+  const condensedClasses = condensed ? "condensed" : null;
+  if (to) {
+    let t72;
+    if ($2[12] === Symbol.for("react.memo_cache_sentinel")) {
+      t72 = {
+        fontStretch: "115%"
+      };
+      $2[12] = t72;
+    } else {
+      t72 = $2[12];
+    }
+    const t82 = `${"inline-flex items-center justify-start rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+    const t92 = props;
+    let t102;
+    if ($2[13] !== isLoading) {
+      t102 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
+      $2[13] = isLoading;
+      $2[14] = t102;
+    } else {
+      t102 = $2[14];
+    }
+    let t112;
+    if ($2[15] !== children || $2[16] !== ref || $2[17] !== t102 || $2[18] !== t82 || $2[19] !== t92 || $2[20] !== to) {
+      t112 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { ref, style: t72, className: t82, ...t92, to, children: [
+        t102,
+        children
+      ] });
+      $2[15] = children;
+      $2[16] = ref;
+      $2[17] = t102;
+      $2[18] = t82;
+      $2[19] = t92;
+      $2[20] = to;
+      $2[21] = t112;
+    } else {
+      t112 = $2[21];
+    }
+    return t112;
+  }
+  let t7;
+  if ($2[22] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = {
+      fontStretch: "115%"
+    };
+    $2[22] = t7;
+  } else {
+    t7 = $2[22];
+  }
+  const t8 = `${"inline-flex items-center justify-start rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+  const t9 = disabled || isLoading;
+  let t10;
+  if ($2[23] !== isLoading) {
+    t10 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
+    $2[23] = isLoading;
+    $2[24] = t10;
+  } else {
+    t10 = $2[24];
+  }
+  let t11;
+  if ($2[25] !== children || $2[26] !== props || $2[27] !== ref || $2[28] !== t10 || $2[29] !== t8 || $2[30] !== t9) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { ref, style: t7, className: t8, disabled: t9, ...props, children: [
+      t10,
+      children
+    ] });
+    $2[25] = children;
+    $2[26] = props;
+    $2[27] = ref;
+    $2[28] = t10;
+    $2[29] = t8;
+    $2[30] = t9;
+    $2[31] = t11;
+  } else {
+    t11 = $2[31];
+  }
+  return t11;
+});
+Button.displayName = "Button";
 const useFormsStore = create((set, get) => ({
   forms: [],
   isLoading: false,
@@ -24622,117 +24917,6 @@ const useTestRunsStore = create((set, get) => ({
     }
   }
 }));
-const Button = React$3.forwardRef((t0, ref) => {
-  const $2 = dist.c(21);
-  let children;
-  let condensed;
-  let disabled;
-  let props;
-  let t1;
-  let t2;
-  let t3;
-  let t4;
-  if ($2[0] !== t0) {
-    ({
-      className: t1,
-      variant: t2,
-      size: t3,
-      isLoading: t4,
-      disabled,
-      children,
-      condensed,
-      ...props
-    } = t0);
-    $2[0] = t0;
-    $2[1] = children;
-    $2[2] = condensed;
-    $2[3] = disabled;
-    $2[4] = props;
-    $2[5] = t1;
-    $2[6] = t2;
-    $2[7] = t3;
-    $2[8] = t4;
-  } else {
-    children = $2[1];
-    condensed = $2[2];
-    disabled = $2[3];
-    props = $2[4];
-    t1 = $2[5];
-    t2 = $2[6];
-    t3 = $2[7];
-    t4 = $2[8];
-  }
-  const className = t1 === void 0 ? "" : t1;
-  const variant = t2 === void 0 ? "primary" : t2;
-  const size2 = t3 === void 0 ? "md" : t3;
-  const isLoading = t4 === void 0 ? false : t4;
-  let t5;
-  if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = {
-      primary: "font-[700] text-white bg-blue-600 dark:bg-blue-700 border border-1 dark:border-blue-700 border-blue-800 hover:bg-blue-700",
-      secondary: "font-[500] text-gray-800 dark:text-gray-200 bg-gray-50 border-1 dark:border-gray-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600",
-      outline: "font-[500] text-blue-600 dark:text-blue-400 bg-transparent border-1 border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20",
-      ghost: "font-[500] text-gray-700 dark:text-gray-300 bg-transparent border-1 border-transparent",
-      danger: "font-[700] text-white bg-red-600 dark:bg-red-700 border border-1 dark:border-red-800 border-red-700 hover:bg-red-700 focus:ring-red-500"
-    };
-    $2[9] = t5;
-  } else {
-    t5 = $2[9];
-  }
-  const variants = t5;
-  let t6;
-  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = {
-      sm: "px-2 py-1 text-xs",
-      md: "px-3.5 py-1.5 text-sm",
-      lg: "px-4 py-2 text-base"
-    };
-    $2[10] = t6;
-  } else {
-    t6 = $2[10];
-  }
-  const sizes = t6;
-  const variantClasses = variants[variant];
-  const sizeClasses = sizes[size2];
-  const condensedClasses = condensed ? "condensed" : null;
-  let t7;
-  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = {
-      fontStretch: "115%"
-    };
-    $2[11] = t7;
-  } else {
-    t7 = $2[11];
-  }
-  const t8 = `${"inline-flex items-center justify-center rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
-  const t9 = disabled || isLoading;
-  let t10;
-  if ($2[12] !== isLoading) {
-    t10 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
-    $2[12] = isLoading;
-    $2[13] = t10;
-  } else {
-    t10 = $2[13];
-  }
-  let t11;
-  if ($2[14] !== children || $2[15] !== props || $2[16] !== ref || $2[17] !== t10 || $2[18] !== t8 || $2[19] !== t9) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { ref, style: t7, className: t8, disabled: t9, ...props, children: [
-      t10,
-      children
-    ] });
-    $2[14] = children;
-    $2[15] = props;
-    $2[16] = ref;
-    $2[17] = t10;
-    $2[18] = t8;
-    $2[19] = t9;
-    $2[20] = t11;
-  } else {
-    t11 = $2[20];
-  }
-  return t11;
-});
-Button.displayName = "Button";
 function r(e2) {
   var t2, f2, n2 = "";
   if ("string" == typeof e2 || "number" == typeof e2) n2 += e2;
@@ -30857,13 +31041,13 @@ const TestRunDialog = (t0) => {
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-px bg-gradient-to-r from-blue-300 to-blue-400 dark:from-blue-600 dark:to-blue-500" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { size: 14 })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 px-5 py-4 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-600 shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent", children: totalTests }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-br from-blue-50 to-blue-50 dark:from-blue-900/30 dark:to-blue-900/30 px-5 py-4 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-600 shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 bg-clip-text text-transparent", children: totalTests }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium mt-1", children: "Tests" })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 text-purple-400 dark:text-purple-500", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 text-blue-400 dark:text-blue-500", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { size: 14 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-px bg-gradient-to-r from-purple-400 to-purple-300 dark:from-purple-500 dark:to-purple-600" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-px bg-gradient-to-r from-blue-400 to-blue-300 dark:from-blue-500 dark:to-blue-600" })
       ] })
     ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center text-gray-400 dark:text-gray-500", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { className: "w-6 h-6 mx-auto mb-2 opacity-30" }),
@@ -30917,7 +31101,7 @@ const TestRunDialog = (t0) => {
   }
   let t31;
   if ($2[74] !== activePaymentMethods_0 || $2[75] !== isRunning || $2[76] !== selectedPaymentMethodIds) {
-    t31 = activePaymentMethods_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-4 text-gray-500 dark:text-gray-400 text-xs", children: "Keine aktiven Bezahlmethoden" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1.5 max-h-[280px] overflow-y-auto pr-1", children: activePaymentMethods_0.map((pm_3) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { onClick: () => !isRunning && handlePaymentMethodToggle(pm_3.id), className: `flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${selectedPaymentMethodIds.includes(pm_3.id) ? "bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700" : "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
+    t31 = activePaymentMethods_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-4 text-gray-500 dark:text-gray-400 text-xs", children: "Keine aktiven Bezahlmethoden" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1.5 max-h-[280px] overflow-y-auto pr-1", children: activePaymentMethods_0.map((pm_3) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { onClick: () => !isRunning && handlePaymentMethodToggle(pm_3.id), className: `flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${selectedPaymentMethodIds.includes(pm_3.id) ? "bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700" : "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: `pm-${pm_3.id}`, checked: selectedPaymentMethodIds.includes(pm_3.id), onCheckedChange: () => handlePaymentMethodToggle(pm_3.id), disabled: isRunning, className: "pointer-events-none" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: pm_3.name }),
@@ -31079,7 +31263,7 @@ const TestRunDialog = (t0) => {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-300 dark:text-gray-600", children: "×" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-purple-600 dark:text-purple-400 font-medium", children: selectedPaymentMethodIds.length }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-blue-600 dark:text-blue-400 font-medium", children: selectedPaymentMethodIds.length }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
           "Bezahlmethode",
           selectedPaymentMethodIds.length !== 1 ? "n" : ""
@@ -31619,7 +31803,8 @@ const badgeVariants = cva("inline-flex !uppercase items-center gap-1.5 px-2 py-0
       inactive: "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600",
       running: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700",
       pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-700",
-      stopped: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700"
+      stopped: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700",
+      queued: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700"
     },
     size: {
       sm: "text-[9px] px-1.5 py-0.5",
@@ -31733,6 +31918,9 @@ const StatusBadge = (t0) => {
         case "PENDING": {
           return "pending";
         }
+        case "QUEUED": {
+          return "queued";
+        }
         case "STOPPED": {
           return "stopped";
         }
@@ -31770,6 +31958,9 @@ const StatusBadge = (t0) => {
         }
         case "PENDING": {
           return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" }) });
+        }
+        case "QUEUED": {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: 2.5, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M4 6h16M4 12h16M4 18h16" }) });
         }
         case "STOPPED": {
           return /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { className: "w-3 h-3", fill: "currentColor", viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "6", y: "6", width: "12", height: "12", rx: "1" }) });
@@ -32529,9 +32720,9 @@ const Layout = (t0) => {
   if ($2[23] !== location.pathname) {
     t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t14, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
       const IconComponent = item.icon;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { to: item.href, className: `flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"}`, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-blue-600 dark:stroke-blue-400" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `font-stretched transition-all ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-semibold" : ""}`, children: item.name })
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded border border-transparent ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 bg-blue-50 dark:bg-blue-950 border-blue-400 dark:border-blue-900" : "text-gray-700 dark:text-gray-300"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `font-stretched transition-all ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-semibold" : null}`, children: item.name })
       ] }, item.name);
     }) }) });
     $2[23] = location.pathname;
@@ -32614,13 +32805,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-tqn70r9v.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BAbTNj5Y.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-CKvi251q.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BdkQSi5q.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-CSlh5ztD.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-B59zWJ-J.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-UVInmvaE.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-KYk7jwRi.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Xf-IHZnK.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-Ci9vMJbu.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-CaKy40DC.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DHTLWTa5.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-9Px09evG.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-y1Nmsart.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -32690,38 +32881,39 @@ export {
   Monitor as _,
   reactDomExports as a,
   Moon as a0,
-  formatDateTime as a1,
-  formatDuration as a2,
-  Link as a3,
-  CircleX as a4,
-  Search as a5,
-  useSchedulesStore as a6,
-  LoaderCircle as a7,
-  createLucideIcon as a8,
-  ArrowRight as a9,
-  Bell as aa,
-  BookOpen as ab,
-  Building2 as ac,
-  CheckCheck as ad,
-  Clock as ae,
-  Info as af,
-  Landmark as ag,
-  LayoutDashboard as ah,
-  TestTube as ai,
-  DialogHeader as aj,
-  DialogTitle as ak,
-  DialogContent as al,
-  Dialog as am,
-  Root$1 as an,
-  Portal$1 as ao,
-  Content as ap,
-  Title as aq,
-  Overlay as ar,
-  Close as as,
-  Description as at,
-  React$3 as au,
-  DialogDescription as av,
-  DialogFooter as aw,
+  LoaderCircle as a1,
+  Clock as a2,
+  formatDateTime as a3,
+  formatDuration as a4,
+  Link as a5,
+  CircleX as a6,
+  Search as a7,
+  useSchedulesStore as a8,
+  createLucideIcon as a9,
+  ArrowRight as aa,
+  Bell as ab,
+  BookOpen as ac,
+  Building2 as ad,
+  CheckCheck as ae,
+  ChevronLeft as af,
+  Info as ag,
+  Landmark as ah,
+  LayoutDashboard as ai,
+  TestTube as aj,
+  DialogHeader as ak,
+  DialogTitle as al,
+  DialogContent as am,
+  Dialog as an,
+  Root$1 as ao,
+  Portal$1 as ap,
+  Content as aq,
+  Title as ar,
+  Overlay as as,
+  Close as at,
+  Description as au,
+  React$3 as av,
+  DialogDescription as aw,
+  DialogFooter as ax,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,

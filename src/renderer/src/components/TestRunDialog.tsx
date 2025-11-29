@@ -196,17 +196,17 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
                   </div>
                   
                   {/* Center badge */}
-                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 px-5 py-4 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-600 shadow-sm">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-50 dark:from-blue-900/30 dark:to-blue-900/30 px-5 py-4 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-600 shadow-sm">
                     <div className="text-center">
-                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">{totalTests}</div>
+                      <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 bg-clip-text text-transparent">{totalTests}</div>
                       <div className="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium mt-1">Tests</div>
                     </div>
                   </div>
                   
                   {/* Arrows to payment methods */}
-                  <div className="flex items-center gap-1 text-purple-400 dark:text-purple-500">
+                  <div className="flex items-center gap-1 text-blue-400 dark:text-blue-500">
                     <ArrowRight size={14} />
-                    <div className="w-8 h-px bg-gradient-to-r from-purple-400 to-purple-300 dark:from-purple-500 dark:to-purple-600"></div>
+                    <div className="w-8 h-px bg-gradient-to-r from-blue-400 to-blue-300 dark:from-blue-500 dark:to-blue-600"></div>
                   </div>
                 </div>
               ) : (
@@ -241,7 +241,7 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
                       onClick={() => !isRunning && handlePaymentMethodToggle(pm.id)}
                       className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${
                         selectedPaymentMethodIds.includes(pm.id)
-                          ? "bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700"
+                          ? "bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700"
                           : "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
                       }`}>
                       <Checkbox
@@ -318,7 +318,7 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
               </span>
               <span className="text-gray-300 dark:text-gray-600">×</span>
               <span className="flex items-center gap-2">
-                <span className="font-mono text-purple-600 dark:text-purple-400 font-medium">{selectedPaymentMethodIds.length}</span>
+                <span className="font-mono text-blue-600 dark:text-blue-400 font-medium">{selectedPaymentMethodIds.length}</span>
                 <span>Bezahlmethode{selectedPaymentMethodIds.length !== 1 ? 'n' : ''}</span>
               </span>
               <span className="text-gray-300 dark:text-gray-600">=</span>

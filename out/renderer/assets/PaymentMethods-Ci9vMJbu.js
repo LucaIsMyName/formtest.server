@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, B as Button, i as dist, t as useSearchParams, d as usePaymentMethodsStore, v as StatusBadge, x as formatDate } from "./index-Bmp51tp6.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, B as Button, i as dist, t as useSearchParams, d as usePaymentMethodsStore, v as StatusBadge, x as formatDate } from "./index-nfjhyb-l.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DExwtzAB.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2, k as TablePagination } from "./Table-CKvJydMp.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-B00geJkf.js";
-import { S as Skeleton } from "./Skeleton-CzglAHl8.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-CYk0jbAY.js";
-import "./upload-B-d2b6ZK.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DcygsMqQ.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2, k as TablePagination } from "./Table-CBBfXvNr.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-BYc8nJOS.js";
+import { S as Skeleton } from "./Skeleton-B1jJRNkb.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-CYyqvn4J.js";
+import { P as Plus } from "./upload-B0LzP2XK.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -231,7 +231,7 @@ const PaymentMethodsSkeleton = () => {
   return t0;
 };
 const PaymentMethods = () => {
-  const $ = dist.c(92);
+  const $ = dist.c(93);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     paymentMethods,
@@ -547,45 +547,55 @@ const PaymentMethods = () => {
     t19 = $[47];
   }
   let t20;
-  if ($[48] !== handleAddMethod || $[49] !== isLoading) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
-      t19,
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddMethod, variant: "primary", size: "md", disabled: isLoading, children: "Neue Bezahlmethode" })
-    ] });
-    $[48] = handleAddMethod;
-    $[49] = isLoading;
-    $[50] = t20;
+  if ($[48] === Symbol.for("react.memo_cache_sentinel")) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 });
+    $[48] = t20;
   } else {
-    t20 = $[50];
+    t20 = $[48];
   }
   let t21;
-  if ($[51] !== error) {
-    t21 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
+  if ($[49] !== handleAddMethod || $[50] !== isLoading) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
+      t19,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleAddMethod, variant: "primary", size: "md", className: "gap-2", disabled: isLoading, children: [
+        t20,
+        " Neue Bezahlmethode"
+      ] })
+    ] });
+    $[49] = handleAddMethod;
+    $[50] = isLoading;
+    $[51] = t21;
+  } else {
+    t21 = $[51];
+  }
+  let t22;
+  if ($[52] !== error) {
+    t22 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
       " ",
       error
     ] }) });
-    $[51] = error;
-    $[52] = t21;
+    $[52] = error;
+    $[53] = t22;
   } else {
-    t21 = $[52];
-  }
-  let t22;
-  if ($[53] !== clearFilters || $[54] !== filterConfig.searchTerm || $[55] !== filterConfig.statusFilter || $[56] !== paymentMethods.length || $[57] !== setSearchTerm || $[58] !== setStatusFilter) {
-    t22 = paymentMethods.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Bezahlmethoden durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
-    $[53] = clearFilters;
-    $[54] = filterConfig.searchTerm;
-    $[55] = filterConfig.statusFilter;
-    $[56] = paymentMethods.length;
-    $[57] = setSearchTerm;
-    $[58] = setStatusFilter;
-    $[59] = t22;
-  } else {
-    t22 = $[59];
+    t22 = $[53];
   }
   let t23;
-  if ($[60] !== currentPage || $[61] !== displayedMethods || $[62] !== getSortDirection || $[63] !== handleAddMethod || $[64] !== handleEditMethod || $[65] !== isLoading || $[66] !== paymentMethods.length || $[67] !== requestSort || $[68] !== showPagination || $[69] !== togglePaymentMethodActive || $[70] !== totalFilteredItems || $[71] !== totalPages) {
-    t23 = isLoading && paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodsSkeleton, {}) : paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+  if ($[54] !== clearFilters || $[55] !== filterConfig.searchTerm || $[56] !== filterConfig.statusFilter || $[57] !== paymentMethods.length || $[58] !== setSearchTerm || $[59] !== setStatusFilter) {
+    t23 = paymentMethods.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Bezahlmethoden durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
+    $[54] = clearFilters;
+    $[55] = filterConfig.searchTerm;
+    $[56] = filterConfig.statusFilter;
+    $[57] = paymentMethods.length;
+    $[58] = setSearchTerm;
+    $[59] = setStatusFilter;
+    $[60] = t23;
+  } else {
+    t23 = $[60];
+  }
+  let t24;
+  if ($[61] !== currentPage || $[62] !== displayedMethods || $[63] !== getSortDirection || $[64] !== handleAddMethod || $[65] !== handleEditMethod || $[66] !== isLoading || $[67] !== paymentMethods.length || $[68] !== requestSort || $[69] !== showPagination || $[70] !== togglePaymentMethodActive || $[71] !== totalFilteredItems || $[72] !== totalPages) {
+    t24 = isLoading && paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodsSkeleton, {}) : paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Bezahlmethoden konfiguriert." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddMethod, variant: "primary", size: "md", disabled: isLoading, children: "Erste Bezahlmethode hinzufügen" })
     ] }) }) }) : displayedMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
@@ -627,75 +637,75 @@ const PaymentMethods = () => {
       ] }),
       showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems: totalFilteredItems, itemsPerPage: 50, onPageChange: setCurrentPage })
     ] });
-    $[60] = currentPage;
-    $[61] = displayedMethods;
-    $[62] = getSortDirection;
-    $[63] = handleAddMethod;
-    $[64] = handleEditMethod;
-    $[65] = isLoading;
-    $[66] = paymentMethods.length;
-    $[67] = requestSort;
-    $[68] = showPagination;
-    $[69] = togglePaymentMethodActive;
-    $[70] = totalFilteredItems;
-    $[71] = totalPages;
-    $[72] = t23;
+    $[61] = currentPage;
+    $[62] = displayedMethods;
+    $[63] = getSortDirection;
+    $[64] = handleAddMethod;
+    $[65] = handleEditMethod;
+    $[66] = isLoading;
+    $[67] = paymentMethods.length;
+    $[68] = requestSort;
+    $[69] = showPagination;
+    $[70] = togglePaymentMethodActive;
+    $[71] = totalFilteredItems;
+    $[72] = totalPages;
+    $[73] = t24;
   } else {
-    t23 = $[72];
+    t24 = $[73];
   }
-  let t24;
-  if ($[73] !== editingMethod || $[74] !== handleCloseDialog || $[75] !== handleMethodSubmit || $[76] !== isDialogOpen || $[77] !== isLoading) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading });
-    $[73] = editingMethod;
-    $[74] = handleCloseDialog;
-    $[75] = handleMethodSubmit;
-    $[76] = isDialogOpen;
-    $[77] = isLoading;
-    $[78] = t24;
+  let t25;
+  if ($[74] !== editingMethod || $[75] !== handleCloseDialog || $[76] !== handleMethodSubmit || $[77] !== isDialogOpen || $[78] !== isLoading) {
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading });
+    $[74] = editingMethod;
+    $[75] = handleCloseDialog;
+    $[76] = handleMethodSubmit;
+    $[77] = isDialogOpen;
+    $[78] = isLoading;
+    $[79] = t25;
   } else {
-    t24 = $[78];
+    t25 = $[79];
   }
-  const t25 = !!deleteConfirm;
-  let t26;
-  if ($[79] === Symbol.for("react.memo_cache_sentinel")) {
-    t26 = () => setDeleteConfirm(null);
-    $[79] = t26;
+  const t26 = !!deleteConfirm;
+  let t27;
+  if ($[80] === Symbol.for("react.memo_cache_sentinel")) {
+    t27 = () => setDeleteConfirm(null);
+    $[80] = t27;
   } else {
-    t26 = $[79];
+    t27 = $[80];
   }
-  const t27 = deleteConfirm?.name;
-  let t28;
-  if ($[80] !== confirmDelete || $[81] !== isLoading || $[82] !== t25 || $[83] !== t27) {
-    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t25, onClose: t26, onConfirm: confirmDelete, title: "Bezahlmethode löschen", message: "Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t27, isLoading });
-    $[80] = confirmDelete;
-    $[81] = isLoading;
-    $[82] = t25;
-    $[83] = t27;
-    $[84] = t28;
-  } else {
-    t28 = $[84];
-  }
+  const t28 = deleteConfirm?.name;
   let t29;
-  if ($[85] !== t20 || $[86] !== t21 || $[87] !== t22 || $[88] !== t23 || $[89] !== t24 || $[90] !== t28) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t20,
+  if ($[81] !== confirmDelete || $[82] !== isLoading || $[83] !== t26 || $[84] !== t28) {
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t26, onClose: t27, onConfirm: confirmDelete, title: "Bezahlmethode löschen", message: "Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t28, isLoading });
+    $[81] = confirmDelete;
+    $[82] = isLoading;
+    $[83] = t26;
+    $[84] = t28;
+    $[85] = t29;
+  } else {
+    t29 = $[85];
+  }
+  let t30;
+  if ($[86] !== t21 || $[87] !== t22 || $[88] !== t23 || $[89] !== t24 || $[90] !== t25 || $[91] !== t29) {
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t21,
       t22,
       t23,
       t24,
-      t28
+      t25,
+      t29
     ] });
-    $[85] = t20;
     $[86] = t21;
     $[87] = t22;
     $[88] = t23;
     $[89] = t24;
-    $[90] = t28;
+    $[90] = t25;
     $[91] = t29;
+    $[92] = t30;
   } else {
-    t29 = $[91];
+    t30 = $[92];
   }
-  return t29;
+  return t30;
 };
 function _temp(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [

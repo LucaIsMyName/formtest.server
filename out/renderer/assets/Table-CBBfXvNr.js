@@ -1,11 +1,11 @@
-import { a8 as createLucideIcon, an as Root, r as reactExports, i as dist, W as cn, j as jsxRuntimeExports, ao as Portal, ap as Content, aq as Title, ar as Overlay, as as Close, X, at as Description, au as React, A as ChevronRight } from "./index-Bmp51tp6.js";
+import { a9 as createLucideIcon, ao as Root, r as reactExports, i as dist, W as cn, j as jsxRuntimeExports, ap as Portal, aq as Content, ar as Title, as as Overlay, at as Close, X, au as Description, av as React, af as ChevronLeft, A as ChevronRight } from "./index-nfjhyb-l.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$7 = [
+const __iconNode$6 = [
   ["path", { d: "M12 8V4H8", key: "hb8ula" }],
   ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
   ["path", { d: "M2 14h2", key: "vft8re" }],
@@ -13,15 +13,7 @@ const __iconNode$7 = [
   ["path", { d: "M15 13v2", key: "1xurst" }],
   ["path", { d: "M9 13v2", key: "rq6x2g" }]
 ];
-const Bot = createLucideIcon("bot", __iconNode$7);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$6 = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("chevron-left", __iconNode$6);
+const Bot = createLucideIcon("bot", __iconNode$6);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -653,7 +645,7 @@ const TablePagination = (t0) => {
   }
   let t6;
   if ($[11] !== className) {
-    t6 = cn("flex items-center justify-between px-4 py-3 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800", className);
+    t6 = cn("flex items-center justify-between px-4 py-1 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800", className);
     $[11] = className;
     $[12] = t6;
   } else {
@@ -661,7 +653,7 @@ const TablePagination = (t0) => {
   }
   let t7;
   if ($[13] !== endItem || $[14] !== startItem || $[15] !== totalItems) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: [
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: [
       startItem,
       "–",
       endItem,
@@ -696,7 +688,7 @@ const TablePagination = (t0) => {
   }
   let t12;
   if ($[22] === Symbol.for("react.memo_cache_sentinel")) {
-    t12 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { size: 18 });
+    t12 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { size: 14 });
     $[22] = t12;
   } else {
     t12 = $[22];
@@ -720,7 +712,7 @@ const TablePagination = (t0) => {
   }
   let t15;
   if ($[28] === Symbol.for("react.memo_cache_sentinel")) {
-    t15 = cn("w-10 px-1.5 py-1 text-center text-[11px] font-mono rounded border", "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600", "text-gray-700 dark:text-gray-200", "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500");
+    t15 = cn("w-10 px-1 py-1 text-center text-[10px] font-mono rounded border", "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600", "text-gray-700 dark:text-gray-200", "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500");
     $[28] = t15;
   } else {
     t15 = $[28];
@@ -748,7 +740,7 @@ const TablePagination = (t0) => {
   }
   let t18;
   if ($[35] !== t16 || $[36] !== t17) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 text-[11px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: [
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: [
       t14,
       t16,
       t17
@@ -780,7 +772,7 @@ const TablePagination = (t0) => {
   }
   let t23;
   if ($[43] === Symbol.for("react.memo_cache_sentinel")) {
-    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 18 });
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14 });
     $[43] = t23;
   } else {
     t23 = $[43];
@@ -844,6 +836,5 @@ export {
   TableBody as i,
   TableCell as j,
   TablePagination as k,
-  ChevronsUpDown as l,
-  ChevronLeft as m
+  ChevronsUpDown as l
 };

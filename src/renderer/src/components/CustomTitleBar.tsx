@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import TrafficLights from "./TrafficLights";
 import NotificationButton from "./NotificationButton";
-import { Terminal, Search, Sun, Moon, Monitor, Settings } from "lucide-react";
+import { Terminal, Search, Sun, Moon, Monitor, Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface CustomTitleBarProps {
@@ -13,7 +14,16 @@ interface CustomTitleBarProps {
 }
 
 const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSearch, onToggleTheme, onOpenSettings, currentTheme = "system" }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMaximized, setIsMaximized] = useState(false);
+  const [canGoBack, setCanGoBack] = useState(false);
+
+  // Track navigation history
+  useEffect(() => {
+    // Check if we can go back using window.history
+    setCanGoBack(window.history.length > 1);
+  }, [location]);
 
   useEffect(() => {
     // Check initial maximized state
@@ -84,9 +94,52 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
             onMaximize={handleMaximize}
             isMaximized={isMaximized}
           />
-          <div className="cursor-grabbing  text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-4 leading-[0] whitespace-nowrap">
-            <span className="font-mono uppercase  cursor-grabbing ">
-              <b>Formtest</b>.Server
+          {/* Navigation Buttons */}
+          <div 
+            className="flex items-center gap-0.5 ml-3"
+            style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  onClick={() => navigate(-1)}
+                  disabled={!canGoBack}
+                  className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label="Zurück">
+                  <ChevronLeft size={14} strokeWidth={2.5} />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+                  sideOffset={5}>
+                  Zurück
+                  <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  onClick={() => navigate(1)}
+                  className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                  aria-label="Vorwärts">
+                  <ChevronRight size={14} strokeWidth={2.5} />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+                  sideOffset={5}>
+                  Vorwärts
+                  <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </div>
+
+          <div className="cursor-grabbing text-left font-stretched text-xs text-gray-700 dark:text-gray-300 ml-3 leading-[0] whitespace-nowrap">
+            <span className="font-mono uppercase cursor-grabbing">
+              <b>FT</b>.S
             </span>
           </div>
         </div>

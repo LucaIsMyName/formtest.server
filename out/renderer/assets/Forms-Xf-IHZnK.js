@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, k as Checkbox, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, B as Button, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-Bmp51tp6.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, k as Checkbox, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, B as Button, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-nfjhyb-l.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DExwtzAB.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-CKvJydMp.js";
-import { P as Plus } from "./upload-B-d2b6ZK.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-B00geJkf.js";
-import { S as Skeleton } from "./Skeleton-CzglAHl8.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-CYk0jbAY.js";
+import { r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DcygsMqQ.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-CBBfXvNr.js";
+import { P as Plus } from "./upload-B0LzP2XK.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-BYc8nJOS.js";
+import { S as Skeleton } from "./Skeleton-B1jJRNkb.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-CYyqvn4J.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -299,7 +299,7 @@ const FormsSkeleton = () => {
   return t0;
 };
 const Forms = () => {
-  const $ = dist.c(89);
+  const $ = dist.c(90);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     forms,
@@ -591,45 +591,55 @@ const Forms = () => {
     t18 = $[44];
   }
   let t19;
-  if ($[45] !== handleAddForm || $[46] !== isLoading) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
-      t18,
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddForm, variant: "primary", size: "md", disabled: isLoading, children: "Neues Formular" })
-    ] });
-    $[45] = handleAddForm;
-    $[46] = isLoading;
-    $[47] = t19;
+  if ($[45] === Symbol.for("react.memo_cache_sentinel")) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 });
+    $[45] = t19;
   } else {
-    t19 = $[47];
+    t19 = $[45];
   }
   let t20;
-  if ($[48] !== error) {
-    t20 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
+  if ($[46] !== handleAddForm || $[47] !== isLoading) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
+      t18,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleAddForm, variant: "primary", size: "md", className: "gap-2", disabled: isLoading, children: [
+        t19,
+        "Neues Formular"
+      ] })
+    ] });
+    $[46] = handleAddForm;
+    $[47] = isLoading;
+    $[48] = t20;
+  } else {
+    t20 = $[48];
+  }
+  let t21;
+  if ($[49] !== error) {
+    t21 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
       " ",
       error
     ] }) });
-    $[48] = error;
-    $[49] = t20;
+    $[49] = error;
+    $[50] = t21;
   } else {
-    t20 = $[49];
-  }
-  let t21;
-  if ($[50] !== clearFilters || $[51] !== filterConfig.searchTerm || $[52] !== filterConfig.statusFilter || $[53] !== forms.length || $[54] !== setSearchTerm || $[55] !== setStatusFilter) {
-    t21 = forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
-    $[50] = clearFilters;
-    $[51] = filterConfig.searchTerm;
-    $[52] = filterConfig.statusFilter;
-    $[53] = forms.length;
-    $[54] = setSearchTerm;
-    $[55] = setStatusFilter;
-    $[56] = t21;
-  } else {
-    t21 = $[56];
+    t21 = $[50];
   }
   let t22;
-  if ($[57] !== currentPage || $[58] !== displayedForms || $[59] !== forms.length || $[60] !== getSortDirection || $[61] !== handleAddForm || $[62] !== handleEditForm || $[63] !== isLoading || $[64] !== requestSort || $[65] !== showPagination || $[66] !== toggleFormActive || $[67] !== totalFilteredItems || $[68] !== totalPages) {
-    t22 = isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+  if ($[51] !== clearFilters || $[52] !== filterConfig.searchTerm || $[53] !== filterConfig.statusFilter || $[54] !== forms.length || $[55] !== setSearchTerm || $[56] !== setStatusFilter) {
+    t22 = forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
+    $[51] = clearFilters;
+    $[52] = filterConfig.searchTerm;
+    $[53] = filterConfig.statusFilter;
+    $[54] = forms.length;
+    $[55] = setSearchTerm;
+    $[56] = setStatusFilter;
+    $[57] = t22;
+  } else {
+    t22 = $[57];
+  }
+  let t23;
+  if ($[58] !== currentPage || $[59] !== displayedForms || $[60] !== forms.length || $[61] !== getSortDirection || $[62] !== handleAddForm || $[63] !== handleEditForm || $[64] !== isLoading || $[65] !== requestSort || $[66] !== showPagination || $[67] !== toggleFormActive || $[68] !== totalFilteredItems || $[69] !== totalPages) {
+    t23 = isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Formulare konfiguriert." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddForm, variant: "primary", size: "md", disabled: isLoading, children: "Erstes Formular hinzufügen" })
     ] }) }) }) : displayedForms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
@@ -675,75 +685,75 @@ const Forms = () => {
       ] }),
       showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems: totalFilteredItems, itemsPerPage: 50, onPageChange: setCurrentPage })
     ] });
-    $[57] = currentPage;
-    $[58] = displayedForms;
-    $[59] = forms.length;
-    $[60] = getSortDirection;
-    $[61] = handleAddForm;
-    $[62] = handleEditForm;
-    $[63] = isLoading;
-    $[64] = requestSort;
-    $[65] = showPagination;
-    $[66] = toggleFormActive;
-    $[67] = totalFilteredItems;
-    $[68] = totalPages;
-    $[69] = t22;
+    $[58] = currentPage;
+    $[59] = displayedForms;
+    $[60] = forms.length;
+    $[61] = getSortDirection;
+    $[62] = handleAddForm;
+    $[63] = handleEditForm;
+    $[64] = isLoading;
+    $[65] = requestSort;
+    $[66] = showPagination;
+    $[67] = toggleFormActive;
+    $[68] = totalFilteredItems;
+    $[69] = totalPages;
+    $[70] = t23;
   } else {
-    t22 = $[69];
+    t23 = $[70];
   }
-  let t23;
-  if ($[70] !== editingForm || $[71] !== handleCloseDialog || $[72] !== handleFormSubmit || $[73] !== isDialogOpen || $[74] !== isLoading) {
-    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading });
-    $[70] = editingForm;
-    $[71] = handleCloseDialog;
-    $[72] = handleFormSubmit;
-    $[73] = isDialogOpen;
-    $[74] = isLoading;
-    $[75] = t23;
+  let t24;
+  if ($[71] !== editingForm || $[72] !== handleCloseDialog || $[73] !== handleFormSubmit || $[74] !== isDialogOpen || $[75] !== isLoading) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading });
+    $[71] = editingForm;
+    $[72] = handleCloseDialog;
+    $[73] = handleFormSubmit;
+    $[74] = isDialogOpen;
+    $[75] = isLoading;
+    $[76] = t24;
   } else {
-    t23 = $[75];
+    t24 = $[76];
   }
-  const t24 = !!deleteConfirm;
-  let t25;
-  if ($[76] === Symbol.for("react.memo_cache_sentinel")) {
-    t25 = () => setDeleteConfirm(null);
-    $[76] = t25;
+  const t25 = !!deleteConfirm;
+  let t26;
+  if ($[77] === Symbol.for("react.memo_cache_sentinel")) {
+    t26 = () => setDeleteConfirm(null);
+    $[77] = t26;
   } else {
-    t25 = $[76];
+    t26 = $[77];
   }
-  const t26 = deleteConfirm?.name;
-  let t27;
-  if ($[77] !== confirmDelete || $[78] !== isLoading || $[79] !== t24 || $[80] !== t26) {
-    t27 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t24, onClose: t25, onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t26, isLoading });
-    $[77] = confirmDelete;
-    $[78] = isLoading;
-    $[79] = t24;
-    $[80] = t26;
-    $[81] = t27;
-  } else {
-    t27 = $[81];
-  }
+  const t27 = deleteConfirm?.name;
   let t28;
-  if ($[82] !== t19 || $[83] !== t20 || $[84] !== t21 || $[85] !== t22 || $[86] !== t23 || $[87] !== t27) {
-    t28 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t19,
+  if ($[78] !== confirmDelete || $[79] !== isLoading || $[80] !== t25 || $[81] !== t27) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t25, onClose: t26, onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t27, isLoading });
+    $[78] = confirmDelete;
+    $[79] = isLoading;
+    $[80] = t25;
+    $[81] = t27;
+    $[82] = t28;
+  } else {
+    t28 = $[82];
+  }
+  let t29;
+  if ($[83] !== t20 || $[84] !== t21 || $[85] !== t22 || $[86] !== t23 || $[87] !== t24 || $[88] !== t28) {
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t20,
       t21,
       t22,
       t23,
-      t27
+      t24,
+      t28
     ] });
-    $[82] = t19;
     $[83] = t20;
     $[84] = t21;
     $[85] = t22;
     $[86] = t23;
-    $[87] = t27;
+    $[87] = t24;
     $[88] = t28;
+    $[89] = t29;
   } else {
-    t28 = $[88];
+    t29 = $[89];
   }
-  return t28;
+  return t29;
 };
 function _temp(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [

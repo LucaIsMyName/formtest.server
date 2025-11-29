@@ -9,6 +9,13 @@ vi.mock('../src/main/testExecutor', () => ({
   })
 }));
 
+// Mock the database
+vi.mock('../src/main/database', () => ({
+  testRunQueries: {
+    updateStatus: vi.fn()
+  }
+}));
+
 describe('TestQueue', () => {
   beforeEach(() => {
     vi.clearAllMocks();

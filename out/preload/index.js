@@ -42,6 +42,11 @@ const api = {
   tests: {
     run: (formIds, paymentMethodIds, options) => electron.ipcRenderer.invoke("tests:run", formIds, paymentMethodIds, options)
   },
+  // Test queue operations
+  testQueue: {
+    getStatus: () => electron.ipcRenderer.invoke("testQueue:getStatus"),
+    clear: () => electron.ipcRenderer.invoke("testQueue:clear")
+  },
   // Test schedule operations
   testSchedules: {
     getAll: () => electron.ipcRenderer.invoke("testSchedules:getAll"),

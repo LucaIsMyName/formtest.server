@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Loader2, Square, Clock, ListOrdered, X } from "lucide-react";
+import { Loader2, Clock, X } from "lucide-react";
 import Button from "./ui/Button";
 
 interface QueueStatus {
@@ -60,13 +60,13 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
+    <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mb-4">
       <div className="flex items-center justify-between">
         {/* Left: Status info */}
         <div className="flex items-center gap-4">
           {/* Processing indicator */}
-          <div className="flex items-center gap-2">
-            <div className="relative">
+          <div className="flex md:min-w-[180px] items-center justify-start gap-2">
+            <div className="relative ">
               <Loader2 className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin" />
               <div className="absolute inset-0 w-5 h-5 bg-blue-400 dark:bg-blue-500 rounded-full animate-ping opacity-20" />
             </div>
@@ -124,10 +124,10 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
           {status.queueLength > 0 && (
             <Button
               onClick={handleClearQueue}
-              variant="danger"
+              variant="secondary"
               size="sm"
               disabled={isClearing}
-              className="gap-1.5 text-xs"
+              className="gap-1 !text-[9px]"
             >
               {isClearing ? (
                 <Loader2 className="w-3 h-3 animate-spin" />

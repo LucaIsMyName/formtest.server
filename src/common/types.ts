@@ -80,7 +80,7 @@ export interface TestRun {
   uuid: string;
   formId: number;
   paymentMethodId: number;
-  status: "SUCCESS" | "FAILURE" | "SKIPPED" | "RUNNING" | "STOPPED";
+  status: "SUCCESS" | "FAILURE" | "SKIPPED" | "RUNNING" | "STOPPED" | "QUEUED";
   errorMessage?: string;
   screenshotPath?: string;
   logDetails?: string;

@@ -1,10 +1,10 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, B as Button, a6 as useSchedulesStore, a1 as formatDateTime, v as StatusBadge, a7 as LoaderCircle, P as Play } from "./index-Bmp51tp6.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, B as Button, a8 as useSchedulesStore, a3 as formatDateTime, v as StatusBadge, a1 as LoaderCircle, P as Play } from "./index-nfjhyb-l.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2, k as TablePagination } from "./Table-CKvJydMp.js";
-import { S as Skeleton } from "./Skeleton-CzglAHl8.js";
-import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DExwtzAB.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-B00geJkf.js";
-import { P as Plus } from "./upload-B-d2b6ZK.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2, k as TablePagination } from "./Table-CBBfXvNr.js";
+import { S as Skeleton } from "./Skeleton-B1jJRNkb.js";
+import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DcygsMqQ.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-BYc8nJOS.js";
+import { P as Plus } from "./upload-B0LzP2XK.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -455,7 +455,7 @@ const Schedules = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleDrawer, { isOpen: isCreateOpen || !!editingSchedule, onClose: () => {
       setIsCreateOpen(false);
       setEditingSchedule(void 0);
-    }, onSave: handleSave, initialData: editingSchedule, title: editingSchedule ? "Zeitplan bearbeiten" : "Neuer Zeitplan" }),
+    }, onSave: handleSave, initialData: editingSchedule, title: editingSchedule ? "Autopilot bearbeiten" : "Neuer Autopilot" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deletingSchedule, onClose: () => setDeletingSchedule(null), onConfirm: async () => {
       if (deletingSchedule) {
         await deleteSchedule(deletingSchedule.id);

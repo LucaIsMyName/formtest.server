@@ -17,6 +17,7 @@ const badgeVariants = cva(
         running: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700",
         pending: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 border-yellow-300 dark:border-yellow-700",
         stopped: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700",
+        queued: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700",
       },
       size: {
         sm: "text-[9px] px-1.5 py-0.5",
@@ -55,7 +56,7 @@ Badge.displayName = "Badge";
 
 // Helper component for status badges with icons
 interface StatusBadgeProps extends Omit<BadgeProps, "variant"> {
-  status: "SUCCESS" | "FAILURE" | "RUNNING" | "PENDING" | "STOPPED" | "active" | "inactive" | string;
+  status: "SUCCESS" | "FAILURE" | "RUNNING" | "PENDING" | "STOPPED" | "QUEUED" | "active" | "inactive" | string;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status, children, ...props }) => {
@@ -71,6 +72,8 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, children, ...props })
         return "running";
       case "PENDING":
         return "pending";
+      case "QUEUED":
+        return "queued";
       case "STOPPED":
         return "stopped";
       case "INACTIVE":
@@ -107,6 +110,12 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, children, ...props })
         return (
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      case "QUEUED":
+        return (
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         );
       case "STOPPED":
