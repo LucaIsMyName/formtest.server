@@ -112,12 +112,12 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-between px-4 py-3 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800",
+        "flex items-center justify-between px-4 py-1 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800",
         className
       )}
     >
       {/* Left: Item count */}
-      <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+      <div className="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider">
         {startItem}–{endItem} von {totalItems}
       </div>
 
@@ -135,11 +135,11 @@ const TablePagination: React.FC<TablePaginationProps> = ({
           )}
           title="Vorherige Seite"
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={14} />
         </button>
 
         {/* Page input */}
-        <div className="flex items-center gap-1.5 text-[11px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider">
           <span>Seite</span>
           <input
             type="text"
@@ -148,7 +148,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
             onKeyDown={handleInputKeyDown}
             onBlur={handleInputBlur}
             className={cn(
-              "w-10 px-1.5 py-1 text-center text-[11px] font-mono rounded border",
+              "w-10 px-1 py-1 text-center text-[10px] font-mono rounded border",
               "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600",
               "text-gray-700 dark:text-gray-200",
               "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -169,7 +169,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
           )}
           title="Nächste Seite"
         >
-          <ChevronRight size={18} />
+          <ChevronRight size={14} />
         </button>
       </div>
     </div>

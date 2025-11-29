@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
+import Button from "./ui/Button";
 import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Play } from "lucide-react";
@@ -71,7 +72,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("openTestDialog", handleOpenTestDialog);
-    
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("openTestDialog", handleOpenTestDialog);
@@ -107,17 +108,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {navigation.map((item) => {
               const IconComponent = item.icon;
               return (
-                <Link
+                <Button
                   key={item.name}
+                  variant="ghost"
                   to={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100" : "text-gray-700 dark:text-gray-300"}`}>
+                  className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded border border-transparent ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 bg-blue-50 dark:bg-blue-950 border-blue-400 dark:border-blue-900" : "text-gray-700 dark:text-gray-300"}`}>
                   <IconComponent
-                    className={`${location.pathname === item.href ? ` stroke-blue-600 dark:stroke-blue-400` : ""} text-gray-700 dark:text-gray-400 transition-all`}
+                    className={`${location.pathname === item.href ? ` stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-700 dark:text-gray-400 transition-all`}
                     size={18}
                     strokeWidth={location.pathname === item.href ? 2 : 2}
                   />
-                  <span className={`font-stretched transition-all ${location.pathname === item.href ? `text-blue-600 dark:text-blue-400 font-semibold` : ``}`}>{item.name}</span>
-                </Link>
+                  <span className={`font-stretched transition-all ${location.pathname === item.href ? `text-blue-600 dark:text-blue-400 font-semibold` : null}`}>{item.name}</span>
+                </Button>
               );
             })}
           </nav>

@@ -1,9 +1,9 @@
-import { t as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, B as Button, P as Play, a1 as formatDateTime, v as StatusBadge, a2 as formatDuration, a3 as Link, i as dist, a4 as CircleX, Z as CircleCheck } from "./index-CyFdAjl_.js";
+import { t as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, B as Button, P as Play, a1 as formatDateTime, v as StatusBadge, a2 as formatDuration, a3 as Link, i as dist, a4 as CircleX, Z as CircleCheck } from "./index-Bmp51tp6.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { D as DeleteConfirmDialog, C as CircleAlert } from "./DeleteConfirmDialog-CM6FgxMY.js";
-import { S as Skeleton } from "./Skeleton-C0B8i1rn.js";
-import { R as RefreshCw, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, C as Copy, B as Bot, S as Square, T as Trash2, k as TablePagination, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces } from "./Table-DWY6ITCn.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-1DgOl5Rv.js";
+import { D as DeleteConfirmDialog, C as CircleAlert } from "./DeleteConfirmDialog-B00geJkf.js";
+import { S as Skeleton } from "./Skeleton-CzglAHl8.js";
+import { R as RefreshCw, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, C as Copy, B as Bot, S as Square, T as Trash2, k as TablePagination, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces } from "./Table-CKvJydMp.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-CYk0jbAY.js";
 const TestResultsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
@@ -456,7 +456,7 @@ const TestResults = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-sm font-semibold text-gray-700 dark:text-gray-300", children: [
         "Abgeschlossene Tests (",
-        sortedFinishedTests.length,
+        totalFilteredItems,
         ")"
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Tests durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters }),

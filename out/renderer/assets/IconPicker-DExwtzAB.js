@@ -1,7 +1,7 @@
-import { a8 as createLucideIcon, a9 as ArrowRight, aa as Bell, ab as BookOpen, ac as Building2, f as ChartColumn, z as Check, ad as CheckCheck, m as ChevronDown, A as ChevronRight, l as ChevronUp, Z as CircleCheck, a4 as CircleX, ae as Clock, C as CreditCard, F as FileText, af as Info, ag as Landmark, ah as LayoutDashboard, a7 as LoaderCircle, _ as Monitor, a0 as Moon, P as Play, a5 as Search, S as Settings, $ as Sun, T as Terminal, ai as TestTube, X, j as jsxRuntimeExports, i as dist, r as reactExports, aj as DialogHeader, ak as DialogTitle, al as DialogContent, am as Dialog } from "./index-CyFdAjl_.js";
-import { B as Bot, m as ChevronLeft, l as ChevronsUpDown, C as Copy, F as FileBraces, R as RefreshCw, S as Square, T as Trash2 } from "./Table-DWY6ITCn.js";
-import { C as CircleAlert, T as TriangleAlert } from "./DeleteConfirmDialog-CM6FgxMY.js";
-import { b as Circle, C as Code, D as Download, E as Eye, a as EyeOff, P as Plus, R as RotateCcw, S as Settings2, U as Upload } from "./upload-BGrw5bVo.js";
+import { a8 as createLucideIcon, a9 as ArrowRight, aa as Bell, ab as BookOpen, ac as Building2, f as ChartColumn, z as Check, ad as CheckCheck, m as ChevronDown, A as ChevronRight, l as ChevronUp, Z as CircleCheck, a4 as CircleX, ae as Clock, C as CreditCard, F as FileText, af as Info, ag as Landmark, ah as LayoutDashboard, a7 as LoaderCircle, _ as Monitor, a0 as Moon, P as Play, a5 as Search, S as Settings, $ as Sun, T as Terminal, ai as TestTube, X, j as jsxRuntimeExports, i as dist, r as reactExports, aj as DialogHeader, ak as DialogTitle, al as DialogContent, am as Dialog } from "./index-Bmp51tp6.js";
+import { B as Bot, m as ChevronLeft, l as ChevronsUpDown, C as Copy, F as FileBraces, R as RefreshCw, S as Square, T as Trash2 } from "./Table-CKvJydMp.js";
+import { C as CircleAlert, T as TriangleAlert } from "./DeleteConfirmDialog-B00geJkf.js";
+import { b as Circle, C as Code, D as Download, E as Eye, a as EyeOff, P as Plus, R as RotateCcw, S as Settings2, U as Upload } from "./upload-B-d2b6ZK.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -27256,192 +27256,197 @@ const IconPicker = (t0) => {
   }
   const allIcons = t1;
   let t2;
+  if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+    const shuffled = [...allIcons].sort(_temp);
+    t2 = shuffled.slice(0, 50);
+    $[1] = t2;
+  } else {
+    t2 = $[1];
+  }
+  const randomIcons = t2;
+  let t3;
   bb0: {
     if (!search) {
-      let t33;
-      if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
-        t33 = allIcons.slice(0, 50);
-        $[1] = t33;
-      } else {
-        t33 = $[1];
-      }
-      t2 = t33;
+      t3 = randomIcons;
       break bb0;
     }
-    let t32;
+    let t42;
     if ($[2] !== search) {
       const searchLower = search.toLowerCase();
-      t32 = allIcons.filter((icon) => icon.toLowerCase().includes(searchLower));
+      t42 = allIcons.filter((icon) => icon.toLowerCase().includes(searchLower));
       $[2] = search;
-      $[3] = t32;
+      $[3] = t42;
     } else {
-      t32 = $[3];
+      t42 = $[3];
     }
-    t2 = t32;
+    t3 = t42;
   }
-  const filteredIcons = t2;
-  let t3;
+  const filteredIcons = t3;
+  let t4;
   if ($[4] !== onChange || $[5] !== onClose) {
-    t3 = (iconName) => {
+    t4 = (iconName) => {
       onChange(iconName);
       onClose();
     };
     $[4] = onChange;
     $[5] = onClose;
-    $[6] = t3;
+    $[6] = t4;
   } else {
-    t3 = $[6];
+    t4 = $[6];
   }
-  const handleSelect = t3;
-  let t4;
-  if ($[7] !== onClose) {
-    t4 = (open) => !open && onClose();
-    $[7] = onClose;
-    $[8] = t4;
-  } else {
-    t4 = $[8];
-  }
+  const handleSelect = t4;
   let t5;
-  if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { className: "p-4 border-b border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Icon auswählen" }) });
-    $[9] = t5;
+  if ($[7] !== onClose) {
+    t5 = (open) => !open && onClose();
+    $[7] = onClose;
+    $[8] = t5;
   } else {
-    t5 = $[9];
+    t5 = $[8];
   }
   let t6;
-  if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400", size: 18 });
-    $[10] = t6;
+  if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { className: "p-4 border-b border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Icon auswählen" }) });
+    $[9] = t6;
   } else {
-    t6 = $[10];
+    t6 = $[9];
   }
   let t7;
-  if ($[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = (e) => setSearch(e.target.value);
-    $[11] = t7;
+  if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400", size: 18 });
+    $[10] = t7;
   } else {
-    t7 = $[11];
+    t7 = $[10];
   }
   let t8;
+  if ($[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = (e) => setSearch(e.target.value);
+    $[11] = t8;
+  } else {
+    t8 = $[11];
+  }
+  let t9;
   if ($[12] !== search) {
-    t8 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
-      t6,
-      /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "text", value: search, onChange: t7, placeholder: "Icon suchen...", className: "w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500", autoFocus: true })
+    t9 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+      t7,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "text", value: search, onChange: t8, placeholder: "Icon suchen...", className: "w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500", autoFocus: true })
     ] });
     $[12] = search;
-    $[13] = t8;
+    $[13] = t9;
   } else {
-    t8 = $[13];
+    t9 = $[13];
   }
-  const t9 = search ? `${filteredIcons.length} ${filteredIcons.length === 1 ? "Icon" : "Icons"} gefunden` : `${filteredIcons.length} Icons angezeigt (von ${allIcons.length} gesamt)`;
-  let t10;
-  if ($[14] !== t9) {
-    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-2 text-xs text-gray-500 dark:text-gray-400", children: t9 });
-    $[14] = t9;
-    $[15] = t10;
-  } else {
-    t10 = $[15];
-  }
+  const t10 = search ? `${filteredIcons.length} ${filteredIcons.length === 1 ? "Icon" : "Icons"} gefunden` : `${filteredIcons.length} Icons angezeigt (von ${allIcons.length} gesamt)`;
   let t11;
-  if ($[16] !== t10 || $[17] !== t8) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800", children: [
-      t8,
-      t10
-    ] });
-    $[16] = t10;
-    $[17] = t8;
-    $[18] = t11;
+  if ($[14] !== t10) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-2 text-xs text-gray-500 dark:text-gray-400", children: t10 });
+    $[14] = t10;
+    $[15] = t11;
   } else {
-    t11 = $[18];
+    t11 = $[15];
   }
   let t12;
+  if ($[16] !== t11 || $[17] !== t9) {
+    t12 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800", children: [
+      t9,
+      t11
+    ] });
+    $[16] = t11;
+    $[17] = t9;
+    $[18] = t12;
+  } else {
+    t12 = $[18];
+  }
+  let t13;
   if ($[19] !== filteredIcons || $[20] !== handleSelect || $[21] !== value) {
-    let t132;
+    let t142;
     if ($[23] !== handleSelect || $[24] !== value) {
-      t132 = (iconName_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleSelect(iconName_0), className: `flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 ${value === iconName_0 ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-600"}`, title: iconName_0, children: [
+      t142 = (iconName_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleSelect(iconName_0), className: `flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 ${value === iconName_0 ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-600"}`, title: iconName_0, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-700 dark:text-gray-300", children: renderIcon(iconName_0, 24) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[9px] text-gray-500 dark:text-gray-400 mt-1 truncate w-full text-center", children: iconName_0 })
       ] }, iconName_0);
       $[23] = handleSelect;
       $[24] = value;
-      $[25] = t132;
+      $[25] = t142;
     } else {
-      t132 = $[25];
+      t142 = $[25];
     }
-    t12 = filteredIcons.map(t132);
+    t13 = filteredIcons.map(t142);
     $[19] = filteredIcons;
     $[20] = handleSelect;
     $[21] = value;
-    $[22] = t12;
+    $[22] = t13;
   } else {
-    t12 = $[22];
-  }
-  let t13;
-  if ($[26] !== t12) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2", children: t12 });
-    $[26] = t12;
-    $[27] = t13;
-  } else {
-    t13 = $[27];
+    t13 = $[22];
   }
   let t14;
+  if ($[26] !== t13) {
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-2", children: t13 });
+    $[26] = t13;
+    $[27] = t14;
+  } else {
+    t14 = $[27];
+  }
+  let t15;
   if ($[28] !== filteredIcons.length) {
-    t14 = filteredIcons.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12 text-gray-500 dark:text-gray-400", children: [
+    t15 = filteredIcons.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-12 text-gray-500 dark:text-gray-400", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Keine Icons gefunden" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm mt-2", children: "Versuche einen anderen Suchbegriff" })
     ] });
     $[28] = filteredIcons.length;
-    $[29] = t14;
+    $[29] = t15;
   } else {
-    t14 = $[29];
-  }
-  let t15;
-  if ($[30] !== t13 || $[31] !== t14) {
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 overflow-y-auto p-4 bg-white dark:bg-gray-800", children: [
-      t13,
-      t14
-    ] });
-    $[30] = t13;
-    $[31] = t14;
-    $[32] = t15;
-  } else {
-    t15 = $[32];
+    t15 = $[29];
   }
   let t16;
+  if ($[30] !== t14 || $[31] !== t15) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 overflow-y-auto p-4 bg-white dark:bg-gray-800", children: [
+      t14,
+      t15
+    ] });
+    $[30] = t14;
+    $[31] = t15;
+    $[32] = t16;
+  } else {
+    t16 = $[32];
+  }
+  let t17;
   if ($[33] === Symbol.for("react.memo_cache_sentinel")) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between text-xs text-gray-500 dark:text-gray-400", children: [
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between text-xs text-gray-500 dark:text-gray-400", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Klicke auf ein Icon zum Auswählen" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "ESC zum Schließen" })
     ] }) });
-    $[33] = t16;
+    $[33] = t17;
   } else {
-    t16 = $[33];
-  }
-  let t17;
-  if ($[34] !== t11 || $[35] !== t15) {
-    t17 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "max-w-3xl max-h-[80vh] flex flex-col gap-0 p-0 overflow-hidden", children: [
-      t5,
-      t11,
-      t15,
-      t16
-    ] });
-    $[34] = t11;
-    $[35] = t15;
-    $[36] = t17;
-  } else {
-    t17 = $[36];
+    t17 = $[33];
   }
   let t18;
-  if ($[37] !== t17 || $[38] !== t4) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: true, onOpenChange: t4, children: t17 });
-    $[37] = t17;
-    $[38] = t4;
-    $[39] = t18;
+  if ($[34] !== t12 || $[35] !== t16) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "max-w-3xl max-h-[80vh] flex flex-col gap-0 p-0 overflow-hidden", children: [
+      t6,
+      t12,
+      t16,
+      t17
+    ] });
+    $[34] = t12;
+    $[35] = t16;
+    $[36] = t18;
   } else {
-    t18 = $[39];
+    t18 = $[36];
   }
-  return t18;
+  let t19;
+  if ($[37] !== t18 || $[38] !== t5) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: true, onOpenChange: t5, children: t18 });
+    $[37] = t18;
+    $[38] = t5;
+    $[39] = t19;
+  } else {
+    t19 = $[39];
+  }
+  return t19;
 };
+function _temp() {
+  return Math.random() - 0.5;
+}
 export {
   IconPicker as I,
   Pen as P,

@@ -13,7 +13,7 @@ import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, Plus } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 
@@ -250,8 +250,9 @@ const PaymentMethods: React.FC = () => {
           onClick={handleAddMethod}
           variant="primary"
           size="md"
+          className="gap-2"
           disabled={isLoading}>
-          Neue Bezahlmethode
+          <Plus size={16} /> Neue Bezahlmethode
         </Button>
       </div>
 

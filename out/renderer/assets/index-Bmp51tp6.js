@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-Cfi8SqJ9.js","./app.config-KSZPYlnw.js","./Skeleton-C0B8i1rn.js","./Forms-DbplUhmg.js","./IconPicker-BTKpCC2F.js","./Table-DWY6ITCn.js","./DeleteConfirmDialog-CM6FgxMY.js","./upload-BGrw5bVo.js","./useFilterableData-1DgOl5Rv.js","./PaymentMethods-ByjGyYIU.js","./Settings-4ofBsPGd.js","./TestResults-Cb25yc_f.js","./InfoDoku-CGie5hnn.js","./Schedules-Dk-aC1aA.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-tqn70r9v.js","./app.config-KSZPYlnw.js","./Skeleton-CzglAHl8.js","./Forms-BAbTNj5Y.js","./IconPicker-DExwtzAB.js","./Table-CKvJydMp.js","./DeleteConfirmDialog-B00geJkf.js","./upload-B-d2b6ZK.js","./useFilterableData-CYk0jbAY.js","./PaymentMethods-CKvi251q.js","./Settings-BdkQSi5q.js","./TestResults-CSlh5ztD.js","./InfoDoku-B59zWJ-J.js","./Schedules-UVInmvaE.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -23382,7 +23382,7 @@ const NotificationButton = () => {
   }
   let t8;
   if ($2[16] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Benachrichtigungen" });
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xs font-medium text-gray-900 dark:text-white", children: "Benachrichtigungen" });
     $2[16] = t8;
   } else {
     t8 = $2[16];
@@ -23401,7 +23401,7 @@ const NotificationButton = () => {
   }
   let t10;
   if ($2[20] !== t9) {
-    t10 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: [
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: [
       t8,
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-1", children: t9 })
     ] });
@@ -23412,21 +23412,21 @@ const NotificationButton = () => {
   }
   let t11;
   if ($2[22] !== deleteNotification || $2[23] !== handleNotificationClick || $2[24] !== notifications) {
-    t11 = notifications.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400", children: "Keine Benachrichtigungen" }) : notifications.slice(0, 10).map((notification_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Item2, { className: `flex items-start gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors outline-none ${!notification_0.isRead ? "bg-blue-50/50 dark:bg-blue-900/10" : ""}`, onSelect: () => handleNotificationClick(notification_0), children: [
+    t11 = notifications.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-6 text-center text-xs text-gray-500 dark:text-gray-400", children: "Keine Benachrichtigungen" }) : notifications.slice(0, 10).map((notification_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Item2, { className: `flex items-start gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors outline-none ${!notification_0.isRead ? "bg-blue-50/50 dark:bg-blue-900/10" : ""}`, onSelect: () => handleNotificationClick(notification_0), children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 mt-0.5", children: getNotificationIcon(notification_0.type) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: `text-sm ${!notification_0.isRead ? "font-medium" : ""} text-gray-900 dark:text-white truncate`, children: notification_0.title }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: `text-[11px] leading-tight ${!notification_0.isRead ? "font-medium" : ""} text-gray-900 dark:text-white line-clamp-1`, children: notification_0.title }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
             e_0.stopPropagation();
             e_0.preventDefault();
             deleteNotification(notification_0.id);
-          }, className: "flex-shrink-0 p-0.5 text-gray-400 hover:text-red-500 transition-colors", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X$1, { size: 12 }) })
+          }, className: "flex-shrink-0 p-0.5 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X$1, { size: 10 }) })
         ] }),
-        notification_0.message && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5", children: notification_0.message }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-gray-400 dark:text-gray-500 mt-1", children: formatDateTime(notification_0.createdAt) })
+        notification_0.message && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-gray-500 dark:text-gray-400 line-clamp-1", children: notification_0.message }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-gray-400 dark:text-gray-500 mt-0.5", children: formatDateTime(notification_0.createdAt) })
       ] }),
-      !notification_0.isRead && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-1.5" })
+      !notification_0.isRead && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 w-1.5 h-1.5 bg-blue-500 rounded-full mt-1" })
     ] }, notification_0.id));
     $2[22] = deleteNotification;
     $2[23] = handleNotificationClick;
@@ -23437,7 +23437,7 @@ const NotificationButton = () => {
   }
   let t12;
   if ($2[26] !== t11) {
-    t12 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-80 overflow-y-auto", children: t11 });
+    t12 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-64 overflow-y-auto", children: t11 });
     $2[26] = t11;
     $2[27] = t12;
   } else {
@@ -23445,7 +23445,7 @@ const NotificationButton = () => {
   }
   let t13;
   if ($2[28] !== navigate || $2[29] !== notifications.length) {
-    t13 = notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 py-2 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Item2, { className: "w-full text-center text-xs text-blue-600 dark:text-blue-400 hover:underline cursor-pointer outline-none", onSelect: () => navigate("/test-results"), children: "Alle Testergebnisse anzeigen" }) });
+    t13 = notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-1.5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Item2, { className: "w-full text-center text-[10px] text-blue-600 dark:text-blue-400 hover:underline cursor-pointer outline-none", onSelect: () => navigate("/test-results"), children: "Alle Testergebnisse anzeigen" }) });
     $2[28] = navigate;
     $2[29] = notifications.length;
     $2[30] = t13;
@@ -23454,7 +23454,7 @@ const NotificationButton = () => {
   }
   let t14;
   if ($2[31] !== t10 || $2[32] !== t12 || $2[33] !== t13) {
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$2, { className: "w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden animate-in fade-in-0 zoom-in-95", sideOffset: 8, align: "end", children: [
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$2, { className: "w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden animate-in fade-in-0 zoom-in-95", sideOffset: 8, align: "end", children: [
       t10,
       t12,
       t13
@@ -23483,13 +23483,13 @@ const NotificationButton = () => {
 function _temp$3(type) {
   switch (type) {
     case "test_complete": {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14, className: "text-green-500" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 12, className: "text-green-500" });
     }
     case "test_failed": {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 14, className: "text-red-500" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 12, className: "text-red-500" });
     }
     default: {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { size: 14, className: "text-blue-500" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { size: 12, className: "text-blue-500" });
     }
   }
 }
@@ -31607,7 +31607,7 @@ const useSchedulesStore = create((set, get) => ({
     }
   }
 }));
-const badgeVariants = cva("inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-medium font-mono rounded-full border transition-colors", {
+const badgeVariants = cva("inline-flex !uppercase items-center gap-1.5 px-2 py-0.5 text-[11px] font-medium font-mono rounded-full border transition-colors", {
   variants: {
     variant: {
       default: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600",
@@ -31622,9 +31622,9 @@ const badgeVariants = cva("inline-flex items-center gap-1.5 px-2 py-0.5 text-[11
       stopped: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-300 dark:border-purple-700"
     },
     size: {
-      sm: "text-[10px] px-1.5 py-0.5",
-      md: "text-[11px] px-2 py-0.5",
-      lg: "text-xs px-2.5 py-1"
+      sm: "text-[9px] px-1.5 py-0.5",
+      md: "text-[10px] px-2 py-0.5",
+      lg: "text-[11px] px-2.5 py-1"
     }
   },
   defaultVariants: {
@@ -32614,13 +32614,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-Cfi8SqJ9.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DbplUhmg.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-ByjGyYIU.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-4ofBsPGd.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-Cb25yc_f.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-CGie5hnn.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-Dk-aC1aA.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-tqn70r9v.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BAbTNj5Y.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-CKvi251q.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BdkQSi5q.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-CSlh5ztD.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-B59zWJ-J.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-UVInmvaE.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,

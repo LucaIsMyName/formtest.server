@@ -12,12 +12,18 @@ interface IconPickerProps {
 const IconPicker: React.FC<IconPickerProps> = ({ value, onChange, onClose }) => {
   const [search, setSearch] = useState('');
   const allIcons = useMemo(() => getAllIconNames(), []);
+  
+  // Generate random 50 icons on mount (stable for this session)
+  const randomIcons = useMemo(() => {
+    const shuffled = [...allIcons].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 50);
+  }, [allIcons]);
 
   const filteredIcons = useMemo(() => {
-    if (!search) return allIcons.slice(0, 50); // Show first 50 icons by default
+    if (!search) return randomIcons; // Show random 50 icons by default
     const searchLower = search.toLowerCase();
     return allIcons.filter(icon => icon.toLowerCase().includes(searchLower));
-  }, [search, allIcons]);
+  }, [search, allIcons, randomIcons]);
 
   const handleSelect = (iconName: string) => {
     onChange(iconName);

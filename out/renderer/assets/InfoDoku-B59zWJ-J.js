@@ -1,4 +1,4 @@
-import { i as dist, j as jsxRuntimeExports } from "./index-CyFdAjl_.js";
+import { i as dist, j as jsxRuntimeExports } from "./index-Bmp51tp6.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
 const InfoDoku = () => {
   const $ = dist.c(50);

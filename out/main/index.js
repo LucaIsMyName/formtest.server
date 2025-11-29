@@ -2088,6 +2088,86 @@ async function createAndRunTest(formId, paymentMethodId) {
     throw error;
   }
 }
+class TestQueue {
+  constructor() {
+    this.queue = [];
+    this.isProcessing = false;
+    this.currentTest = null;
+  }
+  /**
+   * Add a test to the queue
+   */
+  enqueue(testRunId, form, paymentMethod, settings) {
+    const queuedTest = {
+      testRunId,
+      form,
+      paymentMethod,
+      settings,
+      addedAt: Date.now()
+    };
+    this.queue.push(queuedTest);
+    console.log(`[TestQueue] Added test ${testRunId} to queue. Queue length: ${this.queue.length}`);
+    if (!this.isProcessing) {
+      this.processNext();
+    }
+  }
+  /**
+   * Process the next test in the queue
+   */
+  async processNext() {
+    if (this.isProcessing) {
+      console.log("[TestQueue] Already processing a test, waiting...");
+      return;
+    }
+    if (this.queue.length === 0) {
+      console.log("[TestQueue] Queue is empty, nothing to process");
+      return;
+    }
+    this.isProcessing = true;
+    this.currentTest = this.queue.shift();
+    const { testRunId, form, paymentMethod, settings } = this.currentTest;
+    const waitTime = Date.now() - this.currentTest.addedAt;
+    console.log(`[TestQueue] Starting test ${testRunId} (waited ${waitTime}ms in queue). Remaining in queue: ${this.queue.length}`);
+    try {
+      await runSingleTest(testRunId, form, paymentMethod, settings);
+      console.log(`[TestQueue] Test ${testRunId} completed`);
+    } catch (error) {
+      console.error(`[TestQueue] Test ${testRunId} failed with error:`, error);
+    } finally {
+      this.currentTest = null;
+      this.isProcessing = false;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      if (this.queue.length > 0) {
+        this.processNext();
+      }
+    }
+  }
+  /**
+   * Get current queue status
+   */
+  getStatus() {
+    return {
+      queueLength: this.queue.length,
+      isProcessing: this.isProcessing,
+      currentTestId: this.currentTest?.testRunId || null
+    };
+  }
+  /**
+   * Clear the queue (does not stop current test)
+   */
+  clear() {
+    const cleared = this.queue.length;
+    this.queue = [];
+    console.log(`[TestQueue] Cleared ${cleared} tests from queue`);
+  }
+}
+let testQueueInstance = null;
+function getTestQueue() {
+  if (!testQueueInstance) {
+    testQueueInstance = new TestQueue();
+  }
+  return testQueueInstance;
+}
 class SchedulerService {
   constructor() {
     this.jobs = /* @__PURE__ */ new Map();
@@ -2349,9 +2429,8 @@ function setupIpcHandlers() {
             isScheduled: false
           });
           testRunIds.push(testRun.lastInsertRowid);
-          setImmediate(async () => {
-            await runSingleTest(testRun.lastInsertRowid, form, paymentMethod, settingsMap);
-          });
+          const testQueue = getTestQueue();
+          testQueue.enqueue(testRun.lastInsertRowid, form, paymentMethod, settingsMap);
         }
       }
       return {

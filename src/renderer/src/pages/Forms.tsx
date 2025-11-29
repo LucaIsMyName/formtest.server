@@ -13,7 +13,7 @@ import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
 import { renderIcon } from "../utils/iconHelper";
 import { formatDate } from "../utils/formatters";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, Plus } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 
@@ -178,7 +178,9 @@ const Forms: React.FC = () => {
           onClick={handleAddForm}
           variant="primary"
           size="md"
+          className="gap-2"
           disabled={isLoading}>
+          <Plus size={16} />
           Neues Formular
         </Button>
       </div>

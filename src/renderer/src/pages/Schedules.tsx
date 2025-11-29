@@ -223,7 +223,7 @@ const Schedules: React.FC = () => {
         }}
         onSave={handleSave}
         initialData={editingSchedule}
-        title={editingSchedule ? "Zeitplan bearbeiten" : "Neuer Zeitplan"}
+        title={editingSchedule ? "Autopilot bearbeiten" : "Neuer Autopilot"}
       />
 
       <DeleteConfirmDialog

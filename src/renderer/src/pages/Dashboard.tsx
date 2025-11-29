@@ -23,7 +23,7 @@ interface DashboardStats {
 
 const DashboardSkeleton = () => (
   <div>
-    <div className="h-8 w-48 mb-6">
+    <div className="h-16 w-64 mb-6">
       <Skeleton className="h-full w-full" />
     </div>
 

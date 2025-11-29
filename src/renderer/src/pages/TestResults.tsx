@@ -235,9 +235,9 @@ const TestResults: React.FC = () => {
       // JavaScript parses strings without timezone as LOCAL time, but SQLite stores UTC
       // So we need to parse it as UTC by adding 'Z'
       const dateStr = String(runAt);
-      if (!dateStr.includes('T') && !dateStr.includes('Z')) {
+      if (!dateStr.includes("T") && !dateStr.includes("Z")) {
         // Add Z to indicate UTC
-        const utcDate = new Date(dateStr.replace(' ', 'T') + 'Z');
+        const utcDate = new Date(dateStr.replace(" ", "T") + "Z");
         return utcDate.getTime();
       }
       return new Date(dateStr).getTime();
@@ -300,7 +300,7 @@ const TestResults: React.FC = () => {
   const totalFilteredItems = allSortedFinishedTests.length;
   const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
   const showPagination = totalFilteredItems > 50;
-  
+
   const sortedFinishedTests = useMemo(() => {
     if (totalFilteredItems > 50) {
       const start = (currentPage - 1) * itemsPerPage;
@@ -308,7 +308,7 @@ const TestResults: React.FC = () => {
     }
     return allSortedFinishedTests;
   }, [allSortedFinishedTests, currentPage, itemsPerPage, totalFilteredItems]);
-  
+
   // Reset page when filter or sort changes
   useEffect(() => {
     setCurrentPage(1);
@@ -482,6 +482,15 @@ const TestResults: React.FC = () => {
         <h1 className={CONFIG.style.title.className}>Test Resultate</h1>
         <div className="flex items-center gap-3">
           <Button
+            onClick={loadTestRuns}
+            variant="secondary"
+            size="md"
+            disabled={isLoading}
+            className="gap-2">
+            <RefreshCw size={16} />
+            Aktualisieren
+          </Button>
+          <Button
             onClick={() => {
               // Dispatch global event to open TestRunDialog
               window.dispatchEvent(new Event("openTestDialog"));
@@ -491,15 +500,6 @@ const TestResults: React.FC = () => {
             className="gap-2">
             <Play size={16} />
             Testen
-          </Button>
-          <Button
-            onClick={loadTestRuns}
-            variant="secondary"
-            size="md"
-            disabled={isLoading}
-            className="gap-2">
-            <RefreshCw size={16} />
-            Aktualisieren
           </Button>
         </div>
       </div>
@@ -608,7 +608,7 @@ const TestResults: React.FC = () => {
       {/* Finished Test Runs List */}
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Abgeschlossene Tests ({sortedFinishedTests.length})</h2>
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Abgeschlossene Tests ({totalFilteredItems})</h2>
         </div>
 
         {/* Filter Bar */}
@@ -877,7 +877,7 @@ const TestResults: React.FC = () => {
                           <Link
                             to={`/payment-methods?id=${pmDetails.id}`}
                             className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
-                            Öffnen 
+                            Öffnen
                           </Link>
                         </div>
                         <div className="grid grid-cols-2 gap-3">

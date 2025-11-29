@@ -3,7 +3,7 @@ import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig } from "./database";
 import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule } from "../common/types";
-import { runSingleTest } from "./testExecutor";
+import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
 import { getConfigurableCategories } from "../common/selectors.config";
 
@@ -225,10 +225,9 @@ export function setupIpcHandlers(): void {
 
           testRunIds.push(testRun.lastInsertRowid as number);
 
-          // Run the actual test asynchronously (don't wait for completion)
-          setImmediate(async () => {
-            await runSingleTest(testRun.lastInsertRowid as number, form, paymentMethod, settingsMap);
-          });
+          // Add test to the queue - tests will run sequentially to prevent log mixing
+          const testQueue = getTestQueue();
+          testQueue.enqueue(testRun.lastInsertRowid as number, form, paymentMethod, settingsMap);
         }
       }
 
