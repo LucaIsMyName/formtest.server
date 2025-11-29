@@ -329,7 +329,7 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
           <div>
-            <p className="text-smtext-gray-500 dark:text-gray-400">Erfolgsrate</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Erfolgsrate</p>
             <p
               className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2"
               style={{ fontStretch: "125%" }}>
@@ -358,13 +358,13 @@ const Dashboard: React.FC = () => {
                 <XAxis
                   dataKey="date"
                   stroke="#9ca3af"
-                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
-                  tickLine={{ stroke: '#d1d5db' }}
+                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tickLine={{ stroke: "#d1d5db" }}
                 />
-                <YAxis 
-                  stroke="#9ca3af" 
-                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
-                  tickLine={{ stroke: '#d1d5db' }}
+                <YAxis
+                  stroke="#9ca3af"
+                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tickLine={{ stroke: "#d1d5db" }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
@@ -409,17 +409,16 @@ const Dashboard: React.FC = () => {
                     label={({ name, percent, cx, cy, midAngle = 0, innerRadius, outerRadius }) => {
                       const RADIAN = Math.PI / 180;
                       const radius = Number(innerRadius) + (Number(outerRadius) - Number(innerRadius)) * 1.4;
-                      const x = Number(cx) + radius * Math.cos(-(midAngle) * RADIAN);
-                      const y = Number(cy) + radius * Math.sin(-(midAngle) * RADIAN);
+                      const x = Number(cx) + radius * Math.cos(-midAngle * RADIAN);
+                      const y = Number(cy) + radius * Math.sin(-midAngle * RADIAN);
                       return (
-                        <text 
-                          x={x} 
-                          y={y} 
-                          fill="#9ca3af" 
-                          textAnchor={x > Number(cx) ? 'start' : 'end'} 
+                        <text
+                          x={x}
+                          y={y}
+                          fill="#9ca3af"
+                          textAnchor={x > Number(cx) ? "start" : "end"}
                           dominantBaseline="central"
-                          style={{ fontSize: '10px', fontFamily: 'JetBrains Mono, monospace' }}
-                        >
+                          style={{ fontSize: "10px", fontFamily: "JetBrains Mono, monospace" }}>
                           {`${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                         </text>
                       );
@@ -454,13 +453,13 @@ const Dashboard: React.FC = () => {
                   <XAxis
                     dataKey="name"
                     stroke="#9ca3af"
-                    tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
-                    tickLine={{ stroke: '#d1d5db' }}
+                    tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                    tickLine={{ stroke: "#d1d5db" }}
                   />
-                  <YAxis 
-                    stroke="#9ca3af" 
-                    tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
-                    tickLine={{ stroke: '#d1d5db' }}
+                  <YAxis
+                    stroke="#9ca3af"
+                    tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                    tickLine={{ stroke: "#d1d5db" }}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
@@ -501,16 +500,16 @@ const Dashboard: React.FC = () => {
                 <XAxis
                   type="number"
                   stroke="#9ca3af"
-                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
-                  tickLine={{ stroke: '#d1d5db' }}
+                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tickLine={{ stroke: "#d1d5db" }}
                 />
                 <YAxis
                   dataKey="name"
                   type="category"
                   stroke="#9ca3af"
                   width={150}
-                  tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace' }}
-                  tickLine={{ stroke: '#d1d5db' }}
+                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tickLine={{ stroke: "#d1d5db" }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
