@@ -581,11 +581,12 @@ function migrateTestRunNotes() {
   }
 }
 function migrateTestRunStoppedStatus() {
-  console.log("Database: Checking for test_runs STOPPED status support...");
+  console.log("Database: Checking for test_runs status constraint...");
   try {
     const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get();
-    if (tableInfo && tableInfo.sql.includes("'RUNNING')") && !tableInfo.sql.includes("'STOPPED'")) {
-      console.log("Database: Migrating test_runs table to add STOPPED status...");
+    const needsMigration = tableInfo && (!tableInfo.sql.includes("'STOPPED'") || !tableInfo.sql.includes("'QUEUED'"));
+    if (needsMigration) {
+      console.log("Database: Migrating test_runs table to add STOPPED/QUEUED status...");
       db.transaction(() => {
         db.exec(`
           CREATE TABLE test_runs_new (
@@ -593,7 +594,7 @@ function migrateTestRunStoppedStatus() {
             uuid TEXT,
             formId INTEGER NOT NULL,
             paymentMethodId INTEGER NOT NULL,
-            status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
+            status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
             errorMessage TEXT,
             screenshotPath TEXT,
             logDetails TEXT,
@@ -617,12 +618,12 @@ function migrateTestRunStoppedStatus() {
         `);
         db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid)");
       })();
-      console.log("Database: Successfully migrated test_runs table to support STOPPED status");
+      console.log("Database: Successfully migrated test_runs table to support STOPPED/QUEUED status");
     } else {
-      console.log("Database: test_runs table already supports STOPPED status");
+      console.log("Database: test_runs table already supports all statuses");
     }
   } catch (error) {
-    console.error("Database: STOPPED status migration error:", error);
+    console.error("Database: Status migration error:", error);
   }
 }
 function migrateTestRunScheduled() {
@@ -778,7 +779,7 @@ function initDatabase() {
       uuid TEXT,
       formId INTEGER NOT NULL,
       paymentMethodId INTEGER NOT NULL,
-      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
+      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
       errorMessage TEXT,
       screenshotPath TEXT,
       logDetails TEXT,
@@ -883,7 +884,29 @@ function initDatabase() {
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
   });
+  cleanupOrphanedTests();
   console.log("Database: Initialization complete");
+}
+function cleanupOrphanedTests() {
+  try {
+    const orphanedTests = db.prepare(
+      "SELECT id, status FROM test_runs WHERE status IN ('RUNNING', 'QUEUED')"
+    ).all();
+    if (orphanedTests.length > 0) {
+      console.log(`Database: Found ${orphanedTests.length} orphaned tests from previous session`);
+      const updateStmt = db.prepare(
+        "UPDATE test_runs SET status = 'STOPPED', errorMessage = ? WHERE id = ?"
+      );
+      db.transaction(() => {
+        for (const test of orphanedTests) {
+          updateStmt.run("Test interrupted by app restart", test.id);
+        }
+      })();
+      console.log(`Database: Marked ${orphanedTests.length} orphaned tests as STOPPED`);
+    }
+  } catch (error) {
+    console.error("Database: Error cleaning up orphaned tests:", error);
+  }
 }
 const formQueries = {
   getAll: () => {
@@ -1227,9 +1250,9 @@ const testRunQueries = {
     return stmt.run(notes, id);
   },
   stop: (id) => {
-    const testRun = db.prepare("SELECT runAt FROM test_runs WHERE id = ?").get(id);
+    const testRun = db.prepare("SELECT runAt, status FROM test_runs WHERE id = ?").get(id);
     let durationMs = 0;
-    if (testRun) {
+    if (testRun && testRun.status === "RUNNING") {
       const runAtStr = String(testRun.runAt);
       let startTime;
       if (!runAtStr.includes("T") && !runAtStr.includes("Z")) {
@@ -1239,7 +1262,7 @@ const testRunQueries = {
       }
       durationMs = Date.now() - startTime;
     }
-    const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status = 'RUNNING'");
+    const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status IN ('RUNNING', 'QUEUED')");
     return stmt.run(durationMs, id);
   },
   delete: (id) => {
@@ -2073,15 +2096,17 @@ async function createAndRunTest(formId, paymentMethodId) {
       uuid: crypto.randomUUID(),
       formId: form.id,
       paymentMethodId: paymentMethod.id,
-      status: "RUNNING",
-      logDetails: JSON.stringify([`Autopilot test started for ${form.name} with ${paymentMethod.name}`]),
+      status: "QUEUED",
+      logDetails: JSON.stringify([`Autopilot test queued for ${form.name} with ${paymentMethod.name}`]),
       screenshotPath: void 0,
       errorMessage: void 0,
       durationMs: void 0,
       isScheduled: true
     });
     const testRunId = testRun.lastInsertRowid;
-    runSingleTest(testRunId, form, paymentMethod, settingsMap);
+    const testQueue = getTestQueue();
+    testQueue.enqueue(testRunId, form, paymentMethod, settingsMap);
+    console.log(`[Scheduler] Test ${testRunId} added to queue for ${form.name} × ${paymentMethod.name}`);
     return testRunId;
   } catch (error) {
     console.error("Failed to create and run scheduled test:", error);
@@ -2161,6 +2186,19 @@ class TestQueue {
     };
   }
   /**
+   * Remove a specific test from the queue by its testRunId
+   * Does NOT update database - caller is responsible for that
+   */
+  removeFromQueue(testRunId) {
+    const initialLength = this.queue.length;
+    this.queue = this.queue.filter((t) => t.testRunId !== testRunId);
+    const removed = this.queue.length < initialLength;
+    if (removed) {
+      console.log(`[TestQueue] Removed test ${testRunId} from queue`);
+    }
+    return removed;
+  }
+  /**
    * Clear the queue (does not stop current test)
    * Updates database status for cleared tests to STOPPED
    */
@@ -2172,6 +2210,30 @@ class TestQueue {
     this.queue = [];
     console.log(`[TestQueue] Cleared ${clearedIds.length} tests from queue`);
     return { clearedIds };
+  }
+  /**
+   * Stop the currently running test and clear the queue
+   * This kills the browser process and marks the test as STOPPED
+   */
+  async stopAll() {
+    const currentTestId = this.currentTest?.testRunId || null;
+    const wasProcessing = this.isProcessing;
+    this.currentTest = null;
+    this.isProcessing = false;
+    const { clearedIds } = this.clear();
+    if (currentTestId && wasProcessing) {
+      console.log(`[TestQueue] Stopping current test ${currentTestId}...`);
+      try {
+        const processManager2 = getTestProcessManager();
+        await processManager2.stopProcess();
+        testRunQueries.updateStatus(currentTestId, "STOPPED");
+        console.log(`[TestQueue] Test ${currentTestId} stopped`);
+      } catch (error) {
+        console.error(`[TestQueue] Error stopping test ${currentTestId}:`, error);
+      }
+    }
+    console.log(`[TestQueue] stopAll complete. Queue state: isProcessing=${this.isProcessing}, currentTest=${this.currentTest}`);
+    return { stoppedId: currentTestId, clearedIds };
   }
 }
 let testQueueInstance = null;
@@ -2403,7 +2465,11 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
   electron.ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
   electron.ipcMain.handle("testRuns:updateNotes", (_, id, notes) => testRunQueries.updateNotes(id, notes));
-  electron.ipcMain.handle("testRuns:stop", (_, id) => testRunQueries.stop(id));
+  electron.ipcMain.handle("testRuns:stop", (_, id) => {
+    const testQueue = getTestQueue();
+    testQueue.removeFromQueue(id);
+    return testRunQueries.stop(id);
+  });
   electron.ipcMain.handle("toast:show", (event, type, message, description) => {
     event.sender.send("toast:display", { type, message, description });
   });
@@ -2464,6 +2530,11 @@ function setupIpcHandlers() {
     const testQueue = getTestQueue();
     testQueue.clear();
     return { success: true };
+  });
+  electron.ipcMain.handle("testQueue:stopAll", async () => {
+    const testQueue = getTestQueue();
+    const result = await testQueue.stopAll();
+    return { success: true, ...result };
   });
   electron.ipcMain.handle("database:export", async (_event, options) => {
     try {

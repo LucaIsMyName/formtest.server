@@ -8,6 +8,8 @@ import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
+import { Trash2 } from "lucide-react";
+import { CONFIG } from "../app.config";
 
 interface PaymentMethodDrawerProps {
   isOpen: boolean;
@@ -15,9 +17,10 @@ interface PaymentMethodDrawerProps {
   onSubmit: (method: Omit<PaymentMethod, "id" | "createdAt" | "updatedAt">) => Promise<void>;
   editMethod?: PaymentMethod | null;
   isLoading?: boolean;
+  onDelete?: (id: number) => void;
 }
 
-const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClose, onSubmit, editMethod, isLoading = false }) => {
+const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClose, onSubmit, editMethod, isLoading = false, onDelete }) => {
   const [methodData, setMethodData] = useState({
     name: "",
     type: "paypal" as PaymentMethod["type"],
@@ -126,7 +129,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
       case "paypal":
         return (
           <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="email">PayPal E-Mail *</Label>
+            <Label
+              className="text-gray-600 dark:text-gray-400"
+              htmlFor="email">
+              PayPal E-Mail *
+            </Label>
             <Input
               type="email"
               id="email"
@@ -144,7 +151,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
         return (
           <>
             <div className="space-y-2">
-              <Label className="text-gray-600 dark:text-gray-400" htmlFor="accountHolder">Kontoinhaber *</Label>
+              <Label
+                className="text-gray-600 dark:text-gray-400"
+                htmlFor="accountHolder">
+                Kontoinhaber *
+              </Label>
               <Input
                 type="text"
                 id="accountHolder"
@@ -157,7 +168,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               {errors.accountHolder && <p className="text-red-500 text-xs">{errors.accountHolder}</p>}
             </div>
             <div className="space-y-2">
-              <Label className="text-gray-600 dark:text-gray-400" htmlFor="iban">IBAN *</Label>
+              <Label
+                className="text-gray-600 dark:text-gray-400"
+                htmlFor="iban">
+                IBAN *
+              </Label>
               <Input
                 type="text"
                 id="iban"
@@ -176,7 +191,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
         return (
           <>
             <div className="space-y-2">
-              <Label className="text-gray-600 dark:text-gray-400" htmlFor="cardNumber">Kartennummer *</Label>
+              <Label
+                className="text-gray-600 dark:text-gray-400"
+                htmlFor="cardNumber">
+                Kartennummer *
+              </Label>
               <Input
                 type="text"
                 id="cardNumber"
@@ -190,7 +209,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-gray-600 dark:text-gray-400" htmlFor="expiryDate">Ablaufdatum *</Label>
+                <Label
+                  className="text-gray-600 dark:text-gray-400"
+                  htmlFor="expiryDate">
+                  Ablaufdatum *
+                </Label>
                 <Input
                   type="text"
                   id="expiryDate"
@@ -203,7 +226,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 {errors.expiryDate && <p className="text-red-500 text-xs">{errors.expiryDate}</p>}
               </div>
               <div className="space-y-2">
-                <Label className="text-gray-600 dark:text-gray-400" htmlFor="cvv">CVV *</Label>
+                <Label
+                  className="text-gray-600 dark:text-gray-400"
+                  htmlFor="cvv">
+                  CVV *
+                </Label>
                 <Input
                   type="text"
                   id="cvv"
@@ -222,7 +249,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
       case "eps":
         return (
           <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="bankCode">Bank *</Label>
+            <Label
+              className="text-gray-600 dark:text-gray-400"
+              htmlFor="bankCode">
+              Bank *
+            </Label>
             <Select
               value={methodData.details.bankCode || ""}
               onValueChange={(value) => updateDetails("bankCode", value)}
@@ -249,28 +280,57 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Drawer
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}>
       <DrawerContent>
         <DrawerHeader className="mb-6">
-          <DrawerTitle>{editMethod ? "Bezahlmethode bearbeiten" : "Neue Bezahlmethode"}</DrawerTitle>
+          <DrawerTitle>
+            <div className="space-y-2">
+              <Label
+                className="text-gray-600 dark:text-gray-400"
+                htmlFor="name">
+                Name der Bezahlmethode *
+              </Label>
+              <Input
+                id="name"
+                value={methodData.name}
+                onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
+                placeholder="Bezahlmethoden Name"
+                disabled={isLoading}
+                className={CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "")}
+              />
+              {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
+            </div>
+          </DrawerTitle>
+          {/* Action buttons when editing */}
+          {editMethod && onDelete && (
+            <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800">
+              <Button
+                type="button"
+                onClick={() => {
+                  onDelete(editMethod.id);
+                  onClose();
+                }}
+                variant="danger"
+                size="sm"
+                className="gap-1.5">
+                <Trash2 size={14} />
+                Löschen
+              </Button>
+            </div>
+          )}
         </DrawerHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="name">Name der Bezahlmethode *</Label>
-            <Input
-              id="name"
-              value={methodData.name}
-              onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
-              placeholder="z.B. Test PayPal Account"
-              disabled={isLoading}
-              className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
-            />
-            {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="type">Bezahlmethoden-Typ *</Label>
+            <Label
+              className="text-gray-600 dark:text-gray-400"
+              htmlFor="type">
+              Bezahlmethoden-Typ *
+            </Label>
             <Select
               value={methodData.type}
               onValueChange={(value) =>
@@ -296,7 +356,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
           {renderTypeSpecificFields()}
 
           <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="icon">Icon</Label>
+            <Label
+              className="text-gray-600 dark:text-gray-400"
+              htmlFor="icon">
+              Icon
+            </Label>
             <button
               type="button"
               onClick={() => setShowIconPicker(true)}

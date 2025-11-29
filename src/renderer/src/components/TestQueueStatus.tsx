@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Loader2, Clock, X } from "lucide-react";
+import { Loader2, Clock, X, Square } from "lucide-react";
 import Button from "./ui/Button";
 
 interface QueueStatus {
@@ -49,6 +49,21 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
       onRefresh?.();
     } catch (error) {
       console.error("Failed to clear queue:", error);
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
+  const handleStopAll = async () => {
+    if (!status || status.totalPending === 0) return;
+    
+    setIsClearing(true);
+    try {
+      await window.api?.testQueue?.stopAll();
+      await fetchStatus();
+      onRefresh?.();
+    } catch (error) {
+      console.error("Failed to stop all tests:", error);
     } finally {
       setIsClearing(false);
     }
@@ -120,7 +135,7 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
             </div>
           )}
 
-          {/* Stop button */}
+          {/* Clear queue button */}
           {status.queueLength > 0 && (
             <Button
               onClick={handleClearQueue}
@@ -137,6 +152,22 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
               Warteschlange leeren
             </Button>
           )}
+
+          {/* Stop all button */}
+          <Button
+            onClick={handleStopAll}
+            variant="danger"
+            size="sm"
+            disabled={isClearing}
+            className="gap-1 !text-[9px]"
+          >
+            {isClearing ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <Square className="w-3 h-3" />
+            )}
+            Alles stoppen
+          </Button>
         </div>
       </div>
 

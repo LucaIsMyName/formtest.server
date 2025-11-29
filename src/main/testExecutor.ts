@@ -1,5 +1,6 @@
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, notificationQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
+import { getTestQueue } from "./testQueue";
 import type { Form, PaymentMethod } from "../common/types";
 import { randomUUID } from "crypto";
 import { BrowserWindow } from "electron";
@@ -75,13 +76,13 @@ export async function createAndRunTest(formId: number, paymentMethodId: number) 
       return acc;
     }, {} as Record<string, string>);
 
-    // Create test run
+    // Create test run with QUEUED status (will be set to RUNNING when actually starts)
     const testRun = testRunQueries.create({
       uuid: randomUUID(),
       formId: form.id,
       paymentMethodId: paymentMethod.id,
-      status: "RUNNING",
-      logDetails: JSON.stringify([`Autopilot test started for ${form.name} with ${paymentMethod.name}`]),
+      status: "QUEUED",
+      logDetails: JSON.stringify([`Autopilot test queued for ${form.name} with ${paymentMethod.name}`]),
       screenshotPath: undefined,
       errorMessage: undefined,
       durationMs: undefined,
@@ -90,8 +91,11 @@ export async function createAndRunTest(formId: number, paymentMethodId: number) 
 
     const testRunId = testRun.lastInsertRowid as number;
 
-    // Run asynchronously
-    runSingleTest(testRunId, form, paymentMethod, settingsMap);
+    // Add to queue instead of running directly - prevents concurrent test issues
+    const testQueue = getTestQueue();
+    testQueue.enqueue(testRunId, form, paymentMethod, settingsMap);
+
+    console.log(`[Scheduler] Test ${testRunId} added to queue for ${form.name} × ${paymentMethod.name}`);
 
     return testRunId;
   } catch (error) {

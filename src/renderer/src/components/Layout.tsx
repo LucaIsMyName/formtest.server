@@ -36,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, [location.pathname]);
 
   const handleRunAllTests = () => {
-    setPreselectAll(true);
+    setPreselectAll(false);
     setShowTestDialog(true);
   };
 

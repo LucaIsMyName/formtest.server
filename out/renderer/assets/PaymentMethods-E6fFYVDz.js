@@ -1,17 +1,18 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, B as Button, i as dist, t as useSearchParams, d as usePaymentMethodsStore, v as StatusBadge, x as formatDate } from "./index-nfjhyb-l.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, i as dist, t as useSearchParams, d as usePaymentMethodsStore, v as StatusBadge, x as formatDate } from "./index-g7SABpaB.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DcygsMqQ.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2, k as TablePagination } from "./Table-CBBfXvNr.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-BYc8nJOS.js";
-import { S as Skeleton } from "./Skeleton-B1jJRNkb.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-CYyqvn4J.js";
-import { P as Plus } from "./upload-B0LzP2XK.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DuMj0He9.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-Jt8OQyHB.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-D9HzeR2W.js";
+import { S as Skeleton } from "./Skeleton-C72PQkWF.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-b_RlUtJ6.js";
+import { P as Plus } from "./upload-Ds-YunoJ.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
   onSubmit,
   editMethod,
-  isLoading = false
+  isLoading = false,
+  onDelete
 }) => {
   const [methodData, setMethodData] = reactExports.useState({
     name: "",
@@ -164,16 +165,24 @@ const PaymentMethodDrawer = ({
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: editMethod ? "Bezahlmethode bearbeiten" : "Neue Bezahlmethode" }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerHeader, { className: "mb-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Name der Bezahlmethode *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: methodData.name, onChange: (e_6) => setMethodData({
           ...methodData,
           name: e_6.target.value
-        }), placeholder: "z.B. Test PayPal Account", disabled: isLoading, className: errors.name ? "border-red-500 focus-visible:ring-red-500" : "" }),
+        }), placeholder: "z.B. Test PayPal Account", disabled: isLoading, className: CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "") }),
         errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.name })
-      ] }),
+      ] }) }),
+      editMethod && onDelete && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
+        onDelete(editMethod.id);
+        onClose();
+      }, variant: "danger", size: "sm", className: "gap-1.5", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
+        "Löschen"
+      ] }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "type", children: "Bezahlmethoden-Typ *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: methodData.type, onValueChange: (value_1) => setMethodData({
@@ -231,7 +240,7 @@ const PaymentMethodsSkeleton = () => {
   return t0;
 };
 const PaymentMethods = () => {
-  const $ = dist.c(93);
+  const $ = dist.c(96);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     paymentMethods,
@@ -654,58 +663,75 @@ const PaymentMethods = () => {
     t24 = $[73];
   }
   let t25;
-  if ($[74] !== editingMethod || $[75] !== handleCloseDialog || $[76] !== handleMethodSubmit || $[77] !== isDialogOpen || $[78] !== isLoading) {
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading });
-    $[74] = editingMethod;
-    $[75] = handleCloseDialog;
-    $[76] = handleMethodSubmit;
-    $[77] = isDialogOpen;
-    $[78] = isLoading;
-    $[79] = t25;
+  if ($[74] !== paymentMethods) {
+    t25 = (id) => {
+      const method_6 = paymentMethods.find((m_1) => m_1.id === id);
+      if (method_6) {
+        setDeleteConfirm({
+          id,
+          name: method_6.name
+        });
+      }
+    };
+    $[74] = paymentMethods;
+    $[75] = t25;
   } else {
-    t25 = $[79];
+    t25 = $[75];
   }
-  const t26 = !!deleteConfirm;
-  let t27;
-  if ($[80] === Symbol.for("react.memo_cache_sentinel")) {
-    t27 = () => setDeleteConfirm(null);
-    $[80] = t27;
+  let t26;
+  if ($[76] !== editingMethod || $[77] !== handleCloseDialog || $[78] !== handleMethodSubmit || $[79] !== isDialogOpen || $[80] !== isLoading || $[81] !== t25) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading, onDelete: t25 });
+    $[76] = editingMethod;
+    $[77] = handleCloseDialog;
+    $[78] = handleMethodSubmit;
+    $[79] = isDialogOpen;
+    $[80] = isLoading;
+    $[81] = t25;
+    $[82] = t26;
   } else {
-    t27 = $[80];
+    t26 = $[82];
   }
-  const t28 = deleteConfirm?.name;
-  let t29;
-  if ($[81] !== confirmDelete || $[82] !== isLoading || $[83] !== t26 || $[84] !== t28) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t26, onClose: t27, onConfirm: confirmDelete, title: "Bezahlmethode löschen", message: "Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t28, isLoading });
-    $[81] = confirmDelete;
-    $[82] = isLoading;
-    $[83] = t26;
-    $[84] = t28;
-    $[85] = t29;
+  const t27 = !!deleteConfirm;
+  let t28;
+  if ($[83] === Symbol.for("react.memo_cache_sentinel")) {
+    t28 = () => setDeleteConfirm(null);
+    $[83] = t28;
   } else {
-    t29 = $[85];
+    t28 = $[83];
   }
+  const t29 = deleteConfirm?.name;
   let t30;
-  if ($[86] !== t21 || $[87] !== t22 || $[88] !== t23 || $[89] !== t24 || $[90] !== t25 || $[91] !== t29) {
-    t30 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+  if ($[84] !== confirmDelete || $[85] !== isLoading || $[86] !== t27 || $[87] !== t29) {
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t27, onClose: t28, onConfirm: confirmDelete, title: "Bezahlmethode löschen", message: "Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t29, isLoading });
+    $[84] = confirmDelete;
+    $[85] = isLoading;
+    $[86] = t27;
+    $[87] = t29;
+    $[88] = t30;
+  } else {
+    t30 = $[88];
+  }
+  let t31;
+  if ($[89] !== t21 || $[90] !== t22 || $[91] !== t23 || $[92] !== t24 || $[93] !== t26 || $[94] !== t30) {
+    t31 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t21,
       t22,
       t23,
       t24,
-      t25,
-      t29
+      t26,
+      t30
     ] });
-    $[86] = t21;
-    $[87] = t22;
-    $[88] = t23;
-    $[89] = t24;
-    $[90] = t25;
-    $[91] = t29;
-    $[92] = t30;
+    $[89] = t21;
+    $[90] = t22;
+    $[91] = t23;
+    $[92] = t24;
+    $[93] = t26;
+    $[94] = t30;
+    $[95] = t31;
   } else {
-    t30 = $[92];
+    t31 = $[95];
   }
-  return t30;
+  return t31;
 };
 function _temp(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [

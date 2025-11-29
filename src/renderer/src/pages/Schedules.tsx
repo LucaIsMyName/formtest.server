@@ -38,7 +38,7 @@ const Schedules: React.FC = () => {
   const totalItems = schedules.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const showPagination = totalItems > 50;
-  
+
   const displayedSchedules = useMemo(() => {
     if (totalItems > 50) {
       const start = (currentPage - 1) * itemsPerPage;
@@ -81,12 +81,11 @@ const Schedules: React.FC = () => {
     }
   };
 
-
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className={CONFIG.style.title.className}>Autopilot</h1>
-        
+
         <Button
           onClick={() => setIsCreateOpen(true)}
           className="gap-2">
@@ -110,107 +109,112 @@ const Schedules: React.FC = () => {
           <div className="p-12 text-center text-gray-500 dark:text-gray-400">Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen.</div>
         ) : (
           <>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12"></TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Konfiguration</TableHead>
-                <TableHead>Cron</TableHead>
-                <TableHead>Ausgeführt</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Aktionen</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {displayedSchedules.map((schedule) => (
-                <TableRow 
-                  key={schedule.id}
-                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                  onClick={() => setEditingSchedule(schedule)}>
-                  <TableCell>
-                    <div className="flex items-center justify-center">
-                      {renderIcon(schedule.icon || 'Play', 16, "text-gray-600 dark:text-gray-400")}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="font-medium text-xs text-gray-900 dark:text-white">{schedule.name}</div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-xs text-gray-600 dark:text-gray-300">
-                      {getFormName(schedule.formId)}
-                      <span className="mx-1 text-gray-400">×</span>
-                      {getPaymentMethodName(schedule.paymentMethodId)}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <code className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600">{schedule.cronExpression}</code>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDateTime(schedule.lastRun)}</div>
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge status={schedule.isActive ? "active" : "inactive"}>
-                      {schedule.isActive ? "Aktiv" : "Inaktiv"}
-                    </StatusBadge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); handleRunNow(schedule.id); }}
-                        disabled={runningSchedules.has(schedule.id)}
-                        title="Jetzt ausführen">
-                        {runningSchedules.has(schedule.id) ? (
-                          <Loader2
-                            size={16}
-                            className="text-green-600 dark:text-green-400 animate-spin"
-                          />
-                        ) : (
-                          <Play
-                            size={16}
-                            className="text-green-600 dark:text-green-400"
-                          />
-                        )}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); setEditingSchedule(schedule); }}
-                        title="Bearbeiten">
-                        <Edit2
-                          size={16}
-                          className="text-blue-600 dark:text-blue-400"
-                        />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); setDeletingSchedule(schedule); }}
-                        title="Löschen">
-                        <Trash2
-                          size={16}
-                          className="text-red-600 dark:text-red-400"
-                        />
-                      </Button>
-                    </div>
-                  </TableCell>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {/* <TableHead className="w-12"></TableHead> */}
+                  <TableHead>Name</TableHead>
+                  <TableHead>Konfiguration</TableHead>
+                  <TableHead>Cron</TableHead>
+                  <TableHead>Ausgeführt</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Aktionen</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          {showPagination && (
-            <TablePagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              itemsPerPage={itemsPerPage}
-              onPageChange={setCurrentPage}
-            />
-          )}
+              </TableHeader>
+              <TableBody>
+                {displayedSchedules.map((schedule) => (
+                  <TableRow
+                    key={schedule.id}
+                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle"
+                    onClick={() => setEditingSchedule(schedule)}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {renderIcon(schedule.icon || "Play", 16, "text-gray-600 dark:text-gray-400")}
+                        <span className="font-medium text-xs text-gray-900 dark:text-white">{schedule.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-xs text-gray-600 dark:text-gray-300 ">
+                        {getFormName(schedule.formId)}
+                        <span className="mx-1 text-gray-400">×</span>
+                        {getPaymentMethodName(schedule.paymentMethodId)}
+                      </div>
+                    </TableCell>
+                    <TableCell className="min-w-[160px]">
+                      <div className="flex items-center gap-2">
+                        <code className="w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600">{schedule.cronExpression}</code>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDateTime(schedule.lastRun)}</div>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={schedule.isActive ? "active" : "inactive"}>{schedule.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRunNow(schedule.id);
+                          }}
+                          disabled={runningSchedules.has(schedule.id)}
+                          title="Jetzt ausführen">
+                          {runningSchedules.has(schedule.id) ? (
+                            <Loader2
+                              size={16}
+                              className="text-green-600 dark:text-green-400 animate-spin"
+                            />
+                          ) : (
+                            <Play
+                              size={16}
+                              className="text-green-600 dark:text-green-400"
+                            />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingSchedule(schedule);
+                          }}
+                          title="Bearbeiten">
+                          <Edit2
+                            size={16}
+                            className="text-blue-600 dark:text-blue-400"
+                          />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeletingSchedule(schedule);
+                          }}
+                          title="Löschen">
+                          <Trash2
+                            size={16}
+                            className="text-red-600 dark:text-red-400"
+                          />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {showPagination && (
+              <TablePagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+              />
+            )}
           </>
         )}
       </div>
@@ -224,6 +228,15 @@ const Schedules: React.FC = () => {
         onSave={handleSave}
         initialData={editingSchedule}
         title={editingSchedule ? "Autopilot bearbeiten" : "Neuer Autopilot"}
+        onDelete={(id) => {
+          const schedule = schedules.find((s) => s.id === id);
+          if (schedule) {
+            setDeletingSchedule(schedule);
+          }
+        }}
+        onRunNow={async (id) => {
+          await runScheduleNow(id);
+        }}
       />
 
       <DeleteConfirmDialog

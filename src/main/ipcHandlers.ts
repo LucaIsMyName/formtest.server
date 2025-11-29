@@ -166,7 +166,13 @@ export function setupIpcHandlers(): void {
   ipcMain.handle("testRuns:delete", (_, id: number) => testRunQueries.delete(id));
   ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
   ipcMain.handle("testRuns:updateNotes", (_, id: number, notes: string) => testRunQueries.updateNotes(id, notes));
-  ipcMain.handle("testRuns:stop", (_, id: number) => testRunQueries.stop(id));
+  ipcMain.handle("testRuns:stop", (_, id: number) => {
+    // Remove from queue if it's a queued test
+    const testQueue = getTestQueue();
+    testQueue.removeFromQueue(id);
+    // Update database status
+    return testRunQueries.stop(id);
+  });
 
   // Toast notification handlers
   ipcMain.handle("toast:show", (event, type: 'success' | 'error' | 'info' | 'warning', message: string, description?: string) => {
@@ -252,6 +258,12 @@ export function setupIpcHandlers(): void {
     const testQueue = getTestQueue();
     testQueue.clear();
     return { success: true };
+  });
+
+  ipcMain.handle("testQueue:stopAll", async () => {
+    const testQueue = getTestQueue();
+    const result = await testQueue.stopAll();
+    return { success: true, ...result };
   });
 
   // Export/Import handlers

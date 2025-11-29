@@ -45,7 +45,8 @@ const api = {
   // Test queue operations
   testQueue: {
     getStatus: () => electron.ipcRenderer.invoke("testQueue:getStatus"),
-    clear: () => electron.ipcRenderer.invoke("testQueue:clear")
+    clear: () => electron.ipcRenderer.invoke("testQueue:clear"),
+    stopAll: () => electron.ipcRenderer.invoke("testQueue:stopAll")
   },
   // Test schedule operations
   testSchedules: {

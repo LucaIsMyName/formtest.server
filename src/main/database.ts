@@ -120,27 +120,32 @@ function migrateTestRunNotes(): void {
 }
 
 /**
- * Migrate test_runs table to add STOPPED status to CHECK constraint
+ * Migrate test_runs table to add STOPPED and QUEUED status to CHECK constraint
  */
 function migrateTestRunStoppedStatus(): void {
-  console.log("Database: Checking for test_runs STOPPED status support...");
+  console.log("Database: Checking for test_runs status constraint...");
   
   try {
-    // Check if the table has the old CHECK constraint (without STOPPED)
+    // Check if the table has the old CHECK constraint (without STOPPED or QUEUED)
     const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get() as { sql: string } | undefined;
     
-    if (tableInfo && tableInfo.sql.includes("'RUNNING')") && !tableInfo.sql.includes("'STOPPED'")) {
-      console.log("Database: Migrating test_runs table to add STOPPED status...");
+    const needsMigration = tableInfo && (
+      !tableInfo.sql.includes("'STOPPED'") || 
+      !tableInfo.sql.includes("'QUEUED'")
+    );
+    
+    if (needsMigration) {
+      console.log("Database: Migrating test_runs table to add STOPPED/QUEUED status...");
       
       db.transaction(() => {
-        // Create new table with updated CHECK constraint
+        // Create new table with updated CHECK constraint including QUEUED
         db.exec(`
           CREATE TABLE test_runs_new (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             uuid TEXT,
             formId INTEGER NOT NULL,
             paymentMethodId INTEGER NOT NULL,
-            status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
+            status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
             errorMessage TEXT,
             screenshotPath TEXT,
             logDetails TEXT,
@@ -171,12 +176,12 @@ function migrateTestRunStoppedStatus(): void {
         db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid)");
       })();
       
-      console.log("Database: Successfully migrated test_runs table to support STOPPED status");
+      console.log("Database: Successfully migrated test_runs table to support STOPPED/QUEUED status");
     } else {
-      console.log("Database: test_runs table already supports STOPPED status");
+      console.log("Database: test_runs table already supports all statuses");
     }
   } catch (error) {
-    console.error("Database: STOPPED status migration error:", error);
+    console.error("Database: Status migration error:", error);
   }
 }
 
@@ -389,7 +394,7 @@ export function initDatabase(): void {
       uuid TEXT,
       formId INTEGER NOT NULL,
       paymentMethodId INTEGER NOT NULL,
-      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED')),
+      status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
       errorMessage TEXT,
       screenshotPath TEXT,
       logDetails TEXT,
@@ -523,7 +528,40 @@ export function initDatabase(): void {
     console.error("Database: Failed to migrate payment methods:", error);
   });
   
+  // Clean up orphaned tests (RUNNING/QUEUED from previous session)
+  cleanupOrphanedTests();
+  
   console.log("Database: Initialization complete");
+}
+
+/**
+ * Clean up tests that were left in RUNNING or QUEUED state from a previous session
+ * These tests were interrupted by app crash/restart and should be marked as STOPPED
+ */
+function cleanupOrphanedTests(): void {
+  try {
+    const orphanedTests = db.prepare(
+      "SELECT id, status FROM test_runs WHERE status IN ('RUNNING', 'QUEUED')"
+    ).all() as Array<{ id: number; status: string }>;
+    
+    if (orphanedTests.length > 0) {
+      console.log(`Database: Found ${orphanedTests.length} orphaned tests from previous session`);
+      
+      const updateStmt = db.prepare(
+        "UPDATE test_runs SET status = 'STOPPED', errorMessage = ? WHERE id = ?"
+      );
+      
+      db.transaction(() => {
+        for (const test of orphanedTests) {
+          updateStmt.run("Test interrupted by app restart", test.id);
+        }
+      })();
+      
+      console.log(`Database: Marked ${orphanedTests.length} orphaned tests as STOPPED`);
+    }
+  } catch (error) {
+    console.error("Database: Error cleaning up orphaned tests:", error);
+  }
 }
 
 export function getDatabase(): Database.Database {
@@ -940,10 +978,10 @@ export const testRunQueries = {
     return stmt.run(notes, id);
   },
   stop: (id: number) => {
-    // Get the test run to calculate duration
-    const testRun = db.prepare("SELECT runAt FROM test_runs WHERE id = ?").get(id) as { runAt: string } | undefined;
+    // Get the test run to calculate duration and check status
+    const testRun = db.prepare("SELECT runAt, status FROM test_runs WHERE id = ?").get(id) as { runAt: string; status: string } | undefined;
     let durationMs = 0;
-    if (testRun) {
+    if (testRun && testRun.status === 'RUNNING') {
       // SQLite stores CURRENT_TIMESTAMP as UTC in format "YYYY-MM-DD HH:MM:SS"
       // JavaScript parses strings without timezone as LOCAL time, so we need to parse as UTC
       const runAtStr = String(testRun.runAt);
@@ -956,7 +994,8 @@ export const testRunQueries = {
       }
       durationMs = Date.now() - startTime;
     }
-    const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status = 'RUNNING'");
+    // Allow stopping both RUNNING and QUEUED tests
+    const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status IN ('RUNNING', 'QUEUED')");
     return stmt.run(durationMs, id);
   },
   delete: (id: number) => {

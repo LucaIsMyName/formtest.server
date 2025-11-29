@@ -22,7 +22,9 @@ const FormsSkeleton = () => (
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4">
+          <div
+            key={i}
+            className="flex items-center gap-4">
             <Skeleton className="h-6 w-1/4" />
             <Skeleton className="h-6 w-1/3" />
             <Skeleton className="h-6 w-20" />
@@ -50,49 +52,47 @@ const Forms: React.FC = () => {
   }, [loadForms]);
 
   // Filtering (with localStorage persistence)
-  const { 
-    filteredItems: filteredForms, 
-    filterConfig, 
-    setSearchTerm, 
-    setStatusFilter, 
-    clearFilters 
+  const {
+    filteredItems: filteredForms,
+    filterConfig,
+    setSearchTerm,
+    setStatusFilter,
+    clearFilters,
   } = useFilterableData<Form>(
     forms,
-    ['name', 'url'] as (keyof Form)[],
-    { searchTerm: '', statusFilter: undefined },
-    'forms' // localStorage key
+    ["name", "url"] as (keyof Form)[],
+    { searchTerm: "", statusFilter: undefined },
+    "forms" // localStorage key
   );
 
   // Sorting (with localStorage persistence)
-  const { 
-    sortedItems: sortedForms, 
+  const {
+    sortedItems: sortedForms,
     requestSort,
     sortConfig,
-    getSortDirection 
+    getSortDirection,
   } = useSortableData<Form>(
     filteredForms,
-    { key: 'name', direction: 'asc' },
-    'forms' // localStorage key
+    { key: "name", direction: "asc" },
+    "forms" // localStorage key
   );
 
   // Status filter options
   const statusOptions = [
-    { value: 'active', label: 'Aktiv' },
-    { value: 'inactive', label: 'Inaktiv' },
+    { value: "active", label: "Aktiv" },
+    { value: "inactive", label: "Inaktiv" },
   ];
 
   // Custom status filter logic + pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
-  
+
   const displayedForms = useMemo(() => {
     let filtered = sortedForms;
-    if (filterConfig.statusFilter && filterConfig.statusFilter !== 'all') {
-      filtered = sortedForms.filter(f => 
-        filterConfig.statusFilter === 'active' ? f.isActive : !f.isActive
-      );
+    if (filterConfig.statusFilter && filterConfig.statusFilter !== "all") {
+      filtered = sortedForms.filter((f) => (filterConfig.statusFilter === "active" ? f.isActive : !f.isActive));
     }
-    
+
     // Only paginate if more than 50 items
     if (filtered.length > 50) {
       const start = (currentPage - 1) * itemsPerPage;
@@ -103,17 +103,15 @@ const Forms: React.FC = () => {
 
   // For pagination calculations
   const totalFilteredItems = useMemo(() => {
-    if (!filterConfig.statusFilter || filterConfig.statusFilter === 'all') {
+    if (!filterConfig.statusFilter || filterConfig.statusFilter === "all") {
       return sortedForms.length;
     }
-    return sortedForms.filter(f => 
-      filterConfig.statusFilter === 'active' ? f.isActive : !f.isActive
-    ).length;
+    return sortedForms.filter((f) => (filterConfig.statusFilter === "active" ? f.isActive : !f.isActive)).length;
   }, [sortedForms, filterConfig.statusFilter]);
-  
+
   const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
   const showPagination = totalFilteredItems > 50;
-  
+
   // Reset page when filter or sort changes
   useEffect(() => {
     setCurrentPage(1);
@@ -124,7 +122,7 @@ const Forms: React.FC = () => {
     if (forms.length > 0) {
       const paramId = searchParams.get("id");
       if (paramId) {
-        const form = forms.find(f => String(f.id) === paramId || f.name === paramId);
+        const form = forms.find((f) => String(f.id) === paramId || f.name === paramId);
         if (form) {
           setEditingForm(form);
           setIsDialogOpen(true);
@@ -168,7 +166,6 @@ const Forms: React.FC = () => {
       setDeleteConfirm(null);
     }
   };
-
 
   return (
     <div>
@@ -238,23 +235,23 @@ const Forms: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <SortableTableHead
-                  sortDirection={getSortDirection('name')}
-                  onSort={() => requestSort('name')}>
+                  sortDirection={getSortDirection("name")}
+                  onSort={() => requestSort("name")}>
                   Name
                 </SortableTableHead>
                 <SortableTableHead
-                  sortDirection={getSortDirection('url')}
-                  onSort={() => requestSort('url')}>
+                  sortDirection={getSortDirection("url")}
+                  onSort={() => requestSort("url")}>
                   URL
                 </SortableTableHead>
                 <SortableTableHead
-                  sortDirection={getSortDirection('isActive')}
-                  onSort={() => requestSort('isActive')}>
+                  sortDirection={getSortDirection("isActive")}
+                  onSort={() => requestSort("isActive")}>
                   Status
                 </SortableTableHead>
                 <SortableTableHead
-                  sortDirection={getSortDirection('createdAt')}
-                  onSort={() => requestSort('createdAt')}>
+                  sortDirection={getSortDirection("createdAt")}
+                  onSort={() => requestSort("createdAt")}>
                   Erstellt
                 </SortableTableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
@@ -262,8 +259,8 @@ const Forms: React.FC = () => {
             </TableHeader>
             <TableBody>
               {displayedForms.map((form) => (
-                <TableRow 
-                  key={form.id} 
+                <TableRow
+                  key={form.id}
                   className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
                   onClick={() => handleEditForm(form)}>
                   <TableCell>
@@ -281,38 +278,51 @@ const Forms: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all">
+                      className="text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[11px] font-mono break-all truncate">
                       {form.url}
                     </a>
                   </TableCell>
                   <TableCell>
                     <button
-                      onClick={(e) => { e.stopPropagation(); toggleFormActive(form.id); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFormActive(form.id);
+                      }}
                       className="border-none bg-transparent cursor-pointer p-0"
                       disabled={isLoading}>
-                      <StatusBadge status={form.isActive ? "active" : "inactive"}>
-                        {form.isActive ? "Aktiv" : "Inaktiv"}
-                      </StatusBadge>
+                      <StatusBadge status={form.isActive ? "active" : "inactive"}>{form.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
                     </button>
                   </TableCell>
                   <TableCell className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</TableCell>
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <Button
-                        onClick={(e) => { e.stopPropagation(); handleEditForm(form); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditForm(form);
+                        }}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
                         title="Bearbeiten">
-                        <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
+                        <Edit2
+                          size={16}
+                          className="text-blue-600 dark:text-blue-400"
+                        />
                       </Button>
                       <Button
-                        onClick={(e) => { e.stopPropagation(); handleDeleteForm(form); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteForm(form);
+                        }}
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
                         title="Löschen">
-                        <Trash2 size={16} className="text-red-600 dark:text-red-400" />
+                        <Trash2
+                          size={16}
+                          className="text-red-600 dark:text-red-400"
+                        />
                       </Button>
                     </div>
                   </TableCell>
@@ -338,6 +348,12 @@ const Forms: React.FC = () => {
         onSubmit={handleFormSubmit}
         editForm={editingForm}
         isLoading={isLoading}
+        onDelete={(id) => {
+          const form = forms.find((f) => f.id === id);
+          if (form) {
+            setDeleteConfirm({ id, name: form.name });
+          }
+        }}
       />
 
       <DeleteConfirmDialog

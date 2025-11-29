@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-KYk7jwRi.js","./app.config-KSZPYlnw.js","./Skeleton-B1jJRNkb.js","./Forms-Xf-IHZnK.js","./IconPicker-DcygsMqQ.js","./Table-CBBfXvNr.js","./DeleteConfirmDialog-BYc8nJOS.js","./upload-B0LzP2XK.js","./useFilterableData-CYyqvn4J.js","./PaymentMethods-Ci9vMJbu.js","./Settings-CaKy40DC.js","./TestResults-DHTLWTa5.js","./InfoDoku-9Px09evG.js","./Schedules-y1Nmsart.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-Dy1h4mH1.js","./app.config-KSZPYlnw.js","./Skeleton-C72PQkWF.js","./Forms-C7EISK5K.js","./IconPicker-DuMj0He9.js","./Table-Jt8OQyHB.js","./DeleteConfirmDialog-D9HzeR2W.js","./upload-Ds-YunoJ.js","./useFilterableData-b_RlUtJ6.js","./PaymentMethods-E6fFYVDz.js","./Settings-DC3OY3uR.js","./TestResults-d719JwSw.js","./InfoDoku-Gj0-OVIQ.js","./Schedules-BfIk5Qj_.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -32588,7 +32588,7 @@ const Layout = (t0) => {
   let t6;
   if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
     t6 = () => {
-      setPreselectAll(true);
+      setPreselectAll(false);
       setShowTestDialog(true);
     };
     $2[8] = t6;
@@ -32720,7 +32720,7 @@ const Layout = (t0) => {
   if ($2[23] !== location.pathname) {
     t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t14, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
       const IconComponent = item.icon;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded border border-transparent ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 bg-blue-50 dark:bg-blue-950 border-blue-400 dark:border-blue-900" : "text-gray-700 dark:text-gray-300"}`, children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded border border-transparent ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-70" : "text-gray-700 dark:text-gray-300"}`, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `font-stretched transition-all ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-semibold" : null}`, children: item.name })
       ] }, item.name);
@@ -32805,13 +32805,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-KYk7jwRi.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Xf-IHZnK.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-Ci9vMJbu.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-CaKy40DC.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DHTLWTa5.js"), true ? __vite__mapDeps([11,1,6,2,5,8]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-9Px09evG.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-y1Nmsart.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-Dy1h4mH1.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-C7EISK5K.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-E6fFYVDz.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-DC3OY3uR.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-d719JwSw.js"), true ? __vite__mapDeps([11,1,6,5,2,8]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-Gj0-OVIQ.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-BfIk5Qj_.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,

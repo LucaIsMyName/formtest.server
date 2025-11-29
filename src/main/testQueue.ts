@@ -9,6 +9,7 @@
 
 import { runSingleTest } from "./testExecutor";
 import { testRunQueries } from "./database";
+import { getTestProcessManager } from "./testRunner/processManager";
 import type { Form, PaymentMethod } from "../common/types";
 
 interface QueuedTest {
@@ -116,6 +117,20 @@ class TestQueue {
   }
 
   /**
+   * Remove a specific test from the queue by its testRunId
+   * Does NOT update database - caller is responsible for that
+   */
+  removeFromQueue(testRunId: number): boolean {
+    const initialLength = this.queue.length;
+    this.queue = this.queue.filter(t => t.testRunId !== testRunId);
+    const removed = this.queue.length < initialLength;
+    if (removed) {
+      console.log(`[TestQueue] Removed test ${testRunId} from queue`);
+    }
+    return removed;
+  }
+
+  /**
    * Clear the queue (does not stop current test)
    * Updates database status for cleared tests to STOPPED
    */
@@ -130,6 +145,44 @@ class TestQueue {
     this.queue = [];
     console.log(`[TestQueue] Cleared ${clearedIds.length} tests from queue`);
     return { clearedIds };
+  }
+
+  /**
+   * Stop the currently running test and clear the queue
+   * This kills the browser process and marks the test as STOPPED
+   */
+  async stopAll(): Promise<{ stoppedId: number | null; clearedIds: number[] }> {
+    const currentTestId = this.currentTest?.testRunId || null;
+    const wasProcessing = this.isProcessing;
+    
+    // Reset queue state FIRST to prevent race conditions
+    this.currentTest = null;
+    this.isProcessing = false;
+    
+    // Clear the queue
+    const { clearedIds } = this.clear();
+    
+    // Then stop the current test if one was running
+    if (currentTestId && wasProcessing) {
+      console.log(`[TestQueue] Stopping current test ${currentTestId}...`);
+      
+      try {
+        // Stop the test runner process (kills browser)
+        const processManager = getTestProcessManager();
+        await processManager.stopProcess();
+        
+        // Update database status
+        testRunQueries.updateStatus(currentTestId, "STOPPED");
+        
+        console.log(`[TestQueue] Test ${currentTestId} stopped`);
+      } catch (error) {
+        console.error(`[TestQueue] Error stopping test ${currentTestId}:`, error);
+      }
+    }
+    
+    console.log(`[TestQueue] stopAll complete. Queue state: isProcessing=${this.isProcessing}, currentTest=${this.currentTest}`);
+    
+    return { stoppedId: currentTestId, clearedIds };
   }
 }
 

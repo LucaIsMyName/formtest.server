@@ -3,24 +3,13 @@ import Button from "./ui/Button";
 import IconPicker from "./IconPicker";
 import { renderIcon } from "../utils/iconHelper";
 import type { Form, FormFieldMapping, FieldMappingType, FieldMappingAction } from "../../../common/types";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerFooter,
-} from "./ui/Drawer";
+import { CONFIG } from "../app.config";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "./ui/Drawer";
 import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/Select";
-import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
+import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink } from "lucide-react";
 
 interface FormDrawerProps {
   isOpen: boolean;
@@ -28,37 +17,38 @@ interface FormDrawerProps {
   onSubmit: (form: Omit<Form, "id" | "createdAt" | "updatedAt">) => Promise<void>;
   editForm?: Form | null;
   isLoading?: boolean;
+  onDelete?: (id: number) => void;
 }
 
 // Field type options for dropdown
 const FIELD_TYPE_OPTIONS: { value: FieldMappingType; label: string }[] = [
-  { value: 'amount', label: 'Betrag (Preset)' },
-  { value: 'customAmount', label: 'Betrag (Freier)' },
-  { value: 'interval', label: 'Intervall/Rhythmus' },
-  { value: 'firstName', label: 'Vorname' },
-  { value: 'lastName', label: 'Nachname' },
-  { value: 'email', label: 'E-Mail' },
-  { value: 'salutation', label: 'Anrede' },
-  { value: 'country', label: 'Land' },
-  { value: 'paymentMethod', label: 'Zahlungsmethode' },
-  { value: 'checkbox', label: 'Checkbox' },
-  { value: 'radio', label: 'Radio Button' },
-  { value: 'iban', label: 'IBAN' },
-  { value: 'accountHolder', label: 'Kontoinhaber' },
-  { value: 'birthday', label: 'Geburtstag' },
-  { value: 'custom', label: 'Benutzerdefiniert' },
+  { value: "amount", label: "Betrag (Preset)" },
+  { value: "customAmount", label: "Betrag (Freier)" },
+  { value: "interval", label: "Intervall/Rhythmus" },
+  { value: "firstName", label: "Vorname" },
+  { value: "lastName", label: "Nachname" },
+  { value: "email", label: "E-Mail" },
+  { value: "salutation", label: "Anrede" },
+  { value: "country", label: "Land" },
+  { value: "paymentMethod", label: "Zahlungsmethode" },
+  { value: "checkbox", label: "Checkbox" },
+  { value: "radio", label: "Radio Button" },
+  { value: "iban", label: "IBAN" },
+  { value: "accountHolder", label: "Kontoinhaber" },
+  { value: "birthday", label: "Geburtstag" },
+  { value: "custom", label: "Benutzerdefiniert" },
 ];
 
 // Action options for dropdown
 const ACTION_OPTIONS: { value: FieldMappingAction; label: string }[] = [
-  { value: 'type', label: 'Text eingeben' },
-  { value: 'click', label: 'Klicken' },
-  { value: 'select', label: 'Auswählen (Dropdown)' },
-  { value: 'check', label: 'Checkbox aktivieren' },
-  { value: 'waitAndClick', label: 'Warten & Klicken' },
+  { value: "type", label: "Text eingeben" },
+  { value: "click", label: "Klicken" },
+  { value: "select", label: "Auswählen (Dropdown)" },
+  { value: "check", label: "Checkbox aktivieren" },
+  { value: "waitAndClick", label: "Warten & Klicken" },
 ];
 
-const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, editForm, isLoading = false }) => {
+const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, editForm, isLoading = false, onDelete }) => {
   const [formData, setFormData] = useState({
     name: "",
     url: "",
@@ -104,25 +94,23 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
   const addFieldMapping = () => {
     const newMapping: FormFieldMapping = {
       id: generateId(),
-      fieldType: 'custom',
-      selector: '',
-      value: '',
-      action: 'type',
-      description: '',
+      fieldType: "custom",
+      selector: "",
+      value: "",
+      action: "type",
+      description: "",
     };
     setFieldMappings([...fieldMappings, newMapping]);
   };
 
   // Update a field mapping
   const updateFieldMapping = (id: string, updates: Partial<FormFieldMapping>) => {
-    setFieldMappings(fieldMappings.map(m => 
-      m.id === id ? { ...m, ...updates } : m
-    ));
+    setFieldMappings(fieldMappings.map((m) => (m.id === id ? { ...m, ...updates } : m)));
   };
 
   // Remove a field mapping
   const removeFieldMapping = (id: string) => {
-    setFieldMappings(fieldMappings.filter(m => m.id !== id));
+    setFieldMappings(fieldMappings.filter((m) => m.id !== id));
   };
 
   const validateForm = () => {
@@ -155,8 +143,8 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
 
     try {
       // Filter out empty mappings
-      const validMappings = fieldMappings.filter(m => m.selector.trim() !== '');
-      
+      const validMappings = fieldMappings.filter((m) => m.selector.trim() !== "");
+
       const submitData = {
         name: formData.name.trim(),
         url: formData.url.trim(),
@@ -174,28 +162,68 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Drawer
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}>
       <DrawerContent>
         <DrawerHeader className="mb-6">
-          <DrawerTitle>{editForm ? "Formular bearbeiten" : "Neues Formular"}</DrawerTitle>
+          <DrawerTitle>
+            <div className="space-y-2">
+              <Label
+                className="text-gray-600 dark:text-gray-400"
+                htmlFor="name">
+                Formularname *
+              </Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Formularname"
+                disabled={isLoading}
+                className={CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "")}
+              />
+              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            </div>
+          </DrawerTitle>
+          {/* Action buttons when editing */}
+          {editForm && (
+            <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800">
+              <Button
+                type="button"
+                onClick={() => window.open(editForm.url, "_blank")}
+                variant="secondary"
+                size="sm"
+                className="gap-1.5">
+                <ExternalLink size={14} />
+                URL öffnen
+              </Button>
+              {onDelete && (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    onDelete(editForm.id);
+                    onClose();
+                  }}
+                  variant="danger"
+                  size="sm"
+                  className="gap-1.5">
+                  <Trash2 size={14} />
+                  Löschen
+                </Button>
+              )}
+            </div>
+          )}
         </DrawerHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="name">Formular Name *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="z.B. Allgemeine Spendenform"
-              disabled={isLoading}
-              className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
-            />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="url">Formular URL *</Label>
+            <Label
+              className="text-gray-600 dark:text-gray-400"
+              htmlFor="url">
+              Formular URL *
+            </Label>
             <Input
               id="url"
               type="url"
@@ -209,7 +237,11 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
           </div>
 
           <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="hash">Formular Hash (Optional)</Label>
+            <Label
+              className="text-gray-600 dark:text-gray-400"
+              htmlFor="hash">
+              Formular Hash (Optional)
+            </Label>
             <Input
               id="hash"
               value={formData.hash}
@@ -221,7 +253,11 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
           </div>
 
           <div className="space-y-2">
-            <Label className="text-gray-600 dark:text-gray-400" htmlFor="icon">Icon</Label>
+            <Label
+              className="text-gray-600 dark:text-gray-400"
+              htmlFor="icon">
+              Icon
+            </Label>
             <button
               type="button"
               onClick={() => setShowIconPicker(true)}
@@ -239,7 +275,9 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
               onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
               disabled={isLoading}
             />
-            <Label htmlFor="isActive" className="text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+            <Label
+              htmlFor="isActive"
+              className="text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
               Aktiv (in Tests einbeziehen)
             </Label>
           </div>
@@ -249,44 +287,39 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
             <button
               type="button"
               onClick={() => setShowFieldMappings(!showFieldMappings)}
-              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
+              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Feld-Mappings
-                </span>
-                {fieldMappings.length > 0 && (
-                  <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full">
-                    {fieldMappings.length}
-                  </span>
-                )}
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Feld-Mappings</span>
+                {fieldMappings.length > 0 && <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full">{fieldMappings.length}</span>}
               </div>
               {showFieldMappings ? (
-                <ChevronUp size={16} className="text-gray-500" />
+                <ChevronUp
+                  size={16}
+                  className="text-gray-500"
+                />
               ) : (
-                <ChevronDown size={16} className="text-gray-500" />
+                <ChevronDown
+                  size={16}
+                  className="text-gray-500"
+                />
               )}
             </button>
 
             {showFieldMappings && (
               <div className="px-4 pb-4 space-y-3 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-xs text-gray-500 dark:text-gray-400 pt-3">
-                  Definieren Sie benutzerdefinierte Selektoren und Werte für Formularfelder.
-                  Diese überschreiben die automatische Erkennung.
-                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 pt-3">Definieren Sie benutzerdefinierte Selektoren und Werte für Formularfelder. Diese überschreiben die automatische Erkennung.</p>
 
                 {/* Existing mappings */}
                 {fieldMappings.map((mapping, index) => (
-                  <div key={mapping.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md space-y-2">
+                  <div
+                    key={mapping.id}
+                    className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                        Mapping #{index + 1}
-                      </span>
+                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Mapping #{index + 1}</span>
                       <button
                         type="button"
                         onClick={() => removeFieldMapping(mapping.id)}
-                        className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
-                      >
+                        className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
                         <Trash2 size={14} />
                       </button>
                     </div>
@@ -297,14 +330,17 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                         <Select
                           value={mapping.fieldType}
                           onValueChange={(value) => updateFieldMapping(mapping.id, { fieldType: value as FieldMappingType })}
-                          disabled={isLoading}
-                        >
+                          disabled={isLoading}>
                           <SelectTrigger className="h-8 text-sm">
                             <SelectValue placeholder="Feldtyp wählen" />
                           </SelectTrigger>
                           <SelectContent>
-                            {FIELD_TYPE_OPTIONS.map(opt => (
-                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            {FIELD_TYPE_OPTIONS.map((opt) => (
+                              <SelectItem
+                                key={opt.value}
+                                value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -314,14 +350,17 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                         <Select
                           value={mapping.action}
                           onValueChange={(value) => updateFieldMapping(mapping.id, { action: value as FieldMappingAction })}
-                          disabled={isLoading}
-                        >
+                          disabled={isLoading}>
                           <SelectTrigger className="h-8 text-sm">
                             <SelectValue placeholder="Aktion wählen" />
                           </SelectTrigger>
                           <SelectContent>
-                            {ACTION_OPTIONS.map(opt => (
-                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            {ACTION_OPTIONS.map((opt) => (
+                              <SelectItem
+                                key={opt.value}
+                                value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -342,7 +381,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     <div>
                       <label className="text-xs text-gray-500 dark:text-gray-400">Wert (optional)</label>
                       <Input
-                        value={mapping.value || ''}
+                        value={mapping.value || ""}
                         onChange={(e) => updateFieldMapping(mapping.id, { value: e.target.value })}
                         placeholder="Leer = automatisch generiert"
                         className="h-8 text-sm"
@@ -353,7 +392,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     <div>
                       <label className="text-xs text-gray-500 dark:text-gray-400">Beschreibung (optional)</label>
                       <Input
-                        value={mapping.description || ''}
+                        value={mapping.description || ""}
                         onChange={(e) => updateFieldMapping(mapping.id, { description: e.target.value })}
                         placeholder="z.B. Vorname-Feld"
                         className="h-8 text-sm"
@@ -368,8 +407,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                   type="button"
                   onClick={addFieldMapping}
                   disabled={isLoading}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 border border-dashed border-blue-300 dark:border-blue-700 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50"
-                >
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 border border-dashed border-blue-300 dark:border-blue-700 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50">
                   <Plus size={16} />
                   Neues Mapping hinzufügen
                 </button>

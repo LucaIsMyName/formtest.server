@@ -55,7 +55,8 @@ const api = {
   // Test queue operations
   testQueue: {
     getStatus: () => ipcRenderer.invoke('testQueue:getStatus'),
-    clear: () => ipcRenderer.invoke('testQueue:clear')
+    clear: () => ipcRenderer.invoke('testQueue:clear'),
+    stopAll: () => ipcRenderer.invoke('testQueue:stopAll')
   },
 
   // Test schedule operations

@@ -192,7 +192,7 @@ interface TestRunWithComputed extends TestRun {
 
 const TestResults: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { testRuns, loadTestRuns, isLoading, error } = useTestRunsStore();
+  const { testRuns, loadTestRuns, isLoading, error, runTests } = useTestRunsStore();
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const [selectedTestRun, setSelectedTestRun] = useState<number | null>(null);
@@ -769,7 +769,57 @@ const TestResults: React.FC = () => {
         onOpenChange={(open) => !open && handleSelectTestRun(null)}>
         <DrawerContent className="w-full max-w-2xl">
           <DrawerHeader className="mb-6 pb-6 border-b dark:border-gray-700">
-            <DrawerTitle className={CONFIG.style.title.className}>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerTitle>
+            <DrawerTitle className={CONFIG.style.title.className + ` pb-4`}>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerTitle>
+            {/* Action buttons */}
+            {selectedTestRunData && (
+              <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800">
+                {(selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED") ? (
+                  <Button
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      await handleStopTest(selectedTestRunData);
+                    }}
+                    variant="secondary"
+                    size="sm"
+                    className="gap-1.5 !bg-purple-600 !text-white hover:!bg-purple-700 !border-purple-600"
+                  >
+                    <Square size={14} />
+                    {selectedTestRunData.status === "QUEUED" ? "Aus Warteschlange entfernen" : "Test stoppen"}
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        await runTests([selectedTestRunData.formId], [selectedTestRunData.paymentMethodId]);
+                        handleSelectTestRun(null);
+                      }}
+                      variant="primary"
+                      size="sm"
+                      className="gap-1.5"
+                    >
+                      <Play size={14} />
+                      Erneut ausführen
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowDeleteConfirm({
+                          id: selectedTestRunData.id,
+                          name: `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`
+                        });
+                      }}
+                      variant="danger"
+                      size="sm"
+                      className="gap-1.5"
+                    >
+                      <Trash2 size={14} />
+                      Löschen
+                    </Button>
+                  </>
+                )}
+              </div>
+            )}
           </DrawerHeader>
 
           <div className="flex-1 overflow-y-auto space-y-6">

@@ -54,6 +54,7 @@ declare global {
           totalPending: number;
         }>
         clear: () => Promise<{ success: boolean }>
+        stopAll: () => Promise<{ success: boolean; stoppedId: number | null; clearedIds: number[] }>
       }
       windowControls: {
         close: () => Promise<void>

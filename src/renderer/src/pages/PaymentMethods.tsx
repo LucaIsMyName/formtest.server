@@ -407,6 +407,12 @@ const PaymentMethods: React.FC = () => {
         onSubmit={handleMethodSubmit}
         editMethod={editingMethod}
         isLoading={isLoading}
+        onDelete={(id) => {
+          const method = paymentMethods.find(m => m.id === id);
+          if (method) {
+            setDeleteConfirm({ id, name: method.name });
+          }
+        }}
       />
 
       <DeleteConfirmDialog

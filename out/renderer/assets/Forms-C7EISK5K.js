@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, k as Checkbox, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, B as Button, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-nfjhyb-l.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as Checkbox, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-g7SABpaB.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DcygsMqQ.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-CBBfXvNr.js";
-import { P as Plus } from "./upload-B0LzP2XK.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-BYc8nJOS.js";
-import { S as Skeleton } from "./Skeleton-B1jJRNkb.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-CYyqvn4J.js";
+import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DuMj0He9.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-Jt8OQyHB.js";
+import { P as Plus } from "./upload-Ds-YunoJ.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-D9HzeR2W.js";
+import { S as Skeleton } from "./Skeleton-C72PQkWF.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-b_RlUtJ6.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -73,7 +73,8 @@ const FormDrawer = ({
   onClose,
   onSubmit,
   editForm,
-  isLoading = false
+  isLoading = false,
+  onDelete
 }) => {
   const [formData, setFormData] = reactExports.useState({
     name: "",
@@ -170,16 +171,30 @@ const FormDrawer = ({
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: editForm ? "Formular bearbeiten" : "Neues Formular" }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerHeader, { className: "mb-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Formular Name *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: formData.name, onChange: (e_0) => setFormData({
           ...formData,
           name: e_0.target.value
-        }), placeholder: "z.B. Allgemeine Spendenform", disabled: isLoading, className: errors.name ? "border-red-500 focus-visible:ring-red-500" : "" }),
+        }), placeholder: "z.B. Allgemeine Spendenform", disabled: isLoading, className: CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "") }),
         errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm", children: errors.name })
-      ] }),
+      ] }) }),
+      editForm && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => window.open(editForm.url, "_blank"), variant: "secondary", size: "sm", className: "gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 14 }),
+          "URL öffnen"
+        ] }),
+        onDelete && /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
+          onDelete(editForm.id);
+          onClose();
+        }, variant: "danger", size: "sm", className: "gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
+          "Löschen"
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "url", children: "Formular URL *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "url", type: "url", value: formData.url, onChange: (e_1) => setFormData({
@@ -299,7 +314,7 @@ const FormsSkeleton = () => {
   return t0;
 };
 const Forms = () => {
-  const $ = dist.c(90);
+  const $ = dist.c(93);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     forms,
@@ -665,7 +680,7 @@ const Forms = () => {
               ] })
             ] })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all", children: form_2.url }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-[11px] font-mono break-all truncate", children: form_2.url }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
             e_0.stopPropagation();
             toggleFormActive(form_2.id);
@@ -702,58 +717,75 @@ const Forms = () => {
     t23 = $[70];
   }
   let t24;
-  if ($[71] !== editingForm || $[72] !== handleCloseDialog || $[73] !== handleFormSubmit || $[74] !== isDialogOpen || $[75] !== isLoading) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading });
-    $[71] = editingForm;
-    $[72] = handleCloseDialog;
-    $[73] = handleFormSubmit;
-    $[74] = isDialogOpen;
-    $[75] = isLoading;
-    $[76] = t24;
+  if ($[71] !== forms) {
+    t24 = (id) => {
+      const form_3 = forms.find((f_2) => f_2.id === id);
+      if (form_3) {
+        setDeleteConfirm({
+          id,
+          name: form_3.name
+        });
+      }
+    };
+    $[71] = forms;
+    $[72] = t24;
   } else {
-    t24 = $[76];
+    t24 = $[72];
   }
-  const t25 = !!deleteConfirm;
-  let t26;
-  if ($[77] === Symbol.for("react.memo_cache_sentinel")) {
-    t26 = () => setDeleteConfirm(null);
-    $[77] = t26;
+  let t25;
+  if ($[73] !== editingForm || $[74] !== handleCloseDialog || $[75] !== handleFormSubmit || $[76] !== isDialogOpen || $[77] !== isLoading || $[78] !== t24) {
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading, onDelete: t24 });
+    $[73] = editingForm;
+    $[74] = handleCloseDialog;
+    $[75] = handleFormSubmit;
+    $[76] = isDialogOpen;
+    $[77] = isLoading;
+    $[78] = t24;
+    $[79] = t25;
   } else {
-    t26 = $[77];
+    t25 = $[79];
   }
-  const t27 = deleteConfirm?.name;
-  let t28;
-  if ($[78] !== confirmDelete || $[79] !== isLoading || $[80] !== t25 || $[81] !== t27) {
-    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t25, onClose: t26, onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t27, isLoading });
-    $[78] = confirmDelete;
-    $[79] = isLoading;
-    $[80] = t25;
-    $[81] = t27;
-    $[82] = t28;
+  const t26 = !!deleteConfirm;
+  let t27;
+  if ($[80] === Symbol.for("react.memo_cache_sentinel")) {
+    t27 = () => setDeleteConfirm(null);
+    $[80] = t27;
   } else {
-    t28 = $[82];
+    t27 = $[80];
   }
+  const t28 = deleteConfirm?.name;
   let t29;
-  if ($[83] !== t20 || $[84] !== t21 || $[85] !== t22 || $[86] !== t23 || $[87] !== t24 || $[88] !== t28) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+  if ($[81] !== confirmDelete || $[82] !== isLoading || $[83] !== t26 || $[84] !== t28) {
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t26, onClose: t27, onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t28, isLoading });
+    $[81] = confirmDelete;
+    $[82] = isLoading;
+    $[83] = t26;
+    $[84] = t28;
+    $[85] = t29;
+  } else {
+    t29 = $[85];
+  }
+  let t30;
+  if ($[86] !== t20 || $[87] !== t21 || $[88] !== t22 || $[89] !== t23 || $[90] !== t25 || $[91] !== t29) {
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t20,
       t21,
       t22,
       t23,
-      t24,
-      t28
+      t25,
+      t29
     ] });
-    $[83] = t20;
-    $[84] = t21;
-    $[85] = t22;
-    $[86] = t23;
-    $[87] = t24;
-    $[88] = t28;
-    $[89] = t29;
+    $[86] = t20;
+    $[87] = t21;
+    $[88] = t22;
+    $[89] = t23;
+    $[90] = t25;
+    $[91] = t29;
+    $[92] = t30;
   } else {
-    t29 = $[89];
+    t30 = $[92];
   }
-  return t29;
+  return t30;
 };
 function _temp(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
