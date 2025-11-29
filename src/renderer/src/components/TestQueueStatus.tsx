@@ -80,7 +80,7 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
         {/* Left: Status info */}
         <div className="flex items-center gap-4">
           {/* Processing indicator */}
-          <div className="flex md:min-w-[180px] items-center justify-start gap-2">
+          <div className="flex md:min-w-[200px] items-center justify-start gap-2">
             <div className="relative ">
               <Loader2 className="w-5 h-5 text-blue-600 dark:text-blue-400 animate-spin" />
               <div className="absolute inset-0 w-5 h-5 bg-blue-400 dark:bg-blue-500 rounded-full animate-ping opacity-20" />
@@ -172,12 +172,12 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
       </div>
 
       {/* Progress bar */}
-      <div className="mt-2 h-1 bg-blue-100 dark:bg-blue-900 rounded-full overflow-hidden">
+      {/* <div className="mt-2 h-1 bg-blue-100 dark:bg-blue-900 rounded-full overflow-hidden">
         <div 
           className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full animate-pulse"
           style={{ width: "100%" }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

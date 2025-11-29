@@ -18,7 +18,7 @@ import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 
 const FormsSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
@@ -206,7 +206,7 @@ const Forms: React.FC = () => {
       {isLoading && forms.length === 0 ? (
         <FormsSkeleton />
       ) : forms.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
               <div className="text-gray-500 dark:text-gray-400 mb-4">Noch keine Formulare konfiguriert.</div>
@@ -221,7 +221,7 @@ const Forms: React.FC = () => {
           </div>
         </div>
       ) : displayedForms.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
               <div className="text-gray-500 dark:text-gray-400 mb-4">Keine Formulare gefunden.</div>
@@ -230,7 +230,7 @@ const Forms: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>

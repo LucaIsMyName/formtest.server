@@ -186,7 +186,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                   onSelect={() => handleSelect("/schedules")}
                   className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
                   <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                  <span>Alle Zeitpläne</span>
+                  <span>Alle Autopiloten</span>
                 </Command.Item>
               )}
               {filteredSchedules.map((schedule) => {
@@ -204,6 +204,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                       <span className="text-[10px] text-gray-400 dark:text-gray-500">{formName} × {pmName}</span>
                     </div>
                     <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{schedule.isActive ? "Aktiv" : "Inaktiv"}</span>
+                     <StatusBadge status={schedule.isActive ? "success" : "danger"} size="sm" className="ml-auto" >{schedule.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
                   </Command.Item>
                 );
               })}

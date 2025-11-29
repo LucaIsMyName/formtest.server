@@ -1,11 +1,10 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as Checkbox, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-BZ4UT8XP.js";
-import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-I4HOuwEj.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-BuTQgygv.js";
-import { P as Plus } from "./upload-B5gzV6ik.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-hzSCjdC9.js";
-import { S as Skeleton } from "./Skeleton-fMwt18vq.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-72k2lqOI.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as ChevronUp, l as ChevronDown, m as Select, n as SelectTrigger, o as SelectValue, p as SelectContent, q as SelectItem, i as dist, s as useSearchParams, b as useFormsStore, t as StatusBadge, v as formatDate } from "./index-tRDURfIp.js";
+import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
+import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-BvKsaLY1.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, u as useFilterableData, e as useSortableData, f as TableFilter, g as Table, h as TableHeader, i as TableRow, S as SortableTableHead, j as TableHead, k as TableBody, l as TableCell, m as TablePagination } from "./useFilterableData-CZ0jZ9mH.js";
+import { C as Checkbox, P as Plus } from "./Checkbox-BmgMimdm.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-8Wd3m6Dy.js";
+import { S as Skeleton } from "./Skeleton-zliSJbRH.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -306,7 +305,7 @@ const FormsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
   if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t0 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp) }) }) });
+    t0 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(5)].map(_temp) }) }) });
     $[0] = t0;
   } else {
     t0 = $[0];
@@ -654,13 +653,13 @@ const Forms = () => {
   }
   let t23;
   if ($[58] !== currentPage || $[59] !== displayedForms || $[60] !== forms.length || $[61] !== getSortDirection || $[62] !== handleAddForm || $[63] !== handleEditForm || $[64] !== isLoading || $[65] !== requestSort || $[66] !== showPagination || $[67] !== toggleFormActive || $[68] !== totalFilteredItems || $[69] !== totalPages) {
-    t23 = isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+    t23 = isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Formulare konfiguriert." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddForm, variant: "primary", size: "md", disabled: isLoading, children: "Erstes Formular hinzufügen" })
-    ] }) }) }) : displayedForms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+    ] }) }) }) : displayedForms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Keine Formulare gefunden." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Versuche andere Suchbegriffe oder Filter." })
-    ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: [
+    ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),

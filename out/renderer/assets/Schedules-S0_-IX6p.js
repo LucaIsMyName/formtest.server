@@ -1,10 +1,10 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, P as Play, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, a9 as useSchedulesStore, a3 as formatDateTime, v as StatusBadge, a1 as LoaderCircle } from "./index-BZ4UT8XP.js";
-import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-BuTQgygv.js";
-import { S as Skeleton } from "./Skeleton-fMwt18vq.js";
-import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-I4HOuwEj.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-hzSCjdC9.js";
-import { P as Plus } from "./upload-B5gzV6ik.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, P as Play, m as Select, n as SelectTrigger, o as SelectValue, p as SelectContent, q as SelectItem, a9 as useSchedulesStore, a5 as formatDateTime, t as StatusBadge, a2 as LoaderCircle } from "./index-tRDURfIp.js";
+import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, u as useFilterableData, e as useSortableData, f as TableFilter, g as Table, h as TableHeader, i as TableRow, S as SortableTableHead, k as TableBody, l as TableCell, m as TablePagination } from "./useFilterableData-CZ0jZ9mH.js";
+import { S as Skeleton } from "./Skeleton-zliSJbRH.js";
+import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-BvKsaLY1.js";
+import { C as Checkbox, P as Plus } from "./Checkbox-BmgMimdm.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-8Wd3m6Dy.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -384,17 +384,50 @@ const Schedules = () => {
     loadPaymentMethods();
   }, [loadSchedules, loadForms, loadPaymentMethods]);
   const getFormName = (id) => forms.find((f) => f.id === id)?.name || `Form #${id}`;
-  const totalItems = schedules.length;
+  const getPaymentMethodName = (id_0) => paymentMethods.find((pm) => pm.id === id_0)?.name || `PM #${id_0}`;
+  const enrichedSchedules = reactExports.useMemo(() => {
+    return schedules.map((schedule) => {
+      const formName = getFormName(schedule.formId);
+      const paymentMethodName = getPaymentMethodName(schedule.paymentMethodId);
+      return {
+        ...schedule,
+        formName,
+        paymentMethodName,
+        configuration: `${formName} × ${paymentMethodName}`
+      };
+    });
+  }, [schedules, forms, paymentMethods]);
+  const {
+    filteredItems,
+    filterConfig,
+    setSearchTerm,
+    setStatusFilter,
+    clearFilters
+  } = useFilterableData(enrichedSchedules, ["name", "configuration", "cronExpression", "formName", "paymentMethodName"], {
+    searchTerm: "",
+    statusFilter: void 0
+  }, "schedules");
+  const {
+    sortedItems,
+    requestSort,
+    getSortDirection
+  } = useSortableData(filteredItems, {
+    key: null,
+    direction: null
+  }, "schedules");
+  const totalItems = sortedItems.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const showPagination = totalItems > 50;
   const displayedSchedules = reactExports.useMemo(() => {
     if (totalItems > 50) {
       const start = (currentPage - 1) * itemsPerPage;
-      return schedules.slice(start, start + itemsPerPage);
+      return sortedItems.slice(start, start + itemsPerPage);
     }
-    return schedules;
-  }, [schedules, currentPage, itemsPerPage, totalItems]);
-  const getPaymentMethodName = (id_0) => paymentMethods.find((pm) => pm.id === id_0)?.name || `PM #${id_0}`;
+    return sortedItems;
+  }, [sortedItems, currentPage, itemsPerPage, totalItems]);
+  reactExports.useEffect(() => {
+    setCurrentPage(1);
+  }, [filterConfig]);
   const handleSave = async (data) => {
     if (editingSchedule) {
       await updateSchedule(editingSchedule.id, data);
@@ -433,44 +466,51 @@ const Schedules = () => {
       ] })
     ] }),
     error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800", children: error }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden", children: isLoading && schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 space-y-4", children: [...Array(3)].map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-12 text-center text-gray-500 dark:text-gray-400", children: "Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Autopilot suchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions: [{
+      value: "active",
+      label: "Aktiv"
+    }, {
+      value: "inactive",
+      label: "Inaktiv"
+    }], onClear: clearFilters }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden", children: isLoading && schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 space-y-4", children: [...Array(3)].map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : enrichedSchedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-12 text-center text-gray-500 dark:text-gray-400", children: "Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen." }) : displayedSchedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-12 text-center text-gray-500 dark:text-gray-400", children: "Keine Ergebnisse für die aktuelle Filterung." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Name" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Konfiguration" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Cron" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Ausgeführt" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Status" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("configuration"), onSort: () => requestSort("configuration"), children: "Konfiguration" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("cronExpression"), onSort: () => requestSort("cronExpression"), children: "Cron" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("lastRun"), onSort: () => requestSort("lastRun"), children: "Ausgeführt" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "text-right", children: "Aktionen" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedSchedules.map((schedule) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle", onClick: () => setEditingSchedule(schedule), children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedSchedules.map((schedule_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle", onClick: () => setEditingSchedule(schedule_0), children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-            renderIcon(schedule.icon || "Play", 16, "text-gray-600 dark:text-gray-400"),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-xs text-gray-900 dark:text-white", children: schedule.name })
+            renderIcon(schedule_0.icon || "Play", 16, "text-gray-600 dark:text-gray-400"),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-xs text-gray-900 dark:text-white", children: schedule_0.name })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 dark:text-gray-300 ", children: [
-            getFormName(schedule.formId),
+            getFormName(schedule_0.formId),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mx-1 text-gray-400", children: "×" }),
-            getPaymentMethodName(schedule.paymentMethodId)
+            getPaymentMethodName(schedule_0.paymentMethodId)
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "min-w-[160px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule.cronExpression }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule.lastRun) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule.isActive ? "active" : "inactive", children: schedule.isActive ? "Aktiv" : "Inaktiv" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "min-w-[160px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule_0.cronExpression }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule_0.lastRun) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule_0.isActive ? "active" : "inactive", children: schedule_0.isActive ? "Aktiv" : "Inaktiv" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e) => {
               e.stopPropagation();
-              handleRunNow(schedule.id);
-            }, disabled: runningSchedules.has(schedule.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
+              handleRunNow(schedule_0.id);
+            }, disabled: runningSchedules.has(schedule_0.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule_0.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_0) => {
               e_0.stopPropagation();
-              setEditingSchedule(schedule);
+              setEditingSchedule(schedule_0);
             }, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_1) => {
               e_1.stopPropagation();
-              setDeletingSchedule(schedule);
+              setDeletingSchedule(schedule_0);
             }, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
           ] }) })
-        ] }, schedule.id)) })
+        ] }, schedule_0.id)) })
       ] }),
       showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems, itemsPerPage, onPageChange: setCurrentPage })
     ] }) }),
@@ -478,9 +518,9 @@ const Schedules = () => {
       setIsCreateOpen(false);
       setEditingSchedule(void 0);
     }, onSave: handleSave, initialData: editingSchedule, title: editingSchedule ? "Autopilot bearbeiten" : "Neuer Autopilot", onDelete: (id_2) => {
-      const schedule_0 = schedules.find((s) => s.id === id_2);
-      if (schedule_0) {
-        setDeletingSchedule(schedule_0);
+      const schedule_1 = schedules.find((s) => s.id === id_2);
+      if (schedule_1) {
+        setDeletingSchedule(schedule_1);
       }
     }, onRunNow: async (id_3) => {
       await runScheduleNow(id_3);

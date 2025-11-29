@@ -22,7 +22,7 @@ import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 
 const TestResultsSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
@@ -529,12 +529,12 @@ const TestResults: React.FC = () => {
             Laufende Tests ({runningTests.length}
             {queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
           </h2>
-          <div className="bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-md shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="px-4">ID</TableHead>
+                    <TableHead className="px-4">UUID</TableHead>
                     <TableHead className="px-4">Test</TableHead>
                     <TableHead className="px-4">Gestartet</TableHead>
                     <TableHead className="px-4">Dauer</TableHead>
@@ -597,7 +597,7 @@ const TestResults: React.FC = () => {
                               }}
                               variant="ghost"
                               size="sm"
-                              className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                              className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300"
                               title="Test stoppen">
                               <Square
                                 size={16}
@@ -633,7 +633,7 @@ const TestResults: React.FC = () => {
           onClear={clearFilters}
         />
 
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
           {isLoading && testRuns.length === 0 ? (
             <TestResultsSkeleton />
           ) : sortedFinishedTests.length === 0 ? (
@@ -648,7 +648,7 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <SortableTableHead className="px-4">ID</SortableTableHead>
+                    <SortableTableHead className="px-4">UUID</SortableTableHead>
                     <SortableTableHead
                       className="px-4"
                       sortDirection={getSortDirection("formName")}

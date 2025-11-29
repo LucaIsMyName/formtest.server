@@ -6,13 +6,24 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
+import { Table, TableHeader, TableBody, TableRow, TableCell, TablePagination } from "../components/ui/Table";
+import { SortableTableHead } from "../components/ui/SortableTableHead";
+import { TableFilter } from "../components/ui/TableFilter";
 import { Skeleton } from "../components/ui/Skeleton";
 import ScheduleDrawer from "../components/ScheduleDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import { renderIcon } from "../utils/iconHelper";
 import { formatDateTime } from "../utils/formatters";
 import { TestSchedule } from "../../../common/types";
+import { useSortableData } from "../hooks/useSortableData";
+import { useFilterableData } from "../hooks/useFilterableData";
+
+// Extended type with computed fields for sorting/filtering
+interface ScheduleWithComputed extends TestSchedule {
+  formName: string;
+  paymentMethodName: string;
+  configuration: string;
+}
 
 const Schedules: React.FC = () => {
   const { schedules, loadSchedules, createSchedule, updateSchedule, deleteSchedule, runScheduleNow, isLoading, error } = useSchedulesStore();
@@ -33,20 +44,54 @@ const Schedules: React.FC = () => {
   }, [loadSchedules, loadForms, loadPaymentMethods]);
 
   const getFormName = (id: number) => forms.find((f) => f.id === id)?.name || `Form #${id}`;
+  const getPaymentMethodName = (id: number) => paymentMethods.find((pm) => pm.id === id)?.name || `PM #${id}`;
+
+  // Enrich schedules with computed fields for sorting/filtering
+  const enrichedSchedules = useMemo((): ScheduleWithComputed[] => {
+    return schedules.map((schedule) => {
+      const formName = getFormName(schedule.formId);
+      const paymentMethodName = getPaymentMethodName(schedule.paymentMethodId);
+      return {
+        ...schedule,
+        formName,
+        paymentMethodName,
+        configuration: `${formName} × ${paymentMethodName}`,
+      };
+    });
+  }, [schedules, forms, paymentMethods]);
+
+  // Filtering
+  const { filteredItems, filterConfig, setSearchTerm, setStatusFilter, clearFilters } = useFilterableData<ScheduleWithComputed>(
+    enrichedSchedules,
+    ["name", "configuration", "cronExpression", "formName", "paymentMethodName"],
+    { searchTerm: "", statusFilter: undefined },
+    "schedules"
+  );
+
+  // Sorting
+  const { sortedItems, requestSort, getSortDirection } = useSortableData<ScheduleWithComputed>(
+    filteredItems,
+    { key: null, direction: null },
+    "schedules"
+  );
 
   // Pagination (only if > 50 items)
-  const totalItems = schedules.length;
+  const totalItems = sortedItems.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const showPagination = totalItems > 50;
 
   const displayedSchedules = useMemo(() => {
     if (totalItems > 50) {
       const start = (currentPage - 1) * itemsPerPage;
-      return schedules.slice(start, start + itemsPerPage);
+      return sortedItems.slice(start, start + itemsPerPage);
     }
-    return schedules;
-  }, [schedules, currentPage, itemsPerPage, totalItems]);
-  const getPaymentMethodName = (id: number) => paymentMethods.find((pm) => pm.id === id)?.name || `PM #${id}`;
+    return sortedItems;
+  }, [sortedItems, currentPage, itemsPerPage, totalItems]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterConfig]);
 
   const handleSave = async (data: any) => {
     if (editingSchedule) {
@@ -95,7 +140,21 @@ const Schedules: React.FC = () => {
       </div>
       {error && <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800">{error}</div>}
 
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+      {/* Filter Bar */}
+      <TableFilter
+        searchTerm={filterConfig.searchTerm}
+        onSearchChange={setSearchTerm}
+        placeholder="Autopilot suchen..."
+        statusFilter={filterConfig.statusFilter}
+        onStatusFilterChange={setStatusFilter}
+        statusOptions={[
+          { value: "active", label: "Aktiv" },
+          { value: "inactive", label: "Inaktiv" },
+        ]}
+        onClear={clearFilters}
+      />
+
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
         {isLoading && schedules.length === 0 ? (
           <div className="p-6 space-y-4">
             {[...Array(3)].map((_, i) => (
@@ -105,20 +164,41 @@ const Schedules: React.FC = () => {
               />
             ))}
           </div>
-        ) : schedules.length === 0 ? (
+        ) : enrichedSchedules.length === 0 ? (
           <div className="p-12 text-center text-gray-500 dark:text-gray-400">Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen.</div>
+        ) : displayedSchedules.length === 0 ? (
+          <div className="p-12 text-center text-gray-500 dark:text-gray-400">Keine Ergebnisse für die aktuelle Filterung.</div>
         ) : (
           <>
             <Table>
               <TableHeader>
                 <TableRow>
-                  {/* <TableHead className="w-12"></TableHead> */}
-                  <TableHead>Name</TableHead>
-                  <TableHead>Konfiguration</TableHead>
-                  <TableHead>Cron</TableHead>
-                  <TableHead>Ausgeführt</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Aktionen</TableHead>
+                  <SortableTableHead
+                    sortDirection={getSortDirection("name")}
+                    onSort={() => requestSort("name")}>
+                    Name
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sortDirection={getSortDirection("configuration")}
+                    onSort={() => requestSort("configuration")}>
+                    Konfiguration
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sortDirection={getSortDirection("cronExpression")}
+                    onSort={() => requestSort("cronExpression")}>
+                    Cron
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sortDirection={getSortDirection("lastRun")}
+                    onSort={() => requestSort("lastRun")}>
+                    Ausgeführt
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sortDirection={getSortDirection("isActive")}
+                    onSort={() => requestSort("isActive")}>
+                    Status
+                  </SortableTableHead>
+                  <SortableTableHead className="text-right">Aktionen</SortableTableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

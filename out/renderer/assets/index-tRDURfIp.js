@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-89So9e0e.js","./app.config-KSZPYlnw.js","./Skeleton-fMwt18vq.js","./Forms-B0AV_rGo.js","./IconPicker-I4HOuwEj.js","./Table-BuTQgygv.js","./DeleteConfirmDialog-hzSCjdC9.js","./upload-B5gzV6ik.js","./useFilterableData-72k2lqOI.js","./PaymentMethods-XkXjTOZI.js","./Settings-BgskMG8v.js","./TestResults-BSHZYHyS.js","./InfoDoku-B_o-ikg7.js","./Schedules-DlhHUTzk.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-r0nbQwue.js","./app.config-D8MSMeZ9.js","./Skeleton-zliSJbRH.js","./Forms-Dze-t5hr.js","./IconPicker-BvKsaLY1.js","./useFilterableData-CZ0jZ9mH.js","./DeleteConfirmDialog-8Wd3m6Dy.js","./Checkbox-BmgMimdm.js","./PaymentMethods-JRl1ph2K.js","./Settings-BS9CKgK7.js","./TestResults-DHDKqyAZ.js","./InfoDoku-B5f2ArwT.js","./Schedules-S0_-IX6p.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -7637,10 +7637,10 @@ const RouteContext = /* @__PURE__ */ reactExports.createContext({
   isDataRoute: false
 });
 const RouteErrorContext = /* @__PURE__ */ reactExports.createContext(null);
-function useHref(to, _temp9) {
+function useHref(to, _temp10) {
   let {
     relative
-  } = _temp9 === void 0 ? {} : _temp9;
+  } = _temp10 === void 0 ? {} : _temp10;
   !useInRouterContext() ? invariant(false) : void 0;
   let {
     basename,
@@ -8363,7 +8363,7 @@ var DataRouterStateHook;
   DataRouterStateHook2["UseFetchers"] = "useFetchers";
   DataRouterStateHook2["UseScrollRestoration"] = "useScrollRestoration";
 })(DataRouterStateHook || (DataRouterStateHook = {}));
-function useLinkClickHandler(to, _temp9) {
+function useLinkClickHandler(to, _temp10) {
   let {
     target,
     replace: replaceProp,
@@ -8371,7 +8371,7 @@ function useLinkClickHandler(to, _temp9) {
     preventScrollReset,
     relative,
     viewTransition
-  } = _temp9 === void 0 ? {} : _temp9;
+  } = _temp10 === void 0 ? {} : _temp10;
   let navigate = useNavigate();
   let location = useLocation();
   let path = useResolvedPath(to, {
@@ -17489,18 +17489,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$s = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
-];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode$s);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$r = [
+const __iconNode$x = [
   ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
   [
     "path",
@@ -17510,14 +17499,14 @@ const __iconNode$r = [
     }
   ]
 ];
-const Bell = createLucideIcon("bell", __iconNode$r);
+const Bell = createLucideIcon("bell", __iconNode$x);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$q = [
+const __iconNode$w = [
   ["path", { d: "M12 7v14", key: "1akyts" }],
   [
     "path",
@@ -17527,14 +17516,14 @@ const __iconNode$q = [
     }
   ]
 ];
-const BookOpen = createLucideIcon("book-open", __iconNode$q);
+const BookOpen = createLucideIcon("book-open", __iconNode$w);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$p = [
+const __iconNode$v = [
   ["path", { d: "M10 12h4", key: "a56b0p" }],
   ["path", { d: "M10 8h4", key: "1sr2af" }],
   ["path", { d: "M14 21v-3a2 2 0 0 0-4 0v3", key: "1rgiei" }],
@@ -17547,20 +17536,71 @@ const __iconNode$p = [
   ],
   ["path", { d: "M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16", key: "16ra0t" }]
 ];
-const Building2 = createLucideIcon("building-2", __iconNode$p);
+const Building2 = createLucideIcon("building-2", __iconNode$v);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$o = [
+const __iconNode$u = [
   ["path", { d: "M3 3v16a2 2 0 0 0 2 2h16", key: "c24i48" }],
   ["path", { d: "M18 17V9", key: "2bz60n" }],
   ["path", { d: "M13 17V5", key: "1frdt8" }],
   ["path", { d: "M8 17v-3", key: "17ska0" }]
 ];
-const ChartColumn = createLucideIcon("chart-column", __iconNode$o);
+const ChartColumn = createLucideIcon("chart-column", __iconNode$u);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$t = [
+  ["path", { d: "M18 6 7 17l-5-5", key: "116fxf" }],
+  ["path", { d: "m22 10-7.5 7.5L13 16", key: "ke71qq" }]
+];
+const CheckCheck = createLucideIcon("check-check", __iconNode$t);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$s = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$s);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$r = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$r);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$q = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$q);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$p = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$p);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$o = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$o);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17568,50 +17608,70 @@ const ChartColumn = createLucideIcon("chart-column", __iconNode$o);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$n = [
-  ["path", { d: "M18 6 7 17l-5-5", key: "116fxf" }],
-  ["path", { d: "m22 10-7.5 7.5L13 16", key: "ke71qq" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CheckCheck = createLucideIcon("check-check", __iconNode$n);
+const CircleCheck = createLucideIcon("circle-check", __iconNode$n);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$m = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$m);
+const __iconNode$m = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
+  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
+];
+const CircleX = createLucideIcon("circle-x", __iconNode$m);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$l = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$l);
+const __iconNode$l = [["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]];
+const Circle = createLucideIcon("circle", __iconNode$l);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$k = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-const ChevronLeft = createLucideIcon("chevron-left", __iconNode$k);
+const __iconNode$k = [
+  ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+];
+const Clock = createLucideIcon("clock", __iconNode$k);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$j = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$j);
+const __iconNode$j = [
+  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
+  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
+];
+const CreditCard = createLucideIcon("credit-card", __iconNode$j);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$i = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$i);
+const __iconNode$i = [
+  ["path", { d: "M4 10h12", key: "1y6xl8" }],
+  ["path", { d: "M4 14h9", key: "1loblj" }],
+  [
+    "path",
+    {
+      d: "M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2",
+      key: "1j6lzo"
+    }
+  ]
+];
+const Euro = createLucideIcon("euro", __iconNode$i);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17619,51 +17679,6 @@ const ChevronUp = createLucideIcon("chevron-up", __iconNode$i);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$h = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
-];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$h);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$g = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "m15 9-6 6", key: "1uzhvr" }],
-  ["path", { d: "m9 9 6 6", key: "z0biqf" }]
-];
-const CircleX = createLucideIcon("circle-x", __iconNode$g);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$f = [
-  ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
-];
-const Clock = createLucideIcon("clock", __iconNode$f);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$e = [
-  ["rect", { width: "20", height: "14", x: "2", y: "5", rx: "2", key: "ynyp8z" }],
-  ["line", { x1: "2", x2: "22", y1: "10", y2: "10", key: "1b3vmo" }]
-];
-const CreditCard = createLucideIcon("credit-card", __iconNode$e);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$d = [
   [
     "path",
     {
@@ -17676,26 +17691,38 @@ const __iconNode$d = [
   ["path", { d: "M16 13H8", key: "t4e002" }],
   ["path", { d: "M16 17H8", key: "z1uh3a" }]
 ];
-const FileText = createLucideIcon("file-text", __iconNode$d);
+const FileText = createLucideIcon("file-text", __iconNode$h);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$c = [
+const __iconNode$g = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20", key: "13o1zl" }],
+  ["path", { d: "M2 12h20", key: "9i4pu4" }]
+];
+const Globe = createLucideIcon("globe", __iconNode$g);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$f = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["path", { d: "M12 16v-4", key: "1dtifu" }],
   ["path", { d: "M12 8h.01", key: "e9boi3" }]
 ];
-const Info = createLucideIcon("info", __iconNode$c);
+const Info = createLucideIcon("info", __iconNode$f);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$b = [
+const __iconNode$e = [
   ["path", { d: "M10 18v-7", key: "wt116b" }],
   [
     "path",
@@ -17709,7 +17736,40 @@ const __iconNode$b = [
   ["path", { d: "M3 22h18", key: "8prr45" }],
   ["path", { d: "M6 18v-7", key: "1ivflk" }]
 ];
-const Landmark = createLucideIcon("landmark", __iconNode$b);
+const Landmark = createLucideIcon("landmark", __iconNode$e);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$d = [
+  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
+  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
+  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
+  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
+];
+const LayoutDashboard = createLucideIcon("layout-dashboard", __iconNode$d);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$c = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
+const LoaderCircle = createLucideIcon("loader-circle", __iconNode$c);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$b = [
+  ["rect", { width: "20", height: "14", x: "2", y: "3", rx: "2", key: "48i651" }],
+  ["line", { x1: "8", x2: "16", y1: "21", y2: "21", key: "1svkeh" }],
+  ["line", { x1: "12", x2: "12", y1: "17", y2: "21", key: "vw1qmm" }]
+];
+const Monitor = createLucideIcon("monitor", __iconNode$b);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17717,39 +17777,6 @@ const Landmark = createLucideIcon("landmark", __iconNode$b);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$a = [
-  ["rect", { width: "7", height: "9", x: "3", y: "3", rx: "1", key: "10lvy0" }],
-  ["rect", { width: "7", height: "5", x: "14", y: "3", rx: "1", key: "16une8" }],
-  ["rect", { width: "7", height: "9", x: "14", y: "12", rx: "1", key: "1hutg5" }],
-  ["rect", { width: "7", height: "5", x: "3", y: "16", rx: "1", key: "ldoo1y" }]
-];
-const LayoutDashboard = createLucideIcon("layout-dashboard", __iconNode$a);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$9 = [["path", { d: "M21 12a9 9 0 1 1-6.219-8.56", key: "13zald" }]];
-const LoaderCircle = createLucideIcon("loader-circle", __iconNode$9);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$8 = [
-  ["rect", { width: "20", height: "14", x: "2", y: "3", rx: "2", key: "48i651" }],
-  ["line", { x1: "8", x2: "16", y1: "21", y2: "21", key: "1svkeh" }],
-  ["line", { x1: "12", x2: "12", y1: "17", y2: "21", key: "vw1qmm" }]
-];
-const Monitor = createLucideIcon("monitor", __iconNode$8);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$7 = [
   [
     "path",
     {
@@ -17758,14 +17785,14 @@ const __iconNode$7 = [
     }
   ]
 ];
-const Moon = createLucideIcon("moon", __iconNode$7);
+const Moon = createLucideIcon("moon", __iconNode$a);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$6 = [
+const __iconNode$9 = [
   [
     "path",
     {
@@ -17774,7 +17801,44 @@ const __iconNode$6 = [
     }
   ]
 ];
-const Play = createLucideIcon("play", __iconNode$6);
+const Play = createLucideIcon("play", __iconNode$9);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$8 = [
+  ["path", { d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8", key: "v9h5vc" }],
+  ["path", { d: "M21 3v5h-5", key: "1q7to0" }],
+  ["path", { d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16", key: "3uifl3" }],
+  ["path", { d: "M8 16H3v5", key: "1cv678" }]
+];
+const RefreshCw = createLucideIcon("refresh-cw", __iconNode$8);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$7 = [
+  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
+];
+const Search = createLucideIcon("search", __iconNode$7);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$6 = [
+  ["path", { d: "M14 17H5", key: "gfn3mx" }],
+  ["path", { d: "M19 7h-9", key: "6i9tg" }],
+  ["circle", { cx: "17", cy: "17", r: "3", key: "18b49y" }],
+  ["circle", { cx: "7", cy: "7", r: "3", key: "dfmy0x" }]
+];
+const Settings2 = createLucideIcon("settings-2", __iconNode$6);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17782,17 +17846,6 @@ const Play = createLucideIcon("play", __iconNode$6);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$5 = [
-  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
-];
-const Search = createLucideIcon("search", __iconNode$5);
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$4 = [
   [
     "path",
     {
@@ -17802,14 +17855,14 @@ const __iconNode$4 = [
   ],
   ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const Settings$1 = createLucideIcon("settings", __iconNode$4);
+const Settings$1 = createLucideIcon("settings", __iconNode$5);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$3 = [
+const __iconNode$4 = [
   ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
   ["path", { d: "M12 2v2", key: "tus03m" }],
   ["path", { d: "M12 20v2", key: "1lh1kg" }],
@@ -17820,7 +17873,18 @@ const __iconNode$3 = [
   ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
   ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }]
 ];
-const Sun = createLucideIcon("sun", __iconNode$3);
+const Sun = createLucideIcon("sun", __iconNode$4);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$3 = [
+  ["path", { d: "M12 19h8", key: "baeox8" }],
+  ["path", { d: "m4 17 6-6-6-6", key: "1yngyt" }]
+];
+const Terminal = createLucideIcon("terminal", __iconNode$3);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17828,10 +17892,11 @@ const Sun = createLucideIcon("sun", __iconNode$3);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$2 = [
-  ["path", { d: "M12 19h8", key: "baeox8" }],
-  ["path", { d: "m4 17 6-6-6-6", key: "1yngyt" }]
+  ["path", { d: "M14.5 2v17.5c0 1.4-1.1 2.5-2.5 2.5c-1.4 0-2.5-1.1-2.5-2.5V2", key: "125lnx" }],
+  ["path", { d: "M8.5 2h7", key: "csnxdl" }],
+  ["path", { d: "M14.5 16h-5", key: "1ox875" }]
 ];
-const Terminal = createLucideIcon("terminal", __iconNode$2);
+const TestTube = createLucideIcon("test-tube", __iconNode$2);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17839,11 +17904,10 @@ const Terminal = createLucideIcon("terminal", __iconNode$2);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1 = [
-  ["path", { d: "M14.5 2v17.5c0 1.4-1.1 2.5-2.5 2.5c-1.4 0-2.5-1.1-2.5-2.5V2", key: "125lnx" }],
-  ["path", { d: "M8.5 2h7", key: "csnxdl" }],
-  ["path", { d: "M14.5 16h-5", key: "1ox875" }]
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ];
-const TestTube = createLucideIcon("test-tube", __iconNode$1);
+const X$1 = createLucideIcon("x", __iconNode$1);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -17851,10 +17915,15 @@ const TestTube = createLucideIcon("test-tube", __iconNode$1);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode = [
-  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
-  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
+  [
+    "path",
+    {
+      d: "M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",
+      key: "1xq2db"
+    }
+  ]
 ];
-const X$1 = createLucideIcon("x", __iconNode);
+const Zap = createLucideIcon("zap", __iconNode);
 const useNotificationsStore = create((set, get) => ({
   notifications: [],
   unreadCount: 0,
@@ -18139,7 +18208,7 @@ function useControllableState({
   const setValue = reactExports.useCallback(
     (nextValue) => {
       if (isControlled) {
-        const value2 = isFunction$1(nextValue) ? nextValue(prop) : nextValue;
+        const value2 = isFunction(nextValue) ? nextValue(prop) : nextValue;
         if (value2 !== prop) {
           onChangeRef.current?.(value2);
         }
@@ -18169,7 +18238,7 @@ function useUncontrolledState({
   }, [value, prevValueRef]);
   return [value, setValue, onChangeRef];
 }
-function isFunction$1(value) {
+function isFunction(value) {
   return typeof value === "function";
 }
 // @__NO_SIDE_EFFECTS__
@@ -22736,13 +22805,13 @@ var MenuCheckboxItem = reactExports.forwardRef(
       MenuItem,
       {
         role: "menuitemcheckbox",
-        "aria-checked": isIndeterminate$1(checked) ? "mixed" : checked,
+        "aria-checked": isIndeterminate(checked) ? "mixed" : checked,
         ...checkboxItemProps,
         ref: forwardedRef,
         "data-state": getCheckedState(checked),
         onSelect: composeEventHandlers(
           checkboxItemProps.onSelect,
-          () => onCheckedChange?.(isIndeterminate$1(checked) ? true : !checked),
+          () => onCheckedChange?.(isIndeterminate(checked) ? true : !checked),
           { checkForDefaultPrevented: false }
         )
       }
@@ -22800,7 +22869,7 @@ var MenuItemIndicator = reactExports.forwardRef(
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Presence,
       {
-        present: forceMount || isIndeterminate$1(indicatorContext.checked) || indicatorContext.checked === true,
+        present: forceMount || isIndeterminate(indicatorContext.checked) || indicatorContext.checked === true,
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           Primitive$1.span,
           {
@@ -22993,11 +23062,11 @@ MenuSubContent.displayName = SUB_CONTENT_NAME$1;
 function getOpenState(open) {
   return open ? "open" : "closed";
 }
-function isIndeterminate$1(checked) {
+function isIndeterminate(checked) {
   return checked === "indeterminate";
 }
 function getCheckedState(checked) {
-  return isIndeterminate$1(checked) ? "indeterminate" : checked ? "checked" : "unchecked";
+  return isIndeterminate(checked) ? "indeterminate" : checked ? "checked" : "unchecked";
 }
 function focusFirst(candidates) {
   const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
@@ -23101,11 +23170,11 @@ var DropdownMenu = (props) => {
   );
 };
 DropdownMenu.displayName = DROPDOWN_MENU_NAME;
-var TRIGGER_NAME$4 = "DropdownMenuTrigger";
+var TRIGGER_NAME$3 = "DropdownMenuTrigger";
 var DropdownMenuTrigger = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDropdownMenu, disabled = false, ...triggerProps } = props;
-    const context = useDropdownMenuContext(TRIGGER_NAME$4, __scopeDropdownMenu);
+    const context = useDropdownMenuContext(TRIGGER_NAME$3, __scopeDropdownMenu);
     const menuScope = useMenuScope(__scopeDropdownMenu);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor2, { asChild: true, ...menuScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive$1.button,
@@ -23136,7 +23205,7 @@ var DropdownMenuTrigger = reactExports.forwardRef(
     ) });
   }
 );
-DropdownMenuTrigger.displayName = TRIGGER_NAME$4;
+DropdownMenuTrigger.displayName = TRIGGER_NAME$3;
 var PORTAL_NAME$3 = "DropdownMenuPortal";
 var DropdownMenuPortal = (props) => {
   const { __scopeDropdownMenu, ...portalProps } = props;
@@ -23234,13 +23303,13 @@ var DropdownMenuRadioItem = reactExports.forwardRef((props, forwardedRef) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(RadioItem, { ...menuScope, ...radioItemProps, ref: forwardedRef });
 });
 DropdownMenuRadioItem.displayName = RADIO_ITEM_NAME;
-var INDICATOR_NAME$1 = "DropdownMenuItemIndicator";
+var INDICATOR_NAME = "DropdownMenuItemIndicator";
 var DropdownMenuItemIndicator = reactExports.forwardRef((props, forwardedRef) => {
   const { __scopeDropdownMenu, ...itemIndicatorProps } = props;
   const menuScope = useMenuScope(__scopeDropdownMenu);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(ItemIndicator$1, { ...menuScope, ...itemIndicatorProps, ref: forwardedRef });
 });
-DropdownMenuItemIndicator.displayName = INDICATOR_NAME$1;
+DropdownMenuItemIndicator.displayName = INDICATOR_NAME;
 var SEPARATOR_NAME$1 = "DropdownMenuSeparator";
 var DropdownMenuSeparator = reactExports.forwardRef((props, forwardedRef) => {
   const { __scopeDropdownMenu, ...separatorProps } = props;
@@ -23682,12 +23751,12 @@ var Tooltip = (props) => {
   ) });
 };
 Tooltip.displayName = TOOLTIP_NAME;
-var TRIGGER_NAME$3 = "TooltipTrigger";
+var TRIGGER_NAME$2 = "TooltipTrigger";
 var TooltipTrigger = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeTooltip, ...triggerProps } = props;
-    const context = useTooltipContext(TRIGGER_NAME$3, __scopeTooltip);
-    const providerContext = useTooltipProviderContext(TRIGGER_NAME$3, __scopeTooltip);
+    const context = useTooltipContext(TRIGGER_NAME$2, __scopeTooltip);
+    const providerContext = useTooltipProviderContext(TRIGGER_NAME$2, __scopeTooltip);
     const popperScope = usePopperScope$1(__scopeTooltip);
     const ref = reactExports.useRef(null);
     const composedRefs = useComposedRefs(forwardedRef, ref, context.onTriggerChange);
@@ -23731,7 +23800,7 @@ var TooltipTrigger = reactExports.forwardRef(
     ) });
   }
 );
-TooltipTrigger.displayName = TRIGGER_NAME$3;
+TooltipTrigger.displayName = TRIGGER_NAME$2;
 var PORTAL_NAME$2 = "TooltipPortal";
 var [PortalProvider$1, usePortalContext$1] = createTooltipContext(PORTAL_NAME$2, {
   forceMount: void 0
@@ -24600,7 +24669,7 @@ const Button = React$3.forwardRef((t0, ref) => {
     } else {
       t72 = $2[12];
     }
-    const t82 = `${"inline-flex items-center justify-start rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+    const t82 = `${"inline-flex items-center justify-start rounded-[0.25em] transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
     const t92 = props;
     let t102;
     if ($2[13] !== isLoading) {
@@ -24637,7 +24706,7 @@ const Button = React$3.forwardRef((t0, ref) => {
   } else {
     t7 = $2[22];
   }
-  const t8 = `${"inline-flex items-center justify-start rounded-md transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+  const t8 = `${"inline-flex items-center justify-start rounded-[0.25em] transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
   const t9 = disabled || isLoading;
   let t10;
   if ($2[23] !== isLoading) {
@@ -28102,11 +28171,11 @@ var Dialog$1 = (props) => {
   );
 };
 Dialog$1.displayName = DIALOG_NAME;
-var TRIGGER_NAME$2 = "DialogTrigger";
+var TRIGGER_NAME$1 = "DialogTrigger";
 var DialogTrigger = reactExports.forwardRef(
   (props, forwardedRef) => {
     const { __scopeDialog, ...triggerProps } = props;
-    const context = useDialogContext(TRIGGER_NAME$2, __scopeDialog);
+    const context = useDialogContext(TRIGGER_NAME$1, __scopeDialog);
     const composedTriggerRef = useComposedRefs(forwardedRef, context.triggerRef);
     return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive$1.button,
@@ -28115,7 +28184,7 @@ var DialogTrigger = reactExports.forwardRef(
         "aria-haspopup": "dialog",
         "aria-expanded": context.open,
         "aria-controls": context.contentId,
-        "data-state": getState$1(context.open),
+        "data-state": getState(context.open),
         ...triggerProps,
         ref: composedTriggerRef,
         onClick: composeEventHandlers(props.onClick, context.onOpenToggle)
@@ -28123,7 +28192,7 @@ var DialogTrigger = reactExports.forwardRef(
     );
   }
 );
-DialogTrigger.displayName = TRIGGER_NAME$2;
+DialogTrigger.displayName = TRIGGER_NAME$1;
 var PORTAL_NAME$1 = "DialogPortal";
 var [PortalProvider, usePortalContext] = createDialogContext(PORTAL_NAME$1, {
   forceMount: void 0
@@ -28155,7 +28224,7 @@ var DialogOverlayImpl = reactExports.forwardRef(
       /* @__PURE__ */ jsxRuntimeExports.jsx(ReactRemoveScroll, { as: Slot$1, allowPinchZoom: true, shards: [context.contentRef], children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         Primitive$1.div,
         {
-          "data-state": getState$1(context.open),
+          "data-state": getState(context.open),
           ...overlayProps,
           ref: forwardedRef,
           style: { pointerEvents: "auto", ...overlayProps.style }
@@ -28271,7 +28340,7 @@ var DialogContentImpl = reactExports.forwardRef(
               id: context.contentId,
               "aria-describedby": context.descriptionId,
               "aria-labelledby": context.titleId,
-              "data-state": getState$1(context.open),
+              "data-state": getState(context.open),
               ...contentProps,
               ref: composedRefs,
               onDismiss: () => context.onOpenChange(false)
@@ -28321,7 +28390,7 @@ var DialogClose = reactExports.forwardRef(
   }
 );
 DialogClose.displayName = CLOSE_NAME;
-function getState$1(open) {
+function getState(open) {
   return open ? "open" : "closed";
 }
 var TITLE_WARNING_NAME = "DialogTitleWarning";
@@ -28615,317 +28684,6 @@ const DialogDescription = reactExports.forwardRef((t0, ref) => {
   return t2;
 });
 DialogDescription.displayName = Description.displayName;
-function usePrevious(value) {
-  const ref = reactExports.useRef({ value, previous: value });
-  return reactExports.useMemo(() => {
-    if (ref.current.value !== value) {
-      ref.current.previous = ref.current.value;
-      ref.current.value = value;
-    }
-    return ref.current.previous;
-  }, [value]);
-}
-var CHECKBOX_NAME = "Checkbox";
-var [createCheckboxContext] = createContextScope(CHECKBOX_NAME);
-var [CheckboxProviderImpl, useCheckboxContext] = createCheckboxContext(CHECKBOX_NAME);
-function CheckboxProvider(props) {
-  const {
-    __scopeCheckbox,
-    checked: checkedProp,
-    children,
-    defaultChecked,
-    disabled,
-    form,
-    name,
-    onCheckedChange,
-    required,
-    value = "on",
-    // @ts-expect-error
-    internal_do_not_use_render
-  } = props;
-  const [checked, setChecked] = useControllableState({
-    prop: checkedProp,
-    defaultProp: defaultChecked ?? false,
-    onChange: onCheckedChange,
-    caller: CHECKBOX_NAME
-  });
-  const [control, setControl] = reactExports.useState(null);
-  const [bubbleInput, setBubbleInput] = reactExports.useState(null);
-  const hasConsumerStoppedPropagationRef = reactExports.useRef(false);
-  const isFormControl = control ? !!form || !!control.closest("form") : (
-    // We set this to true by default so that events bubble to forms without JS (SSR)
-    true
-  );
-  const context = {
-    checked,
-    disabled,
-    setChecked,
-    control,
-    setControl,
-    name,
-    form,
-    value,
-    hasConsumerStoppedPropagationRef,
-    required,
-    defaultChecked: isIndeterminate(defaultChecked) ? false : defaultChecked,
-    isFormControl,
-    bubbleInput,
-    setBubbleInput
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
-    CheckboxProviderImpl,
-    {
-      scope: __scopeCheckbox,
-      ...context,
-      children: isFunction(internal_do_not_use_render) ? internal_do_not_use_render(context) : children
-    }
-  );
-}
-var TRIGGER_NAME$1 = "CheckboxTrigger";
-var CheckboxTrigger = reactExports.forwardRef(
-  ({ __scopeCheckbox, onKeyDown, onClick, ...checkboxProps }, forwardedRef) => {
-    const {
-      control,
-      value,
-      disabled,
-      checked,
-      required,
-      setControl,
-      setChecked,
-      hasConsumerStoppedPropagationRef,
-      isFormControl,
-      bubbleInput
-    } = useCheckboxContext(TRIGGER_NAME$1, __scopeCheckbox);
-    const composedRefs = useComposedRefs(forwardedRef, setControl);
-    const initialCheckedStateRef = reactExports.useRef(checked);
-    reactExports.useEffect(() => {
-      const form = control?.form;
-      if (form) {
-        const reset = () => setChecked(initialCheckedStateRef.current);
-        form.addEventListener("reset", reset);
-        return () => form.removeEventListener("reset", reset);
-      }
-    }, [control, setChecked]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$1.button,
-      {
-        type: "button",
-        role: "checkbox",
-        "aria-checked": isIndeterminate(checked) ? "mixed" : checked,
-        "aria-required": required,
-        "data-state": getState(checked),
-        "data-disabled": disabled ? "" : void 0,
-        disabled,
-        value,
-        ...checkboxProps,
-        ref: composedRefs,
-        onKeyDown: composeEventHandlers(onKeyDown, (event) => {
-          if (event.key === "Enter") event.preventDefault();
-        }),
-        onClick: composeEventHandlers(onClick, (event) => {
-          setChecked((prevChecked) => isIndeterminate(prevChecked) ? true : !prevChecked);
-          if (bubbleInput && isFormControl) {
-            hasConsumerStoppedPropagationRef.current = event.isPropagationStopped();
-            if (!hasConsumerStoppedPropagationRef.current) event.stopPropagation();
-          }
-        })
-      }
-    );
-  }
-);
-CheckboxTrigger.displayName = TRIGGER_NAME$1;
-var Checkbox$1 = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const {
-      __scopeCheckbox,
-      name,
-      checked,
-      defaultChecked,
-      required,
-      disabled,
-      value,
-      onCheckedChange,
-      form,
-      ...checkboxProps
-    } = props;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      CheckboxProvider,
-      {
-        __scopeCheckbox,
-        checked,
-        defaultChecked,
-        disabled,
-        required,
-        onCheckedChange,
-        name,
-        form,
-        value,
-        internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            CheckboxTrigger,
-            {
-              ...checkboxProps,
-              ref: forwardedRef,
-              __scopeCheckbox
-            }
-          ),
-          isFormControl && /* @__PURE__ */ jsxRuntimeExports.jsx(
-            CheckboxBubbleInput,
-            {
-              __scopeCheckbox
-            }
-          )
-        ] })
-      }
-    );
-  }
-);
-Checkbox$1.displayName = CHECKBOX_NAME;
-var INDICATOR_NAME = "CheckboxIndicator";
-var CheckboxIndicator = reactExports.forwardRef(
-  (props, forwardedRef) => {
-    const { __scopeCheckbox, forceMount, ...indicatorProps } = props;
-    const context = useCheckboxContext(INDICATOR_NAME, __scopeCheckbox);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Presence,
-      {
-        present: forceMount || isIndeterminate(context.checked) || context.checked === true,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-          Primitive$1.span,
-          {
-            "data-state": getState(context.checked),
-            "data-disabled": context.disabled ? "" : void 0,
-            ...indicatorProps,
-            ref: forwardedRef,
-            style: { pointerEvents: "none", ...props.style }
-          }
-        )
-      }
-    );
-  }
-);
-CheckboxIndicator.displayName = INDICATOR_NAME;
-var BUBBLE_INPUT_NAME$1 = "CheckboxBubbleInput";
-var CheckboxBubbleInput = reactExports.forwardRef(
-  ({ __scopeCheckbox, ...props }, forwardedRef) => {
-    const {
-      control,
-      hasConsumerStoppedPropagationRef,
-      checked,
-      defaultChecked,
-      required,
-      disabled,
-      name,
-      value,
-      form,
-      bubbleInput,
-      setBubbleInput
-    } = useCheckboxContext(BUBBLE_INPUT_NAME$1, __scopeCheckbox);
-    const composedRefs = useComposedRefs(forwardedRef, setBubbleInput);
-    const prevChecked = usePrevious(checked);
-    const controlSize = useSize(control);
-    reactExports.useEffect(() => {
-      const input = bubbleInput;
-      if (!input) return;
-      const inputProto = window.HTMLInputElement.prototype;
-      const descriptor = Object.getOwnPropertyDescriptor(
-        inputProto,
-        "checked"
-      );
-      const setChecked = descriptor.set;
-      const bubbles = !hasConsumerStoppedPropagationRef.current;
-      if (prevChecked !== checked && setChecked) {
-        const event = new Event("click", { bubbles });
-        input.indeterminate = isIndeterminate(checked);
-        setChecked.call(input, isIndeterminate(checked) ? false : checked);
-        input.dispatchEvent(event);
-      }
-    }, [bubbleInput, prevChecked, checked, hasConsumerStoppedPropagationRef]);
-    const defaultCheckedRef = reactExports.useRef(isIndeterminate(checked) ? false : checked);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
-      Primitive$1.input,
-      {
-        type: "checkbox",
-        "aria-hidden": true,
-        defaultChecked: defaultChecked ?? defaultCheckedRef.current,
-        required,
-        disabled,
-        name,
-        value,
-        form,
-        ...props,
-        tabIndex: -1,
-        ref: composedRefs,
-        style: {
-          ...props.style,
-          ...controlSize,
-          position: "absolute",
-          pointerEvents: "none",
-          opacity: 0,
-          margin: 0,
-          // We transform because the input is absolutely positioned but we have
-          // rendered it **after** the button. This pulls it back to sit on top
-          // of the button.
-          transform: "translateX(-100%)"
-        }
-      }
-    );
-  }
-);
-CheckboxBubbleInput.displayName = BUBBLE_INPUT_NAME$1;
-function isFunction(value) {
-  return typeof value === "function";
-}
-function isIndeterminate(checked) {
-  return checked === "indeterminate";
-}
-function getState(checked) {
-  return isIndeterminate(checked) ? "indeterminate" : checked ? "checked" : "unchecked";
-}
-const Checkbox = reactExports.forwardRef((t0, ref) => {
-  const $2 = dist.c(10);
-  let className;
-  let props;
-  if ($2[0] !== t0) {
-    ({
-      className,
-      ...props
-    } = t0);
-    $2[0] = t0;
-    $2[1] = className;
-    $2[2] = props;
-  } else {
-    className = $2[1];
-    props = $2[2];
-  }
-  let t1;
-  if ($2[3] !== className) {
-    t1 = cn("peer h-4 w-4 shrink-0 rounded-sm border border-gray-300 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-blue-600 data-[state=checked]:text-gray-50 dark:border-gray-600 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-300 dark:data-[state=checked]:bg-blue-600 dark:data-[state=checked]:text-gray-50", className);
-    $2[3] = className;
-    $2[4] = t1;
-  } else {
-    t1 = $2[4];
-  }
-  let t2;
-  if ($2[5] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxIndicator, { className: cn("flex items-center justify-center text-current"), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "h-4 w-4" }) });
-    $2[5] = t2;
-  } else {
-    t2 = $2[5];
-  }
-  let t3;
-  if ($2[6] !== props || $2[7] !== ref || $2[8] !== t1) {
-    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox$1, { ref, className: t1, ...props, children: t2 });
-    $2[6] = props;
-    $2[7] = ref;
-    $2[8] = t1;
-    $2[9] = t3;
-  } else {
-    t3 = $2[9];
-  }
-  return t3;
-});
-Checkbox.displayName = Checkbox$1.displayName;
 var REACT_LAZY_TYPE = Symbol.for("react.lazy");
 var use = React$4[" use ".trim().toString()];
 function isPromiseLike(value) {
@@ -29234,6 +28992,16 @@ function getElementRef(element) {
     return element.props.ref;
   }
   return element.props.ref || element.ref;
+}
+function usePrevious(value) {
+  const ref = reactExports.useRef({ value, previous: value });
+  return reactExports.useMemo(() => {
+    if (ref.current.value !== value) {
+      ref.current.previous = ref.current.value;
+      ref.current.value = value;
+    }
+    return ref.current.previous;
+  }, [value]);
 }
 var OPEN_KEYS = [" ", "Enter", "ArrowUp", "ArrowDown"];
 var SELECTION_KEYS = [" ", "Enter"];
@@ -30726,7 +30494,7 @@ const SelectSeparator = reactExports.forwardRef((t0, ref) => {
 });
 SelectSeparator.displayName = Separator.displayName;
 const TestRunDialog = (t0) => {
-  const $2 = dist.c(135);
+  const $2 = dist.c(156);
   const {
     isOpen,
     onClose,
@@ -30950,6 +30718,7 @@ const TestRunDialog = (t0) => {
   }
   const handleRunTests = t16;
   const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length;
+  const getPaymentIcon = _temp9;
   let t17;
   if ($2[39] !== isRunning || $2[40] !== onClose) {
     t17 = (open) => !open && !isRunning && onClose();
@@ -30961,422 +30730,550 @@ const TestRunDialog = (t0) => {
   }
   let t18;
   if ($2[42] === Symbol.for("react.memo_cache_sentinel")) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { className: "p-6 border-b border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { children: "Tests ausführen" }) });
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center border border-blue-700 dark:border-blue-500", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 18, className: "text-white ml-0.5" }) });
     $2[42] = t18;
   } else {
     t18 = $2[42];
   }
   let t19;
-  if ($2[43] !== error) {
-    t19 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-800 dark:text-red-200 text-sm", children: error }) });
-    $2[43] = error;
-    $2[44] = t19;
-  } else {
-    t19 = $2[44];
-  }
-  let t20;
-  if ($2[45] !== activeForms_0.length) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-sm font-medium text-gray-900 dark:text-white", children: [
-      "Formulare (",
-      activeForms_0.length,
-      ")"
-    ] });
-    $2[45] = activeForms_0.length;
-    $2[46] = t20;
-  } else {
-    t20 = $2[46];
-  }
-  const t21 = selectedFormIds.length === activeForms_0.length ? "Keine" : "Alle";
-  let t22;
-  if ($2[47] !== handleSelectAllForms || $2[48] !== isRunning || $2[49] !== t21) {
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleSelectAllForms, disabled: isRunning, className: "text-[10px] text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50", children: t21 });
-    $2[47] = handleSelectAllForms;
-    $2[48] = isRunning;
-    $2[49] = t21;
-    $2[50] = t22;
-  } else {
-    t22 = $2[50];
-  }
-  let t23;
-  if ($2[51] !== t20 || $2[52] !== t22) {
-    t23 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-3", children: [
-      t20,
-      t22
-    ] });
-    $2[51] = t20;
-    $2[52] = t22;
-    $2[53] = t23;
-  } else {
-    t23 = $2[53];
-  }
-  let t24;
-  if ($2[54] !== activeForms_0 || $2[55] !== isRunning || $2[56] !== selectedFormIds) {
-    t24 = activeForms_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-4 text-gray-500 dark:text-gray-400 text-xs", children: "Keine aktiven Formulare" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1.5 max-h-[280px] overflow-y-auto pr-1", children: activeForms_0.map((form_1) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { onClick: () => !isRunning && handleFormToggle(form_1.id), className: `flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${selectedFormIds.includes(form_1.id) ? "bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700" : "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: `form-${form_1.id}`, checked: selectedFormIds.includes(form_1.id), onCheckedChange: () => handleFormToggle(form_1.id), disabled: isRunning, className: "pointer-events-none" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 min-w-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: form_1.name }) })
-    ] }, form_1.id)) });
-    $2[54] = activeForms_0;
-    $2[55] = isRunning;
-    $2[56] = selectedFormIds;
-    $2[57] = t24;
-  } else {
-    t24 = $2[57];
-  }
-  let t25;
-  if ($2[58] !== t23 || $2[59] !== t24) {
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-64 flex-shrink-0", children: [
-      t23,
-      t24
-    ] });
-    $2[58] = t23;
-    $2[59] = t24;
-    $2[60] = t25;
-  } else {
-    t25 = $2[60];
-  }
-  let t26;
-  if ($2[61] !== selectedFormIds.length || $2[62] !== selectedPaymentMethodIds.length || $2[63] !== totalTests) {
-    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex items-center justify-center min-w-[120px] max-w-[200px]", children: selectedFormIds.length > 0 && selectedPaymentMethodIds.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center gap-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 text-blue-400 dark:text-blue-500", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-px bg-gradient-to-r from-blue-300 to-blue-400 dark:from-blue-600 dark:to-blue-500" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { size: 14 })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gradient-to-br from-blue-50 to-blue-50 dark:from-blue-900/30 dark:to-blue-900/30 px-5 py-4 rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-600 shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-600 dark:from-blue-400 dark:to-blue-400 bg-clip-text text-transparent", children: totalTests }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-medium mt-1", children: "Tests" })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 text-blue-400 dark:text-blue-500", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { size: 14 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-px bg-gradient-to-r from-blue-400 to-blue-300 dark:from-blue-500 dark:to-blue-600" })
-      ] })
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center text-gray-400 dark:text-gray-500", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowRight, { className: "w-6 h-6 mx-auto mb-2 opacity-30" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-[10px]", children: [
-        "Wähle Formulare",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-        "und Bezahlmethoden"
+  if ($2[43] === Symbol.for("react.memo_cache_sentinel")) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { className: "relative p-4 pb-4 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+      t18,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { style: {
+          fontStretch: "115%"
+        }, className: "text-2xl font-semibold", children: "Tests ausführen" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "sr-only text-xs text-gray-500 dark:text-gray-400 mt-0.5", children: "Wähle Formulare & Bezahlmethoden für den Testlauf" })
       ] })
     ] }) });
-    $2[61] = selectedFormIds.length;
-    $2[62] = selectedPaymentMethodIds.length;
-    $2[63] = totalTests;
-    $2[64] = t26;
+    $2[43] = t19;
   } else {
-    t26 = $2[64];
+    t19 = $2[43];
+  }
+  let t20;
+  if ($2[44] !== error) {
+    t20 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-5 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-800 dark:text-red-200 text-sm", children: error }) });
+    $2[44] = error;
+    $2[45] = t20;
+  } else {
+    t20 = $2[45];
+  }
+  let t21;
+  let t22;
+  if ($2[46] === Symbol.for("react.memo_cache_sentinel")) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-md border border-emerald-400 dark:border-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 16, className: "text-emerald-600 dark:text-emerald-400" }) });
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-gray-900 dark:text-white", children: "Formulare" });
+    $2[46] = t21;
+    $2[47] = t22;
+  } else {
+    t21 = $2[46];
+    t22 = $2[47];
+  }
+  let t23;
+  if ($2[48] !== activeForms_0.length || $2[49] !== selectedFormIds.length) {
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+      t21,
+      t22,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-gray-400 font-mono", children: [
+        "(",
+        selectedFormIds.length,
+        "/",
+        activeForms_0.length,
+        ")"
+      ] })
+    ] });
+    $2[48] = activeForms_0.length;
+    $2[49] = selectedFormIds.length;
+    $2[50] = t23;
+  } else {
+    t23 = $2[50];
+  }
+  const t24 = selectedFormIds.length === activeForms_0.length ? "secondary" : "primary";
+  const t25 = selectedFormIds.length === activeForms_0.length ? "Keine" : "Alle";
+  let t26;
+  if ($2[51] !== handleSelectAllForms || $2[52] !== isRunning || $2[53] !== t24 || $2[54] !== t25) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSelectAllForms, disabled: isRunning, size: "sm", variant: t24, className: "", children: t25 });
+    $2[51] = handleSelectAllForms;
+    $2[52] = isRunning;
+    $2[53] = t24;
+    $2[54] = t25;
+    $2[55] = t26;
+  } else {
+    t26 = $2[55];
   }
   let t27;
-  if ($2[65] !== activePaymentMethods_0.length) {
-    t27 = /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "text-sm font-medium text-gray-900 dark:text-white", children: [
-      "Bezahlmethoden (",
-      activePaymentMethods_0.length,
-      ")"
+  if ($2[56] !== t23 || $2[57] !== t26) {
+    t27 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+      t23,
+      t26
     ] });
-    $2[65] = activePaymentMethods_0.length;
-    $2[66] = t27;
+    $2[56] = t23;
+    $2[57] = t26;
+    $2[58] = t27;
   } else {
-    t27 = $2[66];
+    t27 = $2[58];
   }
-  const t28 = selectedPaymentMethodIds.length === activePaymentMethods_0.length ? "Keine" : "Alle";
-  let t29;
-  if ($2[67] !== handleSelectAllPaymentMethods || $2[68] !== isRunning || $2[69] !== t28) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleSelectAllPaymentMethods, disabled: isRunning, className: "text-[10px] text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50", children: t28 });
-    $2[67] = handleSelectAllPaymentMethods;
-    $2[68] = isRunning;
-    $2[69] = t28;
-    $2[70] = t29;
+  let t28;
+  if ($2[59] !== activeForms_0 || $2[60] !== isRunning || $2[61] !== selectedFormIds) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-800 p-2 min-h-[200px] max-h-[240px] overflow-y-auto", children: activeForms_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-md border border-emerald-400 dark:border-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 16, className: "text-emerald-600 dark:text-emerald-400" }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: activeForms_0.map((form_1) => {
+      const isSelected = selectedFormIds.includes(form_1.id);
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => !isRunning && handleFormToggle(form_1.id), disabled: isRunning, style: {
+        fontStretch: "115%"
+      }, className: `w-full flex items-center gap-2.5 p-2.5 rounded-md transition-all text-left group ${isSelected ? "bg-emerald-500/10 dark:bg-emerald-500/20 ring-1 ring-emerald-500/50" : "hover:bg-white dark:hover:bg-gray-800"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `w-5 h-5 rounded-md flex items-center justify-center transition-all ${isSelected ? "bg-emerald-500 text-white dark:text-black" : "bg-gray-200 dark:bg-gray-700 text-gray-400 group-hover:bg-gray-300 dark:group-hover:bg-gray-600"}`, children: isSelected ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 12 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Circle, { size: 12 }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-sm truncate flex-1 ${isSelected ? "text-emerald-700 dark:text-emerald-300 font-medium" : "text-gray-700 dark:text-gray-300"}`, children: form_1.name })
+      ] }, form_1.id);
+    }) }) });
+    $2[59] = activeForms_0;
+    $2[60] = isRunning;
+    $2[61] = selectedFormIds;
+    $2[62] = t28;
   } else {
-    t29 = $2[70];
+    t28 = $2[62];
+  }
+  let t29;
+  if ($2[63] !== t27 || $2[64] !== t28) {
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+      t27,
+      t28
+    ] });
+    $2[63] = t27;
+    $2[64] = t28;
+    $2[65] = t29;
+  } else {
+    t29 = $2[65];
   }
   let t30;
-  if ($2[71] !== t27 || $2[72] !== t29) {
-    t30 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-3", children: [
-      t27,
-      t29
-    ] });
-    $2[71] = t27;
-    $2[72] = t29;
-    $2[73] = t30;
-  } else {
-    t30 = $2[73];
-  }
   let t31;
-  if ($2[74] !== activePaymentMethods_0 || $2[75] !== isRunning || $2[76] !== selectedPaymentMethodIds) {
-    t31 = activePaymentMethods_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-4 text-gray-500 dark:text-gray-400 text-xs", children: "Keine aktiven Bezahlmethoden" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1.5 max-h-[280px] overflow-y-auto pr-1", children: activePaymentMethods_0.map((pm_3) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { onClick: () => !isRunning && handlePaymentMethodToggle(pm_3.id), className: `flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all ${selectedPaymentMethodIds.includes(pm_3.id) ? "bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700" : "bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: `pm-${pm_3.id}`, checked: selectedPaymentMethodIds.includes(pm_3.id), onCheckedChange: () => handlePaymentMethodToggle(pm_3.id), disabled: isRunning, className: "pointer-events-none" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: pm_3.name }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] text-gray-500 dark:text-gray-400 capitalize", children: pm_3.type })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-400 dark:text-gray-500 flex-shrink-0", children: [
-        pm_3.type === "paypal" && /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 14 }),
-        pm_3.type === "sepa" && /* @__PURE__ */ jsxRuntimeExports.jsx(Building2, { size: 14 }),
-        pm_3.type === "creditcard" && /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 14 }),
-        pm_3.type === "eps" && /* @__PURE__ */ jsxRuntimeExports.jsx(Landmark, { size: 14 })
-      ] })
-    ] }, pm_3.id)) });
-    $2[74] = activePaymentMethods_0;
-    $2[75] = isRunning;
-    $2[76] = selectedPaymentMethodIds;
-    $2[77] = t31;
+  if ($2[66] === Symbol.for("react.memo_cache_sentinel")) {
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-md border border-orange-400 dark:border-orange-600 bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 16, className: "text-orange-600 dark:text-orange-400" }) });
+    t31 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-semibold text-gray-900 dark:text-white", children: "Bezahlmethoden" });
+    $2[66] = t30;
+    $2[67] = t31;
   } else {
-    t31 = $2[77];
+    t30 = $2[66];
+    t31 = $2[67];
   }
   let t32;
-  if ($2[78] !== t30 || $2[79] !== t31) {
-    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-64 flex-shrink-0", children: [
+  if ($2[68] !== activePaymentMethods_0.length || $2[69] !== selectedPaymentMethodIds.length) {
+    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
       t30,
-      t31
+      t31,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-gray-400 font-mono", children: [
+        "(",
+        selectedPaymentMethodIds.length,
+        "/",
+        activePaymentMethods_0.length,
+        ")"
+      ] })
     ] });
-    $2[78] = t30;
-    $2[79] = t31;
-    $2[80] = t32;
+    $2[68] = activePaymentMethods_0.length;
+    $2[69] = selectedPaymentMethodIds.length;
+    $2[70] = t32;
   } else {
-    t32 = $2[80];
+    t32 = $2[70];
   }
-  let t33;
-  if ($2[81] !== t25 || $2[82] !== t26 || $2[83] !== t32) {
-    t33 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-4 min-h-[300px]", children: [
-      t25,
-      t26,
-      t32
-    ] });
-    $2[81] = t25;
-    $2[82] = t26;
-    $2[83] = t32;
-    $2[84] = t33;
-  } else {
-    t33 = $2[84];
-  }
-  let t34;
-  if ($2[85] === Symbol.for("react.memo_cache_sentinel")) {
-    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-900 dark:text-white mb-4", children: "Test-Parameter" });
-    $2[85] = t34;
-  } else {
-    t34 = $2[85];
-  }
+  const t33 = selectedPaymentMethodIds.length === activePaymentMethods_0.length ? "secondary" : "primary";
+  const t34 = selectedPaymentMethodIds.length === activePaymentMethods_0.length ? "Keine" : "Alle";
   let t35;
-  if ($2[86] === Symbol.for("react.memo_cache_sentinel")) {
-    t35 = /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "test-amount", className: "text-xs text-gray-600 dark:text-gray-400 mb-1.5 block", children: "Spendenbetrag (EUR)" });
-    $2[86] = t35;
+  if ($2[71] !== handleSelectAllPaymentMethods || $2[72] !== isRunning || $2[73] !== t33 || $2[74] !== t34) {
+    t35 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSelectAllPaymentMethods, disabled: isRunning, size: "sm", variant: t33, className: "", children: t34 });
+    $2[71] = handleSelectAllPaymentMethods;
+    $2[72] = isRunning;
+    $2[73] = t33;
+    $2[74] = t34;
+    $2[75] = t35;
   } else {
-    t35 = $2[86];
+    t35 = $2[75];
   }
   let t36;
-  if ($2[87] === Symbol.for("react.memo_cache_sentinel")) {
-    t36 = (e2) => setCustomAmount(e2.target.value);
-    $2[87] = t36;
+  if ($2[76] !== t32 || $2[77] !== t35) {
+    t36 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+      t32,
+      t35
+    ] });
+    $2[76] = t32;
+    $2[77] = t35;
+    $2[78] = t36;
   } else {
-    t36 = $2[87];
+    t36 = $2[78];
   }
   let t37;
-  if ($2[88] !== customAmount || $2[89] !== isRunning) {
-    t37 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 max-w-[200px]", children: [
-      t35,
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "test-amount", type: "number", min: "1", value: customAmount, onChange: t36, disabled: isRunning, className: "h-9" })
-    ] });
-    $2[88] = customAmount;
-    $2[89] = isRunning;
-    $2[90] = t37;
+  if ($2[79] !== activePaymentMethods_0 || $2[80] !== isRunning || $2[81] !== selectedPaymentMethodIds) {
+    t37 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900/50 rounded-xl  border border-gray-200 dark:border-gray-800 p-2 min-h-[200px] max-h-[240px] overflow-y-auto", children: activePaymentMethods_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center justify-center h-full py-8 text-gray-400", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 24, className: "mb-2 opacity-50" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs", children: "Keine aktiven Bezahlmethoden" })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: activePaymentMethods_0.map((pm_3) => {
+      const isSelected_0 = selectedPaymentMethodIds.includes(pm_3.id);
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => !isRunning && handlePaymentMethodToggle(pm_3.id), disabled: isRunning, className: `w-full text-gray-400 dark:text-gray-600 flex items-start gap-2.5 p-2.5 rounded-md transition-all text-left group ${isSelected_0 ? "bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-orange-500/50" : "hover:bg-white dark:hover:bg-gray-800"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `w-5 h-5  rounded-md flex items-center justify-center transition-all ${isSelected_0 ? "bg-orange-500 text-white dark:text-black" : "bg-gray-200 dark:bg-gray-700 text-gray-400 group-hover:bg-gray-300 dark:group-hover:bg-gray-600"}`, children: isSelected_0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 12 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Circle, { size: 12 }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 font-mono truncate ", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+            fontStretch: "115%"
+          }, className: `truncate text-sm truncate block ${isSelected_0 ? "text-orange-700 dark:text-orange-300 font-medium" : "text-gray-700 dark:text-gray-300"}`, children: pm_3.name }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] text-gray-400 truncate", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-semibold uppercase", children: pm_3.type }),
+            pm_3.details.cardNumber !== void 0 ? " - Nr.:" + pm_3.details.cardNumber : "",
+            pm_3.details.email !== void 0 ? " - E-Mail: " + pm_3.details.email : "",
+            pm_3.details.cardHolder !== void 0 ? " - Inhaber: " + pm_3.details.cardHolder : "",
+            pm_3.details.expiryDate !== void 0 ? " - Ablaufdatum: " + pm_3.details.expiryDate : "",
+            pm_3.details.cvv !== void 0 ? " - CVV: " + pm_3.details.cvv : "",
+            pm_3.details.iban !== void 0 ? " - IBAN: " + pm_3.details.iban : "",
+            pm_3.details.bic !== void 0 ? " - BIC: " + pm_3.details.bic : "",
+            pm_3.details.bankCode !== void 0 ? " - Bankcode: " + pm_3.details.bankCode : ""
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `${isSelected_0 ? "text-orange-500" : "text-gray-400"}`, children: getPaymentIcon(pm_3.type) })
+      ] }, pm_3.id);
+    }) }) });
+    $2[79] = activePaymentMethods_0;
+    $2[80] = isRunning;
+    $2[81] = selectedPaymentMethodIds;
+    $2[82] = t37;
   } else {
-    t37 = $2[90];
+    t37 = $2[82];
   }
   let t38;
-  if ($2[91] === Symbol.for("react.memo_cache_sentinel")) {
-    t38 = /* @__PURE__ */ jsxRuntimeExports.jsx(Label$1, { htmlFor: "test-interval", className: "text-xs text-gray-600 dark:text-gray-400 mb-1.5 block", children: "Spendenintervall" });
-    $2[91] = t38;
+  if ($2[83] !== t36 || $2[84] !== t37) {
+    t38 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+      t36,
+      t37
+    ] });
+    $2[83] = t36;
+    $2[84] = t37;
+    $2[85] = t38;
   } else {
-    t38 = $2[91];
+    t38 = $2[85];
   }
   let t39;
-  if ($2[92] === Symbol.for("react.memo_cache_sentinel")) {
-    t39 = /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "test-interval", className: "h-9", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) });
-    $2[92] = t39;
+  if ($2[86] !== t29 || $2[87] !== t38) {
+    t39 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 grid grid-cols-2 gap-5", children: [
+      t29,
+      t38
+    ] });
+    $2[86] = t29;
+    $2[87] = t38;
+    $2[88] = t39;
   } else {
-    t39 = $2[92];
+    t39 = $2[88];
   }
   let t40;
-  if ($2[93] === Symbol.for("react.memo_cache_sentinel")) {
-    t40 = /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+  if ($2[89] === Symbol.for("react.memo_cache_sentinel")) {
+    t40 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Settings2, { size: 14, className: "text-gray-500" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide", children: "Parameter" })
+    ] });
+    $2[89] = t40;
+  } else {
+    t40 = $2[89];
+  }
+  let t41;
+  if ($2[90] === Symbol.for("react.memo_cache_sentinel")) {
+    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Label$1, { htmlFor: "test-amount", className: "text-[10px] text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wide", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Euro, { size: 10, className: "inline mr-1" }),
+      "Betrag"
+    ] });
+    $2[90] = t41;
+  } else {
+    t41 = $2[90];
+  }
+  let t42;
+  if ($2[91] === Symbol.for("react.memo_cache_sentinel")) {
+    t42 = (e2) => setCustomAmount(e2.target.value);
+    $2[91] = t42;
+  } else {
+    t42 = $2[91];
+  }
+  let t43;
+  if ($2[92] !== customAmount || $2[93] !== isRunning) {
+    t43 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+      t41,
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "test-amount", type: "number", min: "1", value: customAmount, onChange: t42, disabled: isRunning, className: "h-9 bg-white dark:bg-gray-900 font-mono" })
+    ] });
+    $2[92] = customAmount;
+    $2[93] = isRunning;
+    $2[94] = t43;
+  } else {
+    t43 = $2[94];
+  }
+  let t44;
+  if ($2[95] === Symbol.for("react.memo_cache_sentinel")) {
+    t44 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Label$1, { htmlFor: "test-interval", className: "text-[10px] text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wide", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 10, className: "inline mr-1" }),
+      "Intervall"
+    ] });
+    $2[95] = t44;
+  } else {
+    t44 = $2[95];
+  }
+  let t45;
+  if ($2[96] === Symbol.for("react.memo_cache_sentinel")) {
+    t45 = /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "test-interval", className: "h-9 bg-white dark:bg-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) });
+    $2[96] = t45;
+  } else {
+    t45 = $2[96];
+  }
+  let t46;
+  if ($2[97] === Symbol.for("react.memo_cache_sentinel")) {
+    t46 = /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Einmalig" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1", children: "Monatlich" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "3", children: "Vierteljährlich" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "6", children: "Halbjährlich" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "12", children: "Jährlich" })
     ] });
-    $2[93] = t40;
+    $2[97] = t46;
   } else {
-    t40 = $2[93];
-  }
-  let t41;
-  if ($2[94] !== customInterval || $2[95] !== isRunning) {
-    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 max-w-[200px]", children: [
-      t38,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: customInterval, onValueChange: setCustomInterval, disabled: isRunning, children: [
-        t39,
-        t40
-      ] })
-    ] });
-    $2[94] = customInterval;
-    $2[95] = isRunning;
-    $2[96] = t41;
-  } else {
-    t41 = $2[96];
-  }
-  let t42;
-  if ($2[97] !== t37 || $2[98] !== t41) {
-    t42 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-6 pt-6 border-t border-gray-200 dark:border-gray-700", children: [
-      t34,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-6", children: [
-        t37,
-        t41
-      ] })
-    ] });
-    $2[97] = t37;
-    $2[98] = t41;
-    $2[99] = t42;
-  } else {
-    t42 = $2[99];
-  }
-  let t43;
-  if ($2[100] !== t19 || $2[101] !== t33 || $2[102] !== t42) {
-    t43 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-6 overflow-y-auto flex-1", children: [
-      t19,
-      t33,
-      t42
-    ] });
-    $2[100] = t19;
-    $2[101] = t33;
-    $2[102] = t42;
-    $2[103] = t43;
-  } else {
-    t43 = $2[103];
-  }
-  let t44;
-  if ($2[104] !== selectedFormIds.length || $2[105] !== selectedPaymentMethodIds.length || $2[106] !== totalTests) {
-    t44 = totalTests > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-blue-600 dark:text-blue-400 font-medium", children: selectedFormIds.length }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-          "Formular",
-          selectedFormIds.length !== 1 ? "e" : ""
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-300 dark:text-gray-600", children: "×" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-blue-600 dark:text-blue-400 font-medium", children: selectedPaymentMethodIds.length }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-          "Bezahlmethode",
-          selectedPaymentMethodIds.length !== 1 ? "n" : ""
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-300 dark:text-gray-600", children: "=" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono text-gray-900 dark:text-white font-semibold", children: totalTests }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-          "Test",
-          totalTests !== 1 ? "s" : ""
-        ] })
-      ] })
-    ] }) });
-    $2[104] = selectedFormIds.length;
-    $2[105] = selectedPaymentMethodIds.length;
-    $2[106] = totalTests;
-    $2[107] = t44;
-  } else {
-    t44 = $2[107];
-  }
-  let t45;
-  if ($2[108] !== isRunning || $2[109] !== totalTests) {
-    t45 = isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" }),
-      "Tests werden ausgeführt..."
-    ] }) : `Bereit für ${totalTests} Test${totalTests !== 1 ? "s" : ""}`;
-    $2[108] = isRunning;
-    $2[109] = totalTests;
-    $2[110] = t45;
-  } else {
-    t45 = $2[110];
-  }
-  let t46;
-  if ($2[111] !== t45) {
-    t46 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400 flex items-center", children: t45 });
-    $2[111] = t45;
-    $2[112] = t46;
-  } else {
-    t46 = $2[112];
+    t46 = $2[97];
   }
   let t47;
-  if ($2[113] !== isRunning || $2[114] !== onClose) {
-    t47 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: onClose, variant: "secondary", size: "md", disabled: isRunning, children: "Abbrechen" });
-    $2[113] = isRunning;
-    $2[114] = onClose;
-    $2[115] = t47;
+  if ($2[98] !== customInterval || $2[99] !== isRunning) {
+    t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+      t44,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: customInterval, onValueChange: setCustomInterval, disabled: isRunning, children: [
+        t45,
+        t46
+      ] })
+    ] });
+    $2[98] = customInterval;
+    $2[99] = isRunning;
+    $2[100] = t47;
   } else {
-    t47 = $2[115];
+    t47 = $2[100];
   }
-  const t48 = isRunning || totalTests === 0;
-  const t49 = isRunning ? "Läuft..." : `${totalTests} Test${totalTests !== 1 ? "s" : ""} starten`;
-  let t50;
-  if ($2[116] !== handleRunTests || $2[117] !== isRunning || $2[118] !== t48 || $2[119] !== t49) {
-    t50 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleRunTests, variant: "primary", size: "md", isLoading: isRunning, disabled: t48, children: t49 });
-    $2[116] = handleRunTests;
-    $2[117] = isRunning;
-    $2[118] = t48;
-    $2[119] = t49;
-    $2[120] = t50;
+  let t48;
+  if ($2[101] !== t43 || $2[102] !== t47) {
+    t48 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-5 pb-5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900/50 dark:to-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-800 p-4", children: [
+      t40,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-4", children: [
+        t43,
+        t47
+      ] })
+    ] }) });
+    $2[101] = t43;
+    $2[102] = t47;
+    $2[103] = t48;
   } else {
-    t50 = $2[120];
+    t48 = $2[103];
+  }
+  let t49;
+  if ($2[104] !== t20 || $2[105] !== t39 || $2[106] !== t48) {
+    t49 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 overflow-y-auto", children: [
+      t20,
+      t39,
+      t48
+    ] });
+    $2[104] = t20;
+    $2[105] = t39;
+    $2[106] = t48;
+    $2[107] = t49;
+  } else {
+    t49 = $2[107];
+  }
+  let t50;
+  if ($2[108] === Symbol.for("react.memo_cache_sentinel")) {
+    t50 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 rounded-full bg-emerald-500" });
+    $2[108] = t50;
+  } else {
+    t50 = $2[108];
   }
   let t51;
-  if ($2[121] !== t47 || $2[122] !== t50) {
-    t51 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-3", children: [
-      t47,
-      t50
+  if ($2[109] !== selectedFormIds.length) {
+    t51 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+      t50,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-mono font-semibold text-gray-900 dark:text-white", children: selectedFormIds.length })
     ] });
-    $2[121] = t47;
-    $2[122] = t50;
-    $2[123] = t51;
+    $2[109] = selectedFormIds.length;
+    $2[110] = t51;
   } else {
-    t51 = $2[123];
+    t51 = $2[110];
   }
   let t52;
-  if ($2[124] !== t46 || $2[125] !== t51) {
-    t52 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 sm:justify-between", children: [
-      t46,
-      t51
-    ] });
-    $2[124] = t46;
-    $2[125] = t51;
-    $2[126] = t52;
+  if ($2[111] === Symbol.for("react.memo_cache_sentinel")) {
+    t52 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400 font-light", children: "×" });
+    $2[111] = t52;
   } else {
-    t52 = $2[126];
+    t52 = $2[111];
   }
   let t53;
-  if ($2[127] !== t43 || $2[128] !== t44 || $2[129] !== t52) {
-    t53 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "!w-[calc(100vw-8rem)] !max-w-[calc(100vw-8rem)] !h-[calc(100vh-8rem)] !max-h-[calc(100vh-8rem)] flex flex-col p-0 gap-0", children: [
-      t18,
-      t43,
-      t44,
-      t52
-    ] });
-    $2[127] = t43;
-    $2[128] = t44;
-    $2[129] = t52;
-    $2[130] = t53;
+  if ($2[112] === Symbol.for("react.memo_cache_sentinel")) {
+    t53 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 rounded-full bg-orange-500" });
+    $2[112] = t53;
   } else {
-    t53 = $2[130];
+    t53 = $2[112];
   }
   let t54;
-  if ($2[131] !== isOpen || $2[132] !== t17 || $2[133] !== t53) {
-    t54 = /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: t17, children: t53 });
-    $2[131] = isOpen;
-    $2[132] = t17;
-    $2[133] = t53;
-    $2[134] = t54;
+  if ($2[113] !== selectedPaymentMethodIds.length) {
+    t54 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+      t53,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-mono font-semibold text-gray-900 dark:text-white", children: selectedPaymentMethodIds.length })
+    ] });
+    $2[113] = selectedPaymentMethodIds.length;
+    $2[114] = t54;
   } else {
-    t54 = $2[134];
+    t54 = $2[114];
   }
-  return t54;
+  let t55;
+  if ($2[115] === Symbol.for("react.memo_cache_sentinel")) {
+    t55 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400 font-light", children: "=" });
+    $2[115] = t55;
+  } else {
+    t55 = $2[115];
+  }
+  const t56 = totalTests > 0 ? "text-amber-500" : "text-gray-400";
+  let t57;
+  if ($2[116] !== t56) {
+    t57 = /* @__PURE__ */ jsxRuntimeExports.jsx(Zap, { size: 14, className: t56 });
+    $2[116] = t56;
+    $2[117] = t57;
+  } else {
+    t57 = $2[117];
+  }
+  const t58 = `text-sm font-mono font-bold ${totalTests > 0 ? "text-gray-900 dark:text-white" : "text-gray-400"}`;
+  let t59;
+  if ($2[118] !== t58 || $2[119] !== totalTests) {
+    t59 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: t58, children: totalTests });
+    $2[118] = t58;
+    $2[119] = totalTests;
+    $2[120] = t59;
+  } else {
+    t59 = $2[120];
+  }
+  let t60;
+  if ($2[121] !== t57 || $2[122] !== t59) {
+    t60 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+      t57,
+      t59
+    ] });
+    $2[121] = t57;
+    $2[122] = t59;
+    $2[123] = t60;
+  } else {
+    t60 = $2[123];
+  }
+  let t61;
+  if ($2[124] !== t51 || $2[125] !== t54 || $2[126] !== t60) {
+    t61 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 px-4 py-2 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700", children: [
+      t51,
+      t52,
+      t54,
+      t55,
+      t60
+    ] });
+    $2[124] = t51;
+    $2[125] = t54;
+    $2[126] = t60;
+    $2[127] = t61;
+  } else {
+    t61 = $2[127];
+  }
+  let t62;
+  if ($2[128] !== isRunning) {
+    t62 = isRunning && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center text-sm text-blue-600 dark:text-blue-400", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" }),
+      "Tests werden gestartet..."
+    ] });
+    $2[128] = isRunning;
+    $2[129] = t62;
+  } else {
+    t62 = $2[129];
+  }
+  let t63;
+  if ($2[130] !== t61 || $2[131] !== t62) {
+    t63 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
+      t61,
+      t62
+    ] });
+    $2[130] = t61;
+    $2[131] = t62;
+    $2[132] = t63;
+  } else {
+    t63 = $2[132];
+  }
+  let t64;
+  if ($2[133] !== isRunning || $2[134] !== onClose) {
+    t64 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: onClose, variant: "secondary", size: "md", disabled: isRunning, children: "Abbrechen" });
+    $2[133] = isRunning;
+    $2[134] = onClose;
+    $2[135] = t64;
+  } else {
+    t64 = $2[135];
+  }
+  const t65 = isRunning || totalTests === 0;
+  let t66;
+  if ($2[136] === Symbol.for("react.memo_cache_sentinel")) {
+    t66 = /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 });
+    $2[136] = t66;
+  } else {
+    t66 = $2[136];
+  }
+  const t67 = totalTests !== 1 ? "s" : "";
+  let t68;
+  if ($2[137] !== handleRunTests || $2[138] !== isRunning || $2[139] !== t65 || $2[140] !== t67 || $2[141] !== totalTests) {
+    t68 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleRunTests, variant: "primary", size: "md", isLoading: isRunning, disabled: t65, className: "gap-2 min-w-[140px]", children: [
+      t66,
+      totalTests,
+      " Test",
+      t67,
+      " starten"
+    ] });
+    $2[137] = handleRunTests;
+    $2[138] = isRunning;
+    $2[139] = t65;
+    $2[140] = t67;
+    $2[141] = totalTests;
+    $2[142] = t68;
+  } else {
+    t68 = $2[142];
+  }
+  let t69;
+  if ($2[143] !== t64 || $2[144] !== t68) {
+    t69 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+      t64,
+      t68
+    ] });
+    $2[143] = t64;
+    $2[144] = t68;
+    $2[145] = t69;
+  } else {
+    t69 = $2[145];
+  }
+  let t70;
+  if ($2[146] !== t63 || $2[147] !== t69) {
+    t70 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 sm:justify-between gap-4", children: [
+      t63,
+      t69
+    ] });
+    $2[146] = t63;
+    $2[147] = t69;
+    $2[148] = t70;
+  } else {
+    t70 = $2[148];
+  }
+  let t71;
+  if ($2[149] !== t49 || $2[150] !== t70) {
+    t71 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "!w-[calc(100vw-6rem)] !max-w-4xl !h-auto !max-h-[calc(100vh-6rem)] flex flex-col p-0 gap-0 overflow-hidden", children: [
+      t19,
+      t49,
+      t70
+    ] });
+    $2[149] = t49;
+    $2[150] = t70;
+    $2[151] = t71;
+  } else {
+    t71 = $2[151];
+  }
+  let t72;
+  if ($2[152] !== isOpen || $2[153] !== t17 || $2[154] !== t71) {
+    t72 = /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: t17, children: t71 });
+    $2[152] = isOpen;
+    $2[153] = t17;
+    $2[154] = t71;
+    $2[155] = t72;
+  } else {
+    t72 = $2[155];
+  }
+  return t72;
 };
 function _temp$1(f2) {
   return f2.isActive;
@@ -31401,6 +31298,25 @@ function _temp7(form_0) {
 }
 function _temp8(pm_2) {
   return pm_2.id;
+}
+function _temp9(type) {
+  switch (type) {
+    case "paypal": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 14 });
+    }
+    case "sepa": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Building2, { size: 14 });
+    }
+    case "creditcard": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 14 });
+    }
+    case "eps": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Landmark, { size: 14 });
+    }
+    default: {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 14 });
+    }
+  }
 }
 var U = 1, Y$1 = 0.9, H = 0.8, J = 0.17, p = 0.1, u = 0.999, $ = 0.9999;
 var k$1 = 0.99, m = /[\\\/_+.#"@\[\(\{&]/, B$1 = /[\\\/_+.#"@\[\(\{&]/g, K$1 = /[\s-]/, X = /[\s-]/g;
@@ -31791,7 +31707,7 @@ const useSchedulesStore = create((set, get) => ({
     }
   }
 }));
-const badgeVariants = cva("inline-flex !uppercase items-center gap-1.5 px-2 py-0.5 text-[11px] font-medium font-mono rounded-full border transition-colors", {
+const badgeVariants = cva("inline-flex !uppercase items-center gap-1.5 px-[0.5em] py-[0.25em] text-[11px] font-medium font-mono rounded-[0.25em] border transition-colors", {
   variants: {
     variant: {
       default: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600",
@@ -31807,9 +31723,9 @@ const badgeVariants = cva("inline-flex !uppercase items-center gap-1.5 px-2 py-0
       queued: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700"
     },
     size: {
-      sm: "text-[9px] px-1.5 py-0.5",
-      md: "text-[10px] px-2 py-0.5",
-      lg: "text-[11px] px-2.5 py-1"
+      sm: "text-[9px]",
+      md: "text-[10px]",
+      lg: "text-[11px]"
     }
   },
   defaultVariants: {
@@ -31952,7 +31868,7 @@ const StatusBadge = (t0) => {
         }
         case "RUNNING": {
           return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "relative flex h-3 w-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-[0.25em] bg-blue-400 opacity-75" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "relative inline-flex rounded-full h-3 w-3 bg-blue-500" })
           ] });
         }
@@ -32313,7 +32229,7 @@ const GlobalSearch = (t0) => {
     ] }), className: "text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2", children: [
       !isSearching && /* @__PURE__ */ jsxRuntimeExports.jsxs(_e.Item, { onSelect: () => handleSelect("/schedules"), className: "flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "w-4 h-4 text-cyan-600 dark:text-cyan-400" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Alle Zeitpläne" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Alle Autopiloten" })
       ] }),
       filteredSchedules.map((schedule) => {
         const formName_1 = forms.find((f_2) => f_2.id === schedule.formId)?.name || `Form #${schedule.formId}`;
@@ -32328,7 +32244,8 @@ const GlobalSearch = (t0) => {
               pmName_1
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400 ml-auto", children: schedule.isActive ? "Aktiv" : "Inaktiv" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400 ml-auto", children: schedule.isActive ? "Aktiv" : "Inaktiv" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule.isActive ? "success" : "danger", size: "sm", className: "ml-auto", children: schedule.isActive ? "Aktiv" : "Inaktiv" })
         ] }, schedule.id);
       })
     ] });
@@ -32805,13 +32722,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-89So9e0e.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-B0AV_rGo.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-XkXjTOZI.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BgskMG8v.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-BSHZYHyS.js"), true ? __vite__mapDeps([11,1,6,5,2,8]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-B_o-ikg7.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DlhHUTzk.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-r0nbQwue.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Dze-t5hr.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-JRl1ph2K.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BS9CKgK7.js"), true ? __vite__mapDeps([9,1,6,2,7]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DHDKqyAZ.js"), true ? __vite__mapDeps([10,1,6,5,2]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-B5f2ArwT.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-S0_-IX6p.js"), true ? __vite__mapDeps([12,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -32851,8 +32768,8 @@ function App() {
 }
 client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsxRuntimeExports.jsx(React$3.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) }));
 export {
-  Sun as $,
-  ChevronRight as A,
+  Monitor as $,
+  Settings2 as A,
   Button as B,
   CreditCard as C,
   createRovingFocusGroupScope as D,
@@ -32876,45 +32793,49 @@ export {
   Presence as V,
   cn as W,
   X$1 as X,
-  useSettingsStore as Y,
-  CircleCheck as Z,
-  Monitor as _,
+  Circle as Y,
+  useSettingsStore as Z,
+  CircleCheck as _,
   reactDomExports as a,
-  Moon as a0,
-  LoaderCircle as a1,
-  Clock as a2,
-  formatDateTime as a3,
-  formatDuration as a4,
-  Link as a5,
-  CircleX as a6,
-  Badge as a7,
-  Search as a8,
+  Sun as a0,
+  Moon as a1,
+  LoaderCircle as a2,
+  Clock as a3,
+  RefreshCw as a4,
+  formatDateTime as a5,
+  formatDuration as a6,
+  Link as a7,
+  CircleX as a8,
   useSchedulesStore as a9,
+  Badge as aA,
+  DialogDescription as aB,
+  DialogFooter as aC,
   createLucideIcon as aa,
-  ArrowRight as ab,
-  Bell as ac,
-  BookOpen as ad,
-  Building2 as ae,
-  CheckCheck as af,
-  ChevronLeft as ag,
-  Info as ah,
-  Landmark as ai,
-  LayoutDashboard as aj,
-  TestTube as ak,
-  DialogHeader as al,
-  DialogTitle as am,
-  DialogContent as an,
-  Dialog as ao,
-  Root$1 as ap,
-  Portal$1 as aq,
-  Content as ar,
-  Title as as,
-  Overlay as at,
-  Close as au,
-  Description as av,
-  React$3 as aw,
-  DialogDescription as ax,
-  DialogFooter as ay,
+  Bell as ab,
+  BookOpen as ac,
+  Building2 as ad,
+  CheckCheck as ae,
+  ChevronLeft as af,
+  Euro as ag,
+  Globe as ah,
+  Info as ai,
+  Landmark as aj,
+  LayoutDashboard as ak,
+  Search as al,
+  TestTube as am,
+  Zap as an,
+  DialogHeader as ao,
+  DialogTitle as ap,
+  DialogContent as aq,
+  Dialog as ar,
+  Root$1 as as,
+  Portal$1 as at,
+  Content as au,
+  Title as av,
+  Overlay as aw,
+  Close as ax,
+  Description as ay,
+  React$3 as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,
@@ -32924,20 +32845,20 @@ export {
   TestRunDialog as h,
   dist as i,
   jsxRuntimeExports as j,
-  Checkbox as k,
-  ChevronUp as l,
-  ChevronDown as m,
-  Select as n,
-  SelectTrigger as o,
-  SelectValue as p,
-  SelectContent as q,
+  ChevronUp as k,
+  ChevronDown as l,
+  Select as m,
+  SelectTrigger as n,
+  SelectValue as o,
+  SelectContent as p,
+  SelectItem as q,
   reactExports as r,
-  SelectItem as s,
-  useSearchParams as t,
+  useSearchParams as s,
+  StatusBadge as t,
   useNavigate as u,
-  StatusBadge as v,
+  formatDate as v,
   withSelectorExports as w,
-  formatDate as x,
-  create as y,
-  Check as z
+  create as x,
+  Check as y,
+  ChevronRight as z
 };

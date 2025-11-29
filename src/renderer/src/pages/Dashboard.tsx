@@ -41,7 +41,7 @@ const DashboardSkeleton = () => (
       {[...Array(4)].map((_, i) => (
         <div
           key={i}
-          className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+          className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <Skeleton className="h-4 w-24 mb-2" />
           <Skeleton className="h-8 w-16" />
         </div>
@@ -50,7 +50,7 @@ const DashboardSkeleton = () => (
 
     {/* Charts Placeholder */}
     <div className="space-y-6 mb-8">
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
         <Skeleton className="h-6 w-32 mb-4" />
         <Skeleton className="h-[300px] w-full" />
       </div>
@@ -59,7 +59,7 @@ const DashboardSkeleton = () => (
         {[...Array(2)].map((_, i) => (
           <div
             key={i}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <Skeleton className="h-6 w-40 mb-4" />
             <Skeleton className="h-[250px] w-full" />
           </div>
@@ -213,7 +213,7 @@ const Dashboard: React.FC = () => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-lg shadow-lg">
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-md shadow-lg">
           <p className="text-gray-900 dark:text-white mb-2">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p
@@ -244,7 +244,7 @@ const Dashboard: React.FC = () => {
           variant="outline"
           size="sm"
           // condensed={true}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <Terminal className="w-4 h-4 text-purple-500 dark:text-purple-400 mr-2 transition-transform" />
           <span className="text-gray-900 dark:text-white">{isRunning ? "Tests laufen..." : "Tests starten"}</span>
         </Button>
@@ -253,7 +253,7 @@ const Dashboard: React.FC = () => {
           onClick={() => handleQuickAction("add-form")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <FileText className="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2 transition-transform" />
           <span className="text-gray-900 dark:text-white">Formulare</span>
         </Button>
@@ -262,7 +262,7 @@ const Dashboard: React.FC = () => {
           onClick={() => handleQuickAction("add-payment")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <CreditCard className="w-4 h-4 text-green-500 dark:text-green-400 mr-2 transition-transform" />
           <span className="text-gray-900 dark:text-white">Bezahlmethoden</span>
         </Button>
@@ -271,7 +271,7 @@ const Dashboard: React.FC = () => {
           onClick={() => handleQuickAction("view-results")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <BarChart3 className="w-4 h-4 text-yellow-500 dark:text-yellow-400 mr-2 transition-transform" />
           <span className="text-gray-900 dark:text-white">Ergebnisse</span>
         </Button>
@@ -280,7 +280,7 @@ const Dashboard: React.FC = () => {
           onClick={() => handleQuickAction("autopilot")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <Play className="w-4 h-4 text-cyan-500 dark:text-cyan-400 mr-2 transition-transform" />
           <span className="text-gray-900 dark:text-white">Autopilot</span>
         </Button>
@@ -289,7 +289,7 @@ const Dashboard: React.FC = () => {
           onClick={() => handleQuickAction("settings")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
           <Settings className="w-4 h-4 text-gray-500 dark:text-gray-400 mr-2 transition-transform" />
           <span className="text-gray-900 dark:text-white">Einstellungen</span>
         </Button>
@@ -297,7 +297,7 @@ const Dashboard: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <div>
             <p className="text-gray-500 dark:text-gray-400">Gesamt Tests</p>
             <p
@@ -307,7 +307,7 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <div>
             <p className="text-gray-500 dark:text-gray-400">Bezahlmethoden</p>
             <p
@@ -317,7 +317,7 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <div>
             <p className="text-gray-500 dark:text-gray-400">Erfolgreich</p>
             <p
@@ -327,7 +327,7 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Erfolgsrate</p>
             <p
@@ -344,7 +344,7 @@ const Dashboard: React.FC = () => {
       {testRuns.length > 0 && (
         <div className="space-y-6 mb-8">
           {/* Timeline Chart */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <h3 className="text-lgtext-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
             <ResponsiveContainer
               width="100%"
@@ -395,7 +395,7 @@ const Dashboard: React.FC = () => {
 
           {/* Success Rate Pie Chart and Stats */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
               <h3 className="text-lg text-gray-900 dark:text-white mb-4">Erfolgsrate Übersicht</h3>
               <ResponsiveContainer
                 width="100%"
@@ -439,7 +439,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Payment Method Performance */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
               <h3 className="text-lg text-gray-900 dark:text-white mb-4">Bezahlmethoden Performance</h3>
               <ResponsiveContainer
                 width="100%"
@@ -484,7 +484,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Form Performance */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <h3 className="text-lg text-gray-900 dark:text-white mb-4">Formular Performance</h3>
             <ResponsiveContainer
               width="100%"

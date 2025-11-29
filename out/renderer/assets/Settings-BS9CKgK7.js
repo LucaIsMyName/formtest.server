@@ -1,8 +1,8 @@
-import { y as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, z as Check, X, m as ChevronDown, A as ChevronRight, I as Input, D as createRovingFocusGroupScope, E as useDirection, G as useControllableState, H as createContextScope, J as Root, K as Primitive, M as useComposedRefs, N as Item, O as composeEventHandlers, Q as usePrevious, U as useSize, V as Presence, W as cn, Y as useSettingsStore, L as Label, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, v as StatusBadge, Z as CircleCheck, _ as Monitor, $ as Sun, a0 as Moon } from "./index-BZ4UT8XP.js";
-import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { T as TriangleAlert, C as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-hzSCjdC9.js";
-import { S as Skeleton } from "./Skeleton-fMwt18vq.js";
-import { R as RotateCcw, C as Code, P as Plus, E as Eye, a as EyeOff, S as Settings2, b as Circle, D as Download, U as Upload } from "./upload-B5gzV6ik.js";
+import { x as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, y as Check, X, l as ChevronDown, z as ChevronRight, I as Input, A as Settings2, D as createRovingFocusGroupScope, E as useDirection, G as useControllableState, H as createContextScope, J as Root, K as Primitive, M as useComposedRefs, N as Item, O as composeEventHandlers, Q as usePrevious, U as useSize, V as Presence, W as cn, Y as Circle, Z as useSettingsStore, L as Label, m as Select, n as SelectTrigger, o as SelectValue, p as SelectContent, q as SelectItem, t as StatusBadge, _ as CircleCheck, $ as Monitor, a0 as Sun, a1 as Moon } from "./index-tRDURfIp.js";
+import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
+import { T as TriangleAlert, C as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-8Wd3m6Dy.js";
+import { S as Skeleton } from "./Skeleton-zliSJbRH.js";
+import { R as RotateCcw, a as Code, P as Plus, E as Eye, b as EyeOff, C as Checkbox, D as Download, U as Upload } from "./Checkbox-BmgMimdm.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -1263,14 +1263,14 @@ const SettingsSkeleton = () => {
   }
   let t2;
   if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
       t0,
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
         t1,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-3", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-lg" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-lg" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-lg" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-md" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-md" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-24 w-full rounded-md" })
         ] })
       ] }) })
     ] });
@@ -1289,7 +1289,7 @@ const SettingsSkeleton = () => {
   if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
     t4 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
       t2,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
         t3,
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-6", children: [...Array(4)].map(_temp) })
       ] })
@@ -1435,7 +1435,7 @@ const Settings = () => {
       error
     ] }) }) }),
     isLoading && settings.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(SettingsSkeleton, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Test-Einstellungen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
@@ -1488,12 +1488,12 @@ const Settings = () => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Formular-Selektoren" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Hier können Sie CSS-Selektoren für die automatische Formular-Erkennung anpassen. Eigene Selektoren haben Priorität vor den Standard-Selektoren. Per-Form Feld-Mappings überschreiben diese globalen Einstellungen." }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorEditor, {})
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-gray-900 dark:text-white text-lg font-semibold mb-4", children: "Daten löschen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden." }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap gap-3", children: [
@@ -1527,7 +1527,7 @@ const Settings = () => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "sr-only text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Import / Export" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -1787,24 +1787,24 @@ const Settings = () => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Darstellung" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "block mb-2 text-gray-800 dark:text-gray-400", children: "Theme" }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("system"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("system"), className: `flex flex-col items-center justify-center p-4 border rounded-md transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
                 fontStretch: "115%"
               }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "System" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("light"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("light"), className: `flex flex-col items-center justify-center p-4 border rounded-md transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
                 fontStretch: "115%"
               }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "Hell" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("dark"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("dark"), className: `flex flex-col items-center justify-center p-4 border rounded-md transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
                 fontStretch: "115%"

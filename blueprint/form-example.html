@@ -8,12 +8,12 @@
   <title>Spendenformular - Diakonie</title>
 
   <link rel="stylesheet" media="screen" type="text/css" href="/paymentAddOn/style8.css?1763723491">
-  <style nonce="Pb26KKGGoOHIL0YI5PUb8A">
+  <style nonce="XurgToHtOBzqZtLIDJs5Mw">
     :root {
       --fb-primary: #162e65;
     }
   </style>
-  <style nonce="tTdJDtybxcW8vc9weoTBQ">
+  <style nonce="8uikK9p52eyRYQJoX8Azkg">
     /*
 TO DO Luca
 
@@ -48,7 +48,7 @@ Diese CSS Regeln kann man aukommentieren, dann werden die 3 felder (amount, zwec
       --accent-light-transparent: rgba(102, 175, 233, 0.6);
       --submit-button-bg: #d3185d;
       --submit-button-text: white;
-      --border: 1px solid var(--grey);
+      --border: 1px solid var(--accent-dark);
       --font-size: 1rem;
       --gap: 1rem;
       --payment-option-columns: 2;
@@ -245,6 +245,8 @@ Diese CSS Regeln kann man aukommentieren, dann werden die 3 felder (amount, zwec
 
     #paymentmethods label.paymentmethod:has(> input[type="radio"]:checked) {
       border: 1px solid var(--accent-dark) !important;
+      outline: 1px solid var(--accent-dark) !important;
+      outline-offset: 2px;
       /* optional niceties */
       transition: background-color .15s ease;
       cursor: pointer;
@@ -262,9 +264,17 @@ Diese CSS Regeln kann man aukommentieren, dann werden die 3 felder (amount, zwec
 .donation.container {
 display:none;
 }*/
+
+    input:not(#submitForm, #payment_customAmount),
+    select,
+    textarea,
+    .choices-grid .choice,
+    #paymentmethods label {
+      border: 1px solid var(--accent-dark) !important;
+    }
   </style>
 
-  <script src="/addons/js/jquery.min.js" nonce="dHgqSFnxVTQS4AcEl5HsA"></script>
+  <script src="/addons/js/jquery.min.js" nonce="ouNweYvVEAHHyjGfsp7XGA"></script>
 </head>
 
 <body data-fb-template-id="8" class="jsFbReady">
@@ -372,11 +382,11 @@ display:none;
                     style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
                     preserveAspectRatio="xMidYMid meet">
                     <defs>
-                      <clipPath id="__lottie_element_25">
+                      <clipPath id="__lottie_element_44">
                         <rect width="1000" height="1000" x="0" y="0"></rect>
                       </clipPath>
                     </defs>
-                    <g clip-path="url(#__lottie_element_25)">
+                    <g clip-path="url(#__lottie_element_44)">
                       <g style="display: block;" transform="matrix(1,0,0,1,0,0)" opacity="1">
                         <rect width="1000" height="1000" fill="transparent"></rect>
                       </g>
@@ -428,11 +438,11 @@ display:none;
                     style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
                     preserveAspectRatio="xMidYMid meet">
                     <defs>
-                      <clipPath id="__lottie_element_63">
+                      <clipPath id="__lottie_element_25">
                         <rect width="1000" height="1000" x="0" y="0"></rect>
                       </clipPath>
                     </defs>
-                    <g clip-path="url(#__lottie_element_63)">
+                    <g clip-path="url(#__lottie_element_25)">
                       <g style="display: block;" transform="matrix(1,0,0,1,0,0)" opacity="1">
                         <rect width="1000" height="1000" fill="transparent"></rect>
                       </g>
@@ -485,11 +495,11 @@ display:none;
                     style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px); content-visibility: visible;"
                     preserveAspectRatio="xMidYMid meet">
                     <defs>
-                      <clipPath id="__lottie_element_44">
+                      <clipPath id="__lottie_element_63">
                         <rect width="1000" height="1000" x="0" y="0"></rect>
                       </clipPath>
                     </defs>
-                    <g clip-path="url(#__lottie_element_44)">
+                    <g clip-path="url(#__lottie_element_63)">
                       <g style="display: block;" transform="matrix(1,0,0,1,0,0)" opacity="1">
                         <rect width="1000" height="1000" fill="transparent"></rect>
                       </g>
@@ -752,6 +762,7 @@ display:none;
                   <option value="88449">Nothilfe Gaza</option>
                   <option value="89531">Nothilfe Karibik</option>
                   <option value="89886">Nothilfe Ukraine</option>
+                  <option value="90280">Weihnachtsaktion für Kinder und Jugendliche</option>
                 </select></div>
             </label>
           </div>
@@ -859,7 +870,7 @@ display:none;
                   data-description-day="Tag (zweistellig)" data-description-month="Monat (zweistellig)"
                   data-description-year="Jahr (vierstellig)" data-date-format="dd.MM.yyyy"
                   data-invalid-message="Bitte in folgendem Format angeben:" class="input" data-min="1900-01-01"
-                  data-max="2025-11-21" id="payment_birthday" placeholder="TT.MM.JJJJ"
+                  data-max="2025-11-27" id="payment_birthday" placeholder="TT.MM.JJJJ"
                   title="Tag (zweistellig), Monat (zweistellig), Jahr (vierstellig)"> </span>
             </label>
           </div>
@@ -1276,9 +1287,9 @@ display:none;
               <div id="payment_credit_card_number" class="StripeElement StripeElement--empty">
                 <div class="__PrivateStripeElement"
                   style="margin: 0px !important; padding: 0px !important; border: medium !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
-                  <iframe name="__privateStripeFrame9073" frameborder="0" allowtransparency="true" scrolling="no"
+                  <iframe name="__privateStripeFrame1873" frameborder="0" allowtransparency="true" scrolling="no"
                     role="presentation"
-                    src="https://js.stripe.com/v3/elements-inner-card-03bd565e0ed67626d2e88aadf2dac312.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardNumber-91ae5388-4970-4094-87c2-ce1d522d0fe7&amp;showIcon=true&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;rtl=false&amp;componentName=cardNumber&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+                    src="https://js.stripe.com/v3/elements-inner-card-867f5e1bc80b72eb16f18ce77fcc6eaa.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%224843775b-bc05-47df-9107-42f3f3e6eae0%22%2C%22assignments%22%3A%7B%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardNumber-7f2212be-459f-43f9-84af-48c19086c391&amp;showIcon=true&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;stripeJsMountedInIframe=true&amp;rtl=false&amp;componentName=cardNumber&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController1871"
                     title="Sicherer Eingaberahmen für Kartennummer"
                     style="border: 0px !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; user-select: none !important; transform: translate(0px) !important; color-scheme: light only !important; height: 24px;"></iframe><input
                     class="__PrivateStripeElement-input" aria-hidden="true" aria-label=" " autocomplete="false"
@@ -1296,9 +1307,9 @@ display:none;
                 <div id="payment_credit_card_secure_id" class="creditCardSecureId StripeElement StripeElement--empty">
                   <div class="__PrivateStripeElement"
                     style="margin: 0px !important; padding: 0px !important; border: medium !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
-                    <iframe name="__privateStripeFrame9074" frameborder="0" allowtransparency="true" scrolling="no"
+                    <iframe name="__privateStripeFrame1874" frameborder="0" allowtransparency="true" scrolling="no"
                       role="presentation"
-                      src="https://js.stripe.com/v3/elements-inner-card-03bd565e0ed67626d2e88aadf2dac312.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardCvc-0c883f61-ded5-435c-a076-6346a9ffb12b&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;rtl=false&amp;componentName=cardCvc&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+                      src="https://js.stripe.com/v3/elements-inner-card-867f5e1bc80b72eb16f18ce77fcc6eaa.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%224843775b-bc05-47df-9107-42f3f3e6eae0%22%2C%22assignments%22%3A%7B%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardCvc-3286dd92-68fc-4b99-8999-5121ea2fab9c&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;stripeJsMountedInIframe=true&amp;rtl=false&amp;componentName=cardCvc&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController1871"
                       title="Sicherer Eingaberahmen für CVC-Prüfziffer"
                       style="border: 0px !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; user-select: none !important; transform: translate(0px) !important; color-scheme: light only !important; height: 24px;"></iframe><input
                       class="__PrivateStripeElement-input" aria-hidden="true" aria-label=" " autocomplete="false"
@@ -1317,9 +1328,9 @@ display:none;
                   <div id="payment_credit_card_expiry" class="creditCardExpiry StripeElement StripeElement--empty">
                     <div class="__PrivateStripeElement"
                       style="margin: 0px !important; padding: 0px !important; border: medium !important; display: block !important; background: transparent !important; position: relative !important; opacity: 1 !important;">
-                      <iframe name="__privateStripeFrame9075" frameborder="0" allowtransparency="true" scrolling="no"
+                      <iframe name="__privateStripeFrame1875" frameborder="0" allowtransparency="true" scrolling="no"
                         role="presentation"
-                        src="https://js.stripe.com/v3/elements-inner-card-03bd565e0ed67626d2e88aadf2dac312.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardExpiry-ae23a15e-18b2-46b2-9eaf-b59db96f06a0&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;rtl=false&amp;componentName=cardExpiry&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+                        src="https://js.stripe.com/v3/elements-inner-card-867f5e1bc80b72eb16f18ce77fcc6eaa.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%224843775b-bc05-47df-9107-42f3f3e6eae0%22%2C%22assignments%22%3A%7B%7D%7D&amp;locale=de&amp;wait=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;elementId=cardExpiry-8883c164-d417-4412-ba97-2a777d278007&amp;style[base][color]=rgb(0%2C+0%2C+0)&amp;style[base][fontFamily]=neue-haas-grotesk%2C+sans-serif&amp;style[base][fontSize]=16px&amp;style[base][fontStyle]=normal&amp;style[base][lineHeight]=24px&amp;style[invalid][color]=rgb(0%2C+0%2C+0)&amp;stripeJsMountedInIframe=true&amp;rtl=false&amp;componentName=cardExpiry&amp;keyMode=live&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;frameMessagingStrategy=postMessage&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController1871"
                         title="Sicherer Eingaberahmen für Ablaufdatum"
                         style="border: 0px !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; user-select: none !important; transform: translate(0px) !important; color-scheme: light only !important; height: 24px;"></iframe><input
                         class="__PrivateStripeElement-input" aria-hidden="true" aria-label=" " autocomplete="false"
@@ -1410,7 +1421,7 @@ display:none;
           type="hidden" name="payment[credit_card_token]" id="payment_credit_card_token" value=""><input type="hidden"
           name="payment[credit_card_network]" id="payment_credit_card_network"><input type="hidden"
           name="payment[token]" id="payment_token"
-          value="s85hkigup9ml6y94uk7vth8tg6829wrwngi3bzo1cgpksozomrrh17m2ez2fgdtp"><input type="hidden"
+          value="s85hkigup9ml6y9445h4blc5uxuxzqvr3new9hbw315nnxk0fk6wxbuin7nq6sl6"><input type="hidden"
           name="payment[parent_url]" id="payment_parent_url" value="https://www.diakonie.at/spenden/meine-spende"><input
           type="hidden" name="payment[success_redirect_url]" id="payment_success_redirect_url"><input type="hidden"
           name="payment[failure_redirect_url]" id="payment_failure_redirect_url"><input type="hidden"
@@ -1450,7 +1461,7 @@ display:none;
     <div class="fb-loading-spinner"></div>
   </div>
 
-  <script type="text/javascript" nonce="wFCZbAYwtt7UiNgoDycEg">
+  <script type="text/javascript" nonce="04PiQvVC6XxCb5Mj8mXNQ">
     var fbDebugTimer = Date.now();
 
     /* Show donation form when javascript is enabled */
@@ -1459,11 +1470,11 @@ display:none;
 
 
 
-  <script src="https://js.stripe.com/v3/" nonce="cOXedMsLlcyoQL6fmBSJg"></script>
+  <script src="https://js.stripe.com/v3/" nonce="vXAOqOXHMiZMvpR46clCZw"></script>
 
 
 
-  <script type="text/javascript" nonce="y5U5MPekwZiMElrEBaI3uQ">
+  <script type="text/javascript" nonce="en0SGkrxUme4ZR07qQDBNw">
     window.addEventListener('error', logUncaughtError);
     $(function () {
       var $submitForm = $("#submitForm");
@@ -2512,7 +2523,7 @@ display:none;
     window.removeEventListener('error', logUncaughtError);
   </script>
 
-  <script nonce="4uTKh7z0CJggiuoJWc7dLA">
+  <script nonce="qgtjg8Yu8E2AjhfvZebg">
 
     document.addEventListener('DOMContentLoaded', function () {
       /**
@@ -2965,14 +2976,14 @@ display:none;
     }
 
   </script>
-  <script nonce="5NnSSY4Xi0Wvxi0c8mqOCA">
+  <script nonce="bKPJNorUCfbJmkyrmFYYSg">
     window.addEventListener('error', logUncaughtError);
   </script>
 
 
-  <script src="/js/polaris.min.js" nonce="cKv7ZjME7bkd4DOfy09SwA"></script>
+  <script src="/js/polaris.min.js" nonce="WCnpvycSQuDG03YmGNw"></script>
 
-  <script nonce="LuAdnHwn4l8kRnj3tLhVmw">
+  <script nonce="r4E5bFfgBlXqbV7qwKdg">
     (function () {
       const amountChoiceContainer = document.getElementById('amountChoice');
       const customAmountInput = document.getElementById('payment_customAmount');
@@ -3044,7 +3055,7 @@ display:none;
     })();
   </script>
 
-  <script nonce="zor6puIsFOxbTp9m1GUQ">
+  <script nonce="gEueVtnwSKAwhHJJDCihw">
     (function () {
       let toggleCompanyName = document.querySelector('#toggleCompanyName input');
       let companyName = document.getElementById('companyNameRow');
@@ -3067,7 +3078,7 @@ display:none;
     })();
   </script>
 
-  <script nonce="N6wFVA8mi6MrkW2wwnq8Xg">
+  <script nonce="jYnzNzcxEfjK9tMkLem7Ig">
     (function () {
       const $amountField = $('#payment_amount');
       const $coveredFeeChecksumAmountField = $('#payment_covered_fee_checksum_amount');
@@ -3111,7 +3122,7 @@ display:none;
     })();
   </script>
 
-  <script nonce="WesRl6LGd1cGrylUxCtNQ">
+  <script nonce="udixT4Q7vYBleBK7wlXQ">
     (function () {
       [].slice.call(document.querySelectorAll('textarea')).forEach(function (textarea) {
         const width = textarea.clientWidth;
@@ -3127,22 +3138,22 @@ display:none;
 
 
 
-  <iframe name="__privateStripeController9071" frameborder="0" allowtransparency="true" scrolling="no"
+  <iframe name="__privateStripeController1871" frameborder="0" allowtransparency="true" scrolling="no"
     role="presentation"
-    src="https://js.stripe.com/v3/controller-with-preconnect-281eafafd795d98dc1645e7105c86a77.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%22274b97af-6291-4ad4-8ae1-050395602ffb%22%2C%22assignments%22%3A%7B%22link_controller_safari_no_http_cookies%22%3A%22control%22%2C%22link_skip_autofill_modal_mount%22%3A%22treatment%22%2C%22link_skip_wallets_link_never%22%3A%22treatment%22%7D%7D&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;stripeAccount=acct_1JkoaCBYyZ3QYNjy&amp;stripeJsId=274b97af-6291-4ad4-8ae1-050395602ffb&amp;stripeObjId=sobj-c900f9b0-0b7f-469c-987e-288e15291ee0&amp;firstStripeInstanceCreatedLatency=21&amp;topOriginForCrossOriginFrame=https%3A%2F%2Fwww.diakonie.at&amp;controllerCount=1&amp;isCheckout=false&amp;stripeJsLoadTime=1763741302496&amp;manualBrowserDeprecationRollout=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"
+    src="https://js.stripe.com/v3/controller-with-preconnect-d102f2ee6792bd5a6874f98e059a2a59.html#__shared_params__[version]=v3&amp;__shared_params__[light_experiment_assignments]=%7B%22token%22%3A%224843775b-bc05-47df-9107-42f3f3e6eae0%22%2C%22assignments%22%3A%7B%7D%7D&amp;apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;stripeAccount=acct_1JkoaCBYyZ3QYNjy&amp;stripeJsId=4843775b-bc05-47df-9107-42f3f3e6eae0&amp;stripeObjId=sobj-b074e554-9444-4b9c-aaf4-5fd2fd0bd8bb&amp;firstStripeInstanceCreatedLatency=19&amp;topOriginForCrossOriginFrame=https%3A%2F%2Fwww.diakonie.at&amp;controllerCount=1&amp;isCheckout=false&amp;stripeJsLoadTime=1764265039864&amp;manualBrowserDeprecationRollout=false&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController1871"
     aria-hidden="true" tabindex="-1"
     style="border: medium !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; visibility: hidden !important; position: fixed !important; height: 1px !important; pointer-events: none !important; user-select: none !important;"></iframe>
-  <div style="display: none;"><iframe name="__privateStripeFrame9076" frameborder="0" allowtransparency="true"
+  <div style="display: none;"><iframe name="__privateStripeFrame1876" frameborder="0" allowtransparency="true"
       scrolling="no" role="presentation" allow="publickey-credentials-get *"
-      src="https://js.stripe.com/v3/universal-link-modal-inner-ac8b376781284962d51222a741ffb399.html#apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;stripeJsId=274b97af-6291-4ad4-8ae1-050395602ffb&amp;stripeAccount=acct_1JkoaCBYyZ3QYNjy&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;locale=de&amp;loggerMetadata[surface]=web_split_card_element&amp;openerFrameId=__privateStripeFrame9073&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController9071"></iframe>
-  </div><iframe name="__privateStripeMetricsController9070" frameborder="0" allowtransparency="true" scrolling="no"
+      src="https://js.stripe.com/v3/universal-link-modal-inner-a82e25aa96b4458e926802026e663e9a.html#apiKey=pk_live_a9FYPQU5rCYUFVAV5117uxNa&amp;stripeJsId=4843775b-bc05-47df-9107-42f3f3e6eae0&amp;stripeAccount=acct_1JkoaCBYyZ3QYNjy&amp;mids[guid]=NA&amp;mids[muid]=NA&amp;mids[sid]=NA&amp;locale=de&amp;loggerMetadata[surface]=web_split_card_element&amp;openerFrameId=__privateStripeFrame1873&amp;referrer=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;controllerId=__privateStripeController1871"></iframe>
+  </div><iframe name="__privateStripeMetricsController1870" frameborder="0" allowtransparency="true" scrolling="no"
     role="presentation"
     src="https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html#url=https%3A%2F%2Fsecure.fundraisingbox.com%2Fapp%2Fpayment%3Fhash%3Ds85hkigup9ml6y94%23https%253A%252F%252Fwww.diakonie.at%252Fspenden%252Fmeine-spende&amp;title=Spendenformular%20-%20Diakonie&amp;referrer=https%3A%2F%2Fwww.diakonie.at%2F&amp;muid=NA&amp;sid=NA&amp;version=6&amp;preview=false&amp;__shared_params__[version]=v3"
     aria-hidden="true" tabindex="-1"
     style="border: medium !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; visibility: hidden !important; position: fixed !important; height: 1px !important; pointer-events: none !important; user-select: none !important;"></iframe><iframe
     frameborder="0" allowtransparency="true" scrolling="no" name="hcaptcha-invisible" referrerpolicy="no-referrer"
     aria-hidden="true" tabindex="-1"
-    src="https://js.stripe.com/v3/hcaptcha-invisible-4629d846b57343334f1b41b117be7cfa.html#debugMode=false&amp;parentOrigin=https%3A%2F%2Fsecure.fundraisingbox.com"
+    src="https://js.stripe.com/v3/hcaptcha-invisible-a3e6d4ab7830519eba24d1331feb1938.html#debugMode=false&amp;parentOrigin=https%3A%2F%2Fsecure.fundraisingbox.com"
     style="border: medium !important; margin: 0px !important; padding: 0px !important; width: 1px !important; min-width: 100% !important; overflow: hidden !important; display: block !important; visibility: hidden !important; position: fixed !important; height: 1px !important; pointer-events: none !important; user-select: none !important;"
     data-initialized="true"></iframe>
 </body>

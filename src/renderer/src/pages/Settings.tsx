@@ -16,21 +16,21 @@ import { Skeleton } from "../components/ui/Skeleton";
 
 const SettingsSkeleton = () => (
   <div className="space-y-6">
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
       <Skeleton className="h-6 w-32 mb-4" />
       <div className="space-y-4">
         <div>
           <Skeleton className="h-4 w-16 mb-2" />
           <div className="grid grid-cols-3 gap-3">
-            <Skeleton className="h-24 w-full rounded-lg" />
-            <Skeleton className="h-24 w-full rounded-lg" />
-            <Skeleton className="h-24 w-full rounded-lg" />
+            <Skeleton className="h-24 w-full rounded-md" />
+            <Skeleton className="h-24 w-full rounded-md" />
+            <Skeleton className="h-24 w-full rounded-md" />
           </div>
         </div>
       </div>
     </div>
 
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
       <Skeleton className="h-6 w-40 mb-4" />
       <div className="space-y-6">
         {[...Array(4)].map((_, i) => (
@@ -221,7 +221,7 @@ const Settings: React.FC = () => {
           {/* Theme Settings */}
          
           {/* Test Settings */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Test-Einstellungen</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
@@ -333,7 +333,7 @@ const Settings: React.FC = () => {
           </div>
 
           {/* Selector Configuration Section */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Formular-Selektoren</h2>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
               Hier können Sie CSS-Selektoren für die automatische Formular-Erkennung anpassen. 
@@ -344,7 +344,7 @@ const Settings: React.FC = () => {
           </div>
 
           {/* Data Management / Delete Section */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <h2 className="text-gray-900 dark:text-white text-lg font-semibold mb-4">Daten löschen</h2>
 
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden.</p>
@@ -424,7 +424,7 @@ const Settings: React.FC = () => {
           </div>
 
           {/* Import/Export Section */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <h2 className="sr-only text-lg font-semibold text-gray-900 dark:text-white mb-4">Import / Export</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -746,7 +746,7 @@ const Settings: React.FC = () => {
             </div>
           </div>
 
-           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Darstellung</h2>
 
             <div className="space-y-4">
@@ -755,7 +755,7 @@ const Settings: React.FC = () => {
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => handleThemeChange("system")}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
+                    className={`flex flex-col items-center justify-center p-4 border rounded-md transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
                     <Monitor className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
                     <span
                       style={{ fontStretch: "115%" }}
@@ -765,7 +765,7 @@ const Settings: React.FC = () => {
                   </button>
                   <button
                     onClick={() => handleThemeChange("light")}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
+                    className={`flex flex-col items-center justify-center p-4 border rounded-md transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
                     <Sun className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
                     <span
                       style={{ fontStretch: "115%" }}
@@ -775,7 +775,7 @@ const Settings: React.FC = () => {
                   </button>
                   <button
                     onClick={() => handleThemeChange("dark")}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
+                    className={`flex flex-col items-center justify-center p-4 border rounded-md transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
                     <Moon className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
                     <span
                       style={{ fontStretch: "115%" }}

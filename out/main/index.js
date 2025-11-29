@@ -2170,8 +2170,28 @@ class TestQueue {
   }
   /**
    * Get current queue status with detailed info
+   * Cross-references with database to ensure consistency
    */
   getStatus() {
+    if (this.currentTest && this.isProcessing) {
+      const dbTest = testRunQueries.getById(this.currentTest.testRunId);
+      if (!dbTest || dbTest.status !== "RUNNING") {
+        console.log(`[TestQueue] Sync fix: currentTest ${this.currentTest.testRunId} is ${dbTest?.status || "missing"} in DB, resetting queue state`);
+        this.currentTest = null;
+        this.isProcessing = false;
+      }
+    }
+    const validQueue = this.queue.filter((t) => {
+      const dbTest = testRunQueries.getById(t.testRunId);
+      if (!dbTest || dbTest.status !== "QUEUED") {
+        console.log(`[TestQueue] Sync fix: removing ${t.testRunId} from queue (DB status: ${dbTest?.status || "missing"})`);
+        return false;
+      }
+      return true;
+    });
+    if (validQueue.length !== this.queue.length) {
+      this.queue = validQueue;
+    }
     return {
       queueLength: this.queue.length,
       isProcessing: this.isProcessing,
