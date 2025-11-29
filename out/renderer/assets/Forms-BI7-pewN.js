@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, b as useFormsStore, m as StatusBadge, n as formatDate } from "./index-9PvzplFq.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, i as dist, l as useSearchParams, b as useFormsStore, m as StatusBadge, n as formatDate } from "./index-CKyy2aq_.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { r as renderIcon, P as Plus, I as IconPicker, a as Pen } from "./IconPicker-BooHE_W6.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell } from "./Table-DnHrHGtZ.js";
-import { I as Input, C as ChevronUp, a as ChevronDown, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-HPDCok5b.js";
-import { S as Skeleton } from "./Skeleton-BMSp2vpZ.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-C8SGjDHA.js";
-import "./upload-v9bFGKTb.js";
+import { r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-Bni637JR.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-DFiXBObE.js";
+import { I as Input, C as ChevronUp, a as ChevronDown, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-COlMfq3x.js";
+import { P as Plus } from "./upload-fG_vv8II.js";
+import { S as Skeleton } from "./Skeleton-CbXQbayn.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-ChOlllFO.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -299,7 +299,7 @@ const FormsSkeleton = () => {
   return t0;
 };
 const Forms = () => {
-  const $ = dist.c(71);
+  const $ = dist.c(89);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     forms,
@@ -366,6 +366,7 @@ const Forms = () => {
   const {
     sortedItems: sortedForms,
     requestSort,
+    sortConfig,
     getSortDirection
   } = useSortableData(filteredForms, t4, "forms");
   let t5;
@@ -382,40 +383,104 @@ const Forms = () => {
     t5 = $[6];
   }
   const statusOptions = t5;
+  const [currentPage, setCurrentPage] = reactExports.useState(1);
   let t6;
   bb0: {
-    if (!filterConfig.statusFilter || filterConfig.statusFilter === "all") {
-      t6 = sortedForms;
+    let filtered = sortedForms;
+    if (filterConfig.statusFilter && filterConfig.statusFilter !== "all") {
+      let t72;
+      if ($[7] !== filterConfig.statusFilter || $[8] !== sortedForms) {
+        let t82;
+        if ($[10] !== filterConfig.statusFilter) {
+          t82 = (f) => filterConfig.statusFilter === "active" ? f.isActive : !f.isActive;
+          $[10] = filterConfig.statusFilter;
+          $[11] = t82;
+        } else {
+          t82 = $[11];
+        }
+        t72 = sortedForms.filter(t82);
+        $[7] = filterConfig.statusFilter;
+        $[8] = sortedForms;
+        $[9] = t72;
+      } else {
+        t72 = $[9];
+      }
+      filtered = t72;
+    }
+    if (filtered.length > 50) {
+      const start = (currentPage - 1) * 50;
+      let t72;
+      if ($[12] !== filtered || $[13] !== start) {
+        t72 = filtered.slice(start, start + 50);
+        $[12] = filtered;
+        $[13] = start;
+        $[14] = t72;
+      } else {
+        t72 = $[14];
+      }
+      t6 = t72;
       break bb0;
     }
-    let t72;
-    if ($[7] !== filterConfig.statusFilter || $[8] !== sortedForms) {
-      let t82;
-      if ($[10] !== filterConfig.statusFilter) {
-        t82 = (f) => filterConfig.statusFilter === "active" ? f.isActive : !f.isActive;
-        $[10] = filterConfig.statusFilter;
-        $[11] = t82;
-      } else {
-        t82 = $[11];
-      }
-      t72 = sortedForms.filter(t82);
-      $[7] = filterConfig.statusFilter;
-      $[8] = sortedForms;
-      $[9] = t72;
-    } else {
-      t72 = $[9];
-    }
-    t6 = t72;
+    t6 = filtered;
   }
   const displayedForms = t6;
   let t7;
+  bb1: {
+    if (!filterConfig.statusFilter || filterConfig.statusFilter === "all") {
+      t7 = sortedForms.length;
+      break bb1;
+    }
+    let t82;
+    if ($[15] !== filterConfig.statusFilter || $[16] !== sortedForms) {
+      let t92;
+      if ($[18] !== filterConfig.statusFilter) {
+        t92 = (f_0) => filterConfig.statusFilter === "active" ? f_0.isActive : !f_0.isActive;
+        $[18] = filterConfig.statusFilter;
+        $[19] = t92;
+      } else {
+        t92 = $[19];
+      }
+      t82 = sortedForms.filter(t92);
+      $[15] = filterConfig.statusFilter;
+      $[16] = sortedForms;
+      $[17] = t82;
+    } else {
+      t82 = $[17];
+    }
+    t7 = t82.length;
+  }
+  const totalFilteredItems = t7;
+  const totalPages = Math.ceil(totalFilteredItems / 50);
+  const showPagination = totalFilteredItems > 50;
   let t8;
-  if ($[12] !== forms || $[13] !== searchParams) {
-    t7 = () => {
+  if ($[20] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = () => {
+      setCurrentPage(1);
+    };
+    $[20] = t8;
+  } else {
+    t8 = $[20];
+  }
+  let t9;
+  if ($[21] !== filterConfig.searchTerm || $[22] !== filterConfig.statusFilter || $[23] !== sortConfig.direction || $[24] !== sortConfig.key) {
+    t9 = [filterConfig.statusFilter, filterConfig.searchTerm, sortConfig.key, sortConfig.direction];
+    $[21] = filterConfig.searchTerm;
+    $[22] = filterConfig.statusFilter;
+    $[23] = sortConfig.direction;
+    $[24] = sortConfig.key;
+    $[25] = t9;
+  } else {
+    t9 = $[25];
+  }
+  reactExports.useEffect(t8, t9);
+  let t10;
+  let t11;
+  if ($[26] !== forms || $[27] !== searchParams) {
+    t10 = () => {
       if (forms.length > 0) {
         const paramId = searchParams.get("id");
         if (paramId) {
-          const form = forms.find((f_0) => String(f_0.id) === paramId || f_0.name === paramId);
+          const form = forms.find((f_1) => String(f_1.id) === paramId || f_1.name === paramId);
           if (form) {
             setEditingForm(form);
             setIsDialogOpen(true);
@@ -423,255 +488,262 @@ const Forms = () => {
         }
       }
     };
-    t8 = [forms, searchParams];
-    $[12] = forms;
-    $[13] = searchParams;
-    $[14] = t7;
-    $[15] = t8;
+    t11 = [forms, searchParams];
+    $[26] = forms;
+    $[27] = searchParams;
+    $[28] = t10;
+    $[29] = t11;
   } else {
-    t7 = $[14];
-    t8 = $[15];
+    t10 = $[28];
+    t11 = $[29];
   }
-  reactExports.useEffect(t7, t8);
-  let t9;
-  if ($[16] !== setSearchParams) {
-    t9 = () => {
+  reactExports.useEffect(t10, t11);
+  let t12;
+  if ($[30] !== setSearchParams) {
+    t12 = () => {
       setEditingForm(null);
       setIsDialogOpen(true);
       setSearchParams({});
     };
-    $[16] = setSearchParams;
-    $[17] = t9;
+    $[30] = setSearchParams;
+    $[31] = t12;
   } else {
-    t9 = $[17];
+    t12 = $[31];
   }
-  const handleAddForm = t9;
-  let t10;
-  if ($[18] !== setSearchParams) {
-    t10 = (form_0) => {
+  const handleAddForm = t12;
+  let t13;
+  if ($[32] !== setSearchParams) {
+    t13 = (form_0) => {
       setEditingForm(form_0);
       setIsDialogOpen(true);
       setSearchParams({
         id: String(form_0.id)
       });
     };
-    $[18] = setSearchParams;
-    $[19] = t10;
+    $[32] = setSearchParams;
+    $[33] = t13;
   } else {
-    t10 = $[19];
+    t13 = $[33];
   }
-  const handleEditForm = t10;
-  let t11;
-  if ($[20] !== setSearchParams) {
-    t11 = () => {
+  const handleEditForm = t13;
+  let t14;
+  if ($[34] !== setSearchParams) {
+    t14 = () => {
       setIsDialogOpen(false);
       setSearchParams({});
     };
-    $[20] = setSearchParams;
-    $[21] = t11;
+    $[34] = setSearchParams;
+    $[35] = t14;
   } else {
-    t11 = $[21];
+    t14 = $[35];
   }
-  const handleCloseDialog = t11;
-  let t12;
-  if ($[22] !== addForm || $[23] !== editingForm || $[24] !== updateForm) {
-    t12 = async (formData) => {
+  const handleCloseDialog = t14;
+  let t15;
+  if ($[36] !== addForm || $[37] !== editingForm || $[38] !== updateForm) {
+    t15 = async (formData) => {
       if (editingForm) {
         await updateForm(editingForm.id, formData);
       } else {
         await addForm(formData);
       }
     };
-    $[22] = addForm;
-    $[23] = editingForm;
-    $[24] = updateForm;
-    $[25] = t12;
+    $[36] = addForm;
+    $[37] = editingForm;
+    $[38] = updateForm;
+    $[39] = t15;
   } else {
-    t12 = $[25];
+    t15 = $[39];
   }
-  const handleFormSubmit = t12;
-  let t13;
-  if ($[26] === Symbol.for("react.memo_cache_sentinel")) {
-    t13 = (form_1) => {
+  const handleFormSubmit = t15;
+  let t16;
+  if ($[40] === Symbol.for("react.memo_cache_sentinel")) {
+    t16 = (form_1) => {
       setDeleteConfirm({
         id: form_1.id,
         name: form_1.name
       });
     };
-    $[26] = t13;
+    $[40] = t16;
   } else {
-    t13 = $[26];
+    t16 = $[40];
   }
-  const handleDeleteForm = t13;
-  let t14;
-  if ($[27] !== deleteConfirm || $[28] !== deleteForm) {
-    t14 = async () => {
+  const handleDeleteForm = t16;
+  let t17;
+  if ($[41] !== deleteConfirm || $[42] !== deleteForm) {
+    t17 = async () => {
       if (deleteConfirm) {
         await deleteForm(deleteConfirm.id);
         setDeleteConfirm(null);
       }
     };
-    $[27] = deleteConfirm;
-    $[28] = deleteForm;
-    $[29] = t14;
+    $[41] = deleteConfirm;
+    $[42] = deleteForm;
+    $[43] = t17;
   } else {
-    t14 = $[29];
+    t17 = $[43];
   }
-  const confirmDelete = t14;
-  let t15;
-  if ($[30] === Symbol.for("react.memo_cache_sentinel")) {
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Formulare" });
-    $[30] = t15;
+  const confirmDelete = t17;
+  let t18;
+  if ($[44] === Symbol.for("react.memo_cache_sentinel")) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Formulare" });
+    $[44] = t18;
   } else {
-    t15 = $[30];
+    t18 = $[44];
   }
-  let t16;
-  if ($[31] !== handleAddForm || $[32] !== isLoading) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
-      t15,
+  let t19;
+  if ($[45] !== handleAddForm || $[46] !== isLoading) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
+      t18,
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddForm, variant: "primary", size: "md", disabled: isLoading, children: "Neues Formular" })
     ] });
-    $[31] = handleAddForm;
-    $[32] = isLoading;
-    $[33] = t16;
+    $[45] = handleAddForm;
+    $[46] = isLoading;
+    $[47] = t19;
   } else {
-    t16 = $[33];
+    t19 = $[47];
   }
-  let t17;
-  if ($[34] !== error) {
-    t17 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
+  let t20;
+  if ($[48] !== error) {
+    t20 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
       " ",
       error
     ] }) });
-    $[34] = error;
-    $[35] = t17;
+    $[48] = error;
+    $[49] = t20;
   } else {
-    t17 = $[35];
+    t20 = $[49];
   }
-  let t18;
-  if ($[36] !== clearFilters || $[37] !== filterConfig.searchTerm || $[38] !== filterConfig.statusFilter || $[39] !== forms.length || $[40] !== setSearchTerm || $[41] !== setStatusFilter) {
-    t18 = forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
-    $[36] = clearFilters;
-    $[37] = filterConfig.searchTerm;
-    $[38] = filterConfig.statusFilter;
-    $[39] = forms.length;
-    $[40] = setSearchTerm;
-    $[41] = setStatusFilter;
-    $[42] = t18;
+  let t21;
+  if ($[50] !== clearFilters || $[51] !== filterConfig.searchTerm || $[52] !== filterConfig.statusFilter || $[53] !== forms.length || $[54] !== setSearchTerm || $[55] !== setStatusFilter) {
+    t21 = forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
+    $[50] = clearFilters;
+    $[51] = filterConfig.searchTerm;
+    $[52] = filterConfig.statusFilter;
+    $[53] = forms.length;
+    $[54] = setSearchTerm;
+    $[55] = setStatusFilter;
+    $[56] = t21;
   } else {
-    t18 = $[42];
+    t21 = $[56];
   }
-  let t19;
-  if ($[43] !== displayedForms || $[44] !== forms.length || $[45] !== getSortDirection || $[46] !== handleAddForm || $[47] !== handleEditForm || $[48] !== isLoading || $[49] !== requestSort || $[50] !== toggleFormActive) {
-    t19 = isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+  let t22;
+  if ($[57] !== currentPage || $[58] !== displayedForms || $[59] !== forms.length || $[60] !== getSortDirection || $[61] !== handleAddForm || $[62] !== handleEditForm || $[63] !== isLoading || $[64] !== requestSort || $[65] !== showPagination || $[66] !== toggleFormActive || $[67] !== totalFilteredItems || $[68] !== totalPages) {
+    t22 = isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Formulare konfiguriert." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddForm, variant: "primary", size: "md", disabled: isLoading, children: "Erstes Formular hinzufügen" })
     ] }) }) }) : displayedForms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Keine Formulare gefunden." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: "Versuche andere Suchbegriffe oder Filter." })
-    ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("url"), onSort: () => requestSort("url"), children: "URL" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("createdAt"), onSort: () => requestSort("createdAt"), children: "Erstellt" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
-      ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedForms.map((form_2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50", onClick: () => handleEditForm(form_2), children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2.5", children: [
-          renderIcon(form_2.icon || "FileText", 16, "text-gray-500 dark:text-gray-400"),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: form_2.name }),
-            form_2.hash && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-500 dark:text-gray-400", children: [
-              "Hash: ",
-              form_2.hash
-            ] })
-          ] })
+    ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("url"), onSort: () => requestSort("url"), children: "URL" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("createdAt"), onSort: () => requestSort("createdAt"), children: "Erstellt" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all", children: form_2.url }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
-          e_0.stopPropagation();
-          toggleFormActive(form_2.id);
-        }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
-            e_1.stopPropagation();
-            handleEditForm(form_2);
-          }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_2) => {
-            e_2.stopPropagation();
-            handleDeleteForm(form_2);
-          }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
-        ] }) })
-      ] }, form_2.id)) })
-    ] }) });
-    $[43] = displayedForms;
-    $[44] = forms.length;
-    $[45] = getSortDirection;
-    $[46] = handleAddForm;
-    $[47] = handleEditForm;
-    $[48] = isLoading;
-    $[49] = requestSort;
-    $[50] = toggleFormActive;
-    $[51] = t19;
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedForms.map((form_2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50", onClick: () => handleEditForm(form_2), children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2.5", children: [
+            renderIcon(form_2.icon || "FileText", 16, "text-gray-500 dark:text-gray-400"),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: form_2.name }),
+              form_2.hash && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-500 dark:text-gray-400", children: [
+                "Hash: ",
+                form_2.hash
+              ] })
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 no-underline text-[11px] font-mono break-all", children: form_2.url }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
+            e_0.stopPropagation();
+            toggleFormActive(form_2.id);
+          }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
+              e_1.stopPropagation();
+              handleEditForm(form_2);
+            }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_2) => {
+              e_2.stopPropagation();
+              handleDeleteForm(form_2);
+            }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
+          ] }) })
+        ] }, form_2.id)) })
+      ] }),
+      showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems: totalFilteredItems, itemsPerPage: 50, onPageChange: setCurrentPage })
+    ] });
+    $[57] = currentPage;
+    $[58] = displayedForms;
+    $[59] = forms.length;
+    $[60] = getSortDirection;
+    $[61] = handleAddForm;
+    $[62] = handleEditForm;
+    $[63] = isLoading;
+    $[64] = requestSort;
+    $[65] = showPagination;
+    $[66] = toggleFormActive;
+    $[67] = totalFilteredItems;
+    $[68] = totalPages;
+    $[69] = t22;
   } else {
-    t19 = $[51];
+    t22 = $[69];
   }
-  let t20;
-  if ($[52] !== editingForm || $[53] !== handleCloseDialog || $[54] !== handleFormSubmit || $[55] !== isDialogOpen || $[56] !== isLoading) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading });
-    $[52] = editingForm;
-    $[53] = handleCloseDialog;
-    $[54] = handleFormSubmit;
-    $[55] = isDialogOpen;
-    $[56] = isLoading;
-    $[57] = t20;
+  let t23;
+  if ($[70] !== editingForm || $[71] !== handleCloseDialog || $[72] !== handleFormSubmit || $[73] !== isDialogOpen || $[74] !== isLoading) {
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading });
+    $[70] = editingForm;
+    $[71] = handleCloseDialog;
+    $[72] = handleFormSubmit;
+    $[73] = isDialogOpen;
+    $[74] = isLoading;
+    $[75] = t23;
   } else {
-    t20 = $[57];
+    t23 = $[75];
   }
-  const t21 = !!deleteConfirm;
-  let t22;
-  if ($[58] === Symbol.for("react.memo_cache_sentinel")) {
-    t22 = () => setDeleteConfirm(null);
-    $[58] = t22;
-  } else {
-    t22 = $[58];
-  }
-  const t23 = deleteConfirm?.name;
-  let t24;
-  if ($[59] !== confirmDelete || $[60] !== isLoading || $[61] !== t21 || $[62] !== t23) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t21, onClose: t22, onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t23, isLoading });
-    $[59] = confirmDelete;
-    $[60] = isLoading;
-    $[61] = t21;
-    $[62] = t23;
-    $[63] = t24;
-  } else {
-    t24 = $[63];
-  }
+  const t24 = !!deleteConfirm;
   let t25;
-  if ($[64] !== t16 || $[65] !== t17 || $[66] !== t18 || $[67] !== t19 || $[68] !== t20 || $[69] !== t24) {
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t16,
-      t17,
-      t18,
+  if ($[76] === Symbol.for("react.memo_cache_sentinel")) {
+    t25 = () => setDeleteConfirm(null);
+    $[76] = t25;
+  } else {
+    t25 = $[76];
+  }
+  const t26 = deleteConfirm?.name;
+  let t27;
+  if ($[77] !== confirmDelete || $[78] !== isLoading || $[79] !== t24 || $[80] !== t26) {
+    t27 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t24, onClose: t25, onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t26, isLoading });
+    $[77] = confirmDelete;
+    $[78] = isLoading;
+    $[79] = t24;
+    $[80] = t26;
+    $[81] = t27;
+  } else {
+    t27 = $[81];
+  }
+  let t28;
+  if ($[82] !== t19 || $[83] !== t20 || $[84] !== t21 || $[85] !== t22 || $[86] !== t23 || $[87] !== t27) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t19,
       t20,
-      t24
+      t21,
+      t22,
+      t23,
+      t27
     ] });
-    $[64] = t16;
-    $[65] = t17;
-    $[66] = t18;
-    $[67] = t19;
-    $[68] = t20;
-    $[69] = t24;
-    $[70] = t25;
+    $[82] = t19;
+    $[83] = t20;
+    $[84] = t21;
+    $[85] = t22;
+    $[86] = t23;
+    $[87] = t27;
+    $[88] = t28;
   } else {
-    t25 = $[70];
+    t28 = $[88];
   }
-  return t25;
+  return t28;
 };
 function _temp(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [

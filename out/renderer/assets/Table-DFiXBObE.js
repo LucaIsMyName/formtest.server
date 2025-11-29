@@ -1,11 +1,11 @@
-import { Z as createLucideIcon, ac as Root, r as reactExports, i as dist, E as cn, j as jsxRuntimeExports, ad as Portal, ae as Content, af as Title, ag as Overlay, ah as Close, X, ai as Description, aj as React } from "./index-9PvzplFq.js";
+import { $ as createLucideIcon, ac as Root, r as reactExports, i as dist, J as cn, j as jsxRuntimeExports, ad as Portal, ae as Content, af as Title, ag as Overlay, ah as Close, X, ai as Description, aj as React, q as ChevronRight } from "./index-CKyy2aq_.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$6 = [
+const __iconNode$7 = [
   ["path", { d: "M12 8V4H8", key: "hb8ula" }],
   ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
   ["path", { d: "M2 14h2", key: "vft8re" }],
@@ -13,7 +13,15 @@ const __iconNode$6 = [
   ["path", { d: "M15 13v2", key: "1xurst" }],
   ["path", { d: "M9 13v2", key: "rq6x2g" }]
 ];
-const Bot = createLucideIcon("bot", __iconNode$6);
+const Bot = createLucideIcon("bot", __iconNode$7);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$6 = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+const ChevronLeft = createLucideIcon("chevron-left", __iconNode$6);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -570,6 +578,253 @@ const TableCell = React.forwardRef((t0, ref) => {
   return t2;
 });
 TableCell.displayName = "TableCell";
+const TablePagination = (t0) => {
+  const $ = dist.c(56);
+  const {
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
+    onPageChange,
+    className
+  } = t0;
+  const [inputValue, setInputValue] = reactExports.useState(String(currentPage));
+  let t1;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t1 = (e) => {
+      setInputValue(e.target.value);
+    };
+    $[0] = t1;
+  } else {
+    t1 = $[0];
+  }
+  const handleInputChange = t1;
+  let t2;
+  if ($[1] !== currentPage || $[2] !== inputValue || $[3] !== onPageChange || $[4] !== totalPages) {
+    t2 = (e_0) => {
+      if (e_0.key === "Enter") {
+        const page = parseInt(inputValue, 10);
+        if (!isNaN(page) && page >= 1 && page <= totalPages) {
+          onPageChange(page);
+        } else {
+          setInputValue(String(currentPage));
+        }
+      }
+    };
+    $[1] = currentPage;
+    $[2] = inputValue;
+    $[3] = onPageChange;
+    $[4] = totalPages;
+    $[5] = t2;
+  } else {
+    t2 = $[5];
+  }
+  const handleInputKeyDown = t2;
+  let t3;
+  if ($[6] !== currentPage) {
+    t3 = () => {
+      setInputValue(String(currentPage));
+    };
+    $[6] = currentPage;
+    $[7] = t3;
+  } else {
+    t3 = $[7];
+  }
+  const handleInputBlur = t3;
+  let t4;
+  let t5;
+  if ($[8] !== currentPage) {
+    t4 = () => {
+      setInputValue(String(currentPage));
+    };
+    t5 = [currentPage];
+    $[8] = currentPage;
+    $[9] = t4;
+    $[10] = t5;
+  } else {
+    t4 = $[9];
+    t5 = $[10];
+  }
+  React.useEffect(t4, t5);
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+  if (totalPages <= 1) {
+    return null;
+  }
+  let t6;
+  if ($[11] !== className) {
+    t6 = cn("flex items-center justify-between px-4 py-3 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800", className);
+    $[11] = className;
+    $[12] = t6;
+  } else {
+    t6 = $[12];
+  }
+  let t7;
+  if ($[13] !== endItem || $[14] !== startItem || $[15] !== totalItems) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: [
+      startItem,
+      "–",
+      endItem,
+      " von ",
+      totalItems
+    ] });
+    $[13] = endItem;
+    $[14] = startItem;
+    $[15] = totalItems;
+    $[16] = t7;
+  } else {
+    t7 = $[16];
+  }
+  let t8;
+  if ($[17] !== currentPage || $[18] !== onPageChange) {
+    t8 = () => onPageChange(currentPage - 1);
+    $[17] = currentPage;
+    $[18] = onPageChange;
+    $[19] = t8;
+  } else {
+    t8 = $[19];
+  }
+  const t9 = currentPage <= 1;
+  const t10 = currentPage <= 1 ? "text-gray-300 dark:text-gray-600 cursor-not-allowed" : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200";
+  let t11;
+  if ($[20] !== t10) {
+    t11 = cn("p-1.5 rounded-md transition-colors", t10);
+    $[20] = t10;
+    $[21] = t11;
+  } else {
+    t11 = $[21];
+  }
+  let t12;
+  if ($[22] === Symbol.for("react.memo_cache_sentinel")) {
+    t12 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronLeft, { size: 18 });
+    $[22] = t12;
+  } else {
+    t12 = $[22];
+  }
+  let t13;
+  if ($[23] !== t11 || $[24] !== t8 || $[25] !== t9) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: t8, disabled: t9, className: t11, title: "Vorherige Seite", children: t12 });
+    $[23] = t11;
+    $[24] = t8;
+    $[25] = t9;
+    $[26] = t13;
+  } else {
+    t13 = $[26];
+  }
+  let t14;
+  if ($[27] === Symbol.for("react.memo_cache_sentinel")) {
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Seite" });
+    $[27] = t14;
+  } else {
+    t14 = $[27];
+  }
+  let t15;
+  if ($[28] === Symbol.for("react.memo_cache_sentinel")) {
+    t15 = cn("w-10 px-1.5 py-1 text-center text-[11px] font-mono rounded border", "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600", "text-gray-700 dark:text-gray-200", "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500");
+    $[28] = t15;
+  } else {
+    t15 = $[28];
+  }
+  let t16;
+  if ($[29] !== handleInputBlur || $[30] !== handleInputKeyDown || $[31] !== inputValue) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "text", value: inputValue, onChange: handleInputChange, onKeyDown: handleInputKeyDown, onBlur: handleInputBlur, className: t15 });
+    $[29] = handleInputBlur;
+    $[30] = handleInputKeyDown;
+    $[31] = inputValue;
+    $[32] = t16;
+  } else {
+    t16 = $[32];
+  }
+  let t17;
+  if ($[33] !== totalPages) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+      "von ",
+      totalPages
+    ] });
+    $[33] = totalPages;
+    $[34] = t17;
+  } else {
+    t17 = $[34];
+  }
+  let t18;
+  if ($[35] !== t16 || $[36] !== t17) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 text-[11px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider", children: [
+      t14,
+      t16,
+      t17
+    ] });
+    $[35] = t16;
+    $[36] = t17;
+    $[37] = t18;
+  } else {
+    t18 = $[37];
+  }
+  let t19;
+  if ($[38] !== currentPage || $[39] !== onPageChange) {
+    t19 = () => onPageChange(currentPage + 1);
+    $[38] = currentPage;
+    $[39] = onPageChange;
+    $[40] = t19;
+  } else {
+    t19 = $[40];
+  }
+  const t20 = currentPage >= totalPages;
+  const t21 = currentPage >= totalPages ? "text-gray-300 dark:text-gray-600 cursor-not-allowed" : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200";
+  let t22;
+  if ($[41] !== t21) {
+    t22 = cn("p-1.5 rounded-md transition-colors", t21);
+    $[41] = t21;
+    $[42] = t22;
+  } else {
+    t22 = $[42];
+  }
+  let t23;
+  if ($[43] === Symbol.for("react.memo_cache_sentinel")) {
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 18 });
+    $[43] = t23;
+  } else {
+    t23 = $[43];
+  }
+  let t24;
+  if ($[44] !== t19 || $[45] !== t20 || $[46] !== t22) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: t19, disabled: t20, className: t22, title: "Nächste Seite", children: t23 });
+    $[44] = t19;
+    $[45] = t20;
+    $[46] = t22;
+    $[47] = t24;
+  } else {
+    t24 = $[47];
+  }
+  let t25;
+  if ($[48] !== t13 || $[49] !== t18 || $[50] !== t24) {
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+      t13,
+      t18,
+      t24
+    ] });
+    $[48] = t13;
+    $[49] = t18;
+    $[50] = t24;
+    $[51] = t25;
+  } else {
+    t25 = $[51];
+  }
+  let t26;
+  if ($[52] !== t25 || $[53] !== t6 || $[54] !== t7) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t6, children: [
+      t7,
+      t25
+    ] });
+    $[52] = t25;
+    $[53] = t6;
+    $[54] = t7;
+    $[55] = t26;
+  } else {
+    t26 = $[55];
+  }
+  return t26;
+};
+TablePagination.displayName = "TablePagination";
 export {
   Bot as B,
   Copy as C,
@@ -588,5 +843,7 @@ export {
   TableHead as h,
   TableBody as i,
   TableCell as j,
-  ChevronsUpDown as k
+  TablePagination as k,
+  ChevronsUpDown as l,
+  ChevronLeft as m
 };

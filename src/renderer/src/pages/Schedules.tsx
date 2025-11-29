@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Plus, Edit2, Trash2, Play, Loader2 } from "lucide-react";
 import { useSchedulesStore } from "../store/useSchedulesStore";
 import { useFormsStore } from "../store/useFormsStore";
@@ -6,7 +6,7 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { Skeleton } from "../components/ui/Skeleton";
 import ScheduleDrawer from "../components/ScheduleDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
@@ -23,6 +23,8 @@ const Schedules: React.FC = () => {
   const [editingSchedule, setEditingSchedule] = useState<TestSchedule | undefined>(undefined);
   const [deletingSchedule, setDeletingSchedule] = useState<TestSchedule | null>(null);
   const [runningSchedules, setRunningSchedules] = useState<Set<number>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
 
   useEffect(() => {
     loadSchedules();
@@ -31,6 +33,19 @@ const Schedules: React.FC = () => {
   }, [loadSchedules, loadForms, loadPaymentMethods]);
 
   const getFormName = (id: number) => forms.find((f) => f.id === id)?.name || `Form #${id}`;
+
+  // Pagination (only if > 50 items)
+  const totalItems = schedules.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const showPagination = totalItems > 50;
+  
+  const displayedSchedules = useMemo(() => {
+    if (totalItems > 50) {
+      const start = (currentPage - 1) * itemsPerPage;
+      return schedules.slice(start, start + itemsPerPage);
+    }
+    return schedules;
+  }, [schedules, currentPage, itemsPerPage, totalItems]);
   const getPaymentMethodName = (id: number) => paymentMethods.find((pm) => pm.id === id)?.name || `PM #${id}`;
 
   const handleSave = async (data: any) => {
@@ -94,6 +109,7 @@ const Schedules: React.FC = () => {
         ) : schedules.length === 0 ? (
           <div className="p-12 text-center text-gray-500 dark:text-gray-400">Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen.</div>
         ) : (
+          <>
           <Table>
             <TableHeader>
               <TableRow>
@@ -107,7 +123,7 @@ const Schedules: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {schedules.map((schedule) => (
+              {displayedSchedules.map((schedule) => (
                 <TableRow 
                   key={schedule.id}
                   className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
@@ -186,6 +202,16 @@ const Schedules: React.FC = () => {
               ))}
             </TableBody>
           </Table>
+          {showPagination && (
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+            />
+          )}
+          </>
         )}
       </div>
 

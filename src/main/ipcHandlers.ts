@@ -1,10 +1,11 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries } from "./database";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig } from "./database";
 import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule } from "../common/types";
 import { runSingleTest } from "./testExecutor";
 import { scheduler } from "./schedulerService";
+import { getConfigurableCategories } from "../common/selectors.config";
 
 export function setupIpcHandlers(): void {
   console.log("=== SETTING UP IPC HANDLERS ===");
@@ -411,5 +412,59 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("notifications:deleteAll", () => {
     return notificationQueries.deleteAll();
+  });
+
+  // Selector Override handlers
+  ipcMain.handle("selectorOverrides:getAll", () => {
+    return selectorOverrideQueries.getAll();
+  });
+
+  ipcMain.handle("selectorOverrides:getByCategory", (_, category: string) => {
+    return selectorOverrideQueries.getByCategory(category);
+  });
+
+  ipcMain.handle("selectorOverrides:getById", (_, id: number) => {
+    return selectorOverrideQueries.getById(id);
+  });
+
+  ipcMain.handle("selectorOverrides:getActive", () => {
+    return selectorOverrideQueries.getActive();
+  });
+
+  ipcMain.handle("selectorOverrides:create", (_, override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => {
+    return selectorOverrideQueries.create(override);
+  });
+
+  ipcMain.handle("selectorOverrides:update", (_, id: number, override: { selectors?: string[]; isActive?: boolean }) => {
+    return selectorOverrideQueries.update(id, override);
+  });
+
+  ipcMain.handle("selectorOverrides:upsert", (_, override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => {
+    return selectorOverrideQueries.upsert(override);
+  });
+
+  ipcMain.handle("selectorOverrides:delete", (_, id: number) => {
+    return selectorOverrideQueries.delete(id);
+  });
+
+  ipcMain.handle("selectorOverrides:deleteByKey", (_, category: string, key: string) => {
+    return selectorOverrideQueries.deleteByKey(category, key);
+  });
+
+  ipcMain.handle("selectorOverrides:deleteAll", () => {
+    return selectorOverrideQueries.deleteAll();
+  });
+
+  // Selector Config handlers
+  ipcMain.handle("selectorConfig:getMerged", () => {
+    return getMergedSelectorConfig();
+  });
+
+  ipcMain.handle("selectorConfig:getBase", () => {
+    return getBaseSelectorConfig();
+  });
+
+  ipcMain.handle("selectorConfig:getCategories", () => {
+    return getConfigurableCategories();
   });
 }

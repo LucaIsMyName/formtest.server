@@ -104,6 +104,409 @@ function isEncrypted(data) {
   const parts = data.split(":");
   return parts.length === 4;
 }
+const SELECTOR_CONFIG = {
+  // Form detection patterns
+  formDetection: {
+    fundraisingBox: [
+      "#fbPaymentForm",
+      '[class*="fundraisingbox"]',
+      "#payment_first_name",
+      "#payment_last_name",
+      "#payment_email",
+      "#paymentmethods",
+      'input#submitForm[value*="spenden"]',
+      'input#submitForm[value*="Spenden"]',
+      "#payment_salutation",
+      "#payment_interval"
+    ],
+    genericForm: [
+      'form[action*="donate"]',
+      'form[action*="spenden"]',
+      'form[id*="donation"]',
+      'form[class*="donation"]'
+    ]
+  },
+  // Cookie consent handling
+  cookieConsent: {
+    banners: [
+      "#ccm-widget",
+      ".ccm-modal",
+      '[class*="cookie"]',
+      '[id*="cookie"]',
+      "#onetrust-consent-sdk",
+      ".cookie-banner",
+      ".cookie-consent",
+      "#cookiebanner",
+      '[data-testid="cookie-banner"]'
+    ],
+    acceptButtons: [
+      'button[data-full-consent="true"]',
+      'button:has-text("Alles annehmen")',
+      'button:has-text("Alle akzeptieren")',
+      'button:has-text("Accept All")',
+      'button:has-text("Akzeptieren")',
+      '.ccm--save-settings[data-full-consent="true"]',
+      '[data-testid="accept-all"]',
+      '[data-cy="accept-all"]',
+      "#accept-all-cookies",
+      ".accept-cookies",
+      'button[class*="accept"]'
+    ]
+  },
+  // Iframe detection for embedded forms
+  iframeDetection: [
+    'iframe[src*="fundraisingbox"]',
+    'iframe[src*="secure.fundraisingbox.com"]',
+    "iframe#fundraisingbox",
+    'iframe[name*="fundraising"]',
+    'iframe[src*="spenden"]',
+    'iframe[src*="donation"]',
+    'iframe[src*="payment"]'
+  ],
+  // Form field selectors (defaults)
+  formFields: {
+    amount: [
+      "#payment_amount_suggestion-0",
+      "#payment_amount_suggestion-1",
+      "#payment_amount_suggestion-2",
+      'label.choice input[name="amountChoice"]',
+      ".choices-grid label.choice:first-child",
+      'input[name*="amount"]',
+      '[data-field="amount"]'
+    ],
+    customAmount: [
+      "#payment_customAmount",
+      'input[name*="customAmount"]',
+      'input[name*="custom_amount"]',
+      'input[type="number"][name*="amount"]'
+    ],
+    interval: [
+      "#payment_interval",
+      'select[name*="interval"]',
+      'select[name*="frequency"]',
+      '[data-field="interval"]'
+    ],
+    salutation: [
+      "#payment_salutation",
+      'select[name*="salutation"]',
+      'select[name*="anrede"]',
+      'select[name*="title"]'
+    ],
+    firstName: [
+      "#payment_first_name",
+      'input[name*="first_name"]',
+      'input[name*="firstname"]',
+      'input[name*="vorname"]',
+      'input[placeholder*="Vorname"]',
+      '[data-field="firstName"]'
+    ],
+    lastName: [
+      "#payment_last_name",
+      'input[name*="last_name"]',
+      'input[name*="lastname"]',
+      'input[name*="nachname"]',
+      'input[placeholder*="Nachname"]',
+      '[data-field="lastName"]'
+    ],
+    email: [
+      "#payment_email",
+      'input[type="email"]',
+      'input[name*="email"]',
+      'input[name*="mail"]',
+      'input[placeholder*="E-Mail"]',
+      '[data-field="email"]'
+    ],
+    country: [
+      "#payment_donation_custom_field_8542",
+      "#payment_country",
+      'select[name*="country"]',
+      'select[name*="land"]',
+      '[data-field="country"]'
+    ],
+    privacy: [
+      "#payment_is_privacy_accepted",
+      'input[name="payment[is_privacy_accepted]"]',
+      'input[type="checkbox"][required]#payment_is_privacy_accepted',
+      '.input-is_privacy_accepted input[type="checkbox"]',
+      'input[name*="privacy"]',
+      'input[name*="datenschutz"]',
+      '[data-field="privacy"]'
+    ],
+    newsletter: [
+      "#payment_donation_custom_field_8543_Nein",
+      'input[name="payment[donation_custom_field_8543]"][value="Nein"]',
+      'input[type="radio"][value="Nein"]',
+      'input[name*="newsletter"]',
+      '[data-field="newsletter"]'
+    ],
+    birthday: [
+      "#payment_birthday",
+      'input[name*="birthday"]',
+      'input[name*="geburt"]',
+      'input[type="date"]',
+      '[data-field="birthday"]'
+    ],
+    phone: [
+      "#payment_phone",
+      'input[type="tel"]',
+      'input[name*="phone"]',
+      'input[name*="telefon"]',
+      'input[placeholder*="Telefon"]',
+      '[data-field="phone"]'
+    ],
+    address: [
+      "#payment_address",
+      'input[name*="address"]',
+      'input[name*="street"]',
+      'input[name*="strasse"]',
+      'input[name*="adresse"]',
+      '[data-field="address"]'
+    ],
+    city: [
+      "#payment_city",
+      'input[name*="city"]',
+      'input[name*="stadt"]',
+      'input[name*="ort"]',
+      '[data-field="city"]'
+    ],
+    zipCode: [
+      "#payment_zip",
+      'input[name*="zip"]',
+      'input[name*="plz"]',
+      'input[name*="postal"]',
+      '[data-field="zipCode"]'
+    ]
+  },
+  // Payment method selectors
+  paymentMethods: {
+    sepa: [
+      '#paymentmethods label[for="sepa_direct_debit"]',
+      "#paymentmethods input#sepa_direct_debit",
+      'label.paymentmethod[for="sepa_direct_debit"]',
+      'input[name="paymentmethods"][id="sepa_direct_debit"]',
+      '[data-payment="sepa"]',
+      'input[value*="sepa"]'
+    ],
+    creditcard: [
+      '#paymentmethods label[for="stripe_credit_card"]',
+      "#paymentmethods input#stripe_credit_card",
+      'label.paymentmethod[for="stripe_credit_card"]',
+      'input[name="paymentmethods"][id="stripe_credit_card"]',
+      '[data-payment="creditcard"]',
+      '[data-payment="credit_card"]',
+      'input[value*="credit"]',
+      'input[value*="card"]'
+    ],
+    paypal: [
+      '#paymentmethods label[for="paypal"]',
+      "#paymentmethods input#paypal",
+      'label.paymentmethod[for="paypal"]',
+      'input[name="paymentmethods"][id="paypal"]',
+      '[data-payment="paypal"]',
+      'input[value*="paypal"]'
+    ],
+    eps: [
+      '#paymentmethods label[for="eps"]',
+      "#paymentmethods input#eps",
+      'label.paymentmethod[for="eps"]',
+      'input[name="paymentmethods"][id="eps"]',
+      '[data-payment="eps"]',
+      'input[value*="eps"]'
+    ]
+  },
+  // Payment field selectors
+  paymentFields: {
+    // SEPA
+    iban: [
+      "#payment_bank_iban",
+      'input[name*="bank_iban"]',
+      'input[name*="iban"]',
+      'input[placeholder*="IBAN"]',
+      '[data-field="iban"]'
+    ],
+    accountHolder: [
+      "#payment_bank_account_owner",
+      'input[name*="bank_account_owner"]',
+      'input[name*="account"][name*="holder"]',
+      'input[name*="kontoinhaber"]',
+      'input[placeholder*="Kontoinhaber"]',
+      '[data-field="accountHolder"]'
+    ],
+    // Credit Card
+    cardNumber: [
+      "#cardnumber",
+      'input[name*="card"][name*="number"]',
+      'input[placeholder*="Kartennummer"]',
+      'input[placeholder*="Card number"]',
+      '[data-field="cardNumber"]'
+    ],
+    cardHolder: [
+      'input[name*="card"][name*="holder"]',
+      'input[name*="owner"]',
+      'input[placeholder*="Karteninhaber"]',
+      'input[placeholder*="Card holder"]',
+      '[data-field="cardHolder"]'
+    ],
+    expiryDate: [
+      'input[name*="expiry"]',
+      'input[name*="expire"]',
+      'input[placeholder*="MM/YY"]',
+      'input[placeholder*="MM/YYYY"]',
+      '[data-field="expiryDate"]'
+    ],
+    cvv: [
+      'input[name*="cvv"]',
+      'input[name*="cvc"]',
+      'input[placeholder*="CVV"]',
+      'input[placeholder*="CVC"]',
+      '[data-field="cvv"]'
+    ],
+    // EPS
+    bankSelect: [
+      "#payment_eps_bank",
+      'select[name*="eps_bank"]',
+      'select[name*="bank"]',
+      'select[name*="eps"]',
+      '[data-field="bankSelect"]'
+    ]
+  },
+  // Submit button selectors
+  submitButtons: [
+    "input#submitForm",
+    'button[type="submit"]',
+    'input[type="submit"]',
+    'button:has-text("Spenden")',
+    'button:has-text("Jetzt spenden")',
+    'button:has-text("Donate")',
+    'button:has-text("Weiter")',
+    'button:has-text("Submit")',
+    'button:has-text("Absenden")',
+    'input[value*="Spenden"]',
+    'input[value*="spenden"]',
+    '[data-action="submit"]'
+  ],
+  // Success detection patterns
+  successPatterns: {
+    redirectUrls: [
+      "paypal.com",
+      "stripe.com",
+      "klarna.com",
+      "sofort.com",
+      "giropay.de",
+      "eps-ueberweisung.at",
+      "secure.fundraisingbox.com/success",
+      "/thank-you",
+      "/danke",
+      "/success",
+      "/confirmation"
+    ],
+    successMessages: [
+      "Vielen Dank",
+      "Thank you",
+      "Spende erfolgreich",
+      "Donation successful",
+      "Zahlung erfolgreich",
+      "Payment successful",
+      "Ihre Spende wurde",
+      "Your donation has been",
+      "Bestätigung",
+      "Confirmation"
+    ],
+    successSelectors: [
+      ".success-message",
+      ".thank-you",
+      '[data-testid="success"]',
+      ".donation-success",
+      "#success-page"
+    ]
+  },
+  // Field purpose detection patterns (regex)
+  fieldPurposePatterns: [
+    { pattern: /email|e-mail|mail/i, purpose: "email", confidence: 0.9 },
+    { pattern: /firstname|vorname|first.name/i, purpose: "firstName", confidence: 0.9 },
+    { pattern: /lastname|nachname|last.name|surname|familienname/i, purpose: "lastName", confidence: 0.9 },
+    { pattern: /phone|telefon|tel|mobile|handy/i, purpose: "phone", confidence: 0.8 },
+    { pattern: /address|adresse|street|strasse|straße/i, purpose: "address", confidence: 0.8 },
+    { pattern: /city|stadt|ort/i, purpose: "city", confidence: 0.8 },
+    { pattern: /zip|plz|postal/i, purpose: "zipCode", confidence: 0.8 },
+    { pattern: /country|land|nation/i, purpose: "country", confidence: 0.8 },
+    { pattern: /amount|betrag|summe|spende/i, purpose: "amount", confidence: 0.9 },
+    { pattern: /iban/i, purpose: "iban", confidence: 0.9 },
+    { pattern: /bic|swift/i, purpose: "bic", confidence: 0.9 },
+    { pattern: /date|datum|birth|geburt/i, purpose: "date", confidence: 0.8 },
+    { pattern: /salutation|anrede|title/i, purpose: "salutation", confidence: 0.8 }
+  ],
+  // Payment type to FundraisingBox ID mapping
+  paymentTypeMapping: {
+    "paypal": "paypal",
+    "sepa": "sepa_direct_debit",
+    "creditcard": "stripe_credit_card",
+    "credit_card": "stripe_credit_card",
+    "visa": "stripe_credit_card",
+    "mastercard": "stripe_credit_card",
+    "eps": "eps"
+  },
+  // Default values for test data
+  defaultValues: {
+    country: "AT",
+    salutation: "Mr.",
+    testIban: "AT89370400440532013000",
+    testCardNumber: "4111111111111111",
+    testCvv: "123",
+    testExpiryDate: "12/25",
+    bankCode: "ASPKAT2LXXX",
+    bankName: "Erste Bank und Sparkassen"
+  }
+};
+function mergeSelectorsConfig(baseConfig, overrides) {
+  const merged = JSON.parse(JSON.stringify(baseConfig));
+  for (const override of overrides) {
+    if (!override.isActive) continue;
+    const category = override.category;
+    const key = override.key;
+    if (category in merged && typeof merged[category] === "object") {
+      const categoryObj = merged[category];
+      if (key in categoryObj && Array.isArray(categoryObj[key])) {
+        categoryObj[key] = [...override.selectors, ...categoryObj[key]];
+      }
+    }
+  }
+  return merged;
+}
+function getConfigurableCategories() {
+  return [
+    {
+      category: "formFields",
+      keys: Object.keys(SELECTOR_CONFIG.formFields),
+      label: "Formularfelder"
+    },
+    {
+      category: "paymentMethods",
+      keys: Object.keys(SELECTOR_CONFIG.paymentMethods),
+      label: "Zahlungsmethoden"
+    },
+    {
+      category: "paymentFields",
+      keys: Object.keys(SELECTOR_CONFIG.paymentFields),
+      label: "Zahlungsfelder"
+    },
+    {
+      category: "cookieConsent",
+      keys: Object.keys(SELECTOR_CONFIG.cookieConsent),
+      label: "Cookie-Zustimmung"
+    },
+    {
+      category: "successPatterns",
+      keys: Object.keys(SELECTOR_CONFIG.successPatterns),
+      label: "Erfolgs-Erkennung"
+    },
+    {
+      category: "formDetection",
+      keys: Object.keys(SELECTOR_CONFIG.formDetection),
+      label: "Formular-Erkennung"
+    }
+  ];
+}
 let db;
 function migrateTestRunUuid() {
   console.log("Database: Checking for test_runs UUID column...");
@@ -414,6 +817,20 @@ function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
     CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(isRead);
     CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(createdAt);
+
+    CREATE TABLE IF NOT EXISTS selector_overrides (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      category TEXT NOT NULL,
+      key TEXT NOT NULL,
+      selectors TEXT NOT NULL,
+      isActive BOOLEAN DEFAULT 1,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(category, key)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_selector_overrides_category ON selector_overrides(category);
+    CREATE INDEX IF NOT EXISTS idx_selector_overrides_active ON selector_overrides(isActive);
   `);
   try {
     const backupExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='test_runs_backup'").get();
@@ -802,7 +1219,7 @@ const testRunQueries = {
   },
   create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
   updateStatus: (id, status, errorMessage, durationMs, steps) => {
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ?");
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ? AND status != 'STOPPED'");
     return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
   },
   updateNotes: (id, notes) => {
@@ -813,7 +1230,14 @@ const testRunQueries = {
     const testRun = db.prepare("SELECT runAt FROM test_runs WHERE id = ?").get(id);
     let durationMs = 0;
     if (testRun) {
-      durationMs = Date.now() - new Date(testRun.runAt).getTime();
+      const runAtStr = String(testRun.runAt);
+      let startTime;
+      if (!runAtStr.includes("T") && !runAtStr.includes("Z")) {
+        startTime = (/* @__PURE__ */ new Date(runAtStr.replace(" ", "T") + "Z")).getTime();
+      } else {
+        startTime = new Date(runAtStr).getTime();
+      }
+      durationMs = Date.now() - startTime;
     }
     const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status = 'RUNNING'");
     return stmt.run(durationMs, id);
@@ -1276,6 +1700,114 @@ const notificationQueries = {
     stmt.run();
   }
 };
+const selectorOverrideQueries = {
+  getAll: () => {
+    const overrides = db.prepare("SELECT * FROM selector_overrides ORDER BY category, key").all();
+    return overrides.map((o) => ({
+      ...o,
+      selectors: JSON.parse(o.selectors),
+      isActive: Boolean(o.isActive),
+      createdAt: new Date(o.createdAt),
+      updatedAt: new Date(o.updatedAt)
+    }));
+  },
+  getByCategory: (category) => {
+    const overrides = db.prepare("SELECT * FROM selector_overrides WHERE category = ? ORDER BY key").all(category);
+    return overrides.map((o) => ({
+      ...o,
+      selectors: JSON.parse(o.selectors),
+      isActive: Boolean(o.isActive),
+      createdAt: new Date(o.createdAt),
+      updatedAt: new Date(o.updatedAt)
+    }));
+  },
+  getById: (id) => {
+    const override = db.prepare("SELECT * FROM selector_overrides WHERE id = ?").get(id);
+    if (!override) return void 0;
+    return {
+      ...override,
+      selectors: JSON.parse(override.selectors),
+      isActive: Boolean(override.isActive),
+      createdAt: new Date(override.createdAt),
+      updatedAt: new Date(override.updatedAt)
+    };
+  },
+  getActive: () => {
+    const overrides = db.prepare("SELECT * FROM selector_overrides WHERE isActive = 1 ORDER BY category, key").all();
+    return overrides.map((o) => ({
+      ...o,
+      selectors: JSON.parse(o.selectors),
+      isActive: Boolean(o.isActive),
+      createdAt: new Date(o.createdAt),
+      updatedAt: new Date(o.updatedAt)
+    }));
+  },
+  create: (override) => {
+    const stmt = db.prepare(`
+      INSERT INTO selector_overrides (category, key, selectors, isActive)
+      VALUES (?, ?, ?, ?)
+    `);
+    const result = stmt.run(
+      override.category,
+      override.key,
+      JSON.stringify(override.selectors),
+      override.isActive !== false ? 1 : 0
+    );
+    return result;
+  },
+  update: (id, override) => {
+    const updates = [];
+    const values = [];
+    if (override.selectors !== void 0) {
+      updates.push("selectors = ?");
+      values.push(JSON.stringify(override.selectors));
+    }
+    if (override.isActive !== void 0) {
+      updates.push("isActive = ?");
+      values.push(override.isActive ? 1 : 0);
+    }
+    if (updates.length === 0) return;
+    updates.push("updatedAt = CURRENT_TIMESTAMP");
+    values.push(id);
+    const stmt = db.prepare(`UPDATE selector_overrides SET ${updates.join(", ")} WHERE id = ?`);
+    return stmt.run(...values);
+  },
+  upsert: (override) => {
+    const stmt = db.prepare(`
+      INSERT INTO selector_overrides (category, key, selectors, isActive)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(category, key) DO UPDATE SET
+        selectors = excluded.selectors,
+        isActive = excluded.isActive,
+        updatedAt = CURRENT_TIMESTAMP
+    `);
+    return stmt.run(
+      override.category,
+      override.key,
+      JSON.stringify(override.selectors),
+      override.isActive !== false ? 1 : 0
+    );
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM selector_overrides WHERE id = ?");
+    return stmt.run(id);
+  },
+  deleteByKey: (category, key) => {
+    const stmt = db.prepare("DELETE FROM selector_overrides WHERE category = ? AND key = ?");
+    return stmt.run(category, key);
+  },
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM selector_overrides");
+    return stmt.run();
+  }
+};
+function getMergedSelectorConfig() {
+  const overrides = selectorOverrideQueries.getActive();
+  return mergeSelectorsConfig(SELECTOR_CONFIG, overrides);
+}
+function getBaseSelectorConfig() {
+  return SELECTOR_CONFIG;
+}
 class TestProcessManager extends events.EventEmitter {
   constructor() {
     super();
@@ -1370,6 +1902,7 @@ class TestProcessManager extends events.EventEmitter {
         await this.startProcess();
       }
       console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);
+      const selectorConfig = getMergedSelectorConfig();
       const message = {
         id: this.generateMessageId(),
         type: "START_TEST",
@@ -1377,7 +1910,8 @@ class TestProcessManager extends events.EventEmitter {
           testRunId,
           form,
           paymentMethod,
-          settings
+          settings,
+          selectorConfig
         }
       };
       const response = await this.sendMessage(message, 12e4);
@@ -1957,6 +2491,45 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("notifications:deleteAll", () => {
     return notificationQueries.deleteAll();
+  });
+  electron.ipcMain.handle("selectorOverrides:getAll", () => {
+    return selectorOverrideQueries.getAll();
+  });
+  electron.ipcMain.handle("selectorOverrides:getByCategory", (_, category) => {
+    return selectorOverrideQueries.getByCategory(category);
+  });
+  electron.ipcMain.handle("selectorOverrides:getById", (_, id) => {
+    return selectorOverrideQueries.getById(id);
+  });
+  electron.ipcMain.handle("selectorOverrides:getActive", () => {
+    return selectorOverrideQueries.getActive();
+  });
+  electron.ipcMain.handle("selectorOverrides:create", (_, override) => {
+    return selectorOverrideQueries.create(override);
+  });
+  electron.ipcMain.handle("selectorOverrides:update", (_, id, override) => {
+    return selectorOverrideQueries.update(id, override);
+  });
+  electron.ipcMain.handle("selectorOverrides:upsert", (_, override) => {
+    return selectorOverrideQueries.upsert(override);
+  });
+  electron.ipcMain.handle("selectorOverrides:delete", (_, id) => {
+    return selectorOverrideQueries.delete(id);
+  });
+  electron.ipcMain.handle("selectorOverrides:deleteByKey", (_, category, key) => {
+    return selectorOverrideQueries.deleteByKey(category, key);
+  });
+  electron.ipcMain.handle("selectorOverrides:deleteAll", () => {
+    return selectorOverrideQueries.deleteAll();
+  });
+  electron.ipcMain.handle("selectorConfig:getMerged", () => {
+    return getMergedSelectorConfig();
+  });
+  electron.ipcMain.handle("selectorConfig:getBase", () => {
+    return getBaseSelectorConfig();
+  });
+  electron.ipcMain.handle("selectorConfig:getCategories", () => {
+    return getConfigurableCategories();
   });
 }
 let mainWindow;

@@ -10,7 +10,7 @@ import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { formatDate } from "../utils/formatters";
 import { Skeleton } from "../components/ui/Skeleton";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
 import { Edit2, Trash2 } from "lucide-react";
@@ -111,7 +111,8 @@ const PaymentMethods: React.FC = () => {
   // Sorting (with localStorage persistence)
   const { 
     sortedItems: sortedMethods, 
-    requestSort, 
+    requestSort,
+    sortConfig,
     getSortDirection 
   } = useSortableData<PaymentMethodWithComputed>(
     filteredMethods,
@@ -125,15 +126,43 @@ const PaymentMethods: React.FC = () => {
     { value: 'inactive', label: 'Inaktiv' },
   ];
 
-  // Custom status filter logic
+  // Custom status filter logic + pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
+  
   const displayedMethods = useMemo((): PaymentMethodWithComputed[] => {
+    let filtered = sortedMethods;
+    if (filterConfig.statusFilter && filterConfig.statusFilter !== 'all') {
+      filtered = sortedMethods.filter(m => 
+        filterConfig.statusFilter === 'active' ? m.isActive : !m.isActive
+      );
+    }
+    
+    // Only paginate if more than 50 items
+    if (filtered.length > 50) {
+      const start = (currentPage - 1) * itemsPerPage;
+      return filtered.slice(start, start + itemsPerPage);
+    }
+    return filtered;
+  }, [sortedMethods, filterConfig.statusFilter, currentPage, itemsPerPage]);
+
+  // For pagination calculations
+  const totalFilteredItems = useMemo(() => {
     if (!filterConfig.statusFilter || filterConfig.statusFilter === 'all') {
-      return sortedMethods;
+      return sortedMethods.length;
     }
     return sortedMethods.filter(m => 
       filterConfig.statusFilter === 'active' ? m.isActive : !m.isActive
-    );
+    ).length;
   }, [sortedMethods, filterConfig.statusFilter]);
+  
+  const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
+  const showPagination = totalFilteredItems > 50;
+  
+  // Reset page when filter or sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterConfig.statusFilter, filterConfig.searchTerm, sortConfig.key, sortConfig.direction]);
 
   // Handle URL params
   useEffect(() => {
@@ -359,6 +388,15 @@ const PaymentMethods: React.FC = () => {
               ))}
             </TableBody>
           </Table>
+          {showPagination && (
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalFilteredItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       )}
 

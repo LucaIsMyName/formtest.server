@@ -4,6 +4,7 @@ import { join } from "path";
 import { randomUUID } from "crypto";
 import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult } from "../common/types";
 import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
+import { SELECTOR_CONFIG, mergeSelectorsConfig, type SelectorOverride, type SelectorConfig } from "../common/selectors.config";
 
 let db: Database.Database;
 
@@ -427,6 +428,20 @@ export function initDatabase(): void {
     CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
     CREATE INDEX IF NOT EXISTS idx_notifications_read ON notifications(isRead);
     CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(createdAt);
+
+    CREATE TABLE IF NOT EXISTS selector_overrides (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      category TEXT NOT NULL,
+      key TEXT NOT NULL,
+      selectors TEXT NOT NULL,
+      isActive BOOLEAN DEFAULT 1,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(category, key)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_selector_overrides_category ON selector_overrides(category);
+    CREATE INDEX IF NOT EXISTS idx_selector_overrides_active ON selector_overrides(isActive);
   `);
 
   // Restore backed up data if migration occurred
@@ -915,7 +930,9 @@ export const testRunQueries = {
   },
   create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"]) => {
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ?");
+    // Don't overwrite STOPPED status - if a test was manually stopped, keep that status
+    // This prevents the runner from changing STOPPED to FAILURE when it eventually completes
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ? AND status != 'STOPPED'");
     return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
   },
   updateNotes: (id: number, notes: string) => {
@@ -927,7 +944,17 @@ export const testRunQueries = {
     const testRun = db.prepare("SELECT runAt FROM test_runs WHERE id = ?").get(id) as { runAt: string } | undefined;
     let durationMs = 0;
     if (testRun) {
-      durationMs = Date.now() - new Date(testRun.runAt).getTime();
+      // SQLite stores CURRENT_TIMESTAMP as UTC in format "YYYY-MM-DD HH:MM:SS"
+      // JavaScript parses strings without timezone as LOCAL time, so we need to parse as UTC
+      const runAtStr = String(testRun.runAt);
+      let startTime: number;
+      if (!runAtStr.includes('T') && !runAtStr.includes('Z')) {
+        // Add 'Z' to indicate UTC
+        startTime = new Date(runAtStr.replace(' ', 'T') + 'Z').getTime();
+      } else {
+        startTime = new Date(runAtStr).getTime();
+      }
+      durationMs = Date.now() - startTime;
     }
     const stmt = db.prepare("UPDATE test_runs SET status = 'STOPPED', durationMs = ? WHERE id = ? AND status = 'RUNNING'");
     return stmt.run(durationMs, id);
@@ -1466,3 +1493,130 @@ export const notificationQueries = {
     stmt.run();
   }
 };
+
+// Selector Override operations
+export const selectorOverrideQueries = {
+  getAll: (): SelectorOverride[] => {
+    const overrides = db.prepare("SELECT * FROM selector_overrides ORDER BY category, key").all() as any[];
+    return overrides.map((o) => ({
+      ...o,
+      selectors: JSON.parse(o.selectors),
+      isActive: Boolean(o.isActive),
+      createdAt: new Date(o.createdAt),
+      updatedAt: new Date(o.updatedAt),
+    }));
+  },
+
+  getByCategory: (category: string): SelectorOverride[] => {
+    const overrides = db.prepare("SELECT * FROM selector_overrides WHERE category = ? ORDER BY key").all(category) as any[];
+    return overrides.map((o) => ({
+      ...o,
+      selectors: JSON.parse(o.selectors),
+      isActive: Boolean(o.isActive),
+      createdAt: new Date(o.createdAt),
+      updatedAt: new Date(o.updatedAt),
+    }));
+  },
+
+  getById: (id: number): SelectorOverride | undefined => {
+    const override = db.prepare("SELECT * FROM selector_overrides WHERE id = ?").get(id) as any;
+    if (!override) return undefined;
+    return {
+      ...override,
+      selectors: JSON.parse(override.selectors),
+      isActive: Boolean(override.isActive),
+      createdAt: new Date(override.createdAt),
+      updatedAt: new Date(override.updatedAt),
+    };
+  },
+
+  getActive: (): SelectorOverride[] => {
+    const overrides = db.prepare("SELECT * FROM selector_overrides WHERE isActive = 1 ORDER BY category, key").all() as any[];
+    return overrides.map((o) => ({
+      ...o,
+      selectors: JSON.parse(o.selectors),
+      isActive: Boolean(o.isActive),
+      createdAt: new Date(o.createdAt),
+      updatedAt: new Date(o.updatedAt),
+    }));
+  },
+
+  create: (override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => {
+    const stmt = db.prepare(`
+      INSERT INTO selector_overrides (category, key, selectors, isActive)
+      VALUES (?, ?, ?, ?)
+    `);
+    const result = stmt.run(
+      override.category,
+      override.key,
+      JSON.stringify(override.selectors),
+      override.isActive !== false ? 1 : 0
+    );
+    return result;
+  },
+
+  update: (id: number, override: { selectors?: string[]; isActive?: boolean }) => {
+    const updates: string[] = [];
+    const values: any[] = [];
+
+    if (override.selectors !== undefined) {
+      updates.push("selectors = ?");
+      values.push(JSON.stringify(override.selectors));
+    }
+    if (override.isActive !== undefined) {
+      updates.push("isActive = ?");
+      values.push(override.isActive ? 1 : 0);
+    }
+
+    if (updates.length === 0) return;
+
+    updates.push("updatedAt = CURRENT_TIMESTAMP");
+    values.push(id);
+
+    const stmt = db.prepare(`UPDATE selector_overrides SET ${updates.join(", ")} WHERE id = ?`);
+    return stmt.run(...values);
+  },
+
+  upsert: (override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => {
+    const stmt = db.prepare(`
+      INSERT INTO selector_overrides (category, key, selectors, isActive)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(category, key) DO UPDATE SET
+        selectors = excluded.selectors,
+        isActive = excluded.isActive,
+        updatedAt = CURRENT_TIMESTAMP
+    `);
+    return stmt.run(
+      override.category,
+      override.key,
+      JSON.stringify(override.selectors),
+      override.isActive !== false ? 1 : 0
+    );
+  },
+
+  delete: (id: number) => {
+    const stmt = db.prepare("DELETE FROM selector_overrides WHERE id = ?");
+    return stmt.run(id);
+  },
+
+  deleteByKey: (category: string, key: string) => {
+    const stmt = db.prepare("DELETE FROM selector_overrides WHERE category = ? AND key = ?");
+    return stmt.run(category, key);
+  },
+
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM selector_overrides");
+    return stmt.run();
+  }
+};
+
+// Get merged selector config (base + user overrides)
+export function getMergedSelectorConfig(): SelectorConfig {
+  const overrides = selectorOverrideQueries.getActive();
+  return mergeSelectorsConfig(SELECTOR_CONFIG, overrides);
+}
+
+// Get base selector config (no overrides)
+export function getBaseSelectorConfig(): SelectorConfig {
+  return SELECTOR_CONFIG;
+}

@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule } from '../common/types'
+import type { SelectorOverride, SelectorConfig } from '../common/selectors.config'
 
 // Custom APIs for renderer
 const api = {
@@ -88,6 +89,31 @@ const api = {
       ipcRenderer.on('notifications:updated', () => callback());
       return () => ipcRenderer.removeAllListeners('notifications:updated');
     }
+  },
+
+  // Selector Override operations
+  selectorOverrides: {
+    getAll: (): Promise<SelectorOverride[]> => ipcRenderer.invoke('selectorOverrides:getAll'),
+    getByCategory: (category: string): Promise<SelectorOverride[]> => ipcRenderer.invoke('selectorOverrides:getByCategory', category),
+    getById: (id: number): Promise<SelectorOverride | undefined> => ipcRenderer.invoke('selectorOverrides:getById', id),
+    getActive: (): Promise<SelectorOverride[]> => ipcRenderer.invoke('selectorOverrides:getActive'),
+    create: (override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => 
+      ipcRenderer.invoke('selectorOverrides:create', override),
+    update: (id: number, override: { selectors?: string[]; isActive?: boolean }) => 
+      ipcRenderer.invoke('selectorOverrides:update', id, override),
+    upsert: (override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => 
+      ipcRenderer.invoke('selectorOverrides:upsert', override),
+    delete: (id: number) => ipcRenderer.invoke('selectorOverrides:delete', id),
+    deleteByKey: (category: string, key: string) => ipcRenderer.invoke('selectorOverrides:deleteByKey', category, key),
+    deleteAll: () => ipcRenderer.invoke('selectorOverrides:deleteAll')
+  },
+
+  // Selector Config operations
+  selectorConfig: {
+    getMerged: (): Promise<SelectorConfig> => ipcRenderer.invoke('selectorConfig:getMerged'),
+    getBase: (): Promise<SelectorConfig> => ipcRenderer.invoke('selectorConfig:getBase'),
+    getCategories: (): Promise<{ category: string; keys: string[]; label: string }[]> => 
+      ipcRenderer.invoke('selectorConfig:getCategories')
   }
 }
 

@@ -12,7 +12,7 @@ import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../components/ui/Drawer";
@@ -284,14 +284,35 @@ const TestResults: React.FC = () => {
 
   // Sorting for finished tests (with localStorage persistence)
   const {
-    sortedItems: sortedFinishedTests,
+    sortedItems: allSortedFinishedTests,
     requestSort,
+    sortConfig,
     getSortDirection,
   } = useSortableData<TestRunWithComputed>(
     filteredFinishedTests,
     { key: "runAt", direction: "desc" }, // Default: newest first
     "testResults" // localStorage key
   );
+
+  // Pagination for finished tests (only if > 50 items)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
+  const totalFilteredItems = allSortedFinishedTests.length;
+  const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
+  const showPagination = totalFilteredItems > 50;
+  
+  const sortedFinishedTests = useMemo(() => {
+    if (totalFilteredItems > 50) {
+      const start = (currentPage - 1) * itemsPerPage;
+      return allSortedFinishedTests.slice(start, start + itemsPerPage);
+    }
+    return allSortedFinishedTests;
+  }, [allSortedFinishedTests, currentPage, itemsPerPage, totalFilteredItems]);
+  
+  // Reset page when filter or sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterConfig.statusFilter, filterConfig.searchTerm, sortConfig.key, sortConfig.direction]);
 
   // Status filter options
   const statusOptions = [
@@ -718,6 +739,15 @@ const TestResults: React.FC = () => {
                   })}
                 </TableBody>
               </Table>
+              {showPagination && (
+                <TablePagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalFilteredItems}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={setCurrentPage}
+                />
+              )}
             </div>
           )}
         </div>

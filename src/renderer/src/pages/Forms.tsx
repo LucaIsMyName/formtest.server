@@ -8,7 +8,7 @@ import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
 import { renderIcon } from "../utils/iconHelper";
@@ -66,7 +66,8 @@ const Forms: React.FC = () => {
   // Sorting (with localStorage persistence)
   const { 
     sortedItems: sortedForms, 
-    requestSort, 
+    requestSort,
+    sortConfig,
     getSortDirection 
   } = useSortableData<Form>(
     filteredForms,
@@ -80,15 +81,43 @@ const Forms: React.FC = () => {
     { value: 'inactive', label: 'Inaktiv' },
   ];
 
-  // Custom status filter logic
+  // Custom status filter logic + pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 50;
+  
   const displayedForms = useMemo(() => {
+    let filtered = sortedForms;
+    if (filterConfig.statusFilter && filterConfig.statusFilter !== 'all') {
+      filtered = sortedForms.filter(f => 
+        filterConfig.statusFilter === 'active' ? f.isActive : !f.isActive
+      );
+    }
+    
+    // Only paginate if more than 50 items
+    if (filtered.length > 50) {
+      const start = (currentPage - 1) * itemsPerPage;
+      return filtered.slice(start, start + itemsPerPage);
+    }
+    return filtered;
+  }, [sortedForms, filterConfig.statusFilter, currentPage, itemsPerPage]);
+
+  // For pagination calculations
+  const totalFilteredItems = useMemo(() => {
     if (!filterConfig.statusFilter || filterConfig.statusFilter === 'all') {
-      return sortedForms;
+      return sortedForms.length;
     }
     return sortedForms.filter(f => 
       filterConfig.statusFilter === 'active' ? f.isActive : !f.isActive
-    );
+    ).length;
   }, [sortedForms, filterConfig.statusFilter]);
+  
+  const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
+  const showPagination = totalFilteredItems > 50;
+  
+  // Reset page when filter or sort changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterConfig.statusFilter, filterConfig.searchTerm, sortConfig.key, sortConfig.direction]);
 
   // Handle URL params
   useEffect(() => {
@@ -289,6 +318,15 @@ const Forms: React.FC = () => {
               ))}
             </TableBody>
           </Table>
+          {showPagination && (
+            <TablePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalFilteredItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule } from '../../../common/types'
+import type { SelectorOverride, SelectorConfig } from '../../../common/selectors.config'
 
 declare global {
   interface Window {
@@ -62,6 +63,23 @@ declare global {
         delete: (id: number) => Promise<void>
         deleteAll: () => Promise<void>
         onUpdated: (callback: () => void) => () => void
+      }
+      selectorOverrides: {
+        getAll: () => Promise<SelectorOverride[]>
+        getByCategory: (category: string) => Promise<SelectorOverride[]>
+        getById: (id: number) => Promise<SelectorOverride | undefined>
+        getActive: () => Promise<SelectorOverride[]>
+        create: (override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => Promise<any>
+        update: (id: number, override: { selectors?: string[]; isActive?: boolean }) => Promise<any>
+        upsert: (override: { category: string; key: string; selectors: string[]; isActive?: boolean }) => Promise<any>
+        delete: (id: number) => Promise<any>
+        deleteByKey: (category: string, key: string) => Promise<any>
+        deleteAll: () => Promise<any>
+      }
+      selectorConfig: {
+        getMerged: () => Promise<SelectorConfig>
+        getBase: () => Promise<SelectorConfig>
+        getCategories: () => Promise<{ category: string; keys: string[]; label: string }[]>
       }
     }
   }

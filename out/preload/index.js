@@ -77,6 +77,25 @@ const api = {
       electron.ipcRenderer.on("notifications:updated", () => callback());
       return () => electron.ipcRenderer.removeAllListeners("notifications:updated");
     }
+  },
+  // Selector Override operations
+  selectorOverrides: {
+    getAll: () => electron.ipcRenderer.invoke("selectorOverrides:getAll"),
+    getByCategory: (category) => electron.ipcRenderer.invoke("selectorOverrides:getByCategory", category),
+    getById: (id) => electron.ipcRenderer.invoke("selectorOverrides:getById", id),
+    getActive: () => electron.ipcRenderer.invoke("selectorOverrides:getActive"),
+    create: (override) => electron.ipcRenderer.invoke("selectorOverrides:create", override),
+    update: (id, override) => electron.ipcRenderer.invoke("selectorOverrides:update", id, override),
+    upsert: (override) => electron.ipcRenderer.invoke("selectorOverrides:upsert", override),
+    delete: (id) => electron.ipcRenderer.invoke("selectorOverrides:delete", id),
+    deleteByKey: (category, key) => electron.ipcRenderer.invoke("selectorOverrides:deleteByKey", category, key),
+    deleteAll: () => electron.ipcRenderer.invoke("selectorOverrides:deleteAll")
+  },
+  // Selector Config operations
+  selectorConfig: {
+    getMerged: () => electron.ipcRenderer.invoke("selectorConfig:getMerged"),
+    getBase: () => electron.ipcRenderer.invoke("selectorConfig:getBase"),
+    getCategories: () => electron.ipcRenderer.invoke("selectorConfig:getCategories")
   }
 };
 if (process.contextIsolated) {

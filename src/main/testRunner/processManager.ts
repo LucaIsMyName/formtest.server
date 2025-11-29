@@ -2,6 +2,8 @@ import { spawn, ChildProcess } from "child_process";
 import { join } from "path";
 import { EventEmitter } from "events";
 import type { Form, PaymentMethod, TestStep } from "../../common/types";
+import { getMergedSelectorConfig } from "../database";
+import type { SelectorConfig } from "../../common/selectors.config";
 
 export interface TestMessage {
   id: string;
@@ -11,6 +13,7 @@ export interface TestMessage {
     form?: Form;
     paymentMethod?: PaymentMethod;
     settings?: Record<string, string>;
+    selectorConfig?: SelectorConfig;
     success?: boolean;
     result?: any;
     error?: string;
@@ -161,6 +164,9 @@ export class TestProcessManager extends EventEmitter {
 
       console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);
 
+      // Get merged selector config (base + user overrides)
+      const selectorConfig = getMergedSelectorConfig();
+
       const message: TestMessage = {
         id: this.generateMessageId(),
         type: "START_TEST",
@@ -169,6 +175,7 @@ export class TestProcessManager extends EventEmitter {
           form,
           paymentMethod,
           settings,
+          selectorConfig,
         },
       };
 

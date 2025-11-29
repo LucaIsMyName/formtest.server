@@ -1,8 +1,902 @@
-import { r as reactExports, o as createRovingFocusGroupScope, p as useDirection, q as useControllableState, j as jsxRuntimeExports, s as createContextScope, t as Root, v as Primitive, x as useComposedRefs, I as Item, y as composeEventHandlers, z as usePrevious, A as useSize, D as Presence, i as dist, E as cn, G as useSettingsStore, L as Label, M as Monitor, H as Sun, J as Moon, B as Button, k as Checkbox, m as StatusBadge, K as CircleCheck } from "./index-9PvzplFq.js";
+import { o as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, p as Check, X, q as ChevronRight, s as createRovingFocusGroupScope, t as useDirection, v as useControllableState, x as createContextScope, y as Root, z as Primitive, A as useComposedRefs, I as Item, D as composeEventHandlers, E as usePrevious, G as useSize, H as Presence, J as cn, K as useSettingsStore, L as Label, k as Checkbox, m as StatusBadge, M as CircleCheck, N as Monitor, O as Sun, Q as Moon } from "./index-CKyy2aq_.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, T as TriangleAlert, f as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-HPDCok5b.js";
-import { C as Circle, D as Download, U as Upload } from "./upload-v9bFGKTb.js";
-import { S as Skeleton } from "./Skeleton-BMSp2vpZ.js";
+import { a as ChevronDown, I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, T as TriangleAlert, f as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-COlMfq3x.js";
+import { S as Skeleton } from "./Skeleton-CbXQbayn.js";
+import { R as RotateCcw, C as Code, P as Plus, E as Eye, a as EyeOff, S as Settings2, b as Circle, D as Download, U as Upload } from "./upload-fG_vv8II.js";
+const useSelectorsStore = create((set, get) => ({
+  // Initial state
+  overrides: [],
+  baseConfig: null,
+  mergedConfig: null,
+  categories: [],
+  isLoading: false,
+  error: null,
+  // Load all overrides
+  loadOverrides: async () => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      const overrides = await window.api.selectorOverrides.getAll();
+      set({
+        overrides
+      });
+    } catch (error) {
+      console.error("Failed to load selector overrides:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to load overrides"
+      });
+    }
+  },
+  // Load base config (defaults)
+  loadBaseConfig: async () => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      const baseConfig = await window.api.selectorConfig.getBase();
+      set({
+        baseConfig
+      });
+    } catch (error) {
+      console.error("Failed to load base config:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to load base config"
+      });
+    }
+  },
+  // Load merged config (defaults + overrides)
+  loadMergedConfig: async () => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      const mergedConfig = await window.api.selectorConfig.getMerged();
+      set({
+        mergedConfig
+      });
+    } catch (error) {
+      console.error("Failed to load merged config:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to load merged config"
+      });
+    }
+  },
+  // Load configurable categories
+  loadCategories: async () => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      const categories = await window.api.selectorConfig.getCategories();
+      set({
+        categories
+      });
+    } catch (error) {
+      console.error("Failed to load categories:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to load categories"
+      });
+    }
+  },
+  // Load everything
+  loadAll: async () => {
+    set({
+      isLoading: true,
+      error: null
+    });
+    try {
+      await Promise.all([get().loadOverrides(), get().loadBaseConfig(), get().loadMergedConfig(), get().loadCategories()]);
+    } finally {
+      set({
+        isLoading: false
+      });
+    }
+  },
+  // Create a new override
+  createOverride: async (override) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      await window.api.selectorOverrides.create(override);
+      await get().loadOverrides();
+      await get().loadMergedConfig();
+    } catch (error) {
+      console.error("Failed to create override:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to create override"
+      });
+      throw error;
+    }
+  },
+  // Update an existing override
+  updateOverride: async (id, override) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      await window.api.selectorOverrides.update(id, override);
+      await get().loadOverrides();
+      await get().loadMergedConfig();
+    } catch (error) {
+      console.error("Failed to update override:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to update override"
+      });
+      throw error;
+    }
+  },
+  // Upsert an override (create or update)
+  upsertOverride: async (override) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      await window.api.selectorOverrides.upsert(override);
+      await get().loadOverrides();
+      await get().loadMergedConfig();
+    } catch (error) {
+      console.error("Failed to upsert override:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to upsert override"
+      });
+      throw error;
+    }
+  },
+  // Delete an override by ID
+  deleteOverride: async (id) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      await window.api.selectorOverrides.delete(id);
+      await get().loadOverrides();
+      await get().loadMergedConfig();
+    } catch (error) {
+      console.error("Failed to delete override:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to delete override"
+      });
+      throw error;
+    }
+  },
+  // Delete an override by category and key
+  deleteOverrideByKey: async (category, key) => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      await window.api.selectorOverrides.deleteByKey(category, key);
+      await get().loadOverrides();
+      await get().loadMergedConfig();
+    } catch (error) {
+      console.error("Failed to delete override:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to delete override"
+      });
+      throw error;
+    }
+  },
+  // Delete all overrides
+  deleteAllOverrides: async () => {
+    try {
+      if (!window.api) {
+        throw new Error("API not available");
+      }
+      await window.api.selectorOverrides.deleteAll();
+      await get().loadOverrides();
+      await get().loadMergedConfig();
+    } catch (error) {
+      console.error("Failed to delete all overrides:", error);
+      set({
+        error: error instanceof Error ? error.message : "Failed to delete all overrides"
+      });
+      throw error;
+    }
+  },
+  // Helper: Get overrides for a specific category
+  getOverridesByCategory: (category) => {
+    return get().overrides.filter((o) => o.category === category);
+  },
+  // Helper: Get a specific override by category and key
+  getOverrideByKey: (category, key) => {
+    return get().overrides.find((o) => o.category === category && o.key === key);
+  },
+  // Helper: Get default selectors for a category/key
+  getDefaultSelectors: (category, key) => {
+    const config = get().baseConfig;
+    if (!config) return [];
+    const categoryObj = config[category];
+    if (!categoryObj || typeof categoryObj !== "object") return [];
+    const selectors = categoryObj[key];
+    if (Array.isArray(selectors)) {
+      return selectors;
+    }
+    return [];
+  },
+  // Helper: Get merged selectors (user overrides + defaults)
+  getMergedSelectors: (category, key) => {
+    const config = get().mergedConfig;
+    if (!config) return [];
+    const categoryObj = config[category];
+    if (!categoryObj || typeof categoryObj !== "object") return [];
+    const selectors = categoryObj[key];
+    if (Array.isArray(selectors)) {
+      return selectors;
+    }
+    return [];
+  }
+}));
+const CATEGORY_LABELS = {
+  formFields: "Formularfelder",
+  paymentMethods: "Zahlungsmethoden",
+  paymentFields: "Zahlungsfelder",
+  cookieConsent: "Cookie-Zustimmung",
+  successPatterns: "Erfolgs-Erkennung",
+  formDetection: "Formular-Erkennung",
+  submitButtons: "Submit-Buttons",
+  iframeDetection: "Iframe-Erkennung"
+};
+const KEY_LABELS = {
+  formFields: {
+    amount: "Betrag",
+    customAmount: "Eigener Betrag",
+    interval: "Intervall",
+    salutation: "Anrede",
+    firstName: "Vorname",
+    lastName: "Nachname",
+    email: "E-Mail",
+    country: "Land",
+    privacy: "Datenschutz",
+    newsletter: "Newsletter",
+    birthday: "Geburtstag",
+    phone: "Telefon",
+    address: "Adresse",
+    city: "Stadt",
+    zipCode: "PLZ"
+  },
+  paymentMethods: {
+    sepa: "SEPA",
+    creditcard: "Kreditkarte",
+    paypal: "PayPal",
+    eps: "EPS"
+  },
+  paymentFields: {
+    iban: "IBAN",
+    accountHolder: "Kontoinhaber",
+    cardNumber: "Kartennummer",
+    cardHolder: "Karteninhaber",
+    expiryDate: "Ablaufdatum",
+    cvv: "CVV",
+    bankSelect: "Bank-Auswahl"
+  },
+  cookieConsent: {
+    banners: "Banner-Selektoren",
+    acceptButtons: "Accept-Buttons"
+  },
+  successPatterns: {
+    redirectUrls: "Redirect-URLs",
+    successMessages: "Erfolgsmeldungen",
+    successSelectors: "Erfolgs-Selektoren"
+  },
+  formDetection: {
+    fundraisingBox: "FundraisingBox",
+    genericForm: "Generische Formulare"
+  }
+};
+const SelectorEditorSkeleton = () => {
+  const $ = dist.c(1);
+  let t0;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t0 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(3)].map(_temp$1) });
+    $[0] = t0;
+  } else {
+    t0 = $[0];
+  }
+  return t0;
+};
+const SelectorItem = (t0) => {
+  const $ = dist.c(11);
+  const {
+    selector,
+    isDefault,
+    isActive: t1,
+    onRemove,
+    onToggle
+  } = t0;
+  const isActive = t1 === void 0 ? true : t1;
+  const t2 = `flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-mono ${isDefault ? "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400" : isActive ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" : "bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 line-through"}`;
+  let t3;
+  if ($[0] !== selector) {
+    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "flex-1 truncate text-xs", children: selector });
+    $[0] = selector;
+    $[1] = t3;
+  } else {
+    t3 = $[1];
+  }
+  let t4;
+  if ($[2] !== isActive || $[3] !== isDefault || $[4] !== onRemove || $[5] !== onToggle) {
+    t4 = isDefault ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap", children: "(Standard)" }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1", children: [
+      onToggle && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onToggle, className: "p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded", title: isActive ? "Deaktivieren" : "Aktivieren", children: isActive ? /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { size: 14 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { size: 14 }) }),
+      onRemove && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onRemove, className: "p-1 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 rounded", title: "Entfernen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 }) })
+    ] });
+    $[2] = isActive;
+    $[3] = isDefault;
+    $[4] = onRemove;
+    $[5] = onToggle;
+    $[6] = t4;
+  } else {
+    t4 = $[6];
+  }
+  let t5;
+  if ($[7] !== t2 || $[8] !== t3 || $[9] !== t4) {
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t2, children: [
+      t3,
+      t4
+    ] });
+    $[7] = t2;
+    $[8] = t3;
+    $[9] = t4;
+    $[10] = t5;
+  } else {
+    t5 = $[10];
+  }
+  return t5;
+};
+const CategorySection = (t0) => {
+  const $ = dist.c(53);
+  const {
+    category,
+    keys,
+    defaultSelectors,
+    overrides,
+    onAddSelector,
+    onRemoveSelector,
+    onToggleOverride
+  } = t0;
+  const [isExpanded, setIsExpanded] = reactExports.useState(false);
+  let t1;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t1 = /* @__PURE__ */ new Set();
+    $[0] = t1;
+  } else {
+    t1 = $[0];
+  }
+  const [expandedKeys, setExpandedKeys] = reactExports.useState(t1);
+  let t2;
+  if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+    t2 = {};
+    $[1] = t2;
+  } else {
+    t2 = $[1];
+  }
+  const [newSelectors, setNewSelectors] = reactExports.useState(t2);
+  let t3;
+  if ($[2] !== expandedKeys) {
+    t3 = (key) => {
+      const newSet = new Set(expandedKeys);
+      if (newSet.has(key)) {
+        newSet.delete(key);
+      } else {
+        newSet.add(key);
+      }
+      setExpandedKeys(newSet);
+    };
+    $[2] = expandedKeys;
+    $[3] = t3;
+  } else {
+    t3 = $[3];
+  }
+  const toggleKey = t3;
+  let t4;
+  if ($[4] !== category || $[5] !== newSelectors || $[6] !== onAddSelector) {
+    t4 = (key_0) => {
+      const selector = newSelectors[key_0]?.trim();
+      if (selector) {
+        onAddSelector(category, key_0, selector);
+        setNewSelectors({
+          ...newSelectors,
+          [key_0]: ""
+        });
+      }
+    };
+    $[4] = category;
+    $[5] = newSelectors;
+    $[6] = onAddSelector;
+    $[7] = t4;
+  } else {
+    t4 = $[7];
+  }
+  const handleAddSelector = t4;
+  let t5;
+  if ($[8] !== category || $[9] !== overrides) {
+    t5 = (key_1) => overrides.find((o) => o.category === category && o.key === key_1);
+    $[8] = category;
+    $[9] = overrides;
+    $[10] = t5;
+  } else {
+    t5 = $[10];
+  }
+  const getOverrideForKey = t5;
+  const categoryLabel = CATEGORY_LABELS[category] || category;
+  let t6;
+  if ($[11] !== category) {
+    t6 = KEY_LABELS[category] || {};
+    $[11] = category;
+    $[12] = t6;
+  } else {
+    t6 = $[12];
+  }
+  const keyLabels = t6;
+  let t7;
+  if ($[13] !== category || $[14] !== overrides) {
+    let t82;
+    if ($[16] !== category) {
+      t82 = (o_0) => o_0.category === category;
+      $[16] = category;
+      $[17] = t82;
+    } else {
+      t82 = $[17];
+    }
+    t7 = overrides.some(t82);
+    $[13] = category;
+    $[14] = overrides;
+    $[15] = t7;
+  } else {
+    t7 = $[15];
+  }
+  const hasOverrides = t7;
+  let t8;
+  if ($[18] !== isExpanded) {
+    t8 = () => setIsExpanded(!isExpanded);
+    $[18] = isExpanded;
+    $[19] = t8;
+  } else {
+    t8 = $[19];
+  }
+  let t9;
+  if ($[20] !== isExpanded) {
+    t9 = isExpanded ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 18 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 18 });
+    $[20] = isExpanded;
+    $[21] = t9;
+  } else {
+    t9 = $[21];
+  }
+  let t10;
+  if ($[22] !== categoryLabel) {
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-gray-900 dark:text-white", children: categoryLabel });
+    $[22] = categoryLabel;
+    $[23] = t10;
+  } else {
+    t10 = $[23];
+  }
+  let t11;
+  if ($[24] !== keys.length) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-gray-500 dark:text-gray-400", children: [
+      "(",
+      keys.length,
+      " Felder)"
+    ] });
+    $[24] = keys.length;
+    $[25] = t11;
+  } else {
+    t11 = $[25];
+  }
+  let t12;
+  if ($[26] !== hasOverrides) {
+    t12 = hasOverrides && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full", children: "Angepasst" });
+    $[26] = hasOverrides;
+    $[27] = t12;
+  } else {
+    t12 = $[27];
+  }
+  let t13;
+  if ($[28] !== t10 || $[29] !== t11 || $[30] !== t12 || $[31] !== t9) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-gray-800 dark:text-gray-200", children: [
+      t9,
+      t10,
+      t11,
+      t12
+    ] });
+    $[28] = t10;
+    $[29] = t11;
+    $[30] = t12;
+    $[31] = t9;
+    $[32] = t13;
+  } else {
+    t13 = $[32];
+  }
+  let t14;
+  if ($[33] === Symbol.for("react.memo_cache_sentinel")) {
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(Settings2, { size: 16, className: "text-gray-400" });
+    $[33] = t14;
+  } else {
+    t14 = $[33];
+  }
+  let t15;
+  if ($[34] !== t13 || $[35] !== t8) {
+    t15 = /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: t8, className: "w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", children: [
+      t13,
+      t14
+    ] });
+    $[34] = t13;
+    $[35] = t8;
+    $[36] = t15;
+  } else {
+    t15 = $[36];
+  }
+  let t16;
+  if ($[37] !== category || $[38] !== defaultSelectors || $[39] !== expandedKeys || $[40] !== getOverrideForKey || $[41] !== handleAddSelector || $[42] !== isExpanded || $[43] !== keyLabels || $[44] !== keys || $[45] !== newSelectors || $[46] !== onRemoveSelector || $[47] !== onToggleOverride || $[48] !== toggleKey) {
+    t16 = isExpanded && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-4 text-gray-800 dark:text-gray-200 space-y-4 bg-white dark:bg-gray-800/50", children: keys.map((key_2) => {
+      const keyLabel = keyLabels[key_2] || key_2;
+      const defaults = defaultSelectors[key_2] || [];
+      const override = getOverrideForKey(key_2);
+      const userSelectors = override?.selectors || [];
+      const isKeyExpanded = expandedKeys.has(key_2);
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-100 dark:border-gray-700 rounded-lg overflow-hidden", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => toggleKey(key_2), className: "w-full flex items-center justify-between px-3 py-2 bg-gray-50/50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+            isKeyExpanded ? /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronDown, { size: 14 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ChevronRight, { size: 14 }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-800 dark:text-gray-200", children: keyLabel }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-gray-400", children: [
+              userSelectors.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-blue-500", children: [
+                "+",
+                userSelectors.length,
+                " eigene, "
+              ] }),
+              defaults.length,
+              " Standard"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Code, { size: 14, className: "text-gray-400" })
+        ] }),
+        isKeyExpanded && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-3 space-y-3", children: [
+          userSelectors.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-blue-600 dark:text-blue-400 mb-1", children: "Eigene Selektoren (Priorität):" }),
+            userSelectors.map((selector_0, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorItem, { selector: selector_0, isDefault: false, isActive: override?.isActive !== false, onRemove: () => onRemoveSelector(category, key_2, idx), onToggle: override ? () => onToggleOverride(override.id, !override.isActive) : void 0 }, `user-${idx}`))
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Standard-Selektoren:" }),
+            defaults.slice(0, 5).map(_temp2),
+            defaults.length > 5 && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-400 italic pl-3", children: [
+              "... und ",
+              defaults.length - 5,
+              " weitere"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { placeholder: "Neuen Selektor hinzufügen (z.B. #my-field)", value: newSelectors[key_2] || "", onChange: (e) => setNewSelectors({
+              ...newSelectors,
+              [key_2]: e.target.value
+            }), onKeyDown: (e_0) => {
+              if (e_0.key === "Enter") {
+                handleAddSelector(key_2);
+              }
+            }, className: "flex-1 text-sm font-mono" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", variant: "outline", onClick: () => handleAddSelector(key_2), disabled: !newSelectors[key_2]?.trim(), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 }) })
+          ] })
+        ] })
+      ] }, key_2);
+    }) });
+    $[37] = category;
+    $[38] = defaultSelectors;
+    $[39] = expandedKeys;
+    $[40] = getOverrideForKey;
+    $[41] = handleAddSelector;
+    $[42] = isExpanded;
+    $[43] = keyLabels;
+    $[44] = keys;
+    $[45] = newSelectors;
+    $[46] = onRemoveSelector;
+    $[47] = onToggleOverride;
+    $[48] = toggleKey;
+    $[49] = t16;
+  } else {
+    t16 = $[49];
+  }
+  let t17;
+  if ($[50] !== t15 || $[51] !== t16) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden", children: [
+      t15,
+      t16
+    ] });
+    $[50] = t15;
+    $[51] = t16;
+    $[52] = t17;
+  } else {
+    t17 = $[52];
+  }
+  return t17;
+};
+const SelectorEditor = () => {
+  const $ = dist.c(48);
+  const {
+    overrides,
+    baseConfig,
+    categories,
+    isLoading,
+    loadAll,
+    upsertOverride,
+    deleteOverrideByKey,
+    deleteAllOverrides
+  } = useSelectorsStore();
+  const [showResetConfirm, setShowResetConfirm] = reactExports.useState(false);
+  let t0;
+  let t1;
+  if ($[0] !== loadAll) {
+    t0 = () => {
+      loadAll();
+    };
+    t1 = [loadAll];
+    $[0] = loadAll;
+    $[1] = t0;
+    $[2] = t1;
+  } else {
+    t0 = $[1];
+    t1 = $[2];
+  }
+  reactExports.useEffect(t0, t1);
+  let t2;
+  if ($[3] !== overrides || $[4] !== upsertOverride) {
+    t2 = async (category, key, selector) => {
+      const existingOverride = overrides.find((o) => o.category === category && o.key === key);
+      const existingSelectors = existingOverride?.selectors || [];
+      if (existingSelectors.includes(selector)) {
+        return;
+      }
+      await upsertOverride({
+        category,
+        key,
+        selectors: [selector, ...existingSelectors],
+        isActive: true
+      });
+    };
+    $[3] = overrides;
+    $[4] = upsertOverride;
+    $[5] = t2;
+  } else {
+    t2 = $[5];
+  }
+  const handleAddSelector = t2;
+  let t3;
+  if ($[6] !== deleteOverrideByKey || $[7] !== overrides || $[8] !== upsertOverride) {
+    t3 = async (category_0, key_0, selectorIndex) => {
+      const existingOverride_0 = overrides.find((o_0) => o_0.category === category_0 && o_0.key === key_0);
+      if (!existingOverride_0) {
+        return;
+      }
+      const newSelectors = existingOverride_0.selectors.filter((_, idx) => idx !== selectorIndex);
+      if (newSelectors.length === 0) {
+        await deleteOverrideByKey(category_0, key_0);
+      } else {
+        await upsertOverride({
+          category: category_0,
+          key: key_0,
+          selectors: newSelectors,
+          isActive: existingOverride_0.isActive
+        });
+      }
+    };
+    $[6] = deleteOverrideByKey;
+    $[7] = overrides;
+    $[8] = upsertOverride;
+    $[9] = t3;
+  } else {
+    t3 = $[9];
+  }
+  const handleRemoveSelector = t3;
+  let t4;
+  if ($[10] !== overrides || $[11] !== upsertOverride) {
+    t4 = async (id, isActive) => {
+      const override = overrides.find((o_1) => o_1.id === id);
+      if (!override) {
+        return;
+      }
+      await upsertOverride({
+        category: override.category,
+        key: override.key,
+        selectors: override.selectors,
+        isActive
+      });
+    };
+    $[10] = overrides;
+    $[11] = upsertOverride;
+    $[12] = t4;
+  } else {
+    t4 = $[12];
+  }
+  const handleToggleOverride = t4;
+  let t5;
+  if ($[13] !== deleteAllOverrides) {
+    t5 = async () => {
+      await deleteAllOverrides();
+      setShowResetConfirm(false);
+    };
+    $[13] = deleteAllOverrides;
+    $[14] = t5;
+  } else {
+    t5 = $[14];
+  }
+  const handleResetAll = t5;
+  let t6;
+  if ($[15] !== baseConfig) {
+    t6 = (category_1) => {
+      if (!baseConfig) {
+        return {};
+      }
+      const categoryData = baseConfig[category_1];
+      if (!categoryData || typeof categoryData !== "object") {
+        return {};
+      }
+      const result = {};
+      for (const [key_1, value] of Object.entries(categoryData)) {
+        if (Array.isArray(value)) {
+          result[key_1] = value;
+        }
+      }
+      return result;
+    };
+    $[15] = baseConfig;
+    $[16] = t6;
+  } else {
+    t6 = $[16];
+  }
+  const getDefaultSelectorsForCategory = t6;
+  if (isLoading) {
+    let t72;
+    if ($[17] === Symbol.for("react.memo_cache_sentinel")) {
+      t72 = /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorEditorSkeleton, {});
+      $[17] = t72;
+    } else {
+      t72 = $[17];
+    }
+    return t72;
+  }
+  const hasAnyOverrides = overrides.length > 0;
+  let t7;
+  if ($[18] !== categories) {
+    t7 = categories.length > 0 ? categories : [{
+      category: "formFields",
+      keys: ["amount", "customAmount", "interval", "salutation", "firstName", "lastName", "email", "country", "privacy", "newsletter", "phone", "address", "city", "zipCode"],
+      label: "Formularfelder"
+    }, {
+      category: "paymentMethods",
+      keys: ["sepa", "creditcard", "paypal", "eps"],
+      label: "Zahlungsmethoden"
+    }, {
+      category: "paymentFields",
+      keys: ["iban", "accountHolder", "cardNumber", "cardHolder", "expiryDate", "cvv", "bankSelect"],
+      label: "Zahlungsfelder"
+    }, {
+      category: "cookieConsent",
+      keys: ["banners", "acceptButtons"],
+      label: "Cookie-Zustimmung"
+    }, {
+      category: "successPatterns",
+      keys: ["redirectUrls", "successMessages", "successSelectors"],
+      label: "Erfolgs-Erkennung"
+    }, {
+      category: "formDetection",
+      keys: ["fundraisingBox", "genericForm"],
+      label: "Formular-Erkennung"
+    }];
+    $[18] = categories;
+    $[19] = t7;
+  } else {
+    t7 = $[19];
+  }
+  const displayCategories = t7;
+  let t8;
+  if ($[20] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-700 dark:text-gray-300", children: "Selektor-Konfiguration" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Eigene CSS-Selektoren haben Priorität vor Standard-Selektoren. Per-Form Mappings überschreiben globale Einstellungen." })
+    ] });
+    $[20] = t8;
+  } else {
+    t8 = $[20];
+  }
+  let t9;
+  if ($[21] !== handleResetAll || $[22] !== hasAnyOverrides || $[23] !== showResetConfirm) {
+    t9 = hasAnyOverrides && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative", children: showResetConfirm ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-red-600 dark:text-red-400", children: "Alle zurücksetzen?" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", variant: "danger", onClick: handleResetAll, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 14 }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", variant: "outline", onClick: () => setShowResetConfirm(false), children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 }) })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { size: "sm", variant: "outline", onClick: () => setShowResetConfirm(true), className: "text-gray-500 hover:text-red-500", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(RotateCcw, { size: 14, className: "mr-1" }),
+      "Zurücksetzen"
+    ] }) });
+    $[21] = handleResetAll;
+    $[22] = hasAnyOverrides;
+    $[23] = showResetConfirm;
+    $[24] = t9;
+  } else {
+    t9 = $[24];
+  }
+  let t10;
+  if ($[25] !== t9) {
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+      t8,
+      t9
+    ] });
+    $[25] = t9;
+    $[26] = t10;
+  } else {
+    t10 = $[26];
+  }
+  let t11;
+  if ($[27] !== displayCategories || $[28] !== getDefaultSelectorsForCategory || $[29] !== handleAddSelector || $[30] !== handleRemoveSelector || $[31] !== handleToggleOverride || $[32] !== overrides) {
+    let t122;
+    if ($[34] !== getDefaultSelectorsForCategory || $[35] !== handleAddSelector || $[36] !== handleRemoveSelector || $[37] !== handleToggleOverride || $[38] !== overrides) {
+      t122 = (cat) => /* @__PURE__ */ jsxRuntimeExports.jsx(CategorySection, { category: cat.category, keys: cat.keys, defaultSelectors: getDefaultSelectorsForCategory(cat.category), overrides, onAddSelector: handleAddSelector, onRemoveSelector: handleRemoveSelector, onToggleOverride: handleToggleOverride }, cat.category);
+      $[34] = getDefaultSelectorsForCategory;
+      $[35] = handleAddSelector;
+      $[36] = handleRemoveSelector;
+      $[37] = handleToggleOverride;
+      $[38] = overrides;
+      $[39] = t122;
+    } else {
+      t122 = $[39];
+    }
+    t11 = displayCategories.map(t122);
+    $[27] = displayCategories;
+    $[28] = getDefaultSelectorsForCategory;
+    $[29] = handleAddSelector;
+    $[30] = handleRemoveSelector;
+    $[31] = handleToggleOverride;
+    $[32] = overrides;
+    $[33] = t11;
+  } else {
+    t11 = $[33];
+  }
+  let t12;
+  if ($[40] !== t11) {
+    t12 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: t11 });
+    $[40] = t11;
+    $[41] = t12;
+  } else {
+    t12 = $[41];
+  }
+  let t13;
+  if ($[42] !== overrides.length) {
+    t13 = overrides.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-blue-700 dark:text-blue-300", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: overrides.length }),
+      " eigene Selektor-Überschreibungen aktiv"
+    ] }) });
+    $[42] = overrides.length;
+    $[43] = t13;
+  } else {
+    t13 = $[43];
+  }
+  let t14;
+  if ($[44] !== t10 || $[45] !== t12 || $[46] !== t13) {
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+      t10,
+      t12,
+      t13
+    ] });
+    $[44] = t10;
+    $[45] = t12;
+    $[46] = t13;
+    $[47] = t14;
+  } else {
+    t14 = $[47];
+  }
+  return t14;
+};
+function _temp$1(_, i) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg p-4", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-48 mb-3" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-full" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-3/4" })
+    ] })
+  ] }, i);
+}
+function _temp2(selector_1, idx_0) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorItem, { selector: selector_1, isDefault: true }, `default-${idx_0}`);
+}
 var RADIO_NAME = "Radio";
 var [createRadioContext, createRadioScope] = createContextScope(RADIO_NAME);
 var [RadioProvider, useRadioContext] = createRadioContext(RADIO_NAME);
@@ -542,32 +1436,6 @@ const Settings = () => {
     ] }) }) }),
     isLoading && settings.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(SettingsSkeleton, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Darstellung" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "block mb-2 text-gray-800 dark:text-gray-400", children: "Theme" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("system"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
-                fontStretch: "115%"
-              }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "System" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("light"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
-                fontStretch: "115%"
-              }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "Hell" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("dark"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
-                fontStretch: "115%"
-              }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "Dunkel" })
-            ] })
-          ] })
-        ] }) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Test-Einstellungen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
@@ -621,6 +1489,11 @@ const Settings = () => {
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Formular-Selektoren" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Hier können Sie CSS-Selektoren für die automatische Formular-Erkennung anpassen. Eigene Selektoren haben Priorität vor den Standard-Selektoren. Per-Form Feld-Mappings überschreiben diese globalen Einstellungen." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorEditor, {})
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-gray-900 dark:text-white text-lg font-semibold mb-4", children: "Daten löschen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Hier können Sie Daten endgültig löschen. Diese Aktionen können nicht rückgängig gemacht werden." }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-wrap gap-3", children: [
@@ -655,7 +1528,7 @@ const Settings = () => {
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Import / Export" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "sr-only text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Import / Export" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md font-medium text-gray-900 dark:text-white mb-3", children: "Daten exportieren" }),
@@ -913,6 +1786,32 @@ const Settings = () => {
             ] })
           ] })
         ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Darstellung" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "block mb-2 text-gray-800 dark:text-gray-400", children: "Theme" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-3 gap-3", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("system"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Monitor, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+                fontStretch: "115%"
+              }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "System" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("light"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Sun, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+                fontStretch: "115%"
+              }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "Hell" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => handleThemeChange("dark"), className: `flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Moon, { className: "w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+                fontStretch: "115%"
+              }, className: "text-sm font-medium text-gray-900 dark:text-white", children: "Dunkel" })
+            ] })
+          ] })
+        ] }) })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deleteConfirmation, onClose: () => setDeleteConfirmation(null), onConfirm: handleDelete, title: deleteConfirmation?.title || "", message: deleteConfirmation?.message || "", isLoading: isDeleting })

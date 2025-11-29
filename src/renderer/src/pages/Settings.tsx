@@ -5,6 +5,7 @@ import { CONFIG } from "../app.config";
 import { StatusBadge } from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import SelectorEditor from "../components/SelectorEditor";
 import type { ImportOptions, ImportResult } from "../../../common/types";
 import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/Label";
@@ -218,48 +219,7 @@ const Settings: React.FC = () => {
       ) : (
         <div className="space-y-6">
           {/* Theme Settings */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Darstellung</h2>
-
-            <div className="space-y-4">
-              <div>
-                <Label className="block mb-2 text-gray-800 dark:text-gray-400">Theme</Label>
-                <div className="grid grid-cols-3 gap-3">
-                  <button
-                    onClick={() => handleThemeChange("system")}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
-                    <Monitor className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
-                    <span
-                      style={{ fontStretch: "115%" }}
-                      className="text-sm font-medium text-gray-900 dark:text-white">
-                      System
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => handleThemeChange("light")}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
-                    <Sun className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
-                    <span
-                      style={{ fontStretch: "115%" }}
-                      className="text-sm font-medium text-gray-900 dark:text-white">
-                      Hell
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => handleThemeChange("dark")}
-                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
-                    <Moon className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
-                    <span
-                      style={{ fontStretch: "115%" }}
-                      className="text-sm font-medium text-gray-900 dark:text-white">
-                      Dunkel
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
+         
           {/* Test Settings */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Test-Einstellungen</h2>
@@ -372,6 +332,17 @@ const Settings: React.FC = () => {
             </div>
           </div>
 
+          {/* Selector Configuration Section */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Formular-Selektoren</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Hier können Sie CSS-Selektoren für die automatische Formular-Erkennung anpassen. 
+              Eigene Selektoren haben Priorität vor den Standard-Selektoren. 
+              Per-Form Feld-Mappings überschreiben diese globalen Einstellungen.
+            </p>
+            <SelectorEditor />
+          </div>
+
           {/* Data Management / Delete Section */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
             <h2 className="text-gray-900 dark:text-white text-lg font-semibold mb-4">Daten löschen</h2>
@@ -454,7 +425,7 @@ const Settings: React.FC = () => {
 
           {/* Import/Export Section */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Import / Export</h2>
+            <h2 className="sr-only text-lg font-semibold text-gray-900 dark:text-white mb-4">Import / Export</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Export Section */}
@@ -774,6 +745,49 @@ const Settings: React.FC = () => {
               </div>
             </div>
           </div>
+
+           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Darstellung</h2>
+
+            <div className="space-y-4">
+              <div>
+                <Label className="block mb-2 text-gray-800 dark:text-gray-400">Theme</Label>
+                <div className="grid grid-cols-3 gap-3">
+                  <button
+                    onClick={() => handleThemeChange("system")}
+                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "system" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
+                    <Monitor className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
+                    <span
+                      style={{ fontStretch: "115%" }}
+                      className="text-sm font-medium text-gray-900 dark:text-white">
+                      System
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => handleThemeChange("light")}
+                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "light" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
+                    <Sun className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
+                    <span
+                      style={{ fontStretch: "115%" }}
+                      className="text-sm font-medium text-gray-900 dark:text-white">
+                      Hell
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => handleThemeChange("dark")}
+                    className={`flex flex-col items-center justify-center p-4 border rounded-lg transition-colors ${theme === "dark" ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}>
+                    <Moon className="w-6 h-6 mb-2 text-gray-700 dark:text-gray-300" />
+                    <span
+                      style={{ fontStretch: "115%" }}
+                      className="text-sm font-medium text-gray-900 dark:text-white">
+                      Dunkel
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       )}
       {/* Confirmation Dialog */}
