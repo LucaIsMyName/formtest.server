@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Command } from "cmdk";
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, FileText, CreditCard, TestTube, Settings, BookOpen, Search, ChevronRight } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, TestTube, Settings, BookOpen, Search, ChevronRight, Clock } from "lucide-react";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
+import { useSchedulesStore } from "../store/useSchedulesStore";
 import { StatusBadge } from "./ui/Badge";
 
 interface GlobalSearchProps {
@@ -19,14 +20,68 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const { testRuns, loadTestRuns } = useTestRunsStore();
+  const { schedules, loadSchedules } = useSchedulesStore();
 
   useEffect(() => {
     if (isOpen) {
       loadForms();
       loadPaymentMethods();
       loadTestRuns();
+      loadSchedules();
     }
-  }, [isOpen, loadForms, loadPaymentMethods, loadTestRuns]);
+  }, [isOpen, loadForms, loadPaymentMethods, loadTestRuns, loadSchedules]);
+
+  // When user types, search across ALL items - not just first 10
+  const isSearching = search.trim().length > 0;
+  
+  // Filter forms based on search
+  const filteredForms = useMemo(() => {
+    if (!isSearching) return forms.slice(0, 10);
+    const searchLower = search.toLowerCase();
+    return forms.filter(f => 
+      f.name.toLowerCase().includes(searchLower) ||
+      f.url.toLowerCase().includes(searchLower)
+    );
+  }, [forms, search, isSearching]);
+
+  // Filter payment methods based on search
+  const filteredPaymentMethods = useMemo(() => {
+    if (!isSearching) return paymentMethods.slice(0, 10);
+    const searchLower = search.toLowerCase();
+    return paymentMethods.filter(pm => 
+      pm.name.toLowerCase().includes(searchLower) ||
+      pm.type.toLowerCase().includes(searchLower)
+    );
+  }, [paymentMethods, search, isSearching]);
+
+  // Filter schedules based on search
+  const filteredSchedules = useMemo(() => {
+    if (!isSearching) return schedules.slice(0, 10);
+    const searchLower = search.toLowerCase();
+    return schedules.filter(s => {
+      const formName = forms.find(f => f.id === s.formId)?.name || "";
+      const pmName = paymentMethods.find(p => p.id === s.paymentMethodId)?.name || "";
+      return s.name.toLowerCase().includes(searchLower) ||
+        formName.toLowerCase().includes(searchLower) ||
+        pmName.toLowerCase().includes(searchLower) ||
+        s.cronExpression.toLowerCase().includes(searchLower);
+    });
+  }, [schedules, forms, paymentMethods, search, isSearching]);
+
+  // Filter test runs based on search - search across ALL test runs
+  const filteredTestRuns = useMemo(() => {
+    if (!isSearching) return testRuns.slice(0, 10);
+    const searchLower = search.toLowerCase();
+    return testRuns.filter(tr => {
+      const formName = forms.find(f => f.id === tr.formId)?.name || "";
+      const pmName = paymentMethods.find(p => p.id === tr.paymentMethodId)?.name || "";
+      const uuid = tr.uuid || "";
+      return formName.toLowerCase().includes(searchLower) ||
+        pmName.toLowerCase().includes(searchLower) ||
+        uuid.toLowerCase().includes(searchLower) ||
+        tr.status.toLowerCase().includes(searchLower);
+    });
+  }, [testRuns, forms, paymentMethods, search, isSearching]);
 
   const handleSelect = (path: string) => {
     navigate(path);
@@ -68,83 +123,129 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           </Command.Group>
 
           {/* Formulare */}
-          <Command.Group
-            heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Formulare</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
-            <Command.Item
-              onSelect={() => handleSelect("/forms")}
-              className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
-              <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
-              <span>Alle Formulare</span>
-            </Command.Item>
-            {forms.slice(0, 5).map((form) => (
-              <Command.Item
-                key={form.id}
-                value={`form-${form.name}`}
-                onSelect={() => handleSelect(`/forms?id=${form.id}`)}
-                className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
-                <ChevronRight className="w-3 h-3 flex-shrink-0" />
-                <span className="text-xs font-normal">{form.name}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{form.isActive ? "Aktiv" : "Inaktiv"}</span>
-              </Command.Item>
-            ))}
-          </Command.Group>
+          {filteredForms.length > 0 && (
+            <Command.Group
+              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Formulare {isSearching && `(${filteredForms.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              {!isSearching && (
+                <Command.Item
+                  onSelect={() => handleSelect("/forms")}
+                  className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
+                  <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  <span>Alle Formulare</span>
+                </Command.Item>
+              )}
+              {filteredForms.map((form) => (
+                <Command.Item
+                  key={form.id}
+                  value={`form-${form.name}-${form.url}`}
+                  onSelect={() => handleSelect(`/forms?id=${form.id}`)}
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
+                  <ChevronRight className="w-3 h-3 flex-shrink-0" />
+                  <span className="text-xs font-normal">{form.name}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{form.isActive ? "Aktiv" : "Inaktiv"}</span>
+                </Command.Item>
+              ))}
+            </Command.Group>
+          )}
 
           {/* Bezahlmethoden */}
-          <Command.Group
-            heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Bezahlmethoden</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
-            <Command.Item
-              onSelect={() => handleSelect("/payment-methods")}
-              className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
-              <CreditCard className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span>Alle Bezahlmethoden</span>
-            </Command.Item>
-            {paymentMethods.slice(0, 5).map((pm) => (
-              <Command.Item
-                key={pm.id}
-                value={`payment-${pm.name}`}
-                onSelect={() => handleSelect(`/payment-methods?id=${pm.id}`)}
-                className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
-                <ChevronRight className="w-3 h-3 flex-shrink-0" />
-                <span className="text-xs font-normal">{pm.name}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{pm.type}</span>
-              </Command.Item>
-            ))}
-          </Command.Group>
+          {filteredPaymentMethods.length > 0 && (
+            <Command.Group
+              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Bezahlmethoden {isSearching && `(${filteredPaymentMethods.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              {!isSearching && (
+                <Command.Item
+                  onSelect={() => handleSelect("/payment-methods")}
+                  className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
+                  <CreditCard className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  <span>Alle Bezahlmethoden</span>
+                </Command.Item>
+              )}
+              {filteredPaymentMethods.map((pm) => (
+                <Command.Item
+                  key={pm.id}
+                  value={`payment-${pm.name}-${pm.type}`}
+                  onSelect={() => handleSelect(`/payment-methods?id=${pm.id}`)}
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
+                  <ChevronRight className="w-3 h-3 flex-shrink-0" />
+                  <span className="text-xs font-normal">{pm.name}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{pm.type}</span>
+                </Command.Item>
+              ))}
+            </Command.Group>
+          )}
+
+          {/* Autopilot / Schedules */}
+          {filteredSchedules.length > 0 && (
+            <Command.Group
+              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Autopilot {isSearching && `(${filteredSchedules.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              {!isSearching && (
+                <Command.Item
+                  onSelect={() => handleSelect("/schedules")}
+                  className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
+                  <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                  <span>Alle Zeitpläne</span>
+                </Command.Item>
+              )}
+              {filteredSchedules.map((schedule) => {
+                const formName = forms.find((f) => f.id === schedule.formId)?.name || `Form #${schedule.formId}`;
+                const pmName = paymentMethods.find((p) => p.id === schedule.paymentMethodId)?.name || `PM #${schedule.paymentMethodId}`;
+                return (
+                  <Command.Item
+                    key={schedule.id}
+                    value={`schedule-${schedule.name}-${formName}-${pmName}`}
+                    onSelect={() => handleSelect(`/schedules`)}
+                    className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7">
+                    <ChevronRight className="w-3 h-3 flex-shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="text-xs font-normal">{schedule.name}</span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">{formName} × {pmName}</span>
+                    </div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 ml-auto">{schedule.isActive ? "Aktiv" : "Inaktiv"}</span>
+                  </Command.Item>
+                );
+              })}
+            </Command.Group>
+          )}
 
           {/* Test Resultate */}
-          <Command.Group
-            heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Test Resultate</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
-            <Command.Item
-              onSelect={() => handleSelect("/test-results")}
-              className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
-              <TestTube className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-              <span>Alle Test Resultate</span>
-            </Command.Item>
-            {testRuns.slice(0, 5).map((testRun) => {
-              const formName = forms.find((f) => f.id === testRun.formId)?.name || `Form #${testRun.formId}`;
-              const pmName = paymentMethods.find((p) => p.id === testRun.paymentMethodId)?.name || `PM #${testRun.paymentMethodId}`;
-              const uuid = testRun.uuid || "";
-              return (
+          {filteredTestRuns.length > 0 && (
+            <Command.Group
+              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Test Resultate {isSearching && `(${filteredTestRuns.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              {!isSearching && (
                 <Command.Item
-                  key={testRun.id}
-                  value={`test-${formName}-${pmName}-${uuid}`}
-                  onSelect={() => handleSelect(`/test-results?id=${testRun.id}`)}
-                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7 group">
-                  <ChevronRight className="w-3 h-3 flex-shrink-0" />
-                  <div className="flex flex-col">
-                    <span className="text-xs font-normal">
-                      {formName} × {pmName}
-                    </span>
-                    {uuid && <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">ID: {uuid.substring(0, 8)}...</span>}
-                  </div>
-                  <StatusBadge status={testRun.status} size="sm" className="ml-auto" />
+                  onSelect={() => handleSelect("/test-results")}
+                  className="flex items-center gap-3 px-3 py-2 mt-2 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white">
+                  <TestTube className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                  <span>Alle Test Resultate</span>
                 </Command.Item>
-              );
-            })}
-          </Command.Group>
+              )}
+              {filteredTestRuns.map((testRun) => {
+                const formName = forms.find((f) => f.id === testRun.formId)?.name || `Form #${testRun.formId}`;
+                const pmName = paymentMethods.find((p) => p.id === testRun.paymentMethodId)?.name || `PM #${testRun.paymentMethodId}`;
+                const uuid = testRun.uuid || "";
+                return (
+                  <Command.Item
+                    key={testRun.id}
+                    value={`test-${formName}-${pmName}-${uuid}-${testRun.status}`}
+                    onSelect={() => handleSelect(`/test-results?id=${testRun.id}`)}
+                    className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 ml-7 group">
+                    <ChevronRight className="w-3 h-3 flex-shrink-0" />
+                    <div className="flex flex-col">
+                      <span className="text-xs font-normal">
+                        {formName} × {pmName}
+                      </span>
+                      {uuid && <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">ID: {uuid.substring(0, 8)}...</span>}
+                    </div>
+                    <StatusBadge status={testRun.status} size="sm" className="ml-auto" />
+                  </Command.Item>
+                );
+              })}
+            </Command.Group>
+          )}
 
           {/* Einstellungen */}
           <Command.Group

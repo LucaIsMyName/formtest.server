@@ -2314,9 +2314,9 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("toast:show", (event, type, message, description) => {
     event.sender.send("toast:display", { type, message, description });
   });
-  electron.ipcMain.handle("tests:run", async (_, formIds, paymentMethodIds) => {
+  electron.ipcMain.handle("tests:run", async (_, formIds, paymentMethodIds, options) => {
     try {
-      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
+      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds, "options:", options);
       const testRunIds = [];
       const forms = formIds.map((id) => formQueries.getById(id)).filter((form) => form !== void 0);
       const paymentMethodPromises = paymentMethodIds.map((id) => paymentMethodQueries.getById(id));
@@ -2328,6 +2328,12 @@ function setupIpcHandlers() {
         acc[setting.key] = setting.value;
         return acc;
       }, {});
+      if (options?.customAmount) {
+        settingsMap["default_donation_amount"] = options.customAmount;
+      }
+      if (options?.customInterval) {
+        settingsMap["default_donation_interval"] = options.customInterval;
+      }
       for (const form of forms) {
         for (const paymentMethod of paymentMethods) {
           console.log(`Creating test run for form "${form.name}" with payment method "${paymentMethod.name}"`);

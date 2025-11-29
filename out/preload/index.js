@@ -40,7 +40,7 @@ const api = {
   },
   // Test execution
   tests: {
-    run: (formIds, paymentMethodIds) => electron.ipcRenderer.invoke("tests:run", formIds, paymentMethodIds)
+    run: (formIds, paymentMethodIds, options) => electron.ipcRenderer.invoke("tests:run", formIds, paymentMethodIds, options)
   },
   // Test schedule operations
   testSchedules: {

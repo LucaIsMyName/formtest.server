@@ -175,9 +175,9 @@ export function setupIpcHandlers(): void {
   });
 
   // Test execution handlers
-  ipcMain.handle("tests:run", async (_, formIds: number[], paymentMethodIds: number[]) => {
+  ipcMain.handle("tests:run", async (_, formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string }) => {
     try {
-      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
+      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds, "options:", options);
 
       const testRunIds: number[] = [];
 
@@ -197,6 +197,14 @@ export function setupIpcHandlers(): void {
         acc[setting.key] = setting.value;
         return acc;
       }, {} as Record<string, string>);
+
+      // Override settings with custom options if provided
+      if (options?.customAmount) {
+        settingsMap['default_donation_amount'] = options.customAmount;
+      }
+      if (options?.customInterval) {
+        settingsMap['default_donation_interval'] = options.customInterval;
+      }
 
       // Create test runs for each combination
       for (const form of forms) {

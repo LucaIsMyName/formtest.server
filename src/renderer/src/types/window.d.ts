@@ -42,7 +42,7 @@ declare global {
         delete: (id: number) => Promise<void>
       }
       tests: {
-        run: (formIds: number[], paymentMethodIds: number[]) => Promise<any>
+        run: (formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string }) => Promise<any>
       }
       windowControls: {
         close: () => Promise<void>

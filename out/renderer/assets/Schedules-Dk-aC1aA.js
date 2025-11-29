@@ -1,92 +1,10 @@
-import { o as create, b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, k as Checkbox, B as Button, U as formatDateTime, m as StatusBadge, _ as LoaderCircle, P as Play } from "./index-CKyy2aq_.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, B as Button, a6 as useSchedulesStore, a1 as formatDateTime, v as StatusBadge, a7 as LoaderCircle, P as Play } from "./index-CyFdAjl_.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2, k as TablePagination } from "./Table-DFiXBObE.js";
-import { S as Skeleton } from "./Skeleton-CbXQbayn.js";
-import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-Bni637JR.js";
-import { I as Input, S as Select, b as SelectTrigger, c as SelectValue, d as SelectContent, e as SelectItem, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-COlMfq3x.js";
-import { P as Plus } from "./upload-fG_vv8II.js";
-const useSchedulesStore = create((set, get) => ({
-  schedules: [],
-  isLoading: false,
-  error: null,
-  loadSchedules: async () => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      const schedules = await window.api.testSchedules.getAll();
-      set({
-        schedules,
-        isLoading: false
-      });
-    } catch (error) {
-      set({
-        error: "Failed to load schedules",
-        isLoading: false
-      });
-    }
-  },
-  createSchedule: async (schedule) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      await window.api.testSchedules.create(schedule);
-      await get().loadSchedules();
-    } catch (error) {
-      set({
-        error: "Failed to create schedule",
-        isLoading: false
-      });
-      throw error;
-    }
-  },
-  updateSchedule: async (id, schedule) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      await window.api.testSchedules.update(id, schedule);
-      await get().loadSchedules();
-    } catch (error) {
-      set({
-        error: "Failed to update schedule",
-        isLoading: false
-      });
-      throw error;
-    }
-  },
-  deleteSchedule: async (id) => {
-    set({
-      isLoading: true,
-      error: null
-    });
-    try {
-      await window.api.testSchedules.delete(id);
-      await get().loadSchedules();
-    } catch (error) {
-      set({
-        error: "Failed to delete schedule",
-        isLoading: false
-      });
-      throw error;
-    }
-  },
-  runScheduleNow: async (id) => {
-    try {
-      await window.api.testSchedules.runNow(id);
-      setTimeout(() => {
-        get().loadSchedules();
-      }, 500);
-    } catch (error) {
-      console.error("Failed to run schedule now:", error);
-      throw error;
-    }
-  }
-}));
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, T as Trash2, k as TablePagination } from "./Table-DWY6ITCn.js";
+import { S as Skeleton } from "./Skeleton-C0B8i1rn.js";
+import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-BTKpCC2F.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-CM6FgxMY.js";
+import { P as Plus } from "./upload-BGrw5bVo.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {

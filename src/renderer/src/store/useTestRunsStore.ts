@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import type { TestRun } from "../../../common/types";
 
+interface TestRunOptions {
+  customAmount?: string;
+  customInterval?: string;
+}
+
 interface TestRunsState {
   testRuns: TestRun[];
   isLoading: boolean;
@@ -10,7 +15,7 @@ interface TestRunsState {
   // Actions
   loadTestRuns: () => Promise<void>;
   getTestRunsByForm: (formId: number) => Promise<TestRun[]>;
-  runTests: (formIds: number[], paymentMethodIds: number[]) => Promise<void>;
+  runTests: (formIds: number[], paymentMethodIds: number[], options?: TestRunOptions) => Promise<void>;
   getTestRunById: (id: number) => Promise<TestRun | undefined>;
 }
 
@@ -46,16 +51,16 @@ export const useTestRunsStore = create<TestRunsState>((set, get) => ({
     }
   },
 
-  runTests: async (formIds: number[], paymentMethodIds: number[]) => {
+  runTests: async (formIds: number[], paymentMethodIds: number[], options?: TestRunOptions) => {
     set({ isRunning: true, error: null });
     try {
       if (!window.api) {
         throw new Error("API not available - make sure you are running in Electron");
       }
 
-      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds);
+      console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds, "options:", options);
 
-      const result = await window.api.tests.run(formIds, paymentMethodIds);
+      const result = await window.api.tests.run(formIds, paymentMethodIds, options);
       console.log("Test execution result:", result);
 
       // Reload test runs to get the latest results

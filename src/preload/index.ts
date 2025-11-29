@@ -48,7 +48,8 @@ const api = {
 
   // Test execution
   tests: {
-    run: (formIds: number[], paymentMethodIds: number[]) => ipcRenderer.invoke('tests:run', formIds, paymentMethodIds)
+    run: (formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string }) => 
+      ipcRenderer.invoke('tests:run', formIds, paymentMethodIds, options)
   },
 
   // Test schedule operations
