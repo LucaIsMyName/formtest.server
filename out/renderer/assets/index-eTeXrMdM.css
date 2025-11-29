@@ -722,9 +722,6 @@ video {
 .min-h-\[300px\] {
   min-height: 300px;
 }
-.min-h-\[400px\] {
-  min-height: 400px;
-}
 .\!w-\[calc\(100vw-8rem\)\] {
   width: calc(100vw - 8rem) !important;
 }
@@ -778,6 +775,9 @@ video {
 }
 .w-40 {
   width: 10rem;
+}
+.w-44 {
+  width: 11rem;
 }
 .w-48 {
   width: 12rem;
@@ -1811,6 +1811,9 @@ video {
 .text-yellow-900 {
   --tw-text-opacity: 1;
   color: rgb(113 63 18 / var(--tw-text-opacity, 1));
+}
+.underline {
+  text-decoration-line: underline;
 }
 .line-through {
   text-decoration-line: line-through;

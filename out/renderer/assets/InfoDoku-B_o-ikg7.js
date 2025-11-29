@@ -1,4 +1,4 @@
-import { i as dist, j as jsxRuntimeExports } from "./index-g7SABpaB.js";
+import { i as dist, j as jsxRuntimeExports } from "./index-BZ4UT8XP.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
 const InfoDoku = () => {
   const $ = dist.c(50);
@@ -525,7 +525,7 @@ const InfoDoku = () => {
   if ($[47] === Symbol.for("react.memo_cache_sentinel")) {
     t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
-      " 1.0.8"
+      " 1.0.11"
     ] });
     t48 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Tech:" }) });
     $[47] = t47;

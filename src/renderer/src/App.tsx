@@ -44,10 +44,10 @@ function App() {
     <>
       <Layout>
         <Suspense fallback={
-          <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center justify-start ">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Loading...</div>
+              <div className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 border-6 border-t-transparent rounded-full animate-spin"></div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 sr-only">Loading...</div>
             </div>
           </div>
         }>

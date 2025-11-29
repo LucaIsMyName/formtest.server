@@ -255,7 +255,7 @@ const InfoDoku: React.FC = () => {
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Version & Technologie</h2>
         <div className="text-gray-700 dark:text-gray-300 space-y-2">
           <p>
-            <strong>Version:</strong> 1.0.8
+            <strong>Version:</strong> 1.0.11
           </p>
           <p>
             <strong>Tech:</strong>

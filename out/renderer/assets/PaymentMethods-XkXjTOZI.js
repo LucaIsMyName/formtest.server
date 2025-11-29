@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, i as dist, t as useSearchParams, d as usePaymentMethodsStore, v as StatusBadge, x as formatDate } from "./index-g7SABpaB.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, k as Checkbox, i as dist, t as useSearchParams, d as usePaymentMethodsStore, v as StatusBadge, x as formatDate } from "./index-BZ4UT8XP.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DuMj0He9.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-Jt8OQyHB.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-D9HzeR2W.js";
-import { S as Skeleton } from "./Skeleton-C72PQkWF.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-b_RlUtJ6.js";
-import { P as Plus } from "./upload-Ds-YunoJ.js";
+import { g as getDefaultPaymentIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-I4HOuwEj.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-BuTQgygv.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-hzSCjdC9.js";
+import { S as Skeleton } from "./Skeleton-fMwt18vq.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-72k2lqOI.js";
+import { P as Plus } from "./upload-B5gzV6ik.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -171,7 +171,7 @@ const PaymentMethodDrawer = ({
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: methodData.name, onChange: (e_6) => setMethodData({
           ...methodData,
           name: e_6.target.value
-        }), placeholder: "z.B. Test PayPal Account", disabled: isLoading, className: CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "") }),
+        }), placeholder: "Bezahlmethoden Name", disabled: isLoading, className: CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "") }),
         errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.name })
       ] }) }),
       editMethod && onDelete && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {

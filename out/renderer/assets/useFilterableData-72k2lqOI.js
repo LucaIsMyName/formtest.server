@@ -1,5 +1,5 @@
-import { i as dist, j as jsxRuntimeExports, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, a7 as Search, I as Input, X, r as reactExports } from "./index-g7SABpaB.js";
-import { l as ChevronsUpDown, h as TableHead } from "./Table-Jt8OQyHB.js";
+import { i as dist, j as jsxRuntimeExports, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, q as SelectContent, s as SelectItem, v as StatusBadge, a7 as Badge, a8 as Search, I as Input, X, r as reactExports } from "./index-BZ4UT8XP.js";
+import { l as ChevronsUpDown, h as TableHead } from "./Table-BuTQgygv.js";
 const SortableTableHead = (t0) => {
   const $ = dist.c(12);
   const {
@@ -53,7 +53,7 @@ const SortableTableHead = (t0) => {
   return t6;
 };
 const TableFilter = (t0) => {
-  const $ = dist.c(27);
+  const $ = dist.c(31);
   const {
     searchTerm,
     onSearchChange,
@@ -74,96 +74,144 @@ const TableFilter = (t0) => {
     t2 = $[2];
   }
   const hasFilters = t2;
+  const getVariantForStatus = _temp;
   let t3;
-  if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
-    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 16, className: "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" });
-    $[3] = t3;
+  if ($[3] !== statusFilter || $[4] !== statusOptions) {
+    t3 = () => {
+      if (!statusFilter || statusFilter === "all") {
+        return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600 dark:text-gray-400", children: "Alle Status" });
+      }
+      const option = statusOptions?.find((o) => o.value === statusFilter);
+      if (option) {
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: getVariantForStatus(option.value), children: option.label });
+      }
+      return statusFilter;
+    };
+    $[3] = statusFilter;
+    $[4] = statusOptions;
+    $[5] = t3;
   } else {
-    t3 = $[3];
+    t3 = $[5];
   }
+  const getSelectedStatusDisplay = t3;
   let t4;
-  if ($[4] !== onSearchChange) {
-    t4 = (e) => onSearchChange(e.target.value);
-    $[4] = onSearchChange;
-    $[5] = t4;
+  if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
+    t4 = /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 16, className: "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" });
+    $[6] = t4;
   } else {
-    t4 = $[5];
+    t4 = $[6];
   }
   let t5;
-  if ($[6] !== placeholder || $[7] !== searchTerm || $[8] !== t4) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", value: searchTerm, onChange: t4, placeholder, className: "pl-9 pr-8" });
-    $[6] = placeholder;
-    $[7] = searchTerm;
-    $[8] = t4;
-    $[9] = t5;
+  if ($[7] !== onSearchChange) {
+    t5 = (e) => onSearchChange(e.target.value);
+    $[7] = onSearchChange;
+    $[8] = t5;
   } else {
-    t5 = $[9];
+    t5 = $[8];
   }
   let t6;
-  if ($[10] !== onSearchChange || $[11] !== searchTerm) {
-    t6 = searchTerm && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => onSearchChange(""), className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 }) });
-    $[10] = onSearchChange;
-    $[11] = searchTerm;
+  if ($[9] !== placeholder || $[10] !== searchTerm || $[11] !== t5) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", value: searchTerm, onChange: t5, placeholder, className: "pl-9 pr-8" });
+    $[9] = placeholder;
+    $[10] = searchTerm;
+    $[11] = t5;
     $[12] = t6;
   } else {
     t6 = $[12];
   }
   let t7;
-  if ($[13] !== t5 || $[14] !== t6) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex-1 max-w-sm", children: [
-      t3,
-      t5,
-      t6
-    ] });
-    $[13] = t5;
-    $[14] = t6;
+  if ($[13] !== onSearchChange || $[14] !== searchTerm) {
+    t7 = searchTerm && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => onSearchChange(""), className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 }) });
+    $[13] = onSearchChange;
+    $[14] = searchTerm;
     $[15] = t7;
   } else {
     t7 = $[15];
   }
   let t8;
-  if ($[16] !== onStatusFilterChange || $[17] !== statusFilter || $[18] !== statusOptions) {
-    t8 = statusOptions && onStatusFilterChange && /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: statusFilter || "all", onValueChange: onStatusFilterChange, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-40", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Status" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "Alle Status" }),
-        statusOptions.map(_temp)
-      ] })
+  if ($[16] !== t6 || $[17] !== t7) {
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex-1 max-w-sm", children: [
+      t4,
+      t6,
+      t7
     ] });
-    $[16] = onStatusFilterChange;
-    $[17] = statusFilter;
-    $[18] = statusOptions;
-    $[19] = t8;
+    $[16] = t6;
+    $[17] = t7;
+    $[18] = t8;
   } else {
-    t8 = $[19];
+    t8 = $[18];
   }
   let t9;
-  if ($[20] !== hasFilters || $[21] !== onClear) {
-    t9 = hasFilters && onClear && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClear, className: "text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200", children: "Filter zurücksetzen" });
-    $[20] = hasFilters;
-    $[21] = onClear;
-    $[22] = t9;
+  if ($[19] !== getSelectedStatusDisplay || $[20] !== onStatusFilterChange || $[21] !== statusFilter || $[22] !== statusOptions) {
+    t9 = statusOptions && onStatusFilterChange && /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: statusFilter || "all", onValueChange: onStatusFilterChange, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-44", children: getSelectedStatusDisplay() }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-600 dark:text-gray-400", children: "Alle Status" }) }),
+        statusOptions.map(_temp2)
+      ] })
+    ] });
+    $[19] = getSelectedStatusDisplay;
+    $[20] = onStatusFilterChange;
+    $[21] = statusFilter;
+    $[22] = statusOptions;
+    $[23] = t9;
   } else {
-    t9 = $[22];
+    t9 = $[23];
   }
   let t10;
-  if ($[23] !== t7 || $[24] !== t8 || $[25] !== t9) {
-    t10 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
-      t7,
-      t8,
-      t9
-    ] });
-    $[23] = t7;
-    $[24] = t8;
-    $[25] = t9;
+  if ($[24] !== hasFilters || $[25] !== onClear) {
+    t10 = hasFilters && onClear && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClear, className: "text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200", children: "Filter zurücksetzen" });
+    $[24] = hasFilters;
+    $[25] = onClear;
     $[26] = t10;
   } else {
     t10 = $[26];
   }
-  return t10;
+  let t11;
+  if ($[27] !== t10 || $[28] !== t8 || $[29] !== t9) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
+      t8,
+      t9,
+      t10
+    ] });
+    $[27] = t10;
+    $[28] = t8;
+    $[29] = t9;
+    $[30] = t11;
+  } else {
+    t11 = $[30];
+  }
+  return t11;
 };
-function _temp(option) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: option.value, children: option.label }, option.value);
+function _temp(status) {
+  switch (status.toUpperCase()) {
+    case "SUCCESS":
+    case "ACTIVE": {
+      return "success";
+    }
+    case "FAILURE":
+    case "ERROR": {
+      return "error";
+    }
+    case "RUNNING": {
+      return "running";
+    }
+    case "QUEUED": {
+      return "queued";
+    }
+    case "STOPPED": {
+      return "stopped";
+    }
+    case "INACTIVE": {
+      return "inactive";
+    }
+    default: {
+      return "default";
+    }
+  }
+}
+function _temp2(option_0) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: option_0.value, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: option_0.value, children: option_0.label }) }, option_0.value);
 }
 function useSortableData(items, t0, storageKey) {
   const $ = dist.c(24);

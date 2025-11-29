@@ -42,11 +42,28 @@ export function useFilterableData<T extends object>(
   const filteredItems = useMemo(() => {
     let result = items;
 
-    // Apply status filter if set (only if item has 'status' property)
+    // Apply status filter if set
     if (filterConfig.statusFilter && filterConfig.statusFilter !== 'all') {
       result = result.filter((item) => {
-        const status = (item as Record<string, unknown>)['status'] as string | undefined;
-        return status === filterConfig.statusFilter;
+        const record = item as Record<string, unknown>;
+        
+        // Check for 'status' property (e.g., TestRuns)
+        if ('status' in record) {
+          return record['status'] === filterConfig.statusFilter;
+        }
+        
+        // Check for 'isActive' property (e.g., Forms, PaymentMethods, Schedules)
+        if ('isActive' in record) {
+          const isActive = record['isActive'] as boolean;
+          if (filterConfig.statusFilter === 'active') {
+            return isActive === true;
+          }
+          if (filterConfig.statusFilter === 'inactive') {
+            return isActive === false;
+          }
+        }
+        
+        return true;
       });
     }
 

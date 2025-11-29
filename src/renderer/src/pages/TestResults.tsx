@@ -526,7 +526,8 @@ const TestResults: React.FC = () => {
         <div className="mt-4 mb-6">
           <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            Laufende Tests ({runningTests.length}{queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
+            Laufende Tests ({runningTests.length}
+            {queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
           </h2>
           <div className="bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-lg shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
@@ -768,12 +769,12 @@ const TestResults: React.FC = () => {
         open={!!selectedTestRun}
         onOpenChange={(open) => !open && handleSelectTestRun(null)}>
         <DrawerContent className="w-full max-w-2xl">
-          <DrawerHeader className="mb-6 pb-6 border-b dark:border-gray-700">
+          <DrawerHeader className="mb-4 pb-6 border-b dark:border-gray-700">
             <DrawerTitle className={CONFIG.style.title.className + ` pb-4`}>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerTitle>
             {/* Action buttons */}
             {selectedTestRunData && (
               <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800">
-                {(selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED") ? (
+                {selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? (
                   <Button
                     onClick={async (e) => {
                       e.stopPropagation();
@@ -781,8 +782,7 @@ const TestResults: React.FC = () => {
                     }}
                     variant="secondary"
                     size="sm"
-                    className="gap-1.5 !bg-purple-600 !text-white hover:!bg-purple-700 !border-purple-600"
-                  >
+                    className="gap-1.5 !bg-purple-600 !text-white hover:!bg-purple-700 !border-purple-600">
                     <Square size={14} />
                     {selectedTestRunData.status === "QUEUED" ? "Aus Warteschlange entfernen" : "Test stoppen"}
                   </Button>
@@ -796,8 +796,7 @@ const TestResults: React.FC = () => {
                       }}
                       variant="primary"
                       size="sm"
-                      className="gap-1.5"
-                    >
+                      className="gap-1.5">
                       <Play size={14} />
                       Erneut ausführen
                     </Button>
@@ -806,13 +805,12 @@ const TestResults: React.FC = () => {
                         e.stopPropagation();
                         setShowDeleteConfirm({
                           id: selectedTestRunData.id,
-                          name: `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`
+                          name: `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`,
                         });
                       }}
                       variant="danger"
                       size="sm"
-                      className="gap-1.5"
-                    >
+                      className="gap-1.5">
                       <Trash2 size={14} />
                       Löschen
                     </Button>
@@ -822,10 +820,11 @@ const TestResults: React.FC = () => {
             )}
           </DrawerHeader>
 
-          <div className="flex-1 overflow-y-auto space-y-6">
+          <div className="flex-1 overflow-y-auto space-y-4">
             {selectedTestRunData ? (
               <>
                 {/* Basic Info */}
+                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">Test Infos</label>
                 <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b dark:border-gray-700">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">ID</label>
@@ -945,13 +944,14 @@ const TestResults: React.FC = () => {
                             <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Name</label>
                             <div className="text-sm text-gray-900 dark:text-white">{pmDetails.name}</div>
                           </div>
-                          <div>
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Typ</label>
-                            <div className="text-sm text-gray-900 dark:text-white">{getPaymentTypeLabel(pmDetails.type)}</div>
-                          </div>
+
                           <div>
                             <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Status</label>
                             <StatusBadge status={pmDetails.isActive ? "active" : "inactive"} />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Typ</label>
+                            <div className="text-sm text-gray-900 dark:text-white">{getPaymentTypeLabel(pmDetails.type)}</div>
                           </div>
                           <div>
                             <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Details</label>

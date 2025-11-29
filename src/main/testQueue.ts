@@ -93,6 +93,7 @@ class TestQueue {
 
   /**
    * Get current queue status with detailed info
+   * Cross-references with database to ensure consistency
    */
   getStatus(): { 
     queueLength: number; 
@@ -102,6 +103,31 @@ class TestQueue {
     queuedTests: { testRunId: number; formName: string; paymentMethodName: string }[];
     totalPending: number;
   } {
+    // Verify current test is still RUNNING in database
+    if (this.currentTest && this.isProcessing) {
+      const dbTest = testRunQueries.getById(this.currentTest.testRunId);
+      if (!dbTest || dbTest.status !== 'RUNNING') {
+        // Database says test is not running - reset queue state
+        console.log(`[TestQueue] Sync fix: currentTest ${this.currentTest.testRunId} is ${dbTest?.status || 'missing'} in DB, resetting queue state`);
+        this.currentTest = null;
+        this.isProcessing = false;
+      }
+    }
+    
+    // Clean queue of tests that are no longer QUEUED in database
+    const validQueue = this.queue.filter(t => {
+      const dbTest = testRunQueries.getById(t.testRunId);
+      if (!dbTest || dbTest.status !== 'QUEUED') {
+        console.log(`[TestQueue] Sync fix: removing ${t.testRunId} from queue (DB status: ${dbTest?.status || 'missing'})`);
+        return false;
+      }
+      return true;
+    });
+    
+    if (validQueue.length !== this.queue.length) {
+      this.queue = validQueue;
+    }
+
     return {
       queueLength: this.queue.length,
       isProcessing: this.isProcessing,

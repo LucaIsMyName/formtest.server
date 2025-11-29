@@ -1,7 +1,8 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
 import { Input } from './Input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './Select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from './Select';
+import { Badge, StatusBadge } from './Badge';
 
 interface StatusOption {
   value: string;
@@ -29,6 +30,40 @@ export const TableFilter: React.FC<TableFilterProps> = ({
 }) => {
   const hasFilters = searchTerm.trim() !== '' || (statusFilter && statusFilter !== 'all');
 
+  // Map status value to badge variant
+  const getVariantForStatus = (status: string): "success" | "error" | "stopped" | "running" | "queued" | "active" | "inactive" | "default" => {
+    switch (status.toUpperCase()) {
+      case "SUCCESS":
+      case "ACTIVE":
+        return "success";
+      case "FAILURE":
+      case "ERROR":
+        return "error";
+      case "RUNNING":
+        return "running";
+      case "QUEUED":
+        return "queued";
+      case "STOPPED":
+        return "stopped";
+      case "INACTIVE":
+        return "inactive";
+      default:
+        return "default";
+    }
+  };
+
+  // Get the current selected status for display in trigger (without icon to avoid duplication)
+  const getSelectedStatusDisplay = () => {
+    if (!statusFilter || statusFilter === 'all') {
+      return <span className="text-gray-600 dark:text-gray-400">Alle Status</span>;
+    }
+    const option = statusOptions?.find(o => o.value === statusFilter);
+    if (option) {
+      return <Badge variant={getVariantForStatus(option.value)}>{option.label}</Badge>;
+    }
+    return statusFilter;
+  };
+
   return (
     <div className="flex items-center gap-3 mb-4">
       <div className="relative flex-1 max-w-sm">
@@ -51,14 +86,16 @@ export const TableFilter: React.FC<TableFilterProps> = ({
 
       {statusOptions && onStatusFilterChange && (
         <Select value={statusFilter || 'all'} onValueChange={onStatusFilterChange}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Status" />
+          <SelectTrigger className="w-44">
+            {getSelectedStatusDisplay()}
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
+            <SelectItem value="all">
+              <span className="text-gray-600 dark:text-gray-400">Alle Status</span>
+            </SelectItem>
             {statusOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
-                {option.label}
+                <StatusBadge status={option.value}>{option.label}</StatusBadge>
               </SelectItem>
             ))}
           </SelectContent>

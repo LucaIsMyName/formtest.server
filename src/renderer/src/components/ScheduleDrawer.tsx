@@ -18,7 +18,7 @@ interface ScheduleDrawerProps {
   onClose: () => void;
   onSave: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon?: string }) => Promise<void>;
   initialData?: TestSchedule;
-  title: string;
+  title?: string;
   onDelete?: (id: number) => void;
   onRunNow?: (id: number) => void;
 }

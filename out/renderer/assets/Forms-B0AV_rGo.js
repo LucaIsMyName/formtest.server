@@ -1,11 +1,11 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as Checkbox, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-g7SABpaB.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as Checkbox, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-BZ4UT8XP.js";
 import { C as CONFIG } from "./app.config-KSZPYlnw.js";
-import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-DuMj0He9.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-Jt8OQyHB.js";
-import { P as Plus } from "./upload-Ds-YunoJ.js";
-import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-D9HzeR2W.js";
-import { S as Skeleton } from "./Skeleton-C72PQkWF.js";
-import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-b_RlUtJ6.js";
+import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-I4HOuwEj.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, T as Trash2, d as DrawerFooter, e as Table, f as TableHeader, g as TableRow, h as TableHead, i as TableBody, j as TableCell, k as TablePagination } from "./Table-BuTQgygv.js";
+import { P as Plus } from "./upload-B5gzV6ik.js";
+import { D as DeleteConfirmDialog } from "./DeleteConfirmDialog-hzSCjdC9.js";
+import { S as Skeleton } from "./Skeleton-fMwt18vq.js";
+import { u as useFilterableData, a as useSortableData, T as TableFilter, S as SortableTableHead } from "./useFilterableData-72k2lqOI.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -173,11 +173,11 @@ const FormDrawer = ({
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerHeader, { className: "mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Formular Name *" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Formularname *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: formData.name, onChange: (e_0) => setFormData({
           ...formData,
           name: e_0.target.value
-        }), placeholder: "z.B. Allgemeine Spendenform", disabled: isLoading, className: CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "") }),
+        }), placeholder: "Formularname", disabled: isLoading, className: CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "") }),
         errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm", children: errors.name })
       ] }) }),
       editForm && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800", children: [
@@ -680,7 +680,7 @@ const Forms = () => {
               ] })
             ] })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-[11px] font-mono break-all truncate", children: form_2.url }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[11px] font-mono break-all truncate", children: form_2.url }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
             e_0.stopPropagation();
             toggleFormActive(form_2.id);

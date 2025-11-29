@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-Dy1h4mH1.js","./app.config-KSZPYlnw.js","./Skeleton-C72PQkWF.js","./Forms-C7EISK5K.js","./IconPicker-DuMj0He9.js","./Table-Jt8OQyHB.js","./DeleteConfirmDialog-D9HzeR2W.js","./upload-Ds-YunoJ.js","./useFilterableData-b_RlUtJ6.js","./PaymentMethods-E6fFYVDz.js","./Settings-DC3OY3uR.js","./TestResults-d719JwSw.js","./InfoDoku-Gj0-OVIQ.js","./Schedules-BfIk5Qj_.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-89So9e0e.js","./app.config-KSZPYlnw.js","./Skeleton-fMwt18vq.js","./Forms-B0AV_rGo.js","./IconPicker-I4HOuwEj.js","./Table-BuTQgygv.js","./DeleteConfirmDialog-hzSCjdC9.js","./upload-B5gzV6ik.js","./useFilterableData-72k2lqOI.js","./PaymentMethods-XkXjTOZI.js","./Settings-BgskMG8v.js","./TestResults-BSHZYHyS.js","./InfoDoku-B_o-ikg7.js","./Schedules-DlhHUTzk.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -32805,13 +32805,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-Dy1h4mH1.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-C7EISK5K.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-E6fFYVDz.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-DC3OY3uR.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-d719JwSw.js"), true ? __vite__mapDeps([11,1,6,5,2,8]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-Gj0-OVIQ.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-BfIk5Qj_.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-89So9e0e.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-B0AV_rGo.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-XkXjTOZI.js"), true ? __vite__mapDeps([9,1,4,5,6,7,2,8]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BgskMG8v.js"), true ? __vite__mapDeps([10,1,6,2,7]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-BSHZYHyS.js"), true ? __vite__mapDeps([11,1,6,5,2,8]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-B_o-ikg7.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DlhHUTzk.js"), true ? __vite__mapDeps([13,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -32836,9 +32836,9 @@ function App() {
       root.classList.add(themeValue);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center min-h-[400px]", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center gap-3", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400", children: "Loading..." })
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-start ", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center gap-3", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 border-2 border-gray-300 dark:border-gray-700 border-6 border-t-transparent rounded-full animate-spin" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400 sr-only", children: "Loading..." })
   ] }) }), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Dashboard, {}) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/forms", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Forms, {}) }),
@@ -32887,33 +32887,34 @@ export {
   formatDuration as a4,
   Link as a5,
   CircleX as a6,
-  Search as a7,
-  useSchedulesStore as a8,
-  createLucideIcon as a9,
-  ArrowRight as aa,
-  Bell as ab,
-  BookOpen as ac,
-  Building2 as ad,
-  CheckCheck as ae,
-  ChevronLeft as af,
-  Info as ag,
-  Landmark as ah,
-  LayoutDashboard as ai,
-  TestTube as aj,
-  DialogHeader as ak,
-  DialogTitle as al,
-  DialogContent as am,
-  Dialog as an,
-  Root$1 as ao,
-  Portal$1 as ap,
-  Content as aq,
-  Title as ar,
-  Overlay as as,
-  Close as at,
-  Description as au,
-  React$3 as av,
-  DialogDescription as aw,
-  DialogFooter as ax,
+  Badge as a7,
+  Search as a8,
+  useSchedulesStore as a9,
+  createLucideIcon as aa,
+  ArrowRight as ab,
+  Bell as ac,
+  BookOpen as ad,
+  Building2 as ae,
+  CheckCheck as af,
+  ChevronLeft as ag,
+  Info as ah,
+  Landmark as ai,
+  LayoutDashboard as aj,
+  TestTube as ak,
+  DialogHeader as al,
+  DialogTitle as am,
+  DialogContent as an,
+  Dialog as ao,
+  Root$1 as ap,
+  Portal$1 as aq,
+  Content as ar,
+  Title as as,
+  Overlay as at,
+  Close as au,
+  Description as av,
+  React$3 as aw,
+  DialogDescription as ax,
+  DialogFooter as ay,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,
