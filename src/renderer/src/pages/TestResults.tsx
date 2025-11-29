@@ -5,6 +5,7 @@ import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import TestQueueStatus from "../components/TestQueueStatus";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
@@ -511,6 +512,11 @@ const TestResults: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Test Queue Status */}
+      <div className="mt-4">
+        <TestQueueStatus onRefresh={loadTestRuns} />
+      </div>
 
       {/* Running Tests Table */}
       {runningTests.length > 0 && (

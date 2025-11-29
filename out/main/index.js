@@ -2143,13 +2143,20 @@ class TestQueue {
     }
   }
   /**
-   * Get current queue status
+   * Get current queue status with detailed info
    */
   getStatus() {
     return {
       queueLength: this.queue.length,
       isProcessing: this.isProcessing,
-      currentTestId: this.currentTest?.testRunId || null
+      currentTestId: this.currentTest?.testRunId || null,
+      currentTestName: this.currentTest ? `${this.currentTest.form.name} × ${this.currentTest.paymentMethod.name}` : null,
+      queuedTests: this.queue.map((t) => ({
+        testRunId: t.testRunId,
+        formName: t.form.name,
+        paymentMethodName: t.paymentMethod.name
+      })),
+      totalPending: this.queue.length + (this.isProcessing ? 1 : 0)
     };
   }
   /**

@@ -52,6 +52,12 @@ const api = {
       ipcRenderer.invoke('tests:run', formIds, paymentMethodIds, options)
   },
 
+  // Test queue operations
+  testQueue: {
+    getStatus: () => ipcRenderer.invoke('testQueue:getStatus'),
+    clear: () => ipcRenderer.invoke('testQueue:clear')
+  },
+
   // Test schedule operations
   testSchedules: {
     getAll: () => ipcRenderer.invoke('testSchedules:getAll'),

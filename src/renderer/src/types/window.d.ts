@@ -44,6 +44,17 @@ declare global {
       tests: {
         run: (formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string }) => Promise<any>
       }
+      testQueue: {
+        getStatus: () => Promise<{
+          queueLength: number;
+          isProcessing: boolean;
+          currentTestId: number | null;
+          currentTestName: string | null;
+          queuedTests: { testRunId: number; formName: string; paymentMethodName: string }[];
+          totalPending: number;
+        }>
+        clear: () => Promise<{ success: boolean }>
+      }
       windowControls: {
         close: () => Promise<void>
         minimize: () => Promise<void>

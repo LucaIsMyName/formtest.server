@@ -1,6 +1,6 @@
 {
   "name": "formtest-server",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Donation form testing application with Electron, Vite, TypeScript, and Playwright",
   "main": "out/main/index.js",
   "scripts": {

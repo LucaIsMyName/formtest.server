@@ -242,6 +242,18 @@ export function setupIpcHandlers(): void {
     }
   });
 
+  // Test queue status handlers
+  ipcMain.handle("testQueue:getStatus", () => {
+    const testQueue = getTestQueue();
+    return testQueue.getStatus();
+  });
+
+  ipcMain.handle("testQueue:clear", () => {
+    const testQueue = getTestQueue();
+    testQueue.clear();
+    return { success: true };
+  });
+
   // Export/Import handlers
   ipcMain.handle("database:export", async (_event, options: ImportOptions) => {
     try {
