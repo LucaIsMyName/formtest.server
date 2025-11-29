@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Bell, CheckCircle2, XCircle, Info, X, CheckCheck } from "lucide-react";
+import { Bell, CheckCircle2, XCircle, Info, X, CheckCheck, Trash2 } from "lucide-react";
 import { useNotificationsStore, Notification } from "../store/useNotificationsStore";
 import { useNavigate, useLocation } from "react-router-dom";
 import { formatDateTime } from "../utils/formatters";
@@ -8,7 +8,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 const NotificationButton: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { notifications, unreadCount, loadNotifications, markAsRead, markAllAsRead, deleteNotification } = useNotificationsStore();
+  const { notifications, unreadCount, loadNotifications, markAsRead, markAllAsRead, deleteNotification, deleteAll } = useNotificationsStore();
 
   // Load notifications on mount and set up listener
   useEffect(() => {
@@ -76,9 +76,17 @@ const NotificationButton: React.FC = () => {
               {unreadCount > 0 && (
                 <button
                   onClick={(e) => { e.preventDefault(); markAllAsRead(); }}
-                  className="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                  className="p-1 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   title="Alle als gelesen markieren">
                   <CheckCheck size={14} />
+                </button>
+              )}
+              {notifications.length > 0 && (
+                <button
+                  onClick={(e) => { e.preventDefault(); deleteAll(); }}
+                  className="p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                  title="Alle löschen">
+                  <Trash2 size={14} />
                 </button>
               )}
             </div>
