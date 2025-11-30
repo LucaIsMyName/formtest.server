@@ -1,9 +1,9 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, ar as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, p as Select, q as SelectTrigger, s as SelectValue, t as SelectContent, v as SelectItem, l as renderIcon, m as Checkbox, as as useSchedulesStore, x as Plus, z as Table, A as TableHeader, D as TableRow, H as TableBody, J as TableCell, am as formatDateTime, K as StatusBadge, ab as LoaderCircle, N as Pen, O as TablePagination } from "./index-B2XIpUw8.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, ar as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, p as Select, q as SelectTrigger, s as SelectValue, t as SelectContent, v as SelectItem, l as renderIcon, m as Checkbox, as as useSchedulesStore, x as Plus, z as Table, A as TableHeader, D as TableRow, H as TableBody, J as TableCell, am as formatDateTime, K as StatusBadge, ab as LoaderCircle, N as Pen, O as TablePagination } from "./index-C5v9pVm2.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-BV3o4tGG.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CStDGHNy.js";
-import { S as Skeleton } from "./Skeleton-CIhEMaNW.js";
-import { I as IconPicker } from "./IconPicker-sFSJC-zs.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-FCsS_yUx.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Gr3_ppqF.js";
+import { S as Skeleton } from "./Skeleton-C_MTMhR3.js";
+import { I as IconPicker } from "./IconPicker-BOPyo6pB.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -189,7 +189,6 @@ const ScheduleDrawer = ({
   onClose,
   onSave,
   initialData,
-  title,
   onDelete,
   onRunNow
 }) => {

@@ -114,37 +114,6 @@ describe("TestRunDialog Redesign", () => {
     });
   });
 
-  describe("Interval labels", () => {
-    const getIntervalLabel = (interval: string) => {
-      switch (interval) {
-        case "0":
-          return "Einmalig";
-        case "1":
-          return "Monatlich";
-        case "3":
-          return "Vierteljährlich";
-        case "6":
-          return "Halbjährlich";
-        case "12":
-          return "Jährlich";
-        default:
-          return interval;
-      }
-    };
-
-    it("should return correct labels for known intervals", () => {
-      expect(getIntervalLabel("0")).toBe("Einmalig");
-      expect(getIntervalLabel("1")).toBe("Monatlich");
-      expect(getIntervalLabel("3")).toBe("Vierteljährlich");
-      expect(getIntervalLabel("6")).toBe("Halbjährlich");
-      expect(getIntervalLabel("12")).toBe("Jährlich");
-    });
-
-    it("should return the interval itself for unknown intervals", () => {
-      expect(getIntervalLabel("24")).toBe("24");
-    });
-  });
-
   describe("Test count calculation", () => {
     it("should calculate total tests correctly", () => {
       const selectedFormIds = [1, 2, 3];

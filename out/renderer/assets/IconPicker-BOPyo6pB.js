@@ -1,4 +1,4 @@
-import { i as dist, r as reactExports, at as getAllIconNames, j as jsxRuntimeExports, au as DialogHeader, av as DialogTitle, aw as Search, l as renderIcon, ax as DialogContent, ay as Dialog } from "./index-B2XIpUw8.js";
+import { i as dist, r as reactExports, at as getAllIconNames, j as jsxRuntimeExports, au as DialogHeader, av as DialogTitle, aw as Search, l as renderIcon, ax as DialogContent, ay as Dialog } from "./index-C5v9pVm2.js";
 const IconPicker = (t0) => {
   const $ = dist.c(40);
   const {
