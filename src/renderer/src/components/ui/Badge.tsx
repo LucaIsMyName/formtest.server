@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../utils/cn";
 
 const badgeVariants = cva(
-  "inline-flex !uppercase items-center gap-1.5 px-[0.5em] py-[0.25em] text-[11px] font-medium font-mono rounded-[0.25em] border transition-colors",
+  "inline-flex !uppercase items-center gap-1.5 px-[0.5em] py-[0.25em] text-[11px] font-medium font-mono rounded border transition-colors",
   {
     variants: {
       variant: {
@@ -102,7 +102,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, children, ...props })
       case "RUNNING":
         return (
           <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-[0.25em] bg-blue-400 opacity-75"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded bg-blue-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
           </span>
         );
