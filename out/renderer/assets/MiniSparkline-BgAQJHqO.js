@@ -1,4 +1,4 @@
-import { i as dist, r as reactExports, av as getAllIconNames, j as jsxRuntimeExports, aw as DialogHeader, ax as DialogTitle, ay as Search, s as renderIcon, az as DialogContent, aA as Dialog } from "./index-Bm_upJoi.js";
+import { i as dist, r as reactExports, av as getAllIconNames, j as jsxRuntimeExports, aw as DialogHeader, ax as DialogTitle, ay as Search, s as renderIcon, az as DialogContent, aA as Dialog } from "./index-CwRktoG4.js";
 const IconPicker = (t0) => {
   const $ = dist.c(40);
   const {
@@ -17,7 +17,7 @@ const IconPicker = (t0) => {
   const allIcons = t1;
   let t2;
   if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
-    const shuffled = [...allIcons].sort(_temp);
+    const shuffled = [...allIcons].sort(_temp$1);
     t2 = shuffled.slice(0, 50);
     $[1] = t2;
   } else {
@@ -204,9 +204,217 @@ const IconPicker = (t0) => {
   }
   return t19;
 };
-function _temp() {
+function _temp$1() {
   return Math.random() - 0.5;
 }
+const MiniSparkline = (t0) => {
+  const $ = dist.c(23);
+  const {
+    data,
+    showTooltip: t1
+  } = t0;
+  const showTooltip = t1 === void 0 ? true : t1;
+  let t2;
+  bb0: {
+    if (data.length === 0) {
+      t2 = null;
+      break bb0;
+    }
+    const totalTests = data.reduce(_temp, 0);
+    const totalSuccess = data.reduce(_temp2, 0);
+    const avgRate = totalTests > 0 ? totalSuccess / totalTests * 100 : 100;
+    let t32;
+    if ($[0] !== avgRate) {
+      t32 = Math.round(avgRate / 10);
+      $[0] = avgRate;
+      $[1] = t32;
+    } else {
+      t32 = $[1];
+    }
+    const filledBullets = t32;
+    const getColor = _temp3;
+    let t42;
+    if ($[2] !== avgRate) {
+      t42 = getColor(avgRate);
+      $[2] = avgRate;
+      $[3] = t42;
+    } else {
+      t42 = $[3];
+    }
+    const colors = t42;
+    let t52;
+    if ($[4] !== avgRate || $[5] !== colors || $[6] !== filledBullets || $[7] !== totalSuccess || $[8] !== totalTests) {
+      t52 = {
+        avgRate,
+        filledBullets,
+        colors,
+        totalTests,
+        totalSuccess
+      };
+      $[4] = avgRate;
+      $[5] = colors;
+      $[6] = filledBullets;
+      $[7] = totalSuccess;
+      $[8] = totalTests;
+      $[9] = t52;
+    } else {
+      t52 = $[9];
+    }
+    t2 = t52;
+  }
+  const chartData = t2;
+  if (!chartData || data.length === 0) {
+    let t32;
+    if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
+      t32 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-0.5", children: [...Array(10)].map(_temp4) });
+      $[10] = t32;
+    } else {
+      t32 = $[10];
+    }
+    return t32;
+  }
+  const {
+    avgRate: avgRate_0,
+    filledBullets: filledBullets_0,
+    colors: colors_0,
+    totalTests: totalTests_0
+  } = chartData;
+  let t3;
+  if ($[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t3 = [...Array(10)];
+    $[11] = t3;
+  } else {
+    t3 = $[11];
+  }
+  let t4;
+  if ($[12] !== colors_0 || $[13] !== filledBullets_0 || $[14] !== t3) {
+    t4 = t3.map((__0, i_0) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 rounded-full transition-colors", style: {
+      backgroundColor: i_0 < filledBullets_0 ? colors_0.filled : colors_0.empty
+    } }, i_0));
+    $[12] = colors_0;
+    $[13] = filledBullets_0;
+    $[14] = t3;
+    $[15] = t4;
+  } else {
+    t4 = $[15];
+  }
+  let t5;
+  if ($[16] !== avgRate_0 || $[17] !== showTooltip || $[18] !== totalTests_0) {
+    t5 = showTooltip && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: avgRate_0 >= 90 ? "text-green-400" : avgRate_0 >= 80 ? "text-orange-400" : "text-red-400", children: [
+        avgRate_0.toFixed(0),
+        "%"
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-gray-400 ml-1", children: [
+        "(",
+        totalTests_0,
+        " Tests, 14 Tage)"
+      ] })
+    ] });
+    $[16] = avgRate_0;
+    $[17] = showTooltip;
+    $[18] = totalTests_0;
+    $[19] = t5;
+  } else {
+    t5 = $[19];
+  }
+  let t6;
+  if ($[20] !== t4 || $[21] !== t5) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative group flex items-center gap-0.5", children: [
+      t4,
+      t5
+    ] });
+    $[20] = t4;
+    $[21] = t5;
+    $[22] = t6;
+  } else {
+    t6 = $[22];
+  }
+  return t6;
+};
+function useSparklineData(testRuns, entityType, entityId, scheduleConfig) {
+  return reactExports.useMemo(() => {
+    const DAYS = 14;
+    const now = /* @__PURE__ */ new Date();
+    const startDate = new Date(now);
+    startDate.setDate(startDate.getDate() - DAYS);
+    startDate.setHours(0, 0, 0, 0);
+    const entityRuns = testRuns.filter((run) => {
+      const runDate = new Date(run.runAt);
+      if (runDate < startDate) return false;
+      if (run.status === "RUNNING" || run.status === "QUEUED") return false;
+      switch (entityType) {
+        case "form":
+          return run.formId === entityId;
+        case "paymentMethod":
+          return run.paymentMethodId === entityId;
+        case "schedule":
+          return scheduleConfig && run.formId === scheduleConfig.formId && run.paymentMethodId === scheduleConfig.paymentMethodId && run.isScheduled === true;
+        default:
+          return false;
+      }
+    });
+    const byDate = {};
+    for (let i = 0; i < DAYS; i++) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - (DAYS - 1 - i));
+      const dateKey = date.toISOString().split("T")[0];
+      byDate[dateKey] = {
+        total: 0,
+        success: 0
+      };
+    }
+    entityRuns.forEach((run_0) => {
+      const dateKey_0 = new Date(run_0.runAt).toISOString().split("T")[0];
+      if (byDate[dateKey_0]) {
+        byDate[dateKey_0].total++;
+        if (run_0.status === "SUCCESS") {
+          byDate[dateKey_0].success++;
+        }
+      }
+    });
+    const result = Object.entries(byDate).sort(([a], [b]) => a.localeCompare(b)).map(([date_0, {
+      total,
+      success
+    }]) => ({
+      date: date_0,
+      total,
+      success,
+      rate: total > 0 ? success / total * 100 : 100
+      // Default to 100% if no tests
+    }));
+    return result;
+  }, [testRuns, entityType, entityId]);
+}
+function _temp(sum, d) {
+  return sum + d.total;
+}
+function _temp2(sum_0, d_0) {
+  return sum_0 + d_0.success;
+}
+function _temp3(rate) {
+  if (rate >= 90) {
+    return {
+      filled: "#10b981",
+      empty: "#d1fae5"
+    };
+  }
+  if (rate >= 80) {
+    return {
+      filled: "#f97316",
+      empty: "#fed7aa"
+    };
+  }
+  return {
+    filled: "#ef4444",
+    empty: "#fecaca"
+  };
+}
+function _temp4(_, i) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700" }, i);
+}
 export {
-  IconPicker as I
+  IconPicker as I,
+  MiniSparkline as M,
+  useSparklineData as u
 };

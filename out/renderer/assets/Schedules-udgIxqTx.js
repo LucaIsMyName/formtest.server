@@ -1,9 +1,9 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, at as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, al as formatDateTime, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, au as useSchedulesStore, H as Plus, K as TableHeader, ab as LoaderCircle, N as Pen, O as TablePagination } from "./index-Bm_upJoi.js";
-import { C as CONFIG } from "./app.config-CbnJ5rA0.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-BiuIQd-Z.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-DHkBeFDb.js";
-import { S as Skeleton } from "./Skeleton-D7GM-8r9.js";
-import { I as IconPicker } from "./IconPicker-BB1FsMVf.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, at as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, al as formatDateTime, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, au as useSchedulesStore, e as useTestRunsStore, H as Plus, K as TableHeader, ab as LoaderCircle, N as Pen, O as TablePagination, i as dist } from "./index-CwRktoG4.js";
+import { C as CONFIG } from "./app.config-BsmENKig.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-_W5mp2RH.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-DI1tYP_c.js";
+import { S as Skeleton } from "./Skeleton-BIfxcMtd.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-BgAQJHqO.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -393,6 +393,37 @@ const ScheduleDrawer = ({
     }, onClose: () => setShowIconPicker(false) })
   ] });
 };
+const ScheduleSparkline = (t0) => {
+  const $ = dist.c(5);
+  const {
+    scheduleId,
+    formId,
+    paymentMethodId,
+    testRuns
+  } = t0;
+  let t1;
+  if ($[0] !== formId || $[1] !== paymentMethodId) {
+    t1 = {
+      formId,
+      paymentMethodId
+    };
+    $[0] = formId;
+    $[1] = paymentMethodId;
+    $[2] = t1;
+  } else {
+    t1 = $[2];
+  }
+  const sparklineData = useSparklineData(testRuns, "schedule", scheduleId, t1);
+  let t2;
+  if ($[3] !== sparklineData) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(MiniSparkline, { data: sparklineData });
+    $[3] = sparklineData;
+    $[4] = t2;
+  } else {
+    t2 = $[4];
+  }
+  return t2;
+};
 const Schedules = () => {
   const {
     schedules,
@@ -412,6 +443,10 @@ const Schedules = () => {
     paymentMethods,
     loadPaymentMethods
   } = usePaymentMethodsStore();
+  const {
+    testRuns,
+    loadTestRuns
+  } = useTestRunsStore();
   const [isCreateOpen, setIsCreateOpen] = reactExports.useState(false);
   const [editingSchedule, setEditingSchedule] = reactExports.useState(void 0);
   const [deletingSchedule, setDeletingSchedule] = reactExports.useState(null);
@@ -422,7 +457,8 @@ const Schedules = () => {
     loadSchedules();
     loadForms();
     loadPaymentMethods();
-  }, [loadSchedules, loadForms, loadPaymentMethods]);
+    loadTestRuns();
+  }, [loadSchedules, loadForms, loadPaymentMethods, loadTestRuns]);
   const getFormName = (id) => forms.find((f) => f.id === id)?.name || `Form #${id}`;
   const getPaymentMethodName = (id_0) => paymentMethods.find((pm) => pm.id === id_0)?.name || `PM #${id_0}`;
   const enrichedSchedules = reactExports.useMemo(() => {
@@ -517,10 +553,12 @@ const Schedules = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("configuration"), onSort: () => requestSort("configuration"), children: "Konfiguration" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("formName"), onSort: () => requestSort("formName"), children: "Formular" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("paymentMethodName"), onSort: () => requestSort("paymentMethodName"), children: "Bezahlmethode" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("cronExpression"), onSort: () => requestSort("cronExpression"), children: "Cron" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("lastRun"), onSort: () => requestSort("lastRun"), children: "Ausgeführt" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "text-left", children: "14-Tage" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "!text-right block", children: "Aktionen" }) })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedSchedules.map((schedule_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset", onClick: () => setEditingSchedule(schedule_0), onKeyDown: (e) => {
@@ -533,14 +571,12 @@ const Schedules = () => {
             renderIcon(schedule_0.icon || "Play", 16, "text-gray-600 dark:text-gray-400"),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-sm text-gray-900 dark:text-white", children: schedule_0.name })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 dark:text-gray-300 ", children: [
-            getFormName(schedule_0.formId),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mx-1 text-gray-400", children: "×" }),
-            getPaymentMethodName(schedule_0.paymentMethodId)
-          ] }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-600 dark:text-gray-300", children: getFormName(schedule_0.formId) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-600 dark:text-gray-300", children: getPaymentMethodName(schedule_0.paymentMethodId) }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "min-w-[160px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule_0.cronExpression }) }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule_0.lastRun) }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "w-[120px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule_0.isActive ? "active" : "inactive", children: schedule_0.isActive ? "Aktiv" : "Inaktiv" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleSparkline, { scheduleId: schedule_0.id, formId: schedule_0.formId, paymentMethodId: schedule_0.paymentMethodId, testRuns }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_0) => {
               e_0.stopPropagation();

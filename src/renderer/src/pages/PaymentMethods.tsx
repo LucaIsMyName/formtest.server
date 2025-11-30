@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
+import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
 import PaymentMethodDrawer from "../components/PaymentMethodDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
@@ -16,12 +17,19 @@ import { TableFilter } from "../components/ui/TableFilter";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
 
 // Extended type for sorting with computed fields
 interface PaymentMethodWithComputed extends PaymentMethod {
   typeLabel?: string;
   detailsSummary?: string; // For sorting by details
 }
+
+// Wrapper component for sparkline that uses the hook
+const PaymentMethodSparkline: React.FC<{ paymentMethodId: number; testRuns: any[] }> = ({ paymentMethodId, testRuns }) => {
+  const sparklineData = useSparklineData(testRuns, "paymentMethod", paymentMethodId);
+  return <MiniSparkline data={sparklineData} />;
+};
 
 const PaymentMethodsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
@@ -50,13 +58,15 @@ const PaymentMethodsSkeleton = () => (
 const PaymentMethods: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { paymentMethods, isLoading, error, loadPaymentMethods, addPaymentMethod, updatePaymentMethod, deletePaymentMethod, togglePaymentMethodActive } = usePaymentMethodsStore();
+  const { testRuns, loadTestRuns } = useTestRunsStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
 
   useEffect(() => {
     loadPaymentMethods();
-  }, [loadPaymentMethods]);
+    loadTestRuns();
+  }, [loadPaymentMethods, loadTestRuns]);
 
   // Add type labels and details summary for sorting
   const paymentMethodsWithComputed = useMemo((): PaymentMethodWithComputed[] => {
@@ -334,6 +344,7 @@ const PaymentMethods: React.FC = () => {
                   onSort={() => requestSort('createdAt')}>
                   Erstellt
                 </SortableTableHead>
+                <TableHead className="text-left">14-Tage</TableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
@@ -374,6 +385,9 @@ const PaymentMethods: React.FC = () => {
                     </button>
                   </TableCell>
                   <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</TableCell>
+                  <TableCell className="text-left">
+                    <PaymentMethodSparkline paymentMethodId={method.id} testRuns={testRuns} />
+                  </TableCell>
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <Button

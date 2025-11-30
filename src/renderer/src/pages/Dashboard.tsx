@@ -403,7 +403,13 @@ const Dashboard: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400">Erfolgsrate</p>
             <p
-              className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2"
+              className={`text-2xl font-semibold mt-2 ${
+                stats.successRate >= 90 
+                  ? "text-green-600 dark:text-green-400" 
+                  : stats.successRate >= 80 
+                    ? "text-orange-500 dark:text-orange-400" 
+                    : "text-red-600 dark:text-red-400"
+              }`}
               style={{ fontStretch: "125%" }}>
               {isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}
             </p>

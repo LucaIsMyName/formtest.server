@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useFormsStore } from "../store/useFormsStore";
+import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
 import FormDrawer from "../components/FormDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
@@ -16,6 +17,7 @@ import { formatDate } from "../utils/formatters";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
 
 const FormsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
@@ -40,16 +42,24 @@ const FormsSkeleton = () => (
   </div>
 );
 
+// Wrapper component for sparkline that uses the hook
+const FormSparkline: React.FC<{ formId: number; testRuns: any[] }> = ({ formId, testRuns }) => {
+  const sparklineData = useSparklineData(testRuns, "form", formId);
+  return <MiniSparkline data={sparklineData} />;
+};
+
 const Forms: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { forms, isLoading, error, loadForms, addForm, updateForm, deleteForm, toggleFormActive } = useFormsStore();
+  const { testRuns, loadTestRuns } = useTestRunsStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingForm, setEditingForm] = useState<Form | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
 
   useEffect(() => {
     loadForms();
-  }, [loadForms]);
+    loadTestRuns();
+  }, [loadForms, loadTestRuns]);
 
   // Filtering (with localStorage persistence)
   const {
@@ -254,6 +264,7 @@ const Forms: React.FC = () => {
                   onSort={() => requestSort("createdAt")}>
                   Erstellt
                 </SortableTableHead>
+                <TableHead className="text-left">14-Tage</TableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
@@ -302,6 +313,9 @@ const Forms: React.FC = () => {
                     </button>
                   </TableCell>
                   <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</TableCell>
+                  <TableCell className="text-left">
+                    <FormSparkline formId={form.id} testRuns={testRuns} />
+                  </TableCell>
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <Button

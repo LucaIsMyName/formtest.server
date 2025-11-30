@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2, Play, Loader2 } from "lucide-react";
 import { useSchedulesStore } from "../store/useSchedulesStore";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
+import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
@@ -17,6 +18,7 @@ import { formatDateTime } from "../utils/formatters";
 import { TestSchedule } from "../../../common/types";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
 
 // Extended type with computed fields for sorting/filtering
 interface ScheduleWithComputed extends TestSchedule {
@@ -25,10 +27,27 @@ interface ScheduleWithComputed extends TestSchedule {
   configuration: string;
 }
 
+// Wrapper component for sparkline that uses the hook
+const ScheduleSparkline: React.FC<{ 
+  scheduleId: number; 
+  formId: number; 
+  paymentMethodId: number; 
+  testRuns: any[] 
+}> = ({ scheduleId, formId, paymentMethodId, testRuns }) => {
+  const sparklineData = useSparklineData(
+    testRuns, 
+    "schedule", 
+    scheduleId, 
+    { formId, paymentMethodId }
+  );
+  return <MiniSparkline data={sparklineData} />;
+};
+
 const Schedules: React.FC = () => {
   const { schedules, loadSchedules, createSchedule, updateSchedule, deleteSchedule, runScheduleNow, isLoading, error } = useSchedulesStore();
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
+  const { testRuns, loadTestRuns } = useTestRunsStore();
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<TestSchedule | undefined>(undefined);
@@ -41,7 +60,8 @@ const Schedules: React.FC = () => {
     loadSchedules();
     loadForms();
     loadPaymentMethods();
-  }, [loadSchedules, loadForms, loadPaymentMethods]);
+    loadTestRuns();
+  }, [loadSchedules, loadForms, loadPaymentMethods, loadTestRuns]);
 
   const getFormName = (id: number) => forms.find((f) => f.id === id)?.name || `Form #${id}`;
   const getPaymentMethodName = (id: number) => paymentMethods.find((pm) => pm.id === id)?.name || `PM #${id}`;
@@ -170,9 +190,14 @@ const Schedules: React.FC = () => {
                     Name
                   </SortableTableHead>
                   <SortableTableHead
-                    sortDirection={getSortDirection("configuration")}
-                    onSort={() => requestSort("configuration")}>
-                    Konfiguration
+                    sortDirection={getSortDirection("formName")}
+                    onSort={() => requestSort("formName")}>
+                    Formular
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sortDirection={getSortDirection("paymentMethodName")}
+                    onSort={() => requestSort("paymentMethodName")}>
+                    Bezahlmethode
                   </SortableTableHead>
                   <SortableTableHead
                     sortDirection={getSortDirection("cronExpression")}
@@ -188,6 +213,9 @@ const Schedules: React.FC = () => {
                     sortDirection={getSortDirection("isActive")}
                     onSort={() => requestSort("isActive")}>
                     Status
+                  </SortableTableHead>
+                  <SortableTableHead className="text-left">
+                    14-Tage
                   </SortableTableHead>
                   <SortableTableHead className="">
                     <span className="!text-right block">Aktionen</span>
@@ -215,9 +243,12 @@ const Schedules: React.FC = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-xs text-gray-600 dark:text-gray-300 ">
+                      <div className="text-xs text-gray-600 dark:text-gray-300">
                         {getFormName(schedule.formId)}
-                        <span className="mx-1 text-gray-400">×</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-xs text-gray-600 dark:text-gray-300">
                         {getPaymentMethodName(schedule.paymentMethodId)}
                       </div>
                     </TableCell>
@@ -231,6 +262,14 @@ const Schedules: React.FC = () => {
                     </TableCell>
                     <TableCell className="w-[120px]">
                       <StatusBadge status={schedule.isActive ? "active" : "inactive"}>{schedule.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
+                    </TableCell>
+                    <TableCell className="text-left">
+                      <ScheduleSparkline 
+                        scheduleId={schedule.id} 
+                        formId={schedule.formId} 
+                        paymentMethodId={schedule.paymentMethodId} 
+                        testRuns={testRuns} 
+                      />
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">

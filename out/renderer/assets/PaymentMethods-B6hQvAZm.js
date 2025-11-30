@@ -1,9 +1,9 @@
-import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, i as dist, J as useSearchParams, d as usePaymentMethodsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, H as Plus } from "./index-Bm_upJoi.js";
-import { C as CONFIG } from "./app.config-CbnJ5rA0.js";
-import { I as IconPicker } from "./IconPicker-BB1FsMVf.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-BiuIQd-Z.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-DHkBeFDb.js";
-import { S as Skeleton } from "./Skeleton-D7GM-8r9.js";
+import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, i as dist, J as useSearchParams, d as usePaymentMethodsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, H as Plus } from "./index-CwRktoG4.js";
+import { C as CONFIG } from "./app.config-BsmENKig.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-BgAQJHqO.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-_W5mp2RH.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-DI1tYP_c.js";
+import { S as Skeleton } from "./Skeleton-BIfxcMtd.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -262,6 +262,23 @@ const PaymentMethodDrawer = ({
     }, onClose: () => setShowIconPicker(false) })
   ] }) });
 };
+const PaymentMethodSparkline = (t0) => {
+  const $ = dist.c(2);
+  const {
+    paymentMethodId,
+    testRuns
+  } = t0;
+  const sparklineData = useSparklineData(testRuns, "paymentMethod", paymentMethodId);
+  let t1;
+  if ($[0] !== sparklineData) {
+    t1 = /* @__PURE__ */ jsxRuntimeExports.jsx(MiniSparkline, { data: sparklineData });
+    $[0] = sparklineData;
+    $[1] = t1;
+  } else {
+    t1 = $[1];
+  }
+  return t1;
+};
 const PaymentMethodsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
@@ -274,7 +291,7 @@ const PaymentMethodsSkeleton = () => {
   return t0;
 };
 const PaymentMethods = () => {
-  const $ = dist.c(96);
+  const $ = dist.c(98);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     paymentMethods,
@@ -286,62 +303,68 @@ const PaymentMethods = () => {
     deletePaymentMethod,
     togglePaymentMethodActive
   } = usePaymentMethodsStore();
+  const {
+    testRuns,
+    loadTestRuns
+  } = useTestRunsStore();
   const [isDialogOpen, setIsDialogOpen] = reactExports.useState(false);
   const [editingMethod, setEditingMethod] = reactExports.useState(null);
   const [deleteConfirm, setDeleteConfirm] = reactExports.useState(null);
   let t0;
   let t1;
-  if ($[0] !== loadPaymentMethods) {
+  if ($[0] !== loadPaymentMethods || $[1] !== loadTestRuns) {
     t0 = () => {
       loadPaymentMethods();
+      loadTestRuns();
     };
-    t1 = [loadPaymentMethods];
+    t1 = [loadPaymentMethods, loadTestRuns];
     $[0] = loadPaymentMethods;
-    $[1] = t0;
-    $[2] = t1;
+    $[1] = loadTestRuns;
+    $[2] = t0;
+    $[3] = t1;
   } else {
-    t0 = $[1];
-    t1 = $[2];
+    t0 = $[2];
+    t1 = $[3];
   }
   reactExports.useEffect(t0, t1);
   const getTypeLabel = _temp2;
   const getDetailsSummary = _temp3;
   let t2;
-  if ($[3] !== paymentMethods) {
+  if ($[4] !== paymentMethods) {
     let t32;
-    if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
+    if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
       t32 = (pm) => ({
         ...pm,
         typeLabel: getTypeLabel(pm.type),
         detailsSummary: getDetailsSummary(pm)
       });
-      $[5] = t32;
+      $[6] = t32;
     } else {
-      t32 = $[5];
+      t32 = $[6];
     }
     t2 = paymentMethods.map(t32);
-    $[3] = paymentMethods;
-    $[4] = t2;
+    $[4] = paymentMethods;
+    $[5] = t2;
   } else {
-    t2 = $[4];
+    t2 = $[5];
   }
   const paymentMethodsWithComputed = t2;
   let t3;
-  if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
     t3 = ["name", "typeLabel", "type", "detailsSummary"];
-    $[6] = t3;
+    $[7] = t3;
   } else {
-    t3 = $[6];
+    t3 = $[7];
   }
   let t4;
-  if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[8] === Symbol.for("react.memo_cache_sentinel")) {
     t4 = {
       searchTerm: "",
       statusFilter: void 0
     };
-    $[7] = t4;
+    $[8] = t4;
   } else {
-    t4 = $[7];
+    t4 = $[8];
   }
   const {
     filteredItems: filteredMethods,
@@ -351,14 +374,14 @@ const PaymentMethods = () => {
     clearFilters
   } = useFilterableData(paymentMethodsWithComputed, t3, t4, "paymentMethods");
   let t5;
-  if ($[8] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
     t5 = {
       key: "name",
       direction: "asc"
     };
-    $[8] = t5;
+    $[9] = t5;
   } else {
-    t5 = $[8];
+    t5 = $[9];
   }
   const {
     sortedItems: sortedMethods,
@@ -367,7 +390,7 @@ const PaymentMethods = () => {
     getSortDirection
   } = useSortableData(filteredMethods, t5, "paymentMethods");
   let t6;
-  if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
     t6 = [{
       value: "active",
       label: "Aktiv"
@@ -375,9 +398,9 @@ const PaymentMethods = () => {
       value: "inactive",
       label: "Inaktiv"
     }];
-    $[9] = t6;
+    $[10] = t6;
   } else {
-    t6 = $[9];
+    t6 = $[10];
   }
   const statusOptions = t6;
   const [currentPage, setCurrentPage] = reactExports.useState(1);
@@ -386,34 +409,34 @@ const PaymentMethods = () => {
     let filtered = sortedMethods;
     if (filterConfig.statusFilter && filterConfig.statusFilter !== "all") {
       let t82;
-      if ($[10] !== filterConfig.statusFilter || $[11] !== sortedMethods) {
+      if ($[11] !== filterConfig.statusFilter || $[12] !== sortedMethods) {
         let t92;
-        if ($[13] !== filterConfig.statusFilter) {
+        if ($[14] !== filterConfig.statusFilter) {
           t92 = (m) => filterConfig.statusFilter === "active" ? m.isActive : !m.isActive;
-          $[13] = filterConfig.statusFilter;
-          $[14] = t92;
+          $[14] = filterConfig.statusFilter;
+          $[15] = t92;
         } else {
-          t92 = $[14];
+          t92 = $[15];
         }
         t82 = sortedMethods.filter(t92);
-        $[10] = filterConfig.statusFilter;
-        $[11] = sortedMethods;
-        $[12] = t82;
+        $[11] = filterConfig.statusFilter;
+        $[12] = sortedMethods;
+        $[13] = t82;
       } else {
-        t82 = $[12];
+        t82 = $[13];
       }
       filtered = t82;
     }
     if (filtered.length > 50) {
       const start = (currentPage - 1) * 50;
       let t82;
-      if ($[15] !== filtered || $[16] !== start) {
+      if ($[16] !== filtered || $[17] !== start) {
         t82 = filtered.slice(start, start + 50);
-        $[15] = filtered;
-        $[16] = start;
-        $[17] = t82;
+        $[16] = filtered;
+        $[17] = start;
+        $[18] = t82;
       } else {
-        t82 = $[17];
+        t82 = $[18];
       }
       t7 = t82;
       break bb0;
@@ -428,21 +451,21 @@ const PaymentMethods = () => {
       break bb1;
     }
     let t92;
-    if ($[18] !== filterConfig.statusFilter || $[19] !== sortedMethods) {
+    if ($[19] !== filterConfig.statusFilter || $[20] !== sortedMethods) {
       let t102;
-      if ($[21] !== filterConfig.statusFilter) {
+      if ($[22] !== filterConfig.statusFilter) {
         t102 = (m_0) => filterConfig.statusFilter === "active" ? m_0.isActive : !m_0.isActive;
-        $[21] = filterConfig.statusFilter;
-        $[22] = t102;
+        $[22] = filterConfig.statusFilter;
+        $[23] = t102;
       } else {
-        t102 = $[22];
+        t102 = $[23];
       }
       t92 = sortedMethods.filter(t102);
-      $[18] = filterConfig.statusFilter;
-      $[19] = sortedMethods;
-      $[20] = t92;
+      $[19] = filterConfig.statusFilter;
+      $[20] = sortedMethods;
+      $[21] = t92;
     } else {
-      t92 = $[20];
+      t92 = $[21];
     }
     t8 = t92.length;
   }
@@ -450,29 +473,29 @@ const PaymentMethods = () => {
   const totalPages = Math.ceil(totalFilteredItems / 50);
   const showPagination = totalFilteredItems > 50;
   let t9;
-  if ($[23] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[24] === Symbol.for("react.memo_cache_sentinel")) {
     t9 = () => {
       setCurrentPage(1);
     };
-    $[23] = t9;
+    $[24] = t9;
   } else {
-    t9 = $[23];
+    t9 = $[24];
   }
   let t10;
-  if ($[24] !== filterConfig.searchTerm || $[25] !== filterConfig.statusFilter || $[26] !== sortConfig.direction || $[27] !== sortConfig.key) {
+  if ($[25] !== filterConfig.searchTerm || $[26] !== filterConfig.statusFilter || $[27] !== sortConfig.direction || $[28] !== sortConfig.key) {
     t10 = [filterConfig.statusFilter, filterConfig.searchTerm, sortConfig.key, sortConfig.direction];
-    $[24] = filterConfig.searchTerm;
-    $[25] = filterConfig.statusFilter;
-    $[26] = sortConfig.direction;
-    $[27] = sortConfig.key;
-    $[28] = t10;
+    $[25] = filterConfig.searchTerm;
+    $[26] = filterConfig.statusFilter;
+    $[27] = sortConfig.direction;
+    $[28] = sortConfig.key;
+    $[29] = t10;
   } else {
-    t10 = $[28];
+    t10 = $[29];
   }
   reactExports.useEffect(t9, t10);
   let t11;
   let t12;
-  if ($[29] !== paymentMethods || $[30] !== searchParams) {
+  if ($[30] !== paymentMethods || $[31] !== searchParams) {
     t11 = () => {
       if (paymentMethods.length > 0) {
         const paramId = searchParams.get("id");
@@ -486,30 +509,30 @@ const PaymentMethods = () => {
       }
     };
     t12 = [paymentMethods, searchParams];
-    $[29] = paymentMethods;
-    $[30] = searchParams;
-    $[31] = t11;
-    $[32] = t12;
+    $[30] = paymentMethods;
+    $[31] = searchParams;
+    $[32] = t11;
+    $[33] = t12;
   } else {
-    t11 = $[31];
-    t12 = $[32];
+    t11 = $[32];
+    t12 = $[33];
   }
   reactExports.useEffect(t11, t12);
   let t13;
-  if ($[33] !== setSearchParams) {
+  if ($[34] !== setSearchParams) {
     t13 = () => {
       setEditingMethod(null);
       setIsDialogOpen(true);
       setSearchParams({});
     };
-    $[33] = setSearchParams;
-    $[34] = t13;
+    $[34] = setSearchParams;
+    $[35] = t13;
   } else {
-    t13 = $[34];
+    t13 = $[35];
   }
   const handleAddMethod = t13;
   let t14;
-  if ($[35] !== setSearchParams) {
+  if ($[36] !== setSearchParams) {
     t14 = (method_1) => {
       setEditingMethod(method_1);
       setIsDialogOpen(true);
@@ -517,26 +540,26 @@ const PaymentMethods = () => {
         id: String(method_1.id)
       });
     };
-    $[35] = setSearchParams;
-    $[36] = t14;
+    $[36] = setSearchParams;
+    $[37] = t14;
   } else {
-    t14 = $[36];
+    t14 = $[37];
   }
   const handleEditMethod = t14;
   let t15;
-  if ($[37] !== setSearchParams) {
+  if ($[38] !== setSearchParams) {
     t15 = () => {
       setIsDialogOpen(false);
       setSearchParams({});
     };
-    $[37] = setSearchParams;
-    $[38] = t15;
+    $[38] = setSearchParams;
+    $[39] = t15;
   } else {
-    t15 = $[38];
+    t15 = $[39];
   }
   const handleCloseDialog = t15;
   let t16;
-  if ($[39] !== addPaymentMethod || $[40] !== editingMethod || $[41] !== updatePaymentMethod) {
+  if ($[40] !== addPaymentMethod || $[41] !== editingMethod || $[42] !== updatePaymentMethod) {
     t16 = async (methodData) => {
       if (editingMethod) {
         await updatePaymentMethod(editingMethod.id, methodData);
@@ -544,60 +567,60 @@ const PaymentMethods = () => {
         await addPaymentMethod(methodData);
       }
     };
-    $[39] = addPaymentMethod;
-    $[40] = editingMethod;
-    $[41] = updatePaymentMethod;
-    $[42] = t16;
+    $[40] = addPaymentMethod;
+    $[41] = editingMethod;
+    $[42] = updatePaymentMethod;
+    $[43] = t16;
   } else {
-    t16 = $[42];
+    t16 = $[43];
   }
   const handleMethodSubmit = t16;
   let t17;
-  if ($[43] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[44] === Symbol.for("react.memo_cache_sentinel")) {
     t17 = (method_2) => {
       setDeleteConfirm({
         id: method_2.id,
         name: method_2.name
       });
     };
-    $[43] = t17;
+    $[44] = t17;
   } else {
-    t17 = $[43];
+    t17 = $[44];
   }
   const handleDeleteMethod = t17;
   let t18;
-  if ($[44] !== deleteConfirm || $[45] !== deletePaymentMethod) {
+  if ($[45] !== deleteConfirm || $[46] !== deletePaymentMethod) {
     t18 = async () => {
       if (deleteConfirm) {
         await deletePaymentMethod(deleteConfirm.id);
         setDeleteConfirm(null);
       }
     };
-    $[44] = deleteConfirm;
-    $[45] = deletePaymentMethod;
-    $[46] = t18;
+    $[45] = deleteConfirm;
+    $[46] = deletePaymentMethod;
+    $[47] = t18;
   } else {
-    t18 = $[46];
+    t18 = $[47];
   }
   const confirmDelete = t18;
   const getPaymentMethodIcon = _temp4;
   const maskSensitiveData = _temp5;
   let t19;
-  if ($[47] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[48] === Symbol.for("react.memo_cache_sentinel")) {
     t19 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Bezahlmethoden" });
-    $[47] = t19;
+    $[48] = t19;
   } else {
-    t19 = $[47];
+    t19 = $[48];
   }
   let t20;
-  if ($[48] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[49] === Symbol.for("react.memo_cache_sentinel")) {
     t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 });
-    $[48] = t20;
+    $[49] = t20;
   } else {
-    t20 = $[48];
+    t20 = $[49];
   }
   let t21;
-  if ($[49] !== handleAddMethod || $[50] !== isLoading) {
+  if ($[50] !== handleAddMethod || $[51] !== isLoading) {
     t21 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
       t19,
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleAddMethod, variant: "primary", size: "md", className: "gap-2", disabled: isLoading, children: [
@@ -605,39 +628,39 @@ const PaymentMethods = () => {
         " Neue Bezahlmethode"
       ] })
     ] });
-    $[49] = handleAddMethod;
-    $[50] = isLoading;
-    $[51] = t21;
+    $[50] = handleAddMethod;
+    $[51] = isLoading;
+    $[52] = t21;
   } else {
-    t21 = $[51];
+    t21 = $[52];
   }
   let t22;
-  if ($[52] !== error) {
+  if ($[53] !== error) {
     t22 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
       " ",
       error
     ] }) });
-    $[52] = error;
-    $[53] = t22;
+    $[53] = error;
+    $[54] = t22;
   } else {
-    t22 = $[53];
+    t22 = $[54];
   }
   let t23;
-  if ($[54] !== clearFilters || $[55] !== filterConfig.searchTerm || $[56] !== filterConfig.statusFilter || $[57] !== paymentMethods.length || $[58] !== setSearchTerm || $[59] !== setStatusFilter) {
+  if ($[55] !== clearFilters || $[56] !== filterConfig.searchTerm || $[57] !== filterConfig.statusFilter || $[58] !== paymentMethods.length || $[59] !== setSearchTerm || $[60] !== setStatusFilter) {
     t23 = paymentMethods.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Bezahlmethoden durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
-    $[54] = clearFilters;
-    $[55] = filterConfig.searchTerm;
-    $[56] = filterConfig.statusFilter;
-    $[57] = paymentMethods.length;
-    $[58] = setSearchTerm;
-    $[59] = setStatusFilter;
-    $[60] = t23;
+    $[55] = clearFilters;
+    $[56] = filterConfig.searchTerm;
+    $[57] = filterConfig.statusFilter;
+    $[58] = paymentMethods.length;
+    $[59] = setSearchTerm;
+    $[60] = setStatusFilter;
+    $[61] = t23;
   } else {
-    t23 = $[60];
+    t23 = $[61];
   }
   let t24;
-  if ($[61] !== currentPage || $[62] !== displayedMethods || $[63] !== getSortDirection || $[64] !== handleAddMethod || $[65] !== handleEditMethod || $[66] !== isLoading || $[67] !== paymentMethods.length || $[68] !== requestSort || $[69] !== showPagination || $[70] !== togglePaymentMethodActive || $[71] !== totalFilteredItems || $[72] !== totalPages) {
+  if ($[62] !== currentPage || $[63] !== displayedMethods || $[64] !== getSortDirection || $[65] !== handleAddMethod || $[66] !== handleEditMethod || $[67] !== isLoading || $[68] !== paymentMethods.length || $[69] !== requestSort || $[70] !== showPagination || $[71] !== testRuns || $[72] !== togglePaymentMethodActive || $[73] !== totalFilteredItems || $[74] !== totalPages) {
     t24 = isLoading && paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodsSkeleton, {}) : paymentMethods.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Bezahlmethoden konfiguriert." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddMethod, variant: "primary", size: "md", disabled: isLoading, children: "Erste Bezahlmethode hinzufügen" })
@@ -652,6 +675,7 @@ const PaymentMethods = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("detailsSummary"), onSort: () => requestSort("detailsSummary"), children: "Details" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "w-[120px]", sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("createdAt"), onSort: () => requestSort("createdAt"), children: "Erstellt" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-left", children: "14-Tage" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedMethods.map((method_5) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset", onClick: () => handleEditMethod(method_5), onKeyDown: (e) => {
@@ -671,6 +695,7 @@ const PaymentMethods = () => {
             togglePaymentMethodActive(method_5.id);
           }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: method_5.isActive ? "active" : "inactive", children: method_5.isActive ? "Aktiv" : "Inaktiv" }) }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(method_5.createdAt) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodSparkline, { paymentMethodId: method_5.id, testRuns }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
               e_1.stopPropagation();
@@ -685,24 +710,25 @@ const PaymentMethods = () => {
       ] }),
       showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems: totalFilteredItems, itemsPerPage: 50, onPageChange: setCurrentPage })
     ] });
-    $[61] = currentPage;
-    $[62] = displayedMethods;
-    $[63] = getSortDirection;
-    $[64] = handleAddMethod;
-    $[65] = handleEditMethod;
-    $[66] = isLoading;
-    $[67] = paymentMethods.length;
-    $[68] = requestSort;
-    $[69] = showPagination;
-    $[70] = togglePaymentMethodActive;
-    $[71] = totalFilteredItems;
-    $[72] = totalPages;
-    $[73] = t24;
+    $[62] = currentPage;
+    $[63] = displayedMethods;
+    $[64] = getSortDirection;
+    $[65] = handleAddMethod;
+    $[66] = handleEditMethod;
+    $[67] = isLoading;
+    $[68] = paymentMethods.length;
+    $[69] = requestSort;
+    $[70] = showPagination;
+    $[71] = testRuns;
+    $[72] = togglePaymentMethodActive;
+    $[73] = totalFilteredItems;
+    $[74] = totalPages;
+    $[75] = t24;
   } else {
-    t24 = $[73];
+    t24 = $[75];
   }
   let t25;
-  if ($[74] !== paymentMethods) {
+  if ($[76] !== paymentMethods) {
     t25 = (id) => {
       const method_6 = paymentMethods.find((m_1) => m_1.id === id);
       if (method_6) {
@@ -712,46 +738,46 @@ const PaymentMethods = () => {
         });
       }
     };
-    $[74] = paymentMethods;
-    $[75] = t25;
+    $[76] = paymentMethods;
+    $[77] = t25;
   } else {
-    t25 = $[75];
+    t25 = $[77];
   }
   let t26;
-  if ($[76] !== editingMethod || $[77] !== handleCloseDialog || $[78] !== handleMethodSubmit || $[79] !== isDialogOpen || $[80] !== isLoading || $[81] !== t25) {
+  if ($[78] !== editingMethod || $[79] !== handleCloseDialog || $[80] !== handleMethodSubmit || $[81] !== isDialogOpen || $[82] !== isLoading || $[83] !== t25) {
     t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(PaymentMethodDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleMethodSubmit, editMethod: editingMethod, isLoading, onDelete: t25 });
-    $[76] = editingMethod;
-    $[77] = handleCloseDialog;
-    $[78] = handleMethodSubmit;
-    $[79] = isDialogOpen;
-    $[80] = isLoading;
-    $[81] = t25;
-    $[82] = t26;
+    $[78] = editingMethod;
+    $[79] = handleCloseDialog;
+    $[80] = handleMethodSubmit;
+    $[81] = isDialogOpen;
+    $[82] = isLoading;
+    $[83] = t25;
+    $[84] = t26;
   } else {
-    t26 = $[82];
+    t26 = $[84];
   }
   const t27 = !!deleteConfirm;
   let t28;
-  if ($[83] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($[85] === Symbol.for("react.memo_cache_sentinel")) {
     t28 = () => setDeleteConfirm(null);
-    $[83] = t28;
+    $[85] = t28;
   } else {
-    t28 = $[83];
+    t28 = $[85];
   }
   const t29 = deleteConfirm?.name;
   let t30;
-  if ($[84] !== confirmDelete || $[85] !== isLoading || $[86] !== t27 || $[87] !== t29) {
+  if ($[86] !== confirmDelete || $[87] !== isLoading || $[88] !== t27 || $[89] !== t29) {
     t30 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t27, onClose: t28, onConfirm: confirmDelete, title: "Bezahlmethode löschen", message: "Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t29, isLoading });
-    $[84] = confirmDelete;
-    $[85] = isLoading;
-    $[86] = t27;
-    $[87] = t29;
-    $[88] = t30;
+    $[86] = confirmDelete;
+    $[87] = isLoading;
+    $[88] = t27;
+    $[89] = t29;
+    $[90] = t30;
   } else {
-    t30 = $[88];
+    t30 = $[90];
   }
   let t31;
-  if ($[89] !== t21 || $[90] !== t22 || $[91] !== t23 || $[92] !== t24 || $[93] !== t26 || $[94] !== t30) {
+  if ($[91] !== t21 || $[92] !== t22 || $[93] !== t23 || $[94] !== t24 || $[95] !== t26 || $[96] !== t30) {
     t31 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       t21,
       t22,
@@ -760,15 +786,15 @@ const PaymentMethods = () => {
       t26,
       t30
     ] });
-    $[89] = t21;
-    $[90] = t22;
-    $[91] = t23;
-    $[92] = t24;
-    $[93] = t26;
-    $[94] = t30;
-    $[95] = t31;
+    $[91] = t21;
+    $[92] = t22;
+    $[93] = t23;
+    $[94] = t24;
+    $[95] = t26;
+    $[96] = t30;
+    $[97] = t31;
   } else {
-    t31 = $[95];
+    t31 = $[97];
   }
   return t31;
 };
