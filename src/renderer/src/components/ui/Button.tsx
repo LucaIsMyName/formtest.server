@@ -9,9 +9,18 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   children: React.ReactNode;
   condensed?: boolean;
   to?: string;
+  href?: string;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "", variant = "primary", size = "md", isLoading = false, disabled, children, condensed, to, ...props }, ref) => {
+const ButtonLoading = () => {
+  return (
+    <>
+      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+    </>
+  );
+};
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "", variant = "primary", size = "md", isLoading = false, disabled, children, condensed, to, href, ...props }, ref) => {
   const baseClasses = "inline-flex items-center justify-start rounded transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
   const variants = {
@@ -32,7 +41,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "
   const sizeClasses = sizes[size];
   const condensedClasses = condensed ? "condensed" : null;
 
-  if (to) {
+  if (to && !href) {
     return (
       <Link
         ref={ref}
@@ -41,13 +50,24 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "
         // disabled={disabled || isLoading}
         {...(props as any)}
         to={to}>
-        {isLoading && (
-          <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          </>
-        )}
+        {isLoading && <ButtonLoading />}
         {children}
       </Link>
+    );
+  }
+
+  if (href && !to) {
+    return (
+      <a
+        ref={ref}
+        style={{ fontStretch: "115%" }}
+        className={`${baseClasses} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`}
+        // disabled={disabled || isLoading}
+        {...(props as any)}
+        href={href}>
+        {isLoading && <ButtonLoading />}
+        {children}
+      </a>
     );
   }
 
@@ -58,11 +78,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "
       className={`${baseClasses} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`}
       disabled={disabled || isLoading}
       {...props}>
-      {isLoading && (
-        <>
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        </>
-      )}
+      {isLoading && <ButtonLoading />}
       {children}
     </button>
   );

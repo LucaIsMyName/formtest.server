@@ -16,6 +16,7 @@ interface TableFilterProps {
   statusFilter?: string;
   onStatusFilterChange?: (value: string) => void;
   statusOptions?: StatusOption[];
+  statusLabel?: string;
   onClear?: () => void;
 }
 
@@ -26,6 +27,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({
   statusFilter,
   onStatusFilterChange,
   statusOptions,
+  statusLabel = 'Status',
   onClear,
 }) => {
   const hasFilters = searchTerm.trim() !== '' || (statusFilter && statusFilter !== 'all');
@@ -55,7 +57,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({
   // Get the current selected status for display in trigger (without icon to avoid duplication)
   const getSelectedStatusDisplay = () => {
     if (!statusFilter || statusFilter === 'all') {
-      return <span className="text-gray-600 dark:text-gray-400">Alle Status</span>;
+      return <span className="text-gray-600 dark:text-gray-400">Alle {statusLabel}</span>;
     }
     const option = statusOptions?.find(o => o.value === statusFilter);
     if (option) {
@@ -91,7 +93,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">
-              <span className="text-gray-600 dark:text-gray-400">Alle Status</span>
+              <span className="text-gray-600 dark:text-gray-400">Alle {statusLabel}</span>
             </SelectItem>
             {statusOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>

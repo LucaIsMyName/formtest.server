@@ -556,17 +556,17 @@ const TestResults: React.FC = () => {
             <>
               <Button
                 onClick={handleExportCsv}
-                variant="outline"
-                size="md"
-                className="gap-2">
+                variant="ghost"
+                size="sm"
+                className="gap-2 ">
                 <FileSpreadsheet size={16} />
                 CSV
               </Button>
               <Button
                 onClick={handleExportAllJson}
-                variant="outline"
-                size="md"
-                className="gap-2">
+                variant="ghost"
+                size="sm"
+                className="gap-2 ">
                 <Download size={16} />
                 JSON
               </Button>
