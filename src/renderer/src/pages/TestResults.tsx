@@ -631,9 +631,9 @@ const TestResults: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="px-4 w-[80px]">UUID</TableHead>
-                    <TableHead className="px-4 w-[50px] text-center"><Bot size={14} className="inline" /></TableHead>
+                    <TableHead className="px-4 w-[70px] text-left"><Bot size={14} className="inline" /></TableHead>
                     <TableHead className="px-4 min-w-[160px]">Formular</TableHead>
-                    <TableHead className="px-4 min-w-[140px]">Bezahlmethode</TableHead>
+                    <TableHead className="px-4 min-w-[160px]">Bezahlmethode</TableHead>
                     <TableHead className="px-4 w-[150px]">Gestartet</TableHead>
                     <TableHead className="px-4 w-[70px]">Dauer</TableHead>
                     <TableHead className="px-4 w-[90px]">Status</TableHead>
@@ -663,7 +663,7 @@ const TestResults: React.FC = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-center">
+                        <TableCell className="px-4 text-left">
                           {testRun.isScheduled && (
                             <Bot size={16} className="inline text-blue-500" />
                           )}
@@ -758,19 +758,19 @@ const TestResults: React.FC = () => {
                   <TableRow>
                     <SortableTableHead className="px-4 w-[80px]">UUID</SortableTableHead>
                     <SortableTableHead
-                      className="px-4 w-[50px] text-center"
+                      className="px-4 w-[70px] text-left justify-left"
                       sortDirection={getSortDirection("isScheduled")}
                       onSort={() => requestSort("isScheduled")}>
                       <Bot size={14} className="inline" />
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4 min-w-[160px]"
+                      className="px-4 min-w-[180px]"
                       sortDirection={getSortDirection("formName")}
                       onSort={() => requestSort("formName")}>
                       Formular
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4 min-w-[140px]"
+                      className="px-4 min-w-[200px]"
                       sortDirection={getSortDirection("paymentMethodName")}
                       onSort={() => requestSort("paymentMethodName")}>
                       Bezahlmethode
@@ -817,7 +817,7 @@ const TestResults: React.FC = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-center">
+                        <TableCell className="px-4 text-left">
                           {testRun.isScheduled && (
                             <Bot size={16} className="inline text-blue-500" />
                           )}
