@@ -48,6 +48,25 @@ This application automates the testing of FundraisingBox donation forms across m
 - [x] **Skeleton Loaders** - Loading states for all pages
 - [x] **Toast Notifications** - User feedback system
 - [x] **Responsive Tables** - Sorting, filtering, pagination
+- [x] **Keyboard Navigation** - Full keyboard shortcuts for navigation and actions
+- [x] **Accessibility** - Focusable table rows, ARIA attributes, keyboard support
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `⌘ + K` | Open global search |
+| `⌘ + ⇧ + T` | Open test run dialog |
+| `⌘ + 1` | Go to Dashboard |
+| `⌘ + 2` | Go to Formulare |
+| `⌘ + 3` | Go to Bezahlmethoden |
+| `⌘ + 4` | Go to Autopilot |
+| `⌘ + 5` | Go to Tests |
+| `⌘ + 6` | Go to Einstellungen |
+| `⌘ + 7` | Go to Info & Doku |
+| `Esc` | Close dialog/drawer |
+| `Enter` | Open selected item |
+| `↑ / ↓` | Navigate list items |
 
 ### Data Management
 - [x] **Import/Export** - Full database backup/restore (JSON)
