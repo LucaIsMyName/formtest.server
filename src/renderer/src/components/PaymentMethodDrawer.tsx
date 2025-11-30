@@ -3,13 +3,12 @@ import Button from "./ui/Button";
 import IconPicker from "./IconPicker";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import type { PaymentMethod, PaymentMethodDetails } from "../../../common/types";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "./ui/Drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "./ui/Drawer";
 import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Trash2 } from "lucide-react";
-import { CONFIG } from "../app.config";
 
 interface PaymentMethodDrawerProps {
   isOpen: boolean;
@@ -284,28 +283,22 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
       open={isOpen}
       onOpenChange={(open) => !open && onClose()}>
       <DrawerContent>
-        <DrawerHeader className="mb-6">
-          <DrawerTitle>
-            <div className="space-y-2">
-              <Label
-                className="text-gray-600 dark:text-gray-400"
-                htmlFor="name">
-                Name der Bezahlmethode *
-              </Label>
-              <Input
-                id="name"
-                value={methodData.name}
-                onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
-                placeholder="Bezahlmethoden Name"
-                disabled={isLoading}
-                className={CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "")}
-              />
-              {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
-            </div>
-          </DrawerTitle>
-          {/* Action buttons when editing */}
+        {/* Top Title Bar with Action Buttons */}
+        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <div className="flex-1 min-w-0">
+            <Label htmlFor="name" className="sr-only">Name der Bezahlmethode *</Label>
+            <Input
+              id="name"
+              value={methodData.name}
+              onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
+              placeholder="Bezahlmethoden Name"
+              disabled={isLoading}
+              className={"text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 " + (errors.name ? "text-red-500" : "")}
+            />
+          </div>
+          {/* Action buttons */}
           {editMethod && onDelete && (
-            <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <Button
                 type="button"
                 onClick={() => {
@@ -320,6 +313,10 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               </Button>
             </div>
           )}
+        </div>
+
+        <DrawerHeader className="pt-6">
+          {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
         </DrawerHeader>
 
         <form

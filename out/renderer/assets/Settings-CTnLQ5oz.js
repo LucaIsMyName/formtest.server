@@ -1,8 +1,8 @@
-import { y as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, z as Check, X, m as ChevronDown, A as ChevronRight, I as Input, D as Settings2, E as useSettingsStore, G as React, H as CircleCheck, J as Sun, M as Moon, K as Monitor, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem } from "./index-Dvu3stsk.js";
+import { y as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, z as Check, X, m as ChevronDown, A as ChevronRight, I as Input, D as Settings2, E as useSettingsStore, G as React, H as CircleCheck, J as Sun, M as Moon, K as Monitor, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem } from "./index-BpMT7ksU.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, C as CircleAlert, D as DeleteConfirmDialog } from "./TableFilter-Cb5I-VCp.js";
-import { S as Skeleton } from "./Skeleton-Iiz3z7bP.js";
-import { R as RotateCcw, a as Code, P as Plus, E as Eye, b as EyeOff, D as Database, M as Mail, S as SlidersVertical, C as Checkbox } from "./Checkbox-oi4O9DR7.js";
+import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, C as CircleAlert, D as DeleteConfirmDialog } from "./TableFilter-D_oxLCMD.js";
+import { S as Skeleton } from "./Skeleton-Btm7eDww.js";
+import { R as RotateCcw, a as Code, P as Plus, E as Eye, b as EyeOff, D as Database, M as Mail, S as SlidersVertical, C as Checkbox } from "./Checkbox-IHlJBmTt.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -1565,10 +1565,10 @@ const Settings = () => {
     const isDisabled = isLoading || item_0.disabled;
     switch (item_0.type) {
       case "input":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: item_0.id.includes("port") || item_0.id.includes("timeout") || item_0.id.includes("amount") ? "number" : item_0.id.includes("pass") ? "password" : "text", value: item_0.value, onChange: (e) => handleSettingChange(item_0.id, e.target.value), onBlur: () => handleSettingBlur(item_0.id), className: `h-7 text-xs w-full max-w-[200px] ${isDisabled ? "opacity-50" : ""}`, disabled: isDisabled });
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: item_0.id.includes("port") || item_0.id.includes("timeout") || item_0.id.includes("amount") ? "number" : item_0.id.includes("pass") ? "password" : "text", value: item_0.value, onChange: (e) => handleSettingChange(item_0.id, e.target.value), onBlur: () => handleSettingBlur(item_0.id), className: `h-7 text-xs w-full ${isDisabled ? "opacity-50" : ""}`, disabled: isDisabled });
       case "select":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: item_0.value, onValueChange: (v) => handleSettingChange(item_0.id, v), disabled: isDisabled, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: `h-7 max-w-[300px] text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: `h-7 text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SelectContent, { children: item_0.options?.map((opt) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: opt.value, className: "text-xs", children: opt.label }, opt.value)) })
         ] });
       case "checkbox":
@@ -1632,8 +1632,8 @@ const Settings = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden", children: filteredSettings.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-8 text-center text-gray-500 dark:text-gray-400 text-sm", children: "Keine Einstellungen gefunden." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[100px]", children: "Kategorie" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { children: "Einstellung" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[220px]", children: "Wert" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[420px]", children: "Einstellung" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[220px] lg:w-[360px]", children: "Wert" })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: filteredSettings.map((item_1) => item_1.fullWidth ? /* @__PURE__ */ jsxRuntimeExports.jsx(React.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableRow, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableCell, { colSpan: 3, className: "p-0", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "px-4 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700", children: [

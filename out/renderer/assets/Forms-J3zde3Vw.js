@@ -1,10 +1,10 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as Trash2, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-Dvu3stsk.js";
+import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as Trash2, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-BpMT7ksU.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-BLrq-rjU.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, u as useFilterableData, e as useSortableData, S as SortableTableHead } from "./useFilterableData-COjRSUGt.js";
-import { C as Checkbox, P as Plus } from "./Checkbox-oi4O9DR7.js";
-import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, g as TablePagination, D as DeleteConfirmDialog } from "./TableFilter-Cb5I-VCp.js";
-import { S as Skeleton } from "./Skeleton-Iiz3z7bP.js";
+import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-CAF1DD8v.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CC6f984r.js";
+import { C as Checkbox, P as Plus } from "./Checkbox-IHlJBmTt.js";
+import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, g as TablePagination, D as DeleteConfirmDialog } from "./TableFilter-D_oxLCMD.js";
+import { S as Skeleton } from "./Skeleton-Btm7eDww.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -170,16 +170,15 @@ const FormDrawer = ({
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerHeader, { className: "mb-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Formularname *" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Formularname *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: formData.name, onChange: (e_0) => setFormData({
           ...formData,
           name: e_0.target.value
-        }), placeholder: "Formularname", disabled: isLoading, className: CONFIG.style.title.className + " h-16 border-none p-0 " + (errors.name ? "border-red-500 focus-visible:ring-red-500" : "") }),
-        errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm", children: errors.name })
-      ] }) }),
-      editForm && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800", children: [
+        }), placeholder: "Formularname", disabled: isLoading, className: "text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 " + (errors.name ? "text-red-500" : "") })
+      ] }),
+      editForm && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => window.open(editForm.url, "_blank"), variant: "secondary", size: "sm", className: "gap-1.5", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 14 }),
           "URL öffnen"
@@ -193,6 +192,7 @@ const FormDrawer = ({
         ] })
       ] })
     ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "pt-6", children: errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm", children: errors.name }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "url", children: "Formular URL *" }),
@@ -679,12 +679,12 @@ const Forms = () => {
               ] })
             ] })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[11px] font-mono break-all truncate", children: form_2.url }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate", children: form_2.url }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
             e_0.stopPropagation();
             toggleFormActive(form_2.id);
           }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[11px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
               e_1.stopPropagation();

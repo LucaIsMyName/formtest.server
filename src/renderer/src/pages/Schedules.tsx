@@ -210,7 +210,7 @@ const Schedules: React.FC = () => {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {renderIcon(schedule.icon || "Play", 16, "text-gray-600 dark:text-gray-400")}
-                        <span className="font-medium text-xs text-gray-900 dark:text-white">{schedule.name}</span>
+                        <span className="font-medium text-sm text-gray-900 dark:text-white">{schedule.name}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -222,13 +222,13 @@ const Schedules: React.FC = () => {
                     </TableCell>
                     <TableCell className="min-w-[160px]">
                       <div className="flex items-center gap-2">
-                        <code className="w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600">{schedule.cronExpression}</code>
+                        <code className="w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600">{schedule.cronExpression}</code>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDateTime(schedule.lastRun)}</div>
+                      <div className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{formatDateTime(schedule.lastRun)}</div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="w-[120px]">
                       <StatusBadge status={schedule.isActive ? "active" : "inactive"}>{schedule.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
                     </TableCell>
                     <TableCell className="text-right">

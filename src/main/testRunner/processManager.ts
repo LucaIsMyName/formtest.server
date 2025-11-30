@@ -43,9 +43,10 @@ export class TestProcessManager extends EventEmitter {
   }
 
   async startProcess(): Promise<void> {
+    // Always restart the process to ensure clean state
     if (this.isRunning) {
-      console.log("Test process already running");
-      return;
+      console.log("Stopping existing test process before starting new one...");
+      await this.stopProcess();
     }
 
     console.log("Starting test runner process...");
@@ -158,11 +159,9 @@ export class TestProcessManager extends EventEmitter {
     const maxRetries = 2;
 
     try {
-      if (!this.isRunning) {
-        await this.startProcess();
-      }
-
+      // Always start fresh process for each test to avoid hung state issues
       console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);
+      await this.startProcess();
 
       // Get merged selector config (base + user overrides)
       const selectorConfig = getMergedSelectorConfig();
@@ -179,7 +178,10 @@ export class TestProcessManager extends EventEmitter {
         },
       };
 
-      const response = await this.sendMessage(message, 120000); // 2 minute timeout
+      const response = await this.sendMessage(message, 180000); // 3 minute timeout
+
+      // Stop process after test completes to ensure clean state for next test
+      await this.stopProcess();
 
       if (response.payload?.success) {
         return {
@@ -210,11 +212,12 @@ export class TestProcessManager extends EventEmitter {
 
         // Stop current process if it's in a bad state
         if (this.isRunning) {
+          console.log('Stopping process before retry...');
           await this.stopProcess();
         }
 
-        // Wait a bit before retry
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Wait longer before retry to let things settle
+        await new Promise((resolve) => setTimeout(resolve, 3000));
 
         // Retry the test
         return this.runTest(testRunId, form, paymentMethod, settings, retryCount + 1);

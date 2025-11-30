@@ -1,10 +1,10 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, P as Play, k as Trash2, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, Y as useSchedulesStore, Q as formatDateTime, v as StatusBadge, N as LoaderCircle } from "./index-Dvu3stsk.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, P as Play, k as Trash2, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, Y as useSchedulesStore, Q as formatDateTime, v as StatusBadge, N as LoaderCircle } from "./index-BpMT7ksU.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, e as TableBody, f as TableCell, g as TablePagination, D as DeleteConfirmDialog } from "./TableFilter-Cb5I-VCp.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, d as DrawerFooter, u as useFilterableData, e as useSortableData, S as SortableTableHead } from "./useFilterableData-COjRSUGt.js";
-import { S as Skeleton } from "./Skeleton-Iiz3z7bP.js";
-import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-BLrq-rjU.js";
-import { C as Checkbox, P as Plus } from "./Checkbox-oi4O9DR7.js";
+import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, e as TableBody, f as TableCell, g as TablePagination, D as DeleteConfirmDialog } from "./TableFilter-D_oxLCMD.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CC6f984r.js";
+import { S as Skeleton } from "./Skeleton-Btm7eDww.js";
+import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-CAF1DD8v.js";
+import { C as Checkbox, P as Plus } from "./Checkbox-IHlJBmTt.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -273,14 +273,12 @@ const ScheduleDrawer = ({
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerHeader, { className: "mb-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerTitle, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "name", children: "Name *" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", type: "text", value: name, onChange: (e_0) => {
-            setName(e_0.target.value);
-          }, placeholder: "Autopilot Name", className: CONFIG.style.title.className + " h-16 border-none p-0 ", disabled: isSubmitting })
-        ] }) }),
-        initialData && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Name *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", type: "text", value: name, onChange: (e_0) => setName(e_0.target.value), placeholder: "Autopilot Name", className: "text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0", disabled: isSubmitting })
+        ] }),
+        initialData && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
           onRunNow && /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
             onRunNow(initialData.id);
             onClose();
@@ -297,6 +295,7 @@ const ScheduleDrawer = ({
           ] })
         ] })
       ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "pt-6" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
         error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-200 rounded-md", children: error }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
@@ -486,16 +485,16 @@ const Schedules = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedSchedules.map((schedule_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle", onClick: () => setEditingSchedule(schedule_0), children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
             renderIcon(schedule_0.icon || "Play", 16, "text-gray-600 dark:text-gray-400"),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-xs text-gray-900 dark:text-white", children: schedule_0.name })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-sm text-gray-900 dark:text-white", children: schedule_0.name })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 dark:text-gray-300 ", children: [
             getFormName(schedule_0.formId),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mx-1 text-gray-400", children: "×" }),
             getPaymentMethodName(schedule_0.paymentMethodId)
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "min-w-[160px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule_0.cronExpression }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[11px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule_0.lastRun) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule_0.isActive ? "active" : "inactive", children: schedule_0.isActive ? "Aktiv" : "Inaktiv" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "min-w-[160px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule_0.cronExpression }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule_0.lastRun) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "w-[120px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule_0.isActive ? "active" : "inactive", children: schedule_0.isActive ? "Aktiv" : "Inaktiv" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e) => {
               e.stopPropagation();

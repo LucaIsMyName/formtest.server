@@ -1,4 +1,4 @@
-import { Z as createLucideIcon, i as dist, j as jsxRuntimeExports, ad as DialogHeader, ae as DialogTitle, ax as DialogDescription, B as Button, ay as DialogFooter, af as DialogContent, ag as Dialog, G as React, ap as cn, r as reactExports, a2 as ChevronLeft, A as ChevronRight, n as Select, o as SelectTrigger, q as SelectContent, s as SelectItem, v as StatusBadge, az as Badge, aa as Search, I as Input, X } from "./index-Dvu3stsk.js";
+import { Z as createLucideIcon, i as dist, j as jsxRuntimeExports, ad as DialogHeader, ae as DialogTitle, ax as DialogDescription, B as Button, ay as DialogFooter, af as DialogContent, ag as Dialog, G as React, ap as cn, r as reactExports, a2 as ChevronLeft, A as ChevronRight, n as Select, o as SelectTrigger, q as SelectContent, s as SelectItem, v as StatusBadge, az as Badge, aa as Search, I as Input, X } from "./index-BpMT7ksU.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -158,41 +158,68 @@ const DeleteConfirmDialog = (t0) => {
   }
   return t13;
 };
+const TableContext = reactExports.createContext({
+  dividers: true
+});
 const Table = React.forwardRef((t0, ref) => {
-  const $ = dist.c(9);
+  const $ = dist.c(15);
   let className;
   let props;
+  let t1;
   if ($[0] !== t0) {
     ({
       className,
+      dividers: t1,
       ...props
     } = t0);
     $[0] = t0;
     $[1] = className;
     $[2] = props;
+    $[3] = t1;
   } else {
     className = $[1];
     props = $[2];
+    t1 = $[3];
   }
-  let t1;
-  if ($[3] !== className) {
-    t1 = cn("w-full divide-y divide-gray-200 dark:divide-gray-700", className);
-    $[3] = className;
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
+  const dividers = t1 === void 0 ? true : t1;
   let t2;
-  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx("table", { ref, className: t1, ...props }) });
-    $[5] = props;
-    $[6] = ref;
-    $[7] = t1;
-    $[8] = t2;
+  if ($[4] !== dividers) {
+    t2 = {
+      dividers
+    };
+    $[4] = dividers;
+    $[5] = t2;
   } else {
-    t2 = $[8];
+    t2 = $[5];
   }
-  return t2;
+  let t3;
+  if ($[6] !== className) {
+    t3 = cn("w-full divide-y divide-gray-200 dark:divide-gray-700", className);
+    $[6] = className;
+    $[7] = t3;
+  } else {
+    t3 = $[7];
+  }
+  let t4;
+  if ($[8] !== props || $[9] !== ref || $[10] !== t3) {
+    t4 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsx("table", { ref, className: t3, ...props }) });
+    $[8] = props;
+    $[9] = ref;
+    $[10] = t3;
+    $[11] = t4;
+  } else {
+    t4 = $[11];
+  }
+  let t5;
+  if ($[12] !== t2 || $[13] !== t4) {
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(TableContext.Provider, { value: t2, children: t4 });
+    $[12] = t2;
+    $[13] = t4;
+    $[14] = t5;
+  } else {
+    t5 = $[14];
+  }
+  return t5;
 });
 Table.displayName = "Table";
 const TableHeader = React.forwardRef((t0, ref) => {
@@ -307,77 +334,97 @@ const TableRow = React.forwardRef((t0, ref) => {
 });
 TableRow.displayName = "TableRow";
 const TableHead = React.forwardRef((t0, ref) => {
-  const $ = dist.c(9);
+  const $ = dist.c(11);
   let className;
+  let divider;
   let props;
   if ($[0] !== t0) {
     ({
       className,
+      divider,
       ...props
     } = t0);
     $[0] = t0;
     $[1] = className;
-    $[2] = props;
+    $[2] = divider;
+    $[3] = props;
   } else {
     className = $[1];
-    props = $[2];
+    divider = $[2];
+    props = $[3];
   }
-  let t1;
-  if ($[3] !== className) {
-    t1 = cn("px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", className);
-    $[3] = className;
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
+  const {
+    dividers: contextDividers
+  } = reactExports.useContext(TableContext);
+  const showDivider = divider ?? contextDividers;
+  const t1 = showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0";
   let t2;
-  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("th", { ref, className: t1, ...props });
-    $[5] = props;
-    $[6] = ref;
-    $[7] = t1;
-    $[8] = t2;
+  if ($[4] !== className || $[5] !== t1) {
+    t2 = cn("px-4 py-3 text-left text-[10px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", t1, className);
+    $[4] = className;
+    $[5] = t1;
+    $[6] = t2;
   } else {
-    t2 = $[8];
+    t2 = $[6];
   }
-  return t2;
+  let t3;
+  if ($[7] !== props || $[8] !== ref || $[9] !== t2) {
+    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("th", { ref, className: t2, ...props });
+    $[7] = props;
+    $[8] = ref;
+    $[9] = t2;
+    $[10] = t3;
+  } else {
+    t3 = $[10];
+  }
+  return t3;
 });
 TableHead.displayName = "TableHead";
 const TableCell = React.forwardRef((t0, ref) => {
-  const $ = dist.c(9);
+  const $ = dist.c(11);
   let className;
+  let divider;
   let props;
   if ($[0] !== t0) {
     ({
       className,
+      divider,
       ...props
     } = t0);
     $[0] = t0;
     $[1] = className;
-    $[2] = props;
+    $[2] = divider;
+    $[3] = props;
   } else {
     className = $[1];
-    props = $[2];
+    divider = $[2];
+    props = $[3];
   }
-  let t1;
-  if ($[3] !== className) {
-    t1 = cn("select-normal px-4 py-3 whitespace-nowrap", className);
-    $[3] = className;
-    $[4] = t1;
-  } else {
-    t1 = $[4];
-  }
+  const {
+    dividers: contextDividers
+  } = reactExports.useContext(TableContext);
+  const showDivider = divider ?? contextDividers;
+  const t1 = showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0";
   let t2;
-  if ($[5] !== props || $[6] !== ref || $[7] !== t1) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("td", { ref, className: t1, ...props });
-    $[5] = props;
-    $[6] = ref;
-    $[7] = t1;
-    $[8] = t2;
+  if ($[4] !== className || $[5] !== t1) {
+    t2 = cn("select-normal px-4 py-3 whitespace-nowrap", t1, className);
+    $[4] = className;
+    $[5] = t1;
+    $[6] = t2;
   } else {
-    t2 = $[8];
+    t2 = $[6];
   }
-  return t2;
+  let t3;
+  if ($[7] !== props || $[8] !== ref || $[9] !== t2) {
+    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("td", { ref, className: t2, ...props });
+    $[7] = props;
+    $[8] = ref;
+    $[9] = t2;
+    $[10] = t3;
+  } else {
+    t3 = $[10];
+  }
+  return t3;
 });
 TableCell.displayName = "TableCell";
 const TablePagination = (t0) => {

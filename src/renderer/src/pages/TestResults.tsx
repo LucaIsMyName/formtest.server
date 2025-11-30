@@ -16,7 +16,7 @@ import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../components/ui/Drawer";
+import { Drawer, DrawerContent, DrawerHeader } from "../components/ui/Drawer";
 import { formatDateTime, formatDuration } from "../utils/formatters";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
@@ -558,16 +558,16 @@ const TestResults: React.FC = () => {
                 onClick={handleExportCsv}
                 variant="ghost"
                 size="sm"
-                className="gap-2 ">
-                <FileSpreadsheet size={16} />
+                className="gap-2 font-mono font-[10px]">
+                <FileSpreadsheet size={12} />
                 CSV
               </Button>
               <Button
                 onClick={handleExportAllJson}
                 variant="ghost"
                 size="sm"
-                className="gap-2 ">
-                <Download size={16} />
+                 className="gap-2 font-mono font-[10px]">
+                <Download size={12} />
                 JSON
               </Button>
             </>
@@ -619,12 +619,12 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="px-4">UUID</TableHead>
-                    <TableHead className="px-4">Test</TableHead>
-                    <TableHead className="px-4">Gestartet</TableHead>
-                    <TableHead className="px-4">Dauer</TableHead>
-                    <TableHead className="px-4">Status</TableHead>
-                    <TableHead className="px-4 text-right">Aktionen</TableHead>
+                    <TableHead className="px-4 w-[100px]">UUID</TableHead>
+                    <TableHead className="px-4 min-w-[200px]">Test</TableHead>
+                    <TableHead className="px-4 w-[160px]">Gestartet</TableHead>
+                    <TableHead className="px-4 w-[80px]">Dauer</TableHead>
+                    <TableHead className="px-4 w-[100px]">Status</TableHead>
+                    <TableHead className="px-4 w-[100px] text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -668,9 +668,9 @@ const TestResults: React.FC = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4">
-                          <span className={`text-[11px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>{formatElapsedTime(runningTimers[testRun.id] || 0)}</span>
+                          <span className={`text-[10px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>{formatElapsedTime(runningTimers[testRun.id] || 0)}</span>
                         </TableCell>
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
@@ -735,32 +735,32 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <SortableTableHead className="px-4">UUID</SortableTableHead>
+                    <SortableTableHead className="px-4 w-[100px]">UUID</SortableTableHead>
                     <SortableTableHead
-                      className="px-4"
+                      className="px-4 min-w-[200px]"
                       sortDirection={getSortDirection("formName")}
                       onSort={() => requestSort("formName")}>
                       Test
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4"
+                      className="px-4 w-[160px]"
                       sortDirection={getSortDirection("runAt")}
                       onSort={() => requestSort("runAt")}>
                       Datum
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4"
+                      className="px-4 w-[80px]"
                       sortDirection={getSortDirection("durationMs")}
                       onSort={() => requestSort("durationMs")}>
                       Dauer
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4"
+                      className="px-4 w-[100px]"
                       sortDirection={getSortDirection("status")}
                       onSort={() => requestSort("status")}>
                       Status
                     </SortableTableHead>
-                    <TableHead className="px-4 text-right">Aktionen</TableHead>
+                    <TableHead className="px-4 w-[100px] text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -801,8 +801,8 @@ const TestResults: React.FC = () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
                         </TableCell>
@@ -855,12 +855,17 @@ const TestResults: React.FC = () => {
       <Drawer
         open={!!selectedTestRun}
         onOpenChange={(open) => !open && handleSelectTestRun(null)}>
-        <DrawerContent className="w-full max-w-2xl">
-          <DrawerHeader className="mb-4 pb-6 border-b dark:border-gray-700">
-            <DrawerTitle className={CONFIG.style.title.className + ` pb-4`}>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerTitle>
+        <DrawerContent className="w-full">
+          {/* Top Title Bar with Action Buttons */}
+          <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+            <div className="flex-1 min-w-0">
+              <span className="text-2xl font-bold text-gray-900 dark:text-white truncate block">
+                {selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}
+              </span>
+            </div>
             {/* Action buttons */}
             {selectedTestRunData && (
-              <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-700">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 {selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? (
                   <Button
                     onClick={async (e) => {
@@ -905,7 +910,9 @@ const TestResults: React.FC = () => {
                 )}
               </div>
             )}
-          </DrawerHeader>
+          </div>
+
+          <DrawerHeader className="pt-6"></DrawerHeader>
 
           <div className="flex-1 overflow-y-auto space-y-4">
             {selectedTestRunData ? (

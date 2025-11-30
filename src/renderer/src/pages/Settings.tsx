@@ -398,14 +398,14 @@ const Settings: React.FC = () => {
             value={item.value}
             onChange={(e) => handleSettingChange(item.id, e.target.value)}
             onBlur={() => handleSettingBlur(item.id)}
-            className={`h-7 text-xs w-full max-w-[200px] ${isDisabled ? "opacity-50" : ""}`}
+            className={`h-7 text-xs w-full ${isDisabled ? "opacity-50" : ""}`}
             disabled={isDisabled}
           />
         );
       case "select":
         return (
           <Select value={item.value} onValueChange={(v) => handleSettingChange(item.id, v)} disabled={isDisabled}>
-            <SelectTrigger className={`h-7 max-w-[300px] text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`}>
+            <SelectTrigger className={`h-7 text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -520,8 +520,8 @@ const Settings: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Kategorie</TableHead>
-                  <TableHead>Einstellung</TableHead>
-                  <TableHead className="w-[220px]">Wert</TableHead>
+                  <TableHead className="w-[420px]">Einstellung</TableHead>
+                  <TableHead className="w-[220px] lg:w-[360px]">Wert</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

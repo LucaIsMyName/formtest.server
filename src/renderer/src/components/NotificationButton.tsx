@@ -111,7 +111,7 @@ const NotificationButton: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-1">
-                      <p className={`text-[11px] leading-tight ${!notification.isRead ? "font-medium" : ""} text-gray-900 dark:text-white line-clamp-1`}>
+                      <p className={`text-[10px] leading-tight ${!notification.isRead ? "font-medium" : ""} text-gray-900 dark:text-white line-clamp-1`}>
                         {notification.title}
                       </p>
                       <button

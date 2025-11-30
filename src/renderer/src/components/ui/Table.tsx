@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, createContext, useContext } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "../../utils/cn";
 
-const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(({ className, ...props }, ref) => (
-  <div className="overflow-x-auto">
-    <table
-      ref={ref}
-      className={cn("w-full divide-y divide-gray-200 dark:divide-gray-700", className)}
-      {...props}
-    />
-  </div>
+// Context for table-wide settings
+interface TableContextValue {
+  dividers: boolean;
+}
+
+const TableContext = createContext<TableContextValue>({ dividers: true });
+
+interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
+  dividers?: boolean;
+}
+
+const Table = React.forwardRef<HTMLTableElement, TableProps>(({ className, dividers = true, ...props }, ref) => (
+  <TableContext.Provider value={{ dividers }}>
+    <div className="overflow-x-auto">
+      <table
+        ref={ref}
+        className={cn("w-full divide-y divide-gray-200 dark:divide-gray-700", className)}
+        {...props}
+      />
+    </div>
+  </TableContext.Provider>
 ));
 Table.displayName = "Table";
 
@@ -40,22 +53,48 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
 ));
 TableRow.displayName = "TableRow";
 
-const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<HTMLTableCellElement>>(({ className, ...props }, ref) => (
-  <th
-    ref={ref}
-    className={cn("px-4 py-3 text-left text-[11px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", className)}
-    {...props}
-  />
-));
+interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  divider?: boolean;
+}
+
+const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(({ className, divider, ...props }, ref) => {
+  const { dividers: contextDividers } = useContext(TableContext);
+  const showDivider = divider ?? contextDividers;
+  
+  return (
+    <th
+      ref={ref}
+      className={cn(
+        "px-4 py-3 text-left text-[10px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider",
+        showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0",
+        className
+      )}
+      {...props}
+    />
+  );
+});
 TableHead.displayName = "TableHead";
 
-const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<HTMLTableCellElement>>(({ className, ...props }, ref) => (
-  <td
-    ref={ref}
-    className={cn("select-normal px-4 py-3 whitespace-nowrap", className)}
-    {...props}
-  />
-));
+interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  divider?: boolean;
+}
+
+const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(({ className, divider, ...props }, ref) => {
+  const { dividers: contextDividers } = useContext(TableContext);
+  const showDivider = divider ?? contextDividers;
+  
+  return (
+    <td
+      ref={ref}
+      className={cn(
+        "select-normal px-4 py-3 whitespace-nowrap",
+        showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0",
+        className
+      )}
+      {...props}
+    />
+  );
+});
 TableCell.displayName = "TableCell";
 
 // Pagination component - styled like TableHeader but at bottom

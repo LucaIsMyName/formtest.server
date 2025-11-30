@@ -324,6 +324,7 @@ const PaymentMethods: React.FC = () => {
                   Details
                 </SortableTableHead>
                 <SortableTableHead
+                  className="w-[120px]"
                   sortDirection={getSortDirection('isActive')}
                   onSort={() => requestSort('isActive')}>
                   Status
@@ -348,13 +349,13 @@ const PaymentMethods: React.FC = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getPaymentMethodIcon(method)}
-                      <span className="text-[11px] font-mono text-gray-900 dark:text-gray-300">{method.typeLabel}</span>
+                      <span className="text-[10px] font-mono text-gray-900 dark:text-gray-300">{method.typeLabel}</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="w-120px">
                     <button
                       onClick={(e) => { e.stopPropagation(); togglePaymentMethodActive(method.id); }}
                       className="border-none bg-transparent cursor-pointer p-0"
@@ -364,7 +365,7 @@ const PaymentMethods: React.FC = () => {
                       </StatusBadge>
                     </button>
                   </TableCell>
-                  <TableCell className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</TableCell>
+                  <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</TableCell>
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <Button

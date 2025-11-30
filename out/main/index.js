@@ -1843,8 +1843,8 @@ class TestProcessManager extends events.EventEmitter {
   }
   async startProcess() {
     if (this.isRunning) {
-      console.log("Test process already running");
-      return;
+      console.log("Stopping existing test process before starting new one...");
+      await this.stopProcess();
     }
     console.log("Starting test runner process...");
     try {
@@ -1922,10 +1922,8 @@ class TestProcessManager extends events.EventEmitter {
   async runTest(testRunId, form, paymentMethod, settings, retryCount = 0) {
     const maxRetries = 2;
     try {
-      if (!this.isRunning) {
-        await this.startProcess();
-      }
       console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);
+      await this.startProcess();
       const selectorConfig = getMergedSelectorConfig();
       const message = {
         id: this.generateMessageId(),
@@ -1938,7 +1936,8 @@ class TestProcessManager extends events.EventEmitter {
           selectorConfig
         }
       };
-      const response = await this.sendMessage(message, 12e4);
+      const response = await this.sendMessage(message, 18e4);
+      await this.stopProcess();
       if (response.payload?.success) {
         return {
           success: true,
@@ -1963,9 +1962,10 @@ class TestProcessManager extends events.EventEmitter {
       if (retryCount < maxRetries) {
         console.log(`Retrying test ${testRunId} (${retryCount + 1}/${maxRetries})...`);
         if (this.isRunning) {
+          console.log("Stopping process before retry...");
           await this.stopProcess();
         }
-        await new Promise((resolve) => setTimeout(resolve, 2e3));
+        await new Promise((resolve) => setTimeout(resolve, 3e3));
         return this.runTest(testRunId, form, paymentMethod, settings, retryCount + 1);
       }
       return {

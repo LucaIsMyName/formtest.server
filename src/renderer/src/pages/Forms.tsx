@@ -278,7 +278,7 @@ const Forms: React.FC = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[11px] font-mono break-all truncate">
+                      className="text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate">
                       {form.url}
                     </a>
                   </TableCell>
@@ -293,7 +293,7 @@ const Forms: React.FC = () => {
                       <StatusBadge status={form.isActive ? "active" : "inactive"}>{form.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
                     </button>
                   </TableCell>
-                  <TableCell className="text-[11px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</TableCell>
+                  <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</TableCell>
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <Button

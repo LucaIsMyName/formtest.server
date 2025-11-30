@@ -574,17 +574,43 @@ class TestRunner {
       : []
     
     const submitSelectors = configSubmitSelectors.length > 0 ? configSubmitSelectors : [
+      // FundraisingBox specific
       'input#submitForm',
       '#submitForm',
+      'input[name="submitForm"]',
+      // German donation forms
       'input[type="submit"][value*="Jetzt spenden"]',
       'input[type="submit"][value*="spenden"]',
       'input[type="submit"][value*="Spenden"]',
+      'input[type="submit"][value*="Weiter"]',
+      'input[type="submit"][value*="weiter"]',
+      'input[type="submit"][value*="Absenden"]',
+      'input[type="submit"][value*="Senden"]',
+      'button:has-text("Spenden")',
+      'button:has-text("Weiter")',
+      'button:has-text("Absenden")',
+      // English donation forms
+      'input[type="submit"][value*="Donate"]',
+      'input[type="submit"][value*="donate"]',
+      'input[type="submit"][value*="Submit"]',
+      'input[type="submit"][value*="Continue"]',
+      'button:has-text("Donate")',
+      'button:has-text("Submit")',
+      // Generic selectors
       'input.button[type="submit"]',
       'button[type="submit"]',
       'input[type="submit"]',
       '.submit-button',
+      '.btn-submit',
       '#submit',
-      '[data-testid="submit"]'
+      '[data-testid="submit"]',
+      // Form submit buttons by class
+      'button.btn-primary[type="submit"]',
+      'button.btn[type="submit"]',
+      '.form-submit',
+      // Last resort - any visible submit
+      'form button:visible',
+      'form input[type="submit"]:visible'
     ]
 
     for (const selector of submitSelectors) {
@@ -620,20 +646,46 @@ class TestRunner {
       }
     }
     
-    // If no button found, try to find any submit element and log details
-    this.log('No standard submit button found, checking page for any submit elements...')
+    // If no button found, try to find any submit element and attempt to click it
+    this.log('No standard submit button found, trying fallback detection...')
     try {
-      const allSubmits = await this.page.$$('input[type="submit"], button[type="submit"]')
-      this.log(`Found ${allSubmits.length} submit elements on page`)
+      const allSubmits = await this.page.$$('input[type="submit"], button[type="submit"], button')
+      this.log(`Found ${allSubmits.length} potential submit elements on page`)
+      
       for (let i = 0; i < allSubmits.length; i++) {
         const el = allSubmits[i]
         const id = await el.getAttribute('id')
         const value = await el.getAttribute('value')
         const className = await el.getAttribute('class')
-        this.log(`Submit element ${i}: id=${id}, value=${value}, class=${className}`)
+        const text = await el.textContent()
+        const isVisible = await el.isVisible()
+        const isEnabled = await el.isEnabled()
+        
+        this.log(`Element ${i}: id=${id}, value=${value}, class=${className}, text="${text?.trim()}", visible=${isVisible}, enabled=${isEnabled}`)
+        
+        // Try to click if it looks like a submit button and is clickable
+        if (isVisible && isEnabled) {
+          const lowerText = (text || '').toLowerCase()
+          const lowerValue = (value || '').toLowerCase()
+          const submitKeywords = ['submit', 'spenden', 'donate', 'weiter', 'continue', 'absenden', 'senden', 'send']
+          
+          const looksLikeSubmit = submitKeywords.some(kw => 
+            lowerText.includes(kw) || lowerValue.includes(kw)
+          )
+          
+          if (looksLikeSubmit) {
+            this.log(`Attempting fallback click on element ${i}`)
+            await el.scrollIntoViewIfNeeded()
+            await this.page.waitForTimeout(500)
+            await el.click()
+            this.log(`Fallback click successful on element ${i}`)
+            await this.page.waitForTimeout(2000)
+            return
+          }
+        }
       }
     } catch (e) {
-      this.log(`Error listing submit elements: ${e.message}`)
+      this.log(`Error in fallback submit detection: ${e.message}`)
     }
     
     throw new Error('No submit button found or clickable')

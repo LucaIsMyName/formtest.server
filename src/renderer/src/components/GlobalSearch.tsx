@@ -112,7 +112,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
 
           {/* Dashboard */}
           <Command.Group
-            heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Dashboard</span>}
+            heading={<span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">Dashboard</span>}
             className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2">
             <Command.Item
               onSelect={() => handleSelect("/")}
@@ -125,7 +125,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Formulare */}
           {filteredForms.length > 0 && (
             <Command.Group
-              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Formulare {isSearching && `(${filteredForms.length} Treffer)`}</span>}
+              heading={<span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">Formulare {isSearching && `(${filteredForms.length} Treffer)`}</span>}
               className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
@@ -152,7 +152,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Bezahlmethoden */}
           {filteredPaymentMethods.length > 0 && (
             <Command.Group
-              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Bezahlmethoden {isSearching && `(${filteredPaymentMethods.length} Treffer)`}</span>}
+              heading={<span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">Bezahlmethoden {isSearching && `(${filteredPaymentMethods.length} Treffer)`}</span>}
               className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
@@ -179,7 +179,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Autopilot / Schedules */}
           {filteredSchedules.length > 0 && (
             <Command.Group
-              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Autopilot {isSearching && `(${filteredSchedules.length} Treffer)`}</span>}
+              heading={<span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">Autopilot {isSearching && `(${filteredSchedules.length} Treffer)`}</span>}
               className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
@@ -214,7 +214,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Test Resultate */}
           {filteredTestRuns.length > 0 && (
             <Command.Group
-              heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Test Resultate {isSearching && `(${filteredTestRuns.length} Treffer)`}</span>}
+              heading={<span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">Test Resultate {isSearching && `(${filteredTestRuns.length} Treffer)`}</span>}
               className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
@@ -250,7 +250,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
 
           {/* Einstellungen */}
           <Command.Group
-            heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Einstellungen</span>}
+            heading={<span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">Einstellungen</span>}
             className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
             <Command.Item
               onSelect={() => handleSelect("/settings")}
@@ -262,7 +262,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
 
           {/* Info & Doku */}
           <Command.Group
-            heading={<span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">Info & Doku</span>}
+            heading={<span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">Info & Doku</span>}
             className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
             <Command.Item
               onSelect={() => handleSelect("/info-doku")}
