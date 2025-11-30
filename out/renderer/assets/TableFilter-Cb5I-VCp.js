@@ -1,16 +1,4 @@
-import { Z as createLucideIcon, i as dist, j as jsxRuntimeExports, ac as DialogHeader, ad as DialogTitle, aw as DialogDescription, B as Button, ax as DialogFooter, ae as DialogContent, af as Dialog, ay as React, ao as cn, r as reactExports, a2 as ChevronLeft, A as ChevronRight, n as Select, o as SelectTrigger, q as SelectContent, s as SelectItem, v as StatusBadge, az as Badge, a9 as Search, I as Input, X } from "./index-DurIewjZ.js";
-/**
- * @license lucide-react v0.554.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$2 = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
-];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$2);
+import { Z as createLucideIcon, i as dist, j as jsxRuntimeExports, ad as DialogHeader, ae as DialogTitle, ax as DialogDescription, B as Button, ay as DialogFooter, af as DialogContent, ag as Dialog, G as React, ap as cn, r as reactExports, a2 as ChevronLeft, A as ChevronRight, n as Select, o as SelectTrigger, q as SelectContent, s as SelectItem, v as StatusBadge, az as Badge, aa as Search, I as Input, X } from "./index-Dvu3stsk.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -18,11 +6,11 @@ const CircleAlert = createLucideIcon("circle-alert", __iconNode$2);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$1 = [
-  ["path", { d: "M12 15V3", key: "m9g1x1" }],
-  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
-  ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
 ];
-const Download = createLucideIcon("download", __iconNode$1);
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$1);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -299,7 +287,7 @@ const TableRow = React.forwardRef((t0, ref) => {
   }
   let t1;
   if ($[3] !== className) {
-    t1 = cn("hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors", className);
+    t1 = cn("hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors", className);
     $[3] = className;
     $[4] = t1;
   } else {
@@ -704,7 +692,7 @@ const TableFilter = (t0) => {
   }
   let t7;
   if ($[10] !== placeholder || $[11] !== searchTerm || $[12] !== t6) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", value: searchTerm, onChange: t6, placeholder, className: "pl-9 pr-8" });
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", value: searchTerm, onChange: t6, placeholder, className: "pl-9 pr-8 max-w-full" });
     $[10] = placeholder;
     $[11] = searchTerm;
     $[12] = t6;
@@ -723,7 +711,7 @@ const TableFilter = (t0) => {
   }
   let t9;
   if ($[17] !== t7 || $[18] !== t8) {
-    t9 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex-1 max-w-sm", children: [
+    t9 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative max-w-md flex-1", children: [
       t5,
       t7,
       t8
@@ -737,7 +725,7 @@ const TableFilter = (t0) => {
   let t10;
   if ($[20] !== getSelectedStatusDisplay || $[21] !== onStatusFilterChange || $[22] !== statusFilter || $[23] !== statusLabel || $[24] !== statusOptions) {
     t10 = statusOptions && onStatusFilterChange && /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: statusFilter || "all", onValueChange: onStatusFilterChange, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "w-44", children: getSelectedStatusDisplay() }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: " max-w-[160px]", children: getSelectedStatusDisplay() }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-gray-600 dark:text-gray-400", children: [
           "Alle ",
@@ -821,6 +809,5 @@ export {
   TableBody as e,
   TableCell as f,
   TablePagination as g,
-  Download as h,
-  TriangleAlert as i
+  TriangleAlert as h
 };

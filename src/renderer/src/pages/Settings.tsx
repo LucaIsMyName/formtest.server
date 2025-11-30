@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
-import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, AlertTriangle, Mail, Send, Settings2, Database, Sliders } from "lucide-react";
+import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code } from "lucide-react";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
@@ -16,12 +16,17 @@ import { TableFilter } from "../components/ui/TableFilter";
 // Setting item interface
 interface SettingItem {
   id: string;
-  category: "test" | "ui" | "email" | "data";
+  category: "test" | "ui" | "email" | "data" | "selectors";
   name: string;
   description: string;
-  type: "input" | "select" | "checkbox" | "theme";
+  type: "input" | "select" | "checkbox" | "theme" | "action" | "component";
   value: string;
   options?: { value: string; label: string }[];
+  disabled?: boolean;
+  action?: () => void;
+  actionLabel?: string;
+  actionVariant?: "primary" | "secondary" | "danger";
+  fullWidth?: boolean;
 }
 
 const SettingsSkeleton = () => (
@@ -61,7 +66,7 @@ const Settings: React.FC = () => {
   const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
 
   // Import/Export state
-  const [exportOptions, setExportOptions] = useState<ImportOptions>({
+  const [exportOptions] = useState<ImportOptions>({
     includeForms: true,
     includePaymentMethods: true,
     includeTestRuns: true,
@@ -127,6 +132,56 @@ const Settings: React.FC = () => {
     });
   }, [settings]);
 
+  // Handler functions (defined before useMemo that uses them)
+  const handleSendTestEmail = useCallback(async () => {
+    setIsSendingTestEmail(true);
+    setEmailTestResult(null);
+    try {
+      const api = window.api as any;
+      const result = await api.email.testConnection();
+      setEmailTestResult(result);
+    } catch (error) {
+      setEmailTestResult({ success: false, message: "Fehler beim Senden" });
+    } finally {
+      setIsSendingTestEmail(false);
+    }
+  }, []);
+
+  const handleExport = useCallback(async () => {
+    setIsExporting(true);
+    setExportMessage(null);
+    try {
+      const result = await window.api.database.export(exportOptions);
+      if (result.success) {
+        setExportMessage(`Export erfolgreich: ${result.filePath}`);
+      } else {
+        setExportMessage(`Export fehlgeschlagen`);
+      }
+    } catch (error) {
+      setExportMessage("Export fehlgeschlagen");
+    } finally {
+      setIsExporting(false);
+    }
+  }, [exportOptions]);
+
+  const handleImport = useCallback(async () => {
+    setIsImporting(true);
+    setImportResult(null);
+    try {
+      const result = await window.api.database.import(importMode, exportOptions);
+      if (result) {
+        setImportResult(result);
+        if (result.success) {
+          loadSettings();
+        }
+      }
+    } catch (error) {
+      setImportResult({ success: false, imported: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 }, skipped: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 }, errors: ["Import fehlgeschlagen"], warnings: [] });
+    } finally {
+      setIsImporting(false);
+    }
+  }, [importMode, exportOptions, loadSettings]);
+
   // Build settings items for table
   const settingsItems: SettingItem[] = useMemo(() => [
     // Test Settings
@@ -153,17 +208,28 @@ const Settings: React.FC = () => {
     { id: "theme", category: "ui", name: "Theme", description: "Farbschema der Anwendung", type: "theme", value: theme },
     // Email Settings
     { id: "email_enabled", category: "email", name: "E-Mail aktiviert", description: "Benachrichtigungen per E-Mail", type: "checkbox", value: String(emailEnabled) },
-    { id: "email_smtp_host", category: "email", name: "SMTP Server", description: "Hostname des SMTP-Servers", type: "input", value: emailSmtpHost },
-    { id: "email_smtp_port", category: "email", name: "SMTP Port", description: "Port des SMTP-Servers", type: "input", value: emailSmtpPort },
-    { id: "email_smtp_secure", category: "email", name: "SSL/TLS", description: "Sichere Verbindung verwenden", type: "checkbox", value: String(emailSmtpSecure) },
-    { id: "email_smtp_user", category: "email", name: "SMTP Benutzer", description: "Benutzername für SMTP", type: "input", value: emailSmtpUser },
-    { id: "email_smtp_pass", category: "email", name: "SMTP Passwort", description: "Passwort für SMTP", type: "input", value: emailSmtpPass },
-    { id: "email_from_email", category: "email", name: "Absender E-Mail", description: "E-Mail-Adresse des Absenders", type: "input", value: emailFromEmail },
-    { id: "email_from_name", category: "email", name: "Absender Name", description: "Name des Absenders", type: "input", value: emailFromName },
-    { id: "email_to_email", category: "email", name: "Empfänger E-Mail", description: "E-Mail-Adresse des Empfängers", type: "input", value: emailToEmail },
-    { id: "email_notify_success", category: "email", name: "Bei Erfolg", description: "Bei erfolgreichen Tests benachrichtigen", type: "checkbox", value: String(emailNotifySuccess) },
-    { id: "email_notify_failure", category: "email", name: "Bei Fehler", description: "Bei fehlgeschlagenen Tests benachrichtigen", type: "checkbox", value: String(emailNotifyFailure) },
-  ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure]);
+    { id: "email_smtp_host", category: "email", name: "SMTP Server", description: "Hostname des SMTP-Servers", type: "input", value: emailSmtpHost, disabled: !emailEnabled },
+    { id: "email_smtp_port", category: "email", name: "SMTP Port", description: "Port des SMTP-Servers", type: "input", value: emailSmtpPort, disabled: !emailEnabled },
+    { id: "email_smtp_secure", category: "email", name: "SSL/TLS", description: "Sichere Verbindung verwenden", type: "checkbox", value: String(emailSmtpSecure), disabled: !emailEnabled },
+    { id: "email_smtp_user", category: "email", name: "SMTP Benutzer", description: "Benutzername für SMTP", type: "input", value: emailSmtpUser, disabled: !emailEnabled },
+    { id: "email_smtp_pass", category: "email", name: "SMTP Passwort", description: "Passwort für SMTP", type: "input", value: emailSmtpPass, disabled: !emailEnabled },
+    { id: "email_from_email", category: "email", name: "Absender E-Mail", description: "E-Mail-Adresse des Absenders", type: "input", value: emailFromEmail, disabled: !emailEnabled },
+    { id: "email_from_name", category: "email", name: "Absender Name", description: "Name des Absenders", type: "input", value: emailFromName, disabled: !emailEnabled },
+    { id: "email_to_email", category: "email", name: "Empfänger E-Mail", description: "E-Mail-Adresse des Empfängers", type: "input", value: emailToEmail, disabled: !emailEnabled },
+    { id: "email_notify_success", category: "email", name: "Bei Erfolg", description: "Bei erfolgreichen Tests benachrichtigen", type: "checkbox", value: String(emailNotifySuccess), disabled: !emailEnabled },
+    { id: "email_notify_failure", category: "email", name: "Bei Fehler", description: "Bei fehlgeschlagenen Tests benachrichtigen", type: "checkbox", value: String(emailNotifyFailure), disabled: !emailEnabled },
+    { id: "email_test", category: "email", name: "Test-E-Mail", description: "Konfiguration testen", type: "action", value: "", actionLabel: isSendingTestEmail ? "Sende..." : "Senden", action: handleSendTestEmail, actionVariant: "secondary", disabled: !emailEnabled || !emailSmtpHost || !emailToEmail },
+    // Data Management
+    { id: "data_export", category: "data", name: "Daten exportieren", description: "Formulare, Bezahlmethoden, Tests exportieren", type: "action", value: "", actionLabel: isExporting ? "Exportiere..." : "Exportieren", action: handleExport, actionVariant: "secondary" },
+    { id: "data_import", category: "data", name: "Daten importieren", description: "Daten aus Backup wiederherstellen", type: "action", value: "", actionLabel: isImporting ? "Importiere..." : "Importieren", action: handleImport, actionVariant: "secondary" },
+    { id: "delete_forms", category: "data", name: "Formulare löschen", description: "Alle Formulare und zugehörige Tests löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "forms", title: "Alle Formulare löschen", message: "Alle Formulare und zugehörige Tests werden gelöscht." }), actionVariant: "danger" },
+    { id: "delete_payments", category: "data", name: "Bezahlmethoden löschen", description: "Alle Bezahlmethoden löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "paymentMethods", title: "Alle Bezahlmethoden löschen", message: "Alle Bezahlmethoden werden gelöscht." }), actionVariant: "danger" },
+    { id: "delete_tests", category: "data", name: "Tests löschen", description: "Alle Testergebnisse löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "testRuns", title: "Alle Tests löschen", message: "Alle Testergebnisse werden gelöscht." }), actionVariant: "danger" },
+    { id: "delete_schedules", category: "data", name: "Zeitpläne löschen", description: "Alle Zeitpläne löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "schedules", title: "Alle Zeitpläne löschen", message: "Alle Zeitpläne werden gelöscht." }), actionVariant: "danger" },
+    { id: "delete_all", category: "data", name: "Alle Daten löschen", description: "ALLE Daten unwiderruflich löschen", type: "action", value: "", actionLabel: "Alles löschen", action: () => setDeleteConfirmation({ type: "all", title: "Alle Daten löschen", message: "ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) werden gelöscht!" }), actionVariant: "danger" },
+    // Selectors
+    { id: "selectors", category: "selectors", name: "Selektor-Konfiguration", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: true },
+  ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport]);
 
   // Filter settings
   const filteredSettings = useMemo(() => {
@@ -274,55 +340,6 @@ const Settings: React.FC = () => {
     }
   };
 
-  const handleSendTestEmail = async () => {
-    setIsSendingTestEmail(true);
-    setEmailTestResult(null);
-    try {
-      const api = window.api as any;
-      const result = await api.email.testConnection();
-      setEmailTestResult(result);
-    } catch (error) {
-      setEmailTestResult({ success: false, message: "Fehler beim Senden" });
-    } finally {
-      setIsSendingTestEmail(false);
-    }
-  };
-
-  const handleExport = async () => {
-    setIsExporting(true);
-    setExportMessage(null);
-    try {
-      const result = await window.api.database.export(exportOptions);
-      if (result.success) {
-        setExportMessage(`Export erfolgreich: ${result.filePath}`);
-      } else {
-        setExportMessage(`Export fehlgeschlagen`);
-      }
-    } catch (error) {
-      setExportMessage("Export fehlgeschlagen");
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const handleImport = async () => {
-    setIsImporting(true);
-    setImportResult(null);
-    try {
-      const result = await window.api.database.import(importMode, exportOptions);
-      if (result) {
-        setImportResult(result);
-        if (result.success) {
-          loadSettings();
-        }
-      }
-    } catch (error) {
-      setImportResult({ success: false, imported: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 }, skipped: { forms: 0, paymentMethods: 0, testRuns: 0, schedules: 0, settings: 0 }, errors: ["Import fehlgeschlagen"], warnings: [] });
-    } finally {
-      setIsImporting(false);
-    }
-  };
-
   const handleDelete = async () => {
     if (!deleteConfirmation) return;
     setIsDeleting(true);
@@ -354,6 +371,7 @@ const Settings: React.FC = () => {
       case "ui": return "UI";
       case "email": return "E-Mail";
       case "data": return "Daten";
+      case "selectors": return "Selektoren";
       default: return category;
     }
   };
@@ -364,11 +382,14 @@ const Settings: React.FC = () => {
       case "ui": return <Sun size={14} className="text-yellow-500" />;
       case "email": return <Mail size={14} className="text-green-500" />;
       case "data": return <Database size={14} className="text-purple-500" />;
+      case "selectors": return <Code size={14} className="text-cyan-500" />;
       default: return <Settings2 size={14} />;
     }
   };
 
   const renderSettingControl = (item: SettingItem) => {
+    const isDisabled = isLoading || item.disabled;
+    
     switch (item.type) {
       case "input":
         return (
@@ -377,14 +398,14 @@ const Settings: React.FC = () => {
             value={item.value}
             onChange={(e) => handleSettingChange(item.id, e.target.value)}
             onBlur={() => handleSettingBlur(item.id)}
-            className="h-7 text-xs w-full max-w-[200px]"
-            disabled={isLoading}
+            className={`h-7 text-xs w-full max-w-[200px] ${isDisabled ? "opacity-50" : ""}`}
+            disabled={isDisabled}
           />
         );
       case "select":
         return (
-          <Select value={item.value} onValueChange={(v) => handleSettingChange(item.id, v)} disabled={isLoading}>
-            <SelectTrigger className="h-7 text-xs w-full max-w-[160px]">
+          <Select value={item.value} onValueChange={(v) => handleSettingChange(item.id, v)} disabled={isDisabled}>
+            <SelectTrigger className={`h-7 max-w-[300px] text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -399,7 +420,8 @@ const Settings: React.FC = () => {
           <Checkbox
             checked={item.value === "true"}
             onCheckedChange={(checked) => handleSettingChange(item.id, String(checked))}
-            disabled={isLoading}
+            disabled={isDisabled}
+            className={isDisabled ? "opacity-50" : ""}
           />
         );
       case "theme":
@@ -418,13 +440,30 @@ const Settings: React.FC = () => {
                     ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700"
                     : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-transparent hover:border-gray-300 dark:hover:border-gray-600"
                 }`}
-                disabled={isLoading}
+                disabled={isDisabled}
               >
                 {t.icon}
               </button>
             ))}
           </div>
         );
+      case "action":
+        return (
+          <Button
+            variant={item.actionVariant || "secondary"}
+            size="sm"
+            onClick={item.action}
+            disabled={isDisabled}
+            className="text-xs h-7"
+          >
+            {item.actionLabel}
+          </Button>
+        );
+      case "component":
+        if (item.id === "selectors") {
+          return <SelectorEditor />;
+        }
+        return null;
       default:
         return null;
     }
@@ -464,6 +503,8 @@ const Settings: React.FC = () => {
             { value: "test", label: "Test" },
             { value: "ui", label: "UI" },
             { value: "email", label: "E-Mail" },
+            { value: "data", label: "Daten" },
+            { value: "selectors", label: "Selektoren" },
           ]}
           statusLabel="Kategorie"
           onClear={() => { setSearchTerm(""); setCategoryFilter(undefined); }}
@@ -485,152 +526,71 @@ const Settings: React.FC = () => {
               </TableHeader>
               <TableBody>
                 {filteredSettings.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-1.5">
-                        {getCategoryIcon(item.category)}
-                        <span className="text-[10px] font-mono uppercase text-gray-500 dark:text-gray-400">
-                          {getCategoryLabel(item.category)}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="text-xs font-medium text-gray-900 dark:text-white">{item.name}</div>
-                        <div className="text-[10px] text-gray-500 dark:text-gray-400">{item.description}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {renderSettingControl(item)}
-                    </TableCell>
-                  </TableRow>
+                  item.fullWidth ? (
+                    <React.Fragment key={item.id}>
+                      <TableRow>
+                        <TableCell colSpan={3} className="p-0">
+                          <div className="px-4 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+                            <div className="flex items-center gap-2 mb-1">
+                              {getCategoryIcon(item.category)}
+                              <span className="text-xs font-medium text-gray-900 dark:text-white">{item.name}</span>
+                            </div>
+                            <div className="text-[10px] text-gray-500 dark:text-gray-400">{item.description}</div>
+                          </div>
+                          <div className="p-4">
+                            {renderSettingControl(item)}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
+                  ) : (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-1.5">
+                          {getCategoryIcon(item.category)}
+                          <span className="text-[10px] font-mono uppercase text-gray-500 dark:text-gray-400">
+                            {getCategoryLabel(item.category)}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="text-xs font-medium text-gray-900 dark:text-white">{item.name}</div>
+                          <div className="text-[10px] text-gray-500 dark:text-gray-400">{item.description}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {renderSettingControl(item)}
+                      </TableCell>
+                    </TableRow>
+                  )
                 ))}
               </TableBody>
             </Table>
           )}
         </div>
 
-        {/* Email Test Button */}
-        {emailEnabled && (
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-4">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleSendTestEmail}
-                disabled={isLoading || isSendingTestEmail || !emailSmtpHost || !emailToEmail}
-                className="gap-1.5 text-xs"
-              >
-                <Send size={14} />
-                {isSendingTestEmail ? "Sende..." : "Test-E-Mail"}
-              </Button>
-              {emailTestResult && (
-                <div className={`flex items-center gap-1.5 text-xs ${emailTestResult.success ? "text-green-600" : "text-red-600"}`}>
-                  {emailTestResult.success ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                  {emailTestResult.message}
-                </div>
-              )}
-            </div>
+        {/* Email Test Result */}
+        {emailTestResult && (
+          <div className={`p-3 rounded-md border text-xs flex items-center gap-2 ${emailTestResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`}>
+            {emailTestResult.success ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+            {emailTestResult.message}
           </div>
         )}
 
-        {/* Selector Configuration */}
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-4">
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Formular-Selektoren</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-            CSS-Selektoren für die automatische Formular-Erkennung. Eigene Selektoren haben Priorität.
-          </p>
-          <SelectorEditor />
-        </div>
-
-        {/* Data Management */}
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-4">
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Daten verwalten</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Export */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-medium text-gray-700 dark:text-gray-300">Exportieren</h3>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { key: "includeForms", label: "Formulare" },
-                  { key: "includePaymentMethods", label: "Bezahlmethoden" },
-                  { key: "includeTestRuns", label: "Tests" },
-                  { key: "includeSchedules", label: "Zeitpläne" },
-                  { key: "includeSettings", label: "Einstellungen" },
-                ].map((opt) => (
-                  <label key={opt.key} className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 cursor-pointer">
-                    <Checkbox
-                      checked={exportOptions[opt.key as keyof ImportOptions]}
-                      onCheckedChange={(checked) => setExportOptions({ ...exportOptions, [opt.key]: checked })}
-                    />
-                    {opt.label}
-                  </label>
-                ))}
-              </div>
-              <Button variant="secondary" size="sm" onClick={handleExport} disabled={isExporting} className="gap-1.5 text-xs">
-                <Download size={14} />
-                {isExporting ? "Exportiere..." : "Exportieren"}
-              </Button>
-              {exportMessage && <p className="text-xs text-gray-500">{exportMessage}</p>}
-            </div>
-
-            {/* Import */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-medium text-gray-700 dark:text-gray-300">Importieren</h3>
-              <Button variant="secondary" size="sm" onClick={handleImport} disabled={isImporting} className="gap-1.5 text-xs">
-                <Upload size={14} />
-                {isImporting ? "Importiere..." : "Importieren"}
-              </Button>
-              {importResult && (
-                <div className={`text-xs ${importResult.success ? "text-green-600" : "text-red-600"}`}>
-                  {importResult.success 
-                    ? `Importiert: ${importResult.imported.forms} Formulare, ${importResult.imported.paymentMethods} Bezahlmethoden`
-                    : importResult.errors.join(', ')}
-                </div>
-              )}
-            </div>
+        {/* Export/Import Result Messages */}
+        {exportMessage && (
+          <div className="p-3 rounded-md border text-xs bg-gray-50 dark:bg-gray-900/20 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            {exportMessage}
           </div>
-        </div>
-
-        {/* Delete Section */}
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-4">
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Daten löschen</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-            Achtung: Diese Aktionen können nicht rückgängig gemacht werden.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { type: "forms" as const, label: "Formulare", title: "Alle Formulare löschen", message: "Alle Formulare und zugehörige Tests werden gelöscht." },
-              { type: "paymentMethods" as const, label: "Bezahlmethoden", title: "Alle Bezahlmethoden löschen", message: "Alle Bezahlmethoden und zugehörige Tests werden gelöscht." },
-              { type: "testRuns" as const, label: "Tests", title: "Alle Tests löschen", message: "Alle Testergebnisse werden gelöscht." },
-              { type: "schedules" as const, label: "Zeitpläne", title: "Alle Zeitpläne löschen", message: "Alle Zeitpläne werden gelöscht." },
-            ].map((item) => (
-              <Button
-                key={item.type}
-                variant="secondary"
-                size="sm"
-                onClick={() => setDeleteConfirmation({ type: item.type, title: item.title, message: item.message })}
-                className="text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-              >
-                {item.label}
-              </Button>
-            ))}
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={() => setDeleteConfirmation({ 
-                type: "all", 
-                title: "Alle Daten löschen", 
-                message: "ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) werden gelöscht!" 
-              })}
-              className="text-xs gap-1.5"
-            >
-              <AlertTriangle size={14} />
-              Alles löschen
-            </Button>
+        )}
+        {importResult && (
+          <div className={`p-3 rounded-md border text-xs ${importResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`}>
+            {importResult.success 
+              ? `Importiert: ${importResult.imported.forms} Formulare, ${importResult.imported.paymentMethods} Bezahlmethoden`
+              : importResult.errors.join(', ')}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}

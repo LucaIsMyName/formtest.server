@@ -80,6 +80,12 @@ This application automates the testing of FundraisingBox donation forms across m
 - [x] Notification preferences (success/failure toggle)
 - [x] Test email functionality
 
+### CLI Test Tool ✅
+- [x] Command-line interface for testing forms and payment methods
+- [x] Payment method validation (SEPA all intervals, EPS/Credit/PayPal one-time only)
+- [x] List forms and payment methods from CLI
+- [x] Dry-run mode for validation without execution
+
 ### Phase F: Advanced Browser Features
 - [ ] Firefox/Safari browser support
 - [ ] Mobile viewport presets

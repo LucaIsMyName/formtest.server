@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-QJYaIKoy.js","./app.config-D8MSMeZ9.js","./Skeleton-CceJQM8P.js","./Forms-Dni08xP1.js","./IconPicker-xpAl3SP0.js","./useFilterableData-BjR5S-t7.js","./TableFilter-Ci-YCz-g.js","./Checkbox-B8SaCThy.js","./PaymentMethods-D9mC8zV4.js","./Settings-BeLeFQF6.js","./TestResults-DnAL4Wyy.js","./InfoDoku-C5B9jTa2.js","./Schedules-DqDJ6Pze.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-CAK1eGs4.js","./app.config-D8MSMeZ9.js","./Skeleton-Iiz3z7bP.js","./Forms-BzfM4_ns.js","./IconPicker-BLrq-rjU.js","./useFilterableData-COjRSUGt.js","./TableFilter-Cb5I-VCp.js","./Checkbox-oi4O9DR7.js","./PaymentMethods-B8q0TKoS.js","./Settings-BTmv35t4.js","./TestResults-qTyxKyZV.js","./InfoDoku-gJYQaU7G.js","./Schedules-C1Wo4cQC.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -24613,11 +24613,23 @@ async function _temp2$1() {
     await window.api.windowControls.minimize();
   }
 }
+const ButtonLoading = () => {
+  const $2 = dist.c(1);
+  let t0;
+  if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t0 = /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
+    $2[0] = t0;
+  } else {
+    t0 = $2[0];
+  }
+  return t0;
+};
 const Button = React$3.forwardRef((t0, ref) => {
-  const $2 = dist.c(32);
+  const $2 = dist.c(43);
   let children;
   let condensed;
   let disabled;
+  let href;
   let props;
   let t1;
   let t2;
@@ -24634,35 +24646,38 @@ const Button = React$3.forwardRef((t0, ref) => {
       children,
       condensed,
       to,
+      href,
       ...props
     } = t0);
     $2[0] = t0;
     $2[1] = children;
     $2[2] = condensed;
     $2[3] = disabled;
-    $2[4] = props;
-    $2[5] = t1;
-    $2[6] = t2;
-    $2[7] = t3;
-    $2[8] = t4;
-    $2[9] = to;
+    $2[4] = href;
+    $2[5] = props;
+    $2[6] = t1;
+    $2[7] = t2;
+    $2[8] = t3;
+    $2[9] = t4;
+    $2[10] = to;
   } else {
     children = $2[1];
     condensed = $2[2];
     disabled = $2[3];
-    props = $2[4];
-    t1 = $2[5];
-    t2 = $2[6];
-    t3 = $2[7];
-    t4 = $2[8];
-    to = $2[9];
+    href = $2[4];
+    props = $2[5];
+    t1 = $2[6];
+    t2 = $2[7];
+    t3 = $2[8];
+    t4 = $2[9];
+    to = $2[10];
   }
   const className = t1 === void 0 ? "" : t1;
   const variant = t2 === void 0 ? "primary" : t2;
   const size2 = t3 === void 0 ? "md" : t3;
   const isLoading = t4 === void 0 ? false : t4;
   let t5;
-  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
     t5 = {
       primary: "font-[700] text-white bg-blue-600 dark:bg-blue-700 border border-1 dark:border-blue-700 border-blue-800 hover:bg-blue-700",
       secondary: "font-[500] text-gray-800 dark:text-gray-200 bg-gray-50 border-1 dark:border-gray-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600",
@@ -24670,98 +24685,136 @@ const Button = React$3.forwardRef((t0, ref) => {
       ghost: "font-[500] text-gray-700 dark:text-gray-300 bg-transparent border-1 border-transparent",
       danger: "font-[700] text-white bg-red-600 dark:bg-red-700 border border-1 dark:border-red-800 border-red-700 hover:bg-red-700 focus:ring-red-500"
     };
-    $2[10] = t5;
+    $2[11] = t5;
   } else {
-    t5 = $2[10];
+    t5 = $2[11];
   }
   const variants = t5;
   let t6;
-  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($2[12] === Symbol.for("react.memo_cache_sentinel")) {
     t6 = {
       sm: "px-2 py-1 text-xs",
       md: "px-3.5 py-1.5 text-sm",
       lg: "px-4 py-2 text-base"
     };
-    $2[11] = t6;
+    $2[12] = t6;
   } else {
-    t6 = $2[11];
+    t6 = $2[12];
   }
   const sizes = t6;
   const variantClasses = variants[variant];
   const sizeClasses = sizes[size2];
   const condensedClasses = condensed ? "condensed" : null;
-  if (to) {
+  if (to && !href) {
     let t72;
-    if ($2[12] === Symbol.for("react.memo_cache_sentinel")) {
+    if ($2[13] === Symbol.for("react.memo_cache_sentinel")) {
       t72 = {
         fontStretch: "115%"
       };
-      $2[12] = t72;
+      $2[13] = t72;
     } else {
-      t72 = $2[12];
+      t72 = $2[13];
     }
     const t82 = `${"inline-flex items-center justify-start rounded transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
     const t92 = props;
     let t102;
-    if ($2[13] !== isLoading) {
-      t102 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
-      $2[13] = isLoading;
-      $2[14] = t102;
+    if ($2[14] !== isLoading) {
+      t102 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonLoading, {});
+      $2[14] = isLoading;
+      $2[15] = t102;
     } else {
-      t102 = $2[14];
+      t102 = $2[15];
     }
     let t112;
-    if ($2[15] !== children || $2[16] !== ref || $2[17] !== t102 || $2[18] !== t82 || $2[19] !== t92 || $2[20] !== to) {
+    if ($2[16] !== children || $2[17] !== ref || $2[18] !== t102 || $2[19] !== t82 || $2[20] !== t92 || $2[21] !== to) {
       t112 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Link, { ref, style: t72, className: t82, ...t92, to, children: [
         t102,
         children
       ] });
-      $2[15] = children;
-      $2[16] = ref;
-      $2[17] = t102;
-      $2[18] = t82;
-      $2[19] = t92;
-      $2[20] = to;
-      $2[21] = t112;
+      $2[16] = children;
+      $2[17] = ref;
+      $2[18] = t102;
+      $2[19] = t82;
+      $2[20] = t92;
+      $2[21] = to;
+      $2[22] = t112;
     } else {
-      t112 = $2[21];
+      t112 = $2[22];
+    }
+    return t112;
+  }
+  if (href && !to) {
+    let t72;
+    if ($2[23] === Symbol.for("react.memo_cache_sentinel")) {
+      t72 = {
+        fontStretch: "115%"
+      };
+      $2[23] = t72;
+    } else {
+      t72 = $2[23];
+    }
+    const t82 = `${"inline-flex items-center justify-start rounded transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+    const t92 = props;
+    let t102;
+    if ($2[24] !== isLoading) {
+      t102 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonLoading, {});
+      $2[24] = isLoading;
+      $2[25] = t102;
+    } else {
+      t102 = $2[25];
+    }
+    let t112;
+    if ($2[26] !== children || $2[27] !== href || $2[28] !== ref || $2[29] !== t102 || $2[30] !== t82 || $2[31] !== t92) {
+      t112 = /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { ref, style: t72, className: t82, ...t92, href, children: [
+        t102,
+        children
+      ] });
+      $2[26] = children;
+      $2[27] = href;
+      $2[28] = ref;
+      $2[29] = t102;
+      $2[30] = t82;
+      $2[31] = t92;
+      $2[32] = t112;
+    } else {
+      t112 = $2[32];
     }
     return t112;
   }
   let t7;
-  if ($2[22] === Symbol.for("react.memo_cache_sentinel")) {
+  if ($2[33] === Symbol.for("react.memo_cache_sentinel")) {
     t7 = {
       fontStretch: "115%"
     };
-    $2[22] = t7;
+    $2[33] = t7;
   } else {
-    t7 = $2[22];
+    t7 = $2[33];
   }
   const t8 = `${"inline-flex items-center justify-start rounded transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
   const t9 = disabled || isLoading;
   let t10;
-  if ($2[23] !== isLoading) {
-    t10 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "w-4 h-4 mr-2 animate-spin" }) });
-    $2[23] = isLoading;
-    $2[24] = t10;
+  if ($2[34] !== isLoading) {
+    t10 = isLoading && /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonLoading, {});
+    $2[34] = isLoading;
+    $2[35] = t10;
   } else {
-    t10 = $2[24];
+    t10 = $2[35];
   }
   let t11;
-  if ($2[25] !== children || $2[26] !== props || $2[27] !== ref || $2[28] !== t10 || $2[29] !== t8 || $2[30] !== t9) {
+  if ($2[36] !== children || $2[37] !== props || $2[38] !== ref || $2[39] !== t10 || $2[40] !== t8 || $2[41] !== t9) {
     t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { ref, style: t7, className: t8, disabled: t9, ...props, children: [
       t10,
       children
     ] });
-    $2[25] = children;
-    $2[26] = props;
-    $2[27] = ref;
-    $2[28] = t10;
-    $2[29] = t8;
-    $2[30] = t9;
-    $2[31] = t11;
+    $2[36] = children;
+    $2[37] = props;
+    $2[38] = ref;
+    $2[39] = t10;
+    $2[40] = t8;
+    $2[41] = t9;
+    $2[42] = t11;
   } else {
-    t11 = $2[31];
+    t11 = $2[42];
   }
   return t11;
 });
@@ -28062,7 +28115,7 @@ const Input = reactExports.forwardRef((t0, ref) => {
   }
   let t1;
   if ($2[4] !== className) {
-    t1 = cn("flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-300 dark:text-white", className);
+    t1 = cn("flex h-10 flex-1 max-w-[360px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-300 dark:text-white", className);
     $2[4] = className;
     $2[5] = t1;
   } else {
@@ -30186,7 +30239,7 @@ const SelectTrigger = reactExports.forwardRef((t0, ref) => {
   }
   let t1;
   if ($2[4] !== className) {
-    t1 = cn("flex h-10 w-full items-center justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white", className);
+    t1 = cn("flex h-10 w-full max-w-[360px] flex-1 items-center justify-between rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white", className);
     $2[4] = className;
     $2[5] = t1;
   } else {
@@ -32753,13 +32806,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-QJYaIKoy.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Dni08xP1.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-D9mC8zV4.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BeLeFQF6.js"), true ? __vite__mapDeps([9,1,6,2,7]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DnAL4Wyy.js"), true ? __vite__mapDeps([10,1,6,5,2]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-C5B9jTa2.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DqDJ6Pze.js"), true ? __vite__mapDeps([12,1,6,5,2,4,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-CAK1eGs4.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BzfM4_ns.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-B8q0TKoS.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BTmv35t4.js"), true ? __vite__mapDeps([9,1,6,2,7]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-qTyxKyZV.js"), true ? __vite__mapDeps([10,1,6,5,2]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-gJYQaU7G.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-C1Wo4cQC.js"), true ? __vite__mapDeps([12,1,6,5,2,4,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -32806,14 +32859,14 @@ export {
   Settings2 as D,
   useSettingsStore as E,
   FileText as F,
-  CircleCheck as G,
-  Sun as H,
+  React$3 as G,
+  CircleCheck as H,
   Input as I,
-  Monitor as J,
-  LoaderCircle as K,
+  Sun as J,
+  Monitor as K,
   Label$1 as L,
   Moon as M,
-  Clock as N,
+  LoaderCircle as N,
   RefreshCw as O,
   Play as P,
   formatDateTime as Q,
@@ -32832,37 +32885,37 @@ export {
   CheckCheck as a1,
   ChevronLeft as a2,
   Circle as a3,
-  Euro as a4,
-  Globe as a5,
-  Info as a6,
-  Landmark as a7,
-  LayoutDashboard as a8,
-  Search as a9,
-  TestTube as aa,
-  Zap as ab,
-  DialogHeader as ac,
-  DialogTitle as ad,
-  DialogContent as ae,
-  Dialog as af,
-  createContextScope as ag,
-  Presence as ah,
-  Primitive$1 as ai,
-  useControllableState as aj,
-  useComposedRefs as ak,
-  composeEventHandlers as al,
-  usePrevious as am,
-  useSize as an,
-  cn as ao,
-  Root$1 as ap,
-  Portal$1 as aq,
-  Content as ar,
-  Title as as,
-  Overlay as at,
-  Close as au,
-  Description as av,
-  DialogDescription as aw,
-  DialogFooter as ax,
-  React$3 as ay,
+  Clock as a4,
+  Euro as a5,
+  Globe as a6,
+  Info as a7,
+  Landmark as a8,
+  LayoutDashboard as a9,
+  Search as aa,
+  TestTube as ab,
+  Zap as ac,
+  DialogHeader as ad,
+  DialogTitle as ae,
+  DialogContent as af,
+  Dialog as ag,
+  createContextScope as ah,
+  Presence as ai,
+  Primitive$1 as aj,
+  useControllableState as ak,
+  useComposedRefs as al,
+  composeEventHandlers as am,
+  usePrevious as an,
+  useSize as ao,
+  cn as ap,
+  Root$1 as aq,
+  Portal$1 as ar,
+  Content as as,
+  Title as at,
+  Overlay as au,
+  Close as av,
+  Description as aw,
+  DialogDescription as ax,
+  DialogFooter as ay,
   Badge as az,
   useFormsStore as b,
   clsx as c,

@@ -603,20 +603,18 @@ const TestResults: React.FC = () => {
         </div>
       )}
 
-      {/* Test Queue Status */}
-      <div className="mt-4">
-        <TestQueueStatus onRefresh={loadTestRuns} />
-      </div>
-
       {/* Running Tests Table */}
       {activeTests.length > 0 && (
         <div className="mt-4 mb-6">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            Laufende Tests ({runningTests.length}
-            {queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
-          </h2>
-          <div className="bg-white dark:bg-gray-800 border border-blue-200 dark:border-blue-800 rounded-md shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+              Laufende Tests ({runningTests.length}
+              {queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
+            </h2>
+            <TestQueueStatus onRefresh={loadTestRuns} />
+          </div>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -633,10 +631,11 @@ const TestResults: React.FC = () => {
                   {activeTests.map((testRun) => {
                     const isSelected = selectedTestRun === testRun.id;
                     const isQueued = testRun.status === "QUEUED";
+                    const isRunning = testRun.status === "RUNNING";
                     return (
                       <TableRow
                         key={testRun.id}
-                        className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : isQueued ? "bg-amber-50/50 dark:bg-amber-900/10" : "bg-white dark:bg-gray-800"}`}
+                        className={`cursor-pointer ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`}
                         onClick={() => handleSelectTestRun(testRun.id)}>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1 group">
@@ -653,6 +652,7 @@ const TestResults: React.FC = () => {
                         </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
+                            {isRunning && <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse flex-shrink-0" />}
                             <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
                               {testRun.formName} × {testRun.paymentMethodName}
                             </div>
@@ -662,7 +662,7 @@ const TestResults: React.FC = () => {
                                 title="Autopilot Test">
                                 <Bot
                                   size={12}
-                                  className="text-blue-600 dark:text-blue-400"
+                                  className="text-gray-500 dark:text-gray-400"
                                 />
                               </div>
                             )}
@@ -670,7 +670,7 @@ const TestResults: React.FC = () => {
                         </TableCell>
                         <TableCell className="px-4 text-[11px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4">
-                          <span className="text-[11px] font-mono text-blue-600 dark:text-blue-400 tabular-nums">{formatElapsedTime(runningTimers[testRun.id] || 0)}</span>
+                          <span className={`text-[11px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>{formatElapsedTime(runningTimers[testRun.id] || 0)}</span>
                         </TableCell>
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
@@ -684,10 +684,10 @@ const TestResults: React.FC = () => {
                               }}
                               variant="ghost"
                               size="sm"
-                              className="text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-300"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                               title="Test stoppen">
                               <Square
-                                size={16}
+                                size={14}
                                 fill="currentColor"
                               />
                             </Button>
@@ -860,7 +860,7 @@ const TestResults: React.FC = () => {
             <DrawerTitle className={CONFIG.style.title.className + ` pb-4`}>{selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}</DrawerTitle>
             {/* Action buttons */}
             {selectedTestRunData && (
-              <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-800">
+              <div className="flex items-center gap-2 mt-6 pt-6 border-t dark:border-t-gray-700">
                 {selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? (
                   <Button
                     onClick={async (e) => {
