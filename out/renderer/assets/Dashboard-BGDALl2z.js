@@ -1,6 +1,6 @@
-import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, P as Play, S as Settings, h as TestRunDialog, i as dist } from "./index-CTw5_kAE.js";
+import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, P as Play, S as Settings, h as TestRunDialog, i as dist } from "./index-B8q1zmZg.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { S as Skeleton } from "./Skeleton-DooFIl-c.js";
+import { S as Skeleton } from "./Skeleton-8iagGSqx.js";
 var EventKeys = ["dangerouslySetInnerHTML", "onCopy", "onCopyCapture", "onCut", "onCutCapture", "onPaste", "onPasteCapture", "onCompositionEnd", "onCompositionEndCapture", "onCompositionStart", "onCompositionStartCapture", "onCompositionUpdate", "onCompositionUpdateCapture", "onFocus", "onFocusCapture", "onBlur", "onBlurCapture", "onChange", "onChangeCapture", "onBeforeInput", "onBeforeInputCapture", "onInput", "onInputCapture", "onReset", "onResetCapture", "onSubmit", "onSubmitCapture", "onInvalid", "onInvalidCapture", "onLoad", "onLoadCapture", "onError", "onErrorCapture", "onKeyDown", "onKeyDownCapture", "onKeyPress", "onKeyPressCapture", "onKeyUp", "onKeyUpCapture", "onAbort", "onAbortCapture", "onCanPlay", "onCanPlayCapture", "onCanPlayThrough", "onCanPlayThroughCapture", "onDurationChange", "onDurationChangeCapture", "onEmptied", "onEmptiedCapture", "onEncrypted", "onEncryptedCapture", "onEnded", "onEndedCapture", "onLoadedData", "onLoadedDataCapture", "onLoadedMetadata", "onLoadedMetadataCapture", "onLoadStart", "onLoadStartCapture", "onPause", "onPauseCapture", "onPlay", "onPlayCapture", "onPlaying", "onPlayingCapture", "onProgress", "onProgressCapture", "onRateChange", "onRateChangeCapture", "onSeeked", "onSeekedCapture", "onSeeking", "onSeekingCapture", "onStalled", "onStalledCapture", "onSuspend", "onSuspendCapture", "onTimeUpdate", "onTimeUpdateCapture", "onVolumeChange", "onVolumeChangeCapture", "onWaiting", "onWaitingCapture", "onAuxClick", "onAuxClickCapture", "onClick", "onClickCapture", "onContextMenu", "onContextMenuCapture", "onDoubleClick", "onDoubleClickCapture", "onDrag", "onDragCapture", "onDragEnd", "onDragEndCapture", "onDragEnter", "onDragEnterCapture", "onDragExit", "onDragExitCapture", "onDragLeave", "onDragLeaveCapture", "onDragOver", "onDragOverCapture", "onDragStart", "onDragStartCapture", "onDrop", "onDropCapture", "onMouseDown", "onMouseDownCapture", "onMouseEnter", "onMouseLeave", "onMouseMove", "onMouseMoveCapture", "onMouseOut", "onMouseOutCapture", "onMouseOver", "onMouseOverCapture", "onMouseUp", "onMouseUpCapture", "onSelect", "onSelectCapture", "onTouchCancel", "onTouchCancelCapture", "onTouchEnd", "onTouchEndCapture", "onTouchMove", "onTouchMoveCapture", "onTouchStart", "onTouchStartCapture", "onPointerDown", "onPointerDownCapture", "onPointerMove", "onPointerMoveCapture", "onPointerUp", "onPointerUpCapture", "onPointerCancel", "onPointerCancelCapture", "onPointerEnter", "onPointerEnterCapture", "onPointerLeave", "onPointerLeaveCapture", "onPointerOver", "onPointerOverCapture", "onPointerOut", "onPointerOutCapture", "onGotPointerCapture", "onGotPointerCaptureCapture", "onLostPointerCapture", "onLostPointerCaptureCapture", "onScroll", "onScrollCapture", "onWheel", "onWheelCapture", "onAnimationStart", "onAnimationStartCapture", "onAnimationEnd", "onAnimationEndCapture", "onAnimationIteration", "onAnimationIterationCapture", "onTransitionEnd", "onTransitionEndCapture"];
 function isEventKey(key) {
   if (typeof key !== "string") {
@@ -24067,6 +24067,62 @@ const Dashboard = () => {
     }
     return data;
   };
+  const prepareSuccessRateTrend = () => {
+    const last7Days = [];
+    const now = /* @__PURE__ */ new Date();
+    for (let i = 6; i >= 0; i--) {
+      const date_0 = new Date(now);
+      date_0.setDate(date_0.getDate() - i);
+      const dateStr = date_0.toLocaleDateString("de-DE");
+      const dayRuns = testRuns.filter((r_2) => {
+        const runDate = new Date(r_2.runAt).toLocaleDateString("de-DE");
+        return runDate === dateStr && r_2.status !== "RUNNING" && r_2.status !== "QUEUED";
+      });
+      const successful_0 = dayRuns.filter((r_3) => r_3.status === "SUCCESS").length;
+      const total = dayRuns.length;
+      const rate = total > 0 ? successful_0 / total * 100 : 0;
+      last7Days.push({
+        date: dateStr,
+        rate: Math.round(rate),
+        total
+      });
+    }
+    return last7Days;
+  };
+  const prepareFormReliability = () => {
+    const formStats = forms.map((form_0) => {
+      const formRuns = testRuns.filter((r_4) => r_4.formId === form_0.id && r_4.status !== "RUNNING" && r_4.status !== "QUEUED");
+      const successful_1 = formRuns.filter((r_5) => r_5.status === "SUCCESS").length;
+      const total_0 = formRuns.length;
+      const rate_0 = total_0 > 0 ? successful_1 / total_0 * 100 : 0;
+      const avgDuration = formRuns.length > 0 ? formRuns.reduce((sum, r_6) => sum + (r_6.durationMs || 0), 0) / formRuns.length : 0;
+      return {
+        name: form_0.name,
+        rate: Math.round(rate_0),
+        total: total_0,
+        avgDuration: Math.round(avgDuration / 1e3),
+        // in seconds
+        isActive: form_0.isActive
+      };
+    }).filter((f_0) => f_0.total > 0).sort((a_0, b_0) => b_0.rate - a_0.rate);
+    return formStats;
+  };
+  const preparePaymentMethodReliability = () => {
+    const pmStats = paymentMethods.map((pm_0) => {
+      const pmRuns = testRuns.filter((r_7) => r_7.paymentMethodId === pm_0.id && r_7.status !== "RUNNING" && r_7.status !== "QUEUED");
+      const successful_2 = pmRuns.filter((r_8) => r_8.status === "SUCCESS").length;
+      const total_1 = pmRuns.length;
+      const rate_1 = total_1 > 0 ? successful_2 / total_1 * 100 : 0;
+      return {
+        name: pm_0.name,
+        type: pm_0.type,
+        rate: Math.round(rate_1),
+        total: total_1,
+        isActive: pm_0.isActive
+      };
+    }).filter((p_0) => p_0.total > 0).sort((a_1, b_1) => b_1.rate - a_1.rate);
+    return pmStats;
+  };
   reactExports.useEffect(() => {
     const loadDashboardData = async () => {
       setIsLoading(true);
@@ -24081,8 +24137,8 @@ const Dashboard = () => {
     loadDashboardData();
   }, [loadForms, loadPaymentMethods, loadTestRuns]);
   reactExports.useEffect(() => {
-    const activeForms = forms.filter((form_0) => form_0.isActive).length;
-    const activePaymentMethods = paymentMethods.filter((pm_0) => pm_0.isActive).length;
+    const activeForms = forms.filter((form_1) => form_1.isActive).length;
+    const activePaymentMethods = paymentMethods.filter((pm_1) => pm_1.isActive).length;
     const successfulTests = testRuns.filter((run_2) => run_2.status === "SUCCESS").length;
     const failedTests = testRuns.filter((run_3) => run_3.status === "FAILURE").length;
     const totalTestRuns = testRuns.length;
@@ -24212,7 +24268,7 @@ const Dashboard = () => {
     ] }),
     testRuns.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lgtext-gray-900 dark:text-white mb-4", children: "Test-Verlauf" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Test-Verlauf" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 300, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(LineChart, { data: prepareTimelineData(), children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#e5e7eb", strokeOpacity: 0.5 }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "date", stroke: "#9ca3af", tick: {
@@ -24305,6 +24361,96 @@ const Dashboard = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "failure", fill: "#ef4444", name: "Fehlgeschlagen" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Bar, { dataKey: "stopped", fill: "#a855f7", name: "Gestoppt" })
         ] }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Erfolgsrate (Letzte 7 Tage)" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 200, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(LineChart, { data: prepareSuccessRateTrend(), children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#e5e7eb", strokeOpacity: 0.5 }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "date", stroke: "#9ca3af", tick: {
+            fontSize: 10,
+            fontFamily: "JetBrains Mono, monospace"
+          }, tickLine: {
+            stroke: "#d1d5db"
+          } }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { domain: [0, 100], stroke: "#9ca3af", tick: {
+            fontSize: 10,
+            fontFamily: "JetBrains Mono, monospace"
+          }, tickLine: {
+            stroke: "#d1d5db"
+          }, tickFormatter: (value) => `${value}%` }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: ({
+            active: active_0,
+            payload: payload_0,
+            label: label_0
+          }) => {
+            if (active_0 && payload_0 && payload_0.length) {
+              return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-md shadow-lg", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-900 dark:text-white mb-1", children: label_0 }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-green-600", children: [
+                  payload_0[0].value,
+                  "% Erfolgsrate"
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-500", children: [
+                  payload_0[0].payload.total,
+                  " Tests"
+                ] })
+              ] });
+            }
+            return null;
+          } }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Line, { type: "monotone", dataKey: "rate", stroke: "#10b981", strokeWidth: 2, dot: {
+            fill: "#10b981",
+            strokeWidth: 2
+          }, name: "Erfolgsrate" })
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Formular Zuverlässigkeit" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3 max-h-[300px] overflow-y-auto", children: prepareFormReliability().length > 0 ? prepareFormReliability().map((form_2, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-900 dark:text-white truncate", children: form_2.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-500", children: [
+                form_2.total,
+                " Tests • Ø ",
+                form_2.avgDuration,
+                "s"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `h-full rounded-full ${form_2.rate >= 80 ? "bg-green-500" : form_2.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`, style: {
+                width: `${form_2.rate}%`
+              } }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `text-sm font-mono ${form_2.rate >= 80 ? "text-green-600" : form_2.rate >= 50 ? "text-yellow-600" : "text-red-600"}`, children: [
+                form_2.rate,
+                "%"
+              ] })
+            ] })
+          ] }, idx)) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500 text-center py-4", children: "Keine Testdaten verfügbar" }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Bezahlmethoden Zuverlässigkeit" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3 max-h-[300px] overflow-y-auto", children: preparePaymentMethodReliability().length > 0 ? preparePaymentMethodReliability().map((pm_2, idx_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-900 dark:text-white truncate", children: pm_2.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-500 uppercase", children: [
+                pm_2.type,
+                " • ",
+                pm_2.total,
+                " Tests"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `h-full rounded-full ${pm_2.rate >= 80 ? "bg-green-500" : pm_2.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`, style: {
+                width: `${pm_2.rate}%`
+              } }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `text-sm font-mono ${pm_2.rate >= 80 ? "text-green-600" : pm_2.rate >= 50 ? "text-yellow-600" : "text-red-600"}`, children: [
+                pm_2.rate,
+                "%"
+              ] })
+            ] })
+          ] }, idx_0)) : /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500 text-center py-4", children: "Keine Testdaten verfügbar" }) })
+        ] })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: () => setShowTestDialog(false) })

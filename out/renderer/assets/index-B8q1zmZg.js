@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-D_9CLsZE.js","./app.config-D8MSMeZ9.js","./Skeleton-DooFIl-c.js","./Forms-bnzHR7Nu.js","./IconPicker-LmZXFlak.js","./useFilterableData-BAOTf6tS.js","./DeleteConfirmDialog-Cev_xDuJ.js","./Checkbox-DtMxuuTh.js","./PaymentMethods-BSu2qF6y.js","./Settings-BjWPfd0C.js","./TestResults-9HTXuCAZ.js","./InfoDoku-IqLtMXJy.js","./Schedules-DBvdSKUg.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-BGDALl2z.js","./app.config-D8MSMeZ9.js","./Skeleton-8iagGSqx.js","./Forms-DzJfmZMJ.js","./IconPicker-BcP962rt.js","./useFilterableData-DxNOQ10L.js","./DeleteConfirmDialog-DHgwKDwD.js","./Checkbox-DpdQ2CP7.js","./PaymentMethods-R6KylCJM.js","./Settings-CIxcvASN.js","./TestResults-CSR3OVKm.js","./InfoDoku-DIKG6oLi.js","./Schedules-uPgpr03s.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -24700,7 +24700,7 @@ const Button = React$3.forwardRef((t0, ref) => {
     } else {
       t72 = $2[12];
     }
-    const t82 = `${"inline-flex items-center justify-start rounded-[0.25em] transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+    const t82 = `${"inline-flex items-center justify-start rounded transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
     const t92 = props;
     let t102;
     if ($2[13] !== isLoading) {
@@ -24737,7 +24737,7 @@ const Button = React$3.forwardRef((t0, ref) => {
   } else {
     t7 = $2[22];
   }
-  const t8 = `${"inline-flex items-center justify-start rounded-[0.25em] transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
+  const t8 = `${"inline-flex items-center justify-start rounded transition-colors focus:ring-0 focus:oultine-2 outline-offset-2 disabled:opacity-50 disabled:pointer-events-none"} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`;
   const t9 = disabled || isLoading;
   let t10;
   if ($2[23] !== isLoading) {
@@ -31738,7 +31738,7 @@ const useSchedulesStore = create((set, get) => ({
     }
   }
 }));
-const badgeVariants = cva("inline-flex !uppercase items-center gap-1.5 px-[0.5em] py-[0.25em] text-[11px] font-medium font-mono rounded-[0.25em] border transition-colors", {
+const badgeVariants = cva("inline-flex !uppercase items-center gap-1.5 px-[0.5em] py-[0.25em] text-[11px] font-medium font-mono rounded border transition-colors", {
   variants: {
     variant: {
       default: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600",
@@ -31899,7 +31899,7 @@ const StatusBadge = (t0) => {
         }
         case "RUNNING": {
           return /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "relative flex h-3 w-3", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-[0.25em] bg-blue-400 opacity-75" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded bg-blue-400 opacity-75" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "relative inline-flex rounded-full h-3 w-3 bg-blue-500" })
           ] });
         }
@@ -32753,13 +32753,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-D_9CLsZE.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-bnzHR7Nu.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-BSu2qF6y.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BjWPfd0C.js"), true ? __vite__mapDeps([9,1,6,2,7]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-9HTXuCAZ.js"), true ? __vite__mapDeps([10,1,6,5,2]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-IqLtMXJy.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DBvdSKUg.js"), true ? __vite__mapDeps([12,1,5,2,4,6,7]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-BGDALl2z.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DzJfmZMJ.js"), true ? __vite__mapDeps([3,1,4,5,6,7,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-R6KylCJM.js"), true ? __vite__mapDeps([8,1,4,5,6,7,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-CIxcvASN.js"), true ? __vite__mapDeps([9,1,6,2,7]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-CSR3OVKm.js"), true ? __vite__mapDeps([10,1,6,5,2]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-DIKG6oLi.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-uPgpr03s.js"), true ? __vite__mapDeps([12,1,5,2,4,6,7]) : void 0, import.meta.url));
 function App() {
   const {
     settings,

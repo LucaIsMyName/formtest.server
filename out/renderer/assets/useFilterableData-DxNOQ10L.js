@@ -1,11 +1,11 @@
-import { ab as createLucideIcon, at as Root, r as reactExports, i as dist, Y as cn, j as jsxRuntimeExports, au as Portal, av as Content, aw as Title, ax as Overlay, ay as Close, X, az as Description, aA as React, ag as ChevronLeft, A as ChevronRight, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, q as SelectContent, s as SelectItem, v as StatusBadge, aB as Badge, am as Search, I as Input } from "./index-CTw5_kAE.js";
+import { ab as createLucideIcon, at as Root, r as reactExports, i as dist, Y as cn, j as jsxRuntimeExports, au as Portal, av as Content, aw as Title, ax as Overlay, ay as Close, X, az as Description, aA as React, ag as ChevronLeft, A as ChevronRight, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, q as SelectContent, s as SelectItem, v as StatusBadge, aB as Badge, am as Search, I as Input } from "./index-B8q1zmZg.js";
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$4 = [
+const __iconNode$9 = [
   ["path", { d: "M12 8V4H8", key: "hb8ula" }],
   ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
   ["path", { d: "M2 14h2", key: "vft8re" }],
@@ -13,36 +13,36 @@ const __iconNode$4 = [
   ["path", { d: "M15 13v2", key: "1xurst" }],
   ["path", { d: "M9 13v2", key: "rq6x2g" }]
 ];
-const Bot = createLucideIcon("bot", __iconNode$4);
+const Bot = createLucideIcon("bot", __iconNode$9);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$3 = [
+const __iconNode$8 = [
   ["path", { d: "m7 15 5 5 5-5", key: "1hf1tw" }],
   ["path", { d: "m7 9 5-5 5 5", key: "sgt6xg" }]
 ];
-const ChevronsUpDown = createLucideIcon("chevrons-up-down", __iconNode$3);
+const ChevronsUpDown = createLucideIcon("chevrons-up-down", __iconNode$8);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$2 = [
+const __iconNode$7 = [
   ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-const Copy = createLucideIcon("copy", __iconNode$2);
+const Copy = createLucideIcon("copy", __iconNode$7);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$1 = [
+const __iconNode$6 = [
   [
     "path",
     {
@@ -60,7 +60,76 @@ const __iconNode$1 = [
     { d: "M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1", key: "mpwhp6" }
   ]
 ];
-const FileBraces = createLucideIcon("file-braces", __iconNode$1);
+const FileBraces = createLucideIcon("file-braces", __iconNode$6);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$5 = [
+  [
+    "path",
+    {
+      d: "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z",
+      key: "1oefj6"
+    }
+  ],
+  ["path", { d: "M14 2v5a1 1 0 0 0 1 1h5", key: "wfsgrz" }],
+  ["path", { d: "M8 13h2", key: "yr2amv" }],
+  ["path", { d: "M14 13h2", key: "un5t4a" }],
+  ["path", { d: "M8 17h2", key: "2yhykz" }],
+  ["path", { d: "M14 17h2", key: "10kma7" }]
+];
+const FileSpreadsheet = createLucideIcon("file-spreadsheet", __iconNode$5);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", ry: "2", key: "1m3agn" }],
+  ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+  ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }]
+];
+const Image = createLucideIcon("image", __iconNode$4);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$3 = [
+  ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+  ["path", { d: "m21 3-7 7", key: "1l2asr" }],
+  ["path", { d: "m3 21 7-7", key: "tjx5ai" }],
+  ["path", { d: "M9 21H3v-6", key: "wtvkvv" }]
+];
+const Maximize2 = createLucideIcon("maximize-2", __iconNode$3);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$2 = [
+  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }]
+];
+const Square = createLucideIcon("square", __iconNode$2);
+/**
+ * @license lucide-react v0.554.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1 = [
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
+  ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
+  ["line", { x1: "11", x2: "11", y1: "8", y2: "14", key: "1vmskp" }],
+  ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
+];
+const ZoomIn = createLucideIcon("zoom-in", __iconNode$1);
 /**
  * @license lucide-react v0.554.0 - ISC
  *
@@ -68,9 +137,11 @@ const FileBraces = createLucideIcon("file-braces", __iconNode$1);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }]
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }],
+  ["line", { x1: "21", x2: "16.65", y1: "21", y2: "16.65", key: "13gj7c" }],
+  ["line", { x1: "8", x2: "14", y1: "11", y2: "11", key: "durymu" }]
 ];
-const Square = createLucideIcon("square", __iconNode);
+const ZoomOut = createLucideIcon("zoom-out", __iconNode);
 const Drawer = Root;
 const DrawerPortal = Portal;
 const DrawerOverlay = reactExports.forwardRef((t0, ref) => {
@@ -1352,9 +1423,12 @@ export {
   Bot as B,
   Copy as C,
   Drawer as D,
-  FileBraces as F,
+  FileSpreadsheet as F,
+  Image as I,
+  Maximize2 as M,
   SortableTableHead as S,
   TableFilter as T,
+  ZoomOut as Z,
   DrawerContent as a,
   DrawerHeader as b,
   DrawerTitle as c,
@@ -1368,6 +1442,8 @@ export {
   TableCell as k,
   TablePagination as l,
   Square as m,
-  ChevronsUpDown as n,
+  ZoomIn as n,
+  FileBraces as o,
+  ChevronsUpDown as p,
   useFilterableData as u
 };

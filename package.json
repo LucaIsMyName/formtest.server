@@ -1,6 +1,6 @@
 {
   "name": "formtest-server",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Donation form testing application with Electron, Vite, TypeScript, and Playwright",
   "main": "out/main/index.js",
   "scripts": {
@@ -43,6 +43,7 @@
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.10.0",
     "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^7.0.4",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
@@ -82,6 +83,7 @@
     "keytar": "^7.9.0",
     "lucide-react": "^0.554.0",
     "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.11",
     "react": "^18.2.0",
     "react-compiler-runtime": "^1.0.0",
     "react-dom": "^18.2.0",

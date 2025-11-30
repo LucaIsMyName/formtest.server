@@ -6,23 +6,9 @@ import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSched
 import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
 import { getConfigurableCategories } from "../common/selectors.config";
+import { emailService } from "./emailService";
 
 export function setupIpcHandlers(): void {
-  console.log("=== SETTING UP IPC HANDLERS ===");
-  console.log("IPC Setup: formQueries available:", !!formQueries);
-  console.log("IPC Setup: paymentMethodQueries available:", !!paymentMethodQueries);
-  console.log("IPC Setup: paymentMethodQueries.create available:", !!paymentMethodQueries?.create);
-
-  // Test if we can call paymentMethodQueries.create directly
-  try {
-    console.log("IPC Setup: Testing paymentMethodQueries object...");
-    console.log("IPC Setup: paymentMethodQueries keys:", Object.keys(paymentMethodQueries || {}));
-
-    // List all registered IPC handlers
-    console.log("IPC Setup: Registering paymentMethods:create handler...");
-  } catch (testError) {
-    console.error("IPC Setup: Error accessing paymentMethodQueries:", testError);
-  }
   // Form handlers with error handling
   ipcMain.handle("forms:getAll", async () => {
     try {
@@ -44,10 +30,7 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("forms:create", async (_, form: Omit<Form, "id" | "createdAt" | "updatedAt">) => {
     try {
-      console.log("IPC Handler - forms:create received:", form);
-      const result = formQueries.create(form);
-      console.log("IPC Handler - forms:create result:", result);
-      return result;
+      return formQueries.create(form);
     } catch (error) {
       console.error("IPC Error - forms:create:", error);
       throw error;
@@ -101,26 +84,10 @@ export function setupIpcHandlers(): void {
   });
 
   ipcMain.handle("paymentMethods:create", async (_, method: Omit<PaymentMethod, "id" | "createdAt" | "updatedAt">) => {
-    console.log("=== IPC HANDLER START ===");
-    console.log("IPC Handler - paymentMethods:create ENTRY POINT reached");
-    console.log("IPC Handler - paymentMethods:create received:", JSON.stringify(method, null, 2));
-    console.log("IPC Handler - paymentMethodQueries available:", !!paymentMethodQueries);
-    console.log("IPC Handler - paymentMethodQueries.create available:", !!paymentMethodQueries?.create);
-
     try {
-      console.log("IPC Handler - About to call paymentMethodQueries.create");
-      const result = await paymentMethodQueries.create(method);
-      console.log("IPC Handler - paymentMethods:create result:", result);
-      console.log("=== IPC HANDLER SUCCESS ===");
-      return result;
+      return await paymentMethodQueries.create(method);
     } catch (error) {
-      console.error("=== IPC HANDLER ERROR ===");
       console.error("IPC Error - paymentMethods:create:", error);
-      if (error instanceof Error) {
-        console.error("IPC Error - message:", error.message);
-        console.error("IPC Error - stack:", error.stack);
-      }
-      console.error("=== IPC HANDLER ERROR END ===");
       throw error;
     }
   });
@@ -497,5 +464,14 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("selectorConfig:getCategories", () => {
     return getConfigurableCategories();
+  });
+
+  // Email handlers
+  ipcMain.handle("email:testConnection", async () => {
+    return await emailService.sendTestEmail();
+  });
+
+  ipcMain.handle("email:getConfig", () => {
+    return emailService.loadConfig();
   });
 }

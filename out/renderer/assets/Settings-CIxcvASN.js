@@ -1,8 +1,8 @@
-import { y as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, z as Check, X, m as ChevronDown, A as ChevronRight, I as Input, D as Settings2, E as createRovingFocusGroupScope, G as useDirection, H as useControllableState, J as createContextScope, K as Root, M as Primitive, N as useComposedRefs, O as Item, Q as composeEventHandlers, U as usePrevious, V as useSize, W as Presence, Y as cn, Z as Circle, _ as useSettingsStore, L as Label, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, v as StatusBadge, $ as CircleCheck, a0 as Monitor, a1 as Sun, a2 as Moon } from "./index-CTw5_kAE.js";
+import { y as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, z as Check, X, m as ChevronDown, A as ChevronRight, I as Input, D as Settings2, E as createRovingFocusGroupScope, G as useDirection, H as useControllableState, J as createContextScope, K as Root, M as Primitive, N as useComposedRefs, O as Item, Q as composeEventHandlers, U as usePrevious, V as useSize, W as Presence, Y as cn, Z as Circle, _ as useSettingsStore, L as Label, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, $ as CircleCheck, v as StatusBadge, a0 as Monitor, a1 as Sun, a2 as Moon } from "./index-B8q1zmZg.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { T as TriangleAlert, C as CircleAlert, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-Cev_xDuJ.js";
-import { S as Skeleton } from "./Skeleton-DooFIl-c.js";
-import { R as RotateCcw, a as Code, P as Plus, E as Eye, b as EyeOff, C as Checkbox, D as Download, U as Upload } from "./Checkbox-DtMxuuTh.js";
+import { C as CircleAlert, T as TriangleAlert, a as Download, D as DeleteConfirmDialog } from "./DeleteConfirmDialog-DHgwKDwD.js";
+import { S as Skeleton } from "./Skeleton-8iagGSqx.js";
+import { R as RotateCcw, a as Code, P as Plus, E as Eye, b as EyeOff, M as Mail, C as Checkbox, S as Send, U as Upload } from "./Checkbox-DpdQ2CP7.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -1328,6 +1328,19 @@ const Settings = () => {
   const [isImporting, setIsImporting] = reactExports.useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = reactExports.useState(null);
   const [isDeleting, setIsDeleting] = reactExports.useState(false);
+  const [emailEnabled, setEmailEnabled] = reactExports.useState(false);
+  const [emailSmtpHost, setEmailSmtpHost] = reactExports.useState("");
+  const [emailSmtpPort, setEmailSmtpPort] = reactExports.useState("587");
+  const [emailSmtpSecure, setEmailSmtpSecure] = reactExports.useState(false);
+  const [emailSmtpUser, setEmailSmtpUser] = reactExports.useState("");
+  const [emailSmtpPass, setEmailSmtpPass] = reactExports.useState("");
+  const [emailFromEmail, setEmailFromEmail] = reactExports.useState("");
+  const [emailFromName, setEmailFromName] = reactExports.useState("FormTest Server");
+  const [emailToEmail, setEmailToEmail] = reactExports.useState("");
+  const [emailNotifySuccess, setEmailNotifySuccess] = reactExports.useState(false);
+  const [emailNotifyFailure, setEmailNotifyFailure] = reactExports.useState(true);
+  const [emailTestResult, setEmailTestResult] = reactExports.useState(null);
+  const [isSendingTestEmail, setIsSendingTestEmail] = reactExports.useState(false);
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
@@ -1362,6 +1375,39 @@ const Settings = () => {
         case "theme":
           setTheme(setting.value);
           break;
+        case "email_enabled":
+          setEmailEnabled(setting.value === "true");
+          break;
+        case "email_smtp_host":
+          setEmailSmtpHost(setting.value);
+          break;
+        case "email_smtp_port":
+          setEmailSmtpPort(setting.value);
+          break;
+        case "email_smtp_secure":
+          setEmailSmtpSecure(setting.value === "true");
+          break;
+        case "email_smtp_user":
+          setEmailSmtpUser(setting.value);
+          break;
+        case "email_smtp_pass":
+          setEmailSmtpPass(setting.value);
+          break;
+        case "email_from_email":
+          setEmailFromEmail(setting.value);
+          break;
+        case "email_from_name":
+          setEmailFromName(setting.value);
+          break;
+        case "email_to_email":
+          setEmailToEmail(setting.value);
+          break;
+        case "email_notify_success":
+          setEmailNotifySuccess(setting.value === "true");
+          break;
+        case "email_notify_failure":
+          setEmailNotifyFailure(setting.value === "true");
+          break;
       }
     });
   }, [settings]);
@@ -1394,32 +1440,85 @@ const Settings = () => {
     await updateSetting("theme", value_4, "UI-Theme-Präferenz (system, light, dark)");
     applyTheme(value_4);
   };
+  const handleEmailEnabledChange = async (checked) => {
+    setEmailEnabled(checked);
+    await updateSetting("email_enabled", String(checked), "E-Mail-Benachrichtigungen aktivieren");
+  };
+  const saveEmailSmtpHost = async () => {
+    await updateSetting("email_smtp_host", emailSmtpHost, "SMTP Server Host");
+  };
+  const saveEmailSmtpPort = async () => {
+    await updateSetting("email_smtp_port", emailSmtpPort, "SMTP Server Port");
+  };
+  const handleEmailSmtpSecureChange = async (checked_0) => {
+    setEmailSmtpSecure(checked_0);
+    await updateSetting("email_smtp_secure", String(checked_0), "SMTP SSL/TLS verwenden");
+  };
+  const saveEmailSmtpUser = async () => {
+    await updateSetting("email_smtp_user", emailSmtpUser, "SMTP Benutzername");
+  };
+  const saveEmailSmtpPass = async () => {
+    await updateSetting("email_smtp_pass", emailSmtpPass, "SMTP Passwort");
+  };
+  const saveEmailFromEmail = async () => {
+    await updateSetting("email_from_email", emailFromEmail, "Absender E-Mail");
+  };
+  const saveEmailFromName = async () => {
+    await updateSetting("email_from_name", emailFromName, "Absender Name");
+  };
+  const saveEmailToEmail = async () => {
+    await updateSetting("email_to_email", emailToEmail, "Empfänger E-Mail");
+  };
+  const handleEmailNotifySuccessChange = async (checked_1) => {
+    setEmailNotifySuccess(checked_1);
+    await updateSetting("email_notify_success", String(checked_1), "Bei erfolgreichen Tests benachrichtigen");
+  };
+  const handleEmailNotifyFailureChange = async (checked_2) => {
+    setEmailNotifyFailure(checked_2);
+    await updateSetting("email_notify_failure", String(checked_2), "Bei fehlgeschlagenen Tests benachrichtigen");
+  };
+  const handleSendTestEmail = async () => {
+    setIsSendingTestEmail(true);
+    setEmailTestResult(null);
+    try {
+      const api = window.api;
+      const result = await api.email.testConnection();
+      setEmailTestResult(result);
+    } catch (error_0) {
+      setEmailTestResult({
+        success: false,
+        message: "Fehler beim Senden der Test-E-Mail"
+      });
+    } finally {
+      setIsSendingTestEmail(false);
+    }
+  };
   const handleDelete = async () => {
     if (!deleteConfirmation) return;
     setIsDeleting(true);
     try {
-      const api = window.api;
+      const api_0 = window.api;
       switch (deleteConfirmation.type) {
         case "forms":
-          await api.forms.deleteAll();
+          await api_0.forms.deleteAll();
           break;
         case "paymentMethods":
-          await api.paymentMethods.deleteAll();
+          await api_0.paymentMethods.deleteAll();
           break;
         case "testRuns":
-          await api.testRuns.deleteAll();
+          await api_0.testRuns.deleteAll();
           break;
         case "schedules":
-          await api.testSchedules.deleteAll();
+          await api_0.testSchedules.deleteAll();
           break;
         case "all":
-          await api.forms.deleteAll();
-          await api.paymentMethods.deleteAll();
+          await api_0.forms.deleteAll();
+          await api_0.paymentMethods.deleteAll();
           break;
       }
       setDeleteConfirmation(null);
-    } catch (error_0) {
-      console.error("Failed to delete data:", error_0);
+    } catch (error_1) {
+      console.error("Failed to delete data:", error_1);
     } finally {
       setIsDeleting(false);
     }
@@ -1489,6 +1588,80 @@ const Settings = () => {
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Mail, { size: 20 }),
+          "E-Mail Benachrichtigungen"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Erhalten Sie E-Mail-Benachrichtigungen bei Autopilot-Tests. Konfigurieren Sie hier Ihren SMTP-Server." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "email-enabled", checked: emailEnabled, onCheckedChange: (checked_3) => handleEmailEnabledChange(checked_3 === true), disabled: isLoading }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "email-enabled", children: "E-Mail-Benachrichtigungen aktivieren" })
+          ] }),
+          emailEnabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "smtp-host", children: "SMTP Server" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "smtp-host", type: "text", placeholder: "smtp.example.com", value: emailSmtpHost, onChange: (e_1) => setEmailSmtpHost(e_1.target.value), onBlur: saveEmailSmtpHost, disabled: isLoading })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "smtp-port", children: "Port" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "smtp-port", type: "number", placeholder: "587", value: emailSmtpPort, onChange: (e_2) => setEmailSmtpPort(e_2.target.value), onBlur: saveEmailSmtpPort, disabled: isLoading })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "smtp-user", children: "Benutzername" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "smtp-user", type: "text", placeholder: "user@example.com", value: emailSmtpUser, onChange: (e_3) => setEmailSmtpUser(e_3.target.value), onBlur: saveEmailSmtpUser, disabled: isLoading })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "smtp-pass", children: "Passwort" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "smtp-pass", type: "password", placeholder: "••••••••", value: emailSmtpPass, onChange: (e_4) => setEmailSmtpPass(e_4.target.value), onBlur: saveEmailSmtpPass, disabled: isLoading })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "smtp-secure", checked: emailSmtpSecure, onCheckedChange: (checked_4) => handleEmailSmtpSecureChange(checked_4 === true), disabled: isLoading }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "smtp-secure", children: "SSL/TLS verwenden (Port 465)" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "from-email", children: "Absender E-Mail" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "from-email", type: "email", placeholder: "noreply@example.com", value: emailFromEmail, onChange: (e_5) => setEmailFromEmail(e_5.target.value), onBlur: saveEmailFromEmail, disabled: isLoading })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "from-name", children: "Absender Name" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "from-name", type: "text", placeholder: "FormTest Server", value: emailFromName, onChange: (e_6) => setEmailFromName(e_6.target.value), onBlur: saveEmailFromName, disabled: isLoading })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2 md:col-span-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", htmlFor: "to-email", children: "Empfänger E-Mail" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "to-email", type: "email", placeholder: "admin@example.com", value: emailToEmail, onChange: (e_7) => setEmailToEmail(e_7.target.value), onBlur: saveEmailToEmail, disabled: isLoading })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-800 dark:text-gray-400", children: "Benachrichtigen bei:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col gap-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "notify-success", checked: emailNotifySuccess, onCheckedChange: (checked_5) => handleEmailNotifySuccessChange(checked_5 === true), disabled: isLoading }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "notify-success", children: "Erfolgreichen Tests" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "notify-failure", checked: emailNotifyFailure, onCheckedChange: (checked_6) => handleEmailNotifyFailureChange(checked_6 === true), disabled: isLoading }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "notify-failure", children: "Fehlgeschlagenen Tests" })
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "secondary", size: "md", onClick: handleSendTestEmail, disabled: isLoading || isSendingTestEmail || !emailSmtpHost || !emailToEmail, className: "gap-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Send, { size: 16 }),
+                isSendingTestEmail ? "Sende..." : "Test-E-Mail senden"
+              ] }),
+              emailTestResult && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `flex items-center gap-2 text-sm ${emailTestResult.success ? "text-green-600" : "text-red-600"}`, children: [
+                emailTestResult.success ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 16 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 16 }),
+                emailTestResult.message
+              ] })
+            ] })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-semibold text-gray-900 dark:text-white mb-4", children: "Formular-Selektoren" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 dark:text-gray-400 mb-4", children: "Hier können Sie CSS-Selektoren für die automatische Formular-Erkennung anpassen. Eigene Selektoren haben Priorität vor den Standard-Selektoren. Per-Form Feld-Mappings überschreiben diese globalen Einstellungen." }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorEditor, {})
@@ -1535,37 +1708,37 @@ const Settings = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-800 dark:text-gray-400 mb-4", children: "Wähle die Daten aus, die du exportieren möchtest:" }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3 mb-4", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-forms", checked: exportOptions.includeForms, onCheckedChange: (checked) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-forms", checked: exportOptions.includeForms, onCheckedChange: (checked_7) => setExportOptions({
                   ...exportOptions,
-                  includeForms: checked === true
+                  includeForms: checked_7 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-forms", children: "Formulare" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-payment", checked: exportOptions.includePaymentMethods, onCheckedChange: (checked_0) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-payment", checked: exportOptions.includePaymentMethods, onCheckedChange: (checked_8) => setExportOptions({
                   ...exportOptions,
-                  includePaymentMethods: checked_0 === true
+                  includePaymentMethods: checked_8 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-payment", children: "Bezahlmethoden" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-runs", checked: exportOptions.includeTestRuns, onCheckedChange: (checked_1) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-runs", checked: exportOptions.includeTestRuns, onCheckedChange: (checked_9) => setExportOptions({
                   ...exportOptions,
-                  includeTestRuns: checked_1 === true
+                  includeTestRuns: checked_9 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-runs", children: "Test Resultate" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-schedules", checked: exportOptions.includeSchedules, onCheckedChange: (checked_2) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-schedules", checked: exportOptions.includeSchedules, onCheckedChange: (checked_10) => setExportOptions({
                   ...exportOptions,
-                  includeSchedules: checked_2 === true
+                  includeSchedules: checked_10 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-schedules", children: "Autopilot (Zeitpläne)" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_3) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "export-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_11) => setExportOptions({
                   ...exportOptions,
-                  includeSettings: checked_3 === true
+                  includeSettings: checked_11 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "export-settings", children: "Einstellungen" })
               ] })
@@ -1574,14 +1747,14 @@ const Settings = () => {
               setIsExporting(true);
               setExportMessage(null);
               try {
-                const result = await window.api.database.export(exportOptions);
-                if (result.success) {
-                  setExportMessage(`✓ ${result.message}`);
+                const result_0 = await window.api.database.export(exportOptions);
+                if (result_0.success) {
+                  setExportMessage(`✓ ${result_0.message}`);
                 } else {
-                  setExportMessage(`✗ ${result.message}`);
+                  setExportMessage(`✗ ${result_0.message}`);
                 }
-              } catch (error_1) {
-                setExportMessage(`✗ Export fehlgeschlagen: ${error_1.message}`);
+              } catch (error_2) {
+                setExportMessage(`✗ Export fehlgeschlagen: ${error_2.message}`);
               } finally {
                 setIsExporting(false);
               }
@@ -1616,37 +1789,37 @@ const Settings = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3 mb-4", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: "Zu importierende Daten:" }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-forms", checked: exportOptions.includeForms, onCheckedChange: (checked_4) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-forms", checked: exportOptions.includeForms, onCheckedChange: (checked_12) => setExportOptions({
                   ...exportOptions,
-                  includeForms: checked_4 === true
+                  includeForms: checked_12 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-forms", children: "Formulare" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-payment", checked: exportOptions.includePaymentMethods, onCheckedChange: (checked_5) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-payment", checked: exportOptions.includePaymentMethods, onCheckedChange: (checked_13) => setExportOptions({
                   ...exportOptions,
-                  includePaymentMethods: checked_5 === true
+                  includePaymentMethods: checked_13 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-payment", children: "Bezahlmethoden" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-runs", checked: exportOptions.includeTestRuns, onCheckedChange: (checked_6) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-runs", checked: exportOptions.includeTestRuns, onCheckedChange: (checked_14) => setExportOptions({
                   ...exportOptions,
-                  includeTestRuns: checked_6 === true
+                  includeTestRuns: checked_14 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-runs", children: "Test Resultate" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-schedules", checked: exportOptions.includeSchedules, onCheckedChange: (checked_7) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-schedules", checked: exportOptions.includeSchedules, onCheckedChange: (checked_15) => setExportOptions({
                   ...exportOptions,
-                  includeSchedules: checked_7 === true
+                  includeSchedules: checked_15 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-schedules", children: "Autopilot (Zeitpläne)" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_8) => setExportOptions({
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { id: "import-settings", checked: exportOptions.includeSettings, onCheckedChange: (checked_16) => setExportOptions({
                   ...exportOptions,
-                  includeSettings: checked_8 === true
+                  includeSettings: checked_16 === true
                 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "font-normal cursor-pointer text-gray-800 dark:text-gray-400", htmlFor: "import-settings", children: "Einstellungen" })
               ] })
@@ -1655,9 +1828,9 @@ const Settings = () => {
               setIsImporting(true);
               setImportResult(null);
               try {
-                const result_0 = await window.api.database.import(importMode, exportOptions);
-                setImportResult(result_0);
-              } catch (error_2) {
+                const result_1 = await window.api.database.import(importMode, exportOptions);
+                setImportResult(result_1);
+              } catch (error_3) {
                 setImportResult({
                   success: false,
                   imported: {
@@ -1674,7 +1847,7 @@ const Settings = () => {
                     schedules: 0,
                     settings: 0
                   },
-                  errors: [`Import fehlgeschlagen: ${error_2.message}`],
+                  errors: [`Import fehlgeschlagen: ${error_3.message}`],
                   warnings: []
                 });
               } finally {
@@ -1771,9 +1944,9 @@ const Settings = () => {
                 importResult.errors && importResult.errors.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-3", children: [
                   /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "font-medium text-red-700 dark:text-red-300", children: "Fehler:" }),
                   /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "text-xs text-red-600 dark:text-red-400 ml-4 mt-1", children: [
-                    importResult.errors.slice(0, 5).map((error_3, i_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+                    importResult.errors.slice(0, 5).map((error_4, i_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
                       "• ",
-                      error_3
+                      error_4
                     ] }, i_0)),
                     importResult.errors.length > 5 && /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { className: "italic", children: [
                       "... und ",

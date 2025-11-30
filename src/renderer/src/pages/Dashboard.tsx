@@ -147,6 +147,78 @@ const Dashboard: React.FC = () => {
     return data;
   };
 
+  // Prepare success rate trend over time (last 7 days)
+  const prepareSuccessRateTrend = () => {
+    const last7Days: { date: string; rate: number; total: number }[] = [];
+    const now = new Date();
+    
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toLocaleDateString("de-DE");
+      
+      const dayRuns = testRuns.filter((r) => {
+        const runDate = new Date(r.runAt).toLocaleDateString("de-DE");
+        return runDate === dateStr && r.status !== "RUNNING" && r.status !== "QUEUED";
+      });
+      
+      const successful = dayRuns.filter((r) => r.status === "SUCCESS").length;
+      const total = dayRuns.length;
+      const rate = total > 0 ? (successful / total) * 100 : 0;
+      
+      last7Days.push({ date: dateStr, rate: Math.round(rate), total });
+    }
+    
+    return last7Days;
+  };
+
+  // Prepare reliability metrics per form
+  const prepareFormReliability = () => {
+    const formStats = forms.map((form) => {
+      const formRuns = testRuns.filter(
+        (r) => r.formId === form.id && r.status !== "RUNNING" && r.status !== "QUEUED"
+      );
+      const successful = formRuns.filter((r) => r.status === "SUCCESS").length;
+      const total = formRuns.length;
+      const rate = total > 0 ? (successful / total) * 100 : 0;
+      const avgDuration = formRuns.length > 0
+        ? formRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / formRuns.length
+        : 0;
+      
+      return {
+        name: form.name,
+        rate: Math.round(rate),
+        total,
+        avgDuration: Math.round(avgDuration / 1000), // in seconds
+        isActive: form.isActive,
+      };
+    }).filter((f) => f.total > 0).sort((a, b) => b.rate - a.rate);
+    
+    return formStats;
+  };
+
+  // Prepare reliability metrics per payment method
+  const preparePaymentMethodReliability = () => {
+    const pmStats = paymentMethods.map((pm) => {
+      const pmRuns = testRuns.filter(
+        (r) => r.paymentMethodId === pm.id && r.status !== "RUNNING" && r.status !== "QUEUED"
+      );
+      const successful = pmRuns.filter((r) => r.status === "SUCCESS").length;
+      const total = pmRuns.length;
+      const rate = total > 0 ? (successful / total) * 100 : 0;
+      
+      return {
+        name: pm.name,
+        type: pm.type,
+        rate: Math.round(rate),
+        total,
+        isActive: pm.isActive,
+      };
+    }).filter((p) => p.total > 0).sort((a, b) => b.rate - a.rate);
+    
+    return pmStats;
+  };
+
   // Separate initial load from stats calculation to fix stale closure issue
   useEffect(() => {
     const loadDashboardData = async () => {
@@ -345,7 +417,7 @@ const Dashboard: React.FC = () => {
         <div className="space-y-6 mb-8">
           {/* Timeline Chart */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lgtext-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
+            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>
@@ -530,6 +602,114 @@ const Dashboard: React.FC = () => {
                 />
               </BarChart>
             </ResponsiveContainer>
+          </div>
+
+          {/* Success Rate Trend (Last 7 Days) */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
+            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Erfolgsrate (Letzte 7 Tage)</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={prepareSuccessRateTrend()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                <XAxis
+                  dataKey="date"
+                  stroke="#9ca3af"
+                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tickLine={{ stroke: "#d1d5db" }}
+                />
+                <YAxis
+                  domain={[0, 100]}
+                  stroke="#9ca3af"
+                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tickLine={{ stroke: "#d1d5db" }}
+                  tickFormatter={(value) => `${value}%`}
+                />
+                <Tooltip
+                  content={({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-md shadow-lg">
+                          <p className="text-gray-900 dark:text-white mb-1">{label}</p>
+                          <p className="text-sm text-green-600">{payload[0].value}% Erfolgsrate</p>
+                          <p className="text-xs text-gray-500">{(payload[0].payload as any).total} Tests</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="rate"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  dot={{ fill: "#10b981", strokeWidth: 2 }}
+                  name="Erfolgsrate"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Reliability Metrics */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Form Reliability */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
+              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Formular Zuverlässigkeit</h3>
+              <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                {prepareFormReliability().length > 0 ? (
+                  prepareFormReliability().map((form, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{form.name}</p>
+                        <p className="text-xs text-gray-500">{form.total} Tests • Ø {form.avgDuration}s</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${form.rate >= 80 ? "bg-green-500" : form.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
+                            style={{ width: `${form.rate}%` }}
+                          />
+                        </div>
+                        <span className={`text-sm font-mono ${form.rate >= 80 ? "text-green-600" : form.rate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
+                          {form.rate}%
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500 text-center py-4">Keine Testdaten verfügbar</p>
+                )}
+              </div>
+            </div>
+
+            {/* Payment Method Reliability */}
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
+              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Bezahlmethoden Zuverlässigkeit</h3>
+              <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                {preparePaymentMethodReliability().length > 0 ? (
+                  preparePaymentMethodReliability().map((pm, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{pm.name}</p>
+                        <p className="text-xs text-gray-500 uppercase">{pm.type} • {pm.total} Tests</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${pm.rate >= 80 ? "bg-green-500" : pm.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
+                            style={{ width: `${pm.rate}%` }}
+                          />
+                        </div>
+                        <span className={`text-sm font-mono ${pm.rate >= 80 ? "text-green-600" : pm.rate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
+                          {pm.rate}%
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500 text-center py-4">Keine Testdaten verfügbar</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -122,6 +122,24 @@ const api = {
     getBase: (): Promise<SelectorConfig> => ipcRenderer.invoke('selectorConfig:getBase'),
     getCategories: (): Promise<{ category: string; keys: string[]; label: string }[]> => 
       ipcRenderer.invoke('selectorConfig:getCategories')
+  },
+
+  // Email operations
+  email: {
+    testConnection: (): Promise<{ success: boolean; message: string }> => 
+      ipcRenderer.invoke('email:testConnection'),
+    getConfig: (): Promise<{
+      enabled: boolean;
+      smtpHost: string;
+      smtpPort: number;
+      smtpSecure: boolean;
+      smtpUser: string;
+      fromEmail: string;
+      fromName: string;
+      toEmail: string;
+      notifyOnSuccess: boolean;
+      notifyOnFailure: boolean;
+    }> => ipcRenderer.invoke('email:getConfig')
   }
 }
 

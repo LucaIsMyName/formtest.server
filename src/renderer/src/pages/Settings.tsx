@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
-import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Sun, Moon, Monitor, Download, Upload, AlertCircle, CheckCircle2, AlertTriangle, Mail, Send } from "lucide-react";
 import { CONFIG } from "../app.config";
 import { StatusBadge } from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -78,6 +78,21 @@ const Settings: React.FC = () => {
   } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Email settings state
+  const [emailEnabled, setEmailEnabled] = useState(false);
+  const [emailSmtpHost, setEmailSmtpHost] = useState("");
+  const [emailSmtpPort, setEmailSmtpPort] = useState("587");
+  const [emailSmtpSecure, setEmailSmtpSecure] = useState(false);
+  const [emailSmtpUser, setEmailSmtpUser] = useState("");
+  const [emailSmtpPass, setEmailSmtpPass] = useState("");
+  const [emailFromEmail, setEmailFromEmail] = useState("");
+  const [emailFromName, setEmailFromName] = useState("FormTest Server");
+  const [emailToEmail, setEmailToEmail] = useState("");
+  const [emailNotifySuccess, setEmailNotifySuccess] = useState(false);
+  const [emailNotifyFailure, setEmailNotifyFailure] = useState(true);
+  const [emailTestResult, setEmailTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
+
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
@@ -116,6 +131,39 @@ const Settings: React.FC = () => {
           break;
         case "theme":
           setTheme(setting.value);
+          break;
+        case "email_enabled":
+          setEmailEnabled(setting.value === "true");
+          break;
+        case "email_smtp_host":
+          setEmailSmtpHost(setting.value);
+          break;
+        case "email_smtp_port":
+          setEmailSmtpPort(setting.value);
+          break;
+        case "email_smtp_secure":
+          setEmailSmtpSecure(setting.value === "true");
+          break;
+        case "email_smtp_user":
+          setEmailSmtpUser(setting.value);
+          break;
+        case "email_smtp_pass":
+          setEmailSmtpPass(setting.value);
+          break;
+        case "email_from_email":
+          setEmailFromEmail(setting.value);
+          break;
+        case "email_from_name":
+          setEmailFromName(setting.value);
+          break;
+        case "email_to_email":
+          setEmailToEmail(setting.value);
+          break;
+        case "email_notify_success":
+          setEmailNotifySuccess(setting.value === "true");
+          break;
+        case "email_notify_failure":
+          setEmailNotifyFailure(setting.value === "true");
           break;
       }
     });
@@ -158,6 +206,69 @@ const Settings: React.FC = () => {
     await updateSetting("theme", value, "UI-Theme-Präferenz (system, light, dark)");
     // Apply theme immediately
     applyTheme(value);
+  };
+
+  // Email settings handlers
+  const handleEmailEnabledChange = async (checked: boolean) => {
+    setEmailEnabled(checked);
+    await updateSetting("email_enabled", String(checked), "E-Mail-Benachrichtigungen aktivieren");
+  };
+
+  const saveEmailSmtpHost = async () => {
+    await updateSetting("email_smtp_host", emailSmtpHost, "SMTP Server Host");
+  };
+
+  const saveEmailSmtpPort = async () => {
+    await updateSetting("email_smtp_port", emailSmtpPort, "SMTP Server Port");
+  };
+
+  const handleEmailSmtpSecureChange = async (checked: boolean) => {
+    setEmailSmtpSecure(checked);
+    await updateSetting("email_smtp_secure", String(checked), "SMTP SSL/TLS verwenden");
+  };
+
+  const saveEmailSmtpUser = async () => {
+    await updateSetting("email_smtp_user", emailSmtpUser, "SMTP Benutzername");
+  };
+
+  const saveEmailSmtpPass = async () => {
+    await updateSetting("email_smtp_pass", emailSmtpPass, "SMTP Passwort");
+  };
+
+  const saveEmailFromEmail = async () => {
+    await updateSetting("email_from_email", emailFromEmail, "Absender E-Mail");
+  };
+
+  const saveEmailFromName = async () => {
+    await updateSetting("email_from_name", emailFromName, "Absender Name");
+  };
+
+  const saveEmailToEmail = async () => {
+    await updateSetting("email_to_email", emailToEmail, "Empfänger E-Mail");
+  };
+
+  const handleEmailNotifySuccessChange = async (checked: boolean) => {
+    setEmailNotifySuccess(checked);
+    await updateSetting("email_notify_success", String(checked), "Bei erfolgreichen Tests benachrichtigen");
+  };
+
+  const handleEmailNotifyFailureChange = async (checked: boolean) => {
+    setEmailNotifyFailure(checked);
+    await updateSetting("email_notify_failure", String(checked), "Bei fehlgeschlagenen Tests benachrichtigen");
+  };
+
+  const handleSendTestEmail = async () => {
+    setIsSendingTestEmail(true);
+    setEmailTestResult(null);
+    try {
+      const api = window.api as any;
+      const result = await api.email.testConnection();
+      setEmailTestResult(result);
+    } catch (error) {
+      setEmailTestResult({ success: false, message: "Fehler beim Senden der Test-E-Mail" });
+    } finally {
+      setIsSendingTestEmail(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -329,6 +440,189 @@ const Settings: React.FC = () => {
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400">Maximale Wartezeit für Test-Operationen (Standard: 30000ms = 30 Sekunden)</p>
               </div>
+            </div>
+          </div>
+
+          {/* Email Notifications Section */}
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+              <Mail size={20} />
+              E-Mail Benachrichtigungen
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Erhalten Sie E-Mail-Benachrichtigungen bei Autopilot-Tests. Konfigurieren Sie hier Ihren SMTP-Server.
+            </p>
+
+            <div className="space-y-6">
+              {/* Enable/Disable */}
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="email-enabled"
+                  checked={emailEnabled}
+                  onCheckedChange={(checked) => handleEmailEnabledChange(checked === true)}
+                  disabled={isLoading}
+                />
+                <Label className="font-normal cursor-pointer text-gray-800 dark:text-gray-400" htmlFor="email-enabled">
+                  E-Mail-Benachrichtigungen aktivieren
+                </Label>
+              </div>
+
+              {emailEnabled && (
+                <>
+                  {/* SMTP Settings */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-gray-800 dark:text-gray-400" htmlFor="smtp-host">SMTP Server</Label>
+                      <Input
+                        id="smtp-host"
+                        type="text"
+                        placeholder="smtp.example.com"
+                        value={emailSmtpHost}
+                        onChange={(e) => setEmailSmtpHost(e.target.value)}
+                        onBlur={saveEmailSmtpHost}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gray-800 dark:text-gray-400" htmlFor="smtp-port">Port</Label>
+                      <Input
+                        id="smtp-port"
+                        type="number"
+                        placeholder="587"
+                        value={emailSmtpPort}
+                        onChange={(e) => setEmailSmtpPort(e.target.value)}
+                        onBlur={saveEmailSmtpPort}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gray-800 dark:text-gray-400" htmlFor="smtp-user">Benutzername</Label>
+                      <Input
+                        id="smtp-user"
+                        type="text"
+                        placeholder="user@example.com"
+                        value={emailSmtpUser}
+                        onChange={(e) => setEmailSmtpUser(e.target.value)}
+                        onBlur={saveEmailSmtpUser}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gray-800 dark:text-gray-400" htmlFor="smtp-pass">Passwort</Label>
+                      <Input
+                        id="smtp-pass"
+                        type="password"
+                        placeholder="••••••••"
+                        value={emailSmtpPass}
+                        onChange={(e) => setEmailSmtpPass(e.target.value)}
+                        onBlur={saveEmailSmtpPass}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="smtp-secure"
+                      checked={emailSmtpSecure}
+                      onCheckedChange={(checked) => handleEmailSmtpSecureChange(checked === true)}
+                      disabled={isLoading}
+                    />
+                    <Label className="font-normal cursor-pointer text-gray-800 dark:text-gray-400" htmlFor="smtp-secure">
+                      SSL/TLS verwenden (Port 465)
+                    </Label>
+                  </div>
+
+                  {/* From/To Settings */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-gray-800 dark:text-gray-400" htmlFor="from-email">Absender E-Mail</Label>
+                      <Input
+                        id="from-email"
+                        type="email"
+                        placeholder="noreply@example.com"
+                        value={emailFromEmail}
+                        onChange={(e) => setEmailFromEmail(e.target.value)}
+                        onBlur={saveEmailFromEmail}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-gray-800 dark:text-gray-400" htmlFor="from-name">Absender Name</Label>
+                      <Input
+                        id="from-name"
+                        type="text"
+                        placeholder="FormTest Server"
+                        value={emailFromName}
+                        onChange={(e) => setEmailFromName(e.target.value)}
+                        onBlur={saveEmailFromName}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label className="text-gray-800 dark:text-gray-400" htmlFor="to-email">Empfänger E-Mail</Label>
+                      <Input
+                        id="to-email"
+                        type="email"
+                        placeholder="admin@example.com"
+                        value={emailToEmail}
+                        onChange={(e) => setEmailToEmail(e.target.value)}
+                        onBlur={saveEmailToEmail}
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Notification Preferences */}
+                  <div className="space-y-2">
+                    <Label className="text-gray-800 dark:text-gray-400">Benachrichtigen bei:</Label>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="notify-success"
+                          checked={emailNotifySuccess}
+                          onCheckedChange={(checked) => handleEmailNotifySuccessChange(checked === true)}
+                          disabled={isLoading}
+                        />
+                        <Label className="font-normal cursor-pointer text-gray-800 dark:text-gray-400" htmlFor="notify-success">
+                          Erfolgreichen Tests
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="notify-failure"
+                          checked={emailNotifyFailure}
+                          onCheckedChange={(checked) => handleEmailNotifyFailureChange(checked === true)}
+                          disabled={isLoading}
+                        />
+                        <Label className="font-normal cursor-pointer text-gray-800 dark:text-gray-400" htmlFor="notify-failure">
+                          Fehlgeschlagenen Tests
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Test Email Button */}
+                  <div className="flex items-center gap-4">
+                    <Button
+                      variant="secondary"
+                      size="md"
+                      onClick={handleSendTestEmail}
+                      disabled={isLoading || isSendingTestEmail || !emailSmtpHost || !emailToEmail}
+                      className="gap-2"
+                    >
+                      <Send size={16} />
+                      {isSendingTestEmail ? "Sende..." : "Test-E-Mail senden"}
+                    </Button>
+                    {emailTestResult && (
+                      <div className={`flex items-center gap-2 text-sm ${emailTestResult.success ? "text-green-600" : "text-red-600"}`}>
+                        {emailTestResult.success ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                        {emailTestResult.message}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

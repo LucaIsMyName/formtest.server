@@ -9,7 +9,7 @@ import TestQueueStatus from "../components/TestQueueStatus";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
-import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle, Square } from "lucide-react";
+import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
@@ -20,6 +20,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../components/
 import { formatDateTime, formatDuration } from "../utils/formatters";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import ScreenshotViewer from "../components/ScreenshotViewer";
 
 const TestResultsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
@@ -480,11 +481,97 @@ const TestResults: React.FC = () => {
     downloadAnchorNode.remove();
   };
 
+  // Export all test results as JSON
+  const handleExportAllJson = () => {
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      totalResults: finishedTests.length,
+      results: finishedTests.map((tr) => ({
+        id: tr.id,
+        uuid: tr.uuid,
+        formName: tr.formName,
+        formId: tr.formId,
+        paymentMethodName: tr.paymentMethodName,
+        paymentMethodId: tr.paymentMethodId,
+        status: tr.status,
+        durationMs: tr.durationMs,
+        errorMessage: tr.errorMessage,
+        isScheduled: tr.isScheduled,
+        notes: tr.notes,
+        runAt: tr.runAt,
+        steps: tr.steps,
+      })),
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+    const downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `test_results_export_${new Date().toISOString().split("T")[0]}.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
+  // Export all test results as CSV
+  const handleExportCsv = () => {
+    // CSV header
+    const headers = ["ID", "UUID", "Form", "Bezahlmethode", "Status", "Dauer (ms)", "Fehler", "Geplant", "Notizen", "Datum"];
+    
+    // CSV rows
+    const rows = finishedTests.map((tr) => [
+      tr.id,
+      tr.uuid || "",
+      tr.formName || "",
+      tr.paymentMethodName || "",
+      tr.status,
+      tr.durationMs || "",
+      (tr.errorMessage || "").replace(/"/g, '""'), // Escape quotes
+      tr.isScheduled ? "Ja" : "Nein",
+      (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " "), // Escape quotes and newlines
+      new Date(tr.runAt).toLocaleString("de-DE"),
+    ]);
+
+    // Build CSV content
+    const csvContent = [
+      headers.join(";"),
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(";")),
+    ].join("\n");
+
+    // Add BOM for Excel compatibility with German characters
+    const bom = "\uFEFF";
+    const dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(bom + csvContent);
+    const downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `test_results_export_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className={CONFIG.style.title.className}>Tests</h1>
         <div className="flex items-center gap-3">
+          {finishedTests.length > 0 && (
+            <>
+              <Button
+                onClick={handleExportCsv}
+                variant="outline"
+                size="md"
+                className="gap-2">
+                <FileSpreadsheet size={16} />
+                CSV
+              </Button>
+              <Button
+                onClick={handleExportAllJson}
+                variant="outline"
+                size="md"
+                className="gap-2">
+                <Download size={16} />
+                JSON
+              </Button>
+            </>
+          )}
           <Button
             onClick={loadTestRuns}
             variant="secondary"
@@ -980,19 +1067,11 @@ const TestResults: React.FC = () => {
                   />
                 )}
 
-                {/* Screenshot */}
-                {selectedTestRunData.screenshotPath && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Screenshot</label>
-                    <div className="border border-gray-200 dark:border-gray-700 rounded overflow-hidden">
-                      <img
-                        src={selectedTestRunData.screenshotPath}
-                        alt="Test screenshot"
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-                )}
+                {/* Screenshot Gallery */}
+                <ScreenshotViewer
+                  screenshotPath={selectedTestRunData.screenshotPath}
+                  testName={`${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}
+                />
 
                 {/* Notes */}
                 <div className="mb-6 pb-6 border-b dark:border-gray-700">

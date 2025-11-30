@@ -1,4 +1,4 @@
-import { i as dist, Y as cn, j as jsxRuntimeExports } from "./index-CTw5_kAE.js";
+import { i as dist, Y as cn, j as jsxRuntimeExports } from "./index-B8q1zmZg.js";
 function Skeleton(t0) {
   const $ = dist.c(8);
   let className;

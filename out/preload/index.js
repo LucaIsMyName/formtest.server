@@ -102,6 +102,11 @@ const api = {
     getMerged: () => electron.ipcRenderer.invoke("selectorConfig:getMerged"),
     getBase: () => electron.ipcRenderer.invoke("selectorConfig:getBase"),
     getCategories: () => electron.ipcRenderer.invoke("selectorConfig:getCategories")
+  },
+  // Email operations
+  email: {
+    testConnection: () => electron.ipcRenderer.invoke("email:testConnection"),
+    getConfig: () => electron.ipcRenderer.invoke("email:getConfig")
   }
 };
 if (process.contextIsolated) {

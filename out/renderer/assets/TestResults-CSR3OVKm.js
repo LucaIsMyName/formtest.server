@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, a3 as LoaderCircle, a4 as Clock, B as Button, X, t as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, a5 as RefreshCw, P as Play, a6 as formatDateTime, v as StatusBadge, a7 as formatDuration, k as Trash2, a8 as Link, i as dist, a9 as CircleX, $ as CircleCheck } from "./index-CTw5_kAE.js";
+import { r as reactExports, j as jsxRuntimeExports, a3 as LoaderCircle, a4 as Clock, B as Button, X, i as dist, t as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, a5 as RefreshCw, P as Play, a6 as formatDateTime, v as StatusBadge, a7 as formatDuration, k as Trash2, a8 as Link, a9 as CircleX, $ as CircleCheck } from "./index-B8q1zmZg.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { D as DeleteConfirmDialog, C as CircleAlert } from "./DeleteConfirmDialog-Cev_xDuJ.js";
-import { m as Square, u as useFilterableData, e as useSortableData, f as Table, g as TableHeader, h as TableRow, i as TableHead, j as TableBody, k as TableCell, C as Copy, B as Bot, T as TableFilter, S as SortableTableHead, l as TablePagination, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, F as FileBraces } from "./useFilterableData-BAOTf6tS.js";
-import { S as Skeleton } from "./Skeleton-DooFIl-c.js";
+import { a as Download, D as DeleteConfirmDialog, C as CircleAlert } from "./DeleteConfirmDialog-DHgwKDwD.js";
+import { m as Square, I as Image, M as Maximize2, Z as ZoomOut, n as ZoomIn, u as useFilterableData, e as useSortableData, F as FileSpreadsheet, f as Table, g as TableHeader, h as TableRow, i as TableHead, j as TableBody, k as TableCell, C as Copy, B as Bot, T as TableFilter, S as SortableTableHead, l as TablePagination, D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerTitle, o as FileBraces } from "./useFilterableData-DxNOQ10L.js";
+import { S as Skeleton } from "./Skeleton-8iagGSqx.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -100,6 +100,330 @@ const TestQueueStatus = ({
     ] })
   ] }) });
 };
+const ScreenshotViewer = (t0) => {
+  const $ = dist.c(49);
+  const {
+    screenshotPath,
+    testName: t1,
+    className: t2
+  } = t0;
+  const testName = t1 === void 0 ? "Test" : t1;
+  const className = t2 === void 0 ? "" : t2;
+  const [isLightboxOpen, setIsLightboxOpen] = reactExports.useState(false);
+  const [zoomLevel, setZoomLevel] = reactExports.useState(1);
+  const [imageError, setImageError] = reactExports.useState(false);
+  const [imageLoaded, setImageLoaded] = reactExports.useState(false);
+  let t3;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t3 = () => {
+      setImageError(false);
+      setImageLoaded(false);
+      setZoomLevel(1);
+    };
+    $[0] = t3;
+  } else {
+    t3 = $[0];
+  }
+  let t4;
+  if ($[1] !== screenshotPath) {
+    t4 = [screenshotPath];
+    $[1] = screenshotPath;
+    $[2] = t4;
+  } else {
+    t4 = $[2];
+  }
+  reactExports.useEffect(t3, t4);
+  let t5;
+  let t6;
+  if ($[3] !== isLightboxOpen) {
+    t5 = () => {
+      if (!isLightboxOpen) {
+        return;
+      }
+      const handleKeyDown = (e) => {
+        bb15: switch (e.key) {
+          case "Escape": {
+            setIsLightboxOpen(false);
+            break bb15;
+          }
+          case "+":
+          case "=": {
+            setZoomLevel(_temp$1);
+            break bb15;
+          }
+          case "-": {
+            setZoomLevel(_temp2$1);
+            break bb15;
+          }
+          case "0": {
+            setZoomLevel(1);
+          }
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    };
+    t6 = [isLightboxOpen];
+    $[3] = isLightboxOpen;
+    $[4] = t5;
+    $[5] = t6;
+  } else {
+    t5 = $[4];
+    t6 = $[5];
+  }
+  reactExports.useEffect(t5, t6);
+  let t7;
+  let t8;
+  if ($[6] !== isLightboxOpen) {
+    t7 = () => {
+      if (isLightboxOpen) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+      return _temp3$1;
+    };
+    t8 = [isLightboxOpen];
+    $[6] = isLightboxOpen;
+    $[7] = t7;
+    $[8] = t8;
+  } else {
+    t7 = $[7];
+    t8 = $[8];
+  }
+  reactExports.useEffect(t7, t8);
+  let t9;
+  if ($[9] !== screenshotPath || $[10] !== testName) {
+    t9 = () => {
+      if (!screenshotPath) {
+        return;
+      }
+      const link = document.createElement("a");
+      link.href = screenshotPath;
+      link.download = `screenshot_${testName.replace(/\s+/g, "_")}_${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+    $[9] = screenshotPath;
+    $[10] = testName;
+    $[11] = t9;
+  } else {
+    t9 = $[11];
+  }
+  const handleDownload = t9;
+  if (!screenshotPath) {
+    const t102 = `flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md ${className}`;
+    let t112;
+    if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
+      t112 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center text-gray-400 dark:text-gray-500", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Image, { className: "w-12 h-12 mx-auto mb-2 opacity-50" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Kein Screenshot verfügbar" })
+      ] });
+      $[12] = t112;
+    } else {
+      t112 = $[12];
+    }
+    let t122;
+    if ($[13] !== t102) {
+      t122 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t102, children: t112 });
+      $[13] = t102;
+      $[14] = t122;
+    } else {
+      t122 = $[14];
+    }
+    return t122;
+  }
+  if (imageError) {
+    const t102 = `flex items-center justify-center p-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md ${className}`;
+    let t112;
+    let t122;
+    if ($[15] === Symbol.for("react.memo_cache_sentinel")) {
+      t112 = /* @__PURE__ */ jsxRuntimeExports.jsx(Image, { className: "w-12 h-12 mx-auto mb-2 opacity-50" });
+      t122 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: "Screenshot konnte nicht geladen werden" });
+      $[15] = t112;
+      $[16] = t122;
+    } else {
+      t112 = $[15];
+      t122 = $[16];
+    }
+    let t132;
+    if ($[17] !== screenshotPath) {
+      t132 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center text-red-500 dark:text-red-400", children: [
+        t112,
+        t122,
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs mt-1 opacity-75", children: screenshotPath })
+      ] });
+      $[17] = screenshotPath;
+      $[18] = t132;
+    } else {
+      t132 = $[18];
+    }
+    let t142;
+    if ($[19] !== t102 || $[20] !== t132) {
+      t142 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t102, children: t132 });
+      $[19] = t102;
+      $[20] = t132;
+      $[21] = t142;
+    } else {
+      t142 = $[21];
+    }
+    return t142;
+  }
+  const t10 = `relative group ${className}`;
+  let t11;
+  if ($[22] === Symbol.for("react.memo_cache_sentinel")) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2", children: "Screenshot" });
+    $[22] = t11;
+  } else {
+    t11 = $[22];
+  }
+  let t12;
+  if ($[23] === Symbol.for("react.memo_cache_sentinel")) {
+    t12 = () => setIsLightboxOpen(true);
+    $[23] = t12;
+  } else {
+    t12 = $[23];
+  }
+  let t13;
+  if ($[24] !== imageLoaded) {
+    t13 = !imageLoaded && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" }) });
+    $[24] = imageLoaded;
+    $[25] = t13;
+  } else {
+    t13 = $[25];
+  }
+  const t14 = `Screenshot: ${testName}`;
+  const t15 = `w-full transition-opacity ${imageLoaded ? "opacity-100" : "opacity-0"}`;
+  let t16;
+  let t17;
+  if ($[26] === Symbol.for("react.memo_cache_sentinel")) {
+    t16 = () => setImageLoaded(true);
+    t17 = () => setImageError(true);
+    $[26] = t16;
+    $[27] = t17;
+  } else {
+    t16 = $[26];
+    t17 = $[27];
+  }
+  let t18;
+  if ($[28] !== screenshotPath || $[29] !== t14 || $[30] !== t15) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: screenshotPath, alt: t14, className: t15, onLoad: t16, onError: t17 });
+    $[28] = screenshotPath;
+    $[29] = t14;
+    $[30] = t15;
+    $[31] = t18;
+  } else {
+    t18 = $[31];
+  }
+  let t19;
+  if ($[32] === Symbol.for("react.memo_cache_sentinel")) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "opacity-0 group-hover:opacity-100 transition-opacity", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Maximize2, { className: "w-8 h-8 text-white drop-shadow-lg" }) }) });
+    $[32] = t19;
+  } else {
+    t19 = $[32];
+  }
+  let t20;
+  if ($[33] !== t13 || $[34] !== t18) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition-colors", onClick: t12, children: [
+      t13,
+      t18,
+      t19
+    ] });
+    $[33] = t13;
+    $[34] = t18;
+    $[35] = t20;
+  } else {
+    t20 = $[35];
+  }
+  let t21;
+  if ($[36] === Symbol.for("react.memo_cache_sentinel")) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-400 dark:text-gray-500 mt-1", children: "Klicken zum Vergrößern" });
+    $[36] = t21;
+  } else {
+    t21 = $[36];
+  }
+  let t22;
+  if ($[37] !== t10 || $[38] !== t20) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t10, children: [
+      t11,
+      t20,
+      t21
+    ] });
+    $[37] = t10;
+    $[38] = t20;
+    $[39] = t22;
+  } else {
+    t22 = $[39];
+  }
+  let t23;
+  if ($[40] !== handleDownload || $[41] !== isLightboxOpen || $[42] !== screenshotPath || $[43] !== testName || $[44] !== zoomLevel) {
+    t23 = isLightboxOpen && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "fixed inset-0 z-50 bg-black/90 flex items-center justify-center", onClick: () => setIsLightboxOpen(false), children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute top-4 right-4 flex items-center gap-2 z-10", onClick: _temp4$1, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setZoomLevel(_temp5$1), className: "text-white hover:bg-white/20", title: "Verkleinern (-)", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ZoomOut, { size: 20 }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-white text-sm font-mono min-w-[4rem] text-center", children: [
+          Math.round(zoomLevel * 100),
+          "%"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setZoomLevel(_temp6$1), className: "text-white hover:bg-white/20", title: "Vergrößern (+)", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ZoomIn, { size: 20 }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-px h-6 bg-white/30 mx-2" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: handleDownload, className: "text-white hover:bg-white/20", title: "Herunterladen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Download, { size: 20 }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setIsLightboxOpen(false), className: "text-white hover:bg-white/20", title: "Schließen (Esc)", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 20 }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[90vw] max-h-[90vh] overflow-auto", onClick: _temp7$1, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: screenshotPath, alt: `Screenshot: ${testName}`, className: "transition-transform duration-200", style: {
+        transform: `scale(${zoomLevel})`,
+        transformOrigin: "center center"
+      } }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 text-xs", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mr-4", children: "ESC: Schließen" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "mr-4", children: "+/-: Zoom" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "0: Reset" })
+      ] })
+    ] });
+    $[40] = handleDownload;
+    $[41] = isLightboxOpen;
+    $[42] = screenshotPath;
+    $[43] = testName;
+    $[44] = zoomLevel;
+    $[45] = t23;
+  } else {
+    t23 = $[45];
+  }
+  let t24;
+  if ($[46] !== t22 || $[47] !== t23) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      t22,
+      t23
+    ] });
+    $[46] = t22;
+    $[47] = t23;
+    $[48] = t24;
+  } else {
+    t24 = $[48];
+  }
+  return t24;
+};
+function _temp$1(prev_0) {
+  return Math.min(prev_0 + 0.25, 3);
+}
+function _temp2$1(prev) {
+  return Math.max(prev - 0.25, 0.5);
+}
+function _temp3$1() {
+  document.body.style.overflow = "";
+}
+function _temp4$1(e_0) {
+  return e_0.stopPropagation();
+}
+function _temp5$1(prev_1) {
+  return Math.max(prev_1 - 0.25, 0.5);
+}
+function _temp6$1(prev_2) {
+  return Math.min(prev_2 + 0.25, 3);
+}
+function _temp7$1(e_1) {
+  return e_1.stopPropagation();
+}
 const TestResultsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
@@ -493,10 +817,74 @@ const TestResults = () => {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
+  const handleExportAllJson = () => {
+    const exportData = {
+      exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      totalResults: finishedTests.length,
+      results: finishedTests.map((tr_5) => ({
+        id: tr_5.id,
+        uuid: tr_5.uuid,
+        formName: tr_5.formName,
+        formId: tr_5.formId,
+        paymentMethodName: tr_5.paymentMethodName,
+        paymentMethodId: tr_5.paymentMethodId,
+        status: tr_5.status,
+        durationMs: tr_5.durationMs,
+        errorMessage: tr_5.errorMessage,
+        isScheduled: tr_5.isScheduled,
+        notes: tr_5.notes,
+        runAt: tr_5.runAt,
+        steps: tr_5.steps
+      }))
+    };
+    const dataStr_0 = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+    const downloadAnchorNode_0 = document.createElement("a");
+    downloadAnchorNode_0.setAttribute("href", dataStr_0);
+    downloadAnchorNode_0.setAttribute("download", `test_results_export_${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.json`);
+    document.body.appendChild(downloadAnchorNode_0);
+    downloadAnchorNode_0.click();
+    downloadAnchorNode_0.remove();
+  };
+  const handleExportCsv = () => {
+    const headers = ["ID", "UUID", "Form", "Bezahlmethode", "Status", "Dauer (ms)", "Fehler", "Geplant", "Notizen", "Datum"];
+    const rows = finishedTests.map((tr_6) => [
+      tr_6.id,
+      tr_6.uuid || "",
+      tr_6.formName || "",
+      tr_6.paymentMethodName || "",
+      tr_6.status,
+      tr_6.durationMs || "",
+      (tr_6.errorMessage || "").replace(/"/g, '""'),
+      // Escape quotes
+      tr_6.isScheduled ? "Ja" : "Nein",
+      (tr_6.notes || "").replace(/"/g, '""').replace(/\n/g, " "),
+      // Escape quotes and newlines
+      new Date(tr_6.runAt).toLocaleString("de-DE")
+    ]);
+    const csvContent = [headers.join(";"), ...rows.map((row) => row.map((cell) => `"${cell}"`).join(";"))].join("\n");
+    const bom = "\uFEFF";
+    const dataStr_1 = "data:text/csv;charset=utf-8," + encodeURIComponent(bom + csvContent);
+    const downloadAnchorNode_1 = document.createElement("a");
+    downloadAnchorNode_1.setAttribute("href", dataStr_1);
+    downloadAnchorNode_1.setAttribute("download", `test_results_export_${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(downloadAnchorNode_1);
+    downloadAnchorNode_1.click();
+    downloadAnchorNode_1.remove();
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Tests" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+        finishedTests.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleExportCsv, variant: "outline", size: "md", className: "gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(FileSpreadsheet, { size: 16 }),
+            "CSV"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleExportAllJson, variant: "outline", size: "md", className: "gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Download, { size: 16 }),
+            "JSON"
+          ] })
+        ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: loadTestRuns, variant: "secondary", size: "md", disabled: isLoading, className: "gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 16 }),
           "Aktualisieren"
@@ -750,10 +1138,7 @@ const TestResults = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-800 dark:text-red-200 font-mono", children: selectedTestRunData.errorMessage })
         ] }),
         (selectedTestRunData.steps?.length || selectedTestRunData.logDetails) && /* @__PURE__ */ jsxRuntimeExports.jsx(TestTimeline, { steps: selectedTestRunData.steps, logDetails: selectedTestRunData.logDetails, status: selectedTestRunData.status }),
-        selectedTestRunData.screenshotPath && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2", children: "Screenshot" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: selectedTestRunData.screenshotPath, alt: "Test screenshot", className: "w-full" }) })
-        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ScreenshotViewer, { screenshotPath: selectedTestRunData.screenshotPath, testName: `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}` }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 pb-6 border-b dark:border-gray-700", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2", children: [
             "Notes",

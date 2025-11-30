@@ -4,6 +4,7 @@ import { getTestQueue } from "./testQueue";
 import type { Form, PaymentMethod } from "../common/types";
 import { randomUUID } from "crypto";
 import { BrowserWindow } from "electron";
+import { emailService } from "./emailService";
 
 export async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
@@ -35,6 +36,17 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
       allWindows.forEach(window => {
         window.webContents.send('notifications:updated');
       });
+
+      // Send email notification for scheduled tests
+      emailService.sendTestResultNotification({
+        testRunId,
+        formName: form.name,
+        paymentMethodName: paymentMethod.name,
+        status: result.success ? "SUCCESS" : "FAILURE",
+        errorMessage: result.error,
+        durationMs: result.duration,
+        runAt: new Date()
+      }).catch(err => console.error("Failed to send email notification:", err));
     }
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
@@ -56,6 +68,16 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
       allWindows.forEach(window => {
         window.webContents.send('notifications:updated');
       });
+
+      // Send email notification for scheduled test failure
+      emailService.sendTestResultNotification({
+        testRunId,
+        formName: form.name,
+        paymentMethodName: paymentMethod.name,
+        status: "FAILURE",
+        errorMessage: error instanceof Error ? error.message : String(error),
+        runAt: new Date()
+      }).catch(err => console.error("Failed to send email notification:", err));
     }
   }
 }

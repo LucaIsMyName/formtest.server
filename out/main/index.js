@@ -8,6 +8,7 @@ const keytar = require("keytar");
 const fs = require("fs");
 const child_process = require("child_process");
 const events = require("events");
+const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 function _interopNamespaceDefault(e) {
   const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
@@ -2042,6 +2043,211 @@ function getTestProcessManager() {
   }
   return processManager;
 }
+class EmailService {
+  constructor() {
+    this.transporter = null;
+    this.config = null;
+  }
+  /**
+   * Load email configuration from database settings
+   */
+  loadConfig() {
+    const getSettingValue = (key, defaultValue) => {
+      const setting = settingsQueries.get(key);
+      return setting?.value || defaultValue;
+    };
+    this.config = {
+      enabled: getSettingValue("email_enabled", "false") === "true",
+      smtpHost: getSettingValue("email_smtp_host", ""),
+      smtpPort: parseInt(getSettingValue("email_smtp_port", "587")),
+      smtpSecure: getSettingValue("email_smtp_secure", "false") === "true",
+      smtpUser: getSettingValue("email_smtp_user", ""),
+      smtpPass: getSettingValue("email_smtp_pass", ""),
+      fromEmail: getSettingValue("email_from_email", ""),
+      fromName: getSettingValue("email_from_name", "FormTest Server"),
+      toEmail: getSettingValue("email_to_email", ""),
+      notifyOnSuccess: getSettingValue("email_notify_success", "false") === "true",
+      notifyOnFailure: getSettingValue("email_notify_failure", "true") === "true"
+    };
+    return this.config;
+  }
+  /**
+   * Initialize the email transporter
+   */
+  async initialize() {
+    const config = this.loadConfig();
+    if (!config.enabled) {
+      console.log("EmailService: Email notifications are disabled");
+      return false;
+    }
+    if (!config.smtpHost || !config.smtpUser || !config.smtpPass) {
+      console.log("EmailService: SMTP configuration incomplete");
+      return false;
+    }
+    try {
+      this.transporter = nodemailer.createTransport({
+        host: config.smtpHost,
+        port: config.smtpPort,
+        secure: config.smtpSecure,
+        auth: {
+          user: config.smtpUser,
+          pass: config.smtpPass
+        }
+      });
+      await this.transporter.verify();
+      console.log("EmailService: SMTP connection verified successfully");
+      return true;
+    } catch (error) {
+      console.error("EmailService: Failed to initialize SMTP connection:", error);
+      this.transporter = null;
+      return false;
+    }
+  }
+  /**
+   * Send a test result notification email
+   */
+  async sendTestResultNotification(result) {
+    const config = this.loadConfig();
+    if (!config.enabled) {
+      return false;
+    }
+    if (result.status === "SUCCESS" && !config.notifyOnSuccess) {
+      return false;
+    }
+    if ((result.status === "FAILURE" || result.status === "STOPPED") && !config.notifyOnFailure) {
+      return false;
+    }
+    if (!this.transporter) {
+      const initialized = await this.initialize();
+      if (!initialized) {
+        return false;
+      }
+    }
+    const isSuccess = result.status === "SUCCESS";
+    const statusEmoji = isSuccess ? "✅" : "❌";
+    const statusText = isSuccess ? "Erfolgreich" : result.status === "STOPPED" ? "Gestoppt" : "Fehlgeschlagen";
+    const duration = result.durationMs ? `${(result.durationMs / 1e3).toFixed(1)}s` : "N/A";
+    const subject = `${statusEmoji} FormTest: ${result.formName} × ${result.paymentMethodName} - ${statusText}`;
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header { padding: 20px; background: ${isSuccess ? "#10b981" : "#ef4444"}; color: white; }
+    .header h1 { margin: 0; font-size: 20px; }
+    .content { padding: 20px; }
+    .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .info-label { color: #666; }
+    .info-value { font-weight: 500; }
+    .error-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 4px; padding: 12px; margin-top: 16px; color: #991b1b; }
+    .footer { padding: 16px 20px; background: #f9fafb; color: #666; font-size: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>${statusEmoji} Test ${statusText}</h1>
+    </div>
+    <div class="content">
+      <div class="info-row">
+        <span class="info-label">Formular</span>
+        <span class="info-value">${result.formName}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Bezahlmethode</span>
+        <span class="info-value">${result.paymentMethodName}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Status</span>
+        <span class="info-value">${statusText}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Dauer</span>
+        <span class="info-value">${duration}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Zeitpunkt</span>
+        <span class="info-value">${new Date(result.runAt).toLocaleString("de-DE")}</span>
+      </div>
+      ${result.errorMessage ? `
+      <div class="error-box">
+        <strong>Fehlermeldung:</strong><br>
+        ${result.errorMessage}
+      </div>
+      ` : ""}
+    </div>
+    <div class="footer">
+      Diese E-Mail wurde automatisch von FormTest Server gesendet.
+    </div>
+  </div>
+</body>
+</html>
+    `;
+    const textContent = `
+Test ${statusText}: ${result.formName} × ${result.paymentMethodName}
+
+Status: ${statusText}
+Dauer: ${duration}
+Zeitpunkt: ${new Date(result.runAt).toLocaleString("de-DE")}
+${result.errorMessage ? `
+Fehler: ${result.errorMessage}` : ""}
+
+--
+FormTest Server
+    `;
+    try {
+      await this.transporter.sendMail({
+        from: `"${config.fromName}" <${config.fromEmail}>`,
+        to: config.toEmail,
+        subject,
+        text: textContent,
+        html: htmlContent
+      });
+      console.log(`EmailService: Notification sent for test ${result.testRunId}`);
+      return true;
+    } catch (error) {
+      console.error("EmailService: Failed to send notification:", error);
+      return false;
+    }
+  }
+  /**
+   * Test the email configuration by sending a test email
+   */
+  async sendTestEmail() {
+    const config = this.loadConfig();
+    if (!config.smtpHost || !config.toEmail) {
+      return { success: false, message: "SMTP-Konfiguration unvollständig" };
+    }
+    try {
+      const initialized = await this.initialize();
+      if (!initialized) {
+        return { success: false, message: "SMTP-Verbindung fehlgeschlagen" };
+      }
+      await this.transporter.sendMail({
+        from: `"${config.fromName}" <${config.fromEmail}>`,
+        to: config.toEmail,
+        subject: "🧪 FormTest Server - Test E-Mail",
+        text: "Dies ist eine Test-E-Mail von FormTest Server. Wenn Sie diese E-Mail erhalten, funktioniert die E-Mail-Konfiguration korrekt.",
+        html: `
+          <div style="font-family: sans-serif; padding: 20px;">
+            <h2>🧪 Test E-Mail</h2>
+            <p>Dies ist eine Test-E-Mail von FormTest Server.</p>
+            <p>Wenn Sie diese E-Mail erhalten, funktioniert die E-Mail-Konfiguration korrekt.</p>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+            <p style="color: #666; font-size: 12px;">FormTest Server</p>
+          </div>
+        `
+      });
+      return { success: true, message: "Test-E-Mail erfolgreich gesendet" };
+    } catch (error) {
+      return { success: false, message: `Fehler: ${error.message}` };
+    }
+  }
+}
+const emailService = new EmailService();
 async function runSingleTest(testRunId, form, paymentMethod, settings) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
   const testRun = testRunQueries.getById(testRunId);
@@ -2062,6 +2268,15 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
       allWindows.forEach((window) => {
         window.webContents.send("notifications:updated");
       });
+      emailService.sendTestResultNotification({
+        testRunId,
+        formName: form.name,
+        paymentMethodName: paymentMethod.name,
+        status: result.success ? "SUCCESS" : "FAILURE",
+        errorMessage: result.error,
+        durationMs: result.duration,
+        runAt: /* @__PURE__ */ new Date()
+      }).catch((err) => console.error("Failed to send email notification:", err));
     }
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
@@ -2077,6 +2292,14 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
       allWindows.forEach((window) => {
         window.webContents.send("notifications:updated");
       });
+      emailService.sendTestResultNotification({
+        testRunId,
+        formName: form.name,
+        paymentMethodName: paymentMethod.name,
+        status: "FAILURE",
+        errorMessage: error instanceof Error ? error.message : String(error),
+        runAt: /* @__PURE__ */ new Date()
+      }).catch((err) => console.error("Failed to send email notification:", err));
     }
   }
 }
@@ -2349,17 +2572,6 @@ class SchedulerService {
 }
 const scheduler = new SchedulerService();
 function setupIpcHandlers() {
-  console.log("=== SETTING UP IPC HANDLERS ===");
-  console.log("IPC Setup: formQueries available:", !!formQueries);
-  console.log("IPC Setup: paymentMethodQueries available:", !!paymentMethodQueries);
-  console.log("IPC Setup: paymentMethodQueries.create available:", !!paymentMethodQueries?.create);
-  try {
-    console.log("IPC Setup: Testing paymentMethodQueries object...");
-    console.log("IPC Setup: paymentMethodQueries keys:", Object.keys(paymentMethodQueries || {}));
-    console.log("IPC Setup: Registering paymentMethods:create handler...");
-  } catch (testError) {
-    console.error("IPC Setup: Error accessing paymentMethodQueries:", testError);
-  }
   electron.ipcMain.handle("forms:getAll", async () => {
     try {
       return formQueries.getAll();
@@ -2378,10 +2590,7 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("forms:create", async (_, form) => {
     try {
-      console.log("IPC Handler - forms:create received:", form);
-      const result = formQueries.create(form);
-      console.log("IPC Handler - forms:create result:", result);
-      return result;
+      return formQueries.create(form);
     } catch (error) {
       console.error("IPC Error - forms:create:", error);
       throw error;
@@ -2428,25 +2637,10 @@ function setupIpcHandlers() {
     }
   });
   electron.ipcMain.handle("paymentMethods:create", async (_, method) => {
-    console.log("=== IPC HANDLER START ===");
-    console.log("IPC Handler - paymentMethods:create ENTRY POINT reached");
-    console.log("IPC Handler - paymentMethods:create received:", JSON.stringify(method, null, 2));
-    console.log("IPC Handler - paymentMethodQueries available:", !!paymentMethodQueries);
-    console.log("IPC Handler - paymentMethodQueries.create available:", !!paymentMethodQueries?.create);
     try {
-      console.log("IPC Handler - About to call paymentMethodQueries.create");
-      const result = await paymentMethodQueries.create(method);
-      console.log("IPC Handler - paymentMethods:create result:", result);
-      console.log("=== IPC HANDLER SUCCESS ===");
-      return result;
+      return await paymentMethodQueries.create(method);
     } catch (error) {
-      console.error("=== IPC HANDLER ERROR ===");
       console.error("IPC Error - paymentMethods:create:", error);
-      if (error instanceof Error) {
-        console.error("IPC Error - message:", error.message);
-        console.error("IPC Error - stack:", error.stack);
-      }
-      console.error("=== IPC HANDLER ERROR END ===");
       throw error;
     }
   });
@@ -2728,6 +2922,12 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("selectorConfig:getCategories", () => {
     return getConfigurableCategories();
+  });
+  electron.ipcMain.handle("email:testConnection", async () => {
+    return await emailService.sendTestEmail();
+  });
+  electron.ipcMain.handle("email:getConfig", () => {
+    return emailService.loadConfig();
   });
 }
 let mainWindow;
