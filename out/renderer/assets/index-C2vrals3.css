@@ -687,6 +687,9 @@ video {
 .h-8 {
   height: 2rem;
 }
+.h-9 {
+  height: 2.25rem;
+}
 .h-\[250px\] {
   height: 250px;
 }
@@ -870,8 +873,8 @@ video {
 .max-w-\[100\%\] {
   max-width: 100%;
 }
-.max-w-\[1040px\] {
-  max-width: 1040px;
+.max-w-\[1240px\] {
+  max-width: 1240px;
 }
 .max-w-\[160px\] {
   max-width: 160px;
@@ -1543,8 +1546,11 @@ video {
 .text-\[9px\] {
   font-size: 9px;
 }
-.text-\[clamp\(2\.25rem\2c 5vw\2c 3\.25rem\)\] {
-  font-size: clamp(2.25rem,5vw,3.25rem);
+.text-\[clamp\(0\.66rem\2c 1\.075vw\2c 0\.925rem\)\] {
+  font-size: clamp(0.66rem,1.075vw,0.925rem);
+}
+.text-\[clamp\(2rem\2c 2\.5vw\2c 2\.33rem\)\] {
+  font-size: clamp(2rem,2.5vw,2.33rem);
 }
 .text-base {
   font-size: 1rem;
@@ -1569,9 +1575,6 @@ video {
 .font-\[10px\] {
   font-weight: 10px;
 }
-.font-\[200\] {
-  font-weight: 200;
-}
 .font-\[500\] {
   font-weight: 500;
 }
@@ -1580,6 +1583,9 @@ video {
 }
 .font-bold {
   font-weight: 700;
+}
+.font-light {
+  font-weight: 300;
 }
 .font-medium {
   font-weight: 500;
@@ -1902,6 +1908,9 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 /* Font weight utilities using variable font */
+.font-light {
+    font-weight: var(--font-weight-light);
+  }
 .font-normal {
     font-weight: var(--font-weight-normal);
   }

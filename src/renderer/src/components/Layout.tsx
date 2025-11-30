@@ -121,7 +121,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     size={18}
                     strokeWidth={location.pathname === item.href ? 1.75 : 1.75}
                   />
-                  <span style={{ fontStretch: "100%"}} className={`transition-all text-base ${location.pathname === item.href ? `text-blue-600 dark:text-blue-400` : null}`}>{item.name}</span>
+                  <span style={{ fontStretch: "115%"}} className={`transition-all text-[clamp(0.66rem,1.075vw,0.925rem)] ${location.pathname === item.href ? `` : null}`}>{item.name}</span>
                 </Button>
               );
             })}
@@ -133,7 +133,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <main
             ref={mainContentRef}
             className="flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4">
-            <div className="max-w-[1040px]">{children}</div>
+            <div className="w-full max-w-[1240px]">{children}</div>
           </main>
         </div>
       </div>

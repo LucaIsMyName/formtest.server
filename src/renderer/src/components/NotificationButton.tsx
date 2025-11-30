@@ -4,6 +4,7 @@ import { useNotificationsStore, Notification } from "../store/useNotificationsSt
 import { useNavigate, useLocation } from "react-router-dom";
 import { formatDateTime } from "../utils/formatters";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 const NotificationButton: React.FC = () => {
   const navigate = useNavigate();
@@ -50,19 +51,32 @@ const NotificationButton: React.FC = () => {
   };
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button
-          className="relative p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
-          aria-label="Benachrichtigungen">
-          <Bell size={14} />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-        </button>
-      </DropdownMenu.Trigger>
+    <Tooltip.Provider>
+      <DropdownMenu.Root>
+        <Tooltip.Root>
+          <Tooltip.Trigger asChild>
+            <DropdownMenu.Trigger asChild>
+              <button
+                className="relative p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
+                aria-label="Benachrichtigungen">
+                <Bell size={14} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+            </DropdownMenu.Trigger>
+          </Tooltip.Trigger>
+          <Tooltip.Portal>
+            <Tooltip.Content
+              className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+              sideOffset={5}>
+              Benachrichtigungen
+              <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+            </Tooltip.Content>
+          </Tooltip.Portal>
+        </Tooltip.Root>
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
@@ -153,7 +167,8 @@ const NotificationButton: React.FC = () => {
           )}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+      </DropdownMenu.Root>
+    </Tooltip.Provider>
   );
 };
 

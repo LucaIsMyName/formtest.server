@@ -23,7 +23,7 @@ interface DashboardStats {
 
 const DashboardSkeleton = () => (
   <div>
-    <div className="h-16 w-64 mb-6">
+    <div className="h-9 w-64 mb-6">
       <Skeleton className="h-full w-full" />
     </div>
 
@@ -87,20 +87,58 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showTestDialog, setShowTestDialog] = useState(false);
 
-  // Prepare chart data
+  // Prepare chart data - grouped by 2-hour intervals for last 48 hours
   const prepareTimelineData = () => {
-    const sortedRuns = [...testRuns].sort((a, b) => new Date(a.runAt).getTime() - new Date(b.runAt).getTime());
-    const grouped = sortedRuns.reduce((acc, run) => {
-      const date = new Date(run.runAt).toLocaleDateString("de-DE");
-      if (!acc[date]) {
-        acc[date] = { date, success: 0, failure: 0, stopped: 0 };
+    const now = new Date();
+    const hoursBack = 48; // Show last 48 hours
+    const intervalHours = 2; // Group by 2-hour intervals
+    
+    // Create time slots for the last 48 hours in 2-hour intervals
+    const slots: Record<string, { date: string; success: number; failure: number; stopped: number }> = {};
+    
+    for (let i = hoursBack; i >= 0; i -= intervalHours) {
+      const slotTime = new Date(now);
+      slotTime.setHours(slotTime.getHours() - i);
+      slotTime.setMinutes(0, 0, 0);
+      // Round down to nearest 2-hour interval
+      slotTime.setHours(Math.floor(slotTime.getHours() / intervalHours) * intervalHours);
+      
+      const slotKey = slotTime.toISOString();
+      const label = `${slotTime.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} ${slotTime.getHours().toString().padStart(2, "0")}:00`;
+      
+      if (!slots[slotKey]) {
+        slots[slotKey] = { date: label, success: 0, failure: 0, stopped: 0 };
       }
-      if (run.status === "SUCCESS") acc[date].success++;
-      if (run.status === "FAILURE") acc[date].failure++;
-      if (run.status === "STOPPED") acc[date].stopped++;
-      return acc;
-    }, {} as Record<string, { date: string; success: number; failure: number; stopped: number }>);
-    return Object.values(grouped);
+    }
+    
+    // Group test runs into slots
+    testRuns.forEach((run) => {
+      if (run.status === "RUNNING" || run.status === "QUEUED") return;
+      
+      const runDate = new Date(run.runAt);
+      const hoursDiff = (now.getTime() - runDate.getTime()) / (1000 * 60 * 60);
+      
+      // Only include runs from the last 48 hours
+      if (hoursDiff > hoursBack) return;
+      
+      // Round to nearest 2-hour slot
+      const slotTime = new Date(runDate);
+      slotTime.setMinutes(0, 0, 0);
+      slotTime.setHours(Math.floor(slotTime.getHours() / intervalHours) * intervalHours);
+      
+      const slotKey = slotTime.toISOString();
+      
+      if (slots[slotKey]) {
+        if (run.status === "SUCCESS") slots[slotKey].success++;
+        if (run.status === "FAILURE") slots[slotKey].failure++;
+        if (run.status === "STOPPED") slots[slotKey].stopped++;
+      }
+    });
+    
+    // Sort by time and return
+    return Object.entries(slots)
+      .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+      .map(([, data]) => data);
   };
 
   const preparePaymentMethodData = () => {
@@ -423,7 +461,7 @@ const Dashboard: React.FC = () => {
         <div className="space-y-6 mb-8">
           {/* Timeline Chart */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf</h3>
+            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf (Letzte 48 Stunden)</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>
@@ -436,8 +474,12 @@ const Dashboard: React.FC = () => {
                 <XAxis
                   dataKey="date"
                   stroke="#9ca3af"
-                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tick={{ fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
                   tickLine={{ stroke: "#d1d5db" }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={60}
+                  interval={2}
                 />
                 <YAxis
                   stroke="#9ca3af"
@@ -663,7 +705,7 @@ const Dashboard: React.FC = () => {
               <div className="space-y-3 max-h-[300px] overflow-y-auto">
                 {prepareFormReliability().length > 0 ? (
                   prepareFormReliability().map((form, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded">
+                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{form.name}</p>
                         <p className="text-xs text-gray-500">{form.total} Tests • Ø {form.avgDuration}s</p>
@@ -693,7 +735,7 @@ const Dashboard: React.FC = () => {
               <div className="space-y-3 max-h-[300px] overflow-y-auto">
                 {preparePaymentMethodReliability().length > 0 ? (
                   preparePaymentMethodReliability().map((pm, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded">
+                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{pm.name}</p>
                         <p className="text-xs text-gray-500 uppercase">{pm.type} • {pm.total} Tests</p>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import { useFormsStore } from "../store/useFormsStore";
@@ -22,6 +22,51 @@ import { formatDateTime, formatDuration } from "../utils/formatters";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import ScreenshotViewer from "../components/ScreenshotViewer";
+
+// Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
+const getStartTime = (runAt: Date | string): number => {
+  if (runAt instanceof Date) {
+    return runAt.getTime();
+  }
+  const dateStr = String(runAt);
+  if (!dateStr.includes("T") && !dateStr.includes("Z")) {
+    const utcDate = new Date(dateStr.replace(" ", "T") + "Z");
+    return utcDate.getTime();
+  }
+  return new Date(dateStr).getTime();
+};
+
+// Format elapsed time as mm:ss
+const formatElapsedTime = (seconds: number): string => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+};
+
+// Separate component for the timer cell - only this re-renders every second
+const RunningTimer: React.FC<{ runAt: Date | string; isRunning: boolean }> = memo(({ runAt, isRunning }) => {
+  const [elapsed, setElapsed] = useState(() => {
+    const startTime = getStartTime(runAt);
+    return Math.max(0, Math.floor((Date.now() - startTime) / 1000));
+  });
+
+  useEffect(() => {
+    if (!isRunning) return;
+    
+    const interval = setInterval(() => {
+      const startTime = getStartTime(runAt);
+      setElapsed(Math.max(0, Math.floor((Date.now() - startTime) / 1000)));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [runAt, isRunning]);
+
+  return (
+    <span className={`text-[10px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>
+      {formatElapsedTime(elapsed)}
+    </span>
+  );
+});
 
 const TestResultsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
@@ -201,7 +246,6 @@ const TestResults: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
   const [notes, setNotes] = useState<string>("");
   const [isSavingNotes, setIsSavingNotes] = useState(false);
-  const [runningTimers, setRunningTimers] = useState<Record<number, number>>({});
 
   useEffect(() => {
     loadTestRuns();
@@ -223,55 +267,6 @@ const TestResults: React.FC = () => {
   const queuedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status === "QUEUED"), [testRunsWithNames]);
   const activeTests = useMemo(() => [...runningTests, ...queuedTests], [runningTests, queuedTests]);
   const finishedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status !== "RUNNING" && tr.status !== "QUEUED"), [testRunsWithNames]);
-
-  // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
-  const getStartTime = (runAt: Date | string): number => {
-    if (runAt instanceof Date) {
-      return runAt.getTime();
-    }
-    // SQLite stores as "YYYY-MM-DD HH:MM:SS" in UTC (CURRENT_TIMESTAMP)
-    // JavaScript parses strings without timezone as LOCAL time, but SQLite stores UTC
-    // So we need to parse it as UTC by adding 'Z'
-    const dateStr = String(runAt);
-    if (!dateStr.includes("T") && !dateStr.includes("Z")) {
-      // Add Z to indicate UTC
-      const utcDate = new Date(dateStr.replace(" ", "T") + "Z");
-      return utcDate.getTime();
-    }
-    return new Date(dateStr).getTime();
-  };
-
-  // Timer effect for running tests - updates every second
-  useEffect(() => {
-    if (runningTests.length === 0) {
-      setRunningTimers({});
-      return;
-    }
-
-    // Initialize timers for running tests
-    const initialTimers: Record<number, number> = {};
-    runningTests.forEach((test) => {
-      const startTime = getStartTime(test.runAt);
-      const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      initialTimers[test.id] = Math.max(0, elapsed); // Ensure non-negative
-    });
-    setRunningTimers(initialTimers);
-
-    // Update every second
-    const interval = setInterval(() => {
-      setRunningTimers(() => {
-        const updated: Record<number, number> = {};
-        runningTests.forEach((test) => {
-          const startTime = getStartTime(test.runAt);
-          const elapsed = Math.floor((Date.now() - startTime) / 1000);
-          updated[test.id] = Math.max(0, elapsed); // Ensure non-negative
-        });
-        return updated;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [runningTests]);
 
   // Auto-refresh when tests are running or queued - poll every 2 seconds
   useEffect(() => {
@@ -381,13 +376,6 @@ const TestResults: React.FC = () => {
   const getPaymentMethodIcon = (pmId: number) => {
     const pm = paymentMethods.find((p) => p.id === pmId);
     return pm?.icon || getDefaultPaymentIcon(pm?.type || "creditcard");
-  };
-
-  // Format elapsed time as MM:SS
-  const formatElapsedTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Get form details for drawer
@@ -703,7 +691,7 @@ const TestResults: React.FC = () => {
                         </TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4">
-                          <span className={`text-[10px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>{formatElapsedTime(runningTimers[testRun.id] || 0)}</span>
+                          <RunningTimer runAt={testRun.runAt} isRunning={isRunning} />
                         </TableCell>
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
@@ -1025,7 +1013,13 @@ const TestResults: React.FC = () => {
                         </TableRow>
                         <TableRow>
                           <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Dauer</TableCell>
-                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{selectedTestRunData.status === "RUNNING" ? formatElapsedTime(runningTimers[selectedTestRunData.id] || 0) : formatDuration(selectedTestRunData.durationMs)}</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">
+                            {selectedTestRunData.status === "RUNNING" ? (
+                              <RunningTimer runAt={selectedTestRunData.runAt} isRunning={true} />
+                            ) : (
+                              formatDuration(selectedTestRunData.durationMs)
+                            )}
+                          </TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Zeitpunkt</TableCell>

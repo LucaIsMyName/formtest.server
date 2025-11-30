@@ -1,6 +1,6 @@
-import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, P as Play, S as Settings, h as TestRunDialog, i as dist } from "./index-CFtKbJVz.js";
-import { C as CONFIG } from "./app.config-BsmENKig.js";
-import { S as Skeleton } from "./Skeleton-DPWmljDO.js";
+import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, P as Play, S as Settings, h as TestRunDialog, i as dist } from "./index-CwRO9-TA.js";
+import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
+import { S as Skeleton } from "./Skeleton-hDMEjhGi.js";
 var EventKeys = ["dangerouslySetInnerHTML", "onCopy", "onCopyCapture", "onCut", "onCutCapture", "onPaste", "onPasteCapture", "onCompositionEnd", "onCompositionEndCapture", "onCompositionStart", "onCompositionStartCapture", "onCompositionUpdate", "onCompositionUpdateCapture", "onFocus", "onFocusCapture", "onBlur", "onBlurCapture", "onChange", "onChangeCapture", "onBeforeInput", "onBeforeInputCapture", "onInput", "onInputCapture", "onReset", "onResetCapture", "onSubmit", "onSubmitCapture", "onInvalid", "onInvalidCapture", "onLoad", "onLoadCapture", "onError", "onErrorCapture", "onKeyDown", "onKeyDownCapture", "onKeyPress", "onKeyPressCapture", "onKeyUp", "onKeyUpCapture", "onAbort", "onAbortCapture", "onCanPlay", "onCanPlayCapture", "onCanPlayThrough", "onCanPlayThroughCapture", "onDurationChange", "onDurationChangeCapture", "onEmptied", "onEmptiedCapture", "onEncrypted", "onEncryptedCapture", "onEnded", "onEndedCapture", "onLoadedData", "onLoadedDataCapture", "onLoadedMetadata", "onLoadedMetadataCapture", "onLoadStart", "onLoadStartCapture", "onPause", "onPauseCapture", "onPlay", "onPlayCapture", "onPlaying", "onPlayingCapture", "onProgress", "onProgressCapture", "onRateChange", "onRateChangeCapture", "onSeeked", "onSeekedCapture", "onSeeking", "onSeekingCapture", "onStalled", "onStalledCapture", "onSuspend", "onSuspendCapture", "onTimeUpdate", "onTimeUpdateCapture", "onVolumeChange", "onVolumeChangeCapture", "onWaiting", "onWaitingCapture", "onAuxClick", "onAuxClickCapture", "onClick", "onClickCapture", "onContextMenu", "onContextMenuCapture", "onDoubleClick", "onDoubleClickCapture", "onDrag", "onDragCapture", "onDragEnd", "onDragEndCapture", "onDragEnter", "onDragEnterCapture", "onDragExit", "onDragExitCapture", "onDragLeave", "onDragLeaveCapture", "onDragOver", "onDragOverCapture", "onDragStart", "onDragStartCapture", "onDrop", "onDropCapture", "onMouseDown", "onMouseDownCapture", "onMouseEnter", "onMouseLeave", "onMouseMove", "onMouseMoveCapture", "onMouseOut", "onMouseOutCapture", "onMouseOver", "onMouseOverCapture", "onMouseUp", "onMouseUpCapture", "onSelect", "onSelectCapture", "onTouchCancel", "onTouchCancelCapture", "onTouchEnd", "onTouchEndCapture", "onTouchMove", "onTouchMoveCapture", "onTouchStart", "onTouchStartCapture", "onPointerDown", "onPointerDownCapture", "onPointerMove", "onPointerMoveCapture", "onPointerUp", "onPointerUpCapture", "onPointerCancel", "onPointerCancelCapture", "onPointerEnter", "onPointerEnterCapture", "onPointerLeave", "onPointerLeaveCapture", "onPointerOver", "onPointerOverCapture", "onPointerOut", "onPointerOutCapture", "onGotPointerCapture", "onGotPointerCaptureCapture", "onLostPointerCapture", "onLostPointerCaptureCapture", "onScroll", "onScrollCapture", "onWheel", "onWheelCapture", "onAnimationStart", "onAnimationStartCapture", "onAnimationEnd", "onAnimationEndCapture", "onAnimationIteration", "onAnimationIterationCapture", "onTransitionEnd", "onTransitionEndCapture"];
 function isEventKey(key) {
   if (typeof key !== "string") {
@@ -23910,7 +23910,7 @@ const DashboardSkeleton = () => {
   const $ = dist.c(5);
   let t02;
   if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-16 w-64 mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-full w-full" }) });
+    t02 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-9 w-64 mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-full w-full" }) });
     $[0] = t02;
   } else {
     t02 = $[0];
@@ -23989,67 +23989,89 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = reactExports.useState(true);
   const [showTestDialog, setShowTestDialog] = reactExports.useState(false);
   const prepareTimelineData = () => {
-    const sortedRuns = [...testRuns].sort((a2, b2) => new Date(a2.runAt).getTime() - new Date(b2.runAt).getTime());
-    const grouped = sortedRuns.reduce((acc, run) => {
-      const date2 = new Date(run.runAt).toLocaleDateString("de-DE");
-      if (!acc[date2]) {
-        acc[date2] = {
-          date: date2,
+    const now = /* @__PURE__ */ new Date();
+    const hoursBack = 48;
+    const intervalHours = 2;
+    const slots = {};
+    for (let i = hoursBack; i >= 0; i -= intervalHours) {
+      const slotTime = new Date(now);
+      slotTime.setHours(slotTime.getHours() - i);
+      slotTime.setMinutes(0, 0, 0);
+      slotTime.setHours(Math.floor(slotTime.getHours() / intervalHours) * intervalHours);
+      const slotKey = slotTime.toISOString();
+      const label = `${slotTime.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit"
+      })} ${slotTime.getHours().toString().padStart(2, "0")}:00`;
+      if (!slots[slotKey]) {
+        slots[slotKey] = {
+          date: label,
           success: 0,
           failure: 0,
           stopped: 0
         };
       }
-      if (run.status === "SUCCESS") acc[date2].success++;
-      if (run.status === "FAILURE") acc[date2].failure++;
-      if (run.status === "STOPPED") acc[date2].stopped++;
-      return acc;
-    }, {});
-    return Object.values(grouped);
+    }
+    testRuns.forEach((run) => {
+      if (run.status === "RUNNING" || run.status === "QUEUED") return;
+      const runDate = new Date(run.runAt);
+      const hoursDiff = (now.getTime() - runDate.getTime()) / (1e3 * 60 * 60);
+      if (hoursDiff > hoursBack) return;
+      const slotTime_0 = new Date(runDate);
+      slotTime_0.setMinutes(0, 0, 0);
+      slotTime_0.setHours(Math.floor(slotTime_0.getHours() / intervalHours) * intervalHours);
+      const slotKey_0 = slotTime_0.toISOString();
+      if (slots[slotKey_0]) {
+        if (run.status === "SUCCESS") slots[slotKey_0].success++;
+        if (run.status === "FAILURE") slots[slotKey_0].failure++;
+        if (run.status === "STOPPED") slots[slotKey_0].stopped++;
+      }
+    });
+    return Object.entries(slots).sort(([a2], [b2]) => new Date(a2).getTime() - new Date(b2).getTime()).map(([, data]) => data);
   };
   const preparePaymentMethodData = () => {
-    const grouped_0 = testRuns.reduce((acc_0, run_0) => {
+    const grouped = testRuns.reduce((acc, run_0) => {
       const pm = paymentMethods.find((p2) => p2.id === run_0.paymentMethodId);
       const name = pm?.name || "Unknown";
-      if (!acc_0[name]) {
-        acc_0[name] = {
+      if (!acc[name]) {
+        acc[name] = {
           name,
           success: 0,
           failure: 0,
           stopped: 0
         };
       }
-      if (run_0.status === "SUCCESS") acc_0[name].success++;
-      if (run_0.status === "FAILURE") acc_0[name].failure++;
-      if (run_0.status === "STOPPED") acc_0[name].stopped++;
-      return acc_0;
+      if (run_0.status === "SUCCESS") acc[name].success++;
+      if (run_0.status === "FAILURE") acc[name].failure++;
+      if (run_0.status === "STOPPED") acc[name].stopped++;
+      return acc;
     }, {});
-    return Object.values(grouped_0);
+    return Object.values(grouped);
   };
   const prepareFormData = () => {
-    const grouped_1 = testRuns.reduce((acc_1, run_1) => {
+    const grouped_0 = testRuns.reduce((acc_0, run_1) => {
       const form = forms.find((f2) => f2.id === run_1.formId);
       const name_0 = form?.name || "Unknown";
-      if (!acc_1[name_0]) {
-        acc_1[name_0] = {
+      if (!acc_0[name_0]) {
+        acc_0[name_0] = {
           name: name_0,
           success: 0,
           failure: 0,
           stopped: 0
         };
       }
-      if (run_1.status === "SUCCESS") acc_1[name_0].success++;
-      if (run_1.status === "FAILURE") acc_1[name_0].failure++;
-      if (run_1.status === "STOPPED") acc_1[name_0].stopped++;
-      return acc_1;
+      if (run_1.status === "SUCCESS") acc_0[name_0].success++;
+      if (run_1.status === "FAILURE") acc_0[name_0].failure++;
+      if (run_1.status === "STOPPED") acc_0[name_0].stopped++;
+      return acc_0;
     }, {});
-    return Object.values(grouped_1);
+    return Object.values(grouped_0);
   };
   const prepareSuccessRateData = () => {
     const successful = testRuns.filter((r) => r.status === "SUCCESS").length;
     const failed = testRuns.filter((r_0) => r_0.status === "FAILURE").length;
     const stopped = testRuns.filter((r_1) => r_1.status === "STOPPED").length;
-    const data = [{
+    const data_0 = [{
       name: "Erfolgreich",
       value: successful,
       color: "#10b981"
@@ -24059,24 +24081,24 @@ const Dashboard = () => {
       color: "#ef4444"
     }];
     if (stopped > 0) {
-      data.push({
+      data_0.push({
         name: "Gestoppt",
         value: stopped,
         color: "#a855f7"
       });
     }
-    return data;
+    return data_0;
   };
   const prepareSuccessRateTrend = () => {
     const last7Days = [];
-    const now = /* @__PURE__ */ new Date();
-    for (let i = 6; i >= 0; i--) {
-      const date_0 = new Date(now);
-      date_0.setDate(date_0.getDate() - i);
-      const dateStr = date_0.toLocaleDateString("de-DE");
+    const now_0 = /* @__PURE__ */ new Date();
+    for (let i_0 = 6; i_0 >= 0; i_0--) {
+      const date2 = new Date(now_0);
+      date2.setDate(date2.getDate() - i_0);
+      const dateStr = date2.toLocaleDateString("de-DE");
       const dayRuns = testRuns.filter((r_2) => {
-        const runDate = new Date(r_2.runAt).toLocaleDateString("de-DE");
-        return runDate === dateStr && r_2.status !== "RUNNING" && r_2.status !== "QUEUED";
+        const runDate_0 = new Date(r_2.runAt).toLocaleDateString("de-DE");
+        return runDate_0 === dateStr && r_2.status !== "RUNNING" && r_2.status !== "QUEUED";
       });
       const successful_0 = dayRuns.filter((r_3) => r_3.status === "SUCCESS").length;
       const total = dayRuns.length;
@@ -24179,11 +24201,11 @@ const Dashboard = () => {
   const CustomTooltip = ({
     active,
     payload,
-    label
+    label: label_0
   }) => {
     if (active && payload && payload.length) {
       return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-md shadow-lg", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-900 dark:text-white mb-2", children: label }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-900 dark:text-white mb-2", children: label_0 }),
         payload.map((entry, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm", style: {
           color: entry.color
         }, children: [
@@ -24268,15 +24290,15 @@ const Dashboard = () => {
     ] }),
     testRuns.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Test-Verlauf" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Test-Verlauf (Letzte 48 Stunden)" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 300, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(LineChart, { data: prepareTimelineData(), children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#e5e7eb", strokeOpacity: 0.5 }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "date", stroke: "#9ca3af", tick: {
-            fontSize: 10,
+            fontSize: 9,
             fontFamily: "JetBrains Mono, monospace"
           }, tickLine: {
             stroke: "#d1d5db"
-          } }),
+          }, angle: -45, textAnchor: "end", height: 60, interval: 2 }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(YAxis, { stroke: "#9ca3af", tick: {
             fontSize: 10,
             fontFamily: "JetBrains Mono, monospace"
@@ -24381,11 +24403,11 @@ const Dashboard = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(Tooltip, { content: ({
             active: active_0,
             payload: payload_0,
-            label: label_0
+            label: label_1
           }) => {
             if (active_0 && payload_0 && payload_0.length) {
               return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-md shadow-lg", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-900 dark:text-white mb-1", children: label_0 }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-900 dark:text-white mb-1", children: label_1 }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-sm text-green-600", children: [
                   payload_0[0].value,
                   "% Erfolgsrate"
@@ -24407,7 +24429,7 @@ const Dashboard = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Formular Zuverlässigkeit" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3 max-h-[300px] overflow-y-auto", children: prepareFormReliability().length > 0 ? prepareFormReliability().map((form_2, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3 max-h-[300px] overflow-y-auto", children: prepareFormReliability().length > 0 ? prepareFormReliability().map((form_2, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-900 dark:text-white truncate", children: form_2.name }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-500", children: [
@@ -24430,7 +24452,7 @@ const Dashboard = () => {
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Bezahlmethoden Zuverlässigkeit" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3 max-h-[300px] overflow-y-auto", children: preparePaymentMethodReliability().length > 0 ? preparePaymentMethodReliability().map((pm_2, idx_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3 max-h-[300px] overflow-y-auto", children: preparePaymentMethodReliability().length > 0 ? preparePaymentMethodReliability().map((pm_2, idx_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm font-medium text-gray-900 dark:text-white truncate", children: pm_2.name }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-gray-500 uppercase", children: [

@@ -1,9 +1,9 @@
-import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, i as dist, J as useSearchParams, d as usePaymentMethodsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, H as Plus } from "./index-CFtKbJVz.js";
-import { C as CONFIG } from "./app.config-BsmENKig.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-m7xwIm2F.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DSEmoiZ7.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BfoOtzv4.js";
-import { S as Skeleton } from "./Skeleton-DPWmljDO.js";
+import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, i as dist, J as useSearchParams, d as usePaymentMethodsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, H as Plus } from "./index-CwRO9-TA.js";
+import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-DGEQqClf.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CCO_7-Li.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BGwV3yV1.js";
+import { S as Skeleton } from "./Skeleton-hDMEjhGi.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -675,7 +675,7 @@ const PaymentMethods = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("detailsSummary"), onSort: () => requestSort("detailsSummary"), children: "Details" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "w-[120px]", sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("createdAt"), onSort: () => requestSort("createdAt"), children: "Erstellt" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-left", children: "14-Tage" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-left", children: "Analyse" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedMethods.map((method_5) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset", onClick: () => handleEditMethod(method_5), onKeyDown: (e) => {

@@ -65,9 +65,16 @@ export class TestProcessManager extends EventEmitter {
         console.log(`Using production runner path: ${runnerPath}`);
       }
 
+      // Verify runner file exists before spawning
+      if (!fs.existsSync(runnerPath)) {
+        throw new Error(`Runner script not found at: ${runnerPath}`);
+      }
+
       this.process = spawn("node", [runnerPath], {
         stdio: ["pipe", "pipe", "pipe"],
         cwd: process.cwd(),
+        // Increase memory limit for Playwright
+        env: { ...process.env, NODE_OPTIONS: "--max-old-space-size=4096" },
       });
 
       this.isRunning = true;
@@ -119,12 +126,35 @@ export class TestProcessManager extends EventEmitter {
         this.emit("processError", error);
       });
 
-      // Test process communication
-      await this.ping();
-      console.log("Test runner process started successfully");
+      // Test process communication with retry
+      let pingAttempts = 0;
+      const maxPingAttempts = 3;
+      while (pingAttempts < maxPingAttempts) {
+        try {
+          await this.ping();
+          console.log("Test runner process started successfully");
+          return;
+        } catch (pingError) {
+          pingAttempts++;
+          console.log(`Ping attempt ${pingAttempts}/${maxPingAttempts} failed: ${pingError}`);
+          if (pingAttempts < maxPingAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+        }
+      }
+      throw new Error("Failed to establish communication with test runner after multiple attempts");
     } catch (error) {
       console.error("Failed to start test runner process:", error);
       this.isRunning = false;
+      // Clean up any partial process
+      if (this.process) {
+        try {
+          this.process.kill("SIGKILL");
+        } catch (e) {
+          // Ignore kill errors
+        }
+        this.process = null;
+      }
       throw error;
     }
   }
@@ -157,11 +187,25 @@ export class TestProcessManager extends EventEmitter {
 
   async runTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>, retryCount: number = 0): Promise<TestResult> {
     const maxRetries = 2;
+    const testTimeout = parseInt(settings.test_timeout || "180000"); // Default 3 minutes
 
     try {
       // Always start fresh process for each test to avoid hung state issues
       console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);
-      await this.startProcess();
+      
+      // Start process with timeout protection
+      const startTimeout = 15000; // 15 seconds to start process
+      const startPromise = this.startProcess();
+      const startTimeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error("Process start timeout")), startTimeout)
+      );
+      
+      try {
+        await Promise.race([startPromise, startTimeoutPromise]);
+      } catch (startError) {
+        console.error(`Failed to start process: ${startError}`);
+        throw new Error(`Failed to start test runner: ${startError instanceof Error ? startError.message : startError}`);
+      }
 
       // Get merged selector config (base + user overrides)
       const selectorConfig = getMergedSelectorConfig();
@@ -178,7 +222,7 @@ export class TestProcessManager extends EventEmitter {
         },
       };
 
-      const response = await this.sendMessage(message, 180000); // 3 minute timeout
+      const response = await this.sendMessage(message, testTimeout + 30000); // Test timeout + 30s buffer
 
       // Stop process after test completes to ensure clean state for next test
       await this.stopProcess();
@@ -206,18 +250,30 @@ export class TestProcessManager extends EventEmitter {
     } catch (error) {
       console.error(`Test ${testRunId} attempt ${retryCount + 1} failed:`, error);
 
-      // Retry logic
+      // Retry logic with exponential backoff
       if (retryCount < maxRetries) {
-        console.log(`Retrying test ${testRunId} (${retryCount + 1}/${maxRetries})...`);
+        const backoffMs = Math.min(3000 * Math.pow(2, retryCount), 10000); // 3s, 6s, max 10s
+        console.log(`Retrying test ${testRunId} in ${backoffMs}ms (attempt ${retryCount + 2}/${maxRetries + 1})...`);
 
-        // Stop current process if it's in a bad state
-        if (this.isRunning) {
-          console.log('Stopping process before retry...');
-          await this.stopProcess();
+        // Force stop current process if it's in a bad state
+        if (this.isRunning || this.process) {
+          console.log('Force stopping process before retry...');
+          try {
+            this.process?.kill("SIGKILL");
+          } catch (e) {
+            // Ignore
+          }
+          this.isRunning = false;
+          this.process = null;
+          // Clear any pending messages
+          for (const { reject, timeout } of this.messageQueue.values()) {
+            clearTimeout(timeout);
+          }
+          this.messageQueue.clear();
         }
 
-        // Wait longer before retry to let things settle
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Wait with exponential backoff before retry
+        await new Promise((resolve) => setTimeout(resolve, backoffMs));
 
         // Retry the test
         return this.runTest(testRunId, form, paymentMethod, settings, retryCount + 1);

@@ -255,6 +255,11 @@ const Forms: React.FC = () => {
                   URL
                 </SortableTableHead>
                 <SortableTableHead
+                  sortDirection={getSortDirection("hash")}
+                  onSort={() => requestSort("hash")}>
+                  Hash
+                </SortableTableHead>
+                <SortableTableHead
                   sortDirection={getSortDirection("isActive")}
                   onSort={() => requestSort("isActive")}>
                   Status
@@ -264,7 +269,7 @@ const Forms: React.FC = () => {
                   onSort={() => requestSort("createdAt")}>
                   Erstellt
                 </SortableTableHead>
-                <TableHead className="text-left">14-Tage</TableHead>
+                <TableHead className="text-left">Analyse</TableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
@@ -285,10 +290,7 @@ const Forms: React.FC = () => {
                   <TableCell>
                     <div className="flex items-center gap-2.5">
                       {renderIcon(form.icon || "FileText", 16, "text-gray-500 dark:text-gray-400")}
-                      <div>
-                        <div className="font-medium text-sm text-gray-900 dark:text-white">{form.name}</div>
-                        {form.hash && <div className="text-xs text-gray-500 dark:text-gray-400">Hash: {form.hash}</div>}
-                      </div>
+                      <div className="font-medium text-sm text-gray-900 dark:text-white">{form.name}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -300,6 +302,9 @@ const Forms: React.FC = () => {
                       className="text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate">
                       {form.url}
                     </a>
+                  </TableCell>
+                  <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">
+                    {form.hash || "—"}
                   </TableCell>
                   <TableCell>
                     <button

@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, an as formatDuration, k as Trash2, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-CFtKbJVz.js";
-import { C as CONFIG } from "./app.config-BsmENKig.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BfoOtzv4.js";
-import { S as Skeleton } from "./Skeleton-DPWmljDO.js";
-import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-DSEmoiZ7.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, an as formatDuration, k as Trash2, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-CwRO9-TA.js";
+import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BGwV3yV1.js";
+import { S as Skeleton } from "./Skeleton-hDMEjhGi.js";
+import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-CCO_7-Li.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -368,6 +368,83 @@ function _temp6$1(prev_2) {
 function _temp7$1(e_1) {
   return e_1.stopPropagation();
 }
+const getStartTime = (runAt) => {
+  if (runAt instanceof Date) {
+    return runAt.getTime();
+  }
+  const dateStr = String(runAt);
+  if (!dateStr.includes("T") && !dateStr.includes("Z")) {
+    const utcDate = /* @__PURE__ */ new Date(dateStr.replace(" ", "T") + "Z");
+    return utcDate.getTime();
+  }
+  return new Date(dateStr).getTime();
+};
+const formatElapsedTime = (seconds) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+};
+const RunningTimer = reactExports.memo((t0) => {
+  const $ = dist.c(11);
+  const {
+    runAt,
+    isRunning
+  } = t0;
+  let t1;
+  if ($[0] !== runAt) {
+    t1 = () => {
+      const startTime = getStartTime(runAt);
+      return Math.max(0, Math.floor((Date.now() - startTime) / 1e3));
+    };
+    $[0] = runAt;
+    $[1] = t1;
+  } else {
+    t1 = $[1];
+  }
+  const [elapsed, setElapsed] = reactExports.useState(t1);
+  let t2;
+  let t3;
+  if ($[2] !== isRunning || $[3] !== runAt) {
+    t2 = () => {
+      if (!isRunning) {
+        return;
+      }
+      const interval = setInterval(() => {
+        const startTime_0 = getStartTime(runAt);
+        setElapsed(Math.max(0, Math.floor((Date.now() - startTime_0) / 1e3)));
+      }, 1e3);
+      return () => clearInterval(interval);
+    };
+    t3 = [runAt, isRunning];
+    $[2] = isRunning;
+    $[3] = runAt;
+    $[4] = t2;
+    $[5] = t3;
+  } else {
+    t2 = $[4];
+    t3 = $[5];
+  }
+  reactExports.useEffect(t2, t3);
+  const t4 = `text-[10px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`;
+  let t5;
+  if ($[6] !== elapsed) {
+    t5 = formatElapsedTime(elapsed);
+    $[6] = elapsed;
+    $[7] = t5;
+  } else {
+    t5 = $[7];
+  }
+  let t6;
+  if ($[8] !== t4 || $[9] !== t5) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: t4, children: t5 });
+    $[8] = t4;
+    $[9] = t5;
+    $[10] = t6;
+  } else {
+    t6 = $[10];
+  }
+  return t6;
+});
 const TestResultsSkeleton = () => {
   const $ = dist.c(1);
   let t0;
@@ -545,7 +622,6 @@ const TestResults = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = reactExports.useState(null);
   const [notes, setNotes] = reactExports.useState("");
   const [isSavingNotes, setIsSavingNotes] = reactExports.useState(false);
-  const [runningTimers, setRunningTimers] = reactExports.useState({});
   reactExports.useEffect(() => {
     loadTestRuns();
     loadForms();
@@ -562,42 +638,6 @@ const TestResults = () => {
   const queuedTests = reactExports.useMemo(() => testRunsWithNames.filter((tr_1) => tr_1.status === "QUEUED"), [testRunsWithNames]);
   const activeTests = reactExports.useMemo(() => [...runningTests, ...queuedTests], [runningTests, queuedTests]);
   const finishedTests = reactExports.useMemo(() => testRunsWithNames.filter((tr_2) => tr_2.status !== "RUNNING" && tr_2.status !== "QUEUED"), [testRunsWithNames]);
-  const getStartTime = (runAt) => {
-    if (runAt instanceof Date) {
-      return runAt.getTime();
-    }
-    const dateStr = String(runAt);
-    if (!dateStr.includes("T") && !dateStr.includes("Z")) {
-      const utcDate = /* @__PURE__ */ new Date(dateStr.replace(" ", "T") + "Z");
-      return utcDate.getTime();
-    }
-    return new Date(dateStr).getTime();
-  };
-  reactExports.useEffect(() => {
-    if (runningTests.length === 0) {
-      setRunningTimers({});
-      return;
-    }
-    const initialTimers = {};
-    runningTests.forEach((test) => {
-      const startTime = getStartTime(test.runAt);
-      const elapsed = Math.floor((Date.now() - startTime) / 1e3);
-      initialTimers[test.id] = Math.max(0, elapsed);
-    });
-    setRunningTimers(initialTimers);
-    const interval = setInterval(() => {
-      setRunningTimers(() => {
-        const updated = {};
-        runningTests.forEach((test_0) => {
-          const startTime_0 = getStartTime(test_0.runAt);
-          const elapsed_0 = Math.floor((Date.now() - startTime_0) / 1e3);
-          updated[test_0.id] = Math.max(0, elapsed_0);
-        });
-        return updated;
-      });
-    }, 1e3);
-    return () => clearInterval(interval);
-  }, [runningTests]);
   reactExports.useEffect(() => {
     if (activeTests.length === 0) return;
     const refreshInterval = setInterval(() => {
@@ -702,11 +742,6 @@ const TestResults = () => {
   const getPaymentMethodIcon = (pmId_0) => {
     const pm_0 = paymentMethods.find((p_1) => p_1.id === pmId_0);
     return pm_0?.icon || getDefaultPaymentIcon(pm_0?.type || "creditcard");
-  };
-  const formatElapsedTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
   const getFormDetails = (formId_1) => {
     return forms.find((f_2) => f_2.id === formId_1);
@@ -926,7 +961,7 @@ const TestResults = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_2.paymentMethodName })
             ] }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDateTime(testRun_2.runAt) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-[10px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`, children: formatElapsedTime(runningTimers[testRun_2.id] || 0) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(RunningTimer, { runAt: testRun_2.runAt, isRunning }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: testRun_2.status }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-end gap-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_2) => {
               e_2.stopPropagation();
@@ -1053,7 +1088,7 @@ const TestResults = () => {
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Dauer" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white font-mono", children: selectedTestRunData.status === "RUNNING" ? formatElapsedTime(runningTimers[selectedTestRunData.id] || 0) : formatDuration(selectedTestRunData.durationMs) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white font-mono", children: selectedTestRunData.status === "RUNNING" ? /* @__PURE__ */ jsxRuntimeExports.jsx(RunningTimer, { runAt: selectedTestRunData.runAt, isRunning: true }) : formatDuration(selectedTestRunData.durationMs) })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Zeitpunkt" }),

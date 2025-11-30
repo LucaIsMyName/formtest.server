@@ -29,6 +29,8 @@ class TestRunner {
     this.prefilledInterval = false
 
     this.buffer = ''
+    this.isTestRunning = false
+    this.lastActivityTime = Date.now()
 
     // Set up process communication
     process.stdin.setEncoding('utf8')
@@ -38,8 +40,11 @@ class TestRunner {
     process.on('SIGINT', this.cleanup.bind(this))
     process.on('SIGTERM', this.cleanup.bind(this))
     process.on('uncaughtException', this.handleError.bind(this))
+    process.on('unhandledRejection', this.handleError.bind(this))
 
-    this.log('Test runner process started')
+    // Send ready signal immediately
+    this.sendMessage({ type: 'RUNNER_READY', timestamp: Date.now() })
+    this.log('Test runner process started and ready')
   }
 
   /**
@@ -263,31 +268,60 @@ class TestRunner {
     this.startStep('browser-init', 'Browser initialisieren')
 
     // Add timeout to browser launch to prevent hanging
-    const browserLaunchTimeout = 30000 // 30 seconds
+    const browserLaunchTimeout = 45000 // 45 seconds (increased for slower systems)
     
-    const launchPromise = chromium.launch({
-      headless: this.config.headless,
-      slowMo: this.config.slowMo,
-      args: [
-        '--disable-web-security', 
-        '--disable-features=VizDisplayCompositor',
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
-    })
+    // Retry browser launch up to 3 times
+    let lastError = null
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        this.log(`Browser launch attempt ${attempt}/3...`)
+        
+        const launchPromise = chromium.launch({
+          headless: this.config.headless,
+          slowMo: this.config.slowMo,
+          timeout: browserLaunchTimeout,
+          args: [
+            '--disable-web-security', 
+            '--disable-features=VizDisplayCompositor',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--disable-software-rasterizer',
+            '--disable-extensions',
+            '--disable-background-networking',
+            '--disable-sync',
+            '--disable-translate',
+            '--metrics-recording-only',
+            '--no-first-run',
+            '--safebrowsing-disable-auto-update'
+          ]
+        })
+        
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Browser-Start Timeout')), browserLaunchTimeout)
+        })
+        
+        this.browser = await Promise.race([launchPromise, timeoutPromise])
+        this.log(`Browser launched successfully on attempt ${attempt}`)
+        break // Success, exit retry loop
+        
+      } catch (error) {
+        lastError = error
+        this.log(`Browser launch attempt ${attempt} failed: ${error.message}`)
+        
+        if (attempt < 3) {
+          // Wait before retry with exponential backoff
+          const waitMs = 2000 * attempt
+          this.log(`Waiting ${waitMs}ms before retry...`)
+          await new Promise(resolve => setTimeout(resolve, waitMs))
+        }
+      }
+    }
     
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Browser-Start Timeout - Chromium konnte nicht innerhalb von 30 Sekunden gestartet werden')), browserLaunchTimeout)
-    })
-    
-    try {
-      this.browser = await Promise.race([launchPromise, timeoutPromise])
-    } catch (error) {
-      this.log(`Browser launch failed: ${error.message}`)
-      this.failStep('browser-init', `Browser-Start fehlgeschlagen: ${error.message}`)
-      throw new Error(`Browser-Start fehlgeschlagen: ${error.message}. Versuche 'npx playwright install chromium' auszuführen.`)
+    if (!this.browser) {
+      this.failStep('browser-init', `Browser-Start fehlgeschlagen nach 3 Versuchen: ${lastError?.message}`)
+      throw new Error(`Browser-Start fehlgeschlagen: ${lastError?.message}. Versuche 'npx playwright install chromium' auszuführen.`)
     }
 
     // Create context with timeout
@@ -594,14 +628,34 @@ class TestRunner {
   async submitForm() {
     this.log('Submitting form...')
 
+    // Wait a moment for any dynamic content to settle
+    await this.page.waitForTimeout(1000)
+
     // Check for validation errors before submitting
     try {
-      const errorBanner = await this.page.$('.form-error-message:visible, .error-banner:visible, .alert-danger:visible')
-      if (errorBanner) {
-        const isVisible = await errorBanner.isVisible()
-        if (isVisible) {
-          const errorText = await errorBanner.textContent()
-          this.log(`Form has validation errors: ${errorText}`)
+      const errorSelectors = [
+        '.form-error-message:visible',
+        '.error-banner:visible', 
+        '.alert-danger:visible',
+        '.error:visible',
+        '.validation-error:visible',
+        '[class*="error"]:visible'
+      ]
+      
+      for (const selector of errorSelectors) {
+        try {
+          const errorBanner = await this.page.$(selector)
+          if (errorBanner) {
+            const isVisible = await errorBanner.isVisible()
+            if (isVisible) {
+              const errorText = await errorBanner.textContent()
+              if (errorText && errorText.trim().length > 0) {
+                this.log(`Form validation warning: ${errorText.trim().substring(0, 100)}`)
+              }
+            }
+          }
+        } catch (e) {
+          // Continue checking other selectors
         }
       }
     } catch (e) {
@@ -613,44 +667,78 @@ class TestRunner {
       ? this.selectorConfig.submitButtons 
       : []
     
+    // Comprehensive list of submit button selectors - ordered by specificity
     const submitSelectors = configSubmitSelectors.length > 0 ? configSubmitSelectors : [
-      // FundraisingBox specific
+      // FundraisingBox specific (highest priority)
       'input#submitForm',
       '#submitForm',
       'input[name="submitForm"]',
-      // German donation forms
-      'input[type="submit"][value*="Jetzt spenden"]',
+      '#fb-submit-button',
+      '.fb-submit',
+      
+      // German donation forms - exact matches first
+      'input[type="submit"][value="Jetzt spenden"]',
+      'input[type="submit"][value="Spenden"]',
+      'input[type="submit"][value="Weiter"]',
+      'input[type="submit"][value="Absenden"]',
+      'input[type="submit"][value="Senden"]',
+      'button[type="submit"]:has-text("Jetzt spenden")',
+      'button[type="submit"]:has-text("Spenden")',
+      'button[type="submit"]:has-text("Weiter")',
+      
+      // German - partial matches
       'input[type="submit"][value*="spenden"]',
       'input[type="submit"][value*="Spenden"]',
       'input[type="submit"][value*="Weiter"]',
       'input[type="submit"][value*="weiter"]',
       'input[type="submit"][value*="Absenden"]',
       'input[type="submit"][value*="Senden"]',
+      
+      // Button text matches (German)
+      'button:has-text("Jetzt spenden")',
       'button:has-text("Spenden")',
       'button:has-text("Weiter")',
       'button:has-text("Absenden")',
+      'button:has-text("Senden")',
+      
       // English donation forms
+      'input[type="submit"][value="Donate"]',
+      'input[type="submit"][value="Donate Now"]',
+      'input[type="submit"][value="Submit"]',
+      'input[type="submit"][value="Continue"]',
       'input[type="submit"][value*="Donate"]',
       'input[type="submit"][value*="donate"]',
       'input[type="submit"][value*="Submit"]',
       'input[type="submit"][value*="Continue"]',
       'button:has-text("Donate")',
+      'button:has-text("Donate Now")',
       'button:has-text("Submit")',
-      // Generic selectors
-      'input.button[type="submit"]',
+      'button:has-text("Continue")',
+      
+      // Generic form submit selectors
+      'form button[type="submit"]',
+      'form input[type="submit"]',
       'button[type="submit"]',
       'input[type="submit"]',
+      'input.button[type="submit"]',
+      
+      // Class-based selectors
       '.submit-button',
       '.btn-submit',
+      '.form-submit',
       '#submit',
       '[data-testid="submit"]',
-      // Form submit buttons by class
       'button.btn-primary[type="submit"]',
       'button.btn[type="submit"]',
-      '.form-submit',
-      // Last resort - any visible submit
-      'form button:visible',
-      'form input[type="submit"]:visible'
+      
+      // Aria and role-based
+      'button[role="button"]:has-text("Submit")',
+      '[aria-label*="submit"]',
+      '[aria-label*="spenden"]',
+      
+      // Last resort - any button in form
+      'form button:not([type="button"]):not([type="reset"])',
+      'form input[type="submit"]'
     ]
 
     for (const selector of submitSelectors) {
@@ -1989,6 +2077,7 @@ class TestRunner {
     const timestamp = new Date().toISOString()
     const logMessage = `[${timestamp}] ${message}`
     this.logs.push(logMessage)
+    this.lastActivityTime = Date.now() // Track activity for timeout detection
     console.error(logMessage) // Use stderr for logs to avoid interfering with stdout communication
   }
 }

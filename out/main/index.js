@@ -1856,9 +1856,14 @@ class TestProcessManager extends events.EventEmitter {
       } else {
         console.log(`Using production runner path: ${runnerPath}`);
       }
+      if (!fs2.existsSync(runnerPath)) {
+        throw new Error(`Runner script not found at: ${runnerPath}`);
+      }
       this.process = child_process.spawn("node", [runnerPath], {
         stdio: ["pipe", "pipe", "pipe"],
-        cwd: process.cwd()
+        cwd: process.cwd(),
+        // Increase memory limit for Playwright
+        env: { ...process.env, NODE_OPTIONS: "--max-old-space-size=4096" }
       });
       this.isRunning = true;
       this.process.stdout?.on("data", (data) => {
@@ -1894,11 +1899,32 @@ class TestProcessManager extends events.EventEmitter {
         this.isRunning = false;
         this.emit("processError", error);
       });
-      await this.ping();
-      console.log("Test runner process started successfully");
+      let pingAttempts = 0;
+      const maxPingAttempts = 3;
+      while (pingAttempts < maxPingAttempts) {
+        try {
+          await this.ping();
+          console.log("Test runner process started successfully");
+          return;
+        } catch (pingError) {
+          pingAttempts++;
+          console.log(`Ping attempt ${pingAttempts}/${maxPingAttempts} failed: ${pingError}`);
+          if (pingAttempts < maxPingAttempts) {
+            await new Promise((resolve) => setTimeout(resolve, 1e3));
+          }
+        }
+      }
+      throw new Error("Failed to establish communication with test runner after multiple attempts");
     } catch (error) {
       console.error("Failed to start test runner process:", error);
       this.isRunning = false;
+      if (this.process) {
+        try {
+          this.process.kill("SIGKILL");
+        } catch (e) {
+        }
+        this.process = null;
+      }
       throw error;
     }
   }
@@ -1921,9 +1947,20 @@ class TestProcessManager extends events.EventEmitter {
   }
   async runTest(testRunId, form, paymentMethod, settings, retryCount = 0) {
     const maxRetries = 2;
+    const testTimeout = parseInt(settings.test_timeout || "180000");
     try {
       console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);
-      await this.startProcess();
+      const startTimeout = 15e3;
+      const startPromise = this.startProcess();
+      const startTimeoutPromise = new Promise(
+        (_, reject) => setTimeout(() => reject(new Error("Process start timeout")), startTimeout)
+      );
+      try {
+        await Promise.race([startPromise, startTimeoutPromise]);
+      } catch (startError) {
+        console.error(`Failed to start process: ${startError}`);
+        throw new Error(`Failed to start test runner: ${startError instanceof Error ? startError.message : startError}`);
+      }
       const selectorConfig = getMergedSelectorConfig();
       const message = {
         id: this.generateMessageId(),
@@ -1936,7 +1973,7 @@ class TestProcessManager extends events.EventEmitter {
           selectorConfig
         }
       };
-      const response = await this.sendMessage(message, 18e4);
+      const response = await this.sendMessage(message, testTimeout + 3e4);
       await this.stopProcess();
       if (response.payload?.success) {
         return {
@@ -1960,12 +1997,22 @@ class TestProcessManager extends events.EventEmitter {
     } catch (error) {
       console.error(`Test ${testRunId} attempt ${retryCount + 1} failed:`, error);
       if (retryCount < maxRetries) {
-        console.log(`Retrying test ${testRunId} (${retryCount + 1}/${maxRetries})...`);
-        if (this.isRunning) {
-          console.log("Stopping process before retry...");
-          await this.stopProcess();
+        const backoffMs = Math.min(3e3 * Math.pow(2, retryCount), 1e4);
+        console.log(`Retrying test ${testRunId} in ${backoffMs}ms (attempt ${retryCount + 2}/${maxRetries + 1})...`);
+        if (this.isRunning || this.process) {
+          console.log("Force stopping process before retry...");
+          try {
+            this.process?.kill("SIGKILL");
+          } catch (e) {
+          }
+          this.isRunning = false;
+          this.process = null;
+          for (const { reject, timeout } of this.messageQueue.values()) {
+            clearTimeout(timeout);
+          }
+          this.messageQueue.clear();
         }
-        await new Promise((resolve) => setTimeout(resolve, 3e3));
+        await new Promise((resolve) => setTimeout(resolve, backoffMs));
         return this.runTest(testRunId, form, paymentMethod, settings, retryCount + 1);
       }
       return {

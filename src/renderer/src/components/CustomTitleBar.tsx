@@ -146,7 +146,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
 
         {/* Right Section - Matches Main Content Area */}
         <div className="flex-1 flex items-center px-4 h-full overflow-hidden">
-          <div className="w-full max-w-[1040px] flex items-center gap-4">
+          <div className="w-full max-w-[1240px] flex items-center gap-4">
             {/* Global Search */}
             <div
               className="flex-1"

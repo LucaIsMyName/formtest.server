@@ -1,9 +1,9 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, au as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, am as formatDateTime, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, av as useSchedulesStore, e as useTestRunsStore, H as Plus, K as TableHeader, ab as LoaderCircle, N as Pen, O as TablePagination, i as dist } from "./index-CFtKbJVz.js";
-import { C as CONFIG } from "./app.config-BsmENKig.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DSEmoiZ7.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BfoOtzv4.js";
-import { S as Skeleton } from "./Skeleton-DPWmljDO.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-m7xwIm2F.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, au as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, am as formatDateTime, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, av as useSchedulesStore, e as useTestRunsStore, H as Plus, K as TableHeader, ab as LoaderCircle, N as Pen, O as TablePagination, i as dist } from "./index-CwRO9-TA.js";
+import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CCO_7-Li.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BGwV3yV1.js";
+import { S as Skeleton } from "./Skeleton-hDMEjhGi.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-DGEQqClf.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -558,7 +558,7 @@ const Schedules = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("cronExpression"), onSort: () => requestSort("cronExpression"), children: "Cron" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("lastRun"), onSort: () => requestSort("lastRun"), children: "Ausgeführt" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "text-left", children: "14-Tage" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "text-left", children: "Analyse" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "!text-right block", children: "Aktionen" }) })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedSchedules.map((schedule_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset", onClick: () => setEditingSchedule(schedule_0), onKeyDown: (e) => {

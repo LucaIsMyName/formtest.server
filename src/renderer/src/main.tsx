@@ -7,7 +7,8 @@ import "./index.css";
 
 if (import.meta.env.DEV) {
   scan({
-    enabled: false,
+    enabled: true,
+    log: true,
   });
 }
 

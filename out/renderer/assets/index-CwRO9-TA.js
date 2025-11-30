@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DqjNxrog.js","./app.config-BsmENKig.js","./Skeleton-DPWmljDO.js","./Forms-DQnuHTK1.js","./MiniSparkline-m7xwIm2F.js","./useFilterableData-DSEmoiZ7.js","./TableFilter-BfoOtzv4.js","./PaymentMethods-Co161xk9.js","./Settings-ggH2puj-.js","./TestResults-DVSriaeh.js","./InfoDoku-D5KLpwqQ.js","./Schedules-LWyiepNG.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-ClSMXbQW.js","./app.config-Dj0WDsKm.js","./Skeleton-hDMEjhGi.js","./Forms-CoLvKOtO.js","./MiniSparkline-DGEQqClf.js","./useFilterableData-CCO_7-Li.js","./TableFilter-BGwV3yV1.js","./PaymentMethods-79GPGVa_.js","./Settings-C0oK_JB7.js","./TestResults-BnExp_r4.js","./InfoDoku-Q5uSVohc.js","./Schedules-D_EDr9wh.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -50745,233 +50745,6 @@ var Trigger$2 = DropdownMenuTrigger;
 var Portal2 = DropdownMenuPortal;
 var Content2$2 = DropdownMenuContent;
 var Item2 = DropdownMenuItem;
-const NotificationButton = () => {
-  const $2 = dist.c(42);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const {
-    notifications,
-    unreadCount,
-    loadNotifications,
-    markAsRead,
-    markAllAsRead,
-    deleteNotification,
-    deleteAll
-  } = useNotificationsStore();
-  let t0;
-  let t1;
-  if ($2[0] !== loadNotifications) {
-    t0 = () => {
-      loadNotifications();
-      const cleanup = window.api?.notifications?.onUpdated?.(() => {
-        loadNotifications();
-      });
-      return cleanup;
-    };
-    t1 = [loadNotifications];
-    $2[0] = loadNotifications;
-    $2[1] = t0;
-    $2[2] = t1;
-  } else {
-    t0 = $2[1];
-    t1 = $2[2];
-  }
-  reactExports.useEffect(t0, t1);
-  let t2;
-  let t3;
-  if ($2[3] !== location.pathname || $2[4] !== markAllAsRead || $2[5] !== unreadCount) {
-    t2 = () => {
-      if (location.pathname === "/test-results" && unreadCount > 0) {
-        markAllAsRead();
-      }
-    };
-    t3 = [location.pathname, unreadCount, markAllAsRead];
-    $2[3] = location.pathname;
-    $2[4] = markAllAsRead;
-    $2[5] = unreadCount;
-    $2[6] = t2;
-    $2[7] = t3;
-  } else {
-    t2 = $2[6];
-    t3 = $2[7];
-  }
-  reactExports.useEffect(t2, t3);
-  const getNotificationIcon = _temp$3;
-  let t4;
-  if ($2[8] !== markAsRead || $2[9] !== navigate) {
-    t4 = (notification) => {
-      if (!notification.isRead) {
-        markAsRead(notification.id);
-      }
-      if (notification.testRunId) {
-        navigate(`/test-results?highlight=${notification.testRunId}`);
-      }
-    };
-    $2[8] = markAsRead;
-    $2[9] = navigate;
-    $2[10] = t4;
-  } else {
-    t4 = $2[10];
-  }
-  const handleNotificationClick = t4;
-  let t5;
-  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(Bell, { size: 14 });
-    $2[11] = t5;
-  } else {
-    t5 = $2[11];
-  }
-  let t6;
-  if ($2[12] !== unreadCount) {
-    t6 = unreadCount > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center", children: unreadCount > 9 ? "9+" : unreadCount });
-    $2[12] = unreadCount;
-    $2[13] = t6;
-  } else {
-    t6 = $2[13];
-  }
-  let t7;
-  if ($2[14] !== t6) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$2, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "relative p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Benachrichtigungen", children: [
-      t5,
-      t6
-    ] }) });
-    $2[14] = t6;
-    $2[15] = t7;
-  } else {
-    t7 = $2[15];
-  }
-  let t8;
-  if ($2[16] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xs font-medium text-gray-900 dark:text-white", children: "Benachrichtigungen" });
-    $2[16] = t8;
-  } else {
-    t8 = $2[16];
-  }
-  let t9;
-  if ($2[17] !== markAllAsRead || $2[18] !== unreadCount) {
-    t9 = unreadCount > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e2) => {
-      e2.preventDefault();
-      markAllAsRead();
-    }, className: "p-1 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors", title: "Alle als gelesen markieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCheck, { size: 14 }) });
-    $2[17] = markAllAsRead;
-    $2[18] = unreadCount;
-    $2[19] = t9;
-  } else {
-    t9 = $2[19];
-  }
-  let t10;
-  if ($2[20] !== deleteAll || $2[21] !== notifications.length) {
-    t10 = notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
-      e_0.preventDefault();
-      deleteAll();
-    }, className: "p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors", title: "Alle löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }) });
-    $2[20] = deleteAll;
-    $2[21] = notifications.length;
-    $2[22] = t10;
-  } else {
-    t10 = $2[22];
-  }
-  let t11;
-  if ($2[23] !== t10 || $2[24] !== t9) {
-    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: [
-      t8,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1", children: [
-        t9,
-        t10
-      ] })
-    ] });
-    $2[23] = t10;
-    $2[24] = t9;
-    $2[25] = t11;
-  } else {
-    t11 = $2[25];
-  }
-  let t12;
-  if ($2[26] !== deleteNotification || $2[27] !== handleNotificationClick || $2[28] !== notifications) {
-    t12 = notifications.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-6 text-center text-xs text-gray-500 dark:text-gray-400", children: "Keine Benachrichtigungen" }) : notifications.slice(0, 10).map((notification_0) => {
-      !notification_0.isRead ? "" : "";
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Item2, { className: `flex items-start gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors outline-none ${!notification_0.isRead ? "bg-blue-50/50 dark:bg-blue-900/10" : ""}`, onSelect: () => handleNotificationClick(notification_0), children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 mt-0.5", children: getNotificationIcon(notification_0.type) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[13px] font-normal leading-tight block  text-gray-900 dark:text-white truncate", children: notification_0.title }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_1) => {
-              e_1.stopPropagation();
-              e_1.preventDefault();
-              deleteNotification(notification_0.id);
-            }, className: "flex-shrink-0 p-0.5 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X$1, { size: 10 }) })
-          ] }),
-          notification_0.message && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-gray-500 dark:text-gray-400 line-clamp-1", children: notification_0.message }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-gray-400 dark:text-gray-500 mt-0.5", children: formatDateTime(notification_0.createdAt) })
-        ] }),
-        !notification_0.isRead && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 w-1.5 h-1.5 bg-blue-500 rounded-full mt-1" })
-      ] }, notification_0.id);
-    });
-    $2[26] = deleteNotification;
-    $2[27] = handleNotificationClick;
-    $2[28] = notifications;
-    $2[29] = t12;
-  } else {
-    t12 = $2[29];
-  }
-  let t13;
-  if ($2[30] !== t12) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-64 overflow-y-auto", children: t12 });
-    $2[30] = t12;
-    $2[31] = t13;
-  } else {
-    t13 = $2[31];
-  }
-  let t14;
-  if ($2[32] !== navigate || $2[33] !== notifications.length) {
-    t14 = notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-1.5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Item2, { className: "w-full text-center text-[10px] text-blue-600 dark:text-blue-400 hover:underline cursor-pointer outline-none", onSelect: () => navigate("/test-results"), children: "Alle Testergebnisse anzeigen" }) });
-    $2[32] = navigate;
-    $2[33] = notifications.length;
-    $2[34] = t14;
-  } else {
-    t14 = $2[34];
-  }
-  let t15;
-  if ($2[35] !== t11 || $2[36] !== t13 || $2[37] !== t14) {
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$2, { className: "w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden animate-in fade-in-0 zoom-in-95", sideOffset: 8, align: "end", children: [
-      t11,
-      t13,
-      t14
-    ] }) });
-    $2[35] = t11;
-    $2[36] = t13;
-    $2[37] = t14;
-    $2[38] = t15;
-  } else {
-    t15 = $2[38];
-  }
-  let t16;
-  if ($2[39] !== t15 || $2[40] !== t7) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root2$1, { children: [
-      t7,
-      t15
-    ] });
-    $2[39] = t15;
-    $2[40] = t7;
-    $2[41] = t16;
-  } else {
-    t16 = $2[41];
-  }
-  return t16;
-};
-function _temp$3(type) {
-  switch (type) {
-    case "test_complete": {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 12, className: "text-green-500" });
-    }
-    case "test_failed": {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 12, className: "text-red-500" });
-    }
-    default: {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { size: 12, className: "text-blue-500" });
-    }
-  }
-}
 var SLOTTABLE_IDENTIFIER$3 = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
 function createSlottable(ownerName) {
@@ -51484,6 +51257,254 @@ var Trigger$1 = TooltipTrigger;
 var Portal$2 = TooltipPortal;
 var Content2$1 = TooltipContent;
 var Arrow2 = TooltipArrow;
+const NotificationButton = () => {
+  const $2 = dist.c(45);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    notifications,
+    unreadCount,
+    loadNotifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    deleteAll
+  } = useNotificationsStore();
+  let t0;
+  let t1;
+  if ($2[0] !== loadNotifications) {
+    t0 = () => {
+      loadNotifications();
+      const cleanup = window.api?.notifications?.onUpdated?.(() => {
+        loadNotifications();
+      });
+      return cleanup;
+    };
+    t1 = [loadNotifications];
+    $2[0] = loadNotifications;
+    $2[1] = t0;
+    $2[2] = t1;
+  } else {
+    t0 = $2[1];
+    t1 = $2[2];
+  }
+  reactExports.useEffect(t0, t1);
+  let t2;
+  let t3;
+  if ($2[3] !== location.pathname || $2[4] !== markAllAsRead || $2[5] !== unreadCount) {
+    t2 = () => {
+      if (location.pathname === "/test-results" && unreadCount > 0) {
+        markAllAsRead();
+      }
+    };
+    t3 = [location.pathname, unreadCount, markAllAsRead];
+    $2[3] = location.pathname;
+    $2[4] = markAllAsRead;
+    $2[5] = unreadCount;
+    $2[6] = t2;
+    $2[7] = t3;
+  } else {
+    t2 = $2[6];
+    t3 = $2[7];
+  }
+  reactExports.useEffect(t2, t3);
+  const getNotificationIcon = _temp$3;
+  let t4;
+  if ($2[8] !== markAsRead || $2[9] !== navigate) {
+    t4 = (notification) => {
+      if (!notification.isRead) {
+        markAsRead(notification.id);
+      }
+      if (notification.testRunId) {
+        navigate(`/test-results?highlight=${notification.testRunId}`);
+      }
+    };
+    $2[8] = markAsRead;
+    $2[9] = navigate;
+    $2[10] = t4;
+  } else {
+    t4 = $2[10];
+  }
+  const handleNotificationClick = t4;
+  let t5;
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(Bell, { size: 14 });
+    $2[11] = t5;
+  } else {
+    t5 = $2[11];
+  }
+  let t6;
+  if ($2[12] !== unreadCount) {
+    t6 = unreadCount > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center", children: unreadCount > 9 ? "9+" : unreadCount });
+    $2[12] = unreadCount;
+    $2[13] = t6;
+  } else {
+    t6 = $2[13];
+  }
+  let t7;
+  if ($2[14] !== t6) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$1, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger$2, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { className: "relative p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400", "aria-label": "Benachrichtigungen", children: [
+      t5,
+      t6
+    ] }) }) });
+    $2[14] = t6;
+    $2[15] = t7;
+  } else {
+    t7 = $2[15];
+  }
+  let t8;
+  if ($2[16] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$1, { className: "bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50", sideOffset: 5, children: [
+      "Benachrichtigungen",
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-gray-900 dark:fill-gray-700" })
+    ] }) });
+    $2[16] = t8;
+  } else {
+    t8 = $2[16];
+  }
+  let t9;
+  if ($2[17] !== t7) {
+    t9 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      t7,
+      t8
+    ] });
+    $2[17] = t7;
+    $2[18] = t9;
+  } else {
+    t9 = $2[18];
+  }
+  let t10;
+  if ($2[19] === Symbol.for("react.memo_cache_sentinel")) {
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-xs font-medium text-gray-900 dark:text-white", children: "Benachrichtigungen" });
+    $2[19] = t10;
+  } else {
+    t10 = $2[19];
+  }
+  let t11;
+  if ($2[20] !== markAllAsRead || $2[21] !== unreadCount) {
+    t11 = unreadCount > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e2) => {
+      e2.preventDefault();
+      markAllAsRead();
+    }, className: "p-1 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors", title: "Alle als gelesen markieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckCheck, { size: 14 }) });
+    $2[20] = markAllAsRead;
+    $2[21] = unreadCount;
+    $2[22] = t11;
+  } else {
+    t11 = $2[22];
+  }
+  let t12;
+  if ($2[23] !== deleteAll || $2[24] !== notifications.length) {
+    t12 = notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_0) => {
+      e_0.preventDefault();
+      deleteAll();
+    }, className: "p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors", title: "Alle löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }) });
+    $2[23] = deleteAll;
+    $2[24] = notifications.length;
+    $2[25] = t12;
+  } else {
+    t12 = $2[25];
+  }
+  let t13;
+  if ($2[26] !== t11 || $2[27] !== t12) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: [
+      t10,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1", children: [
+        t11,
+        t12
+      ] })
+    ] });
+    $2[26] = t11;
+    $2[27] = t12;
+    $2[28] = t13;
+  } else {
+    t13 = $2[28];
+  }
+  let t14;
+  if ($2[29] !== deleteNotification || $2[30] !== handleNotificationClick || $2[31] !== notifications) {
+    t14 = notifications.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-6 text-center text-xs text-gray-500 dark:text-gray-400", children: "Keine Benachrichtigungen" }) : notifications.slice(0, 10).map((notification_0) => {
+      !notification_0.isRead ? "" : "";
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Item2, { className: `flex items-start gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors outline-none ${!notification_0.isRead ? "bg-blue-50/50 dark:bg-blue-900/10" : ""}`, onSelect: () => handleNotificationClick(notification_0), children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 mt-0.5", children: getNotificationIcon(notification_0.type) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between gap-1", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[13px] font-normal leading-tight block  text-gray-900 dark:text-white truncate", children: notification_0.title }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_1) => {
+              e_1.stopPropagation();
+              e_1.preventDefault();
+              deleteNotification(notification_0.id);
+            }, className: "flex-shrink-0 p-0.5 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X$1, { size: 10 }) })
+          ] }),
+          notification_0.message && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-gray-500 dark:text-gray-400 line-clamp-1", children: notification_0.message }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[9px] text-gray-400 dark:text-gray-500 mt-0.5", children: formatDateTime(notification_0.createdAt) })
+        ] }),
+        !notification_0.isRead && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 w-1.5 h-1.5 bg-blue-500 rounded-full mt-1" })
+      ] }, notification_0.id);
+    });
+    $2[29] = deleteNotification;
+    $2[30] = handleNotificationClick;
+    $2[31] = notifications;
+    $2[32] = t14;
+  } else {
+    t14 = $2[32];
+  }
+  let t15;
+  if ($2[33] !== t14) {
+    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-64 overflow-y-auto", children: t14 });
+    $2[33] = t14;
+    $2[34] = t15;
+  } else {
+    t15 = $2[34];
+  }
+  let t16;
+  if ($2[35] !== navigate || $2[36] !== notifications.length) {
+    t16 = notifications.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-3 py-1.5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Item2, { className: "w-full text-center text-[10px] text-blue-600 dark:text-blue-400 hover:underline cursor-pointer outline-none", onSelect: () => navigate("/test-results"), children: "Alle Testergebnisse anzeigen" }) });
+    $2[35] = navigate;
+    $2[36] = notifications.length;
+    $2[37] = t16;
+  } else {
+    t16 = $2[37];
+  }
+  let t17;
+  if ($2[38] !== t13 || $2[39] !== t15 || $2[40] !== t16) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx(Portal2, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2$2, { className: "w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden animate-in fade-in-0 zoom-in-95", sideOffset: 8, align: "end", children: [
+      t13,
+      t15,
+      t16
+    ] }) });
+    $2[38] = t13;
+    $2[39] = t15;
+    $2[40] = t16;
+    $2[41] = t17;
+  } else {
+    t17 = $2[41];
+  }
+  let t18;
+  if ($2[42] !== t17 || $2[43] !== t9) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Root2$1, { children: [
+      t9,
+      t17
+    ] }) });
+    $2[42] = t17;
+    $2[43] = t9;
+    $2[44] = t18;
+  } else {
+    t18 = $2[44];
+  }
+  return t18;
+};
+function _temp$3(type) {
+  switch (type) {
+    case "test_complete": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 12, className: "text-green-500" });
+    }
+    case "test_failed": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { size: 12, className: "text-red-500" });
+    }
+    default: {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Info, { size: 12, className: "text-blue-500" });
+    }
+  }
+}
 const CustomTitleBar = (t0) => {
   const $2 = dist.c(80);
   const {
@@ -51950,7 +51971,7 @@ const CustomTitleBar = (t0) => {
   }
   let t49;
   if ($2[74] !== t31 || $2[75] !== t48) {
-    t49 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex items-center px-4 h-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[1040px] flex items-center gap-4", children: [
+    t49 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex items-center px-4 h-full overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "w-full max-w-[1240px] flex items-center gap-4", children: [
       t31,
       t48
     ] }) });
@@ -61194,8 +61215,8 @@ const Layout = (t0) => {
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 1.75 : 1.75 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
-          fontStretch: "100%"
-        }, className: `transition-all text-base ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400" : null}`, children: item.name })
+          fontStretch: "115%"
+        }, className: `transition-all text-[clamp(0.66rem,1.075vw,0.925rem)] ${location.pathname === item.href ? "" : null}`, children: item.name })
       ] }, item.name);
     }) }) });
     $2[24] = location.pathname;
@@ -61205,7 +61226,7 @@ const Layout = (t0) => {
   }
   let t17;
   if ($2[26] !== children) {
-    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[1040px]", children }) }) });
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full max-w-[1240px]", children }) }) });
     $2[26] = children;
     $2[27] = t17;
   } else {
@@ -61278,13 +61299,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DqjNxrog.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DQnuHTK1.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-Co161xk9.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-ggH2puj-.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DVSriaeh.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-D5KLpwqQ.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-LWyiepNG.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-ClSMXbQW.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-CoLvKOtO.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-79GPGVa_.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-C0oK_JB7.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-BnExp_r4.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-Q5uSVohc.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-D_EDr9wh.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
 function App() {
   const {
     settings,

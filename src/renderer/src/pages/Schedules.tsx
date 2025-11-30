@@ -215,7 +215,7 @@ const Schedules: React.FC = () => {
                     Status
                   </SortableTableHead>
                   <SortableTableHead className="text-left">
-                    14-Tage
+                    Analyse
                   </SortableTableHead>
                   <SortableTableHead className="">
                     <span className="!text-right block">Aktionen</span>

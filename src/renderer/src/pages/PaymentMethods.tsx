@@ -344,7 +344,7 @@ const PaymentMethods: React.FC = () => {
                   onSort={() => requestSort('createdAt')}>
                   Erstellt
                 </SortableTableHead>
-                <TableHead className="text-left">14-Tage</TableHead>
+                <TableHead className="text-left">Analyse</TableHead>
                 <TableHead className="text-right">Aktionen</TableHead>
               </TableRow>
             </TableHeader>

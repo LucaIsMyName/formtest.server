@@ -1,9 +1,9 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, i as dist, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination } from "./index-CFtKbJVz.js";
-import { C as CONFIG } from "./app.config-BsmENKig.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-m7xwIm2F.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DSEmoiZ7.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BfoOtzv4.js";
-import { S as Skeleton } from "./Skeleton-DPWmljDO.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, i as dist, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination } from "./index-CwRO9-TA.js";
+import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-DGEQqClf.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CCO_7-Li.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BGwV3yV1.js";
+import { S as Skeleton } from "./Skeleton-hDMEjhGi.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -730,9 +730,10 @@ const Forms = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("url"), onSort: () => requestSort("url"), children: "URL" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("hash"), onSort: () => requestSort("hash"), children: "Hash" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("isActive"), onSort: () => requestSort("isActive"), children: "Status" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("createdAt"), onSort: () => requestSort("createdAt"), children: "Erstellt" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-left", children: "14-Tage" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-left", children: "Analyse" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedForms.map((form_2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset", onClick: () => handleEditForm(form_2), onKeyDown: (e) => {
@@ -743,15 +744,10 @@ const Forms = () => {
         }, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2.5", children: [
             renderIcon(form_2.icon || "FileText", 16, "text-gray-500 dark:text-gray-400"),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: form_2.name }),
-              form_2.hash && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-500 dark:text-gray-400", children: [
-                "Hash: ",
-                form_2.hash
-              ] })
-            ] })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: form_2.name })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate", children: form_2.url }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: form_2.hash || "—" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_1) => {
             e_1.stopPropagation();
             toggleFormActive(form_2.id);

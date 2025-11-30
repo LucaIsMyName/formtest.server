@@ -51,13 +51,15 @@ const MiniSparkline: React.FC<MiniSparklineProps> = ({
     };
   }, [data]);
 
+  const BULLET_COUNT = 10;
+
   if (!chartData || data.length === 0) {
     return (
-      <div className="flex items-center gap-0.5">
-        {[...Array(10)].map((_, i) => (
+      <div className="flex items-center gap-0.5" style={{ minWidth: `${BULLET_COUNT * 10}px` }}>
+        {Array.from({ length: BULLET_COUNT }).map((_, i) => (
           <div
             key={i}
-            className="w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700"
+            className="w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0"
           />
         ))}
       </div>
@@ -67,11 +69,11 @@ const MiniSparkline: React.FC<MiniSparklineProps> = ({
   const { avgRate, filledBullets, colors, totalTests } = chartData;
 
   return (
-    <div className="relative group flex items-center gap-0.5">
-      {[...Array(10)].map((_, i) => (
+    <div className="relative group flex items-center gap-0.5" style={{ minWidth: `${BULLET_COUNT * 10}px` }}>
+      {Array.from({ length: BULLET_COUNT }).map((_, i) => (
         <div
           key={i}
-          className="w-1.5 h-1.5 rounded-full transition-colors"
+          className="w-1.5 h-1.5 rounded-full transition-colors flex-shrink-0"
           style={{
             backgroundColor: i < filledBullets ? colors.filled : colors.empty,
           }}

@@ -1,4 +1,4 @@
-import { i as dist, r as reactExports, aw as getAllIconNames, j as jsxRuntimeExports, ax as DialogHeader, ay as DialogTitle, az as Search, s as renderIcon, aA as DialogContent, aB as Dialog } from "./index-CFtKbJVz.js";
+import { i as dist, r as reactExports, aw as getAllIconNames, j as jsxRuntimeExports, ax as DialogHeader, ay as DialogTitle, az as Search, s as renderIcon, aA as DialogContent, aB as Dialog } from "./index-CwRO9-TA.js";
 const IconPicker = (t0) => {
   const $ = dist.c(40);
   const {
@@ -208,7 +208,7 @@ function _temp$1() {
   return Math.random() - 0.5;
 }
 const MiniSparkline = (t0) => {
-  const $ = dist.c(23);
+  const $ = dist.c(24);
   const {
     data,
     showTooltip: t1
@@ -266,7 +266,11 @@ const MiniSparkline = (t0) => {
   if (!chartData || data.length === 0) {
     let t32;
     if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
-      t32 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-0.5", children: [...Array(10)].map(_temp4) });
+      t32 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-0.5", style: {
+        minWidth: "100px"
+      }, children: Array.from({
+        length: 10
+      }).map(_temp4) });
       $[10] = t32;
     } else {
       t32 = $[10];
@@ -280,27 +284,35 @@ const MiniSparkline = (t0) => {
     totalTests: totalTests_0
   } = chartData;
   let t3;
+  let t4;
   if ($[11] === Symbol.for("react.memo_cache_sentinel")) {
-    t3 = [...Array(10)];
+    t3 = {
+      minWidth: "100px"
+    };
+    t4 = Array.from({
+      length: 10
+    });
     $[11] = t3;
+    $[12] = t4;
   } else {
     t3 = $[11];
-  }
-  let t4;
-  if ($[12] !== colors_0 || $[13] !== filledBullets_0 || $[14] !== t3) {
-    t4 = t3.map((__0, i_0) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 rounded-full transition-colors", style: {
-      backgroundColor: i_0 < filledBullets_0 ? colors_0.filled : colors_0.empty
-    } }, i_0));
-    $[12] = colors_0;
-    $[13] = filledBullets_0;
-    $[14] = t3;
-    $[15] = t4;
-  } else {
-    t4 = $[15];
+    t4 = $[12];
   }
   let t5;
-  if ($[16] !== avgRate_0 || $[17] !== showTooltip || $[18] !== totalTests_0) {
-    t5 = showTooltip && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10", children: [
+  if ($[13] !== colors_0 || $[14] !== filledBullets_0 || $[15] !== t4) {
+    t5 = t4.map((__0, i_0) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 rounded-full transition-colors flex-shrink-0", style: {
+      backgroundColor: i_0 < filledBullets_0 ? colors_0.filled : colors_0.empty
+    } }, i_0));
+    $[13] = colors_0;
+    $[14] = filledBullets_0;
+    $[15] = t4;
+    $[16] = t5;
+  } else {
+    t5 = $[16];
+  }
+  let t6;
+  if ($[17] !== avgRate_0 || $[18] !== showTooltip || $[19] !== totalTests_0) {
+    t6 = showTooltip && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: avgRate_0 >= 90 ? "text-green-400" : avgRate_0 >= 80 ? "text-orange-400" : "text-red-400", children: [
         avgRate_0.toFixed(0),
         "%"
@@ -311,26 +323,26 @@ const MiniSparkline = (t0) => {
         " Tests, 14 Tage)"
       ] })
     ] });
-    $[16] = avgRate_0;
-    $[17] = showTooltip;
-    $[18] = totalTests_0;
-    $[19] = t5;
+    $[17] = avgRate_0;
+    $[18] = showTooltip;
+    $[19] = totalTests_0;
+    $[20] = t6;
   } else {
-    t5 = $[19];
+    t6 = $[20];
   }
-  let t6;
-  if ($[20] !== t4 || $[21] !== t5) {
-    t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative group flex items-center gap-0.5", children: [
-      t4,
-      t5
+  let t7;
+  if ($[21] !== t5 || $[22] !== t6) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative group flex items-center gap-0.5", style: t3, children: [
+      t5,
+      t6
     ] });
-    $[20] = t4;
     $[21] = t5;
     $[22] = t6;
+    $[23] = t7;
   } else {
-    t6 = $[22];
+    t7 = $[23];
   }
-  return t6;
+  return t7;
 };
 function useSparklineData(testRuns, entityType, entityId, scheduleConfig) {
   return reactExports.useMemo(() => {
@@ -411,7 +423,7 @@ function _temp3(rate) {
   };
 }
 function _temp4(_, i) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700" }, i);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0" }, i);
 }
 export {
   IconPicker as I,
