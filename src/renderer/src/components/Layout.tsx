@@ -6,6 +6,7 @@ import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Play } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
+import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -53,29 +54,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     navigate("/settings");
   };
 
-  // Keyboard shortcut: Cmd+K or Ctrl+K
+  // Use keyboard shortcuts hook for global navigation
+  useKeyboardShortcuts({
+    onOpenSearch: handleOpenSearch,
+    onOpenTestDialog: handleRunAllTests,
+  });
+
+  // Handle Escape to close search and global event for test dialog
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setShowSearch(true);
-      }
       if (e.key === "Escape") {
         setShowSearch(false);
       }
     };
 
     // Global event listener for opening test dialog from any page
-    const handleOpenTestDialog = () => {
+    const handleOpenTestDialogEvent = () => {
       setShowTestDialog(true);
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("openTestDialog", handleOpenTestDialog);
+    window.addEventListener("openTestDialog", handleOpenTestDialogEvent);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("openTestDialog", handleOpenTestDialog);
+      window.removeEventListener("openTestDialog", handleOpenTestDialogEvent);
     };
   }, []);
 

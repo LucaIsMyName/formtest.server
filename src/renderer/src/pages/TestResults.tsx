@@ -648,8 +648,17 @@ const TestResults: React.FC = () => {
                     return (
                       <TableRow
                         key={testRun.id}
-                        className={`cursor-pointer ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`}
-                        onClick={() => handleSelectTestRun(testRun.id)}>
+                        tabIndex={0}
+                        role="button"
+                        aria-selected={isSelected}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`}
+                        onClick={() => handleSelectTestRun(testRun.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleSelectTestRun(testRun.id);
+                          }
+                        }}>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1 group">
                             <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
@@ -802,8 +811,17 @@ const TestResults: React.FC = () => {
                     return (
                       <TableRow
                         key={testRun.id}
-                        className={`cursor-pointer ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
-                        onClick={() => handleSelectTestRun(testRun.id)}>
+                        tabIndex={0}
+                        role="button"
+                        aria-selected={isSelected}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
+                        onClick={() => handleSelectTestRun(testRun.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleSelectTestRun(testRun.id);
+                          }
+                        }}>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1 group">
                             <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
