@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-C7fAb6hh.js","./app.config-D8MSMeZ9.js","./Skeleton-CdeGxkmK.js","./Forms-DNG4R5lT.js","./IconPicker-ASeukVxT.js","./useFilterableData-3YDRXZ6z.js","./TableFilter-BLLnXNVg.js","./PaymentMethods-Dt5hNaP9.js","./Settings-UHTigAv_.js","./TestResults-Db6CRTe-.js","./InfoDoku-o8UzFuy-.js","./Schedules-D8aA9g8z.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DmkLFq3E.js","./app.config-D8MSMeZ9.js","./Skeleton-CKuMF-g8.js","./Forms-Cna5dQff.js","./IconPicker-BnUikLPf.js","./useFilterableData-CLnQDM5f.js","./TableFilter-CuWts4X_.js","./PaymentMethods-BTxHw7yI.js","./Settings-BOsPoqQq.js","./TestResults-DHiBtE4c.js","./InfoDoku-uLtfHcLl.js","./Schedules-q9J3IZ1C.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -55917,7 +55917,7 @@ const TablePagination = (t0) => {
   }
   let t15;
   if ($2[28] === Symbol.for("react.memo_cache_sentinel")) {
-    t15 = cn("w-10 px-1 py-1 text-center text-[10px] font-mono rounded border", "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600", "text-gray-700 dark:text-gray-200", "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500");
+    t15 = cn("w-10 px-1 py-1 text-center text-[10px] font-mono rounded border", "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600", "text-gray-700 dark:text-gray-200", "focus:bg-gray-200 dark:focus:bg-gray-800 focus:ring-0");
     $2[28] = t15;
   } else {
     t15 = $2[28];
@@ -61277,13 +61277,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-C7fAb6hh.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DNG4R5lT.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-Dt5hNaP9.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-UHTigAv_.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-Db6CRTe-.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-o8UzFuy-.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-D8aA9g8z.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DmkLFq3E.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Cna5dQff.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-BTxHw7yI.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BOsPoqQq.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DHiBtE4c.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-uLtfHcLl.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-q9J3IZ1C.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -61362,21 +61362,20 @@ export {
   Sun as a7,
   SlidersVertical as a8,
   Moon as a9,
-  DialogContent as aA,
-  Dialog as aB,
-  Root$1 as aC,
-  cn as aD,
-  Portal$1 as aE,
-  Content as aF,
-  Overlay as aG,
-  Close as aH,
-  Title as aI,
-  Description as aJ,
-  ChevronsUpDown as aK,
-  TriangleAlert as aL,
-  DialogDescription as aM,
-  DialogFooter as aN,
-  Badge as aO,
+  Dialog as aA,
+  Root$1 as aB,
+  cn as aC,
+  Portal$1 as aD,
+  Content as aE,
+  Overlay as aF,
+  Close as aG,
+  Title as aH,
+  Description as aI,
+  ChevronsUpDown as aJ,
+  TriangleAlert as aK,
+  DialogDescription as aL,
+  DialogFooter as aM,
+  Badge as aN,
   Monitor as aa,
   LoaderCircle as ab,
   Square as ac,
@@ -61386,23 +61385,23 @@ export {
   ZoomIn as ag,
   Download as ah,
   FileSpreadsheet as ai,
-  RefreshCw as aj,
-  Bot as ak,
-  Copy as al,
-  formatDateTime as am,
-  formatDuration as an,
-  Link$1 as ao,
-  FileBraces as ap,
-  CircleX as aq,
-  KEYBOARD_SHORTCUTS as ar,
-  Keyboard as as,
-  formatShortcut as at,
-  getDefaultScheduleIcon as au,
-  useSchedulesStore as av,
-  getAllIconNames as aw,
-  DialogHeader as ax,
-  DialogTitle as ay,
-  Search as az,
+  Bot as aj,
+  Copy as ak,
+  formatDateTime as al,
+  formatDuration as am,
+  Link$1 as an,
+  FileBraces as ao,
+  CircleX as ap,
+  KEYBOARD_SHORTCUTS as aq,
+  Keyboard as ar,
+  formatShortcut as as,
+  getDefaultScheduleIcon as at,
+  useSchedulesStore as au,
+  getAllIconNames as av,
+  DialogHeader as aw,
+  DialogTitle as ax,
+  Search as ay,
+  DialogContent as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,

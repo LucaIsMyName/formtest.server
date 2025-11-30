@@ -61,19 +61,10 @@ const Schedules: React.FC = () => {
   }, [schedules, forms, paymentMethods]);
 
   // Filtering
-  const { filteredItems, filterConfig, setSearchTerm, setStatusFilter, clearFilters } = useFilterableData<ScheduleWithComputed>(
-    enrichedSchedules,
-    ["name", "configuration", "cronExpression", "formName", "paymentMethodName"],
-    { searchTerm: "", statusFilter: undefined },
-    "schedules"
-  );
+  const { filteredItems, filterConfig, setSearchTerm, setStatusFilter, clearFilters } = useFilterableData<ScheduleWithComputed>(enrichedSchedules, ["name", "configuration", "cronExpression", "formName", "paymentMethodName"], { searchTerm: "", statusFilter: undefined }, "schedules");
 
   // Sorting
-  const { sortedItems, requestSort, getSortDirection } = useSortableData<ScheduleWithComputed>(
-    filteredItems,
-    { key: null, direction: null },
-    "schedules"
-  );
+  const { sortedItems, requestSort, getSortDirection } = useSortableData<ScheduleWithComputed>(filteredItems, { key: null, direction: null }, "schedules");
 
   // Pagination (only if > 50 items)
   const totalItems = sortedItems.length;
@@ -198,7 +189,9 @@ const Schedules: React.FC = () => {
                     onSort={() => requestSort("isActive")}>
                     Status
                   </SortableTableHead>
-                  <SortableTableHead className="text-right">Aktionen</SortableTableHead>
+                  <SortableTableHead className="">
+                    <span className="!text-right block">Aktionen</span>
+                  </SortableTableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

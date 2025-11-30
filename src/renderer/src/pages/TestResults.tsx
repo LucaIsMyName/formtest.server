@@ -9,7 +9,7 @@ import TestQueueStatus from "../components/TestQueueStatus";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
-import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
+import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
@@ -224,29 +224,29 @@ const TestResults: React.FC = () => {
   const activeTests = useMemo(() => [...runningTests, ...queuedTests], [runningTests, queuedTests]);
   const finishedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status !== "RUNNING" && tr.status !== "QUEUED"), [testRunsWithNames]);
 
+  // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
+  const getStartTime = (runAt: Date | string): number => {
+    if (runAt instanceof Date) {
+      return runAt.getTime();
+    }
+    // SQLite stores as "YYYY-MM-DD HH:MM:SS" in UTC (CURRENT_TIMESTAMP)
+    // JavaScript parses strings without timezone as LOCAL time, but SQLite stores UTC
+    // So we need to parse it as UTC by adding 'Z'
+    const dateStr = String(runAt);
+    if (!dateStr.includes("T") && !dateStr.includes("Z")) {
+      // Add Z to indicate UTC
+      const utcDate = new Date(dateStr.replace(" ", "T") + "Z");
+      return utcDate.getTime();
+    }
+    return new Date(dateStr).getTime();
+  };
+
   // Timer effect for running tests - updates every second
   useEffect(() => {
     if (runningTests.length === 0) {
       setRunningTimers({});
       return;
     }
-
-    // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
-    const getStartTime = (runAt: Date | string): number => {
-      if (runAt instanceof Date) {
-        return runAt.getTime();
-      }
-      // SQLite stores as "YYYY-MM-DD HH:MM:SS" in UTC (CURRENT_TIMESTAMP)
-      // JavaScript parses strings without timezone as LOCAL time, but SQLite stores UTC
-      // So we need to parse it as UTC by adding 'Z'
-      const dateStr = String(runAt);
-      if (!dateStr.includes("T") && !dateStr.includes("Z")) {
-        // Add Z to indicate UTC
-        const utcDate = new Date(dateStr.replace(" ", "T") + "Z");
-        return utcDate.getTime();
-      }
-      return new Date(dateStr).getTime();
-    };
 
     // Initialize timers for running tests
     const initialTimers: Record<number, number> = {};
@@ -272,6 +272,17 @@ const TestResults: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [runningTests]);
+
+  // Auto-refresh when tests are running or queued - poll every 2 seconds
+  useEffect(() => {
+    if (activeTests.length === 0) return;
+
+    const refreshInterval = setInterval(() => {
+      loadTestRuns();
+    }, 2000);
+
+    return () => clearInterval(refreshInterval);
+  }, [activeTests.length, loadTestRuns]);
 
   // Filtering for finished tests (with localStorage persistence)
   const {
@@ -584,15 +595,6 @@ const TestResults: React.FC = () => {
             </>
           )}
           <Button
-            onClick={loadTestRuns}
-            variant="secondary"
-            size="md"
-            disabled={isLoading}
-            className="gap-2">
-            <RefreshCw size={16} />
-            Aktualisieren
-          </Button>
-          <Button
             onClick={() => {
               // Dispatch global event to open TestRunDialog
               window.dispatchEvent(new Event("openTestDialog"));
@@ -736,7 +738,10 @@ const TestResults: React.FC = () => {
       {/* Finished Test Runs List */}
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Abgeschlossene Tests ({totalFilteredItems})</h2>
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <CheckCircle2 size={12} className="text-gray-400 dark:text-gray-500" />
+            Ausgeführte Tests ({totalFilteredItems})
+          </h2>
         </div>
 
         {/* Filter Bar */}
@@ -989,41 +994,46 @@ const TestResults: React.FC = () => {
           <div className="flex-1 overflow-y-auto space-y-4">
             {selectedTestRunData ? (
               <>
-                {/* Basic Info */}
-                <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">Test Infos</label>
-                <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b dark:border-gray-700">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">ID</label>
-                    <div className="flex items-center gap-2">
-                      <code className="text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{selectedTestRunData.uuid || selectedTestRunData.id}</code>
-                      {selectedTestRunData.uuid && (
-                        <button
-                          onClick={(e) => handleCopyUuid(e, selectedTestRunData.uuid!)}
-                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                          title="ID kopieren">
-                          <Copy size={12} />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
-                    <StatusBadge status={selectedTestRunData.status} />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Duration</label>
-                    <div className="text-sm text-gray-900 dark:text-white font-mono">{selectedTestRunData.status === "RUNNING" ? formatElapsedTime(runningTimers[selectedTestRunData.id] || 0) : formatDuration(selectedTestRunData.durationMs)}</div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Run At</label>
-                    <div className="text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(selectedTestRunData.runAt)}</div>
+                {/* Basic Info Table */}
+                <div className="mb-6 pb-6 border-b dark:border-gray-700">
+                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Test Infos</label>
+                  <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">ID</TableCell>
+                          <TableCell className="px-3 py-2">
+                            <div className="flex items-center gap-2">
+                              <code className="text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{selectedTestRunData.uuid || selectedTestRunData.id}</code>
+                              {selectedTestRunData.uuid && (
+                                <button
+                                  onClick={(e) => handleCopyUuid(e, selectedTestRunData.uuid!)}
+                                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                  title="ID kopieren">
+                                  <Copy size={12} />
+                                </button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                          <TableCell className="px-3 py-2"><StatusBadge status={selectedTestRunData.status} /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Dauer</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{selectedTestRunData.status === "RUNNING" ? formatElapsedTime(runningTimers[selectedTestRunData.id] || 0) : formatDuration(selectedTestRunData.durationMs)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Zeitpunkt</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(selectedTestRunData.runAt)}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
                   </div>
                 </div>
 
-                {/* Form Details */}
+                {/* Form Details Table */}
                 {(() => {
                   const formDetails = getFormDetails(selectedTestRunData.formId);
                   return (
@@ -1037,32 +1047,38 @@ const TestResults: React.FC = () => {
                             Öffnen
                           </Link>
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Name</label>
-                            <div className="text-sm text-gray-900 dark:text-white">{formDetails.name}</div>
-                          </div>
-                          <div>
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Status</label>
-                            <StatusBadge status={formDetails.isActive ? "active" : "inactive"} />
-                          </div>
-                          <div className="col-span-2">
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">URL</label>
-                            <a
-                              href={formDetails.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate block">
-                              {formDetails.url}
-                            </a>
-                          </div>
+                        <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+                          <Table>
+                            <TableBody>
+                              <TableRow>
+                                <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Name</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{formDetails.name}</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                                <TableCell className="px-3 py-2"><StatusBadge status={formDetails.isActive ? "active" : "inactive"} /></TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">URL</TableCell>
+                                <TableCell className="px-3 py-2">
+                                  <a
+                                    href={formDetails.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate block">
+                                    {formDetails.url}
+                                  </a>
+                                </TableCell>
+                              </TableRow>
+                            </TableBody>
+                          </Table>
                         </div>
                       </div>
                     )
                   );
                 })()}
 
-                {/* Payment Method Details */}
+                {/* Payment Method Details Table */}
                 {(() => {
                   const pmDetails = getPaymentMethodDetails(selectedTestRunData.paymentMethodId);
                   const getPaymentTypeLabel = (type: string) => {
@@ -1105,24 +1121,27 @@ const TestResults: React.FC = () => {
                             Öffnen
                           </Link>
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Name</label>
-                            <div className="text-sm text-gray-900 dark:text-white">{pmDetails.name}</div>
-                          </div>
-
-                          <div>
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Status</label>
-                            <StatusBadge status={pmDetails.isActive ? "active" : "inactive"} />
-                          </div>
-                          <div>
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Typ</label>
-                            <div className="text-sm text-gray-900 dark:text-white">{getPaymentTypeLabel(pmDetails.type)}</div>
-                          </div>
-                          <div>
-                            <label className="block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5">Details</label>
-                            <div className="text-sm text-gray-900 dark:text-white font-mono">{getMaskedDetails(pmDetails)}</div>
-                          </div>
+                        <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+                          <Table>
+                            <TableBody>
+                              <TableRow>
+                                <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Name</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{pmDetails.name}</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                                <TableCell className="px-3 py-2"><StatusBadge status={pmDetails.isActive ? "active" : "inactive"} /></TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Typ</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{getPaymentTypeLabel(pmDetails.type)}</TableCell>
+                              </TableRow>
+                              <TableRow>
+                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Details</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{getMaskedDetails(pmDetails)}</TableCell>
+                              </TableRow>
+                            </TableBody>
+                          </Table>
                         </div>
                       </div>
                     )

@@ -115,7 +115,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   key={item.name}
                   variant="ghost"
                   to={item.href}
-                  className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded border border-transparent ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-70" : "text-gray-700 dark:text-gray-300"}`}>
+                  className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-white dark:!bg-black !border !border-gray-300 dark:!border-gray-700" : "text-gray-700 dark:text-gray-300"}`}>
                   <IconComponent
                     className={`${location.pathname === item.href ? ` stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-700 dark:text-gray-400 transition-all`}
                     size={18}

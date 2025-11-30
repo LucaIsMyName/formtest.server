@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, y as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, aj as RefreshCw, P as Play, z as Table, A as TableHeader, D as TableRow, G as TableHead, ak as Bot, H as TableBody, J as TableCell, al as Copy, l as renderIcon, am as formatDateTime, K as StatusBadge, an as formatDuration, k as Trash2, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX, a3 as CircleCheck } from "./index-2Ha6lPaN.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, y as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, z as Table, A as TableHeader, D as TableRow, G as TableHead, aj as Bot, H as TableBody, J as TableCell, ak as Copy, l as renderIcon, al as formatDateTime, K as StatusBadge, am as formatDuration, k as Trash2, O as TablePagination, an as Link, ao as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, ap as CircleX, a3 as CircleCheck } from "./index-BKwbP5SI.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BLLnXNVg.js";
-import { S as Skeleton } from "./Skeleton-CdeGxkmK.js";
-import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-3YDRXZ6z.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CuWts4X_.js";
+import { S as Skeleton } from "./Skeleton-CKuMF-g8.js";
+import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-CLnQDM5f.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -539,22 +539,22 @@ const TestResults = () => {
   const queuedTests = reactExports.useMemo(() => testRunsWithNames.filter((tr_1) => tr_1.status === "QUEUED"), [testRunsWithNames]);
   const activeTests = reactExports.useMemo(() => [...runningTests, ...queuedTests], [runningTests, queuedTests]);
   const finishedTests = reactExports.useMemo(() => testRunsWithNames.filter((tr_2) => tr_2.status !== "RUNNING" && tr_2.status !== "QUEUED"), [testRunsWithNames]);
+  const getStartTime = (runAt) => {
+    if (runAt instanceof Date) {
+      return runAt.getTime();
+    }
+    const dateStr = String(runAt);
+    if (!dateStr.includes("T") && !dateStr.includes("Z")) {
+      const utcDate = /* @__PURE__ */ new Date(dateStr.replace(" ", "T") + "Z");
+      return utcDate.getTime();
+    }
+    return new Date(dateStr).getTime();
+  };
   reactExports.useEffect(() => {
     if (runningTests.length === 0) {
       setRunningTimers({});
       return;
     }
-    const getStartTime = (runAt) => {
-      if (runAt instanceof Date) {
-        return runAt.getTime();
-      }
-      const dateStr = String(runAt);
-      if (!dateStr.includes("T") && !dateStr.includes("Z")) {
-        const utcDate = /* @__PURE__ */ new Date(dateStr.replace(" ", "T") + "Z");
-        return utcDate.getTime();
-      }
-      return new Date(dateStr).getTime();
-    };
     const initialTimers = {};
     runningTests.forEach((test) => {
       const startTime = getStartTime(test.runAt);
@@ -575,6 +575,13 @@ const TestResults = () => {
     }, 1e3);
     return () => clearInterval(interval);
   }, [runningTests]);
+  reactExports.useEffect(() => {
+    if (activeTests.length === 0) return;
+    const refreshInterval = setInterval(() => {
+      loadTestRuns();
+    }, 2e3);
+    return () => clearInterval(refreshInterval);
+  }, [activeTests.length, loadTestRuns]);
   const {
     filteredItems: filteredFinishedTests,
     filterConfig,
@@ -837,10 +844,6 @@ const TestResults = () => {
             "JSON"
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: loadTestRuns, variant: "secondary", size: "md", disabled: isLoading, className: "gap-2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 16 }),
-          "Aktualisieren"
-        ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: () => {
           window.dispatchEvent(new Event("openTestDialog"));
         }, variant: "primary", size: "md", className: "gap-2", children: [
@@ -1011,27 +1014,29 @@ const TestResults = () => {
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "pt-6" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 overflow-y-auto space-y-4", children: selectedTestRunData ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400", children: "Test Infos" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4 mb-6 pb-6 border-b dark:border-gray-700", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "ID" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700", children: selectedTestRunData.uuid || selectedTestRunData.id }),
-              selectedTestRunData.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_10) => handleCopyUuid(e_10, selectedTestRunData.uuid), className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 pb-6 border-b dark:border-gray-700", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3", children: "Test Infos" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Table, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableBody, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "ID" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700", children: selectedTestRunData.uuid || selectedTestRunData.id }),
+                selectedTestRunData.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_10) => handleCopyUuid(e_10, selectedTestRunData.uuid), className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) })
+              ] }) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Status" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: selectedTestRunData.status }) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Dauer" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white font-mono", children: selectedTestRunData.status === "RUNNING" ? formatElapsedTime(runningTimers[selectedTestRunData.id] || 0) : formatDuration(selectedTestRunData.durationMs) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Zeitpunkt" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white font-mono", children: formatDateTime(selectedTestRunData.runAt) })
             ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Status" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: selectedTestRunData.status })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Duration" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white font-mono", children: selectedTestRunData.status === "RUNNING" ? formatElapsedTime(runningTimers[selectedTestRunData.id] || 0) : formatDuration(selectedTestRunData.durationMs) })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1", children: "Run At" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white font-mono", children: formatDateTime(selectedTestRunData.runAt) })
-          ] })
+          ] }) }) })
         ] }),
         (() => {
           const formDetails = getFormDetails(selectedTestRunData.formId);
@@ -1040,20 +1045,20 @@ const TestResults = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400", children: "Formular" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: `/forms?id=${formDetails.id}`, className: "text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1", children: "Öffnen" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5", children: "Name" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white", children: formDetails.name })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Table, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableBody, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Name" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white", children: formDetails.name })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5", children: "Status" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: formDetails.isActive ? "active" : "inactive" })
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Status" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: formDetails.isActive ? "active" : "inactive" }) })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "col-span-2", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5", children: "URL" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: formDetails.url, target: "_blank", rel: "noopener noreferrer", className: "text-xs text-blue-600 dark:text-blue-400 hover:underline truncate block", children: formDetails.url })
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "URL" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: formDetails.url, target: "_blank", rel: "noopener noreferrer", className: "text-xs text-blue-600 dark:text-blue-400 hover:underline truncate block", children: formDetails.url }) })
               ] })
-            ] })
+            ] }) }) })
           ] });
         })(),
         (() => {
@@ -1092,24 +1097,24 @@ const TestResults = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400", children: "Bezahlmethode" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: `/payment-methods?id=${pmDetails.id}`, className: "text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1", children: "Öffnen" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-3", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5", children: "Name" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white", children: pmDetails.name })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Table, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableBody, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Name" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white", children: pmDetails.name })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5", children: "Status" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: pmDetails.isActive ? "active" : "inactive" })
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Status" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: pmDetails.isActive ? "active" : "inactive" }) })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5", children: "Typ" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white", children: getPaymentTypeLabel(pmDetails.type) })
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Typ" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white", children: getPaymentTypeLabel(pmDetails.type) })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-[10px] text-gray-400 dark:text-gray-500 mb-0.5", children: "Details" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-900 dark:text-white font-mono", children: getMaskedDetails(pmDetails) })
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Details" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white font-mono", children: getMaskedDetails(pmDetails) })
               ] })
-            ] })
+            ] }) }) })
           ] });
         })(),
         selectedTestRunData.errorMessage && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mb-6 pb-6 border-b dark:border-gray-700 ", children: [

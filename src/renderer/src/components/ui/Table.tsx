@@ -60,15 +60,11 @@ interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
 const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(({ className, divider, ...props }, ref) => {
   const { dividers: contextDividers } = useContext(TableContext);
   const showDivider = divider ?? contextDividers;
-  
+
   return (
     <th
       ref={ref}
-      className={cn(
-        "px-4 py-3 text-left text-[10px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider",
-        showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0",
-        className
-      )}
+      className={cn("px-4 py-3 text-left text-[10px] font-mono font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider", showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0", className)}
       {...props}
     />
   );
@@ -82,15 +78,11 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
 const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(({ className, divider, ...props }, ref) => {
   const { dividers: contextDividers } = useContext(TableContext);
   const showDivider = divider ?? contextDividers;
-  
+
   return (
     <td
       ref={ref}
-      className={cn(
-        "select-normal px-4 py-3 whitespace-nowrap",
-        showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0",
-        className
-      )}
+      className={cn("select-normal px-4 py-3 whitespace-nowrap", showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0", className)}
       {...props}
     />
   );
@@ -107,14 +99,7 @@ interface TablePaginationProps {
   className?: string;
 }
 
-const TablePagination: React.FC<TablePaginationProps> = ({
-  currentPage,
-  totalPages,
-  totalItems,
-  itemsPerPage,
-  onPageChange,
-  className
-}) => {
+const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPages, totalItems, itemsPerPage, onPageChange, className }) => {
   const [inputValue, setInputValue] = useState(String(currentPage));
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,12 +134,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
   }
 
   return (
-    <div
-      className={cn(
-        "flex items-center justify-between px-4 py-1 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800",
-        className
-      )}
-    >
+    <div className={cn("flex items-center justify-between px-4 py-1 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800", className)}>
       {/* Left: Item count */}
       <div className="text-[10px] font-mono text-gray-500 dark:text-gray-400 uppercase tracking-wider">
         {startItem}–{endItem} von {totalItems}
@@ -166,14 +146,8 @@ const TablePagination: React.FC<TablePaginationProps> = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className={cn(
-            "p-1.5 rounded-md transition-colors",
-            currentPage <= 1
-              ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
-              : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200"
-          )}
-          title="Vorherige Seite"
-        >
+          className={cn("p-1.5 rounded-md transition-colors", currentPage <= 1 ? "text-gray-300 dark:text-gray-600 cursor-not-allowed" : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200")}
+          title="Vorherige Seite">
           <ChevronLeft size={14} />
         </button>
 
@@ -186,12 +160,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onBlur={handleInputBlur}
-            className={cn(
-              "w-10 px-1 py-1 text-center text-[10px] font-mono rounded border",
-              "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600",
-              "text-gray-700 dark:text-gray-200",
-              "focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            )}
+            className={cn("w-10 px-1 py-1 text-center text-[10px] font-mono rounded border", "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600", "text-gray-700 dark:text-gray-200", "focus:bg-gray-200 dark:focus:bg-gray-800 focus:ring-0")}
           />
           <span>von {totalPages}</span>
         </div>
@@ -200,14 +169,8 @@ const TablePagination: React.FC<TablePaginationProps> = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className={cn(
-            "p-1.5 rounded-md transition-colors",
-            currentPage >= totalPages
-              ? "text-gray-300 dark:text-gray-600 cursor-not-allowed"
-              : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200"
-          )}
-          title="Nächste Seite"
-        >
+          className={cn("p-1.5 rounded-md transition-colors", currentPage >= totalPages ? "text-gray-300 dark:text-gray-600 cursor-not-allowed" : "text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200")}
+          title="Nächste Seite">
           <ChevronRight size={14} />
         </button>
       </div>
@@ -232,53 +195,34 @@ interface PaginatedTableProps<T> {
   emptyMessage?: string;
 }
 
-function PaginatedTable<T>({
-  data,
-  renderHeader,
-  renderRow,
-  keyExtractor,
-  threshold = DEFAULT_PAGINATION_THRESHOLD,
-  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
-  className,
-  emptyMessage = "Keine Einträge vorhanden"
-}: PaginatedTableProps<T>) {
+function PaginatedTable<T>({ data, renderHeader, renderRow, keyExtractor, threshold = DEFAULT_PAGINATION_THRESHOLD, itemsPerPage = DEFAULT_ITEMS_PER_PAGE, className, emptyMessage = "Keine Einträge vorhanden" }: PaginatedTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const totalItems = data.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
   const showPagination = totalItems > threshold;
-  
+
   // Reset to page 1 if current page becomes invalid
   React.useEffect(() => {
     if (currentPage > totalPages) {
       setCurrentPage(1);
     }
   }, [totalPages, currentPage]);
-  
+
   // Calculate paginated data
-  const paginatedData = showPagination
-    ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : data;
+  const paginatedData = showPagination ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : data;
 
   if (data.length === 0) {
-    return (
-      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-        {emptyMessage}
-      </div>
-    );
+    return <div className="text-center py-8 text-gray-500 dark:text-gray-400">{emptyMessage}</div>;
   }
 
   return (
     <div className={className}>
       <Table>
-        <TableHeader>
-          {renderHeader()}
-        </TableHeader>
+        <TableHeader>{renderHeader()}</TableHeader>
         <TableBody>
           {paginatedData.map((item, index) => (
-            <React.Fragment key={keyExtractor(item)}>
-              {renderRow(item, index)}
-            </React.Fragment>
+            <React.Fragment key={keyExtractor(item)}>{renderRow(item, index)}</React.Fragment>
           ))}
         </TableBody>
       </Table>

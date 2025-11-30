@@ -23,7 +23,7 @@ export const SortableTableHead: React.FC<SortableTableHeadProps> = ({
       className={`${className} ${isSortable ? 'cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors' : ''}`}
       onClick={onSort}>
       <div className="flex items-center gap-1">
-        <span>{children}</span>
+        <span className='block flex-1'>{children}</span>
         {isSortable && (
           <span className="inline-flex">
             {sortDirection === 'asc' ? (

@@ -1,4 +1,4 @@
-import { aC as Root, r as reactExports, i as dist, aD as cn, j as jsxRuntimeExports, aE as Portal, aF as Content, aG as Overlay, aH as Close, X, aI as Title, aJ as Description, n as ChevronUp, o as ChevronDown, aK as ChevronsUpDown, G as TableHead } from "./index-2Ha6lPaN.js";
+import { aB as Root, r as reactExports, i as dist, aC as cn, j as jsxRuntimeExports, aD as Portal, aE as Content, aF as Overlay, aG as Close, X, aH as Title, aI as Description, n as ChevronUp, o as ChevronDown, aJ as ChevronsUpDown, G as TableHead } from "./index-BKwbP5SI.js";
 const Drawer = Root;
 const DrawerPortal = Portal;
 const DrawerOverlay = reactExports.forwardRef((t0, ref) => {
@@ -67,7 +67,7 @@ const DrawerContent = reactExports.forwardRef((t0, ref) => {
   }
   let t2;
   if ($[5] !== className) {
-    t2 = cn("fixed inset-y-0 right-0 z-50 h-full w-3/4 border-l border-gray-200 bg-white p-6 shadow-lg overflow-y-auto transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-full md:max-w-[678px] dark:border-gray-700 dark:bg-gray-800", className);
+    t2 = cn("fixed inset-y-0 right-0 z-50 h-full w-3/4 border-l border-gray-200 bg-white p-6 shadow-lg overflow-y-auto transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-full md:max-w-[800px] dark:border-gray-700 dark:bg-gray-800", className);
     $[5] = className;
     $[6] = t2;
   } else {

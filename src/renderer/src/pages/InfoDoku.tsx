@@ -6,116 +6,13 @@ import { Keyboard } from "lucide-react";
 
 const InfoDoku: React.FC = () => {
   // Group shortcuts by category
-  const navigationShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "navigation");
-  const actionShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "actions");
-  const generalShortcuts = KEYBOARD_SHORTCUTS.filter(s => s.category === "general");
+  const navigationShortcuts = KEYBOARD_SHORTCUTS.filter((s) => s.category === "navigation");
+  const actionShortcuts = KEYBOARD_SHORTCUTS.filter((s) => s.category === "actions");
+  const generalShortcuts = KEYBOARD_SHORTCUTS.filter((s) => s.category === "general");
 
   return (
     <div className="max-w-4xl">
       <h1 className={CONFIG.style.title.className}>Info & Doku</h1>
-
-      {/* Keyboard Shortcuts Section */}
-      <section className="my-6">
-        <div className="border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <Keyboard size={18} className="text-white" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Tastenkürzel</h2>
-          </div>
-          
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Nutze diese Tastenkürzel für schnellere Navigation und Aktionen.
-          </p>
-
-          {/* Navigation Shortcuts */}
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Navigation</h3>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
-                    <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
-                    <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {navigationShortcuts.map((shortcut, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="px-4 py-2">
-                        <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">
-                          {formatShortcut(shortcut)}
-                        </kbd>
-                      </TableCell>
-                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
-                        {shortcut.description}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-
-          {/* Action Shortcuts */}
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Aktionen</h3>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
-                    <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
-                    <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {actionShortcuts.map((shortcut, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="px-4 py-2">
-                        <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">
-                          {formatShortcut(shortcut)}
-                        </kbd>
-                      </TableCell>
-                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
-                        {shortcut.description}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-
-          {/* General Shortcuts */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Allgemein</h3>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
-                    <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
-                    <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {generalShortcuts.map((shortcut, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="px-4 py-2">
-                        <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">
-                          {formatShortcut(shortcut)}
-                        </kbd>
-                      </TableCell>
-                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
-                        {shortcut.description}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="select-auto my-6">
         {/* Impressum Section */}
@@ -360,6 +257,97 @@ const InfoDoku: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Keyboard Shortcuts Section */}
+      <section className="my-6">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+              <Keyboard
+                size={18}
+                className="text-white"
+              />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Tastenkürzel</h2>
+          </div>
+
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Nutze diese Tastenkürzel für schnellere Navigation und Aktionen.</p>
+
+          {/* Navigation Shortcuts */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Navigation</h3>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                    <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
+                    <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {navigationShortcuts.map((shortcut, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="px-4 py-2">
+                        <kbd className="px-2 py-1 bg-gray-100 dark:text-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
+                      </TableCell>
+                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{shortcut.description}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* Action Shortcuts */}
+          <div className="mb-6">
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Aktionen</h3>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                    <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
+                    <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {actionShortcuts.map((shortcut, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="px-4 py-2">
+                        <kbd className="px-2 py-1 dark:text-white bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
+                      </TableCell>
+                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{shortcut.description}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+          {/* General Shortcuts */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Allgemein</h3>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                    <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
+                    <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {generalShortcuts.map((shortcut, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="px-4 py-2">
+                        <kbd className="px-2 py-1 dark:text-white bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
+                      </TableCell>
+                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{shortcut.description}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Version Info */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
