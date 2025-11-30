@@ -60,12 +60,16 @@
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-
 }
 
 /* Reset and base styles */
 * {
   box-sizing: border-box;
+  user-select: none;
+}
+
+table {
+  user-select: all !important;
 }
 
 :where(a) {
@@ -101,6 +105,10 @@
 
 .semi-condensed {
   font-stretch: 87.5% !important;
+}
+
+.not-stretched {
+  font-stretch: 100%;
 }
 
 .expanded {
@@ -270,6 +278,35 @@ select.input {
   }
 }
 
+/* Running test row blink animation */
+@keyframes blink-running {
+  0%,
+  100% {
+    background-color: white;
+  }
+  50% {
+    background-color: rgba(232, 242, 255, 0.9); /* blue-100 */
+  }
+}
+
+@keyframes blink-running-dark {
+  0%,
+  100% {
+    background-color: rgb(31 41 55); /* gray-800 */
+  }
+  50% {
+    background-color: rgba(16, 42, 112, 0.3); /* blue-900/30 */
+  }
+}
+
+.animate-blink-running {
+  animation: blink-running 1.5s ease-in-out infinite;
+}
+
+.dark .animate-blink-running {
+  animation: blink-running-dark 1.5s ease-in-out infinite;
+}
+
 /* Google Sans Flex Variable Font Utilities */
 @layer utilities {
   /* Font weight utilities using variable font */
@@ -302,4 +339,3 @@ select.input {
     font-optical-sizing: none;
   }
 }
-

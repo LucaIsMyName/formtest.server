@@ -653,7 +653,7 @@ const TestResults: React.FC = () => {
                         tabIndex={0}
                         role="button"
                         aria-selected={isSelected}
-                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`}
                         onClick={() => handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
@@ -681,7 +681,6 @@ const TestResults: React.FC = () => {
                         </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
-                            {isRunning && <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse flex-shrink-0" />}
                             <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
                               {renderIcon(getFormIcon(testRun.formId), 14)}
                             </span>

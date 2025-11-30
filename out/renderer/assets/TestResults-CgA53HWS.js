@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, s as renderIcon, al as formatDateTime, p as StatusBadge, a3 as CircleCheck, am as formatDuration, k as Trash2, O as TablePagination, an as Link, ao as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, ap as CircleX } from "./index-BNrALBn_.js";
-import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-D4srFFCA.js";
-import { S as Skeleton } from "./Skeleton-DL6oWMtn.js";
-import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-BhVY-NWb.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, s as renderIcon, al as formatDateTime, p as StatusBadge, a3 as CircleCheck, am as formatDuration, k as Trash2, O as TablePagination, an as Link, ao as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, ap as CircleX } from "./index-Bm_upJoi.js";
+import { C as CONFIG } from "./app.config-CbnJ5rA0.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-DHkBeFDb.js";
+import { S as Skeleton } from "./Skeleton-D7GM-8r9.js";
+import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-BiuIQd-Z.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -906,7 +906,7 @@ const TestResults = () => {
           const isSelected = selectedTestRun === testRun_2.id;
           const isQueued = testRun_2.status === "QUEUED";
           const isRunning = testRun_2.status === "RUNNING";
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isSelected, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_2.id), onKeyDown: (e_0) => {
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isSelected, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_2.id), onKeyDown: (e_0) => {
             if (e_0.key === "Enter" || e_0.key === " ") {
               e_0.preventDefault();
               handleSelectTestRun(testRun_2.id);
@@ -918,7 +918,6 @@ const TestResults = () => {
             ] }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-left", children: testRun_2.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 16, className: "inline text-blue-500" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
-              isRunning && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse flex-shrink-0" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getFormIcon(testRun_2.formId), 14) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_2.formName })
             ] }) }),
