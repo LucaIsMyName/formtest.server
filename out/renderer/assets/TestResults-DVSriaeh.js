@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, s as renderIcon, al as formatDateTime, p as StatusBadge, a3 as CircleCheck, am as formatDuration, k as Trash2, O as TablePagination, an as Link, ao as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, ap as CircleX } from "./index-CwRktoG4.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, an as formatDuration, k as Trash2, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-CFtKbJVz.js";
 import { C as CONFIG } from "./app.config-BsmENKig.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-DI1tYP_c.js";
-import { S as Skeleton } from "./Skeleton-BIfxcMtd.js";
-import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-_W5mp2RH.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BfoOtzv4.js";
+import { S as Skeleton } from "./Skeleton-DPWmljDO.js";
+import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-DSEmoiZ7.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -916,7 +916,7 @@ const TestResults = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: testRun_2.uuid ? testRun_2.uuid.substring(0, 8) : `ID:${testRun_2.id}` }),
               testRun_2.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_1) => handleCopyUuid(e_1, testRun_2.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
             ] }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-left", children: testRun_2.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 16, className: "inline text-blue-500" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-left", children: testRun_2.isScheduled ? /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 16, className: "inline text-blue-500" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(User, { size: 16, className: "inline text-green-500" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getFormIcon(testRun_2.formId), 14) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_2.formName })
@@ -971,7 +971,7 @@ const TestResults = () => {
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: testRun_3.uuid ? testRun_3.uuid.substring(0, 8) : `ID:${testRun_3.id}` }),
                 testRun_3.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_4) => handleCopyUuid(e_4, testRun_3.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
               ] }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-left", children: testRun_3.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 16, className: "inline text-blue-500" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-left", children: testRun_3.isScheduled ? /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 16, className: "inline text-blue-500" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(User, { size: 16, className: "inline text-green-500" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getFormIcon(testRun_3.formId), 14) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_3.formName })

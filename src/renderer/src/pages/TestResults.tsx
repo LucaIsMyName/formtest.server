@@ -9,7 +9,7 @@ import TestQueueStatus from "../components/TestQueueStatus";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
-import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
+import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
@@ -675,8 +675,10 @@ const TestResults: React.FC = () => {
                           </div>
                         </TableCell>
                         <TableCell className="px-4 text-left">
-                          {testRun.isScheduled && (
+                          {testRun.isScheduled ? (
                             <Bot size={16} className="inline text-blue-500" />
+                          ) : (
+                            <User size={16} className="inline text-green-500" />
                           )}
                         </TableCell>
                         <TableCell className="px-4">
@@ -840,8 +842,10 @@ const TestResults: React.FC = () => {
                           </div>
                         </TableCell>
                         <TableCell className="px-4 text-left">
-                          {testRun.isScheduled && (
+                          {testRun.isScheduled ? (
                             <Bot size={16} className="inline text-blue-500" />
+                          ) : (
+                            <User size={16} className="inline text-green-500" />
                           )}
                         </TableCell>
                         <TableCell className="px-4">
