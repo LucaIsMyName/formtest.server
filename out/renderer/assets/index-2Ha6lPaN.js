@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DjnnqRZu.js","./app.config-D8MSMeZ9.js","./Skeleton-C_MTMhR3.js","./Forms-CsFYBLOV.js","./IconPicker-BOPyo6pB.js","./useFilterableData-FCsS_yUx.js","./TableFilter-Gr3_ppqF.js","./PaymentMethods-fYN3_FyQ.js","./Settings-CujyAWpv.js","./TestResults-tJjdNOE1.js","./InfoDoku-DhuakPxo.js","./Schedules-vuvFRIqF.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-C7fAb6hh.js","./app.config-D8MSMeZ9.js","./Skeleton-CdeGxkmK.js","./Forms-DNG4R5lT.js","./IconPicker-ASeukVxT.js","./useFilterableData-3YDRXZ6z.js","./TableFilter-BLLnXNVg.js","./PaymentMethods-Dt5hNaP9.js","./Settings-UHTigAv_.js","./TestResults-Db6CRTe-.js","./InfoDoku-o8UzFuy-.js","./Schedules-D8aA9g8z.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -60760,8 +60760,237 @@ const GlobalSearch = (t0) => {
   }
   return t35;
 };
+const KEYBOARD_SHORTCUTS = [
+  // Navigation
+  {
+    key: "1",
+    modifiers: ["meta"],
+    description: "Dashboard öffnen",
+    category: "navigation"
+  },
+  {
+    key: "2",
+    modifiers: ["meta"],
+    description: "Formulare öffnen",
+    category: "navigation"
+  },
+  {
+    key: "3",
+    modifiers: ["meta"],
+    description: "Bezahlmethoden öffnen",
+    category: "navigation"
+  },
+  {
+    key: "4",
+    modifiers: ["meta"],
+    description: "Autopilot öffnen",
+    category: "navigation"
+  },
+  {
+    key: "5",
+    modifiers: ["meta"],
+    description: "Tests öffnen",
+    category: "navigation"
+  },
+  {
+    key: "6",
+    modifiers: ["meta"],
+    description: "Einstellungen öffnen",
+    category: "navigation"
+  },
+  {
+    key: "7",
+    modifiers: ["meta"],
+    description: "Info & Doku öffnen",
+    category: "navigation"
+  },
+  // Actions
+  {
+    key: "k",
+    modifiers: ["meta"],
+    description: "Globale Suche öffnen",
+    category: "actions"
+  },
+  {
+    key: "t",
+    modifiers: ["meta", "shift"],
+    description: "Tests ausführen Dialog öffnen",
+    category: "actions"
+  },
+  {
+    key: "n",
+    modifiers: ["meta"],
+    description: "Neues Element erstellen (kontextabhängig)",
+    category: "actions"
+  },
+  // General
+  {
+    key: "Escape",
+    modifiers: [],
+    description: "Dialog/Drawer schließen",
+    category: "general"
+  },
+  {
+    key: "Enter",
+    modifiers: [],
+    description: "Ausgewähltes Element öffnen",
+    category: "general"
+  },
+  {
+    key: "ArrowUp",
+    modifiers: [],
+    description: "Vorheriges Element auswählen",
+    category: "general"
+  },
+  {
+    key: "ArrowDown",
+    modifiers: [],
+    description: "Nächstes Element auswählen",
+    category: "general"
+  }
+];
+function useKeyboardShortcuts(t0) {
+  const $2 = dist.c(8);
+  const {
+    onOpenSearch,
+    onOpenTestDialog,
+    onCreateNew
+  } = t0;
+  const navigate = useNavigate();
+  let t1;
+  if ($2[0] !== navigate || $2[1] !== onCreateNew || $2[2] !== onOpenSearch || $2[3] !== onOpenTestDialog) {
+    t1 = (e2) => {
+      const target = e2.target;
+      const isInputFocused = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+      if (e2.key === "Escape") {
+        return;
+      }
+      if ((e2.metaKey || e2.ctrlKey) && e2.key === "k") {
+        e2.preventDefault();
+        onOpenSearch();
+        return;
+      }
+      if ((e2.metaKey || e2.ctrlKey) && e2.shiftKey && e2.key === "t") {
+        e2.preventDefault();
+        onOpenTestDialog();
+        return;
+      }
+      if (isInputFocused) {
+        return;
+      }
+      if ((e2.metaKey || e2.ctrlKey) && e2.key === "n") {
+        e2.preventDefault();
+        onCreateNew?.();
+        return;
+      }
+      if (e2.metaKey || e2.ctrlKey) {
+        bb59: switch (e2.key) {
+          case "1": {
+            e2.preventDefault();
+            navigate("/");
+            break bb59;
+          }
+          case "2": {
+            e2.preventDefault();
+            navigate("/forms");
+            break bb59;
+          }
+          case "3": {
+            e2.preventDefault();
+            navigate("/payment-methods");
+            break bb59;
+          }
+          case "4": {
+            e2.preventDefault();
+            navigate("/schedules");
+            break bb59;
+          }
+          case "5": {
+            e2.preventDefault();
+            navigate("/test-results");
+            break bb59;
+          }
+          case "6": {
+            e2.preventDefault();
+            navigate("/settings");
+            break bb59;
+          }
+          case "7": {
+            e2.preventDefault();
+            navigate("/info-doku");
+          }
+        }
+      }
+    };
+    $2[0] = navigate;
+    $2[1] = onCreateNew;
+    $2[2] = onOpenSearch;
+    $2[3] = onOpenTestDialog;
+    $2[4] = t1;
+  } else {
+    t1 = $2[4];
+  }
+  const handleKeyDown = t1;
+  let t2;
+  let t3;
+  if ($2[5] !== handleKeyDown) {
+    t2 = () => {
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    };
+    t3 = [handleKeyDown];
+    $2[5] = handleKeyDown;
+    $2[6] = t2;
+    $2[7] = t3;
+  } else {
+    t2 = $2[6];
+    t3 = $2[7];
+  }
+  reactExports.useEffect(t2, t3);
+}
+function formatShortcut(shortcut) {
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  const parts = [];
+  if (shortcut.modifiers?.includes("meta")) {
+    parts.push(isMac ? "⌘" : "Ctrl");
+  }
+  if (shortcut.modifiers?.includes("ctrl")) {
+    parts.push("Ctrl");
+  }
+  if (shortcut.modifiers?.includes("alt")) {
+    parts.push(isMac ? "⌥" : "Alt");
+  }
+  if (shortcut.modifiers?.includes("shift")) {
+    parts.push(isMac ? "⇧" : "Shift");
+  }
+  let keyDisplay = shortcut.key;
+  switch (shortcut.key) {
+    case "ArrowUp":
+      keyDisplay = "↑";
+      break;
+    case "ArrowDown":
+      keyDisplay = "↓";
+      break;
+    case "ArrowLeft":
+      keyDisplay = "←";
+      break;
+    case "ArrowRight":
+      keyDisplay = "→";
+      break;
+    case "Escape":
+      keyDisplay = "Esc";
+      break;
+    case "Enter":
+      keyDisplay = "↵";
+      break;
+    default:
+      keyDisplay = shortcut.key.toUpperCase();
+  }
+  parts.push(keyDisplay);
+  return parts.join(" + ");
+}
 const Layout = (t0) => {
-  const $2 = dist.c(42);
+  const $2 = dist.c(43);
   const {
     children
   } = t0;
@@ -60867,39 +61096,46 @@ const Layout = (t0) => {
   }
   const handleOpenSettings = t9;
   let t10;
-  let t11;
   if ($2[15] === Symbol.for("react.memo_cache_sentinel")) {
-    t10 = () => {
+    t10 = {
+      onOpenSearch: handleOpenSearch,
+      onOpenTestDialog: handleRunAllTests
+    };
+    $2[15] = t10;
+  } else {
+    t10 = $2[15];
+  }
+  useKeyboardShortcuts(t10);
+  let t11;
+  let t12;
+  if ($2[16] === Symbol.for("react.memo_cache_sentinel")) {
+    t11 = () => {
       const handleKeyDown = (e2) => {
-        if ((e2.metaKey || e2.ctrlKey) && e2.key === "k") {
-          e2.preventDefault();
-          setShowSearch(true);
-        }
         if (e2.key === "Escape") {
           setShowSearch(false);
         }
       };
-      const handleOpenTestDialog = () => {
+      const handleOpenTestDialogEvent = () => {
         setShowTestDialog(true);
       };
       window.addEventListener("keydown", handleKeyDown);
-      window.addEventListener("openTestDialog", handleOpenTestDialog);
+      window.addEventListener("openTestDialog", handleOpenTestDialogEvent);
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
-        window.removeEventListener("openTestDialog", handleOpenTestDialog);
+        window.removeEventListener("openTestDialog", handleOpenTestDialogEvent);
       };
     };
-    t11 = [];
-    $2[15] = t10;
+    t12 = [];
     $2[16] = t11;
+    $2[17] = t12;
   } else {
-    t10 = $2[15];
     t11 = $2[16];
+    t12 = $2[17];
   }
-  reactExports.useEffect(t10, t11);
-  let t12;
-  if ($2[17] === Symbol.for("react.memo_cache_sentinel")) {
-    t12 = [{
+  reactExports.useEffect(t11, t12);
+  let t13;
+  if ($2[18] === Symbol.for("react.memo_cache_sentinel")) {
+    t13 = [{
       name: "Dashboard",
       href: "/",
       icon: LayoutDashboard
@@ -60928,126 +61164,126 @@ const Layout = (t0) => {
       href: "/info-doku",
       icon: BookOpen
     }];
-    $2[17] = t12;
+    $2[18] = t13;
   } else {
-    t12 = $2[17];
+    t13 = $2[18];
   }
-  const navigation = t12;
-  let t13;
-  if ($2[18] !== currentTheme || $2[19] !== handleOpenSettings || $2[20] !== handleToggleTheme) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
-    $2[18] = currentTheme;
-    $2[19] = handleOpenSettings;
-    $2[20] = handleToggleTheme;
-    $2[21] = t13;
-  } else {
-    t13 = $2[21];
-  }
+  const navigation = t13;
   let t14;
-  if ($2[22] === Symbol.for("react.memo_cache_sentinel")) {
-    t14 = {
-      width: "clamp(16rem, 22.5vw, 40rem)"
-    };
+  if ($2[19] !== currentTheme || $2[20] !== handleOpenSettings || $2[21] !== handleToggleTheme) {
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
+    $2[19] = currentTheme;
+    $2[20] = handleOpenSettings;
+    $2[21] = handleToggleTheme;
     $2[22] = t14;
   } else {
     t14 = $2[22];
   }
   let t15;
-  if ($2[23] !== location.pathname) {
-    t15 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t14, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
+  if ($2[23] === Symbol.for("react.memo_cache_sentinel")) {
+    t15 = {
+      width: "clamp(16rem, 22.5vw, 40rem)"
+    };
+    $2[23] = t15;
+  } else {
+    t15 = $2[23];
+  }
+  let t16;
+  if ($2[24] !== location.pathname) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t15, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
       const IconComponent = item.icon;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded border border-transparent ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-70" : "text-gray-700 dark:text-gray-300"}`, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `font-stretched transition-all ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-semibold" : null}`, children: item.name })
       ] }, item.name);
     }) }) });
-    $2[23] = location.pathname;
-    $2[24] = t15;
+    $2[24] = location.pathname;
+    $2[25] = t16;
   } else {
-    t15 = $2[24];
-  }
-  let t16;
-  if ($2[25] !== children) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[1040px]", children }) }) });
-    $2[25] = children;
-    $2[26] = t16;
-  } else {
-    t16 = $2[26];
+    t16 = $2[25];
   }
   let t17;
-  if ($2[27] !== t15 || $2[28] !== t16) {
-    t17 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
-      t15,
-      t16
-    ] });
-    $2[27] = t15;
-    $2[28] = t16;
-    $2[29] = t17;
+  if ($2[26] !== children) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[1040px]", children }) }) });
+    $2[26] = children;
+    $2[27] = t17;
   } else {
-    t17 = $2[29];
+    t17 = $2[27];
   }
   let t18;
-  if ($2[30] === Symbol.for("react.memo_cache_sentinel")) {
-    t18 = () => {
-      setShowTestDialog(false);
-      setPreselectAll(false);
-    };
+  if ($2[28] !== t16 || $2[29] !== t17) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
+      t16,
+      t17
+    ] });
+    $2[28] = t16;
+    $2[29] = t17;
     $2[30] = t18;
   } else {
     t18 = $2[30];
   }
   let t19;
-  if ($2[31] !== preselectAll || $2[32] !== showTestDialog) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t18, preselectAll });
-    $2[31] = preselectAll;
-    $2[32] = showTestDialog;
-    $2[33] = t19;
+  if ($2[31] === Symbol.for("react.memo_cache_sentinel")) {
+    t19 = () => {
+      setShowTestDialog(false);
+      setPreselectAll(false);
+    };
+    $2[31] = t19;
   } else {
-    t19 = $2[33];
+    t19 = $2[31];
   }
   let t20;
-  if ($2[34] === Symbol.for("react.memo_cache_sentinel")) {
-    t20 = () => setShowSearch(false);
+  if ($2[32] !== preselectAll || $2[33] !== showTestDialog) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t19, preselectAll });
+    $2[32] = preselectAll;
+    $2[33] = showTestDialog;
     $2[34] = t20;
   } else {
     t20 = $2[34];
   }
   let t21;
-  if ($2[35] !== showSearch) {
-    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t20 });
-    $2[35] = showSearch;
-    $2[36] = t21;
+  if ($2[35] === Symbol.for("react.memo_cache_sentinel")) {
+    t21 = () => setShowSearch(false);
+    $2[35] = t21;
   } else {
-    t21 = $2[36];
+    t21 = $2[35];
   }
   let t22;
-  if ($2[37] !== t13 || $2[38] !== t17 || $2[39] !== t19 || $2[40] !== t21) {
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
-      t13,
-      t17,
-      t19,
-      t21
-    ] });
-    $2[37] = t13;
-    $2[38] = t17;
-    $2[39] = t19;
-    $2[40] = t21;
-    $2[41] = t22;
+  if ($2[36] !== showSearch) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t21 });
+    $2[36] = showSearch;
+    $2[37] = t22;
   } else {
-    t22 = $2[41];
+    t22 = $2[37];
   }
-  return t22;
+  let t23;
+  if ($2[38] !== t14 || $2[39] !== t18 || $2[40] !== t20 || $2[41] !== t22) {
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
+      t14,
+      t18,
+      t20,
+      t22
+    ] });
+    $2[38] = t14;
+    $2[39] = t18;
+    $2[40] = t20;
+    $2[41] = t22;
+    $2[42] = t23;
+  } else {
+    t23 = $2[42];
+  }
+  return t23;
 };
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DjnnqRZu.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-CsFYBLOV.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-fYN3_FyQ.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-CujyAWpv.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-tJjdNOE1.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-DhuakPxo.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-vuvFRIqF.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-C7fAb6hh.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DNG4R5lT.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-Dt5hNaP9.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-UHTigAv_.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-Db6CRTe-.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-o8UzFuy-.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-D8aA9g8z.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -61126,18 +61362,21 @@ export {
   Sun as a7,
   SlidersVertical as a8,
   Moon as a9,
-  cn as aA,
-  Portal$1 as aB,
-  Content as aC,
-  Overlay as aD,
-  Close as aE,
-  Title as aF,
-  Description as aG,
-  ChevronsUpDown as aH,
-  TriangleAlert as aI,
-  DialogDescription as aJ,
-  DialogFooter as aK,
-  Badge as aL,
+  DialogContent as aA,
+  Dialog as aB,
+  Root$1 as aC,
+  cn as aD,
+  Portal$1 as aE,
+  Content as aF,
+  Overlay as aG,
+  Close as aH,
+  Title as aI,
+  Description as aJ,
+  ChevronsUpDown as aK,
+  TriangleAlert as aL,
+  DialogDescription as aM,
+  DialogFooter as aN,
+  Badge as aO,
   Monitor as aa,
   LoaderCircle as ab,
   Square as ac,
@@ -61155,15 +61394,15 @@ export {
   Link$1 as ao,
   FileBraces as ap,
   CircleX as aq,
-  getDefaultScheduleIcon as ar,
-  useSchedulesStore as as,
-  getAllIconNames as at,
-  DialogHeader as au,
-  DialogTitle as av,
-  Search as aw,
-  DialogContent as ax,
-  Dialog as ay,
-  Root$1 as az,
+  KEYBOARD_SHORTCUTS as ar,
+  Keyboard as as,
+  formatShortcut as at,
+  getDefaultScheduleIcon as au,
+  useSchedulesStore as av,
+  getAllIconNames as aw,
+  DialogHeader as ax,
+  DialogTitle as ay,
+  Search as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,
