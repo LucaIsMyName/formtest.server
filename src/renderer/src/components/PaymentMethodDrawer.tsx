@@ -9,6 +9,7 @@ import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Trash2 } from "lucide-react";
+import { CONFIG } from "@/app.config";
 
 interface PaymentMethodDrawerProps {
   isOpen: boolean;
@@ -284,19 +285,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
       onOpenChange={(open) => !open && onClose()}>
       <DrawerContent>
         {/* Top Title Bar with Action Buttons */}
-        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <div className="flex-1 min-w-0">
-            <Label htmlFor="name" className="sr-only">Name der Bezahlmethode *</Label>
-            <Input
-              id="name"
-              value={methodData.name}
-              onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
-              placeholder="Bezahlmethoden Name"
-              disabled={isLoading}
-              className={"text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 " + (errors.name ? "text-red-500" : "")}
-            />
-          </div>
-          {/* Action buttons */}
+        <div className="pb-4 flex-shrink-0">
           {editMethod && onDelete && (
             <div className="flex items-center gap-2 flex-shrink-0">
               <Button
@@ -313,11 +302,25 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               </Button>
             </div>
           )}
+          <div className="flex-1 min-w-0 mt-4">
+            <Label
+              htmlFor="name"
+              className="sr-only">
+              Name der Bezahlmethode *
+            </Label>
+            <Input
+              id="name"
+              value={methodData.name}
+              onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
+              placeholder="Bezahlmethoden Name"
+              disabled={isLoading}
+              className={`${CONFIG.style.title.className} h-16` + (errors.name ? "text-red-500" : "")}
+            />
+          </div>
+          {/* Action buttons */}
         </div>
 
-        <DrawerHeader className="pt-6">
-          {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
-        </DrawerHeader>
+        <DrawerHeader className="pt-6">{errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}</DrawerHeader>
 
         <form
           onSubmit={handleSubmit}

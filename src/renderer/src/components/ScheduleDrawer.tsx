@@ -11,6 +11,7 @@ import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Trash2, Play } from "lucide-react";
+import { CONFIG } from "@/app.config";
 
 interface ScheduleDrawerProps {
   isOpen: boolean;
@@ -86,7 +87,7 @@ const FREQUENCY_OPTIONS = [
   { label: "Benutzerdefiniert", value: "custom" },
 ];
 
-const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave, initialData, title, onDelete, onRunNow }) => {
+const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave, initialData, onDelete, onRunNow }) => {
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
 
@@ -172,22 +173,9 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
       onOpenChange={(open) => !open && onClose()}>
       <DrawerContent>
         {/* Top Title Bar with Action Buttons */}
-        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <div className="flex-1 min-w-0">
-            <Label htmlFor="name" className="sr-only">Name *</Label>
-            <Input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Autopilot Name"
-              className="text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0"
-              disabled={isSubmitting}
-            />
-          </div>
-          {/* Action buttons */}
+        <div className=" gap-4 pb-4 flex-shrink-0">
           {initialData && (
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-2 mb-4 flex-shrink-0">
               {onRunNow && (
                 <Button
                   type="button"
@@ -218,6 +206,20 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
               )}
             </div>
           )}
+          <div className="flex-1 min-w-0 h-12">
+            <Label htmlFor="name" className="sr-only">Name *</Label>
+            <Input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Autopilot Name"
+              className={`${CONFIG.style.title.className} h-16`}
+              disabled={isSubmitting}
+            />
+          </div>
+          
+          
         </div>
 
         <DrawerHeader className="pt-6"></DrawerHeader>

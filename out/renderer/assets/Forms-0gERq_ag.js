@@ -1,10 +1,9 @@
-import { r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, k as Trash2, l as ChevronUp, m as ChevronDown, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, i as dist, t as useSearchParams, b as useFormsStore, v as StatusBadge, x as formatDate } from "./index-BpMT7ksU.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as renderIcon, m as Checkbox, n as ChevronUp, o as ChevronDown, p as Select, q as SelectTrigger, s as SelectValue, t as SelectContent, v as SelectItem, x as Plus, i as dist, y as useSearchParams, b as useFormsStore, z as Table, A as TableHeader, D as TableRow, G as TableHead, H as TableBody, J as TableCell, K as StatusBadge, M as formatDate, N as Pen, O as TablePagination } from "./index-B2XIpUw8.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { E as ExternalLink, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-CAF1DD8v.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CC6f984r.js";
-import { C as Checkbox, P as Plus } from "./Checkbox-IHlJBmTt.js";
-import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, g as TablePagination, D as DeleteConfirmDialog } from "./TableFilter-D_oxLCMD.js";
-import { S as Skeleton } from "./Skeleton-Btm7eDww.js";
+import { I as IconPicker } from "./IconPicker-sFSJC-zs.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-BV3o4tGG.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CStDGHNy.js";
+import { S as Skeleton } from "./Skeleton-CIhEMaNW.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -170,14 +169,7 @@ const FormDrawer = ({
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Formularname *" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: formData.name, onChange: (e_0) => setFormData({
-          ...formData,
-          name: e_0.target.value
-        }), placeholder: "Formularname", disabled: isLoading, className: "text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 " + (errors.name ? "text-red-500" : "") })
-      ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: " pb-4 flex-shrink-0", children: [
       editForm && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => window.open(editForm.url, "_blank"), variant: "secondary", size: "sm", className: "gap-1.5", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(ExternalLink, { size: 14 }),
@@ -190,6 +182,13 @@ const FormDrawer = ({
           /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
           "Löschen"
         ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 mt-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Formularname *" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: formData.name, onChange: (e_0) => setFormData({
+          ...formData,
+          name: e_0.target.value
+        }), placeholder: "Formularname", disabled: isLoading, className: `${CONFIG.style.title.className} h-16` + (errors.name ? "text-red-500" : "") })
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "pt-6", children: errors.name && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-sm", children: errors.name }) }),

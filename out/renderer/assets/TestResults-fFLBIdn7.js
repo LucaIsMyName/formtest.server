@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, N as LoaderCircle, i as dist, X, t as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, O as RefreshCw, P as Play, Q as formatDateTime, v as StatusBadge, U as formatDuration, k as Trash2, V as Link, W as CircleX, H as CircleCheck } from "./index-BpMT7ksU.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, y as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, aj as RefreshCw, P as Play, z as Table, A as TableHeader, D as TableRow, G as TableHead, H as TableBody, J as TableCell, ak as Copy, l as renderIcon, al as Bot, am as formatDateTime, K as StatusBadge, an as formatDuration, k as Trash2, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX, a3 as CircleCheck } from "./index-B2XIpUw8.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { a as Table, b as TableHeader, c as TableRow, d as TableHead, e as TableBody, f as TableCell, T as TableFilter, g as TablePagination, D as DeleteConfirmDialog, C as CircleAlert } from "./TableFilter-D_oxLCMD.js";
-import { e as Square, I as Image, M as Maximize2, Z as ZoomOut, f as ZoomIn, g as Download, u as useFilterableData, d as useSortableData, F as FileSpreadsheet, C as Copy, B as Bot, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader, h as FileBraces } from "./useFilterableData-CC6f984r.js";
-import { S as Skeleton } from "./Skeleton-Btm7eDww.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CStDGHNy.js";
+import { S as Skeleton } from "./Skeleton-CIhEMaNW.js";
+import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-BV3o4tGG.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -661,20 +661,28 @@ const TestResults = () => {
     const form = forms.find((f_0) => f_0.id === formId);
     return form ? form.name : `Form #${formId}`;
   };
+  const getFormIcon = (formId_0) => {
+    const form_0 = forms.find((f_1) => f_1.id === formId_0);
+    return form_0?.icon || "FileText";
+  };
   const getPaymentMethodName = (pmId) => {
     const pm = paymentMethods.find((p_0) => p_0.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
+  };
+  const getPaymentMethodIcon = (pmId_0) => {
+    const pm_0 = paymentMethods.find((p_1) => p_1.id === pmId_0);
+    return pm_0?.icon || getDefaultPaymentIcon(pm_0?.type || "creditcard");
   };
   const formatElapsedTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
-  const getFormDetails = (formId_0) => {
-    return forms.find((f_1) => f_1.id === formId_0);
+  const getFormDetails = (formId_1) => {
+    return forms.find((f_2) => f_2.id === formId_1);
   };
-  const getPaymentMethodDetails = (pmId_0) => {
-    return paymentMethods.find((p_1) => p_1.id === pmId_0);
+  const getPaymentMethodDetails = (pmId_1) => {
+    return paymentMethods.find((p_2) => p_2.id === pmId_1);
   };
   const handleDeleteClick = (testRun) => {
     const formName = getFormName(testRun.formId);
@@ -714,13 +722,13 @@ const TestResults = () => {
   };
   const handleRunAgain = async (testRun_1) => {
     try {
-      const form_0 = forms.find((f_2) => f_2.id === testRun_1.formId);
-      const paymentMethod = paymentMethods.find((pm_0) => pm_0.id === testRun_1.paymentMethodId);
-      if (!form_0 || !paymentMethod) {
+      const form_1 = forms.find((f_3) => f_3.id === testRun_1.formId);
+      const paymentMethod = paymentMethods.find((pm_1) => pm_1.id === testRun_1.paymentMethodId);
+      if (!form_1 || !paymentMethod) {
         console.error("Form or payment method not found for re-run");
         return;
       }
-      await window.api.tests.run([form_0.id], [paymentMethod.id]);
+      await window.api.tests.run([form_1.id], [paymentMethod.id]);
       await loadTestRuns();
     } catch (error_2) {
       console.error("Failed to run test again:", error_2);
@@ -860,7 +868,8 @@ const TestResults = () => {
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[100px]", children: "UUID" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 min-w-[200px]", children: "Test" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 min-w-[140px]", children: "Formular" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 min-w-[120px]", children: "Bezahlmethode" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[160px]", children: "Gestartet" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[80px]", children: "Dauer" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[100px]", children: "Status" }),
@@ -877,12 +886,13 @@ const TestResults = () => {
             ] }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
               isRunning && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse flex-shrink-0" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
-                testRun_2.formName,
-                " × ",
-                testRun_2.paymentMethodName
-              ] }),
-              testRun_2.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-gray-500 dark:text-gray-400" }) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getFormIcon(testRun_2.formId), 14) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_2.formName }),
+              testRun_2.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "flex-shrink-0 text-gray-500 dark:text-gray-400", title: "Autopilot Test" })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getPaymentMethodIcon(testRun_2.paymentMethodId), 14) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_2.paymentMethodName })
             ] }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDateTime(testRun_2.runAt) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-[10px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`, children: formatElapsedTime(runningTimers[testRun_2.id] || 0) }) }),
@@ -890,7 +900,7 @@ const TestResults = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-end gap-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_1) => {
               e_1.stopPropagation();
               handleStopTest(testRun_2);
-            }, variant: "ghost", size: "sm", className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20", title: "Test stoppen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Square, { size: 14, fill: "currentColor" }) }) }) })
+            }, variant: "ghost", size: "sm", className: "text-red-600 dark:text-red-400", title: "Test stoppen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Square, { size: 14, fill: "currentColor" }) }) }) })
           ] }, testRun_2.id);
         }) })
       ] }) }) })
@@ -909,7 +919,8 @@ const TestResults = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[100px]", children: "UUID" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 min-w-[200px]", sortDirection: getSortDirection("formName"), onSort: () => requestSort("formName"), children: "Test" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 min-w-[140px]", sortDirection: getSortDirection("formName"), onSort: () => requestSort("formName"), children: "Formular" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 min-w-[120px]", sortDirection: getSortDirection("paymentMethodName"), onSort: () => requestSort("paymentMethodName"), children: "Bezahlmethode" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[160px]", sortDirection: getSortDirection("runAt"), onSort: () => requestSort("runAt"), children: "Datum" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[80px]", sortDirection: getSortDirection("durationMs"), onSort: () => requestSort("durationMs"), children: "Dauer" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[100px]", sortDirection: getSortDirection("status"), onSort: () => requestSort("status"), children: "Status" }),
@@ -923,12 +934,13 @@ const TestResults = () => {
                 testRun_3.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_2) => handleCopyUuid(e_2, testRun_3.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
               ] }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: [
-                  testRun_3.formName,
-                  " × ",
-                  testRun_3.paymentMethodName
-                ] }),
-                testRun_3.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0", title: "Autopilot Test", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "text-blue-600 dark:text-blue-400" }) })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getFormIcon(testRun_3.formId), 14) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_3.formName }),
+                testRun_3.isScheduled && /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 12, className: "flex-shrink-0 text-blue-600 dark:text-blue-400", title: "Autopilot Test" })
+              ] }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getPaymentMethodIcon(testRun_3.paymentMethodId), 14) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_3.paymentMethodName })
               ] }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDateTime(testRun_3.runAt) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400", children: formatDuration(testRun_3.durationMs) }),
@@ -950,9 +962,8 @@ const TestResults = () => {
       ] }) })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: !!selectedTestRun, onOpenChange: (open) => !open && handleSelectTestRun(null), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { className: "w-full", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 min-w-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-2xl font-bold text-gray-900 dark:text-white truncate block", children: selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}` }) }),
-        selectedTestRunData && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2 flex-shrink-0", children: selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: async (e_5) => {
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0", children: [
+        selectedTestRunData && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 flex items-center gap-2 flex-shrink-0", children: selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: async (e_5) => {
           e_5.stopPropagation();
           await handleStopTest(selectedTestRunData);
         }, variant: "secondary", size: "sm", className: "gap-1.5 !bg-purple-600 !text-white hover:!bg-purple-700 !border-purple-600", children: [
@@ -977,7 +988,14 @@ const TestResults = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
             "Löschen"
           ] })
-        ] }) })
+        ] }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 min-w-0", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `${CONFIG.style.title.className} flex items-center gap-3`, children: selectedTestRunData && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-300 dark:text-gray-700", children: renderIcon(getFormIcon(selectedTestRunData.formId), 48) }),
+          getFormName(selectedTestRunData.formId),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400 dark:text-gray-500 font-normal", children: "×" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-300 dark:text-gray-700", children: renderIcon(getPaymentMethodIcon(selectedTestRunData.paymentMethodId), 48) }),
+          getPaymentMethodName(selectedTestRunData.paymentMethodId)
+        ] }) }) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "pt-6" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 overflow-y-auto space-y-4", children: selectedTestRunData ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
@@ -1042,17 +1060,17 @@ const TestResults = () => {
                 return type;
             }
           };
-          const getMaskedDetails = (pm_1) => {
-            if (!pm_1) return "";
-            switch (pm_1.type) {
+          const getMaskedDetails = (pm_2) => {
+            if (!pm_2) return "";
+            switch (pm_2.type) {
               case "paypal":
-                return pm_1.details.email || "";
+                return pm_2.details.email || "";
               case "sepa":
-                return pm_1.details.accountHolder || (pm_1.details.iban ? `***${pm_1.details.iban.slice(-4)}` : "");
+                return pm_2.details.accountHolder || (pm_2.details.iban ? `***${pm_2.details.iban.slice(-4)}` : "");
               case "creditcard":
-                return pm_1.details.cardNumber ? `****${pm_1.details.cardNumber.slice(-4)}` : "";
+                return pm_2.details.cardNumber ? `****${pm_2.details.cardNumber.slice(-4)}` : "";
               case "eps":
-                return pm_1.details.bankCode || "";
+                return pm_2.details.bankCode || "";
               default:
                 return "";
             }

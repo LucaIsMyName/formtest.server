@@ -10,6 +10,7 @@ import TestQueueStatus from "../components/TestQueueStatus";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { RefreshCw, FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
+import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
@@ -356,9 +357,19 @@ const TestResults: React.FC = () => {
     return form ? form.name : `Form #${formId}`;
   };
 
+  const getFormIcon = (formId: number) => {
+    const form = forms.find((f) => f.id === formId);
+    return form?.icon || "FileText";
+  };
+
   const getPaymentMethodName = (pmId: number) => {
     const pm = paymentMethods.find((p) => p.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
+  };
+
+  const getPaymentMethodIcon = (pmId: number) => {
+    const pm = paymentMethods.find((p) => p.id === pmId);
+    return pm?.icon || getDefaultPaymentIcon(pm?.type || "creditcard");
   };
 
   // Format elapsed time as MM:SS
@@ -619,12 +630,14 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="px-4 w-[100px]">UUID</TableHead>
-                    <TableHead className="px-4 min-w-[200px]">Test</TableHead>
-                    <TableHead className="px-4 w-[160px]">Gestartet</TableHead>
-                    <TableHead className="px-4 w-[80px]">Dauer</TableHead>
-                    <TableHead className="px-4 w-[100px]">Status</TableHead>
-                    <TableHead className="px-4 w-[100px] text-right">Aktionen</TableHead>
+                    <TableHead className="px-4 w-[80px]">UUID</TableHead>
+                    <TableHead className="px-4 w-[50px] text-center"><Bot size={14} className="inline" /></TableHead>
+                    <TableHead className="px-4 min-w-[160px]">Formular</TableHead>
+                    <TableHead className="px-4 min-w-[140px]">Bezahlmethode</TableHead>
+                    <TableHead className="px-4 w-[150px]">Gestartet</TableHead>
+                    <TableHead className="px-4 w-[70px]">Dauer</TableHead>
+                    <TableHead className="px-4 w-[90px]">Status</TableHead>
+                    <TableHead className="px-4 w-[80px] text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -650,22 +663,30 @@ const TestResults: React.FC = () => {
                             )}
                           </div>
                         </TableCell>
+                        <TableCell className="px-4 text-center">
+                          {testRun.isScheduled && (
+                            <Bot size={16} className="inline text-blue-500" />
+                          )}
+                        </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
                             {isRunning && <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse flex-shrink-0" />}
+                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                              {renderIcon(getFormIcon(testRun.formId), 14)}
+                            </span>
                             <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                              {testRun.formName} × {testRun.paymentMethodName}
+                              {testRun.formName}
                             </div>
-                            {testRun.isScheduled && (
-                              <div
-                                className="flex-shrink-0"
-                                title="Autopilot Test">
-                                <Bot
-                                  size={12}
-                                  className="text-gray-500 dark:text-gray-400"
-                                />
-                              </div>
-                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                              {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
+                            </span>
+                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                              {testRun.paymentMethodName}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
@@ -684,7 +705,7 @@ const TestResults: React.FC = () => {
                               }}
                               variant="ghost"
                               size="sm"
-                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
+                              className="text-red-600 dark:text-red-400"
                               title="Test stoppen">
                               <Square
                                 size={14}
@@ -735,32 +756,44 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <SortableTableHead className="px-4 w-[100px]">UUID</SortableTableHead>
+                    <SortableTableHead className="px-4 w-[80px]">UUID</SortableTableHead>
                     <SortableTableHead
-                      className="px-4 min-w-[200px]"
-                      sortDirection={getSortDirection("formName")}
-                      onSort={() => requestSort("formName")}>
-                      Test
+                      className="px-4 w-[50px] text-center"
+                      sortDirection={getSortDirection("isScheduled")}
+                      onSort={() => requestSort("isScheduled")}>
+                      <Bot size={14} className="inline" />
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4 w-[160px]"
+                      className="px-4 min-w-[160px]"
+                      sortDirection={getSortDirection("formName")}
+                      onSort={() => requestSort("formName")}>
+                      Formular
+                    </SortableTableHead>
+                    <SortableTableHead
+                      className="px-4 min-w-[140px]"
+                      sortDirection={getSortDirection("paymentMethodName")}
+                      onSort={() => requestSort("paymentMethodName")}>
+                      Bezahlmethode
+                    </SortableTableHead>
+                    <SortableTableHead
+                      className="px-4 w-[150px]"
                       sortDirection={getSortDirection("runAt")}
                       onSort={() => requestSort("runAt")}>
                       Datum
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4 w-[80px]"
+                      className="px-4 w-[70px]"
                       sortDirection={getSortDirection("durationMs")}
                       onSort={() => requestSort("durationMs")}>
                       Dauer
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4 w-[100px]"
+                      className="px-4 w-[90px]"
                       sortDirection={getSortDirection("status")}
                       onSort={() => requestSort("status")}>
                       Status
                     </SortableTableHead>
-                    <TableHead className="px-4 w-[100px] text-right">Aktionen</TableHead>
+                    <TableHead className="px-4 w-[80px] text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -784,21 +817,29 @@ const TestResults: React.FC = () => {
                             )}
                           </div>
                         </TableCell>
+                        <TableCell className="px-4 text-center">
+                          {testRun.isScheduled && (
+                            <Bot size={16} className="inline text-blue-500" />
+                          )}
+                        </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                              {renderIcon(getFormIcon(testRun.formId), 14)}
+                            </span>
                             <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
-                              {testRun.formName} × {testRun.paymentMethodName}
+                              {testRun.formName}
                             </div>
-                            {testRun.isScheduled && (
-                              <div
-                                className="flex-shrink-0"
-                                title="Autopilot Test">
-                                <Bot
-                                  size={12}
-                                  className="text-blue-600 dark:text-blue-400"
-                                />
-                              </div>
-                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                              {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
+                            </span>
+                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                              {testRun.paymentMethodName}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
@@ -857,15 +898,11 @@ const TestResults: React.FC = () => {
         onOpenChange={(open) => !open && handleSelectTestRun(null)}>
         <DrawerContent className="w-full">
           {/* Top Title Bar with Action Buttons */}
-          <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-            <div className="flex-1 min-w-0">
-              <span className="text-2xl font-bold text-gray-900 dark:text-white truncate block">
-                {selectedTestRunData && `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}
-              </span>
-            </div>
+          <div className="items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+           
             {/* Action buttons */}
             {selectedTestRunData && (
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="mb-4 flex items-center gap-2 flex-shrink-0">
                 {selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? (
                   <Button
                     onClick={async (e) => {
@@ -910,6 +947,23 @@ const TestResults: React.FC = () => {
                 )}
               </div>
             )}
+             <div className="flex-1 min-w-0">
+              <span className={`${CONFIG.style.title.className} flex items-center gap-3`}>
+                {selectedTestRunData && (
+                  <>
+                    <span className="text-gray-300 dark:text-gray-700">
+                      {renderIcon(getFormIcon(selectedTestRunData.formId), 48)}
+                    </span>
+                    {getFormName(selectedTestRunData.formId)}
+                    <span className="text-gray-400 dark:text-gray-500 font-normal">×</span>
+                    <span className="text-gray-300 dark:text-gray-700">
+                      {renderIcon(getPaymentMethodIcon(selectedTestRunData.paymentMethodId), 48)}
+                    </span>
+                    {getPaymentMethodName(selectedTestRunData.paymentMethodId)}
+                  </>
+                )}
+              </span>
+            </div>
           </div>
 
           <DrawerHeader className="pt-6"></DrawerHeader>

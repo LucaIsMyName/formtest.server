@@ -200,7 +200,7 @@ class TestRunner {
         browser: 'chromium',
         viewport: { width: 1280, height: 720 },
         defaultAmount: settings.default_donation_amount || '50',
-        defaultInterval: settings.default_interval || '0'
+        defaultInterval: settings.default_donation_interval || '0'
       }
 
       // Initialize browser

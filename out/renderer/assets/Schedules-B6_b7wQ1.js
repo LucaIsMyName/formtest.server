@@ -1,10 +1,9 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, j as jsxRuntimeExports, L as Label, I as Input, B as Button, P as Play, k as Trash2, n as Select, o as SelectTrigger, p as SelectValue, q as SelectContent, s as SelectItem, Y as useSchedulesStore, Q as formatDateTime, v as StatusBadge, N as LoaderCircle } from "./index-BpMT7ksU.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, ar as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, p as Select, q as SelectTrigger, s as SelectValue, t as SelectContent, v as SelectItem, l as renderIcon, m as Checkbox, as as useSchedulesStore, x as Plus, z as Table, A as TableHeader, D as TableRow, H as TableBody, J as TableCell, am as formatDateTime, K as StatusBadge, ab as LoaderCircle, N as Pen, O as TablePagination } from "./index-B2XIpUw8.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { T as TableFilter, a as Table, b as TableHeader, c as TableRow, e as TableBody, f as TableCell, g as TablePagination, D as DeleteConfirmDialog } from "./TableFilter-D_oxLCMD.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CC6f984r.js";
-import { S as Skeleton } from "./Skeleton-Btm7eDww.js";
-import { a as getDefaultScheduleIcon, r as renderIcon, I as IconPicker, P as Pen } from "./IconPicker-CAF1DD8v.js";
-import { C as Checkbox, P as Plus } from "./Checkbox-IHlJBmTt.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-BV3o4tGG.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CStDGHNy.js";
+import { S as Skeleton } from "./Skeleton-CIhEMaNW.js";
+import { I as IconPicker } from "./IconPicker-sFSJC-zs.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -273,12 +272,8 @@ const ScheduleDrawer = ({
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Name *" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", type: "text", value: name, onChange: (e_0) => setName(e_0.target.value), placeholder: "Autopilot Name", className: "text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0", disabled: isSubmitting })
-        ] }),
-        initialData && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: " gap-4 pb-4 flex-shrink-0", children: [
+        initialData && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-4 flex-shrink-0", children: [
           onRunNow && /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
             onRunNow(initialData.id);
             onClose();
@@ -293,6 +288,10 @@ const ScheduleDrawer = ({
             /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
             "Löschen"
           ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 h-12", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Name *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", type: "text", value: name, onChange: (e_0) => setName(e_0.target.value), placeholder: "Autopilot Name", className: `${CONFIG.style.title.className} h-16`, disabled: isSubmitting })
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(DrawerHeader, { className: "pt-6" }),

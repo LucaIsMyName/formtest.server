@@ -9,6 +9,7 @@ import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink } from "lucide-react";
+import { CONFIG } from "@/app.config";
 
 interface FormDrawerProps {
   isOpen: boolean;
@@ -166,19 +167,8 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
       onOpenChange={(open) => !open && onClose()}>
       <DrawerContent>
         {/* Top Title Bar with Action Buttons */}
-        <div className="flex items-center justify-between gap-4 px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <div className="flex-1 min-w-0">
-            <Label htmlFor="name" className="sr-only">Formularname *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Formularname"
-              disabled={isLoading}
-              className={"text-2xl font-bold border-none bg-transparent p-0 h-auto focus-visible:ring-0 focus-visible:ring-offset-0 " + (errors.name ? "text-red-500" : "")}
-            />
-          </div>
-          {/* Action buttons */}
+        <div className=" pb-4 flex-shrink-0">
+           {/* Action buttons */}
           {editForm && (
             <div className="flex items-center gap-2 flex-shrink-0">
               <Button
@@ -206,6 +196,18 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
               )}
             </div>
           )}
+          <div className="flex-1 min-w-0 mt-4">
+            <Label htmlFor="name" className="sr-only">Formularname *</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder="Formularname"
+              disabled={isLoading}
+              className={`${CONFIG.style.title.className} h-16` + (errors.name ? "text-red-500" : "")}
+            />
+          </div>
+         
         </div>
 
         <DrawerHeader className="pt-6">
