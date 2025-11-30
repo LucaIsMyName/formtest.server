@@ -1,4 +1,4 @@
-import { aB as Root, r as reactExports, i as dist, aC as cn, j as jsxRuntimeExports, aD as Portal, aE as Content, aF as Overlay, aG as Close, X, aH as Title, aI as Description, n as ChevronUp, o as ChevronDown, aJ as ChevronsUpDown, G as TableHead } from "./index-BKwbP5SI.js";
+import { aB as Root, r as reactExports, i as dist, aC as cn, j as jsxRuntimeExports, aD as Portal, aE as Content, aF as Overlay, aG as Close, X, aH as Title, aI as Description, v as ChevronUp, x as ChevronDown, aJ as ChevronsUpDown, M as TableHead } from "./index-BNrALBn_.js";
 const Drawer = Root;
 const DrawerPortal = Portal;
 const DrawerOverlay = reactExports.forwardRef((t0, ref) => {
@@ -262,7 +262,7 @@ const SortableTableHead = (t0) => {
   const t2 = `${className} ${isSortable ? "cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors" : ""}`;
   let t3;
   if ($[0] !== children) {
-    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children });
+    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block flex-1", children });
     $[0] = children;
     $[1] = t3;
   } else {

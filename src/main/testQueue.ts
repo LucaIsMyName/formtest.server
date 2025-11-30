@@ -163,9 +163,22 @@ class TestQueue {
   clear(): { clearedIds: number[] } {
     const clearedIds = this.queue.map(t => t.testRunId);
     
-    // Update database status for all cleared tests
+    // Create stopped steps for cleared tests
+    const stoppedSteps: import("../common/types").TestStep[] = [
+      {
+        id: 'queue-cleared',
+        name: 'Aus Warteschlange entfernt',
+        status: 'stopped' as const,
+        startTime: new Date().toISOString(),
+        endTime: new Date().toISOString(),
+        duration: 0,
+        message: 'Test wurde aus der Warteschlange entfernt bevor er gestartet wurde'
+      }
+    ];
+    
+    // Update database status for all cleared tests with steps
     for (const testRunId of clearedIds) {
-      testRunQueries.updateStatus(testRunId, "STOPPED");
+      testRunQueries.updateStatus(testRunId, "STOPPED", undefined, 0, stoppedSteps);
     }
     
     this.queue = [];
@@ -197,8 +210,21 @@ class TestQueue {
         const processManager = getTestProcessManager();
         await processManager.stopProcess();
         
-        // Update database status
-        testRunQueries.updateStatus(currentTestId, "STOPPED");
+        // Create stopped steps for the current test
+        const stoppedSteps: import("../common/types").TestStep[] = [
+          {
+            id: 'test-stopped',
+            name: 'Test gestoppt',
+            status: 'stopped' as const,
+            startTime: new Date().toISOString(),
+            endTime: new Date().toISOString(),
+            duration: 0,
+            message: 'Test wurde vom Benutzer manuell gestoppt'
+          }
+        ];
+        
+        // Update database status with steps
+        testRunQueries.updateStatus(currentTestId, "STOPPED", undefined, 0, stoppedSteps);
         
         console.log(`[TestQueue] Test ${currentTestId} stopped`);
       } catch (error) {

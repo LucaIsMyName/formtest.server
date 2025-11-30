@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DmkLFq3E.js","./app.config-D8MSMeZ9.js","./Skeleton-CKuMF-g8.js","./Forms-Cna5dQff.js","./IconPicker-BnUikLPf.js","./useFilterableData-CLnQDM5f.js","./TableFilter-CuWts4X_.js","./PaymentMethods-BTxHw7yI.js","./Settings-BOsPoqQq.js","./TestResults-DHiBtE4c.js","./InfoDoku-uLtfHcLl.js","./Schedules-q9J3IZ1C.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DfkqBb0f.js","./app.config-D8MSMeZ9.js","./Skeleton-DL6oWMtn.js","./Forms-BHqayGyw.js","./IconPicker-CQLTM_8-.js","./useFilterableData-BhVY-NWb.js","./TableFilter-D4srFFCA.js","./PaymentMethods-C3CKJGG7.js","./Settings-COQMmMwR.js","./TestResults-Cmt7ok4E.js","./InfoDoku-CGd-InIY.js","./Schedules-Cz91czx5.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -58769,9 +58769,9 @@ const getIconComponent = (iconName) => {
   if (!iconName || !icons[iconName]) return FileText;
   return icons[iconName];
 };
-const renderIcon = (iconName, size2 = 16, className) => {
+const renderIcon = (iconName, size2 = 16, className, strokeWidth) => {
   const Icon2 = getIconComponent(iconName);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { size: size2, className });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { size: size2, strokeWidth: 1.5, className });
 };
 const getAllIconNames = () => {
   return Object.keys(icons).sort();
@@ -61192,9 +61192,11 @@ const Layout = (t0) => {
   if ($2[24] !== location.pathname) {
     t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t15, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
       const IconComponent = item.icon;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded border border-transparent ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-70" : "text-gray-700 dark:text-gray-300"}`, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 2 }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `font-stretched transition-all ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400 font-semibold" : null}`, children: item.name })
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 1.75 : 1.75 }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+          fontStretch: "100%"
+        }, className: `transition-all text-base ${location.pathname === item.href ? "text-blue-600 dark:text-blue-400" : null}`, children: item.name })
       ] }, item.name);
     }) }) });
     $2[24] = location.pathname;
@@ -61277,13 +61279,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DmkLFq3E.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Cna5dQff.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-BTxHw7yI.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BOsPoqQq.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DHiBtE4c.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-uLtfHcLl.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-q9J3IZ1C.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DfkqBb0f.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BHqayGyw.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-C3CKJGG7.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-COQMmMwR.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-Cmt7ok4E.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-CGd-InIY.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-Cz91czx5.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -61324,19 +61326,19 @@ function App() {
 client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsxRuntimeExports.jsx(React$3.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) }));
 export {
   EyeOff as $,
-  TableHeader as A,
+  SelectValue as A,
   Button as B,
   CreditCard as C,
-  TableRow as D,
+  SelectContent as D,
   ExternalLink as E,
   FileText as F,
-  TableHead as G,
-  TableBody as H,
+  SelectItem as G,
+  Plus as H,
   Input as I,
-  TableCell as J,
-  StatusBadge as K,
+  useSearchParams as J,
+  TableHeader as K,
   Label$1 as L,
-  formatDate as M,
+  TableHead as M,
   Pen as N,
   TablePagination as O,
   Play as P,
@@ -61412,19 +61414,19 @@ export {
   dist as i,
   jsxRuntimeExports as j,
   Trash2 as k,
-  renderIcon as l,
-  Checkbox as m,
-  ChevronUp as n,
-  ChevronDown as o,
-  Select as p,
-  SelectTrigger as q,
+  Table as l,
+  TableBody as m,
+  TableRow as n,
+  TableCell as o,
+  StatusBadge as p,
+  formatDate as q,
   reactExports as r,
-  SelectValue as s,
-  SelectContent as t,
+  renderIcon as s,
+  Checkbox as t,
   useNavigate as u,
-  SelectItem as v,
+  ChevronUp as v,
   withSelectorExports as w,
-  Plus as x,
-  useSearchParams as y,
-  Table as z
+  ChevronDown as x,
+  Select as y,
+  SelectTrigger as z
 };

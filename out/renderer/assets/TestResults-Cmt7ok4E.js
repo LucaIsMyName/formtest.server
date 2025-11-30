@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, y as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, z as Table, A as TableHeader, D as TableRow, G as TableHead, aj as Bot, H as TableBody, J as TableCell, ak as Copy, l as renderIcon, al as formatDateTime, K as StatusBadge, am as formatDuration, k as Trash2, O as TablePagination, an as Link, ao as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, ap as CircleX, a3 as CircleCheck } from "./index-BKwbP5SI.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, s as renderIcon, al as formatDateTime, p as StatusBadge, a3 as CircleCheck, am as formatDuration, k as Trash2, O as TablePagination, an as Link, ao as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, ap as CircleX } from "./index-BNrALBn_.js";
 import { C as CONFIG } from "./app.config-D8MSMeZ9.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CuWts4X_.js";
-import { S as Skeleton } from "./Skeleton-CKuMF-g8.js";
-import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-CLnQDM5f.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-D4srFFCA.js";
+import { S as Skeleton } from "./Skeleton-DL6oWMtn.js";
+import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-BhVY-NWb.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -412,12 +412,14 @@ const TestDetailsSkeleton = () => {
   return t0;
 };
 const TestTimeline = (t0) => {
-  const $ = dist.c(15);
+  const $ = dist.c(23);
   const {
     steps: structuredSteps,
     logDetails,
     status
   } = t0;
+  let T0;
+  let T1;
   let t1;
   let t2;
   let t3;
@@ -448,58 +450,79 @@ const TestTimeline = (t0) => {
     const allSteps = [...timelineSteps, finalStep];
     const getStepIcon = _temp6;
     const formatTimestamp = _temp7;
-    t3 = "space-y-4";
-    if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
-      t4 = /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Test Timeline" });
-      $[7] = t4;
+    t3 = "mb-6 pb-6 border-b dark:border-gray-700";
+    if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
+      t4 = /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3", children: "Test Timeline" });
+      $[9] = t4;
     } else {
-      t4 = $[7];
+      t4 = $[9];
     }
-    t1 = "relative";
-    t2 = allSteps.map((step_0, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex items-start space-x-3 pb-4", children: [
-      index === 0 ? null : null,
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative flex items-center justify-center w-6 h-6 bg-white dark:bg-gray-800 ", children: getStepIcon(step_0.type) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 min-w-0", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-900 dark:text-white", children: step_0.message }),
-        step_0.timestamp && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400 font-mono", children: formatTimestamp(step_0.timestamp) })
-      ] }) })
+    t2 = "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden";
+    T1 = Table;
+    T0 = TableBody;
+    t1 = allSteps.map((step_0, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[40px] bg-gray-50 dark:bg-gray-800/50", children: getStepIcon(step_0.type) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white", children: step_0.message }),
+      step_0.timestamp && /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[80px] text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400 font-mono", children: formatTimestamp(step_0.timestamp) }) })
     ] }, index));
     $[0] = logDetails;
     $[1] = status;
     $[2] = structuredSteps;
-    $[3] = t1;
-    $[4] = t2;
-    $[5] = t3;
-    $[6] = t4;
+    $[3] = T0;
+    $[4] = T1;
+    $[5] = t1;
+    $[6] = t2;
+    $[7] = t3;
+    $[8] = t4;
   } else {
-    t1 = $[3];
-    t2 = $[4];
-    t3 = $[5];
-    t4 = $[6];
+    T0 = $[3];
+    T1 = $[4];
+    t1 = $[5];
+    t2 = $[6];
+    t3 = $[7];
+    t4 = $[8];
   }
   let t5;
-  if ($[8] !== t1 || $[9] !== t2) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t1, children: t2 });
-    $[8] = t1;
-    $[9] = t2;
-    $[10] = t5;
+  if ($[10] !== T0 || $[11] !== t1) {
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(T0, { children: t1 });
+    $[10] = T0;
+    $[11] = t1;
+    $[12] = t5;
   } else {
-    t5 = $[10];
+    t5 = $[12];
   }
   let t6;
-  if ($[11] !== t3 || $[12] !== t4 || $[13] !== t5) {
-    t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t3, children: [
-      t4,
-      t5
-    ] });
-    $[11] = t3;
-    $[12] = t4;
-    $[13] = t5;
-    $[14] = t6;
+  if ($[13] !== T1 || $[14] !== t5) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx(T1, { children: t5 });
+    $[13] = T1;
+    $[14] = t5;
+    $[15] = t6;
   } else {
-    t6 = $[14];
+    t6 = $[15];
   }
-  return t6;
+  let t7;
+  if ($[16] !== t2 || $[17] !== t6) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t2, children: t6 });
+    $[16] = t2;
+    $[17] = t6;
+    $[18] = t7;
+  } else {
+    t7 = $[18];
+  }
+  let t8;
+  if ($[19] !== t3 || $[20] !== t4 || $[21] !== t7) {
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t3, children: [
+      t4,
+      t7
+    ] });
+    $[19] = t3;
+    $[20] = t4;
+    $[21] = t7;
+    $[22] = t8;
+  } else {
+    t8 = $[22];
+  }
+  return t8;
 };
 const TestResults = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -915,8 +938,9 @@ const TestResults = () => {
       ] }) }) })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "mt-4", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-sm font-semibold text-gray-700 dark:text-gray-300", children: [
-        "Abgeschlossene Tests (",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-between mb-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 12, className: "text-gray-400 dark:text-gray-500" }),
+        "Ausgeführte Tests (",
         totalFilteredItems,
         ")"
       ] }) }),

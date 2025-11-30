@@ -51,8 +51,22 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
 
-    // Update test run with error
-    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
+    // Create error steps for the drawer to display
+    const errorSteps: import("../common/types").TestStep[] = [
+      {
+        id: 'test-error',
+        name: 'Test fehlgeschlagen',
+        status: 'error' as const,
+        startTime: new Date().toISOString(),
+        endTime: new Date().toISOString(),
+        duration: 0,
+        message: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
+      }
+    ];
+
+    // Update test run with error and steps
+    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0, errorSteps);
 
     // Create notification for scheduled test failure
     if (isScheduled) {

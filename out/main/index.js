@@ -2280,7 +2280,19 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
     }
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
-    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0);
+    const errorSteps = [
+      {
+        id: "test-error",
+        name: "Test fehlgeschlagen",
+        status: "error",
+        startTime: (/* @__PURE__ */ new Date()).toISOString(),
+        endTime: (/* @__PURE__ */ new Date()).toISOString(),
+        duration: 0,
+        message: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message : String(error)
+      }
+    ];
+    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0, errorSteps);
     if (isScheduled) {
       notificationQueries.create({
         type: "test_failed",
@@ -2447,8 +2459,19 @@ class TestQueue {
    */
   clear() {
     const clearedIds = this.queue.map((t) => t.testRunId);
+    const stoppedSteps = [
+      {
+        id: "queue-cleared",
+        name: "Aus Warteschlange entfernt",
+        status: "stopped",
+        startTime: (/* @__PURE__ */ new Date()).toISOString(),
+        endTime: (/* @__PURE__ */ new Date()).toISOString(),
+        duration: 0,
+        message: "Test wurde aus der Warteschlange entfernt bevor er gestartet wurde"
+      }
+    ];
     for (const testRunId of clearedIds) {
-      testRunQueries.updateStatus(testRunId, "STOPPED");
+      testRunQueries.updateStatus(testRunId, "STOPPED", void 0, 0, stoppedSteps);
     }
     this.queue = [];
     console.log(`[TestQueue] Cleared ${clearedIds.length} tests from queue`);
@@ -2469,7 +2492,18 @@ class TestQueue {
       try {
         const processManager2 = getTestProcessManager();
         await processManager2.stopProcess();
-        testRunQueries.updateStatus(currentTestId, "STOPPED");
+        const stoppedSteps = [
+          {
+            id: "test-stopped",
+            name: "Test gestoppt",
+            status: "stopped",
+            startTime: (/* @__PURE__ */ new Date()).toISOString(),
+            endTime: (/* @__PURE__ */ new Date()).toISOString(),
+            duration: 0,
+            message: "Test wurde vom Benutzer manuell gestoppt"
+          }
+        ];
+        testRunQueries.updateStatus(currentTestId, "STOPPED", void 0, 0, stoppedSteps);
         console.log(`[TestQueue] Test ${currentTestId} stopped`);
       } catch (error) {
         console.error(`[TestQueue] Error stopping test ${currentTestId}:`, error);

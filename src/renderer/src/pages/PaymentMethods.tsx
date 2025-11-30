@@ -341,16 +341,24 @@ const PaymentMethods: React.FC = () => {
               {displayedMethods.map((method) => (
                 <TableRow 
                   key={method.id}
-                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                  onClick={() => handleEditMethod(method)}>
-                  <TableCell>
-                    <div className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</div>
-                  </TableCell>
+                  tabIndex={0}
+                  role="button"
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
+                  onClick={() => handleEditMethod(method)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleEditMethod(method);
+                    }
+                  }}>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getPaymentMethodIcon(method)}
-                      <span className="text-[10px] font-mono text-gray-900 dark:text-gray-300">{method.typeLabel}</span>
+                      <span className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</span>
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-[10px] font-mono text-gray-900 dark:text-gray-300">{method.typeLabel}</span>
                   </TableCell>
                   <TableCell>
                     <span className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>

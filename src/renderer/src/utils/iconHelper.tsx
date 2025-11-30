@@ -16,10 +16,11 @@ export const getIconComponent = (iconName?: string): LucideIcon => {
 export const renderIcon = (
   iconName?: string, 
   size: number = 16, 
-  className?: string
+  className?: string,
+  strokeWidth?: number
 ): React.ReactElement => {
   const Icon = getIconComponent(iconName);
-  return <Icon size={size} className={className} />;
+  return <Icon size={size} strokeWidth={strokeWidth || 1.5} className={className} />;
 };
 
 /**

@@ -198,8 +198,16 @@ const Schedules: React.FC = () => {
                 {displayedSchedules.map((schedule) => (
                   <TableRow
                     key={schedule.id}
-                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle"
-                    onClick={() => setEditingSchedule(schedule)}>
+                    tabIndex={0}
+                    role="button"
+                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
+                    onClick={() => setEditingSchedule(schedule)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setEditingSchedule(schedule);
+                      }
+                    }}>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {renderIcon(schedule.icon || "Play", 16, "text-gray-600 dark:text-gray-400")}

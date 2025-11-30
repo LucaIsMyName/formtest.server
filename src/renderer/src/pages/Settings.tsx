@@ -33,7 +33,10 @@ const SettingsSkeleton = () => (
   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
     <div className="p-4 space-y-3">
       {[...Array(6)].map((_, i) => (
-        <Skeleton key={i} className="h-10 w-full" />
+        <Skeleton
+          key={i}
+          className="h-10 w-full"
+        />
       ))}
     </div>
   </div>
@@ -111,23 +114,57 @@ const Settings: React.FC = () => {
   useEffect(() => {
     settings.forEach((setting) => {
       switch (setting.key) {
-        case "default_donation_amount": setDonationAmount(setting.value); break;
-        case "default_interval": setDonationInterval(setting.value); break;
-        case "test_timeout": setTestTimeout(setting.value); break;
-        case "headless_mode": setHeadlessMode(setting.value); break;
-        case "slow_motion": setSlowMotion(setting.value); break;
-        case "theme": setTheme(setting.value); break;
-        case "email_enabled": setEmailEnabled(setting.value === "true"); break;
-        case "email_smtp_host": setEmailSmtpHost(setting.value); break;
-        case "email_smtp_port": setEmailSmtpPort(setting.value); break;
-        case "email_smtp_secure": setEmailSmtpSecure(setting.value === "true"); break;
-        case "email_smtp_user": setEmailSmtpUser(setting.value); break;
-        case "email_smtp_pass": setEmailSmtpPass(setting.value); break;
-        case "email_from_email": setEmailFromEmail(setting.value); break;
-        case "email_from_name": setEmailFromName(setting.value); break;
-        case "email_to_email": setEmailToEmail(setting.value); break;
-        case "email_notify_success": setEmailNotifySuccess(setting.value === "true"); break;
-        case "email_notify_failure": setEmailNotifyFailure(setting.value === "true"); break;
+        case "default_donation_amount":
+          setDonationAmount(setting.value);
+          break;
+        case "default_interval":
+          setDonationInterval(setting.value);
+          break;
+        case "test_timeout":
+          setTestTimeout(setting.value);
+          break;
+        case "headless_mode":
+          setHeadlessMode(setting.value);
+          break;
+        case "slow_motion":
+          setSlowMotion(setting.value);
+          break;
+        case "theme":
+          setTheme(setting.value);
+          break;
+        case "email_enabled":
+          setEmailEnabled(setting.value === "true");
+          break;
+        case "email_smtp_host":
+          setEmailSmtpHost(setting.value);
+          break;
+        case "email_smtp_port":
+          setEmailSmtpPort(setting.value);
+          break;
+        case "email_smtp_secure":
+          setEmailSmtpSecure(setting.value === "true");
+          break;
+        case "email_smtp_user":
+          setEmailSmtpUser(setting.value);
+          break;
+        case "email_smtp_pass":
+          setEmailSmtpPass(setting.value);
+          break;
+        case "email_from_email":
+          setEmailFromEmail(setting.value);
+          break;
+        case "email_from_name":
+          setEmailFromName(setting.value);
+          break;
+        case "email_to_email":
+          setEmailToEmail(setting.value);
+          break;
+        case "email_notify_success":
+          setEmailNotifySuccess(setting.value === "true");
+          break;
+        case "email_notify_failure":
+          setEmailNotifyFailure(setting.value === "true");
+          break;
       }
     });
   }, [settings]);
@@ -183,60 +220,85 @@ const Settings: React.FC = () => {
   }, [importMode, exportOptions, loadSettings]);
 
   // Build settings items for table
-  const settingsItems: SettingItem[] = useMemo(() => [
-    // Test Settings
-    { id: "donation_amount", category: "test", name: "Spendenbetrag (EUR)", description: "Standard-Spendenbetrag für Tests", type: "input", value: donationAmount },
-    { id: "donation_interval", category: "test", name: "Spendenintervall", description: "Standard-Intervall für Tests", type: "select", value: donationInterval, options: [
-      { value: "0", label: "Einmalig" },
-      { value: "1", label: "Monatlich" },
-      { value: "3", label: "Vierteljährlich" },
-      { value: "12", label: "Jährlich" },
-    ]},
-    { id: "headless_mode", category: "test", name: "Headless-Modus", description: "Browser ohne sichtbares Fenster", type: "select", value: headlessMode, options: [
-      { value: "true", label: "Aktiviert" },
-      { value: "false", label: "Deaktiviert" },
-    ]},
-    { id: "slow_motion", category: "test", name: "Slow Motion", description: "Verzögerung zwischen Aktionen (Debugging)", type: "select", value: slowMotion, options: [
-      { value: "0", label: "Aus (Normal)" },
-      { value: "250", label: "250ms" },
-      { value: "500", label: "500ms" },
-      { value: "1000", label: "1000ms" },
-      { value: "2000", label: "2000ms" },
-    ]},
-    { id: "test_timeout", category: "test", name: "Test-Timeout (ms)", description: "Maximale Wartezeit für Operationen", type: "input", value: testTimeout },
-    // UI Settings
-    { id: "theme", category: "ui", name: "Theme", description: "Farbschema der Anwendung", type: "theme", value: theme },
-    // Email Settings
-    { id: "email_enabled", category: "email", name: "E-Mail aktiviert", description: "Benachrichtigungen per E-Mail", type: "checkbox", value: String(emailEnabled) },
-    { id: "email_smtp_host", category: "email", name: "SMTP Server", description: "Hostname des SMTP-Servers", type: "input", value: emailSmtpHost, disabled: !emailEnabled },
-    { id: "email_smtp_port", category: "email", name: "SMTP Port", description: "Port des SMTP-Servers", type: "input", value: emailSmtpPort, disabled: !emailEnabled },
-    { id: "email_smtp_secure", category: "email", name: "SSL/TLS", description: "Sichere Verbindung verwenden", type: "checkbox", value: String(emailSmtpSecure), disabled: !emailEnabled },
-    { id: "email_smtp_user", category: "email", name: "SMTP Benutzer", description: "Benutzername für SMTP", type: "input", value: emailSmtpUser, disabled: !emailEnabled },
-    { id: "email_smtp_pass", category: "email", name: "SMTP Passwort", description: "Passwort für SMTP", type: "input", value: emailSmtpPass, disabled: !emailEnabled },
-    { id: "email_from_email", category: "email", name: "Absender E-Mail", description: "E-Mail-Adresse des Absenders", type: "input", value: emailFromEmail, disabled: !emailEnabled },
-    { id: "email_from_name", category: "email", name: "Absender Name", description: "Name des Absenders", type: "input", value: emailFromName, disabled: !emailEnabled },
-    { id: "email_to_email", category: "email", name: "Empfänger E-Mail", description: "E-Mail-Adresse des Empfängers", type: "input", value: emailToEmail, disabled: !emailEnabled },
-    { id: "email_notify_success", category: "email", name: "Bei Erfolg", description: "Bei erfolgreichen Tests benachrichtigen", type: "checkbox", value: String(emailNotifySuccess), disabled: !emailEnabled },
-    { id: "email_notify_failure", category: "email", name: "Bei Fehler", description: "Bei fehlgeschlagenen Tests benachrichtigen", type: "checkbox", value: String(emailNotifyFailure), disabled: !emailEnabled },
-    { id: "email_test", category: "email", name: "Test-E-Mail", description: "Konfiguration testen", type: "action", value: "", actionLabel: isSendingTestEmail ? "Sende..." : "Senden", action: handleSendTestEmail, actionVariant: "secondary", disabled: !emailEnabled || !emailSmtpHost || !emailToEmail },
-    // Data Management
-    { id: "data_export", category: "data", name: "Daten exportieren", description: "Formulare, Bezahlmethoden, Tests exportieren", type: "action", value: "", actionLabel: isExporting ? "Exportiere..." : "Exportieren", action: handleExport, actionVariant: "secondary" },
-    { id: "data_import", category: "data", name: "Daten importieren", description: "Daten aus Backup wiederherstellen", type: "action", value: "", actionLabel: isImporting ? "Importiere..." : "Importieren", action: handleImport, actionVariant: "secondary" },
-    { id: "delete_forms", category: "data", name: "Formulare löschen", description: "Alle Formulare und zugehörige Tests löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "forms", title: "Alle Formulare löschen", message: "Alle Formulare und zugehörige Tests werden gelöscht." }), actionVariant: "danger" },
-    { id: "delete_payments", category: "data", name: "Bezahlmethoden löschen", description: "Alle Bezahlmethoden löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "paymentMethods", title: "Alle Bezahlmethoden löschen", message: "Alle Bezahlmethoden werden gelöscht." }), actionVariant: "danger" },
-    { id: "delete_tests", category: "data", name: "Tests löschen", description: "Alle Testergebnisse löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "testRuns", title: "Alle Tests löschen", message: "Alle Testergebnisse werden gelöscht." }), actionVariant: "danger" },
-    { id: "delete_schedules", category: "data", name: "Zeitpläne löschen", description: "Alle Zeitpläne löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "schedules", title: "Alle Zeitpläne löschen", message: "Alle Zeitpläne werden gelöscht." }), actionVariant: "danger" },
-    { id: "delete_all", category: "data", name: "Alle Daten löschen", description: "ALLE Daten unwiderruflich löschen", type: "action", value: "", actionLabel: "Alles löschen", action: () => setDeleteConfirmation({ type: "all", title: "Alle Daten löschen", message: "ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) werden gelöscht!" }), actionVariant: "danger" },
-    // Selectors
-    { id: "selectors", category: "selectors", name: "Selektor-Konfiguration", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: true },
-  ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport]);
+  const settingsItems: SettingItem[] = useMemo(
+    () => [
+      // Test Settings
+      { id: "donation_amount", category: "test", name: "Spendenbetrag (EUR)", description: "Standard-Spendenbetrag für Tests", type: "input", value: donationAmount },
+      {
+        id: "donation_interval",
+        category: "test",
+        name: "Spendenintervall",
+        description: "Standard-Intervall für Tests",
+        type: "select",
+        value: donationInterval,
+        options: [
+          { value: "0", label: "Einmalig" },
+          { value: "1", label: "Monatlich" },
+          { value: "3", label: "Vierteljährlich" },
+          { value: "12", label: "Jährlich" },
+        ],
+      },
+      {
+        id: "headless_mode",
+        category: "test",
+        name: "Headless-Modus",
+        description: "Browser ohne sichtbares Fenster",
+        type: "select",
+        value: headlessMode,
+        options: [
+          { value: "true", label: "Aktiviert" },
+          { value: "false", label: "Deaktiviert" },
+        ],
+      },
+      {
+        id: "slow_motion",
+        category: "test",
+        name: "Slow Motion",
+        description: "Verzögerung zwischen Aktionen (Debugging)",
+        type: "select",
+        value: slowMotion,
+        options: [
+          { value: "0", label: "Aus (Normal)" },
+          { value: "250", label: "250ms" },
+          { value: "500", label: "500ms" },
+          { value: "1000", label: "1000ms" },
+          { value: "2000", label: "2000ms" },
+        ],
+      },
+      { id: "test_timeout", category: "test", name: "Test-Timeout (ms)", description: "Maximale Wartezeit für Operationen", type: "input", value: testTimeout },
+      // UI Settings
+      { id: "theme", category: "ui", name: "Theme", description: "Farbschema der Anwendung", type: "theme", value: theme },
+      // Email Settings
+      { id: "email_enabled", category: "email", name: "E-Mail aktiviert", description: "Benachrichtigungen per E-Mail", type: "checkbox", value: String(emailEnabled) },
+      { id: "email_smtp_host", category: "email", name: "SMTP Server", description: "Hostname des SMTP-Servers", type: "input", value: emailSmtpHost, disabled: !emailEnabled },
+      { id: "email_smtp_port", category: "email", name: "SMTP Port", description: "Port des SMTP-Servers", type: "input", value: emailSmtpPort, disabled: !emailEnabled },
+      { id: "email_smtp_secure", category: "email", name: "SSL/TLS", description: "Sichere Verbindung verwenden", type: "checkbox", value: String(emailSmtpSecure), disabled: !emailEnabled },
+      { id: "email_smtp_user", category: "email", name: "SMTP Benutzer", description: "Benutzername für SMTP", type: "input", value: emailSmtpUser, disabled: !emailEnabled },
+      { id: "email_smtp_pass", category: "email", name: "SMTP Passwort", description: "Passwort für SMTP", type: "input", value: emailSmtpPass, disabled: !emailEnabled },
+      { id: "email_from_email", category: "email", name: "Absender E-Mail", description: "E-Mail-Adresse des Absenders", type: "input", value: emailFromEmail, disabled: !emailEnabled },
+      { id: "email_from_name", category: "email", name: "Absender Name", description: "Name des Absenders", type: "input", value: emailFromName, disabled: !emailEnabled },
+      { id: "email_to_email", category: "email", name: "Empfänger E-Mail", description: "E-Mail-Adresse des Empfängers", type: "input", value: emailToEmail, disabled: !emailEnabled },
+      { id: "email_notify_success", category: "email", name: "Bei Erfolg", description: "Bei erfolgreichen Tests benachrichtigen", type: "checkbox", value: String(emailNotifySuccess), disabled: !emailEnabled },
+      { id: "email_notify_failure", category: "email", name: "Bei Fehler", description: "Bei fehlgeschlagenen Tests benachrichtigen", type: "checkbox", value: String(emailNotifyFailure), disabled: !emailEnabled },
+      { id: "email_test", category: "email", name: "Test-E-Mail", description: "Konfiguration testen", type: "action", value: "", actionLabel: isSendingTestEmail ? "Sende..." : "Senden", action: handleSendTestEmail, actionVariant: "secondary", disabled: !emailEnabled || !emailSmtpHost || !emailToEmail },
+      // Data Management
+      { id: "data_export", category: "data", name: "Daten exportieren", description: "Formulare, Bezahlmethoden, Tests exportieren", type: "action", value: "", actionLabel: isExporting ? "Exportiere..." : "Exportieren", action: handleExport, actionVariant: "secondary" },
+      { id: "data_import", category: "data", name: "Daten importieren", description: "Daten aus Backup wiederherstellen", type: "action", value: "", actionLabel: isImporting ? "Importiere..." : "Importieren", action: handleImport, actionVariant: "secondary" },
+      { id: "delete_forms", category: "data", name: "Formulare löschen", description: "Alle Formulare und zugehörige Tests löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "forms", title: "Alle Formulare löschen", message: "Alle Formulare und zugehörige Tests werden gelöscht." }), actionVariant: "danger" },
+      { id: "delete_payments", category: "data", name: "Bezahlmethoden löschen", description: "Alle Bezahlmethoden löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "paymentMethods", title: "Alle Bezahlmethoden löschen", message: "Alle Bezahlmethoden werden gelöscht." }), actionVariant: "danger" },
+      { id: "delete_tests", category: "data", name: "Tests löschen", description: "Alle Testergebnisse löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "testRuns", title: "Alle Tests löschen", message: "Alle Testergebnisse werden gelöscht." }), actionVariant: "danger" },
+      { id: "delete_schedules", category: "data", name: "Zeitpläne löschen", description: "Alle Zeitpläne löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "schedules", title: "Alle Zeitpläne löschen", message: "Alle Zeitpläne werden gelöscht." }), actionVariant: "danger" },
+      { id: "delete_all", category: "data", name: "Alle Daten löschen", description: "ALLE Daten unwiderruflich löschen", type: "action", value: "", actionLabel: "Alles löschen", action: () => setDeleteConfirmation({ type: "all", title: "Alle Daten löschen", message: "ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) werden gelöscht!" }), actionVariant: "danger" },
+      // Selectors
+      { id: "selectors", category: "selectors", name: "Selektor-Konfiguration", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: true },
+    ],
+    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport]
+  );
 
   // Filter settings
   const filteredSettings = useMemo(() => {
     return settingsItems.filter((item) => {
-      const matchesSearch = !searchTerm || 
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = !searchTerm || item.name.toLowerCase().includes(searchTerm.toLowerCase()) || item.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = !categoryFilter || categoryFilter === "all" || item.category === categoryFilter;
       return matchesSearch && matchesCategory;
     });
@@ -346,10 +408,18 @@ const Settings: React.FC = () => {
     try {
       const api = window.api as any;
       switch (deleteConfirmation.type) {
-        case "forms": await api.forms.deleteAll(); break;
-        case "paymentMethods": await api.paymentMethods.deleteAll(); break;
-        case "testRuns": await api.testRuns.deleteAll(); break;
-        case "schedules": await api.schedules.deleteAll(); break;
+        case "forms":
+          await api.forms.deleteAll();
+          break;
+        case "paymentMethods":
+          await api.paymentMethods.deleteAll();
+          break;
+        case "testRuns":
+          await api.testRuns.deleteAll();
+          break;
+        case "schedules":
+          await api.schedules.deleteAll();
+          break;
         case "all":
           await api.forms.deleteAll();
           await api.paymentMethods.deleteAll();
@@ -367,29 +437,66 @@ const Settings: React.FC = () => {
 
   const getCategoryLabel = (category: string) => {
     switch (category) {
-      case "test": return "Test";
-      case "ui": return "UI";
-      case "email": return "E-Mail";
-      case "data": return "Daten";
-      case "selectors": return "Selektoren";
-      default: return category;
+      case "test":
+        return "Test";
+      case "ui":
+        return "UI";
+      case "email":
+        return "E-Mail";
+      case "data":
+        return "Daten";
+      case "selectors":
+        return "Selektoren";
+      default:
+        return category;
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "test": return <Sliders size={14} className="text-blue-500" />;
-      case "ui": return <Sun size={14} className="text-yellow-500" />;
-      case "email": return <Mail size={14} className="text-green-500" />;
-      case "data": return <Database size={14} className="text-purple-500" />;
-      case "selectors": return <Code size={14} className="text-cyan-500" />;
-      default: return <Settings2 size={14} />;
+      case "test":
+        return (
+          <Sliders
+            size={14}
+            className="text-blue-500"
+          />
+        );
+      case "ui":
+        return (
+          <Sun
+            size={14}
+            className="text-yellow-500"
+          />
+        );
+      case "email":
+        return (
+          <Mail
+            size={14}
+            className="text-green-500"
+          />
+        );
+      case "data":
+        return (
+          <Database
+            size={14}
+            className="text-purple-500"
+          />
+        );
+      case "selectors":
+        return (
+          <Code
+            size={14}
+            className="text-cyan-500"
+          />
+        );
+      default:
+        return <Settings2 size={14} />;
     }
   };
 
   const renderSettingControl = (item: SettingItem) => {
     const isDisabled = isLoading || item.disabled;
-    
+
     switch (item.type) {
       case "input":
         return (
@@ -404,13 +511,21 @@ const Settings: React.FC = () => {
         );
       case "select":
         return (
-          <Select value={item.value} onValueChange={(v) => handleSettingChange(item.id, v)} disabled={isDisabled}>
+          <Select
+            value={item.value}
+            onValueChange={(v) => handleSettingChange(item.id, v)}
+            disabled={isDisabled}>
             <SelectTrigger className={`h-7 text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {item.options?.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value} className="text-xs">{opt.label}</SelectItem>
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  className="text-xs">
+                  {opt.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -435,13 +550,8 @@ const Settings: React.FC = () => {
               <button
                 key={t.value}
                 onClick={() => handleSettingChange("theme", t.value)}
-                className={`p-1.5 rounded text-xs flex items-center gap-1 transition-colors ${
-                  theme === t.value
-                    ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                }`}
-                disabled={isDisabled}
-              >
+                className={`p-1.5 rounded text-xs flex items-center gap-1 transition-colors ${theme === t.value ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-transparent hover:border-gray-300 dark:hover:border-gray-600"}`}
+                disabled={isDisabled}>
                 {t.icon}
               </button>
             ))}
@@ -454,8 +564,7 @@ const Settings: React.FC = () => {
             size="sm"
             onClick={item.action}
             disabled={isDisabled}
-            className="text-xs h-7"
-          >
+            className="text-xs h-7">
             {item.actionLabel}
           </Button>
         );
@@ -484,11 +593,7 @@ const Settings: React.FC = () => {
       <h1 className={CONFIG.style.title.className}>Einstellungen</h1>
       <p className="text-gray-500 dark:text-gray-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800 text-sm">
-          {error}
-        </div>
-      )}
+      {error && <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800 text-sm">{error}</div>}
 
       {/* Settings Table */}
       <div className="space-y-6">
@@ -507,14 +612,15 @@ const Settings: React.FC = () => {
             { value: "selectors", label: "Selektoren" },
           ]}
           statusLabel="Kategorie"
-          onClear={() => { setSearchTerm(""); setCategoryFilter(undefined); }}
+          onClear={() => {
+            setSearchTerm("");
+            setCategoryFilter(undefined);
+          }}
         />
 
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
           {filteredSettings.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400 text-sm">
-              Keine Einstellungen gefunden.
-            </div>
+            <div className="p-8 text-center text-gray-500 dark:text-gray-400 text-sm">Keine Einstellungen gefunden.</div>
           ) : (
             <Table>
               <TableHeader>
@@ -525,11 +631,13 @@ const Settings: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredSettings.map((item) => (
+                {filteredSettings.map((item) =>
                   item.fullWidth ? (
                     <React.Fragment key={item.id}>
                       <TableRow>
-                        <TableCell colSpan={3} className="p-0">
+                        <TableCell
+                          colSpan={3}
+                          className="p-0">
                           <div className="px-4 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
                             <div className="flex items-center gap-2 mb-1">
                               {getCategoryIcon(item.category)}
@@ -537,9 +645,7 @@ const Settings: React.FC = () => {
                             </div>
                             <div className="text-[10px] text-gray-500 dark:text-gray-400">{item.description}</div>
                           </div>
-                          <div className="p-4">
-                            {renderSettingControl(item)}
-                          </div>
+                          <div className="p-4">{renderSettingControl(item)}</div>
                         </TableCell>
                       </TableRow>
                     </React.Fragment>
@@ -548,23 +654,23 @@ const Settings: React.FC = () => {
                       <TableCell>
                         <div className="flex items-center gap-1.5">
                           {getCategoryIcon(item.category)}
-                          <span className="text-[10px] font-mono uppercase text-gray-500 dark:text-gray-400">
-                            {getCategoryLabel(item.category)}
-                          </span>
+                          <span className="text-[10px] font-mono uppercase text-gray-500 dark:text-gray-400">{getCategoryLabel(item.category)}</span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div>
-                          <div className="text-xs font-medium text-gray-900 dark:text-white">{item.name}</div>
-                          <div className="text-[10px] text-gray-500 dark:text-gray-400">{item.description}</div>
+                          <div style={{ fontStretch: "125%" }} className="text-sm font-medium text-gray-900 dark:text-white">{item.name}</div>
+                          <div
+                            style={{ fontStretch: "100%" }}
+                            className="text-xs text-gray-500 dark:text-gray-400">
+                            {item.description}
+                          </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        {renderSettingControl(item)}
-                      </TableCell>
+                      <TableCell>{renderSettingControl(item)}</TableCell>
                     </TableRow>
                   )
-                ))}
+                )}
               </TableBody>
             </Table>
           )}
@@ -579,18 +685,8 @@ const Settings: React.FC = () => {
         )}
 
         {/* Export/Import Result Messages */}
-        {exportMessage && (
-          <div className="p-3 rounded-md border text-xs bg-gray-50 dark:bg-gray-900/20 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-            {exportMessage}
-          </div>
-        )}
-        {importResult && (
-          <div className={`p-3 rounded-md border text-xs ${importResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`}>
-            {importResult.success 
-              ? `Importiert: ${importResult.imported.forms} Formulare, ${importResult.imported.paymentMethods} Bezahlmethoden`
-              : importResult.errors.join(', ')}
-          </div>
-        )}
+        {exportMessage && <div className="p-3 rounded-md border text-xs bg-gray-50 dark:bg-gray-900/20 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">{exportMessage}</div>}
+        {importResult && <div className={`p-3 rounded-md border text-xs ${importResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`}>{importResult.success ? `Importiert: ${importResult.imported.forms} Formulare, ${importResult.imported.paymentMethods} Bezahlmethoden` : importResult.errors.join(", ")}</div>}
       </div>
 
       {/* Delete Confirmation Dialog */}

@@ -66,7 +66,7 @@ export interface GlobalSetting {
 export interface TestStep {
   id: string;
   name: string;
-  status: "pending" | "running" | "success" | "error" | "skipped";
+  status: "pending" | "running" | "success" | "error" | "skipped" | "stopped";
   startTime: string;
   endTime?: string;
   duration?: number;

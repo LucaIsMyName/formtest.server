@@ -261,8 +261,16 @@ const Forms: React.FC = () => {
               {displayedForms.map((form) => (
                 <TableRow
                   key={form.id}
-                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                  onClick={() => handleEditForm(form)}>
+                  tabIndex={0}
+                  role="button"
+                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
+                  onClick={() => handleEditForm(form)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleEditForm(form);
+                    }
+                  }}>
                   <TableCell>
                     <div className="flex items-center gap-2.5">
                       {renderIcon(form.icon || "FileText", 16, "text-gray-500 dark:text-gray-400")}

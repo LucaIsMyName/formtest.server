@@ -10,8 +10,11 @@ import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
+import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
+import { StatusBadge } from "./ui/Badge";
 import { Trash2, Play } from "lucide-react";
 import { CONFIG } from "@/app.config";
+import { formatDateTime } from "../utils/formatters";
 
 interface ScheduleDrawerProps {
   isOpen: boolean;
@@ -224,141 +227,187 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
 
         <DrawerHeader className="pt-6"></DrawerHeader>
 
+        {/* Details Table - only shown when editing */}
+        {initialData && (
+          <div className="mb-6 pb-6 border-b dark:border-gray-700">
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Autopilot Details</label>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">ID</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{initialData.id}</code>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2"><StatusBadge status={initialData.isActive ? "active" : "inactive"} /></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Formular</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">
+                      {forms.find(f => f.id === initialData.formId)?.name || `ID: ${initialData.formId}`}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Bezahlmethode</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">
+                      {paymentMethods.find(p => p.id === initialData.paymentMethodId)?.name || `ID: ${initialData.paymentMethodId}`}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Zeitplan</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{initialData.cronExpression}</code>
+                    </TableCell>
+                  </TableRow>
+                  {initialData.lastRun && (
+                    <TableRow>
+                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Letzter Lauf</TableCell>
+                      <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(initialData.lastRun)}</TableCell>
+                    </TableRow>
+                  )}
+                  {initialData.nextRun && (
+                    <TableRow>
+                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Nächster Lauf</TableCell>
+                      <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(initialData.nextRun)}</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
           className="space-y-4">
           {error && <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-200 rounded-md">{error}</div>}
 
-          {/* Name */}
-
-          {/* Form Selection */}
-          <div className="space-y-2">
-            <Label
-              className="text-gray-600 dark:text-gray-400"
-              htmlFor="formId">
-              Formular *
-            </Label>
-            <Select
-              value={formId}
-              onValueChange={setFormId}
-              disabled={isSubmitting}>
-              <SelectTrigger id="formId">
-                <SelectValue placeholder="Formular auswählen" />
-              </SelectTrigger>
-              <SelectContent>
-                {forms.map((form) => (
-                  <SelectItem
-                    key={form.id}
-                    value={String(form.id)}>
-                    {form.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Payment Method Selection */}
-          <div className="space-y-2">
-            <Label
-              className="text-gray-600 dark:text-gray-400"
-              htmlFor="paymentMethodId">
-              Bezahlmethode *
-            </Label>
-            <Select
-              value={paymentMethodId}
-              onValueChange={setPaymentMethodId}
-              disabled={isSubmitting}>
-              <SelectTrigger id="paymentMethodId">
-                <SelectValue placeholder="Bezahlmethode auswählen" />
-              </SelectTrigger>
-              <SelectContent>
-                {paymentMethods.map((pm) => (
-                  <SelectItem
-                    key={pm.id}
-                    value={String(pm.id)}>
-                    {pm.name} ({pm.type})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Frequency Selection */}
-          <div className="space-y-2">
-            <Label
-              className="text-gray-600 dark:text-gray-400"
-              htmlFor="frequency">
-              Häufigkeit *
-            </Label>
-            <Select
-              value={frequency}
-              onValueChange={setFrequency}
-              disabled={isSubmitting}>
-              <SelectTrigger id="frequency">
-                <SelectValue placeholder="Häufigkeit auswählen" />
-              </SelectTrigger>
-              <SelectContent>
-                {FREQUENCY_OPTIONS.map((opt) => (
-                  <SelectItem
-                    key={opt.value}
-                    value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Custom Cron Input */}
-          {frequency === "custom" && (
-            <div className="space-y-2">
-              <Label
-                className="text-gray-600 dark:text-gray-400"
-                htmlFor="customCron">
-                Cron Ausdruck *
-              </Label>
-              <Input
-                id="customCron"
-                type="text"
-                value={customCron}
-                onChange={(e) => setCustomCron(e.target.value)}
-                placeholder="* * * * * *"
-                disabled={isSubmitting}
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400">Format: Sekunde Minute Stunde Tag Monat Wochentag</p>
+          {/* Schedule Fields Table */}
+          <div className="mb-6">
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Autopilot Einstellungen</label>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Formular *</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <Select
+                        value={formId}
+                        onValueChange={setFormId}
+                        disabled={isSubmitting}>
+                        <SelectTrigger id="formId" className="text-sm">
+                          <SelectValue placeholder="Formular auswählen" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {forms.map((form) => (
+                            <SelectItem
+                              key={form.id}
+                              value={String(form.id)}>
+                              {form.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Bezahlmethode *</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <Select
+                        value={paymentMethodId}
+                        onValueChange={setPaymentMethodId}
+                        disabled={isSubmitting}>
+                        <SelectTrigger id="paymentMethodId" className="text-sm">
+                          <SelectValue placeholder="Bezahlmethode auswählen" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {paymentMethods.map((pm) => (
+                            <SelectItem
+                              key={pm.id}
+                              value={String(pm.id)}>
+                              {pm.name} ({pm.type})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Häufigkeit *</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <Select
+                        value={frequency}
+                        onValueChange={setFrequency}
+                        disabled={isSubmitting}>
+                        <SelectTrigger id="frequency" className="text-sm">
+                          <SelectValue placeholder="Häufigkeit auswählen" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {FREQUENCY_OPTIONS.map((opt) => (
+                            <SelectItem
+                              key={opt.value}
+                              value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                  {frequency === "custom" && (
+                    <TableRow>
+                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Cron *</TableCell>
+                      <TableCell className="px-3 py-2">
+                        <Input
+                          id="customCron"
+                          type="text"
+                          value={customCron}
+                          onChange={(e) => setCustomCron(e.target.value)}
+                          placeholder="* * * * * *"
+                          disabled={isSubmitting}
+                          className="text-sm"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Format: Sekunde Minute Stunde Tag Monat Wochentag</p>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Icon</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowIconPicker(true)}
+                        disabled={isSubmitting}
+                        className="flex items-center gap-3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+                        {renderIcon(icon, 18, "text-blue-600 dark:text-blue-400")}
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{icon}</span>
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="isActive"
+                          checked={isActive}
+                          onCheckedChange={(checked) => setIsActive(checked === true)}
+                          disabled={isSubmitting}
+                        />
+                        <Label
+                          htmlFor="isActive"
+                          className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+                          Zeitplan aktiv
+                        </Label>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </div>
-          )}
-
-          {/* Icon Selection */}
-          <div className="space-y-2">
-            <Label
-              className="text-gray-600 dark:text-gray-400"
-              htmlFor="icon">
-              Icon
-            </Label>
-            <button
-              type="button"
-              onClick={() => setShowIconPicker(true)}
-              disabled={isSubmitting}
-              className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
-              {renderIcon(icon, 20, "text-blue-600 dark:text-blue-400")}
-              <span className="text-sm text-gray-700 dark:text-gray-300">{icon}</span>
-            </button>
-          </div>
-
-          {/* Active Toggle */}
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="isActive"
-              checked={isActive}
-              onCheckedChange={(checked) => setIsActive(checked === true)}
-              disabled={isSubmitting}
-            />
-            <Label
-              htmlFor="isActive"
-              className="text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
-              Zeitplan aktiv
-            </Label>
           </div>
 
           <DrawerFooter className="pt-6">

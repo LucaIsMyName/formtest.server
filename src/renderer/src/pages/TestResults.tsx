@@ -159,28 +159,28 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   };
 
   return (
-    <div className="space-y-4">
-      <h4 className="text-sm font-medium text-gray-900 dark:text-white">Test Timeline</h4>
-      <div className="relative">
-        {allSteps.map((step, index) => (
-          <div
-            key={index}
-            className="relative flex items-start space-x-3 pb-4">
-            {/* Timeline line */}
-            {/* {index < allSteps.length - 1 ? <div className="absolute left-3 top-6 w-0.5 h-full bg-gray-200 dark:bg-gray-700" /> : null} */}
-            {index === 0 ? null : null}
-            {/* Step icon */}
-            <div className="relative flex items-center justify-center w-6 h-6 bg-white dark:bg-gray-800 ">{getStepIcon(step.type)}</div>
-
-            {/* Step content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-900 dark:text-white">{step.message}</p>
-                {step.timestamp && <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{formatTimestamp(step.timestamp)}</span>}
-              </div>
-            </div>
-          </div>
-        ))}
+    <div className="mb-6 pb-6 border-b dark:border-gray-700">
+      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Test Timeline</label>
+      <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+        <Table>
+          <TableBody>
+            {allSteps.map((step, index) => (
+              <TableRow key={index}>
+                <TableCell className="px-3 py-2 w-[40px] bg-gray-50 dark:bg-gray-800/50">
+                  {getStepIcon(step.type)}
+                </TableCell>
+                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">
+                  {step.message}
+                </TableCell>
+                {step.timestamp && (
+                  <TableCell className="px-3 py-2 w-[80px] text-right">
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{formatTimestamp(step.timestamp)}</span>
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

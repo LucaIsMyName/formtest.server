@@ -8,8 +8,11 @@ import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
+import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
+import { StatusBadge } from "./ui/Badge";
 import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink } from "lucide-react";
 import { CONFIG } from "@/app.config";
+import { formatDate } from "../utils/formatters";
 
 interface FormDrawerProps {
   isOpen: boolean;
@@ -214,71 +217,123 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
           {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
         </DrawerHeader>
 
+        {/* Details Table - only shown when editing */}
+        {editForm && (
+          <div className="mb-6 pb-6 border-b dark:border-gray-700">
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Formular Details</label>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">ID</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{editForm.id}</code>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2"><StatusBadge status={editForm.isActive ? "active" : "inactive"} /></TableCell>
+                  </TableRow>
+                  {editForm.hash && (
+                    <TableRow>
+                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Hash</TableCell>
+                      <TableCell className="px-3 py-2">
+                        <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{editForm.hash}</code>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Erstellt</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDate(editForm.createdAt)}</TableCell>
+                  </TableRow>
+                  {editForm.updatedAt && (
+                    <TableRow>
+                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Aktualisiert</TableCell>
+                      <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDate(editForm.updatedAt)}</TableCell>
+                    </TableRow>
+                  )}
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Mappings</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{editForm.fieldMappings?.length || 0} Feld-Mappings</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
           className="space-y-4">
-          <div className="space-y-2">
-            <Label
-              className="text-gray-600 dark:text-gray-400"
-              htmlFor="url">
-              Formular URL *
-            </Label>
-            <Input
-              id="url"
-              type="url"
-              value={formData.url}
-              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-              placeholder="https://secure.fundraisingbox.com/..."
-              disabled={isLoading}
-              className={errors.url ? "border-red-500 focus-visible:ring-red-500" : ""}
-            />
-            {errors.url && <p className="text-red-500 text-sm">{errors.url}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label
-              className="text-gray-600 dark:text-gray-400"
-              htmlFor="hash">
-              Formular Hash (Optional)
-            </Label>
-            <Input
-              id="hash"
-              value={formData.hash}
-              onChange={(e) => setFormData({ ...formData, hash: e.target.value })}
-              placeholder="z.B. s85hkigup9ml6y94"
-              disabled={isLoading}
-            />
-            <p className="text-gray-500 dark:text-gray-400 text-xs">Formular-Identifikations-Hash von FundraisingBox</p>
-          </div>
-
-          <div className="space-y-2">
-            <Label
-              className="text-gray-600 dark:text-gray-400"
-              htmlFor="icon">
-              Icon
-            </Label>
-            <button
-              type="button"
-              onClick={() => setShowIconPicker(true)}
-              disabled={isLoading}
-              className="flex items-center gap-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
-              {renderIcon(formData.icon, 20, "text-blue-600 dark:text-blue-400")}
-              <span className="text-sm text-gray-700 dark:text-gray-300">{formData.icon}</span>
-            </button>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="isActive"
-              checked={formData.isActive}
-              onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
-              disabled={isLoading}
-            />
-            <Label
-              htmlFor="isActive"
-              className="text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
-              Aktiv (in Tests einbeziehen)
-            </Label>
+          {/* Form Fields Table */}
+          <div className="mb-6">
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Formular Einstellungen</label>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">URL *</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <Input
+                        id="url"
+                        type="url"
+                        value={formData.url}
+                        onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                        placeholder="https://secure.fundraisingbox.com/..."
+                        disabled={isLoading}
+                        className={`text-sm ${errors.url ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                      />
+                      {errors.url && <p className="text-red-500 text-xs mt-1">{errors.url}</p>}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Hash</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <Input
+                        id="hash"
+                        value={formData.hash}
+                        onChange={(e) => setFormData({ ...formData, hash: e.target.value })}
+                        placeholder="z.B. s85hkigup9ml6y94"
+                        disabled={isLoading}
+                        className="text-sm"
+                      />
+                      <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">Formular-Identifikations-Hash von FundraisingBox</p>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Icon</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowIconPicker(true)}
+                        disabled={isLoading}
+                        className="flex items-center gap-3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+                        {renderIcon(formData.icon, 18, "text-blue-600 dark:text-blue-400")}
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{formData.icon}</span>
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="isActive"
+                          checked={formData.isActive}
+                          onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
+                          disabled={isLoading}
+                        />
+                        <Label
+                          htmlFor="isActive"
+                          className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+                          Aktiv (in Tests einbeziehen)
+                        </Label>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
           </div>
 
           {/* Field Mappings Section */}
