@@ -393,20 +393,26 @@ export const SELECTOR_CONFIG: SelectorConfig = {
   ],
 
   // Success detection patterns
+  // NOTE: Don't add the form's own domain here! The runner now requires
+  // an actual URL CHANGE to a payment provider or success page.
   successPatterns: {
     redirectUrls: [
-      'diakonie.at',
+      // Payment providers (external redirects)
       'paypal.com',
-      'stripe.com',
+      'stripe.com/pay',
+      'checkout.stripe.com',
       'klarna.com',
       'sofort.com',
       'giropay.de',
       'eps-ueberweisung.at',
+      // Success page paths (must be different from form URL)
       'secure.fundraisingbox.com/success',
       '/thank-you',
       '/danke',
       '/success',
-      '/confirmation'
+      '/confirmation',
+      '/vielen-dank',
+      '/spende-abgeschlossen'
     ],
     successMessages: [
       'Vielen Dank',

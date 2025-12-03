@@ -87,20 +87,20 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showTestDialog, setShowTestDialog] = useState(false);
 
-  // Prepare chart data - grouped by 2-hour intervals for last 48 hours
+  // Prepare chart data - grouped by 6-hour intervals for last 7 days
   const prepareTimelineData = () => {
     const now = new Date();
-    const hoursBack = 48; // Show last 48 hours
-    const intervalHours = 2; // Group by 2-hour intervals
+    const hoursBack = 168; // Show last 7 days (7 * 24 = 168 hours)
+    const intervalHours = 6; // Group by 6-hour intervals
     
-    // Create time slots for the last 48 hours in 2-hour intervals
+    // Create time slots for the last 7 days in 6-hour intervals
     const slots: Record<string, { date: string; success: number; failure: number; stopped: number }> = {};
     
     for (let i = hoursBack; i >= 0; i -= intervalHours) {
       const slotTime = new Date(now);
       slotTime.setHours(slotTime.getHours() - i);
       slotTime.setMinutes(0, 0, 0);
-      // Round down to nearest 2-hour interval
+      // Round down to nearest 6-hour interval
       slotTime.setHours(Math.floor(slotTime.getHours() / intervalHours) * intervalHours);
       
       const slotKey = slotTime.toISOString();
@@ -118,10 +118,10 @@ const Dashboard: React.FC = () => {
       const runDate = new Date(run.runAt);
       const hoursDiff = (now.getTime() - runDate.getTime()) / (1000 * 60 * 60);
       
-      // Only include runs from the last 48 hours
+      // Only include runs from the last 7 days
       if (hoursDiff > hoursBack) return;
       
-      // Round to nearest 2-hour slot
+      // Round to nearest 6-hour slot
       const slotTime = new Date(runDate);
       slotTime.setMinutes(0, 0, 0);
       slotTime.setHours(Math.floor(slotTime.getHours() / intervalHours) * intervalHours);
@@ -461,7 +461,7 @@ const Dashboard: React.FC = () => {
         <div className="space-y-6 mb-8">
           {/* Timeline Chart */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf (Letzte 48 Stunden)</h3>
+            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf (Letzte 7 Tage)</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>

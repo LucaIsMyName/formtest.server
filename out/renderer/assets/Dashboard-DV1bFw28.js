@@ -1,6 +1,6 @@
-import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, P as Play, S as Settings, h as TestRunDialog, i as dist } from "./index-CwRO9-TA.js";
+import { r as reactExports, c as clsx, g as getDefaultExportFromCjs, w as withSelectorExports, a as reactDomExports, R as React$1, u as useNavigate, b as useFormsStore, d as usePaymentMethodsStore, e as useTestRunsStore, j as jsxRuntimeExports, B as Button, T as Terminal, F as FileText, C as CreditCard, f as ChartColumn, P as Play, S as Settings, h as TestRunDialog, i as dist } from "./index-BWqAKNyf.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { S as Skeleton } from "./Skeleton-hDMEjhGi.js";
+import { S as Skeleton } from "./Skeleton-Dnu-7wuB.js";
 var EventKeys = ["dangerouslySetInnerHTML", "onCopy", "onCopyCapture", "onCut", "onCutCapture", "onPaste", "onPasteCapture", "onCompositionEnd", "onCompositionEndCapture", "onCompositionStart", "onCompositionStartCapture", "onCompositionUpdate", "onCompositionUpdateCapture", "onFocus", "onFocusCapture", "onBlur", "onBlurCapture", "onChange", "onChangeCapture", "onBeforeInput", "onBeforeInputCapture", "onInput", "onInputCapture", "onReset", "onResetCapture", "onSubmit", "onSubmitCapture", "onInvalid", "onInvalidCapture", "onLoad", "onLoadCapture", "onError", "onErrorCapture", "onKeyDown", "onKeyDownCapture", "onKeyPress", "onKeyPressCapture", "onKeyUp", "onKeyUpCapture", "onAbort", "onAbortCapture", "onCanPlay", "onCanPlayCapture", "onCanPlayThrough", "onCanPlayThroughCapture", "onDurationChange", "onDurationChangeCapture", "onEmptied", "onEmptiedCapture", "onEncrypted", "onEncryptedCapture", "onEnded", "onEndedCapture", "onLoadedData", "onLoadedDataCapture", "onLoadedMetadata", "onLoadedMetadataCapture", "onLoadStart", "onLoadStartCapture", "onPause", "onPauseCapture", "onPlay", "onPlayCapture", "onPlaying", "onPlayingCapture", "onProgress", "onProgressCapture", "onRateChange", "onRateChangeCapture", "onSeeked", "onSeekedCapture", "onSeeking", "onSeekingCapture", "onStalled", "onStalledCapture", "onSuspend", "onSuspendCapture", "onTimeUpdate", "onTimeUpdateCapture", "onVolumeChange", "onVolumeChangeCapture", "onWaiting", "onWaitingCapture", "onAuxClick", "onAuxClickCapture", "onClick", "onClickCapture", "onContextMenu", "onContextMenuCapture", "onDoubleClick", "onDoubleClickCapture", "onDrag", "onDragCapture", "onDragEnd", "onDragEndCapture", "onDragEnter", "onDragEnterCapture", "onDragExit", "onDragExitCapture", "onDragLeave", "onDragLeaveCapture", "onDragOver", "onDragOverCapture", "onDragStart", "onDragStartCapture", "onDrop", "onDropCapture", "onMouseDown", "onMouseDownCapture", "onMouseEnter", "onMouseLeave", "onMouseMove", "onMouseMoveCapture", "onMouseOut", "onMouseOutCapture", "onMouseOver", "onMouseOverCapture", "onMouseUp", "onMouseUpCapture", "onSelect", "onSelectCapture", "onTouchCancel", "onTouchCancelCapture", "onTouchEnd", "onTouchEndCapture", "onTouchMove", "onTouchMoveCapture", "onTouchStart", "onTouchStartCapture", "onPointerDown", "onPointerDownCapture", "onPointerMove", "onPointerMoveCapture", "onPointerUp", "onPointerUpCapture", "onPointerCancel", "onPointerCancelCapture", "onPointerEnter", "onPointerEnterCapture", "onPointerLeave", "onPointerLeaveCapture", "onPointerOver", "onPointerOverCapture", "onPointerOut", "onPointerOutCapture", "onGotPointerCapture", "onGotPointerCaptureCapture", "onLostPointerCapture", "onLostPointerCaptureCapture", "onScroll", "onScrollCapture", "onWheel", "onWheelCapture", "onAnimationStart", "onAnimationStartCapture", "onAnimationEnd", "onAnimationEndCapture", "onAnimationIteration", "onAnimationIterationCapture", "onTransitionEnd", "onTransitionEndCapture"];
 function isEventKey(key) {
   if (typeof key !== "string") {
@@ -23990,8 +23990,8 @@ const Dashboard = () => {
   const [showTestDialog, setShowTestDialog] = reactExports.useState(false);
   const prepareTimelineData = () => {
     const now = /* @__PURE__ */ new Date();
-    const hoursBack = 48;
-    const intervalHours = 2;
+    const hoursBack = 168;
+    const intervalHours = 6;
     const slots = {};
     for (let i = hoursBack; i >= 0; i -= intervalHours) {
       const slotTime = new Date(now);
@@ -24290,7 +24290,7 @@ const Dashboard = () => {
     ] }),
     testRuns.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Test-Verlauf (Letzte 48 Stunden)" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg text-gray-900 dark:text-white mb-4", children: "Test-Verlauf (Letzte 7 Tage)" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height: 300, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(LineChart, { data: prepareTimelineData(), children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(CartesianGrid, { strokeDasharray: "3 3", stroke: "#e5e7eb", strokeOpacity: 0.5 }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(XAxis, { dataKey: "date", stroke: "#9ca3af", tick: {
