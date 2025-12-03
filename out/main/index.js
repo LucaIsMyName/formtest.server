@@ -389,6 +389,7 @@ const SELECTOR_CONFIG = {
   // Success detection patterns
   successPatterns: {
     redirectUrls: [
+      "diakonie.at",
       "paypal.com",
       "stripe.com",
       "klarna.com",
@@ -448,6 +449,7 @@ const SELECTOR_CONFIG = {
     "eps": "eps"
   },
   // Default values for test data
+  // use FBox defaults in the future!!!!
   defaultValues: {
     country: "AT",
     salutation: "Mr.",

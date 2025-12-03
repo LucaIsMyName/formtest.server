@@ -423,6 +423,9 @@ class TestRunner {
     this.prefilledAmount = false
     this.prefilledInterval = false
     
+    // Reset tracking of fields filled by user mappings
+    this.filledByMapping = new Set()
+    
     // Store form field mappings for use during form filling
     this.fieldMappings = form.fieldMappings || []
     this.log(`Form has ${this.fieldMappings.length} custom field mappings`)
@@ -822,74 +825,187 @@ class TestRunner {
   async waitForSuccessRedirect() {
     this.log('Waiting for success redirect or confirmation...')
     
+    // IMPORTANT: Use mainPage for URL detection since form might be in iframe
+    const pageForUrlCheck = this.mainPage || this.page
+    
+    // Store the initial URL - we need to detect an ACTUAL change, not just pattern match
+    const initialUrl = pageForUrlCheck.url()
+    const initialUrlLower = initialUrl.toLowerCase()
+    this.log(`Initial URL (before submission): ${initialUrl}`)
+    
     // Get success patterns from config
     const configPatterns = this.getSuccessPatterns()
     
-    // Build regex patterns from config redirect URLs
-    const redirectPatterns = configPatterns.redirectUrls.length > 0
-      ? configPatterns.redirectUrls.map(url => new RegExp(url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'))
-      : [
-          /paypal\.com/,
-          /pay\.google\.com/,
-          /stripe\.com/,
-          /visa/,
-          /mastercard/,
-          /amex/,
-          /sepa/,
-          /eps/,
-          /sofort/,
-          /klarna/,
-          /giropay/,
-          /success/,
-          /thank-you/,
-          /danke/,
-          /confirmation/,
-          /bestaetigung/
-        ]
+    // Payment provider patterns - these are EXTERNAL redirects (always valid)
+    const paymentProviderPatterns = [
+      /paypal\.com/,
+      /pay\.google\.com/,
+      /stripe\.com\/pay/,
+      /checkout\.stripe\.com/,
+      /klarna\.com/,
+      /sofort\.com/,
+      /giropay\./,
+      /eps-ueberweisung/,
+      /secure\.ogone/,
+      /viveum/,
+      /hobex/
+    ]
     
-    // Build success message selectors from config
+    // Success page patterns - these require URL to be DIFFERENT from initial
+    const successPagePatterns = [
+      /\/success/,
+      /\/thank-you/,
+      /\/danke/,
+      /\/confirmation/,
+      /\/bestaetigung/,
+      /\/vielen-dank/,
+      /\/spende-abgeschlossen/,
+      /\/donation-complete/
+    ]
+    
+    // Build success message selectors
     const successMessageSelectors = configPatterns.successMessages.length > 0
       ? configPatterns.successMessages.map(msg => `:text("${msg}")`).join(', ')
-      : ':text("Vielen Dank"), :text("Thank you")'
+      : ':text("Vielen Dank für Ihre Spende"), :text("Thank you for your donation"), :text("Ihre Spende wurde erfolgreich")'
     
     const successSelectors = configPatterns.successSelectors.length > 0
       ? configPatterns.successSelectors.join(', ')
-      : '.success-message, .alert-success'
+      : '.success-message, .alert-success, .donation-success, .thank-you-message'
+    
+    // Error patterns to detect failed submissions
+    const errorPatterns = [
+      '.error', '.alert-error', '.alert-danger', '.form-error',
+      '.field-error', '.validation-error', '.payment-error',
+      ':text("Fehler")', ':text("Error")', ':text("ungültig")', ':text("invalid")',
+      ':text("Bitte überprüfen")', ':text("Please check")'
+    ]
+
+    this.log(`Checking URL on: ${pageForUrlCheck === this.mainPage ? 'mainPage' : 'iframe'}`)
 
     try {
-      // Wait for URL change or network activity
+      // Wait for URL change or success message
       const result = await Promise.race([
-        // Check URL changes
-        this.page.waitForURL((url) => {
+        // Check for URL changes - must be DIFFERENT from initial URL
+        pageForUrlCheck.waitForURL((url) => {
           const urlString = url.toString().toLowerCase()
-          const matched = redirectPatterns.some(pattern => pattern.test(urlString))
-          if (matched) {
-            this.log(`Detected success URL: ${urlString}`)
+          
+          // Must be different from initial URL
+          if (urlString === initialUrlLower) {
+            return false
+          }
+          
+          // Check for payment provider redirect (external)
+          const isPaymentProvider = paymentProviderPatterns.some(p => p.test(urlString))
+          if (isPaymentProvider) {
+            this.log(`✓ Redirected to payment provider: ${urlString}`)
             return true
           }
+          
+          // Check for success page pattern (must be different URL)
+          const isSuccessPage = successPagePatterns.some(p => p.test(urlString))
+          if (isSuccessPage) {
+            this.log(`✓ Redirected to success page: ${urlString}`)
+            return true
+          }
+          
+          // URL changed but doesn't match known patterns - could still be success
+          // Log it but don't auto-accept
+          this.log(`URL changed to: ${urlString} (checking if success...)`)
           return false
         }, { timeout: 30000 }),
         
-        // Also check for success messages in the page content as a fallback
-        // (some forms stay on the same page)
-        this.page.waitForSelector(`${successSelectors}, ${successMessageSelectors}`, { timeout: 30000 })
+        // Check for success messages on the page
+        pageForUrlCheck.waitForSelector(`${successSelectors}, ${successMessageSelectors}`, { 
+          timeout: 30000,
+          state: 'visible'
+        }).then(async (el) => {
+          if (el) {
+            const text = await el.textContent()
+            this.log(`✓ Found success message: "${text?.substring(0, 50)}..."`)
+            return { type: 'message', element: el }
+          }
+          return null
+        }).catch(() => null)
       ])
 
-      return { success: true, url: this.page.url() }
+      const finalUrl = pageForUrlCheck.url()
+      
+      // Final validation: check we're not still on the same page with errors
+      if (finalUrl.toLowerCase() === initialUrlLower) {
+        // Still on same page - check for errors
+        const hasError = await this.checkForFormErrors(pageForUrlCheck, errorPatterns)
+        if (hasError) {
+          throw new Error('Form submission failed - error message detected on page')
+        }
+        
+        // Check if there's actually a success message visible
+        try {
+          const successEl = await pageForUrlCheck.$(`${successSelectors}, ${successMessageSelectors}`)
+          if (successEl && await successEl.isVisible()) {
+            this.log(`✓ Success message found on same page`)
+            return { success: true, url: finalUrl, type: 'same-page-success' }
+          }
+        } catch (e) {
+          // No success message found
+        }
+        
+        throw new Error('Form stayed on same page without success confirmation')
+      }
+      
+      this.log(`✓ Success! Final URL: ${finalUrl}`)
+      return { success: true, url: finalUrl }
+      
     } catch (error) {
-      this.log(`Timeout waiting for success redirect: ${error.message}`)
+      this.log(`❌ ${error.message}`)
       
-      // Check final URL just in case
-      const currentUrl = this.page.url().toLowerCase()
-      const matched = redirectPatterns.some(pattern => pattern.test(currentUrl))
+      // Final check: did URL change at all?
+      const currentUrl = pageForUrlCheck.url()
+      if (currentUrl.toLowerCase() !== initialUrlLower) {
+        // URL changed - check if it's a payment provider
+        const isPaymentProvider = paymentProviderPatterns.some(p => p.test(currentUrl.toLowerCase()))
+        if (isPaymentProvider) {
+          this.log(`✓ Final URL is payment provider: ${currentUrl}`)
+          return { success: true, url: currentUrl }
+        }
+        
+        // Check for success patterns in new URL
+        const isSuccessPage = successPagePatterns.some(p => p.test(currentUrl.toLowerCase()))
+        if (isSuccessPage) {
+          this.log(`✓ Final URL is success page: ${currentUrl}`)
+          return { success: true, url: currentUrl }
+        }
+      }
       
-      if (matched) {
-         this.log(`Final URL matches success pattern: ${currentUrl}`)
-         return { success: true, url: currentUrl }
+      // Check for errors on the page
+      const hasError = await this.checkForFormErrors(pageForUrlCheck, errorPatterns)
+      if (hasError) {
+        throw new Error('Form submission failed - validation errors on page')
       }
 
-      throw new Error('Form submission did not redirect to a known payment provider or success page')
+      throw new Error('Form submission did not redirect to a payment provider or success page')
     }
+  }
+  
+  /**
+   * Check if there are error messages visible on the page
+   */
+  async checkForFormErrors(page, errorPatterns) {
+    for (const pattern of errorPatterns) {
+      try {
+        const errorEl = await page.$(pattern)
+        if (errorEl) {
+          const isVisible = await errorEl.isVisible()
+          if (isVisible) {
+            const text = await errorEl.textContent()
+            this.log(`❌ Error detected: "${text?.substring(0, 100)}"`)
+            return true
+          }
+        }
+      } catch (e) {
+        // Continue checking other patterns
+      }
+    }
+    return false
   }
 
   async analyzeAndFillForm() {
@@ -922,6 +1038,10 @@ class TestRunner {
    * These take priority over automatic field detection
    */
   async applyFieldMappings() {
+    // Track which selectors/fields we've filled so we don't overwrite them later
+    // We track multiple variations of the selector to catch all cases
+    this.filledByMapping = this.filledByMapping || new Set()
+    
     for (const mapping of this.fieldMappings) {
       try {
         this.log(`Applying mapping: ${mapping.fieldType} -> ${mapping.selector}`)
@@ -944,6 +1064,8 @@ class TestRunner {
             const typeValue = mapping.value || this.getDefaultValueForFieldType(mapping.fieldType)
             await element.fill(typeValue)
             this.log(`Typed "${this.maskSensitiveValue(typeValue, mapping.fieldType)}" into ${mapping.selector}`)
+            // Track multiple variations of the selector to prevent overwrites
+            this.trackFilledField(mapping.selector, element)
             break
 
           case 'click':
@@ -963,6 +1085,8 @@ class TestRunner {
             const selectValue = mapping.value || this.getDefaultValueForFieldType(mapping.fieldType)
             await element.selectOption(selectValue)
             this.log(`Selected "${selectValue}" in ${mapping.selector}`)
+            // Track multiple variations of the selector to prevent overwrites
+            this.trackFilledField(mapping.selector, element)
             break
 
           case 'check':
@@ -984,6 +1108,78 @@ class TestRunner {
         this.log(`Failed to apply mapping ${mapping.fieldType}: ${error.message}`)
       }
     }
+  }
+
+  /**
+   * Track a filled field by adding multiple selector variations to prevent overwrites
+   * This handles cases where the same field can be selected by different selectors:
+   * - [name="payment[first_name]"] vs #payment_first_name
+   */
+  async trackFilledField(selector, element) {
+    // Add the original selector
+    this.filledByMapping.add(selector)
+    
+    try {
+      // Get element attributes to create alternative selectors
+      const id = await element.getAttribute('id')
+      const name = await element.getAttribute('name')
+      
+      if (id) {
+        this.filledByMapping.add(`#${id}`)
+        this.filledByMapping.add(id)
+        // Also track the field name pattern (e.g., "first_name" from "payment_first_name")
+        const fieldName = id.replace('payment_', '')
+        this.filledByMapping.add(fieldName)
+      }
+      
+      if (name) {
+        this.filledByMapping.add(`[name="${name}"]`)
+        this.filledByMapping.add(name)
+        // Extract field name from name attribute (e.g., "first_name" from "payment[first_name]")
+        const match = name.match(/\[([^\]]+)\]/)
+        if (match) {
+          this.filledByMapping.add(match[1])
+        }
+      }
+      
+      this.log(`Tracked filled field: ${Array.from(this.filledByMapping).slice(-5).join(', ')}`)
+    } catch (e) {
+      // Ignore errors, we at least have the original selector
+    }
+  }
+
+  /**
+   * Check if a field was already filled by user mapping
+   */
+  isFieldFilledByMapping(field) {
+    if (!this.filledByMapping || this.filledByMapping.size === 0) {
+      return false
+    }
+    
+    // Check various identifiers
+    const identifiers = [
+      field.selector,
+      field.id,
+      field.name,
+      `#${field.id}`,
+      `[name="${field.name}"]`
+    ].filter(Boolean)
+    
+    for (const id of identifiers) {
+      if (this.filledByMapping.has(id)) {
+        return true
+      }
+    }
+    
+    // Also check partial matches for field names
+    // e.g., if we filled "first_name", skip "#payment_first_name"
+    for (const filled of this.filledByMapping) {
+      if (field.id && field.id.includes(filled)) return true
+      if (field.name && field.name.includes(filled)) return true
+      if (field.selector && field.selector.includes(filled)) return true
+    }
+    
+    return false
   }
 
   /**
@@ -1378,13 +1574,19 @@ class TestRunner {
     this.log('Handling FB personal data...')
 
     const personalFields = [
-      { selector: '#payment_first_name', value: faker.person.firstName(), type: 'firstName' },
-      { selector: '#payment_last_name', value: faker.person.lastName(), type: 'lastName' },
-      { selector: '#payment_email', value: faker.internet.email(), type: 'email' }
+      { selector: '#payment_first_name', id: 'payment_first_name', name: 'payment[first_name]', value: faker.person.firstName(), type: 'firstName' },
+      { selector: '#payment_last_name', id: 'payment_last_name', name: 'payment[last_name]', value: faker.person.lastName(), type: 'lastName' },
+      { selector: '#payment_email', id: 'payment_email', name: 'payment[email]', value: faker.internet.email(), type: 'email' }
     ]
 
     for (const field of personalFields) {
-      // Skip if handled by field mapping
+      // Skip if already filled by user's field mapping (check all variations)
+      if (this.isFieldFilledByMapping(field)) {
+        this.log(`${field.type} already filled by user mapping, skipping`)
+        continue
+      }
+      
+      // Also check by fieldType for backwards compatibility
       const mapping = this.fieldMappings?.find(m => m.fieldType === field.type)
       if (mapping) {
         this.log(`${field.type} already handled by field mapping`)
@@ -1454,8 +1656,50 @@ class TestRunner {
   async fillFormFields(fields) {
     this.log('Filling form fields with test data...')
 
+    // Fields to skip (already handled by FundraisingBox-specific handling or are special types)
+    const skipPatterns = [
+      /payment_amount/,           // Amount fields - handled separately
+      /payment_interval/,         // Interval - handled separately
+      /payment_salutation/,       // Salutation - handled separately
+      /payment_country/,          // Country - handled separately
+      /payment_is_privacy/,       // Privacy checkbox - handled separately
+      /donation_custom_field/,    // Custom fields like newsletter - handled separately
+      /payment_project/,          // Project selection - handled separately
+      /payment_bank/,             // Bank fields - handled by payment method
+      /payment_credit_card/,      // Credit card fields - handled by payment method
+      /payment_eps/,              // EPS fields - handled by payment method
+      /payment_token/,            // Hidden tokens
+      /payment_parent_url/,       // Hidden URLs
+      /payment_success/,          // Hidden URLs
+      /payment_failure/,          // Hidden URLs
+      /payment_fb_sci/,           // Hidden tracking
+      /payment_element_hash/,     // Hidden hash
+      /payment_payment_method/,   // Hidden payment method
+      /payment_covered_fee/,      // Hidden fee fields
+    ]
+
     for (const field of fields) {
       try {
+        // Skip radio and checkbox inputs - they need click, not fill
+        if (field.inputType === 'radio' || field.inputType === 'checkbox') {
+          continue
+        }
+
+        // Skip fields matching skip patterns
+        const shouldSkip = skipPatterns.some(pattern => 
+          pattern.test(field.id || '') || pattern.test(field.name || '')
+        )
+        if (shouldSkip) {
+          continue
+        }
+
+        // IMPORTANT: Skip fields that were already filled by user-defined field mappings
+        // This prevents overwriting user's custom values with faker data
+        if (this.isFieldFilledByMapping(field)) {
+          this.log(`Skipping ${field.selector} - already filled by user mapping`)
+          continue
+        }
+
         const value = this.generateFieldValue(field)
         if (value) {
           await this.fillField(field, value)
@@ -1545,10 +1789,26 @@ class TestRunner {
         return
       }
 
+      // IMPORTANT: Check if element is visible before trying to fill
+      // This prevents getting stuck on hidden fields like #payment_company_name
+      const isVisible = await element.isVisible()
+      if (!isVisible) {
+        this.log(`Skipping hidden field: ${field.selector}`)
+        return
+      }
+
+      // Check if element is editable (not disabled/readonly)
+      const isEditable = await element.isEditable().catch(() => true)
+      if (!isEditable) {
+        this.log(`Skipping non-editable field: ${field.selector}`)
+        return
+      }
+
       if (field.type === 'select') {
         await element.selectOption(value)
       } else {
-        await element.fill(value)
+        // Use a short timeout to avoid getting stuck
+        await element.fill(value, { timeout: 5000 })
       }
 
       this.log(`Filled ${field.selector} with: ${value}`)
@@ -1707,8 +1967,80 @@ class TestRunner {
     }
   }
 
+  /**
+   * Log the current state of all payment forms for debugging
+   */
+  async logPaymentFormState() {
+    const forms = [
+      { name: 'bankAccountForm (SEPA)', selector: '#bankAccountForm' },
+      { name: 'creditCardForm', selector: '#creditCardForm' },
+      { name: 'epsBankForm', selector: '#epsBankForm' }
+    ]
+
+    this.log('=== Payment Form State ===')
+    for (const form of forms) {
+      try {
+        const element = await this.page.$(form.selector)
+        if (element) {
+          const isVisible = await element.isVisible()
+          const display = await element.evaluate(el => window.getComputedStyle(el).display)
+          this.log(`${form.name}: visible=${isVisible}, display=${display}`)
+        } else {
+          this.log(`${form.name}: not found in DOM`)
+        }
+      } catch (e) {
+        this.log(`${form.name}: error checking - ${e.message}`)
+      }
+    }
+    this.log('==========================')
+  }
+
+  /**
+   * Wait for the correct payment form to become visible after selecting a payment method
+   * @param {string} paymentType - The payment type (sepa, creditcard, eps, paypal)
+   */
+  async waitForPaymentFormVisibility(paymentType) {
+    const formMap = {
+      'sepa': { selector: '#bankAccountForm', name: 'SEPA/Bank Account Form' },
+      'creditcard': { selector: '#creditCardForm', name: 'Credit Card Form' },
+      'eps': { selector: '#epsBankForm', name: 'EPS Bank Form' },
+      'paypal': null // PayPal doesn't have an additional form
+    }
+
+    const formInfo = formMap[paymentType.toLowerCase()]
+    
+    if (!formInfo) {
+      this.log(`No additional form needed for payment type: ${paymentType}`)
+      return true
+    }
+
+    this.log(`Waiting for ${formInfo.name} to become visible...`)
+
+    try {
+      // Wait for the form to be visible (max 5 seconds)
+      await this.page.waitForSelector(formInfo.selector, {
+        state: 'visible',
+        timeout: 5000
+      })
+      this.log(`✓ ${formInfo.name} is now visible`)
+      
+      // Additional wait for any animations to complete
+      await this.page.waitForTimeout(300)
+      return true
+    } catch (error) {
+      this.log(`⚠ Warning: ${formInfo.name} did not become visible within timeout`)
+      
+      // Log current state for debugging
+      await this.logPaymentFormState()
+      return false
+    }
+  }
+
   async handlePaymentMethod(paymentMethod, formAnalysis) {
     this.log(`Handling payment method: ${paymentMethod.type}`)
+
+    // Log initial payment form state
+    await this.logPaymentFormState()
 
     // Check if already handled by field mapping
     const paymentMapping = this.fieldMappings?.find(m => m.fieldType === 'paymentMethod')
@@ -1725,6 +2057,7 @@ class TestRunner {
       } catch (error) {
         paymentDetails = {}
       }
+      await this.waitForPaymentFormVisibility(paymentMethod.type)
       await this.fillPaymentFields(paymentMethod.type, paymentDetails)
       return
     }
@@ -1751,6 +2084,7 @@ class TestRunner {
     }
 
     const fbPaymentId = fbPaymentMap[paymentMethod.type.toLowerCase()] || paymentMethod.type.toLowerCase()
+    this.log(`Mapped payment type '${paymentMethod.type}' to FundraisingBox ID: '${fbPaymentId}'`)
 
     // FundraisingBox-specific payment selectors (card-style labels with radio inputs)
     const fbPaymentSelectors = [
@@ -1760,6 +2094,8 @@ class TestRunner {
       `input[name="paymentmethods"][id="${fbPaymentId}"]`
     ]
 
+    let paymentMethodSelected = false
+
     // Try FundraisingBox selectors first
     for (const selector of fbPaymentSelectors) {
       try {
@@ -1768,13 +2104,8 @@ class TestRunner {
           await element.scrollIntoViewIfNeeded()
           await element.click()
           this.log(`Selected FB payment method: ${fbPaymentId} via ${selector}`)
-          
-          // Wait for payment form to appear
-          await this.page.waitForTimeout(500)
-          
-          // Fill payment-specific fields
-          await this.fillPaymentFields(paymentMethod.type, paymentDetails)
-          return
+          paymentMethodSelected = true
+          break
         }
       } catch (error) {
         // Continue trying other selectors
@@ -1782,30 +2113,42 @@ class TestRunner {
     }
 
     // Fallback: generic payment selectors
-    const genericPaymentSelectors = [
-      `input[value*="${paymentMethod.type.toLowerCase()}"]`,
-      `button[data-payment*="${paymentMethod.type.toLowerCase()}"]`,
-      `input[name*="payment"][value*="${paymentMethod.type.toLowerCase()}"]`,
-      `label:has-text("${paymentMethod.type}")`
-    ]
+    if (!paymentMethodSelected) {
+      const genericPaymentSelectors = [
+        `input[value*="${paymentMethod.type.toLowerCase()}"]`,
+        `button[data-payment*="${paymentMethod.type.toLowerCase()}"]`,
+        `input[name*="payment"][value*="${paymentMethod.type.toLowerCase()}"]`,
+        `label:has-text("${paymentMethod.type}")`
+      ]
 
-    for (const selector of genericPaymentSelectors) {
-      try {
-        const element = await this.page.$(selector)
-        if (element) {
-          await element.click()
-          this.log(`Selected payment method: ${paymentMethod.type}`)
-
-          // Fill payment-specific fields
-          await this.fillPaymentFields(paymentMethod.type, paymentDetails)
-          return
+      for (const selector of genericPaymentSelectors) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            await element.click()
+            this.log(`Selected payment method via generic selector: ${selector}`)
+            paymentMethodSelected = true
+            break
+          }
+        } catch (error) {
+          // Continue trying other selectors
         }
-      } catch (error) {
-        // Continue trying other selectors
       }
     }
 
-    this.log(`Could not find payment method selector for: ${paymentMethod.type}`)
+    if (!paymentMethodSelected) {
+      this.log(`⚠ Could not find payment method selector for: ${paymentMethod.type}`)
+      return
+    }
+
+    // IMPORTANT: Wait for the payment form to become visible
+    await this.waitForPaymentFormVisibility(paymentMethod.type)
+    
+    // Log state after selection
+    await this.logPaymentFormState()
+
+    // Fill payment-specific fields
+    await this.fillPaymentFields(paymentMethod.type, paymentDetails)
   }
 
   async fillPaymentFields(paymentType, paymentDetails) {
@@ -1838,65 +2181,110 @@ class TestRunner {
   async fillCreditCardFields(details) {
     this.log('Filling credit card fields...')
 
-    const cardFields = [
-      {
-        selectors: ['input[name*="card"][name*="number"]', 'input[placeholder*="Kartennummer"]', '#cardnumber'],
-        value: details.cardNumber || '4111111111111111',
-        name: 'card number'
-      },
-      {
-        selectors: ['input[name*="card"][name*="holder"]', 'input[name*="owner"]', 'input[placeholder*="Karteninhaber"]'],
-        value: details.cardHolder || 'Max Mustermann',
-        name: 'card holder'
-      },
-      {
-        selectors: ['input[name*="expiry"]', 'input[name*="expire"]', 'input[placeholder*="MM/YY"]'],
-        value: details.expiryDate || '12/25',
-        name: 'expiry date'
-      },
-      {
-        selectors: ['input[name*="cvv"]', 'input[name*="cvc"]', 'input[placeholder*="CVV"]'],
-        value: details.cvv || '123',
-        name: 'CVV'
+    // Verify credit card form is visible before filling
+    const creditCardForm = await this.page.$('#creditCardForm')
+    if (creditCardForm) {
+      const isVisible = await creditCardForm.isVisible()
+      if (!isVisible) {
+        this.log('⚠ Warning: Credit card form (#creditCardForm) is not visible')
+        await this.logPaymentFormState()
+        return
       }
+      this.log('✓ Credit card form is visible')
+    } else {
+      this.log('⚠ Warning: Credit card form (#creditCardForm) not found in DOM')
+      return
+    }
+
+    // IMPORTANT: FundraisingBox uses Stripe Elements for card number, CVV, and expiry
+    // These are rendered in iframes and CANNOT be filled directly by Playwright
+    // Only the card holder/owner field is a regular input we can fill
+    
+    // Check for Stripe iframes
+    const stripeIframes = await this.page.$$('#creditCardForm iframe[name*="__privateStripeFrame"]')
+    if (stripeIframes.length > 0) {
+      this.log(`⚠ Detected ${stripeIframes.length} Stripe iframe(s) - card number/CVV/expiry cannot be automated`)
+      this.log('Note: Stripe Elements are secure iframes that prevent automation')
+      this.log('Test will fill card holder only and proceed to submission')
+    }
+
+    // Fill card holder/owner - this is a regular input field
+    const cardHolderSelectors = [
+      '#creditCardForm #payment_credit_card_owner',  // Most specific
+      '#payment_credit_card_owner',
+      '#creditCardForm input[name*="credit_card_owner"]',
+      'input[name="payment[credit_card_owner]"]',
+      'input[name*="card"][name*="owner"]',
+      'input[name*="card"][name*="holder"]',
+      'input[placeholder*="Karteninhaber"]'
     ]
 
-    for (const field of cardFields) {
-      await this.tryFillField(field.selectors, field.value, field.name)
+    const cardHolderValue = details.cardHolder || `${faker.person.firstName()} ${faker.person.lastName()}`
+    const filled = await this.tryFillFieldWithVisibilityCheck(cardHolderSelectors, cardHolderValue, 'credit card holder')
+    
+    if (filled) {
+      this.log('✓ Credit card holder filled successfully')
+    } else {
+      this.log('⚠ Could not fill credit card holder field')
     }
+
+    // Log what we cannot fill due to Stripe iframes
+    this.log('ℹ Stripe iframe fields (cannot be automated):')
+    this.log('  - Card number (#payment_credit_card_number)')
+    this.log('  - CVV/CVC (#payment_credit_card_secure_id)')
+    this.log('  - Expiry date (#payment_credit_card_expiry)')
+    this.log('These fields require manual entry or Stripe test mode configuration')
   }
 
   async fillSepaFields(details) {
     this.log('Filling SEPA fields...')
 
-    // Wait for SEPA form to appear (FundraisingBox shows it dynamically)
-    await this.page.waitForTimeout(500)
+    // Verify SEPA form is visible before filling
+    const sepaForm = await this.page.$('#bankAccountForm')
+    if (sepaForm) {
+      const isVisible = await sepaForm.isVisible()
+      if (!isVisible) {
+        this.log('⚠ Warning: SEPA form (#bankAccountForm) is not visible')
+        await this.logPaymentFormState()
+      } else {
+        this.log('✓ SEPA form is visible, proceeding to fill fields')
+      }
+    } else {
+      this.log('⚠ Warning: SEPA form (#bankAccountForm) not found in DOM')
+    }
 
     // Check if handled by field mapping
     const ibanMapping = this.fieldMappings?.find(m => m.fieldType === 'iban')
     const accountHolderMapping = this.fieldMappings?.find(m => m.fieldType === 'accountHolder')
 
     // Get selectors from config or use fallbacks
+    // IMPORTANT: Use container-scoped selectors to avoid filling wrong fields
     const accountHolderSelectors = this.getSelectors('paymentFields', 'accountHolder')
     const ibanSelectors = this.getSelectors('paymentFields', 'iban')
     const defaultIban = this.getDefaultValue('testIban') || 'AT89370400440532013000'
 
     const sepaFields = [
       {
+        // Container-scoped selectors first, then fallback to generic
         selectors: accountHolderSelectors.length > 0 ? accountHolderSelectors : [
+          '#bankAccountForm #payment_bank_account_owner',  // Most specific
           '#payment_bank_account_owner',
+          '#bankAccountForm input[name*="bank_account_owner"]',
+          'input[name="payment[bank_account_owner]"]',
           'input[name*="bank_account_owner"]',
-          'input[name*="account"][name*="holder"]', 
           'input[name*="kontoinhaber"]', 
           'input[placeholder*="Kontoinhaber"]'
         ],
         value: accountHolderMapping?.value || details.accountHolder || `${faker.person.firstName()} ${faker.person.lastName()}`,
-        name: 'account holder',
+        name: 'SEPA account holder',
         skip: !!accountHolderMapping
       },
       {
         selectors: ibanSelectors.length > 0 ? ibanSelectors : [
+          '#bankAccountForm #payment_bank_iban',  // Most specific
           '#payment_bank_iban',
+          '#bankAccountForm input[name*="bank_iban"]',
+          'input[name="payment[bank_iban]"]',
           'input[name*="bank_iban"]',
           'input[name*="iban"]', 
           'input[placeholder*="IBAN"]'
@@ -1912,23 +2300,65 @@ class TestRunner {
         this.log(`${field.name} already handled by field mapping`)
         continue
       }
-      await this.tryFillField(field.selectors, field.value, field.name)
+      const filled = await this.tryFillFieldWithVisibilityCheck(field.selectors, field.value, field.name)
+      if (!filled) {
+        this.log(`⚠ Could not fill ${field.name} - field not found or not visible`)
+      }
     }
+  }
+
+  /**
+   * Try to fill a field, checking visibility before filling
+   */
+  async tryFillFieldWithVisibilityCheck(selectors, value, fieldName) {
+    for (const selector of selectors) {
+      try {
+        const element = await this.page.$(selector)
+        if (element) {
+          const isVisible = await element.isVisible()
+          if (isVisible) {
+            await element.fill(value)
+            this.log(`✓ Filled ${fieldName} via ${selector}`)
+            return true
+          } else {
+            this.log(`Field ${selector} found but not visible, trying next...`)
+          }
+        }
+      } catch (error) {
+        // Continue trying other selectors
+      }
+    }
+    return false
   }
 
   async fillEpsFields(details) {
     this.log('Filling EPS fields...')
 
-    // Wait for EPS form to appear (FundraisingBox shows it dynamically)
-    await this.page.waitForTimeout(500)
+    // Verify EPS form is visible before filling
+    const epsForm = await this.page.$('#epsBankForm')
+    if (epsForm) {
+      const isVisible = await epsForm.isVisible()
+      if (!isVisible) {
+        this.log('⚠ Warning: EPS form (#epsBankForm) is not visible')
+        await this.logPaymentFormState()
+        return
+      }
+      this.log('✓ EPS form is visible')
+    } else {
+      this.log('⚠ Warning: EPS form (#epsBankForm) not found in DOM')
+      return
+    }
 
     // Get bank selectors from config or use fallbacks
+    // Use container-scoped selectors first
     const configBankSelectors = this.getSelectors('paymentFields', 'bankSelect')
     const bankSelectors = configBankSelectors.length > 0 ? configBankSelectors : [
+      '#epsBankForm #payment_eps_bank',  // Most specific
       '#payment_eps_bank',
+      '#epsBankForm select[name*="eps_bank"]',
+      'select[name="payment[eps_bank]"]',
       'select[name*="eps_bank"]',
-      'select[name*="bank"]',
-      'select[name*="eps"]'
+      'select[name*="bank"]'
     ]
 
     // Default to Erste Bank (common Austrian bank)
@@ -1938,17 +2368,27 @@ class TestRunner {
       try {
         const selectElement = await this.page.$(selector)
         if (selectElement) {
+          const isVisible = await selectElement.isVisible()
+          if (!isVisible) {
+            this.log(`Bank selector ${selector} found but not visible, trying next...`)
+            continue
+          }
+          
           // Try to select by value (bank code)
           try {
             await selectElement.selectOption(bankCode)
-            this.log(`Selected bank by code: ${bankCode}`)
+            this.log(`✓ Selected bank by code: ${bankCode}`)
             return
           } catch {
             // Try by label
             const bankName = details.bankName || 'Erste Bank und Sparkassen'
-            await selectElement.selectOption({ label: bankName })
-            this.log(`Selected bank by name: ${bankName}`)
-            return
+            try {
+              await selectElement.selectOption({ label: bankName })
+              this.log(`✓ Selected bank by name: ${bankName}`)
+              return
+            } catch (labelError) {
+              this.log(`Could not select bank by label: ${labelError.message}`)
+            }
           }
         }
       } catch (error) {
@@ -1956,7 +2396,7 @@ class TestRunner {
       }
     }
 
-    this.log('Could not find bank selection dropdown')
+    this.log('⚠ Could not find or select bank dropdown')
   }
 
   async tryFillField(selectors, value, fieldName) {
@@ -2033,10 +2473,13 @@ class TestRunner {
     this.log('Cleaning up browser resources...')
 
     try {
-      if (this.page) {
+      // Note: this.page might be a Frame (not a Page) if we switched to an iframe
+      // Frames don't have a close() method, so we need to check
+      if (this.page && typeof this.page.close === 'function') {
         await this.page.close()
-        this.page = null
       }
+      this.page = null
+      this.mainPage = null
 
       if (this.context) {
         await this.context.close()

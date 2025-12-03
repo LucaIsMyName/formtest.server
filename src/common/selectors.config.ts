@@ -395,6 +395,7 @@ export const SELECTOR_CONFIG: SelectorConfig = {
   // Success detection patterns
   successPatterns: {
     redirectUrls: [
+      'diakonie.at',
       'paypal.com',
       'stripe.com',
       'klarna.com',
@@ -457,6 +458,7 @@ export const SELECTOR_CONFIG: SelectorConfig = {
   },
 
   // Default values for test data
+  // use FBox defaults in the future!!!!
   defaultValues: {
     country: 'AT',
     salutation: 'Mr.',
