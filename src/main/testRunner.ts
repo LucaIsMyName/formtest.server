@@ -355,7 +355,7 @@ export async function createTestRunner(settings?: Record<string, string>): Promi
     timeout: parseInt(settings?.test_timeout || "30000"),
     browser: "chromium", // Default to chromium
     viewport: { width: 1280, height: 720 },
-    defaultAmount: settings?.default_donation_amount || "50",
+    defaultAmount: settings?.default_donation_amount || "5",
     defaultInterval: settings?.default_interval || "0",
   };
 

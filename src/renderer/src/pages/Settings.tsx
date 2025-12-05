@@ -46,7 +46,7 @@ const Settings: React.FC = () => {
   const { settings, isLoading, error, loadSettings, updateSetting } = useSettingsStore();
 
   // Local state for immediate updates
-  const [donationAmount, setDonationAmount] = useState("50");
+  const [donationAmount, setDonationAmount] = useState("5");
   const [donationInterval, setDonationInterval] = useState("0");
   const [testTimeout, setTestTimeout] = useState("30000");
   const [headlessMode, setHeadlessMode] = useState("true");

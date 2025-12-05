@@ -480,7 +480,7 @@ export function initDatabase(): void {
 
   // Insert default settings
   const defaultSettings = [
-    { key: "default_donation_amount", value: "50", description: "Default donation amount in EUR" },
+    { key: "default_donation_amount", value: "5", description: "Default donation amount in EUR" },
     { key: "default_interval", value: "0", description: "Default donation interval (0=once, 1=monthly)" },
     { key: "test_timeout", value: "30000", description: "Test timeout in milliseconds" },
     { key: "headless_mode", value: "true", description: "Run tests in headless mode" },

@@ -78,6 +78,9 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
       if (!methodData.details.cardNumber) {
         newErrors.cardNumber = "Kartennummer ist erforderlich";
       }
+      if (!methodData.details.cardholderName) {
+        newErrors.cardholderName = "Karteninhaber ist erforderlich";
+      }
       if (!methodData.details.expiryDate) {
         newErrors.expiryDate = "Ablaufdatum ist erforderlich";
       }
@@ -211,6 +214,23 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 className={errors.cardNumber ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
               {errors.cardNumber && <p className="text-red-500 text-xs">{errors.cardNumber}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label
+                className="text-gray-600 dark:text-gray-400"
+                htmlFor="cardholderName">
+                Karteninhaber *
+              </Label>
+              <Input
+                type="text"
+                id="cardholderName"
+                value={methodData.details.cardholderName || ""}
+                onChange={(e) => updateDetails("cardholderName", e.target.value)}
+                placeholder="Max Mustermann"
+                disabled={isLoading}
+                className={errors.cardholderName ? "border-red-500 focus-visible:ring-red-500" : ""}
+              />
+              {errors.cardholderName && <p className="text-red-500 text-xs">{errors.cardholderName}</p>}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

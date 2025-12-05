@@ -1,9 +1,9 @@
-import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, i as dist, J as useSearchParams, d as usePaymentMethodsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, H as Plus } from "./index-KVo-50kv.js";
+import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, i as dist, J as useSearchParams, d as usePaymentMethodsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, H as Plus } from "./index-DBe7Ss4L.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-nC_aI_nl.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DJp8j8MF.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-hXGk_ki9.js";
-import { S as Skeleton } from "./Skeleton-CSVqUXRD.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-Bb7hxR-h.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-CnUwDs86.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-C6ByrS11.js";
+import { S as Skeleton } from "./Skeleton-j11q0gD7.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -61,6 +61,9 @@ const PaymentMethodDrawer = ({
       if (!methodData.details.cardNumber) {
         newErrors.cardNumber = "Kartennummer ist erforderlich";
       }
+      if (!methodData.details.cardholderName) {
+        newErrors.cardholderName = "Karteninhaber ist erforderlich";
+      }
       if (!methodData.details.expiryDate) {
         newErrors.expiryDate = "Ablaufdatum ist erforderlich";
       }
@@ -108,19 +111,19 @@ const PaymentMethodDrawer = ({
       case "paypal":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "email", children: "PayPal E-Mail *" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "email", id: "email", value: methodData.details.email || "", onChange: (e_5) => updateDetails("email", e_5.target.value), placeholder: "paypal@example.com", disabled: isLoading, className: errors.email ? "border-red-500 focus-visible:ring-red-500" : "" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "email", id: "email", value: methodData.details.email || "", onChange: (e_6) => updateDetails("email", e_6.target.value), placeholder: "paypal@example.com", disabled: isLoading, className: errors.email ? "border-red-500 focus-visible:ring-red-500" : "" }),
           errors.email && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.email })
         ] });
       case "sepa":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "accountHolder", children: "Kontoinhaber *" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "accountHolder", value: methodData.details.accountHolder || "", onChange: (e_3) => updateDetails("accountHolder", e_3.target.value), placeholder: "Max Mustermann", disabled: isLoading, className: errors.accountHolder ? "border-red-500 focus-visible:ring-red-500" : "" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "accountHolder", value: methodData.details.accountHolder || "", onChange: (e_4) => updateDetails("accountHolder", e_4.target.value), placeholder: "Max Mustermann", disabled: isLoading, className: errors.accountHolder ? "border-red-500 focus-visible:ring-red-500" : "" }),
             errors.accountHolder && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.accountHolder })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "iban", children: "IBAN *" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "iban", numberType: "IBAN", value: methodData.details.iban || "", onChange: (e_4) => updateDetails("iban", e_4.target.value), placeholder: "DE89 3704 0044 0532 0130 00", disabled: isLoading, className: errors.iban ? "border-red-500 focus-visible:ring-red-500" : "" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "iban", numberType: "IBAN", value: methodData.details.iban || "", onChange: (e_5) => updateDetails("iban", e_5.target.value), placeholder: "DE89 3704 0044 0532 0130 00", disabled: isLoading, className: errors.iban ? "border-red-500 focus-visible:ring-red-500" : "" }),
             errors.iban && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.iban })
           ] })
         ] });
@@ -131,15 +134,20 @@ const PaymentMethodDrawer = ({
             /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "cardNumber", numberType: "CreditCardNumber", value: methodData.details.cardNumber || "", onChange: (e_0) => updateDetails("cardNumber", e_0.target.value), placeholder: "4111 1111 1111 1111", disabled: isLoading, className: errors.cardNumber ? "border-red-500 focus-visible:ring-red-500" : "" }),
             errors.cardNumber && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.cardNumber })
           ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "cardholderName", children: "Karteninhaber *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "cardholderName", value: methodData.details.cardholderName || "", onChange: (e_1) => updateDetails("cardholderName", e_1.target.value), placeholder: "Max Mustermann", disabled: isLoading, className: errors.cardholderName ? "border-red-500 focus-visible:ring-red-500" : "" }),
+            errors.cardholderName && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.cardholderName })
+          ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "expiryDate", children: "Ablaufdatum *" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "expiryDate", numberType: "UntilDate", value: methodData.details.expiryDate || "", onChange: (e_1) => updateDetails("expiryDate", e_1.target.value), placeholder: "MM/YY", disabled: isLoading, className: errors.expiryDate ? "border-red-500 focus-visible:ring-red-500" : "" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "expiryDate", numberType: "UntilDate", value: methodData.details.expiryDate || "", onChange: (e_2) => updateDetails("expiryDate", e_2.target.value), placeholder: "MM/YY", disabled: isLoading, className: errors.expiryDate ? "border-red-500 focus-visible:ring-red-500" : "" }),
               errors.expiryDate && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.expiryDate })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { className: "text-gray-600 dark:text-gray-400", htmlFor: "cvv", children: "CVV *" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "cvv", numberType: "CVV", value: methodData.details.cvv || "", onChange: (e_2) => updateDetails("cvv", e_2.target.value), placeholder: "123", disabled: isLoading, className: errors.cvv ? "border-red-500 focus-visible:ring-red-500" : "" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", id: "cvv", numberType: "CVV", value: methodData.details.cvv || "", onChange: (e_3) => updateDetails("cvv", e_3.target.value), placeholder: "123", disabled: isLoading, className: errors.cvv ? "border-red-500 focus-visible:ring-red-500" : "" }),
               errors.cvv && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-500 text-xs", children: errors.cvv })
             ] })
           ] })
@@ -173,9 +181,9 @@ const PaymentMethodDrawer = ({
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 mt-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Name der Bezahlmethode *" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: methodData.name, onChange: (e_6) => setMethodData({
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: methodData.name, onChange: (e_7) => setMethodData({
           ...methodData,
-          name: e_6.target.value
+          name: e_7.target.value
         }), placeholder: "Bezahlmethoden Name", disabled: isLoading, className: `${CONFIG.style.title.className} h-16` + (errors.name ? "text-red-500" : "") })
       ] })
     ] }),

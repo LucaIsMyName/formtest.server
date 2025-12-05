@@ -364,7 +364,7 @@ export class SmartFormFiller {
         return "Deutschland";
 
       case "amount":
-        return "50";
+        return "5";
 
       case "iban":
         return "DE89 3704 0044 0532 0130 00";
@@ -380,7 +380,7 @@ export class SmartFormFiller {
 
       default:
         if (field.type === "input" && field.inputType === "number") {
-          return "50";
+          return "5";
         }
         if (field.type === "input" && field.inputType === "text") {
           return faker.lorem.words(2);

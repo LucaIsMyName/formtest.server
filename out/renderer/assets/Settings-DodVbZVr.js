@@ -1,7 +1,7 @@
-import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, a1 as useSettingsStore, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, a2 as React, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, a3 as CircleCheck, a4 as CircleAlert, a5 as Database, a6 as Mail, a7 as Sun, a8 as SlidersVertical, a9 as Moon, aa as Monitor, t as Checkbox } from "./index-KVo-50kv.js";
+import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, a1 as useSettingsStore, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, a2 as React, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, a3 as CircleCheck, a4 as CircleAlert, a5 as Database, a6 as Mail, a7 as Sun, a8 as SlidersVertical, a9 as Moon, aa as Monitor, t as Checkbox } from "./index-DBe7Ss4L.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-hXGk_ki9.js";
-import { S as Skeleton } from "./Skeleton-CSVqUXRD.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-C6ByrS11.js";
+import { S as Skeleton } from "./Skeleton-j11q0gD7.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -915,7 +915,7 @@ const Settings = () => {
     loadSettings,
     updateSetting
   } = useSettingsStore();
-  const [donationAmount, setDonationAmount] = reactExports.useState("50");
+  const [donationAmount, setDonationAmount] = reactExports.useState("5");
   const [donationInterval, setDonationInterval] = reactExports.useState("0");
   const [testTimeout, setTestTimeout] = reactExports.useState("30000");
   const [headlessMode, setHeadlessMode] = reactExports.useState("true");
