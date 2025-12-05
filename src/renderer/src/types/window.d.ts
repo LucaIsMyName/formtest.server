@@ -1,4 +1,4 @@
-import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule } from '../../../common/types'
+import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule, GlobalFieldDefaults } from '../../../common/types'
 import type { SelectorOverride, SelectorConfig } from '../../../common/selectors.config'
 
 declare global {
@@ -22,6 +22,8 @@ declare global {
         getAll: () => Promise<GlobalSetting[]>
         get: (key: string) => Promise<GlobalSetting | undefined>
         set: (key: string, value: string, description?: string) => Promise<void>
+        getFieldDefaults: () => Promise<GlobalFieldDefaults>
+        setFieldDefaults: (defaults: GlobalFieldDefaults) => Promise<void>
       }
       testRuns: {
         getAll: () => Promise<TestRun[]>

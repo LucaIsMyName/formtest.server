@@ -1,8 +1,8 @@
 import { spawn, ChildProcess } from "child_process";
 import { join } from "path";
 import { EventEmitter } from "events";
-import type { Form, PaymentMethod, TestStep } from "../../common/types";
-import { getMergedSelectorConfig } from "../database";
+import type { Form, PaymentMethod, TestStep, GlobalFieldDefaults } from "../../common/types";
+import { getMergedSelectorConfig, settingsQueries } from "../database";
 import type { SelectorConfig } from "../../common/selectors.config";
 
 export interface TestMessage {
@@ -14,6 +14,7 @@ export interface TestMessage {
     paymentMethod?: PaymentMethod;
     settings?: Record<string, string>;
     selectorConfig?: SelectorConfig;
+    globalFieldDefaults?: GlobalFieldDefaults;
     success?: boolean;
     result?: any;
     error?: string;
@@ -209,6 +210,10 @@ export class TestProcessManager extends EventEmitter {
 
       // Get merged selector config (base + user overrides)
       const selectorConfig = getMergedSelectorConfig();
+      
+      // Get global field defaults (middle layer between faker and form mappings)
+      const globalFieldDefaults = settingsQueries.getFieldDefaults();
+      console.log('ProcessManager: Global field defaults:', JSON.stringify(globalFieldDefaults));
 
       const message: TestMessage = {
         id: this.generateMessageId(),
@@ -219,6 +224,7 @@ export class TestProcessManager extends EventEmitter {
           paymentMethod,
           settings,
           selectorConfig,
+          globalFieldDefaults,
         },
       };
 

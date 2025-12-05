@@ -2,7 +2,7 @@ import Database from "better-sqlite3";
 import { app } from "electron";
 import { join } from "path";
 import { randomUUID } from "crypto";
-import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult } from "../common/types";
+import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult, GlobalFieldDefaults } from "../common/types";
 import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 import { SELECTOR_CONFIG, mergeSelectorsConfig, type SelectorOverride, type SelectorConfig } from "../common/selectors.config";
 
@@ -938,6 +938,26 @@ export const settingsQueries = {
   getAll: () => db.prepare("SELECT * FROM global_settings ORDER BY key").all() as GlobalSetting[],
   get: (key: string) => db.prepare("SELECT * FROM global_settings WHERE key = ?").get(key) as GlobalSetting | undefined,
   set: (key: string, value: string, description?: string) => db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(key, value, description),
+  
+  // Global field defaults - stored as JSON in a single setting
+  getFieldDefaults: (): GlobalFieldDefaults => {
+    const setting = db.prepare("SELECT value FROM global_settings WHERE key = 'global_field_defaults'").get() as { value: string } | undefined;
+    if (!setting) return {};
+    try {
+      return JSON.parse(setting.value) as GlobalFieldDefaults;
+    } catch {
+      return {};
+    }
+  },
+  
+  setFieldDefaults: (defaults: GlobalFieldDefaults) => {
+    const value = JSON.stringify(defaults);
+    return db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(
+      'global_field_defaults',
+      value,
+      'Global default field values that override Faker.js'
+    );
+  },
 };
 
 export const testRunQueries = {

@@ -5,7 +5,7 @@ import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import SelectorEditor from "../components/SelectorEditor";
-import type { ImportOptions, ImportResult } from "../../../common/types";
+import type { ImportOptions, ImportResult, GlobalFieldDefaults } from "../../../common/types";
 import { Input } from "../components/ui/Input";
 import { Checkbox } from "../components/ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
@@ -94,9 +94,45 @@ const Settings: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined);
 
+  // Global field defaults state
+  const [fieldDefaults, setFieldDefaults] = useState<GlobalFieldDefaults>({});
+  const [isLoadingDefaults, setIsLoadingDefaults] = useState(true);
+  const [isSavingDefaults, setIsSavingDefaults] = useState(false);
+  const [defaultsSaveMessage, setDefaultsSaveMessage] = useState<string | null>(null);
+
   useEffect(() => {
     loadSettings();
+    // Load global field defaults
+    window.api.settings.getFieldDefaults().then((defaults) => {
+      setFieldDefaults(defaults || {});
+      setIsLoadingDefaults(false);
+    }).catch(() => {
+      setIsLoadingDefaults(false);
+    });
   }, [loadSettings]);
+
+  // Save global field defaults
+  const handleSaveFieldDefaults = useCallback(async () => {
+    setIsSavingDefaults(true);
+    setDefaultsSaveMessage(null);
+    try {
+      await window.api.settings.setFieldDefaults(fieldDefaults);
+      setDefaultsSaveMessage("Standardwerte gespeichert!");
+      setTimeout(() => setDefaultsSaveMessage(null), 3000);
+    } catch (error) {
+      setDefaultsSaveMessage("Fehler beim Speichern");
+    } finally {
+      setIsSavingDefaults(false);
+    }
+  }, [fieldDefaults]);
+
+  // Update a single field default
+  const updateFieldDefault = useCallback((field: keyof GlobalFieldDefaults, value: string) => {
+    setFieldDefaults(prev => ({
+      ...prev,
+      [field]: value || undefined // Remove empty strings
+    }));
+  }, []);
 
   // Theme application function
   const applyTheme = (themeValue: string) => {
@@ -673,6 +709,194 @@ const Settings: React.FC = () => {
                 )}
               </TableBody>
             </Table>
+          )}
+        </div>
+
+        {/* Global Field Defaults Section */}
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+          <div className="px-4 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Settings2 size={14} className="text-gray-500" />
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">Globale Standardwerte</span>
+                </div>
+                <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                  Diese Werte überschreiben Faker.js, werden aber von Form-spezifischen Mappings überschrieben.
+                  <br />
+                  <span className="text-gray-400">Priorität: Form-Mapping → Globale Standardwerte → Faker.js</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {defaultsSaveMessage && (
+                  <span className={`text-xs ${defaultsSaveMessage.includes("Fehler") ? "text-red-500" : "text-green-500"}`}>
+                    {defaultsSaveMessage}
+                  </span>
+                )}
+                <Button
+                  size="sm"
+                  onClick={handleSaveFieldDefaults}
+                  disabled={isSavingDefaults}
+                  className="text-xs h-7">
+                  {isSavingDefaults ? "Speichern..." : "Speichern"}
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {isLoadingDefaults ? (
+            <div className="p-4">
+              <Skeleton className="h-10 w-full mb-2" />
+              <Skeleton className="h-10 w-full mb-2" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ) : (
+            <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Personal Info */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Vorname</label>
+                <Input
+                  value={fieldDefaults.firstName || ""}
+                  onChange={(e) => updateFieldDefault("firstName", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Nachname</label>
+                <Input
+                  value={fieldDefaults.lastName || ""}
+                  onChange={(e) => updateFieldDefault("lastName", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">E-Mail</label>
+                <Input
+                  type="email"
+                  value={fieldDefaults.email || ""}
+                  onChange={(e) => updateFieldDefault("email", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              
+              {/* Address */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Straße</label>
+                <Input
+                  value={fieldDefaults.street || ""}
+                  onChange={(e) => updateFieldDefault("street", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">PLZ</label>
+                <Input
+                  value={fieldDefaults.zip || ""}
+                  onChange={(e) => updateFieldDefault("zip", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Stadt</label>
+                <Input
+                  value={fieldDefaults.city || ""}
+                  onChange={(e) => updateFieldDefault("city", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              
+              {/* Additional */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Land (ISO Code)</label>
+                <Input
+                  value={fieldDefaults.country || ""}
+                  onChange={(e) => updateFieldDefault("country", e.target.value)}
+                  placeholder="z.B. AT, DE"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Telefon</label>
+                <Input
+                  value={fieldDefaults.phone || ""}
+                  onChange={(e) => updateFieldDefault("phone", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Geburtstag</label>
+                <Input
+                  value={fieldDefaults.birthday || ""}
+                  onChange={(e) => updateFieldDefault("birthday", e.target.value)}
+                  placeholder="z.B. 01.01.1980"
+                  className="h-8 text-sm"
+                />
+              </div>
+              
+              {/* Company/Title */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Titel</label>
+                <Input
+                  value={fieldDefaults.title || ""}
+                  onChange={(e) => updateFieldDefault("title", e.target.value)}
+                  placeholder="z.B. Dr., Mag."
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Firma</label>
+                <Input
+                  value={fieldDefaults.company || ""}
+                  onChange={(e) => updateFieldDefault("company", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Anrede</label>
+                <Select
+                  value={fieldDefaults.salutation || "__faker__"}
+                  onValueChange={(value) => updateFieldDefault("salutation", value === "__faker__" ? "" : value)}>
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="Faker.js" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__faker__">Faker.js</SelectItem>
+                    <SelectItem value="Mr.">Herr</SelectItem>
+                    <SelectItem value="Mrs.">Frau</SelectItem>
+                    <SelectItem value="Mx.">Divers</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Payment */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">IBAN</label>
+                <Input
+                  value={fieldDefaults.iban || ""}
+                  onChange={(e) => updateFieldDefault("iban", e.target.value)}
+                  placeholder="z.B. AT89370400440532013000"
+                  numberType="IBAN"
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Kontoinhaber</label>
+                <Input
+                  value={fieldDefaults.accountHolder || ""}
+                  onChange={(e) => updateFieldDefault("accountHolder", e.target.value)}
+                  placeholder="Faker.js"
+                  className="h-8 text-sm"
+                />
+              </div>
+            </div>
           )}
         </div>
 

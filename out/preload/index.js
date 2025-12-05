@@ -24,7 +24,9 @@ const api = {
   settings: {
     getAll: () => electron.ipcRenderer.invoke("settings:getAll"),
     get: (key) => electron.ipcRenderer.invoke("settings:get", key),
-    set: (key, value, description) => electron.ipcRenderer.invoke("settings:set", key, value, description)
+    set: (key, value, description) => electron.ipcRenderer.invoke("settings:set", key, value, description),
+    getFieldDefaults: () => electron.ipcRenderer.invoke("settings:getFieldDefaults"),
+    setFieldDefaults: (defaults) => electron.ipcRenderer.invoke("settings:setFieldDefaults", defaults)
   },
   // Test run operations
   testRuns: {

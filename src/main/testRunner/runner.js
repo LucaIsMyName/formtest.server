@@ -180,7 +180,7 @@ class TestRunner {
 
   async startTest(message) {
     const { id, payload } = message
-    const { testRunId, form, paymentMethod, settings, selectorConfig } = payload
+    const { testRunId, form, paymentMethod, settings, selectorConfig, globalFieldDefaults } = payload
 
     // IMPORTANT: Reset logs and steps for each new test run
     // This prevents accumulation from previous test runs
@@ -195,6 +195,15 @@ class TestRunner {
       this.selectorConfig = selectorConfig || null
       if (this.selectorConfig) {
         this.log('Using dynamic selector configuration')
+      }
+      
+      // Store global field defaults (middle layer: Form Mapping > Global Defaults > Faker)
+      this.globalFieldDefaults = globalFieldDefaults || {}
+      if (Object.keys(this.globalFieldDefaults).length > 0) {
+        this.log(`Using ${Object.keys(this.globalFieldDefaults).length} global field defaults`)
+        this.log(`Global defaults: ${JSON.stringify(this.globalFieldDefaults)}`)
+      } else {
+        this.log('No global field defaults configured')
       }
 
       // Update config from settings
@@ -1572,11 +1581,14 @@ class TestRunner {
    */
   async handleFBPersonalData() {
     this.log('Handling FB personal data...')
+    
+    // Use global defaults if available, otherwise fall back to faker
+    const defaults = this.globalFieldDefaults || {}
 
     const personalFields = [
-      { selector: '#payment_first_name', id: 'payment_first_name', name: 'payment[first_name]', value: faker.person.firstName(), type: 'firstName' },
-      { selector: '#payment_last_name', id: 'payment_last_name', name: 'payment[last_name]', value: faker.person.lastName(), type: 'lastName' },
-      { selector: '#payment_email', id: 'payment_email', name: 'payment[email]', value: faker.internet.email(), type: 'email' }
+      { selector: '#payment_first_name', id: 'payment_first_name', name: 'payment[first_name]', value: defaults.firstName || faker.person.firstName(), type: 'firstName' },
+      { selector: '#payment_last_name', id: 'payment_last_name', name: 'payment[last_name]', value: defaults.lastName || faker.person.lastName(), type: 'lastName' },
+      { selector: '#payment_email', id: 'payment_email', name: 'payment[email]', value: defaults.email || faker.internet.email(), type: 'email' }
     ]
 
     for (const field of personalFields) {
@@ -1712,26 +1724,38 @@ class TestRunner {
 
   generateFieldValue(field) {
     const fieldInfo = this.analyzeFieldPurpose(field)
+    
+    // Priority: Global Defaults > Faker.js
+    // (Form mappings are handled separately in applyFieldMappings)
+    const defaults = this.globalFieldDefaults || {}
 
     switch (fieldInfo.purpose) {
       case 'email':
-        return faker.internet.email()
+        return defaults.email || faker.internet.email()
       case 'firstName':
-        return faker.person.firstName()
+        return defaults.firstName || faker.person.firstName()
       case 'lastName':
-        return faker.person.lastName()
+        return defaults.lastName || faker.person.lastName()
       case 'phone':
-        return faker.phone.number()
+        return defaults.phone || faker.phone.number()
       case 'address':
-        return faker.location.streetAddress()
+        return defaults.street || faker.location.streetAddress()
       case 'city':
-        return faker.location.city()
+        return defaults.city || faker.location.city()
       case 'zipCode':
-        return faker.location.zipCode()
+        return defaults.zip || faker.location.zipCode()
       case 'amount':
         return this.config.defaultAmount
       case 'country':
-        return 'Deutschland'
+        return defaults.country || 'Deutschland'
+      case 'company':
+        return defaults.company || faker.company.name()
+      case 'title':
+        return defaults.title || ''
+      case 'birthday':
+        return defaults.birthday || faker.date.birthdate({ min: 18, max: 65, mode: 'age' }).toLocaleDateString('de-DE')
+      case 'salutation':
+        return defaults.salutation || 'Mr.'
       default:
         if (field.inputType === 'number') {
           return '50'
@@ -1759,10 +1783,11 @@ class TestRunner {
     if (/lastname|nachname|last.name|surname/.test(indicators)) {
       return { purpose: 'lastName', confidence: 0.9 }
     }
-    if (/phone|telefon|tel/.test(indicators)) {
+    if (/phone|telefon|(?<![ti])tel|mobile|handy/.test(indicators)) {
+      // Note: (?<![ti])tel avoids matching 'titel' which should be title
       return { purpose: 'phone', confidence: 0.8 }
     }
-    if (/address|adresse|street|strasse/.test(indicators)) {
+    if (/address|adresse|street|strasse|straße/.test(indicators)) {
       return { purpose: 'address', confidence: 0.8 }
     }
     if (/city|stadt|ort/.test(indicators)) {
@@ -1776,6 +1801,18 @@ class TestRunner {
     }
     if (/country|land/.test(indicators)) {
       return { purpose: 'country', confidence: 0.8 }
+    }
+    if (/company|firma|unternehmen|organisation/.test(indicators)) {
+      return { purpose: 'company', confidence: 0.8 }
+    }
+    if (/title|titel/.test(indicators)) {
+      return { purpose: 'title', confidence: 0.7 }
+    }
+    if (/birthday|geburtstag|geburtsdatum|birth/.test(indicators)) {
+      return { purpose: 'birthday', confidence: 0.8 }
+    }
+    if (/salutation|anrede/.test(indicators)) {
+      return { purpose: 'salutation', confidence: 0.8 }
     }
 
     return { purpose: 'unknown', confidence: 0 }

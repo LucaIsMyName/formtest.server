@@ -1,6 +1,29 @@
 export type FieldMappingAction = "type" | "click" | "select" | "check" | "waitAndClick";
 
-export type FieldMappingType = "amount" | "customAmount" | "interval" | "firstName" | "lastName" | "email" | "salutation" | "country" | "paymentMethod" | "checkbox" | "radio" | "iban" | "accountHolder" | "birthday" | "custom";
+export type FieldMappingType = "amount" | "customAmount" | "interval" | "firstName" | "lastName" | "email" | "salutation" | "country" | "paymentMethod" | "checkbox" | "radio" | "iban" | "accountHolder" | "birthday" | "street" | "city" | "zip" | "phone" | "title" | "company" | "custom";
+
+/**
+ * Global default field values that override Faker.js but are overridden by form-specific mappings.
+ * Priority: Form Mapping > Global Default > Faker.js
+ */
+export interface GlobalFieldDefaults {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  salutation?: string;
+  country?: string;
+  birthday?: string;
+  street?: string;
+  city?: string;
+  zip?: string;
+  phone?: string;
+  title?: string;
+  company?: string;
+  iban?: string;
+  accountHolder?: string;
+  // Allow custom fields
+  [key: string]: string | undefined;
+}
 
 export interface FormFieldMapping {
   id: string; // UUID

@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule } from '../common/types'
+import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule, GlobalFieldDefaults } from '../common/types'
 import type { SelectorOverride, SelectorConfig } from '../common/selectors.config'
 
 // Custom APIs for renderer
@@ -29,7 +29,9 @@ const api = {
   settings: {
     getAll: () => ipcRenderer.invoke('settings:getAll'),
     get: (key: string) => ipcRenderer.invoke('settings:get', key),
-    set: (key: string, value: string, description?: string) => ipcRenderer.invoke('settings:set', key, value, description)
+    set: (key: string, value: string, description?: string) => ipcRenderer.invoke('settings:set', key, value, description),
+    getFieldDefaults: (): Promise<GlobalFieldDefaults> => ipcRenderer.invoke('settings:getFieldDefaults'),
+    setFieldDefaults: (defaults: GlobalFieldDefaults) => ipcRenderer.invoke('settings:setFieldDefaults', defaults)
   },
 
   // Test run operations

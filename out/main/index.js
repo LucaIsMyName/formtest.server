@@ -1221,7 +1221,25 @@ const paymentMethodQueries = {
 const settingsQueries = {
   getAll: () => db.prepare("SELECT * FROM global_settings ORDER BY key").all(),
   get: (key) => db.prepare("SELECT * FROM global_settings WHERE key = ?").get(key),
-  set: (key, value, description) => db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(key, value, description)
+  set: (key, value, description) => db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(key, value, description),
+  // Global field defaults - stored as JSON in a single setting
+  getFieldDefaults: () => {
+    const setting = db.prepare("SELECT value FROM global_settings WHERE key = 'global_field_defaults'").get();
+    if (!setting) return {};
+    try {
+      return JSON.parse(setting.value);
+    } catch {
+      return {};
+    }
+  },
+  setFieldDefaults: (defaults) => {
+    const value = JSON.stringify(defaults);
+    return db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(
+      "global_field_defaults",
+      value,
+      "Global default field values that override Faker.js"
+    );
+  }
 };
 const testRunQueries = {
   getAll: () => {
@@ -1970,6 +1988,8 @@ class TestProcessManager extends events.EventEmitter {
         throw new Error(`Failed to start test runner: ${startError instanceof Error ? startError.message : startError}`);
       }
       const selectorConfig = getMergedSelectorConfig();
+      const globalFieldDefaults = settingsQueries.getFieldDefaults();
+      console.log("ProcessManager: Global field defaults:", JSON.stringify(globalFieldDefaults));
       const message = {
         id: this.generateMessageId(),
         type: "START_TEST",
@@ -1978,7 +1998,8 @@ class TestProcessManager extends events.EventEmitter {
           form,
           paymentMethod,
           settings,
-          selectorConfig
+          selectorConfig,
+          globalFieldDefaults
         }
       };
       const response = await this.sendMessage(message, testTimeout + 3e4);
@@ -2760,6 +2781,8 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("settings:getAll", () => settingsQueries.getAll());
   electron.ipcMain.handle("settings:get", (_, key) => settingsQueries.get(key));
   electron.ipcMain.handle("settings:set", (_, key, value, description) => settingsQueries.set(key, value, description));
+  electron.ipcMain.handle("settings:getFieldDefaults", () => settingsQueries.getFieldDefaults());
+  electron.ipcMain.handle("settings:setFieldDefaults", (_, defaults) => settingsQueries.setFieldDefaults(defaults));
   electron.ipcMain.handle("testRuns:getAll", () => testRunQueries.getAll());
   electron.ipcMain.handle("testRuns:getById", (_, id) => testRunQueries.getById(id));
   electron.ipcMain.handle("testRuns:getByForm", (_, formId) => testRunQueries.getByForm(formId));

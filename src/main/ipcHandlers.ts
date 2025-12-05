@@ -2,7 +2,7 @@ import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig } from "./database";
-import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule } from "../common/types";
+import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults } from "../common/types";
 import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
 import { getConfigurableCategories } from "../common/selectors.config";
@@ -123,6 +123,10 @@ export function setupIpcHandlers(): void {
   ipcMain.handle("settings:getAll", () => settingsQueries.getAll());
   ipcMain.handle("settings:get", (_, key: string) => settingsQueries.get(key));
   ipcMain.handle("settings:set", (_, key: string, value: string, description?: string) => settingsQueries.set(key, value, description));
+  
+  // Global field defaults handlers
+  ipcMain.handle("settings:getFieldDefaults", () => settingsQueries.getFieldDefaults());
+  ipcMain.handle("settings:setFieldDefaults", (_, defaults: GlobalFieldDefaults) => settingsQueries.setFieldDefaults(defaults));
 
   // Test run handlers
   ipcMain.handle("testRuns:getAll", () => testRunQueries.getAll());
