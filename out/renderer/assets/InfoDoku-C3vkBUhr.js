@@ -1,4 +1,4 @@
-import { i as dist, ar as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, as as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, at as formatShortcut } from "./index-BWqAKNyf.js";
+import { i as dist, ar as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, as as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, at as formatShortcut } from "./index-BmMc8igd.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
 const InfoDoku = () => {
   const $ = dist.c(9);
@@ -319,7 +319,7 @@ const InfoDoku = () => {
   if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
     t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
-      " 1.0.11"
+      " 1.0.23"
     ] });
     t7 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Tech:" }) });
     $[6] = t6;

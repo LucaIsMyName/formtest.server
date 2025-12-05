@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DV1bFw28.js","./app.config-Dj0WDsKm.js","./Skeleton-Dnu-7wuB.js","./Forms-DEwapuKI.js","./MiniSparkline-Dt31AxfZ.js","./useFilterableData-BKNCPv8L.js","./TableFilter-DkAv7k2j.js","./PaymentMethods-CfkH7QLZ.js","./Settings-Ce9zabjX.js","./TestResults-DgQgRmKt.js","./InfoDoku-DGJoJPGl.js","./Schedules-D9L3kG1V.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-CdsOXFlX.js","./app.config-Dj0WDsKm.js","./Skeleton-CRWf65wP.js","./Forms-8UAsF-mk.js","./MiniSparkline-BLFOC8RX.js","./useFilterableData-ButGe4d7.js","./TableFilter-BNTw9_GT.js","./PaymentMethods-OXLRJmge.js","./Settings-D2-FE_3M.js","./TestResults-CgCf7nNa.js","./InfoDoku-C3vkBUhr.js","./Schedules-D9DtfsWy.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -55485,46 +55485,197 @@ const twMerge = /* @__PURE__ */ createTailwindMerge(getDefaultConfig);
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+const formatForDisplay = (value, type) => {
+  if (!value) return "";
+  const clean = value.replace(/[^a-zA-Z0-9]/g, "");
+  switch (type) {
+    case "IBAN":
+      return clean.toUpperCase().slice(0, 34).replace(/(.{4})/g, "$1 ").trim();
+    case "BIC":
+      return clean.toUpperCase().slice(0, 11).replace(/(.{4})/g, "$1 ").trim();
+    case "CreditCardNumber":
+      return clean.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
+    case "UntilDate":
+      const digits = clean.replace(/\D/g, "").slice(0, 4);
+      if (digits.length <= 2) return digits;
+      return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    case "CVV":
+      return clean.replace(/\D/g, "").slice(0, 4);
+    default:
+      return value;
+  }
+};
+const stripFormatting = (value, type) => {
+  if (!value) return "";
+  switch (type) {
+    case "IBAN":
+    case "BIC":
+      return value.replace(/\s/g, "").toUpperCase();
+    case "CreditCardNumber":
+    case "CVV":
+      return value.replace(/\D/g, "");
+    case "UntilDate":
+      return value.replace(/\D/g, "");
+    default:
+      return value;
+  }
+};
+const getMaxLength = (type) => {
+  switch (type) {
+    case "IBAN":
+      return 34;
+    case "BIC":
+      return 11;
+    case "CreditCardNumber":
+      return 16;
+    case "UntilDate":
+      return 4;
+    case "CVV":
+      return 4;
+    default:
+      return Infinity;
+  }
+};
 const Input = reactExports.forwardRef((t0, ref) => {
-  const $2 = dist.c(11);
+  const $2 = dist.c(28);
   let className;
+  let numberType;
+  let onChange;
   let props;
   let type;
+  let value;
   if ($2[0] !== t0) {
     ({
       className,
       type,
+      numberType,
+      value,
+      onChange,
       ...props
     } = t0);
     $2[0] = t0;
     $2[1] = className;
-    $2[2] = props;
-    $2[3] = type;
+    $2[2] = numberType;
+    $2[3] = onChange;
+    $2[4] = props;
+    $2[5] = type;
+    $2[6] = value;
   } else {
     className = $2[1];
-    props = $2[2];
-    type = $2[3];
+    numberType = $2[2];
+    onChange = $2[3];
+    props = $2[4];
+    type = $2[5];
+    value = $2[6];
   }
+  const [displayValue, setDisplayValue] = reactExports.useState("");
+  const inputRef = reactExports.useRef(null);
   let t1;
-  if ($2[4] !== className) {
-    t1 = cn("flex h-10 flex-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-300 dark:text-white", className);
-    $2[4] = className;
-    $2[5] = t1;
+  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t1 = () => inputRef.current;
+    $2[7] = t1;
   } else {
-    t1 = $2[5];
+    t1 = $2[7];
   }
+  reactExports.useImperativeHandle(ref, t1);
   let t2;
-  if ($2[6] !== props || $2[7] !== ref || $2[8] !== t1 || $2[9] !== type) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type, className: t1, ref, ...props });
-    $2[6] = props;
-    $2[7] = ref;
-    $2[8] = t1;
-    $2[9] = type;
+  let t3;
+  if ($2[8] !== numberType || $2[9] !== value) {
+    t2 = () => {
+      if (numberType && value !== void 0) {
+        setDisplayValue(formatForDisplay(String(value), numberType));
+      }
+    };
+    t3 = [value, numberType];
+    $2[8] = numberType;
+    $2[9] = value;
     $2[10] = t2;
+    $2[11] = t3;
   } else {
     t2 = $2[10];
+    t3 = $2[11];
   }
-  return t2;
+  reactExports.useEffect(t2, t3);
+  let t4;
+  if ($2[12] !== numberType || $2[13] !== onChange) {
+    t4 = (e2) => {
+      if (!numberType) {
+        onChange?.(e2);
+        return;
+      }
+      const inputValue = e2.target.value;
+      const cursorPos = e2.target.selectionStart || 0;
+      const cleanValue = stripFormatting(inputValue, numberType);
+      const maxLen = getMaxLength(numberType);
+      if (cleanValue.length > maxLen) {
+        return;
+      }
+      const formatted = formatForDisplay(cleanValue, numberType);
+      setDisplayValue(formatted);
+      const syntheticEvent = {
+        ...e2,
+        target: {
+          ...e2.target,
+          value: cleanValue
+        }
+      };
+      onChange?.(syntheticEvent);
+      requestAnimationFrame(() => {
+        if (inputRef.current) {
+          const beforeCursor = inputValue.slice(0, cursorPos);
+          const cleanBeforeCursor = stripFormatting(beforeCursor, numberType);
+          const formattedBeforeCursor = formatForDisplay(cleanBeforeCursor, numberType);
+          const newCursorPos = formattedBeforeCursor.length;
+          inputRef.current.setSelectionRange(newCursorPos, newCursorPos);
+        }
+      });
+    };
+    $2[12] = numberType;
+    $2[13] = onChange;
+    $2[14] = t4;
+  } else {
+    t4 = $2[14];
+  }
+  const handleChange = t4;
+  let t5;
+  if ($2[15] !== displayValue || $2[16] !== handleChange || $2[17] !== numberType || $2[18] !== onChange || $2[19] !== value) {
+    t5 = numberType ? {
+      value: displayValue,
+      onChange: handleChange
+    } : {
+      value,
+      onChange
+    };
+    $2[15] = displayValue;
+    $2[16] = handleChange;
+    $2[17] = numberType;
+    $2[18] = onChange;
+    $2[19] = value;
+    $2[20] = t5;
+  } else {
+    t5 = $2[20];
+  }
+  const inputProps = t5;
+  let t6;
+  if ($2[21] !== className) {
+    t6 = cn("flex h-10 flex-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus-visible:ring-gray-300 dark:text-white", className);
+    $2[21] = className;
+    $2[22] = t6;
+  } else {
+    t6 = $2[22];
+  }
+  let t7;
+  if ($2[23] !== inputProps || $2[24] !== props || $2[25] !== t6 || $2[26] !== type) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type, className: t6, ref: inputRef, ...inputProps, ...props });
+    $2[23] = inputProps;
+    $2[24] = props;
+    $2[25] = t6;
+    $2[26] = type;
+    $2[27] = t7;
+  } else {
+    t7 = $2[27];
+  }
+  return t7;
 });
 Input.displayName = "Input";
 const TableContext = reactExports.createContext({
@@ -61299,13 +61450,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DV1bFw28.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DEwapuKI.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-CfkH7QLZ.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-Ce9zabjX.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DgQgRmKt.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-DGJoJPGl.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-D9L3kG1V.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-CdsOXFlX.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-8UAsF-mk.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-OXLRJmge.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-D2-FE_3M.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-CgCf7nNa.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-C3vkBUhr.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-D9DtfsWy.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
 function App() {
   const {
     settings,

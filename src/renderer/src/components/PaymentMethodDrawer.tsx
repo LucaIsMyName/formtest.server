@@ -179,6 +179,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               <Input
                 type="text"
                 id="iban"
+                numberType="IBAN"
                 value={methodData.details.iban || ""}
                 onChange={(e) => updateDetails("iban", e.target.value)}
                 placeholder="DE89 3704 0044 0532 0130 00"
@@ -202,6 +203,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               <Input
                 type="text"
                 id="cardNumber"
+                numberType="CreditCardNumber"
                 value={methodData.details.cardNumber || ""}
                 onChange={(e) => updateDetails("cardNumber", e.target.value)}
                 placeholder="4111 1111 1111 1111"
@@ -220,6 +222,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 <Input
                   type="text"
                   id="expiryDate"
+                  numberType="UntilDate"
                   value={methodData.details.expiryDate || ""}
                   onChange={(e) => updateDetails("expiryDate", e.target.value)}
                   placeholder="MM/YY"
@@ -237,6 +240,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 <Input
                   type="text"
                   id="cvv"
+                  numberType="CVV"
                   value={methodData.details.cvv || ""}
                   onChange={(e) => updateDetails("cvv", e.target.value)}
                   placeholder="123"
