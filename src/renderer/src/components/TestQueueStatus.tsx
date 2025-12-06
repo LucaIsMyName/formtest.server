@@ -74,7 +74,7 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
         ) : (
           <Square className="w-3 h-3" fill="currentColor" />
         )}
-        Alles stoppen
+        Alle stoppen
       </Button>
     </div>
   );

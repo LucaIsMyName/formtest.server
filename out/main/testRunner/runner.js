@@ -135,6 +135,12 @@ class TestRunner {
     if (lowerUrl.includes('sofort')) return 'Sofort'
     if (lowerUrl.includes('giropay')) return 'Giropay'
     if (lowerUrl.includes('eps')) return 'EPS'
+    // Austrian bank login pages (EPS redirects)
+    if (lowerUrl.includes('raiffeisen')) return 'EPS (Raiffeisen)'
+    if (lowerUrl.includes('sparkasse')) return 'EPS (Sparkasse)'
+    if (lowerUrl.includes('george.at')) return 'EPS (Erste Bank)'
+    if (lowerUrl.includes('netbanking') || lowerUrl.includes('ebanking') || lowerUrl.includes('onlinebanking')) return 'EPS (Bank Login)'
+    if (lowerUrl.includes('mein-login')) return 'EPS (Bank Login)'
     if (lowerUrl.includes('sepa')) return 'SEPA'
     if (lowerUrl.includes('visa')) return 'Visa'
     if (lowerUrl.includes('mastercard')) return 'Mastercard'
@@ -878,7 +884,23 @@ class TestRunner {
         allowSuccessPage: true  // SEPA usually redirects to success/thank-you page on same domain
       },
       'eps': {
-        patterns: [/eps-ueberweisung/, /eps\.at/, /giropay\./],
+        patterns: [
+          /eps-ueberweisung/,
+          /eps\.at/,
+          /giropay\./,
+          // Austrian bank login pages (EPS redirects to bank's SSO)
+          /raiffeisen\.at/,
+          /sso\.raiffeisen/,
+          /sparkasse\.at/,
+          /george\.at/,           // Erste Bank online banking
+          /netbanking/,
+          /banking\.austria/,
+          /bank.*login/,
+          /login.*bank/,
+          /mein-login/,
+          /ebanking/,
+          /onlinebanking/
+        ],
         name: 'EPS',
         allowSuccessPage: false  // EPS should redirect to bank
       }
@@ -905,7 +927,16 @@ class TestRunner {
       /eps\.at/,
       /secure\.ogone/,
       /viveum/,
-      /hobex/
+      /hobex/,
+      // Austrian bank login pages (EPS)
+      /raiffeisen\.at/,
+      /sso\.raiffeisen/,
+      /sparkasse\.at/,
+      /george\.at/,
+      /netbanking/,
+      /ebanking/,
+      /onlinebanking/,
+      /mein-login/
     ]
     
     // Success page patterns - these require URL to be DIFFERENT from initial
@@ -2489,70 +2520,136 @@ class TestRunner {
 
   async fillEpsFields(details) {
     this.log('Filling EPS fields...')
+    this.log(`EPS details: bankCode=${details.bankCode}`)
 
-    // Verify EPS form is visible before filling
+    // Bank code mapping - some systems use different codes
+    // Map common bank identifiers to their BIC/SWIFT codes used in FundraisingBox
+    const bankCodeMapping = {
+      // Raiffeisen variants
+      'RLNWATWW': 'ALPEAT22XXX',      // Raiffeisen NÖ-Wien -> Raiffeisen Bankengruppe
+      'RLNWATWWXXX': 'ALPEAT22XXX',
+      'RAIFFEISEN': 'ALPEAT22XXX',
+      // Erste Bank variants  
+      'GIBAATWW': 'ASPKAT2LXXX',      // Erste Bank old code
+      'GIBAATWWXXX': 'ASPKAT2LXXX',
+      // Bank Austria variants
+      'BKAUATWW': 'BKAUATWWXXX',
+      // Keep standard codes as-is
+      'ALPEAT22XXX': 'ALPEAT22XXX',
+      'ASPKAT2LXXX': 'ASPKAT2LXXX',
+    }
+
+    // Check if EPS form container exists (optional - some forms don't have it)
     const epsForm = await this.page.$('#epsBankForm')
     if (epsForm) {
       const isVisible = await epsForm.isVisible()
-      if (!isVisible) {
-        this.log('⚠ Warning: EPS form (#epsBankForm) is not visible')
-        await this.logPaymentFormState()
-        return
+      if (isVisible) {
+        this.log('✓ EPS form container (#epsBankForm) is visible')
+      } else {
+        this.log('⚠ EPS form container exists but not visible, will try direct selectors')
       }
-      this.log('✓ EPS form is visible')
     } else {
-      this.log('⚠ Warning: EPS form (#epsBankForm) not found in DOM')
-      return
+      this.log('ℹ No #epsBankForm container, will try direct selectors')
     }
 
     // Get bank selectors from config or use fallbacks
-    // Use container-scoped selectors first
+    // Prioritize the most common selector first
     const configBankSelectors = this.getSelectors('paymentFields', 'bankSelect')
     const bankSelectors = configBankSelectors.length > 0 ? configBankSelectors : [
-      '#epsBankForm #payment_eps_bank',  // Most specific
+      'select[name="payment[eps_bank]"]',  // Most common - from user's HTML
       '#payment_eps_bank',
+      '#epsBankForm #payment_eps_bank',
       '#epsBankForm select[name*="eps_bank"]',
-      'select[name="payment[eps_bank]"]',
       'select[name*="eps_bank"]',
-      'select[name*="bank"]'
+      'select[name*="eps"]',
+      'select.input[name*="bank"]'  // Generic fallback with class
     ]
 
-    // Default to Erste Bank (common Austrian bank)
-    const bankCode = details.bankCode || this.getDefaultValue('bankCode') || 'ASPKAT2LXXX'
+    // Get bank code and map it if needed
+    let bankCode = details.bankCode || this.getDefaultValue('bankCode') || 'ASPKAT2LXXX'
+    const mappedCode = bankCodeMapping[bankCode.toUpperCase()]
+    if (mappedCode && mappedCode !== bankCode) {
+      this.log(`Mapping bank code ${bankCode} -> ${mappedCode}`)
+      bankCode = mappedCode
+    }
+    this.log(`Will select bank with code: ${bankCode}`)
 
     for (const selector of bankSelectors) {
       try {
+        this.log(`Trying EPS bank selector: ${selector}`)
         const selectElement = await this.page.$(selector)
         if (selectElement) {
           const isVisible = await selectElement.isVisible()
           if (!isVisible) {
-            this.log(`Bank selector ${selector} found but not visible, trying next...`)
+            this.log(`  → Found but not visible, trying next...`)
             continue
           }
           
-          // Try to select by value (bank code)
-          try {
-            await selectElement.selectOption(bankCode)
-            this.log(`✓ Selected bank by code: ${bankCode}`)
-            return
-          } catch {
-            // Try by label
-            const bankName = details.bankName || 'Erste Bank und Sparkassen'
-            try {
-              await selectElement.selectOption({ label: bankName })
-              this.log(`✓ Selected bank by name: ${bankName}`)
-              return
-            } catch (labelError) {
-              this.log(`Could not select bank by label: ${labelError.message}`)
+          this.log(`  → Found and visible!`)
+          
+          // Get all available options first
+          const options = await selectElement.$$('option')
+          const availableValues = []
+          for (const option of options) {
+            const value = await option.getAttribute('value')
+            const text = await option.textContent()
+            if (value && value !== '') {
+              availableValues.push({ value, text: text?.trim() })
             }
           }
+          this.log(`  → Available banks: ${availableValues.length}`)
+          
+          // Try to select by exact value match
+          const exactMatch = availableValues.find(o => o.value === bankCode)
+          if (exactMatch) {
+            await selectElement.selectOption({ value: bankCode })
+            this.log(`✓ Selected EPS bank: ${exactMatch.text} (${bankCode})`)
+            return
+          }
+          
+          // Try partial match (bank code contains or is contained)
+          const partialMatch = availableValues.find(o => 
+            o.value.includes(bankCode.replace('XXX', '')) || 
+            bankCode.includes(o.value.replace('XXX', ''))
+          )
+          if (partialMatch) {
+            await selectElement.selectOption({ value: partialMatch.value })
+            this.log(`✓ Selected EPS bank (partial match): ${partialMatch.text} (${partialMatch.value})`)
+            return
+          }
+          
+          // Try by label (bank name)
+          const bankName = details.bankName
+          if (bankName) {
+            const nameMatch = availableValues.find(o => 
+              o.text?.toLowerCase().includes(bankName.toLowerCase()) ||
+              bankName.toLowerCase().includes(o.text?.toLowerCase() || '')
+            )
+            if (nameMatch) {
+              await selectElement.selectOption({ value: nameMatch.value })
+              this.log(`✓ Selected EPS bank by name: ${nameMatch.text} (${nameMatch.value})`)
+              return
+            }
+          }
+          
+          // Last resort: select first available bank
+          if (availableValues.length > 0) {
+            const firstBank = availableValues[0]
+            await selectElement.selectOption({ value: firstBank.value })
+            this.log(`✓ Selected first available EPS bank: ${firstBank.text} (${firstBank.value})`)
+            return
+          }
+          
+          this.log(`  → No valid options found in dropdown`)
+        } else {
+          this.log(`  → Not found`)
         }
       } catch (error) {
-        // Try next selector
+        this.log(`  → Error: ${error.message}`)
       }
     }
 
-    this.log('⚠ Could not find or select bank dropdown')
+    this.log('⚠ Could not find or select EPS bank dropdown')
   }
 
   async tryFillField(selectors, value, fieldName) {
