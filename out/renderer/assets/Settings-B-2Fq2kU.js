@@ -1,7 +1,7 @@
-import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, a1 as useSettingsStore, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, a2 as React, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, a3 as CircleCheck, a4 as CircleAlert, a5 as Database, a6 as Mail, a7 as Sun, a8 as SlidersVertical, a9 as Moon, aa as Monitor, t as Checkbox } from "./index-DBe7Ss4L.js";
+import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Database, a6 as Mail, a7 as Sun, a8 as SlidersVertical, a9 as Moon, aa as Monitor, t as Checkbox } from "./index-C-ArmITa.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-C6ByrS11.js";
-import { S as Skeleton } from "./Skeleton-j11q0gD7.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-COmKvR0u.js";
+import { S as Skeleton } from "./Skeleton-CKdwSFDR.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -288,7 +288,7 @@ const SelectorEditorSkeleton = () => {
   const $ = dist.c(1);
   let t0;
   if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t0 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(3)].map(_temp$1) });
+    t0 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: [...Array(3)].map(_temp$2) });
     $[0] = t0;
   } else {
     t0 = $[0];
@@ -884,7 +884,7 @@ const SelectorEditor = () => {
   }
   return t14;
 };
-function _temp$1(_, i) {
+function _temp$2(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg p-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-6 w-48 mb-3" }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
@@ -895,6 +895,252 @@ function _temp$1(_, i) {
 }
 function _temp2(selector_1, idx_0) {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorItem, { selector: selector_1, isDefault: true }, `default-${idx_0}`);
+}
+const FIELD_LABELS = {
+  firstName: "Vorname",
+  lastName: "Nachname",
+  email: "E-Mail",
+  street: "Straße",
+  zip: "PLZ",
+  city: "Stadt",
+  country: "Land (ISO Code)",
+  phone: "Telefon",
+  birthday: "Geburtstag",
+  title: "Titel",
+  company: "Firma",
+  salutation: "Anrede",
+  iban: "IBAN",
+  accountHolder: "Kontoinhaber"
+};
+const FIELD_ORDER = ["firstName", "lastName", "email", "street", "zip", "city", "country", "phone", "birthday", "title", "company", "salutation", "iban", "accountHolder"];
+const GlobalDefaultsEditorSkeleton = () => {
+  const $ = dist.c(1);
+  let t0;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t0 = /* @__PURE__ */ jsxRuntimeExports.jsx(Table, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: [...Array(6)].map(_temp$1) }) });
+    $[0] = t0;
+  } else {
+    t0 = $[0];
+  }
+  return t0;
+};
+const GlobalDefaultsEditor = () => {
+  const $ = dist.c(25);
+  let t0;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t0 = {};
+    $[0] = t0;
+  } else {
+    t0 = $[0];
+  }
+  const [fieldDefaults, setFieldDefaults] = reactExports.useState(t0);
+  const [isLoading, setIsLoading] = reactExports.useState(true);
+  const [saveStatus, setSaveStatus] = reactExports.useState("idle");
+  const saveTimeoutRef = reactExports.useRef(null);
+  const statusTimeoutRef = reactExports.useRef(null);
+  let t1;
+  let t2;
+  if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+    t1 = () => {
+      window.api.settings.getFieldDefaults().then((defaults) => {
+        setFieldDefaults(defaults || {});
+        setIsLoading(false);
+      }).catch(() => {
+        setIsLoading(false);
+      });
+    };
+    t2 = [];
+    $[1] = t1;
+    $[2] = t2;
+  } else {
+    t1 = $[1];
+    t2 = $[2];
+  }
+  reactExports.useEffect(t1, t2);
+  let t3;
+  if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
+    t3 = async (defaults_0) => {
+      setSaveStatus("saving");
+      try {
+        await window.api.settings.setFieldDefaults(defaults_0);
+        setSaveStatus("saved");
+        if (statusTimeoutRef.current) {
+          clearTimeout(statusTimeoutRef.current);
+        }
+        statusTimeoutRef.current = setTimeout(() => {
+          setSaveStatus("idle");
+        }, 2e3);
+      } catch (t42) {
+        const error = t42;
+        console.error("Failed to save field defaults:", error);
+        setSaveStatus("idle");
+      }
+    };
+    $[3] = t3;
+  } else {
+    t3 = $[3];
+  }
+  const saveDefaults = t3;
+  let t4;
+  if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
+    t4 = (field, value) => {
+      setFieldDefaults((prev) => {
+        const newDefaults = {
+          ...prev,
+          [field]: value || void 0
+        };
+        if (saveTimeoutRef.current) {
+          clearTimeout(saveTimeoutRef.current);
+        }
+        saveTimeoutRef.current = setTimeout(() => {
+          saveDefaults(newDefaults);
+        }, 500);
+        return newDefaults;
+      });
+    };
+    $[4] = t4;
+  } else {
+    t4 = $[4];
+  }
+  const updateFieldDefault = t4;
+  let t5;
+  let t6;
+  if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
+    t5 = () => () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      if (statusTimeoutRef.current) {
+        clearTimeout(statusTimeoutRef.current);
+      }
+    };
+    t6 = [];
+    $[5] = t5;
+    $[6] = t6;
+  } else {
+    t5 = $[5];
+    t6 = $[6];
+  }
+  reactExports.useEffect(t5, t6);
+  let t7;
+  if ($[7] !== fieldDefaults) {
+    t7 = (field_0) => {
+      const value_0 = fieldDefaults[field_0] || "";
+      if (field_0 === "salutation") {
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: value_0 || "__faker__", onValueChange: (v) => updateFieldDefault(field_0, v === "__faker__" ? "" : v), children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "h-7 text-xs w-full", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Faker.js" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "__faker__", children: "Faker.js" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Mr.", children: "Herr" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Mrs.", children: "Frau" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Mx.", children: "Divers" })
+          ] })
+        ] });
+      }
+      if (field_0 === "iban") {
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: value_0, onChange: (e) => updateFieldDefault(field_0, e.target.value), placeholder: "z.B. AT89370400440532013000", numberType: "IBAN", className: "h-7 text-xs w-full" });
+      }
+      const placeholder = field_0 === "country" ? "z.B. AT, DE" : field_0 === "birthday" ? "z.B. 01.01.1980" : field_0 === "title" ? "z.B. Dr., Mag." : "Faker.js";
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: field_0 === "email" ? "email" : "text", value: value_0, onChange: (e_0) => updateFieldDefault(field_0, e_0.target.value), placeholder, className: "h-7 text-xs w-full" });
+    };
+    $[7] = fieldDefaults;
+    $[8] = t7;
+  } else {
+    t7 = $[8];
+  }
+  const renderFieldInput = t7;
+  if (isLoading) {
+    let t82;
+    if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
+      t82 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalDefaultsEditorSkeleton, {});
+      $[9] = t82;
+    } else {
+      t82 = $[9];
+    }
+    return t82;
+  }
+  let t8;
+  if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-sm font-medium text-gray-700 dark:text-gray-300", children: "Globale Standardwerte" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-1", children: "Diese Werte überschreiben Faker.js, werden aber von Form-spezifischen Mappings überschrieben." })
+    ] });
+    $[10] = t8;
+  } else {
+    t8 = $[10];
+  }
+  let t9;
+  if ($[11] !== saveStatus) {
+    t9 = saveStatus === "saving" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Speichern..." });
+    $[11] = saveStatus;
+    $[12] = t9;
+  } else {
+    t9 = $[12];
+  }
+  let t10;
+  if ($[13] !== saveStatus) {
+    t10 = saveStatus === "saved" && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs text-green-600 dark:text-green-400 flex items-center gap-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { size: 12 }),
+      "Gespeichert"
+    ] });
+    $[13] = saveStatus;
+    $[14] = t10;
+  } else {
+    t10 = $[14];
+  }
+  let t11;
+  if ($[15] !== t10 || $[16] !== t9) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+      t8,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+        t9,
+        t10
+      ] })
+    ] });
+    $[15] = t10;
+    $[16] = t9;
+    $[17] = t11;
+  } else {
+    t11 = $[17];
+  }
+  let t12;
+  if ($[18] !== renderFieldInput) {
+    t12 = FIELD_ORDER.map((field_1) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "w-40 text-xs text-gray-600 dark:text-gray-400 font-medium", children: FIELD_LABELS[field_1] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: renderFieldInput(field_1) })
+    ] }, field_1));
+    $[18] = renderFieldInput;
+    $[19] = t12;
+  } else {
+    t12 = $[19];
+  }
+  let t13;
+  if ($[20] !== t12) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(Table, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: t12 }) });
+    $[20] = t12;
+    $[21] = t13;
+  } else {
+    t13 = $[21];
+  }
+  let t14;
+  if ($[22] !== t11 || $[23] !== t13) {
+    t14 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+      t11,
+      t13
+    ] });
+    $[22] = t11;
+    $[23] = t13;
+    $[24] = t14;
+  } else {
+    t14 = $[24];
+  }
+  return t14;
+};
+function _temp$1(_, i) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-4 w-20" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-7 w-full" }) })
+  ] }, i);
 }
 const SettingsSkeleton = () => {
   const $ = dist.c(1);
@@ -950,39 +1196,9 @@ const Settings = () => {
   const [isDeleting, setIsDeleting] = reactExports.useState(false);
   const [searchTerm, setSearchTerm] = reactExports.useState("");
   const [categoryFilter, setCategoryFilter] = reactExports.useState(void 0);
-  const [fieldDefaults, setFieldDefaults] = reactExports.useState({});
-  const [isLoadingDefaults, setIsLoadingDefaults] = reactExports.useState(true);
-  const [isSavingDefaults, setIsSavingDefaults] = reactExports.useState(false);
-  const [defaultsSaveMessage, setDefaultsSaveMessage] = reactExports.useState(null);
   reactExports.useEffect(() => {
     loadSettings();
-    window.api.settings.getFieldDefaults().then((defaults) => {
-      setFieldDefaults(defaults || {});
-      setIsLoadingDefaults(false);
-    }).catch(() => {
-      setIsLoadingDefaults(false);
-    });
   }, [loadSettings]);
-  const handleSaveFieldDefaults = reactExports.useCallback(async () => {
-    setIsSavingDefaults(true);
-    setDefaultsSaveMessage(null);
-    try {
-      await window.api.settings.setFieldDefaults(fieldDefaults);
-      setDefaultsSaveMessage("Standardwerte gespeichert!");
-      setTimeout(() => setDefaultsSaveMessage(null), 3e3);
-    } catch (error_0) {
-      setDefaultsSaveMessage("Fehler beim Speichern");
-    } finally {
-      setIsSavingDefaults(false);
-    }
-  }, [fieldDefaults]);
-  const updateFieldDefault = reactExports.useCallback((field, value) => {
-    setFieldDefaults((prev) => ({
-      ...prev,
-      [field]: value || void 0
-      // Remove empty strings
-    }));
-  }, []);
   const applyTheme = (themeValue) => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
@@ -1057,7 +1273,7 @@ const Settings = () => {
       const api = window.api;
       const result = await api.email.testConnection();
       setEmailTestResult(result);
-    } catch (error_1) {
+    } catch (error_0) {
       setEmailTestResult({
         success: false,
         message: "Fehler beim Senden"
@@ -1076,7 +1292,7 @@ const Settings = () => {
       } else {
         setExportMessage(`Export fehlgeschlagen`);
       }
-    } catch (error_2) {
+    } catch (error_1) {
       setExportMessage("Export fehlgeschlagen");
     } finally {
       setIsExporting(false);
@@ -1093,7 +1309,7 @@ const Settings = () => {
           loadSettings();
         }
       }
-    } catch (error_3) {
+    } catch (error_2) {
       setImportResult({
         success: false,
         imported: {
@@ -1422,6 +1638,16 @@ const Settings = () => {
       type: "component",
       value: "",
       fullWidth: true
+    },
+    // Global Defaults
+    {
+      id: "global_defaults",
+      category: "selectors",
+      name: "Globale Standardwerte",
+      description: "Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.",
+      type: "component",
+      value: "",
+      fullWidth: true
     }
   ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport]);
   const filteredSettings = reactExports.useMemo(() => {
@@ -1431,67 +1657,67 @@ const Settings = () => {
       return matchesSearch && matchesCategory;
     });
   }, [settingsItems, searchTerm, categoryFilter]);
-  const handleSettingChange = async (id, value_0) => {
+  const handleSettingChange = async (id, value) => {
     switch (id) {
       case "donation_amount":
-        setDonationAmount(value_0);
+        setDonationAmount(value);
         break;
       case "donation_interval":
-        setDonationInterval(value_0);
-        await updateSetting("default_interval", value_0, "Standard-Spendenintervall");
+        setDonationInterval(value);
+        await updateSetting("default_interval", value, "Standard-Spendenintervall");
         break;
       case "headless_mode":
-        setHeadlessMode(value_0);
-        await updateSetting("headless_mode", value_0, "Headless-Modus");
+        setHeadlessMode(value);
+        await updateSetting("headless_mode", value, "Headless-Modus");
         break;
       case "slow_motion":
-        setSlowMotion(value_0);
-        await updateSetting("slow_motion", value_0, "Slow Motion");
+        setSlowMotion(value);
+        await updateSetting("slow_motion", value, "Slow Motion");
         break;
       case "test_timeout":
-        setTestTimeout(value_0);
+        setTestTimeout(value);
         break;
       case "theme":
-        setTheme(value_0);
-        await updateSetting("theme", value_0, "UI-Theme");
-        applyTheme(value_0);
+        setTheme(value);
+        await updateSetting("theme", value, "UI-Theme");
+        applyTheme(value);
         break;
       case "email_enabled":
-        setEmailEnabled(value_0 === "true");
-        await updateSetting("email_enabled", value_0, "E-Mail aktiviert");
+        setEmailEnabled(value === "true");
+        await updateSetting("email_enabled", value, "E-Mail aktiviert");
         break;
       case "email_smtp_host":
-        setEmailSmtpHost(value_0);
+        setEmailSmtpHost(value);
         break;
       case "email_smtp_port":
-        setEmailSmtpPort(value_0);
+        setEmailSmtpPort(value);
         break;
       case "email_smtp_secure":
-        setEmailSmtpSecure(value_0 === "true");
-        await updateSetting("email_smtp_secure", value_0, "SSL/TLS");
+        setEmailSmtpSecure(value === "true");
+        await updateSetting("email_smtp_secure", value, "SSL/TLS");
         break;
       case "email_smtp_user":
-        setEmailSmtpUser(value_0);
+        setEmailSmtpUser(value);
         break;
       case "email_smtp_pass":
-        setEmailSmtpPass(value_0);
+        setEmailSmtpPass(value);
         break;
       case "email_from_email":
-        setEmailFromEmail(value_0);
+        setEmailFromEmail(value);
         break;
       case "email_from_name":
-        setEmailFromName(value_0);
+        setEmailFromName(value);
         break;
       case "email_to_email":
-        setEmailToEmail(value_0);
+        setEmailToEmail(value);
         break;
       case "email_notify_success":
-        setEmailNotifySuccess(value_0 === "true");
-        await updateSetting("email_notify_success", value_0, "Bei Erfolg benachrichtigen");
+        setEmailNotifySuccess(value === "true");
+        await updateSetting("email_notify_success", value, "Bei Erfolg benachrichtigen");
         break;
       case "email_notify_failure":
-        setEmailNotifyFailure(value_0 === "true");
-        await updateSetting("email_notify_failure", value_0, "Bei Fehler benachrichtigen");
+        setEmailNotifyFailure(value === "true");
+        await updateSetting("email_notify_failure", value, "Bei Fehler benachrichtigen");
         break;
     }
   };
@@ -1552,8 +1778,8 @@ const Settings = () => {
           break;
       }
       setDeleteConfirmation(null);
-    } catch (error_4) {
-      console.error("Delete failed:", error_4);
+    } catch (error_3) {
+      console.error("Delete failed:", error_3);
     } finally {
       setIsDeleting(false);
     }
@@ -1622,6 +1848,9 @@ const Settings = () => {
         if (item_0.id === "selectors") {
           return /* @__PURE__ */ jsxRuntimeExports.jsx(SelectorEditor, {});
         }
+        if (item_0.id === "global_defaults") {
+          return /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalDefaultsEditor, {});
+        }
         return null;
       default:
         return null;
@@ -1689,95 +1918,6 @@ const Settings = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: renderSettingControl(item_1) })
         ] }, item_1.id)) })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-1", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Settings2, { size: 14, className: "text-gray-500" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-medium text-gray-900 dark:text-white", children: "Globale Standardwerte" })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-[10px] text-gray-500 dark:text-gray-400", children: [
-              "Diese Werte überschreiben Faker.js, werden aber von Form-spezifischen Mappings überschrieben.",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "Priorität: Form-Mapping → Globale Standardwerte → Faker.js" })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-            defaultsSaveMessage && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-xs ${defaultsSaveMessage.includes("Fehler") ? "text-red-500" : "text-green-500"}`, children: defaultsSaveMessage }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", onClick: handleSaveFieldDefaults, disabled: isSavingDefaults, className: "text-xs h-7", children: isSavingDefaults ? "Speichern..." : "Speichern" })
-          ] })
-        ] }) }),
-        isLoadingDefaults ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 w-full mb-2" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 w-full mb-2" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-10 w-full" })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Vorname" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.firstName || "", onChange: (e_0) => updateFieldDefault("firstName", e_0.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Nachname" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.lastName || "", onChange: (e_1) => updateFieldDefault("lastName", e_1.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "E-Mail" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "email", value: fieldDefaults.email || "", onChange: (e_2) => updateFieldDefault("email", e_2.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Straße" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.street || "", onChange: (e_3) => updateFieldDefault("street", e_3.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "PLZ" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.zip || "", onChange: (e_4) => updateFieldDefault("zip", e_4.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Stadt" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.city || "", onChange: (e_5) => updateFieldDefault("city", e_5.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Land (ISO Code)" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.country || "", onChange: (e_6) => updateFieldDefault("country", e_6.target.value), placeholder: "z.B. AT, DE", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Telefon" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.phone || "", onChange: (e_7) => updateFieldDefault("phone", e_7.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Geburtstag" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.birthday || "", onChange: (e_8) => updateFieldDefault("birthday", e_8.target.value), placeholder: "z.B. 01.01.1980", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Titel" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.title || "", onChange: (e_9) => updateFieldDefault("title", e_9.target.value), placeholder: "z.B. Dr., Mag.", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Firma" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.company || "", onChange: (e_10) => updateFieldDefault("company", e_10.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Anrede" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: fieldDefaults.salutation || "__faker__", onValueChange: (value_1) => updateFieldDefault("salutation", value_1 === "__faker__" ? "" : value_1), children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: "h-8 text-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "Faker.js" }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "__faker__", children: "Faker.js" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Mr.", children: "Herr" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Mrs.", children: "Frau" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "Mx.", children: "Divers" })
-              ] })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "IBAN" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.iban || "", onChange: (e_11) => updateFieldDefault("iban", e_11.target.value), placeholder: "z.B. AT89370400440532013000", numberType: "IBAN", className: "h-8 text-sm" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "text-xs font-medium text-gray-600 dark:text-gray-400", children: "Kontoinhaber" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { value: fieldDefaults.accountHolder || "", onChange: (e_12) => updateFieldDefault("accountHolder", e_12.target.value), placeholder: "Faker.js", className: "h-8 text-sm" })
-          ] })
-        ] })
-      ] }),
       emailTestResult && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `p-3 rounded-md border text-xs flex items-center gap-2 ${emailTestResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`, children: [
         emailTestResult.success ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 14 }),
         emailTestResult.message
