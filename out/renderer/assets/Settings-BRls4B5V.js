@@ -1,7 +1,7 @@
-import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Database, a6 as Mail, a7 as Sun, a8 as SlidersVertical, a9 as Moon, aa as Monitor, t as Checkbox } from "./index-C-ArmITa.js";
+import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Database, a6 as Mail, a7 as Sun, a8 as SlidersVertical, a9 as Moon, aa as Monitor, t as Checkbox } from "./index-Ce-03Pjy.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-COmKvR0u.js";
-import { S as Skeleton } from "./Skeleton-CKdwSFDR.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Btpub4kl.js";
+import { S as Skeleton } from "./Skeleton-CZRqJCxj.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -1106,7 +1106,7 @@ const GlobalDefaultsEditor = () => {
   let t12;
   if ($[18] !== renderFieldInput) {
     t12 = FIELD_ORDER.map((field_1) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "w-40 text-xs text-gray-600 dark:text-gray-400 font-medium", children: FIELD_LABELS[field_1] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "w-40 text-xs text-gray-600 dark:text-gray-400 font-medium pl-0", children: FIELD_LABELS[field_1] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: renderFieldInput(field_1) })
     ] }, field_1));
     $[18] = renderFieldInput;
@@ -1116,7 +1116,7 @@ const GlobalDefaultsEditor = () => {
   }
   let t13;
   if ($[20] !== t12) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(Table, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: t12 }) });
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsx(Table, { dividers: false, className: "bg-transparent", children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { className: "", children: t12 }) });
     $[20] = t12;
     $[21] = t13;
   } else {

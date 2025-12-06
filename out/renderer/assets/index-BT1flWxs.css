@@ -1470,6 +1470,9 @@ video {
 .pb-6 {
   padding-bottom: 1.5rem;
 }
+.pl-0 {
+  padding-left: 0px;
+}
 .pl-10 {
   padding-left: 2.5rem;
 }

@@ -596,13 +596,15 @@ class TestRunner {
       throw error
     }
 
-    // Step 8: Success Detection
+    // Step 8: Success Detection (payment-method-specific)
     const successStep = this.startStep('redirect-detection', 'Detect Payment Redirect')
     try {
-      const successResult = await this.waitForSuccessRedirect()
-      this.completeStep('redirect-detection', 'success', `Redirected to payment provider`, {
+      const successResult = await this.waitForSuccessRedirect(paymentMethod.type)
+      this.completeStep('redirect-detection', 'success', `${successResult.message || 'Success detected'}`, {
         redirectUrl: successResult.url,
-        paymentProvider: this.detectPaymentProvider(successResult.url)
+        paymentProvider: successResult.detectedProvider,
+        expectedProvider: paymentMethod.type,
+        matchedExpected: successResult.matchedExpected
       })
 
       // Step 9: Success Confirmation
@@ -831,8 +833,8 @@ class TestRunner {
     throw new Error('No submit button found or clickable')
   }
 
-  async waitForSuccessRedirect() {
-    this.log('Waiting for success redirect or confirmation...')
+  async waitForSuccessRedirect(paymentMethodType = 'unknown') {
+    this.log(`Waiting for success redirect or confirmation (payment method: ${paymentMethodType})...`)
     
     // IMPORTANT: Use mainPage for URL detection since form might be in iframe
     const pageForUrlCheck = this.mainPage || this.page
@@ -845,16 +847,49 @@ class TestRunner {
     // Get success patterns from config
     const configPatterns = this.getSuccessPatterns()
     
-    // Payment provider patterns - these are EXTERNAL redirects (always valid)
-    const paymentProviderPatterns = [
+    // Payment-method-specific expected redirect patterns
+    const expectedRedirectsByMethod = {
+      'paypal': {
+        patterns: [/paypal\.com/],
+        name: 'PayPal',
+        allowSuccessPage: false  // PayPal must redirect to paypal.com
+      },
+      'creditcard': {
+        patterns: [/stripe\.com/, /checkout\.stripe\.com/, /pay\.stripe\.com/, /visa\./, /mastercard\./, /secure\.ogone/, /viveum/, /hobex/],
+        name: 'Credit Card Provider',
+        allowSuccessPage: true  // Credit card can also show success page after 3DS
+      },
+      'sepa': {
+        patterns: [],  // SEPA typically stays on same domain
+        name: 'SEPA',
+        allowSuccessPage: true  // SEPA usually redirects to success/thank-you page on same domain
+      },
+      'eps': {
+        patterns: [/eps-ueberweisung/, /eps\.at/, /giropay\./],
+        name: 'EPS',
+        allowSuccessPage: false  // EPS should redirect to bank
+      }
+    }
+    
+    const expectedConfig = expectedRedirectsByMethod[paymentMethodType] || {
+      patterns: [],
+      name: 'Unknown',
+      allowSuccessPage: true
+    }
+    
+    this.log(`Expected redirect for ${paymentMethodType}: ${expectedConfig.name}`)
+    
+    // All payment provider patterns (for detection, not validation)
+    const allPaymentProviderPatterns = [
       /paypal\.com/,
       /pay\.google\.com/,
-      /stripe\.com\/pay/,
+      /stripe\.com/,
       /checkout\.stripe\.com/,
       /klarna\.com/,
       /sofort\.com/,
       /giropay\./,
       /eps-ueberweisung/,
+      /eps\.at/,
       /secure\.ogone/,
       /viveum/,
       /hobex/
@@ -869,7 +904,9 @@ class TestRunner {
       /\/bestaetigung/,
       /\/vielen-dank/,
       /\/spende-abgeschlossen/,
-      /\/donation-complete/
+      /\/donation-complete/,
+      /\/willkommen/,
+      /\/welcome/
     ]
     
     // Build success message selectors
@@ -891,6 +928,27 @@ class TestRunner {
 
     this.log(`Checking URL on: ${pageForUrlCheck === this.mainPage ? 'mainPage' : 'iframe'}`)
 
+    // Helper function to validate redirect matches expected payment method
+    const validateRedirect = (urlString) => {
+      const detectedProvider = this.detectPaymentProvider(urlString)
+      
+      // Check if URL matches expected patterns for this payment method
+      const matchesExpected = expectedConfig.patterns.some(p => p.test(urlString))
+      
+      // Check if it's any payment provider
+      const isAnyPaymentProvider = allPaymentProviderPatterns.some(p => p.test(urlString))
+      
+      // Check if it's a success page
+      const isSuccessPage = successPagePatterns.some(p => p.test(urlString))
+      
+      return {
+        matchesExpected,
+        isAnyPaymentProvider,
+        isSuccessPage,
+        detectedProvider
+      }
+    }
+
     try {
       // Wait for URL change or success message
       const result = await Promise.race([
@@ -903,23 +961,37 @@ class TestRunner {
             return false
           }
           
-          // Check for payment provider redirect (external)
-          const isPaymentProvider = paymentProviderPatterns.some(p => p.test(urlString))
-          if (isPaymentProvider) {
-            this.log(`✓ Redirected to payment provider: ${urlString}`)
+          const validation = validateRedirect(urlString)
+          
+          // For payment methods that expect specific providers (PayPal, EPS)
+          if (expectedConfig.patterns.length > 0) {
+            if (validation.matchesExpected) {
+              this.log(`✓ Redirected to expected ${expectedConfig.name}: ${urlString}`)
+              return true
+            }
+            // Wrong payment provider redirect - this is an error!
+            if (validation.isAnyPaymentProvider && !validation.matchesExpected) {
+              this.log(`⚠ Redirected to WRONG provider (${validation.detectedProvider}) instead of ${expectedConfig.name}: ${urlString}`)
+              // Still return true to capture the URL, but we'll flag it as wrong
+              return true
+            }
+          }
+          
+          // For SEPA and methods that allow success pages
+          if (expectedConfig.allowSuccessPage && validation.isSuccessPage) {
+            this.log(`✓ Redirected to success page (valid for ${expectedConfig.name}): ${urlString}`)
             return true
           }
           
-          // Check for success page pattern (must be different URL)
-          const isSuccessPage = successPagePatterns.some(p => p.test(urlString))
-          if (isSuccessPage) {
-            this.log(`✓ Redirected to success page: ${urlString}`)
-            return true
+          // Any URL change for methods that allow success pages
+          if (expectedConfig.allowSuccessPage) {
+            this.log(`URL changed to: ${urlString} (checking for ${expectedConfig.name} success...)`)
+            // Accept any URL change for SEPA since it stays on same domain
+            if (paymentMethodType === 'sepa') {
+              return true
+            }
           }
           
-          // URL changed but doesn't match known patterns - could still be success
-          // Log it but don't auto-accept
-          this.log(`URL changed to: ${urlString} (checking if success...)`)
           return false
         }, { timeout: 30000 }),
         
@@ -938,6 +1010,7 @@ class TestRunner {
       ])
 
       const finalUrl = pageForUrlCheck.url()
+      const finalValidation = validateRedirect(finalUrl.toLowerCase())
       
       // Final validation: check we're not still on the same page with errors
       if (finalUrl.toLowerCase() === initialUrlLower) {
@@ -947,12 +1020,19 @@ class TestRunner {
           throw new Error('Form submission failed - error message detected on page')
         }
         
-        // Check if there's actually a success message visible
+        // Check if there's actually a success message visible (valid for SEPA)
         try {
           const successEl = await pageForUrlCheck.$(`${successSelectors}, ${successMessageSelectors}`)
           if (successEl && await successEl.isVisible()) {
             this.log(`✓ Success message found on same page`)
-            return { success: true, url: finalUrl, type: 'same-page-success' }
+            return { 
+              success: true, 
+              url: finalUrl, 
+              type: 'same-page-success',
+              detectedProvider: 'Same Page',
+              matchedExpected: expectedConfig.allowSuccessPage,
+              message: `Success message on same page (${expectedConfig.name})`
+            }
           }
         } catch (e) {
           // No success message found
@@ -961,8 +1041,23 @@ class TestRunner {
         throw new Error('Form stayed on same page without success confirmation')
       }
       
-      this.log(`✓ Success! Final URL: ${finalUrl}`)
-      return { success: true, url: finalUrl }
+      // URL changed - validate it matches expected payment method
+      const matchedExpected = finalValidation.matchesExpected || 
+        (expectedConfig.allowSuccessPage && (finalValidation.isSuccessPage || paymentMethodType === 'sepa'))
+      
+      if (!matchedExpected && finalValidation.isAnyPaymentProvider) {
+        this.log(`⚠ WARNING: Redirected to ${finalValidation.detectedProvider} but expected ${expectedConfig.name}`)
+      }
+      
+      return { 
+        success: true, 
+        url: finalUrl,
+        detectedProvider: finalValidation.detectedProvider,
+        matchedExpected,
+        message: matchedExpected 
+          ? `Redirected to ${finalValidation.detectedProvider || 'success page'}`
+          : `Redirected to ${finalValidation.detectedProvider} (expected ${expectedConfig.name})`
+      }
       
     } catch (error) {
       this.log(`❌ ${error.message}`)
@@ -970,18 +1065,23 @@ class TestRunner {
       // Final check: did URL change at all?
       const currentUrl = pageForUrlCheck.url()
       if (currentUrl.toLowerCase() !== initialUrlLower) {
-        // URL changed - check if it's a payment provider
-        const isPaymentProvider = paymentProviderPatterns.some(p => p.test(currentUrl.toLowerCase()))
-        if (isPaymentProvider) {
-          this.log(`✓ Final URL is payment provider: ${currentUrl}`)
-          return { success: true, url: currentUrl }
-        }
+        const finalValidation = validateRedirect(currentUrl.toLowerCase())
         
-        // Check for success patterns in new URL
-        const isSuccessPage = successPagePatterns.some(p => p.test(currentUrl.toLowerCase()))
-        if (isSuccessPage) {
-          this.log(`✓ Final URL is success page: ${currentUrl}`)
-          return { success: true, url: currentUrl }
+        // URL changed - validate against expected payment method
+        const matchedExpected = finalValidation.matchesExpected || 
+          (expectedConfig.allowSuccessPage && (finalValidation.isSuccessPage || paymentMethodType === 'sepa'))
+        
+        if (matchedExpected || finalValidation.isAnyPaymentProvider || finalValidation.isSuccessPage) {
+          this.log(`✓ Final URL accepted: ${currentUrl}`)
+          return { 
+            success: true, 
+            url: currentUrl,
+            detectedProvider: finalValidation.detectedProvider,
+            matchedExpected,
+            message: matchedExpected 
+              ? `Redirected to ${finalValidation.detectedProvider || 'success page'}`
+              : `Redirected to ${finalValidation.detectedProvider} (expected ${expectedConfig.name})`
+          }
         }
       }
       
@@ -991,7 +1091,7 @@ class TestRunner {
         throw new Error('Form submission failed - validation errors on page')
       }
 
-      throw new Error('Form submission did not redirect to a payment provider or success page')
+      throw new Error(`Form submission did not redirect to expected ${expectedConfig.name} provider or success page`)
     }
   }
   

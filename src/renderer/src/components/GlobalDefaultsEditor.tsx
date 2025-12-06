@@ -201,11 +201,11 @@ const GlobalDefaultsEditor: React.FC = () => {
       </div>
 
       {/* Table Layout */}
-      <Table>
-        <TableBody>
+      <Table dividers={false} className="bg-transparent">
+        <TableBody className="">
           {FIELD_ORDER.map(field => (
             <TableRow key={field}>
-              <TableCell className="w-40 text-xs text-gray-600 dark:text-gray-400 font-medium">
+              <TableCell className="w-40 text-xs text-gray-600 dark:text-gray-400 font-medium pl-0">
                 {FIELD_LABELS[field]}
               </TableCell>
               <TableCell>
