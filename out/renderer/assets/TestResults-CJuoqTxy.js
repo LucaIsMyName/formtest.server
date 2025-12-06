@@ -1,9 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, X, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, k as Trash2, t as Checkbox, an as formatDuration, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-ChHsagZL.js";
-import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Dryzb9TW.js";
-import { S as Skeleton } from "./Skeleton-DZm2ZUoB.js";
-import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-DCf5Cjv4.js";
-import { u as useTableSelection, c as computeIsPartialSelected, a as computeIsAllSelected } from "./useTableSelection-B_ZvBChM.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, k as Trash2, t as Checkbox, an as formatDuration, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-N4J4W4Ga.js";
+import { C as CONFIG } from "./app.config-b2lfEN4K.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BymsvGgs.js";
+import { u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useTableSelection-DvHvMnqw.js";
+import { S as Skeleton } from "./Skeleton-Bf8J3j5X.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -45,73 +44,6 @@ const TestQueueStatus = ({
     "Alles stoppen"
   ] }) });
 };
-const SelectionActionBar = (t0) => {
-  const $ = dist.c(11);
-  const {
-    selectedCount,
-    onClear,
-    actions,
-    itemLabel: t1
-  } = t0;
-  if (selectedCount === 0) {
-    return null;
-  }
-  let t2;
-  if ($[0] !== selectedCount) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap", children: [
-      selectedCount,
-      " ausgewählt"
-    ] });
-    $[0] = selectedCount;
-    $[1] = t2;
-  } else {
-    t2 = $[1];
-  }
-  let t3;
-  if ($[2] !== actions) {
-    t3 = actions.map(_temp$2);
-    $[2] = actions;
-    $[3] = t3;
-  } else {
-    t3 = $[3];
-  }
-  let t4;
-  if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
-    t4 = /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 });
-    $[4] = t4;
-  } else {
-    t4 = $[4];
-  }
-  let t5;
-  if ($[5] !== onClear) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClear, className: "p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "Auswahl aufheben", children: t4 });
-    $[5] = onClear;
-    $[6] = t5;
-  } else {
-    t5 = $[6];
-  }
-  let t6;
-  if ($[7] !== t2 || $[8] !== t3 || $[9] !== t5) {
-    t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-      t2,
-      t3,
-      t5
-    ] });
-    $[7] = t2;
-    $[8] = t3;
-    $[9] = t5;
-    $[10] = t6;
-  } else {
-    t6 = $[10];
-  }
-  return t6;
-};
-function _temp$2(action, index) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { size: "sm", variant: action.variant || "secondary", onClick: action.onClick, disabled: action.disabled || action.loading, className: "h-7 text-xs gap-1 px-2", children: [
-    action.icon,
-    action.loading ? "..." : action.label
-  ] }, index);
-}
 const ScreenshotViewer = (t0) => {
   const $ = dist.c(49);
   const {

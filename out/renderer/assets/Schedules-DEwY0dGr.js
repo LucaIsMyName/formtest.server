@@ -1,9 +1,9 @@
-import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, au as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, am as formatDateTime, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, av as useSchedulesStore, e as useTestRunsStore, H as Plus, K as TableHeader, ab as LoaderCircle, N as Pen, O as TablePagination, i as dist } from "./index-ChHsagZL.js";
-import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DCf5Cjv4.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Dryzb9TW.js";
-import { S as Skeleton } from "./Skeleton-DZm2ZUoB.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-vJKLxUqK.js";
+import { b as useFormsStore, d as usePaymentMethodsStore, r as reactExports, au as getDefaultScheduleIcon, j as jsxRuntimeExports, B as Button, P as Play, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, am as formatDateTime, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, av as useSchedulesStore, e as useTestRunsStore, H as Plus, K as TableHeader, M as TableHead, ab as LoaderCircle, N as Pen, O as TablePagination, i as dist } from "./index-N4J4W4Ga.js";
+import { C as CONFIG } from "./app.config-b2lfEN4K.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead } from "./useTableSelection-DvHvMnqw.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BymsvGgs.js";
+import { S as Skeleton } from "./Skeleton-Bf8J3j5X.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-sexxEKk_.js";
 const FREQUENCY_OPTIONS = [
   // Frequent intervals
   {
@@ -453,6 +453,17 @@ const Schedules = () => {
   const [runningSchedules, setRunningSchedules] = reactExports.useState(/* @__PURE__ */ new Set());
   const [currentPage, setCurrentPage] = reactExports.useState(1);
   const itemsPerPage = 50;
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = reactExports.useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = reactExports.useState(false);
+  const {
+    selectedIds,
+    toggleItem,
+    toggleAll,
+    clearSelection,
+    selectedCount,
+    isSelected,
+    getSelectedIds
+  } = useTableSelection();
   reactExports.useEffect(() => {
     loadSchedules();
     loadForms();
@@ -533,6 +544,30 @@ const Schedules = () => {
       }, 1e3);
     }
   };
+  const handleBulkDelete = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+    const deletedCount = ids.length;
+    setIsBulkDeleting(true);
+    try {
+      for (const id_2 of ids) {
+        await deleteSchedule(id_2);
+      }
+      clearSelection();
+      setShowBulkDeleteConfirm(false);
+      const remainingItems = totalItems - deletedCount;
+      if (remainingItems > 0) {
+        const newTotalPages = Math.ceil(remainingItems / itemsPerPage);
+        if (currentPage > newTotalPages) {
+          setCurrentPage(Math.max(1, newTotalPages));
+        }
+      }
+    } catch (error_1) {
+      console.error("Failed to bulk delete schedules:", error_1);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Autopilot" }),
@@ -548,10 +583,16 @@ const Schedules = () => {
     }, {
       value: "inactive",
       label: "Inaktiv"
-    }], onClear: clearFilters }),
+    }], onClear: clearFilters, rightContent: selectedCount > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(SelectionActionBar, { selectedCount, onClear: clearSelection, actions: [{
+      label: "Löschen",
+      icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
+      onClick: () => setShowBulkDeleteConfirm(true),
+      variant: "danger"
+    }] }) : void 0 }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden", children: isLoading && schedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6 space-y-4", children: [...Array(3)].map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-12 w-full" }, i)) }) : enrichedSchedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-12 text-center text-gray-500 dark:text-gray-400", children: "Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen." }) : displayedSchedules.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-12 text-center text-gray-500 dark:text-gray-400", children: "Keine Ergebnisse für die aktuelle Filterung." }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[40px] px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: computeIsAllSelected(displayedSchedules, selectedIds), indeterminate: computeIsPartialSelected(displayedSchedules, selectedIds), onCheckedChange: () => toggleAll(displayedSchedules), "aria-label": "Alle auswählen" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("formName"), onSort: () => requestSort("formName"), children: "Formular" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("paymentMethodName"), onSort: () => requestSort("paymentMethodName"), children: "Bezahlmethode" }),
@@ -561,57 +602,62 @@ const Schedules = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "text-left", children: "Analyse" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "!text-right block", children: "Aktionen" }) })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedSchedules.map((schedule_0) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset", onClick: () => setEditingSchedule(schedule_0), onKeyDown: (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            setEditingSchedule(schedule_0);
-          }
-        }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-            renderIcon(schedule_0.icon || "Play", 16, "text-gray-600 dark:text-gray-400"),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-sm text-gray-900 dark:text-white", children: schedule_0.name })
-          ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-600 dark:text-gray-300", children: getFormName(schedule_0.formId) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-600 dark:text-gray-300", children: getPaymentMethodName(schedule_0.paymentMethodId) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "min-w-[160px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule_0.cronExpression }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule_0.lastRun) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "w-[120px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule_0.isActive ? "active" : "inactive", children: schedule_0.isActive ? "Aktiv" : "Inaktiv" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleSparkline, { scheduleId: schedule_0.id, formId: schedule_0.formId, paymentMethodId: schedule_0.paymentMethodId, testRuns }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_0) => {
-              e_0.stopPropagation();
-              handleRunNow(schedule_0.id);
-            }, disabled: runningSchedules.has(schedule_0.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule_0.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_1) => {
-              e_1.stopPropagation();
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedSchedules.map((schedule_0) => {
+          const isChecked = isSelected(schedule_0.id);
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: `cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`, onClick: () => setEditingSchedule(schedule_0), onKeyDown: (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
               setEditingSchedule(schedule_0);
-            }, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_2) => {
-              e_2.stopPropagation();
-              setDeletingSchedule(schedule_0);
-            }, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
-          ] }) })
-        ] }, schedule_0.id)) })
+            }
+          }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", onClick: (e_0) => e_0.stopPropagation(), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: isChecked, onCheckedChange: () => toggleItem(schedule_0.id), "aria-label": `${schedule_0.name} auswählen` }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+              renderIcon(schedule_0.icon || "Play", 16, "text-gray-600 dark:text-gray-400"),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium text-sm text-gray-900 dark:text-white", children: schedule_0.name })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-600 dark:text-gray-300", children: getFormName(schedule_0.formId) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs text-gray-600 dark:text-gray-300", children: getPaymentMethodName(schedule_0.paymentMethodId) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "min-w-[160px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600", children: schedule_0.cronExpression }) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: formatDateTime(schedule_0.lastRun) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "w-[120px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: schedule_0.isActive ? "active" : "inactive", children: schedule_0.isActive ? "Aktiv" : "Inaktiv" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleSparkline, { scheduleId: schedule_0.id, formId: schedule_0.formId, paymentMethodId: schedule_0.paymentMethodId, testRuns }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_1) => {
+                e_1.stopPropagation();
+                handleRunNow(schedule_0.id);
+              }, disabled: runningSchedules.has(schedule_0.id), title: "Jetzt ausführen", children: runningSchedules.has(schedule_0.id) ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { size: 16, className: "text-green-600 dark:text-green-400 animate-spin" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_2) => {
+                e_2.stopPropagation();
+                setEditingSchedule(schedule_0);
+              }, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: (e_3) => {
+                e_3.stopPropagation();
+                setDeletingSchedule(schedule_0);
+              }, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
+            ] }) })
+          ] }, schedule_0.id);
+        }) })
       ] }),
       showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems, itemsPerPage, onPageChange: setCurrentPage })
     ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(ScheduleDrawer, { isOpen: isCreateOpen || !!editingSchedule, onClose: () => {
       setIsCreateOpen(false);
       setEditingSchedule(void 0);
-    }, onSave: handleSave, initialData: editingSchedule, title: editingSchedule ? "Autopilot bearbeiten" : "Neuer Autopilot", onDelete: (id_2) => {
-      const schedule_1 = schedules.find((s) => s.id === id_2);
+    }, onSave: handleSave, initialData: editingSchedule, title: editingSchedule ? "Autopilot bearbeiten" : "Neuer Autopilot", onDelete: (id_3) => {
+      const schedule_1 = schedules.find((s) => s.id === id_3);
       if (schedule_1) {
         setDeletingSchedule(schedule_1);
       }
-    }, onRunNow: async (id_3) => {
-      await runScheduleNow(id_3);
+    }, onRunNow: async (id_4) => {
+      await runScheduleNow(id_4);
     } }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deletingSchedule, onClose: () => setDeletingSchedule(null), onConfirm: async () => {
       if (deletingSchedule) {
         await deleteSchedule(deletingSchedule.id);
         setDeletingSchedule(null);
       }
-    }, title: "Zeitplan löschen", message: `Sind Sie sicher, dass Sie den Zeitplan "${deletingSchedule?.name}" löschen möchten?`, itemName: deletingSchedule?.name, isLoading })
+    }, title: "Zeitplan löschen", message: `Sind Sie sicher, dass Sie den Zeitplan "${deletingSchedule?.name}" löschen möchten?`, itemName: deletingSchedule?.name, isLoading }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: showBulkDeleteConfirm, onClose: () => setShowBulkDeleteConfirm(false), onConfirm: handleBulkDelete, title: "Autopilots löschen", message: `Sind Sie sicher, dass Sie ${selectedCount} Autopilot(s) löschen möchten?`, itemName: `${selectedCount} ausgewählte Autopilots`, isLoading: isBulkDeleting })
   ] });
 };
 export {

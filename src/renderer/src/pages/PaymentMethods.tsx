@@ -5,8 +5,10 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
 import PaymentMethodDrawer from "../components/PaymentMethodDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import SelectionActionBar from "../components/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
+import { Checkbox } from "../components/ui/Checkbox";
 import type { PaymentMethod } from "../../../common/types";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { formatDate } from "../utils/formatters";
@@ -17,6 +19,7 @@ import { TableFilter } from "../components/ui/TableFilter";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
 import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
 
 // Extended type for sorting with computed fields
@@ -62,6 +65,19 @@ const PaymentMethods: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  // Table selection
+  const {
+    selectedIds,
+    toggleItem,
+    toggleAll,
+    clearSelection,
+    selectedCount,
+    isSelected,
+    getSelectedIds,
+  } = useTableSelection<PaymentMethodWithComputed>();
 
   useEffect(() => {
     loadPaymentMethods();
@@ -224,6 +240,35 @@ const PaymentMethods: React.FC = () => {
     }
   };
 
+  // Bulk delete selected payment methods
+  const handleBulkDelete = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    const deletedCount = ids.length;
+    setIsBulkDeleting(true);
+    try {
+      for (const id of ids) {
+        await deletePaymentMethod(id);
+      }
+      clearSelection();
+      setShowBulkDeleteConfirm(false);
+
+      // Adjust pagination if current page becomes empty
+      const remainingItems = totalFilteredItems - deletedCount;
+      if (remainingItems > 0) {
+        const newTotalPages = Math.ceil(remainingItems / itemsPerPage);
+        if (currentPage > newTotalPages) {
+          setCurrentPage(Math.max(1, newTotalPages));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to bulk delete payment methods:", error);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
 
   const getPaymentMethodIcon = (method: PaymentMethod) => {
     const iconName = method.icon || getDefaultPaymentIcon(method.type);
@@ -284,6 +329,22 @@ const PaymentMethods: React.FC = () => {
           onStatusFilterChange={setStatusFilter}
           statusOptions={statusOptions}
           onClear={clearFilters}
+          rightContent={
+            selectedCount > 0 ? (
+              <SelectionActionBar
+                selectedCount={selectedCount}
+                onClear={clearSelection}
+                actions={[
+                  {
+                    label: "Löschen",
+                    icon: <Trash2 size={14} />,
+                    onClick: () => setShowBulkDeleteConfirm(true),
+                    variant: "danger",
+                  },
+                ]}
+              />
+            ) : undefined
+          }
         />
       )}
 
@@ -318,6 +379,14 @@ const PaymentMethods: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[40px] px-4">
+                  <Checkbox
+                    checked={computeIsAllSelected(displayedMethods, selectedIds)}
+                    indeterminate={computeIsPartialSelected(displayedMethods, selectedIds)}
+                    onCheckedChange={() => toggleAll(displayedMethods)}
+                    aria-label="Alle auswählen"
+                  />
+                </TableHead>
                 <SortableTableHead
                   sortDirection={getSortDirection('name')}
                   onSort={() => requestSort('name')}>
@@ -349,12 +418,14 @@ const PaymentMethods: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {displayedMethods.map((method) => (
+              {displayedMethods.map((method) => {
+                const isChecked = isSelected(method.id);
+                return (
                 <TableRow 
                   key={method.id}
                   tabIndex={0}
                   role="button"
-                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
+                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
                   onClick={() => handleEditMethod(method)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -362,6 +433,13 @@ const PaymentMethods: React.FC = () => {
                       handleEditMethod(method);
                     }
                   }}>
+                  <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      checked={isChecked}
+                      onCheckedChange={() => toggleItem(method.id)}
+                      aria-label={`${method.name} auswählen`}
+                    />
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getPaymentMethodIcon(method)}
@@ -409,7 +487,8 @@ const PaymentMethods: React.FC = () => {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              );
+              })}
             </TableBody>
           </Table>
           {showPagination && (
@@ -446,6 +525,17 @@ const PaymentMethods: React.FC = () => {
         message="Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
         itemName={deleteConfirm?.name}
         isLoading={isLoading}
+      />
+
+      {/* Bulk Delete Confirmation */}
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDelete}
+        title="Bezahlmethoden löschen"
+        message={`Sind Sie sicher, dass Sie ${selectedCount} Bezahlmethode(n) löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.`}
+        itemName={`${selectedCount} ausgewählte Bezahlmethoden`}
+        isLoading={isBulkDeleting}
       />
     </div>
   );

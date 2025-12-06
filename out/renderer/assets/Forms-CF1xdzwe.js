@@ -1,10 +1,9 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, i as dist } from "./index-ChHsagZL.js";
-import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-vJKLxUqK.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DCf5Cjv4.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Dryzb9TW.js";
-import { S as Skeleton } from "./Skeleton-DZm2ZUoB.js";
-import { u as useTableSelection } from "./useTableSelection-B_ZvBChM.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, i as dist } from "./index-N4J4W4Ga.js";
+import { C as CONFIG } from "./app.config-b2lfEN4K.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-sexxEKk_.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead } from "./useTableSelection-DvHvMnqw.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-BymsvGgs.js";
+import { S as Skeleton } from "./Skeleton-Bf8J3j5X.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -515,6 +514,22 @@ const Forms = () => {
       setDeleteConfirm(null);
     }
   };
+  const handleBulkDelete = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+    setIsBulkDeleting(true);
+    try {
+      for (const id of ids) {
+        await deleteForm(id);
+      }
+      clearSelection();
+      setShowBulkDeleteConfirm(false);
+    } catch (error_0) {
+      console.error("Failed to bulk delete forms:", error_0);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Formulare" }),
@@ -528,7 +543,12 @@ const Forms = () => {
       " ",
       error
     ] }) }),
-    forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters }),
+    forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters, rightContent: selectedCount > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(SelectionActionBar, { selectedCount, onClear: clearSelection, actions: [{
+      label: "Löschen",
+      icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
+      onClick: () => setShowBulkDeleteConfirm(true),
+      variant: "danger"
+    }] }) : void 0 }),
     isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Formulare konfiguriert." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddForm, variant: "primary", size: "md", disabled: isLoading, children: "Erstes Formular hinzufügen" })
@@ -538,6 +558,7 @@ const Forms = () => {
     ] }) }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-[40px] px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: computeIsAllSelected(displayedForms, selectedIds), indeterminate: computeIsPartialSelected(displayedForms, selectedIds), onCheckedChange: () => toggleAll(displayedForms), "aria-label": "Alle auswählen" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("name"), onSort: () => requestSort("name"), children: "Name" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("url"), onSort: () => requestSort("url"), children: "URL" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { sortDirection: getSortDirection("hash"), onSort: () => requestSort("hash"), children: "Hash" }),
@@ -546,35 +567,39 @@ const Forms = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-left", children: "Analyse" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "text-right", children: "Aktionen" })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedForms.map((form_2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset", onClick: () => handleEditForm(form_2), onKeyDown: (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            handleEditForm(form_2);
-          }
-        }, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2.5", children: [
-            renderIcon(form_2.icon || "FileText", 16, "text-gray-500 dark:text-gray-400"),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: form_2.name })
-          ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: (e_0) => e_0.stopPropagation(), className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate", children: form_2.url }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: form_2.hash || "—" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_1) => {
-            e_1.stopPropagation();
-            toggleFormActive(form_2.id);
-          }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FormSparkline, { formId: form_2.id, testRuns }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_2) => {
-              e_2.stopPropagation();
+        /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: displayedForms.map((form_2) => {
+          const isChecked = isSelected(form_2.id);
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", className: `cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`, onClick: () => handleEditForm(form_2), onKeyDown: (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
               handleEditForm(form_2);
-            }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_3) => {
-              e_3.stopPropagation();
-              handleDeleteForm(form_2);
-            }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
-          ] }) })
-        ] }, form_2.id)) })
+            }
+          }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", onClick: (e_0) => e_0.stopPropagation(), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: isChecked, onCheckedChange: () => toggleItem(form_2.id), "aria-label": `${form_2.name} auswählen` }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2.5", children: [
+              renderIcon(form_2.icon || "FileText", 16, "text-gray-500 dark:text-gray-400"),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: form_2.name })
+            ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: (e_1) => e_1.stopPropagation(), className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate", children: form_2.url }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: form_2.hash || "—" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_2) => {
+              e_2.stopPropagation();
+              toggleFormActive(form_2.id);
+            }, className: "border-none bg-transparent cursor-pointer p-0", disabled: isLoading, children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: form_2.isActive ? "active" : "inactive", children: form_2.isActive ? "Aktiv" : "Inaktiv" }) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: formatDate(form_2.createdAt) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FormSparkline, { formId: form_2.id, testRuns }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_3) => {
+                e_3.stopPropagation();
+                handleEditForm(form_2);
+              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_4) => {
+                e_4.stopPropagation();
+                handleDeleteForm(form_2);
+              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
+            ] }) })
+          ] }, form_2.id);
+        }) })
       ] }),
       showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems: totalFilteredItems, itemsPerPage, onPageChange: setCurrentPage })
     ] }),
@@ -587,7 +612,8 @@ const Forms = () => {
         });
       }
     } }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deleteConfirm, onClose: () => setDeleteConfirm(null), onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: deleteConfirm?.name, isLoading })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deleteConfirm, onClose: () => setDeleteConfirm(null), onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: deleteConfirm?.name, isLoading }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: showBulkDeleteConfirm, onClose: () => setShowBulkDeleteConfirm(false), onConfirm: handleBulkDelete, title: "Formulare löschen", message: `Sind Sie sicher, dass Sie ${selectedCount} Formular(e) löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.`, itemName: `${selectedCount} ausgewählte Formulare`, isLoading: isBulkDeleting })
   ] });
 };
 function _temp(_, i) {

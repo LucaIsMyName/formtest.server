@@ -7,17 +7,20 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
-import { Table, TableHeader, TableBody, TableRow, TableCell, TablePagination } from "../components/ui/Table";
+import { Checkbox } from "../components/ui/Checkbox";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
 import { Skeleton } from "../components/ui/Skeleton";
 import ScheduleDrawer from "../components/ScheduleDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import SelectionActionBar from "../components/SelectionActionBar";
 import { renderIcon } from "../utils/iconHelper";
 import { formatDateTime } from "../utils/formatters";
 import { TestSchedule } from "../../../common/types";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
 import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
 
 // Extended type with computed fields for sorting/filtering
@@ -55,6 +58,19 @@ const Schedules: React.FC = () => {
   const [runningSchedules, setRunningSchedules] = useState<Set<number>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  // Table selection
+  const {
+    selectedIds,
+    toggleItem,
+    toggleAll,
+    clearSelection,
+    selectedCount,
+    isSelected,
+    getSelectedIds,
+  } = useTableSelection<ScheduleWithComputed>();
 
   useEffect(() => {
     loadSchedules();
@@ -137,6 +153,35 @@ const Schedules: React.FC = () => {
     }
   };
 
+  // Bulk delete selected schedules
+  const handleBulkDelete = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    const deletedCount = ids.length;
+    setIsBulkDeleting(true);
+    try {
+      for (const id of ids) {
+        await deleteSchedule(id);
+      }
+      clearSelection();
+      setShowBulkDeleteConfirm(false);
+
+      // Adjust pagination if current page becomes empty
+      const remainingItems = totalItems - deletedCount;
+      if (remainingItems > 0) {
+        const newTotalPages = Math.ceil(remainingItems / itemsPerPage);
+        if (currentPage > newTotalPages) {
+          setCurrentPage(Math.max(1, newTotalPages));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to bulk delete schedules:", error);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -163,6 +208,22 @@ const Schedules: React.FC = () => {
           { value: "inactive", label: "Inaktiv" },
         ]}
         onClear={clearFilters}
+        rightContent={
+          selectedCount > 0 ? (
+            <SelectionActionBar
+              selectedCount={selectedCount}
+              onClear={clearSelection}
+              actions={[
+                {
+                  label: "Löschen",
+                  icon: <Trash2 size={14} />,
+                  onClick: () => setShowBulkDeleteConfirm(true),
+                  variant: "danger",
+                },
+              ]}
+            />
+          ) : undefined
+        }
       />
 
       <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
@@ -184,6 +245,14 @@ const Schedules: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[40px] px-4">
+                    <Checkbox
+                      checked={computeIsAllSelected(displayedSchedules, selectedIds)}
+                      indeterminate={computeIsPartialSelected(displayedSchedules, selectedIds)}
+                      onCheckedChange={() => toggleAll(displayedSchedules)}
+                      aria-label="Alle auswählen"
+                    />
+                  </TableHead>
                   <SortableTableHead
                     sortDirection={getSortDirection("name")}
                     onSort={() => requestSort("name")}>
@@ -223,12 +292,14 @@ const Schedules: React.FC = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {displayedSchedules.map((schedule) => (
+                {displayedSchedules.map((schedule) => {
+                  const isChecked = isSelected(schedule.id);
+                  return (
                   <TableRow
                     key={schedule.id}
                     tabIndex={0}
                     role="button"
-                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
+                    className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
                     onClick={() => setEditingSchedule(schedule)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
@@ -236,6 +307,13 @@ const Schedules: React.FC = () => {
                         setEditingSchedule(schedule);
                       }
                     }}>
+                    <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={isChecked}
+                        onCheckedChange={() => toggleItem(schedule.id)}
+                        aria-label={`${schedule.name} auswählen`}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {renderIcon(schedule.icon || "Play", 16, "text-gray-600 dark:text-gray-400")}
@@ -323,7 +401,8 @@ const Schedules: React.FC = () => {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                );
+                })}
               </TableBody>
             </Table>
             {showPagination && (
@@ -372,6 +451,17 @@ const Schedules: React.FC = () => {
         message={`Sind Sie sicher, dass Sie den Zeitplan "${deletingSchedule?.name}" löschen möchten?`}
         itemName={deletingSchedule?.name}
         isLoading={isLoading}
+      />
+
+      {/* Bulk Delete Confirmation */}
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDelete}
+        title="Autopilots löschen"
+        message={`Sind Sie sicher, dass Sie ${selectedCount} Autopilot(s) löschen möchten?`}
+        itemName={`${selectedCount} ausgewählte Autopilots`}
+        isLoading={isBulkDeleting}
       />
     </div>
   );

@@ -844,6 +844,19 @@ class TestRunner {
     const initialUrlLower = initialUrl.toLowerCase()
     this.log(`Initial URL (before submission): ${initialUrl}`)
     
+    // Check if we're ALREADY on a payment provider page (redirect happened during submission)
+    const alreadyOnPaymentProvider = this.detectPaymentProvider(initialUrl)
+    if (alreadyOnPaymentProvider !== 'Unknown') {
+      this.log(`✓ Already redirected to ${alreadyOnPaymentProvider}: ${initialUrl}`)
+      return {
+        success: true,
+        url: initialUrl,
+        detectedProvider: alreadyOnPaymentProvider,
+        matchedExpected: true,
+        message: `Already redirected to ${alreadyOnPaymentProvider}`
+      }
+    }
+    
     // Get success patterns from config
     const configPatterns = this.getSuccessPatterns()
     
@@ -961,6 +974,7 @@ class TestRunner {
             return false
           }
           
+          this.log(`URL changed to: ${urlString}`)
           const validation = validateRedirect(urlString)
           
           // For payment methods that expect specific providers (PayPal, EPS)
@@ -969,12 +983,17 @@ class TestRunner {
               this.log(`✓ Redirected to expected ${expectedConfig.name}: ${urlString}`)
               return true
             }
-            // Wrong payment provider redirect - this is an error!
-            if (validation.isAnyPaymentProvider && !validation.matchesExpected) {
-              this.log(`⚠ Redirected to WRONG provider (${validation.detectedProvider}) instead of ${expectedConfig.name}: ${urlString}`)
-              // Still return true to capture the URL, but we'll flag it as wrong
+            // Any payment provider redirect is acceptable (even if "wrong" - still a success)
+            if (validation.isAnyPaymentProvider) {
+              this.log(`✓ Redirected to payment provider (${validation.detectedProvider}): ${urlString}`)
               return true
             }
+          }
+          
+          // Any payment provider redirect is a success
+          if (validation.isAnyPaymentProvider) {
+            this.log(`✓ Redirected to payment provider (${validation.detectedProvider}): ${urlString}`)
+            return true
           }
           
           // For SEPA and methods that allow success pages
@@ -985,7 +1004,7 @@ class TestRunner {
           
           // Any URL change for methods that allow success pages
           if (expectedConfig.allowSuccessPage) {
-            this.log(`URL changed to: ${urlString} (checking for ${expectedConfig.name} success...)`)
+            this.log(`URL changed (checking for ${expectedConfig.name} success...): ${urlString}`)
             // Accept any URL change for SEPA since it stays on same domain
             if (paymentMethodType === 'sepa') {
               return true

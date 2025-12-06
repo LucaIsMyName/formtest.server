@@ -245,6 +245,22 @@ const Forms: React.FC = () => {
           onStatusFilterChange={setStatusFilter}
           statusOptions={statusOptions}
           onClear={clearFilters}
+          rightContent={
+            selectedCount > 0 ? (
+              <SelectionActionBar
+                selectedCount={selectedCount}
+                onClear={clearSelection}
+                actions={[
+                  {
+                    label: "Löschen",
+                    icon: <Trash2 size={14} />,
+                    onClick: () => setShowBulkDeleteConfirm(true),
+                    variant: "danger",
+                  },
+                ]}
+              />
+            ) : undefined
+          }
         />
       )}
 
@@ -279,6 +295,14 @@ const Forms: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[40px] px-4">
+                  <Checkbox
+                    checked={computeIsAllSelected(displayedForms, selectedIds)}
+                    indeterminate={computeIsPartialSelected(displayedForms, selectedIds)}
+                    onCheckedChange={() => toggleAll(displayedForms)}
+                    aria-label="Alle auswählen"
+                  />
+                </TableHead>
                 <SortableTableHead
                   sortDirection={getSortDirection("name")}
                   onSort={() => requestSort("name")}>
@@ -309,12 +333,14 @@ const Forms: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {displayedForms.map((form) => (
+              {displayedForms.map((form) => {
+                const isChecked = isSelected(form.id);
+                return (
                 <TableRow
                   key={form.id}
                   tabIndex={0}
                   role="button"
-                  className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
+                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
                   onClick={() => handleEditForm(form)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -322,6 +348,13 @@ const Forms: React.FC = () => {
                       handleEditForm(form);
                     }
                   }}>
+                  <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      checked={isChecked}
+                      onCheckedChange={() => toggleItem(form.id)}
+                      aria-label={`${form.name} auswählen`}
+                    />
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2.5">
                       {renderIcon(form.icon || "FileText", 16, "text-gray-500 dark:text-gray-400")}
@@ -389,7 +422,8 @@ const Forms: React.FC = () => {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              );
+              })}
             </TableBody>
           </Table>
           {showPagination && (
@@ -426,6 +460,17 @@ const Forms: React.FC = () => {
         message="Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
         itemName={deleteConfirm?.name}
         isLoading={isLoading}
+      />
+
+      {/* Bulk Delete Confirmation */}
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDelete}
+        title="Formulare löschen"
+        message={`Sind Sie sicher, dass Sie ${selectedCount} Formular(e) löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.`}
+        itemName={`${selectedCount} ausgewählte Formulare`}
+        isLoading={isBulkDeleting}
       />
     </div>
   );

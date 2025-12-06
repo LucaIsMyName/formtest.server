@@ -1,5 +1,5 @@
-import { i as dist, ar as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, as as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, at as formatShortcut } from "./index-ChHsagZL.js";
-import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
+import { i as dist, ar as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, as as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, at as formatShortcut } from "./index-N4J4W4Ga.js";
+import { C as CONFIG } from "./app.config-b2lfEN4K.js";
 const InfoDoku = () => {
   const $ = dist.c(9);
   let t0;
