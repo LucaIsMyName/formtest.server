@@ -1,8 +1,9 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, an as formatDuration, k as Trash2, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-Ce-03Pjy.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, X, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, k as Trash2, t as Checkbox, an as formatDuration, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-ChHsagZL.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Btpub4kl.js";
-import { S as Skeleton } from "./Skeleton-CZRqJCxj.js";
-import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-DPoTkKVL.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Dryzb9TW.js";
+import { S as Skeleton } from "./Skeleton-DZm2ZUoB.js";
+import { u as useFilterableData, d as useSortableData, S as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useFilterableData-DCf5Cjv4.js";
+import { u as useTableSelection, c as computeIsPartialSelected, a as computeIsAllSelected } from "./useTableSelection-B_ZvBChM.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -44,6 +45,73 @@ const TestQueueStatus = ({
     "Alles stoppen"
   ] }) });
 };
+const SelectionActionBar = (t0) => {
+  const $ = dist.c(11);
+  const {
+    selectedCount,
+    onClear,
+    actions,
+    itemLabel: t1
+  } = t0;
+  if (selectedCount === 0) {
+    return null;
+  }
+  let t2;
+  if ($[0] !== selectedCount) {
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-xs font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap", children: [
+      selectedCount,
+      " ausgewählt"
+    ] });
+    $[0] = selectedCount;
+    $[1] = t2;
+  } else {
+    t2 = $[1];
+  }
+  let t3;
+  if ($[2] !== actions) {
+    t3 = actions.map(_temp$2);
+    $[2] = actions;
+    $[3] = t3;
+  } else {
+    t3 = $[3];
+  }
+  let t4;
+  if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
+    t4 = /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 });
+    $[4] = t4;
+  } else {
+    t4 = $[4];
+  }
+  let t5;
+  if ($[5] !== onClear) {
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: onClear, className: "p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "Auswahl aufheben", children: t4 });
+    $[5] = onClear;
+    $[6] = t5;
+  } else {
+    t5 = $[6];
+  }
+  let t6;
+  if ($[7] !== t2 || $[8] !== t3 || $[9] !== t5) {
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+      t2,
+      t3,
+      t5
+    ] });
+    $[7] = t2;
+    $[8] = t3;
+    $[9] = t5;
+    $[10] = t6;
+  } else {
+    t6 = $[10];
+  }
+  return t6;
+};
+function _temp$2(action, index) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { size: "sm", variant: action.variant || "secondary", onClick: action.onClick, disabled: action.disabled || action.loading, className: "h-7 text-xs gap-1 px-2", children: [
+    action.icon,
+    action.loading ? "..." : action.label
+  ] }, index);
+}
 const ScreenshotViewer = (t0) => {
   const $ = dist.c(49);
   const {
@@ -620,8 +688,20 @@ const TestResults = () => {
   } = usePaymentMethodsStore();
   const [selectedTestRun, setSelectedTestRun] = reactExports.useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = reactExports.useState(null);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = reactExports.useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = reactExports.useState(false);
+  const [isBulkRunning, setIsBulkRunning] = reactExports.useState(false);
   const [notes, setNotes] = reactExports.useState("");
   const [isSavingNotes, setIsSavingNotes] = reactExports.useState(false);
+  const {
+    selectedIds,
+    toggleItem,
+    toggleAll,
+    clearSelection,
+    selectedCount,
+    isSelected,
+    getSelectedIds
+  } = useTableSelection();
   reactExports.useEffect(() => {
     loadTestRuns();
     loadForms();
@@ -799,11 +879,63 @@ const TestResults = () => {
       console.error("Failed to run test again:", error_2);
     }
   };
+  const handleBulkDelete = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+    const deletedCount = ids.length;
+    setIsBulkDeleting(true);
+    try {
+      for (const id_0 of ids) {
+        await window.api.testRuns.delete(id_0);
+      }
+      await loadTestRuns();
+      clearSelection();
+      setShowBulkDeleteConfirm(false);
+      const remainingItems = totalFilteredItems - deletedCount;
+      if (remainingItems > 0) {
+        const newTotalPages = Math.ceil(remainingItems / itemsPerPage);
+        if (currentPage > newTotalPages) {
+          setCurrentPage(Math.max(1, newTotalPages));
+        }
+      }
+    } catch (error_3) {
+      console.error("Failed to bulk delete test runs:", error_3);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+  const handleBulkRunAgain = async () => {
+    const ids_0 = getSelectedIds();
+    if (ids_0.length === 0) return;
+    setIsBulkRunning(true);
+    try {
+      const selectedTests = finishedTests.filter((tr_4) => ids_0.includes(tr_4.id));
+      const combinations = /* @__PURE__ */ new Map();
+      for (const test of selectedTests) {
+        const key = `${test.formId}-${test.paymentMethodId}`;
+        if (!combinations.has(key)) {
+          combinations.set(key, {
+            formId: test.formId,
+            paymentMethodId: test.paymentMethodId
+          });
+        }
+      }
+      for (const combo of combinations.values()) {
+        await window.api.tests.run([combo.formId], [combo.paymentMethodId]);
+      }
+      await loadTestRuns();
+      clearSelection();
+    } catch (error_4) {
+      console.error("Failed to bulk run tests:", error_4);
+    } finally {
+      setIsBulkRunning(false);
+    }
+  };
   const handleCopyUuid = (e, uuid) => {
     e.stopPropagation();
     navigator.clipboard.writeText(uuid);
   };
-  const selectedTestRunData = selectedTestRun ? testRuns.find((tr_4) => tr_4.id === selectedTestRun) : null;
+  const selectedTestRunData = selectedTestRun ? testRuns.find((tr_5) => tr_5.id === selectedTestRun) : null;
   reactExports.useEffect(() => {
     if (selectedTestRunData) {
       setNotes(selectedTestRunData.notes || "");
@@ -818,8 +950,8 @@ const TestResults = () => {
     try {
       await window.api.testRuns.updateNotes(selectedTestRunData.id, value);
       await loadTestRuns();
-    } catch (error_3) {
-      console.error("Failed to save notes:", error_3);
+    } catch (error_5) {
+      console.error("Failed to save notes:", error_5);
     } finally {
       setIsSavingNotes(false);
     }
@@ -838,20 +970,20 @@ const TestResults = () => {
     const exportData = {
       exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
       totalResults: finishedTests.length,
-      results: finishedTests.map((tr_5) => ({
-        id: tr_5.id,
-        uuid: tr_5.uuid,
-        formName: tr_5.formName,
-        formId: tr_5.formId,
-        paymentMethodName: tr_5.paymentMethodName,
-        paymentMethodId: tr_5.paymentMethodId,
-        status: tr_5.status,
-        durationMs: tr_5.durationMs,
-        errorMessage: tr_5.errorMessage,
-        isScheduled: tr_5.isScheduled,
-        notes: tr_5.notes,
-        runAt: tr_5.runAt,
-        steps: tr_5.steps
+      results: finishedTests.map((tr_6) => ({
+        id: tr_6.id,
+        uuid: tr_6.uuid,
+        formName: tr_6.formName,
+        formId: tr_6.formId,
+        paymentMethodName: tr_6.paymentMethodName,
+        paymentMethodId: tr_6.paymentMethodId,
+        status: tr_6.status,
+        durationMs: tr_6.durationMs,
+        errorMessage: tr_6.errorMessage,
+        isScheduled: tr_6.isScheduled,
+        notes: tr_6.notes,
+        runAt: tr_6.runAt,
+        steps: tr_6.steps
       }))
     };
     const dataStr_0 = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
@@ -864,19 +996,19 @@ const TestResults = () => {
   };
   const handleExportCsv = () => {
     const headers = ["ID", "UUID", "Form", "Bezahlmethode", "Status", "Dauer (ms)", "Fehler", "Geplant", "Notizen", "Datum"];
-    const rows = finishedTests.map((tr_6) => [
-      tr_6.id,
-      tr_6.uuid || "",
-      tr_6.formName || "",
-      tr_6.paymentMethodName || "",
-      tr_6.status,
-      tr_6.durationMs || "",
-      (tr_6.errorMessage || "").replace(/"/g, '""'),
+    const rows = finishedTests.map((tr_7) => [
+      tr_7.id,
+      tr_7.uuid || "",
+      tr_7.formName || "",
+      tr_7.paymentMethodName || "",
+      tr_7.status,
+      tr_7.durationMs || "",
+      (tr_7.errorMessage || "").replace(/"/g, '""'),
       // Escape quotes
-      tr_6.isScheduled ? "Ja" : "Nein",
-      (tr_6.notes || "").replace(/"/g, '""').replace(/\n/g, " "),
+      tr_7.isScheduled ? "Ja" : "Nein",
+      (tr_7.notes || "").replace(/"/g, '""').replace(/\n/g, " "),
       // Escape quotes and newlines
-      new Date(tr_6.runAt).toLocaleString("de-DE")
+      new Date(tr_7.runAt).toLocaleString("de-DE")
     ]);
     const csvContent = [headers.join(";"), ...rows.map((row) => row.map((cell) => `"${cell}"`).join(";"))].join("\n");
     const bom = "\uFEFF";
@@ -938,10 +1070,10 @@ const TestResults = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[80px] text-right", children: "Aktionen" })
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: activeTests.map((testRun_2) => {
-          const isSelected = selectedTestRun === testRun_2.id;
+          const isSelected_0 = selectedTestRun === testRun_2.id;
           const isQueued = testRun_2.status === "QUEUED";
           const isRunning = testRun_2.status === "RUNNING";
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isSelected, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_2.id), onKeyDown: (e_0) => {
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isSelected_0, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected_0 ? "bg-gray-100 dark:bg-gray-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_2.id), onKeyDown: (e_0) => {
             if (e_0.key === "Enter" || e_0.key === " ") {
               e_0.preventDefault();
               handleSelectTestRun(testRun_2.id);
@@ -978,13 +1110,25 @@ const TestResults = () => {
         totalFilteredItems,
         ")"
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Tests durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Tests durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters, rightContent: selectedCount > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(SelectionActionBar, { selectedCount, onClear: clearSelection, itemLabel: "Tests", actions: [{
+        label: "Erneut testen",
+        icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 }),
+        onClick: handleBulkRunAgain,
+        variant: "secondary",
+        loading: isBulkRunning
+      }, {
+        label: "Löschen",
+        icon: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
+        onClick: () => setShowBulkDeleteConfirm(true),
+        variant: "danger"
+      }] }) : void 0 }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden", children: isLoading && testRuns.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(TestResultsSkeleton, {}) : sortedFinishedTests.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: finishedTests.length === 0 ? "Noch keine abgeschlossenen Tests." : "Keine Tests gefunden." }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400", children: finishedTests.length === 0 ? "Führe Tests aus, um Ergebnisse hier zu sehen." : "Versuche andere Suchbegriffe oder Filter." })
       ] }) }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "overflow-x-auto", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[40px]", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: computeIsAllSelected(sortedFinishedTests, selectedIds), indeterminate: computeIsPartialSelected(sortedFinishedTests, selectedIds), onCheckedChange: () => toggleAll(sortedFinishedTests), "aria-label": "Alle auswählen" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[80px]", children: "UUID" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[70px] text-left justify-left", sortDirection: getSortDirection("isScheduled"), onSort: () => requestSort("isScheduled"), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 14, className: "inline" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 min-w-[180px]", sortDirection: getSortDirection("formName"), onSort: () => requestSort("formName"), children: "Formular" }),
@@ -995,16 +1139,18 @@ const TestResults = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[80px] text-right", children: "Aktionen" })
           ] }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: sortedFinishedTests.map((testRun_3) => {
-            const isSelected_0 = selectedTestRun === testRun_3.id;
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isSelected_0, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected_0 ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_3.id), onKeyDown: (e_3) => {
+            const isRowSelected = selectedTestRun === testRun_3.id;
+            const isChecked = isSelected(testRun_3.id);
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isRowSelected, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : isRowSelected ? "bg-gray-50 dark:bg-gray-700/50" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_3.id), onKeyDown: (e_3) => {
               if (e_3.key === "Enter" || e_3.key === " ") {
                 e_3.preventDefault();
                 handleSelectTestRun(testRun_3.id);
               }
             }, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", onClick: (e_4) => e_4.stopPropagation(), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: isChecked, onCheckedChange: () => toggleItem(testRun_3.id), "aria-label": `${testRun_3.formName} auswählen` }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1 group", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] font-mono text-gray-500 dark:text-gray-400", children: testRun_3.uuid ? testRun_3.uuid.substring(0, 8) : `ID:${testRun_3.id}` }),
-                testRun_3.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_4) => handleCopyUuid(e_4, testRun_3.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
+                testRun_3.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_5) => handleCopyUuid(e_5, testRun_3.uuid), className: "p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 10 }) })
               ] }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-left", children: testRun_3.isScheduled ? /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 16, className: "inline text-blue-500" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(User, { size: 16, className: "inline text-green-500" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5 min-w-0", children: [
@@ -1019,12 +1165,12 @@ const TestResults = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400", children: formatDuration(testRun_3.durationMs) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: testRun_3.status }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-1", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_5) => {
-                  e_5.stopPropagation();
-                  handleRunAgain(testRun_3);
-                }, variant: "ghost", size: "sm", className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300", title: "Test erneut ausführen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16 }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_6) => {
                   e_6.stopPropagation();
+                  handleRunAgain(testRun_3);
+                }, variant: "ghost", size: "sm", className: "text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300", title: "Test erneut ausführen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16 }) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_7) => {
+                  e_7.stopPropagation();
                   handleDeleteClick(testRun_3);
                 }, variant: "ghost", size: "sm", className: "text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300", title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16 }) })
               ] }) })
@@ -1036,23 +1182,23 @@ const TestResults = () => {
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: !!selectedTestRun, onOpenChange: (open) => !open && handleSelectTestRun(null), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { className: "w-full", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0", children: [
-        selectedTestRunData && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 flex items-center gap-2 flex-shrink-0", children: selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: async (e_7) => {
-          e_7.stopPropagation();
+        selectedTestRunData && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 flex items-center gap-2 flex-shrink-0", children: selectedTestRunData.status === "RUNNING" || selectedTestRunData.status === "QUEUED" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: async (e_8) => {
+          e_8.stopPropagation();
           await handleStopTest(selectedTestRunData);
         }, variant: "secondary", size: "sm", className: "gap-1.5 !bg-purple-600 !text-white hover:!bg-purple-700 !border-purple-600", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Square, { size: 14 }),
           selectedTestRunData.status === "QUEUED" ? "Aus Warteschlange entfernen" : "Test stoppen"
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: async (e_8) => {
-            e_8.stopPropagation();
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: async (e_9) => {
+            e_9.stopPropagation();
             await runTests([selectedTestRunData.formId], [selectedTestRunData.paymentMethodId]);
             handleSelectTestRun(null);
           }, variant: "primary", size: "sm", className: "gap-1.5", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 }),
             "Erneut ausführen"
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: (e_9) => {
-            e_9.stopPropagation();
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: (e_10) => {
+            e_10.stopPropagation();
             setShowDeleteConfirm({
               id: selectedTestRunData.id,
               name: `${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`
@@ -1079,7 +1225,7 @@ const TestResults = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "ID" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700", children: selectedTestRunData.uuid || selectedTestRunData.id }),
-                selectedTestRunData.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_10) => handleCopyUuid(e_10, selectedTestRunData.uuid), className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) })
+                selectedTestRunData.uuid && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_11) => handleCopyUuid(e_11, selectedTestRunData.uuid), className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", title: "ID kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) })
               ] }) })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
@@ -1186,7 +1332,7 @@ const TestResults = () => {
             "Notes",
             isSavingNotes && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "ml-2 text-xs text-gray-400", children: "(saving...)" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { value: notes, onChange: (e_11) => handleNotesChange(e_11.target.value), placeholder: "Add notes about this test run...", className: "w-full h-24 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-md resize-none !focus:outline-0 !focus:ring-0 !focus:ring-offset-0 !focus:ring-blue-500 dark:focus:ring-blue-400" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { value: notes, onChange: (e_12) => handleNotesChange(e_12.target.value), placeholder: "Add notes about this test run...", className: "w-full h-24 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-md resize-none !focus:outline-0 !focus:ring-0 !focus:ring-offset-0 !focus:ring-blue-500 dark:focus:ring-blue-400" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pt-4 border-t border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "secondary", size: "sm", onClick: handleExportJson, className: "gap-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(FileBraces, { size: 16 }),
@@ -1194,7 +1340,8 @@ const TestResults = () => {
         ] }) })
       ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(TestDetailsSkeleton, {}) })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!showDeleteConfirm, onClose: () => setShowDeleteConfirm(null), onConfirm: confirmDeleteTestRun, title: "Test Run löschen", message: "Sind Sie sicher, dass Sie diesen Test Run löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.", itemName: showDeleteConfirm?.name, isLoading })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!showDeleteConfirm, onClose: () => setShowDeleteConfirm(null), onConfirm: confirmDeleteTestRun, title: "Test Run löschen", message: "Sind Sie sicher, dass Sie diesen Test Run löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.", itemName: showDeleteConfirm?.name, isLoading }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: showBulkDeleteConfirm, onClose: () => setShowBulkDeleteConfirm(false), onConfirm: handleBulkDelete, title: "Tests löschen", message: `Sind Sie sicher, dass Sie ${selectedCount} Test(s) löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.`, itemName: `${selectedCount} ausgewählte Tests`, isLoading: isBulkDeleting })
   ] });
 };
 function _temp(_, i) {

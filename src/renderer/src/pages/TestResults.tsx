@@ -6,9 +6,11 @@ import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import TestQueueStatus from "../components/TestQueueStatus";
+import SelectionActionBar from "../components/SelectionActionBar";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
+import { Checkbox } from "../components/ui/Checkbox";
 import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
@@ -21,6 +23,7 @@ import { Drawer, DrawerContent, DrawerHeader } from "../components/ui/Drawer";
 import { formatDateTime, formatDuration } from "../utils/formatters";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
 import ScreenshotViewer from "../components/ScreenshotViewer";
 
 // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
@@ -244,8 +247,22 @@ const TestResults: React.FC = () => {
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const [selectedTestRun, setSelectedTestRun] = useState<number | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [isBulkRunning, setIsBulkRunning] = useState(false);
   const [notes, setNotes] = useState<string>("");
   const [isSavingNotes, setIsSavingNotes] = useState(false);
+  
+  // Table selection
+  const {
+    selectedIds,
+    toggleItem,
+    toggleAll,
+    clearSelection,
+    selectedCount,
+    isSelected,
+    getSelectedIds,
+  } = useTableSelection<TestRunWithComputed>();
 
   useEffect(() => {
     loadTestRuns();
@@ -443,6 +460,70 @@ const TestResults: React.FC = () => {
       await loadTestRuns();
     } catch (error) {
       console.error("Failed to run test again:", error);
+    }
+  };
+
+  // Bulk delete selected tests
+  const handleBulkDelete = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    const deletedCount = ids.length;
+    setIsBulkDeleting(true);
+    try {
+      // Delete each test run
+      for (const id of ids) {
+        await window.api.testRuns.delete(id);
+      }
+      await loadTestRuns();
+      clearSelection();
+      setShowBulkDeleteConfirm(false);
+
+      // Adjust pagination if current page becomes empty
+      const remainingItems = totalFilteredItems - deletedCount;
+      if (remainingItems > 0) {
+        const newTotalPages = Math.ceil(remainingItems / itemsPerPage);
+        if (currentPage > newTotalPages) {
+          setCurrentPage(Math.max(1, newTotalPages));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to bulk delete test runs:", error);
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  // Bulk run selected tests again
+  const handleBulkRunAgain = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    setIsBulkRunning(true);
+    try {
+      // Get unique form/payment method combinations from selected tests
+      const selectedTests = finishedTests.filter((tr) => ids.includes(tr.id));
+      
+      // Group by form and payment method to avoid duplicate runs
+      const combinations = new Map<string, { formId: number; paymentMethodId: number }>();
+      for (const test of selectedTests) {
+        const key = `${test.formId}-${test.paymentMethodId}`;
+        if (!combinations.has(key)) {
+          combinations.set(key, { formId: test.formId, paymentMethodId: test.paymentMethodId });
+        }
+      }
+
+      // Run each unique combination
+      for (const combo of combinations.values()) {
+        await window.api.tests.run([combo.formId], [combo.paymentMethodId]);
+      }
+
+      await loadTestRuns();
+      clearSelection();
+    } catch (error) {
+      console.error("Failed to bulk run tests:", error);
+    } finally {
+      setIsBulkRunning(false);
     }
   };
 
@@ -733,7 +814,7 @@ const TestResults: React.FC = () => {
           </h2>
         </div>
 
-        {/* Filter Bar */}
+        {/* Filter Bar with Selection Actions */}
         <TableFilter
           searchTerm={filterConfig.searchTerm}
           onSearchChange={setSearchTerm}
@@ -742,6 +823,30 @@ const TestResults: React.FC = () => {
           onStatusFilterChange={setStatusFilter}
           statusOptions={statusOptions}
           onClear={clearFilters}
+          rightContent={
+            selectedCount > 0 ? (
+              <SelectionActionBar
+                selectedCount={selectedCount}
+                onClear={clearSelection}
+                itemLabel="Tests"
+                actions={[
+                  {
+                    label: "Erneut testen",
+                    icon: <Play size={14} />,
+                    onClick: handleBulkRunAgain,
+                    variant: "secondary",
+                    loading: isBulkRunning,
+                  },
+                  {
+                    label: "Löschen",
+                    icon: <Trash2 size={14} />,
+                    onClick: () => setShowBulkDeleteConfirm(true),
+                    variant: "danger",
+                  },
+                ]}
+              />
+            ) : undefined
+          }
         />
 
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
@@ -759,6 +864,14 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="px-4 w-[40px]">
+                      <Checkbox
+                        checked={computeIsAllSelected(sortedFinishedTests, selectedIds)}
+                        indeterminate={computeIsPartialSelected(sortedFinishedTests, selectedIds)}
+                        onCheckedChange={() => toggleAll(sortedFinishedTests)}
+                        aria-label="Alle auswählen"
+                      />
+                    </TableHead>
                     <SortableTableHead className="px-4 w-[80px]">UUID</SortableTableHead>
                     <SortableTableHead
                       className="px-4 w-[70px] text-left justify-left"
@@ -801,14 +914,15 @@ const TestResults: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {sortedFinishedTests.map((testRun) => {
-                    const isSelected = selectedTestRun === testRun.id;
+                    const isRowSelected = selectedTestRun === testRun.id;
+                    const isChecked = isSelected(testRun.id);
                     return (
                       <TableRow
                         key={testRun.id}
                         tabIndex={0}
                         role="button"
-                        aria-selected={isSelected}
-                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "bg-white dark:bg-gray-800"}`}
+                        aria-selected={isRowSelected}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : isRowSelected ? "bg-gray-50 dark:bg-gray-700/50" : "bg-white dark:bg-gray-800"}`}
                         onClick={() => handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
@@ -816,6 +930,13 @@ const TestResults: React.FC = () => {
                             handleSelectTestRun(testRun.id);
                           }
                         }}>
+                        <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={isChecked}
+                            onCheckedChange={() => toggleItem(testRun.id)}
+                            aria-label={`${testRun.formName} auswählen`}
+                          />
+                        </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1 group">
                             <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
@@ -1209,6 +1330,17 @@ const TestResults: React.FC = () => {
         message="Sind Sie sicher, dass Sie diesen Test Run löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
         itemName={showDeleteConfirm?.name}
         isLoading={isLoading}
+      />
+
+      {/* Bulk Delete Confirmation */}
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDelete}
+        title="Tests löschen"
+        message={`Sind Sie sicher, dass Sie ${selectedCount} Test(s) löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.`}
+        itemName={`${selectedCount} ausgewählte Tests`}
+        isLoading={isBulkDeleting}
       />
 
       {/* TestRunDialog is handled by Layout component via global events */}

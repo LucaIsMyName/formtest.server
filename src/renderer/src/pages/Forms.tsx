@@ -5,8 +5,10 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
 import FormDrawer from "../components/FormDrawer";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import SelectionActionBar from "../components/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
+import { Checkbox } from "../components/ui/Checkbox";
 import type { Form } from "../../../common/types";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
@@ -17,6 +19,7 @@ import { formatDate } from "../utils/formatters";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
+import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
 import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
 
 const FormsSkeleton = () => (
@@ -55,6 +58,19 @@ const Forms: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingForm, setEditingForm] = useState<Form | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  // Table selection
+  const {
+    selectedIds,
+    toggleItem,
+    toggleAll,
+    clearSelection,
+    selectedCount,
+    isSelected,
+    getSelectedIds,
+  } = useTableSelection<Form>();
 
   useEffect(() => {
     loadForms();
@@ -174,6 +190,25 @@ const Forms: React.FC = () => {
     if (deleteConfirm) {
       await deleteForm(deleteConfirm.id);
       setDeleteConfirm(null);
+    }
+  };
+
+  // Bulk delete selected forms
+  const handleBulkDelete = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    setIsBulkDeleting(true);
+    try {
+      for (const id of ids) {
+        await deleteForm(id);
+      }
+      clearSelection();
+      setShowBulkDeleteConfirm(false);
+    } catch (error) {
+      console.error("Failed to bulk delete forms:", error);
+    } finally {
+      setIsBulkDeleting(false);
     }
   };
 

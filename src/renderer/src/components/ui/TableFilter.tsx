@@ -18,9 +18,11 @@ interface TableFilterProps {
   statusOptions?: StatusOption[];
   statusLabel?: string;
   onClear?: () => void;
+  /** Optional content to render on the right side (e.g., selection actions) */
+  rightContent?: React.ReactNode;
 }
 
-export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchChange, placeholder = "Suchen...", statusFilter, onStatusFilterChange, statusOptions, statusLabel = "Status", onClear }) => {
+export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchChange, placeholder = "Suchen...", statusFilter, onStatusFilterChange, statusOptions, statusLabel = "Status", onClear, rightContent }) => {
   const hasFilters = searchTerm.trim() !== "" || (statusFilter && statusFilter !== "all");
 
   // Map status value to badge variant
@@ -106,6 +108,13 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
           className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
           Filter zurücksetzen
         </button>
+      )}
+
+      {/* Right content (e.g., selection actions) */}
+      {rightContent && (
+        <div className="ml-auto flex items-center">
+          {rightContent}
+        </div>
       )}
     </div>
   );

@@ -1,9 +1,10 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, i as dist, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination } from "./index-Ce-03Pjy.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, i as dist } from "./index-ChHsagZL.js";
 import { C as CONFIG } from "./app.config-Dj0WDsKm.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-BwvpJ2eX.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DPoTkKVL.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Btpub4kl.js";
-import { S as Skeleton } from "./Skeleton-CZRqJCxj.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-vJKLxUqK.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useFilterableData, d as useSortableData, S as SortableTableHead } from "./useFilterableData-DCf5Cjv4.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-Dryzb9TW.js";
+import { S as Skeleton } from "./Skeleton-DZm2ZUoB.js";
+import { u as useTableSelection } from "./useTableSelection-B_ZvBChM.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -373,7 +374,6 @@ const FormSparkline = (t0) => {
   return t1;
 };
 const Forms = () => {
-  const $ = dist.c(95);
   const [searchParams, setSearchParams] = useSearchParams();
   const {
     forms,
@@ -392,334 +392,144 @@ const Forms = () => {
   const [isDialogOpen, setIsDialogOpen] = reactExports.useState(false);
   const [editingForm, setEditingForm] = reactExports.useState(null);
   const [deleteConfirm, setDeleteConfirm] = reactExports.useState(null);
-  let t0;
-  let t1;
-  if ($[0] !== loadForms || $[1] !== loadTestRuns) {
-    t0 = () => {
-      loadForms();
-      loadTestRuns();
-    };
-    t1 = [loadForms, loadTestRuns];
-    $[0] = loadForms;
-    $[1] = loadTestRuns;
-    $[2] = t0;
-    $[3] = t1;
-  } else {
-    t0 = $[2];
-    t1 = $[3];
-  }
-  reactExports.useEffect(t0, t1);
-  let t2;
-  if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = ["name", "url"];
-    $[4] = t2;
-  } else {
-    t2 = $[4];
-  }
-  let t3;
-  if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
-    t3 = {
-      searchTerm: "",
-      statusFilter: void 0
-    };
-    $[5] = t3;
-  } else {
-    t3 = $[5];
-  }
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = reactExports.useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = reactExports.useState(false);
+  const {
+    selectedIds,
+    toggleItem,
+    toggleAll,
+    clearSelection,
+    selectedCount,
+    isSelected,
+    getSelectedIds
+  } = useTableSelection();
+  reactExports.useEffect(() => {
+    loadForms();
+    loadTestRuns();
+  }, [loadForms, loadTestRuns]);
   const {
     filteredItems: filteredForms,
     filterConfig,
     setSearchTerm,
     setStatusFilter,
     clearFilters
-  } = useFilterableData(forms, t2, t3, "forms");
-  let t4;
-  if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
-    t4 = {
-      key: "name",
-      direction: "asc"
-    };
-    $[6] = t4;
-  } else {
-    t4 = $[6];
-  }
+  } = useFilterableData(
+    forms,
+    ["name", "url"],
+    {
+      searchTerm: "",
+      statusFilter: void 0
+    },
+    "forms"
+    // localStorage key
+  );
   const {
     sortedItems: sortedForms,
     requestSort,
     sortConfig,
     getSortDirection
-  } = useSortableData(filteredForms, t4, "forms");
-  let t5;
-  if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = [{
-      value: "active",
-      label: "Aktiv"
-    }, {
-      value: "inactive",
-      label: "Inaktiv"
-    }];
-    $[7] = t5;
-  } else {
-    t5 = $[7];
-  }
-  const statusOptions = t5;
+  } = useSortableData(
+    filteredForms,
+    {
+      key: "name",
+      direction: "asc"
+    },
+    "forms"
+    // localStorage key
+  );
+  const statusOptions = [{
+    value: "active",
+    label: "Aktiv"
+  }, {
+    value: "inactive",
+    label: "Inaktiv"
+  }];
   const [currentPage, setCurrentPage] = reactExports.useState(1);
-  let t6;
-  bb0: {
+  const itemsPerPage = 50;
+  const displayedForms = reactExports.useMemo(() => {
     let filtered = sortedForms;
     if (filterConfig.statusFilter && filterConfig.statusFilter !== "all") {
-      let t72;
-      if ($[8] !== filterConfig.statusFilter || $[9] !== sortedForms) {
-        let t82;
-        if ($[11] !== filterConfig.statusFilter) {
-          t82 = (f) => filterConfig.statusFilter === "active" ? f.isActive : !f.isActive;
-          $[11] = filterConfig.statusFilter;
-          $[12] = t82;
-        } else {
-          t82 = $[12];
-        }
-        t72 = sortedForms.filter(t82);
-        $[8] = filterConfig.statusFilter;
-        $[9] = sortedForms;
-        $[10] = t72;
-      } else {
-        t72 = $[10];
-      }
-      filtered = t72;
+      filtered = sortedForms.filter((f) => filterConfig.statusFilter === "active" ? f.isActive : !f.isActive);
     }
     if (filtered.length > 50) {
-      const start = (currentPage - 1) * 50;
-      let t72;
-      if ($[13] !== filtered || $[14] !== start) {
-        t72 = filtered.slice(start, start + 50);
-        $[13] = filtered;
-        $[14] = start;
-        $[15] = t72;
-      } else {
-        t72 = $[15];
-      }
-      t6 = t72;
-      break bb0;
+      const start = (currentPage - 1) * itemsPerPage;
+      return filtered.slice(start, start + itemsPerPage);
     }
-    t6 = filtered;
-  }
-  const displayedForms = t6;
-  let t7;
-  bb1: {
+    return filtered;
+  }, [sortedForms, filterConfig.statusFilter, currentPage, itemsPerPage]);
+  const totalFilteredItems = reactExports.useMemo(() => {
     if (!filterConfig.statusFilter || filterConfig.statusFilter === "all") {
-      t7 = sortedForms.length;
-      break bb1;
+      return sortedForms.length;
     }
-    let t82;
-    if ($[16] !== filterConfig.statusFilter || $[17] !== sortedForms) {
-      let t92;
-      if ($[19] !== filterConfig.statusFilter) {
-        t92 = (f_0) => filterConfig.statusFilter === "active" ? f_0.isActive : !f_0.isActive;
-        $[19] = filterConfig.statusFilter;
-        $[20] = t92;
-      } else {
-        t92 = $[20];
-      }
-      t82 = sortedForms.filter(t92);
-      $[16] = filterConfig.statusFilter;
-      $[17] = sortedForms;
-      $[18] = t82;
-    } else {
-      t82 = $[18];
-    }
-    t7 = t82.length;
-  }
-  const totalFilteredItems = t7;
-  const totalPages = Math.ceil(totalFilteredItems / 50);
+    return sortedForms.filter((f_0) => filterConfig.statusFilter === "active" ? f_0.isActive : !f_0.isActive).length;
+  }, [sortedForms, filterConfig.statusFilter]);
+  const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
   const showPagination = totalFilteredItems > 50;
-  let t8;
-  if ($[21] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = () => {
-      setCurrentPage(1);
-    };
-    $[21] = t8;
-  } else {
-    t8 = $[21];
-  }
-  let t9;
-  if ($[22] !== filterConfig.searchTerm || $[23] !== filterConfig.statusFilter || $[24] !== sortConfig.direction || $[25] !== sortConfig.key) {
-    t9 = [filterConfig.statusFilter, filterConfig.searchTerm, sortConfig.key, sortConfig.direction];
-    $[22] = filterConfig.searchTerm;
-    $[23] = filterConfig.statusFilter;
-    $[24] = sortConfig.direction;
-    $[25] = sortConfig.key;
-    $[26] = t9;
-  } else {
-    t9 = $[26];
-  }
-  reactExports.useEffect(t8, t9);
-  let t10;
-  let t11;
-  if ($[27] !== forms || $[28] !== searchParams) {
-    t10 = () => {
-      if (forms.length > 0) {
-        const paramId = searchParams.get("id");
-        if (paramId) {
-          const form = forms.find((f_1) => String(f_1.id) === paramId || f_1.name === paramId);
-          if (form) {
-            setEditingForm(form);
-            setIsDialogOpen(true);
-          }
+  reactExports.useEffect(() => {
+    setCurrentPage(1);
+  }, [filterConfig.statusFilter, filterConfig.searchTerm, sortConfig.key, sortConfig.direction]);
+  reactExports.useEffect(() => {
+    if (forms.length > 0) {
+      const paramId = searchParams.get("id");
+      if (paramId) {
+        const form = forms.find((f_1) => String(f_1.id) === paramId || f_1.name === paramId);
+        if (form) {
+          setEditingForm(form);
+          setIsDialogOpen(true);
         }
       }
-    };
-    t11 = [forms, searchParams];
-    $[27] = forms;
-    $[28] = searchParams;
-    $[29] = t10;
-    $[30] = t11;
-  } else {
-    t10 = $[29];
-    t11 = $[30];
-  }
-  reactExports.useEffect(t10, t11);
-  let t12;
-  if ($[31] !== setSearchParams) {
-    t12 = () => {
-      setEditingForm(null);
-      setIsDialogOpen(true);
-      setSearchParams({});
-    };
-    $[31] = setSearchParams;
-    $[32] = t12;
-  } else {
-    t12 = $[32];
-  }
-  const handleAddForm = t12;
-  let t13;
-  if ($[33] !== setSearchParams) {
-    t13 = (form_0) => {
-      setEditingForm(form_0);
-      setIsDialogOpen(true);
-      setSearchParams({
-        id: String(form_0.id)
-      });
-    };
-    $[33] = setSearchParams;
-    $[34] = t13;
-  } else {
-    t13 = $[34];
-  }
-  const handleEditForm = t13;
-  let t14;
-  if ($[35] !== setSearchParams) {
-    t14 = () => {
-      setIsDialogOpen(false);
-      setSearchParams({});
-    };
-    $[35] = setSearchParams;
-    $[36] = t14;
-  } else {
-    t14 = $[36];
-  }
-  const handleCloseDialog = t14;
-  let t15;
-  if ($[37] !== addForm || $[38] !== editingForm || $[39] !== updateForm) {
-    t15 = async (formData) => {
-      if (editingForm) {
-        await updateForm(editingForm.id, formData);
-      } else {
-        await addForm(formData);
-      }
-    };
-    $[37] = addForm;
-    $[38] = editingForm;
-    $[39] = updateForm;
-    $[40] = t15;
-  } else {
-    t15 = $[40];
-  }
-  const handleFormSubmit = t15;
-  let t16;
-  if ($[41] === Symbol.for("react.memo_cache_sentinel")) {
-    t16 = (form_1) => {
-      setDeleteConfirm({
-        id: form_1.id,
-        name: form_1.name
-      });
-    };
-    $[41] = t16;
-  } else {
-    t16 = $[41];
-  }
-  const handleDeleteForm = t16;
-  let t17;
-  if ($[42] !== deleteConfirm || $[43] !== deleteForm) {
-    t17 = async () => {
-      if (deleteConfirm) {
-        await deleteForm(deleteConfirm.id);
-        setDeleteConfirm(null);
-      }
-    };
-    $[42] = deleteConfirm;
-    $[43] = deleteForm;
-    $[44] = t17;
-  } else {
-    t17 = $[44];
-  }
-  const confirmDelete = t17;
-  let t18;
-  if ($[45] === Symbol.for("react.memo_cache_sentinel")) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Formulare" });
-    $[45] = t18;
-  } else {
-    t18 = $[45];
-  }
-  let t19;
-  if ($[46] === Symbol.for("react.memo_cache_sentinel")) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 });
-    $[46] = t19;
-  } else {
-    t19 = $[46];
-  }
-  let t20;
-  if ($[47] !== handleAddForm || $[48] !== isLoading) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
-      t18,
+    }
+  }, [forms, searchParams]);
+  const handleAddForm = () => {
+    setEditingForm(null);
+    setIsDialogOpen(true);
+    setSearchParams({});
+  };
+  const handleEditForm = (form_0) => {
+    setEditingForm(form_0);
+    setIsDialogOpen(true);
+    setSearchParams({
+      id: String(form_0.id)
+    });
+  };
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setSearchParams({});
+  };
+  const handleFormSubmit = async (formData) => {
+    if (editingForm) {
+      await updateForm(editingForm.id, formData);
+    } else {
+      await addForm(formData);
+    }
+  };
+  const handleDeleteForm = (form_1) => {
+    setDeleteConfirm({
+      id: form_1.id,
+      name: form_1.name
+    });
+  };
+  const confirmDelete = async () => {
+    if (deleteConfirm) {
+      await deleteForm(deleteConfirm.id);
+      setDeleteConfirm(null);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-center mb-8", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Formulare" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleAddForm, variant: "primary", size: "md", className: "gap-2", disabled: isLoading, children: [
-        t19,
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 16 }),
         "Neues Formular"
       ] })
-    ] });
-    $[47] = handleAddForm;
-    $[48] = isLoading;
-    $[49] = t20;
-  } else {
-    t20 = $[49];
-  }
-  let t21;
-  if ($[50] !== error) {
-    t21 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
+    ] }),
+    error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-red-800 dark:text-red-200", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
       " ",
       error
-    ] }) });
-    $[50] = error;
-    $[51] = t21;
-  } else {
-    t21 = $[51];
-  }
-  let t22;
-  if ($[52] !== clearFilters || $[53] !== filterConfig.searchTerm || $[54] !== filterConfig.statusFilter || $[55] !== forms.length || $[56] !== setSearchTerm || $[57] !== setStatusFilter) {
-    t22 = forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters });
-    $[52] = clearFilters;
-    $[53] = filterConfig.searchTerm;
-    $[54] = filterConfig.statusFilter;
-    $[55] = forms.length;
-    $[56] = setSearchTerm;
-    $[57] = setStatusFilter;
-    $[58] = t22;
-  } else {
-    t22 = $[58];
-  }
-  let t23;
-  if ($[59] !== currentPage || $[60] !== displayedForms || $[61] !== forms.length || $[62] !== getSortDirection || $[63] !== handleAddForm || $[64] !== handleEditForm || $[65] !== isLoading || $[66] !== requestSort || $[67] !== showPagination || $[68] !== testRuns || $[69] !== toggleFormActive || $[70] !== totalFilteredItems || $[71] !== totalPages) {
-    t23 = isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
+    ] }) }),
+    forms.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm: filterConfig.searchTerm, onSearchChange: setSearchTerm, placeholder: "Formulare durchsuchen...", statusFilter: filterConfig.statusFilter, onStatusFilterChange: setStatusFilter, statusOptions, onClear: clearFilters }),
+    isLoading && forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(FormsSkeleton, {}) : forms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-500 dark:text-gray-400 mb-4", children: "Noch keine Formulare konfiguriert." }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleAddForm, variant: "primary", size: "md", disabled: isLoading, children: "Erstes Formular hinzufügen" })
     ] }) }) }) : displayedForms.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center py-8", children: [
@@ -746,7 +556,7 @@ const Forms = () => {
             renderIcon(form_2.icon || "FileText", 16, "text-gray-500 dark:text-gray-400"),
             /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-medium text-sm text-gray-900 dark:text-white", children: form_2.name })
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: _temp2, className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate", children: form_2.url }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: form_2.url, target: "_blank", rel: "noopener noreferrer", onClick: (e_0) => e_0.stopPropagation(), className: "text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate", children: form_2.url }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-[10px] text-gray-500 dark:text-gray-400 font-mono", children: form_2.hash || "—" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: (e_1) => {
             e_1.stopPropagation();
@@ -766,95 +576,19 @@ const Forms = () => {
           ] }) })
         ] }, form_2.id)) })
       ] }),
-      showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems: totalFilteredItems, itemsPerPage: 50, onPageChange: setCurrentPage })
-    ] });
-    $[59] = currentPage;
-    $[60] = displayedForms;
-    $[61] = forms.length;
-    $[62] = getSortDirection;
-    $[63] = handleAddForm;
-    $[64] = handleEditForm;
-    $[65] = isLoading;
-    $[66] = requestSort;
-    $[67] = showPagination;
-    $[68] = testRuns;
-    $[69] = toggleFormActive;
-    $[70] = totalFilteredItems;
-    $[71] = totalPages;
-    $[72] = t23;
-  } else {
-    t23 = $[72];
-  }
-  let t24;
-  if ($[73] !== forms) {
-    t24 = (id) => {
-      const form_3 = forms.find((f_2) => f_2.id === id);
+      showPagination && /* @__PURE__ */ jsxRuntimeExports.jsx(TablePagination, { currentPage, totalPages, totalItems: totalFilteredItems, itemsPerPage, onPageChange: setCurrentPage })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading, onDelete: (id_0) => {
+      const form_3 = forms.find((f_2) => f_2.id === id_0);
       if (form_3) {
         setDeleteConfirm({
-          id,
+          id: id_0,
           name: form_3.name
         });
       }
-    };
-    $[73] = forms;
-    $[74] = t24;
-  } else {
-    t24 = $[74];
-  }
-  let t25;
-  if ($[75] !== editingForm || $[76] !== handleCloseDialog || $[77] !== handleFormSubmit || $[78] !== isDialogOpen || $[79] !== isLoading || $[80] !== t24) {
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx(FormDrawer, { isOpen: isDialogOpen, onClose: handleCloseDialog, onSubmit: handleFormSubmit, editForm: editingForm, isLoading, onDelete: t24 });
-    $[75] = editingForm;
-    $[76] = handleCloseDialog;
-    $[77] = handleFormSubmit;
-    $[78] = isDialogOpen;
-    $[79] = isLoading;
-    $[80] = t24;
-    $[81] = t25;
-  } else {
-    t25 = $[81];
-  }
-  const t26 = !!deleteConfirm;
-  let t27;
-  if ($[82] === Symbol.for("react.memo_cache_sentinel")) {
-    t27 = () => setDeleteConfirm(null);
-    $[82] = t27;
-  } else {
-    t27 = $[82];
-  }
-  const t28 = deleteConfirm?.name;
-  let t29;
-  if ($[83] !== confirmDelete || $[84] !== isLoading || $[85] !== t26 || $[86] !== t28) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: t26, onClose: t27, onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: t28, isLoading });
-    $[83] = confirmDelete;
-    $[84] = isLoading;
-    $[85] = t26;
-    $[86] = t28;
-    $[87] = t29;
-  } else {
-    t29 = $[87];
-  }
-  let t30;
-  if ($[88] !== t20 || $[89] !== t21 || $[90] !== t22 || $[91] !== t23 || $[92] !== t25 || $[93] !== t29) {
-    t30 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      t20,
-      t21,
-      t22,
-      t23,
-      t25,
-      t29
-    ] });
-    $[88] = t20;
-    $[89] = t21;
-    $[90] = t22;
-    $[91] = t23;
-    $[92] = t25;
-    $[93] = t29;
-    $[94] = t30;
-  } else {
-    t30 = $[94];
-  }
-  return t30;
+    } }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(DeleteConfirmDialog, { isOpen: !!deleteConfirm, onClose: () => setDeleteConfirm(null), onConfirm: confirmDelete, title: "Formular löschen", message: "Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.", itemName: deleteConfirm?.name, isLoading })
+  ] });
 };
 function _temp(_, i) {
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
@@ -867,9 +601,6 @@ function _temp(_, i) {
       /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-20" })
     ] })
   ] }, i);
-}
-function _temp2(e_0) {
-  return e_0.stopPropagation();
 }
 export {
   Forms as default

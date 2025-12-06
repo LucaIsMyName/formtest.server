@@ -1,4 +1,4 @@
-import { i as dist, j as jsxRuntimeExports, aL as TriangleAlert, ax as DialogHeader, ay as DialogTitle, aM as DialogDescription, B as Button, aN as DialogFooter, aA as DialogContent, aB as Dialog, y as Select, z as SelectTrigger, D as SelectContent, G as SelectItem, p as StatusBadge, aO as Badge, az as Search, I as Input, X } from "./index-Ce-03Pjy.js";
+import { i as dist, j as jsxRuntimeExports, aL as TriangleAlert, ax as DialogHeader, ay as DialogTitle, aM as DialogDescription, B as Button, aN as DialogFooter, aA as DialogContent, aB as Dialog, y as Select, z as SelectTrigger, D as SelectContent, G as SelectItem, p as StatusBadge, aO as Badge, az as Search, I as Input, X } from "./index-ChHsagZL.js";
 const DeleteConfirmDialog = (t0) => {
   const $ = dist.c(31);
   const {
@@ -129,7 +129,7 @@ const DeleteConfirmDialog = (t0) => {
   return t13;
 };
 const TableFilter = (t0) => {
-  const $ = dist.c(33);
+  const $ = dist.c(36);
   const {
     searchTerm,
     onSearchChange,
@@ -138,7 +138,8 @@ const TableFilter = (t0) => {
     onStatusFilterChange,
     statusOptions,
     statusLabel: t2,
-    onClear
+    onClear,
+    rightContent
   } = t0;
   const placeholder = t1 === void 0 ? "Suchen..." : t1;
   const statusLabel = t2 === void 0 ? "Status" : t2;
@@ -254,20 +255,30 @@ const TableFilter = (t0) => {
     t11 = $[28];
   }
   let t12;
-  if ($[29] !== t10 || $[30] !== t11 || $[31] !== t9) {
-    t12 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
+  if ($[29] !== rightContent) {
+    t12 = rightContent && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ml-auto flex items-center", children: rightContent });
+    $[29] = rightContent;
+    $[30] = t12;
+  } else {
+    t12 = $[30];
+  }
+  let t13;
+  if ($[31] !== t10 || $[32] !== t11 || $[33] !== t12 || $[34] !== t9) {
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
       t9,
       t10,
-      t11
+      t11,
+      t12
     ] });
-    $[29] = t10;
-    $[30] = t11;
-    $[31] = t9;
-    $[32] = t12;
+    $[31] = t10;
+    $[32] = t11;
+    $[33] = t12;
+    $[34] = t9;
+    $[35] = t13;
   } else {
-    t12 = $[32];
+    t13 = $[35];
   }
-  return t12;
+  return t13;
 };
 function _temp(status) {
   switch (status.toUpperCase()) {

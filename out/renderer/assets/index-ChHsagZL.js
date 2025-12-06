@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-BuutmMqd.js","./app.config-Dj0WDsKm.js","./Skeleton-CZRqJCxj.js","./Forms-Bj66IwM7.js","./MiniSparkline-BwvpJ2eX.js","./useFilterableData-DPoTkKVL.js","./TableFilter-Btpub4kl.js","./PaymentMethods-VFuTb_zf.js","./Settings-BRls4B5V.js","./TestResults-DTPQbUXc.js","./InfoDoku-DDuty0ZV.js","./Schedules-Fuh6yvlb.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-DqcuaVHN.js","./app.config-Dj0WDsKm.js","./Skeleton-DZm2ZUoB.js","./Forms-C1TM01wn.js","./MiniSparkline-vJKLxUqK.js","./useFilterableData-DCf5Cjv4.js","./TableFilter-Dryzb9TW.js","./useTableSelection-B_ZvBChM.js","./PaymentMethods-DOnL6pK2.js","./Settings-qPF2lfge.js","./TestResults-DC1x8Yjh.js","./InfoDoku-DDvSvdx_.js","./Schedules-CBKNYgko.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -58894,47 +58894,66 @@ function getState(checked) {
   return isIndeterminate(checked) ? "indeterminate" : checked ? "checked" : "unchecked";
 }
 const Checkbox = reactExports.forwardRef((t0, ref) => {
-  const $2 = dist.c(10);
+  const $2 = dist.c(16);
+  let checked;
   let className;
+  let indeterminate;
   let props;
   if ($2[0] !== t0) {
     ({
       className,
+      indeterminate,
+      checked,
       ...props
     } = t0);
     $2[0] = t0;
-    $2[1] = className;
-    $2[2] = props;
+    $2[1] = checked;
+    $2[2] = className;
+    $2[3] = indeterminate;
+    $2[4] = props;
   } else {
-    className = $2[1];
-    props = $2[2];
+    checked = $2[1];
+    className = $2[2];
+    indeterminate = $2[3];
+    props = $2[4];
   }
-  let t1;
-  if ($2[3] !== className) {
-    t1 = cn("peer h-4 w-4 shrink-0 rounded-sm border border-gray-300 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-blue-600 data-[state=checked]:text-gray-50 dark:border-gray-600 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-300 dark:data-[state=checked]:bg-blue-600 dark:data-[state=checked]:text-gray-50", className);
-    $2[3] = className;
-    $2[4] = t1;
-  } else {
-    t1 = $2[4];
-  }
+  const t1 = indeterminate ? "indeterminate" : checked;
   let t2;
-  if ($2[5] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxIndicator, { className: cn("flex items-center justify-center text-current"), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "h-4 w-4" }) });
-    $2[5] = t2;
+  if ($2[5] !== className) {
+    t2 = cn("peer h-4 w-4 shrink-0 rounded-sm border border-gray-300 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-blue-600 data-[state=checked]:text-gray-50 data-[state=indeterminate]:bg-blue-600 data-[state=indeterminate]:text-gray-50 dark:border-gray-600 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-300 dark:data-[state=checked]:bg-blue-600 dark:data-[state=checked]:text-gray-50 dark:data-[state=indeterminate]:bg-blue-600 dark:data-[state=indeterminate]:text-gray-50", className);
+    $2[5] = className;
+    $2[6] = t2;
   } else {
-    t2 = $2[5];
+    t2 = $2[6];
   }
   let t3;
-  if ($2[6] !== props || $2[7] !== ref || $2[8] !== t1) {
-    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox$1, { ref, className: t1, ...props, children: t2 });
-    $2[6] = props;
-    $2[7] = ref;
-    $2[8] = t1;
-    $2[9] = t3;
+  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t3 = cn("flex items-center justify-center text-current");
+    $2[7] = t3;
   } else {
-    t3 = $2[9];
+    t3 = $2[7];
   }
-  return t3;
+  let t4;
+  if ($2[8] !== indeterminate) {
+    t4 = /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxIndicator, { className: t3, children: indeterminate ? /* @__PURE__ */ jsxRuntimeExports.jsx(Minus, { className: "h-3 w-3" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Check, { className: "h-4 w-4" }) });
+    $2[8] = indeterminate;
+    $2[9] = t4;
+  } else {
+    t4 = $2[9];
+  }
+  let t5;
+  if ($2[10] !== props || $2[11] !== ref || $2[12] !== t1 || $2[13] !== t2 || $2[14] !== t4) {
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox$1, { ref, checked: t1, className: t2, ...props, children: t4 });
+    $2[10] = props;
+    $2[11] = ref;
+    $2[12] = t1;
+    $2[13] = t2;
+    $2[14] = t4;
+    $2[15] = t5;
+  } else {
+    t5 = $2[15];
+  }
+  return t5;
 });
 Checkbox.displayName = Checkbox$1.displayName;
 const getIconComponent = (iconName) => {
@@ -61450,13 +61469,13 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-BuutmMqd.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Bj66IwM7.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-VFuTb_zf.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-BRls4B5V.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DTPQbUXc.js"), true ? __vite__mapDeps([9,1,6,2,5]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-DDuty0ZV.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-Fuh6yvlb.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-DqcuaVHN.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-C1TM01wn.js"), true ? __vite__mapDeps([3,1,4,5,6,2,7]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-DOnL6pK2.js"), true ? __vite__mapDeps([8,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-qPF2lfge.js"), true ? __vite__mapDeps([9,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DC1x8Yjh.js"), true ? __vite__mapDeps([10,1,6,2,5,7]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-DDvSvdx_.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-CBKNYgko.js"), true ? __vite__mapDeps([12,1,5,6,2,4]) : void 0, import.meta.url));
 function App() {
   const {
     settings,

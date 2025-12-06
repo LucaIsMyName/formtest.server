@@ -2591,12 +2591,22 @@ select.input {
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
 }
 
+.data-\[state\=indeterminate\]\:bg-blue-600[data-state="indeterminate"] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
+}
+
 .data-\[state\=open\]\:bg-gray-100[data-state="open"] {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
 }
 
 .data-\[state\=checked\]\:text-gray-50[data-state="checked"] {
+  --tw-text-opacity: 1;
+  color: rgb(249 250 251 / var(--tw-text-opacity, 1));
+}
+
+.data-\[state\=indeterminate\]\:text-gray-50[data-state="indeterminate"] {
   --tw-text-opacity: 1;
   color: rgb(249 250 251 / var(--tw-text-opacity, 1));
 }
@@ -3077,12 +3087,22 @@ select.input {
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
 }
 
+.dark\:data-\[state\=indeterminate\]\:bg-blue-600[data-state="indeterminate"]:is(.dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
+}
+
 .dark\:data-\[state\=open\]\:bg-gray-800[data-state="open"]:is(.dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
 }
 
 .dark\:data-\[state\=checked\]\:text-gray-50[data-state="checked"]:is(.dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(249 250 251 / var(--tw-text-opacity, 1));
+}
+
+.dark\:data-\[state\=indeterminate\]\:text-gray-50[data-state="indeterminate"]:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(249 250 251 / var(--tw-text-opacity, 1));
 }
