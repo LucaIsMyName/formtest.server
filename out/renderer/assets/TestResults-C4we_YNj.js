@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ae as LoaderCircle, af as Square, i as dist, ag as Image, ah as Maximize2, ai as ZoomOut, aj as ZoomIn, ak as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, al as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, am as Bot, m as TableBody, o as TableCell, aa as Copy, an as User, s as renderIcon, ao as formatDateTime, p as StatusBadge, a3 as CircleCheck, k as Trash2, t as Checkbox, ap as formatDuration, O as TablePagination, aq as Link, ar as FileBraces, Q as getDefaultPaymentIcon, as as Clock, a4 as CircleAlert, at as CircleX } from "./index-DzJQkFUp.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ag as LoaderCircle, ah as Square, i as dist, ai as Image, aj as Maximize2, ak as ZoomOut, al as ZoomIn, am as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, an as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, ao as Bot, m as TableBody, o as TableCell, ac as Copy, ap as User, s as renderIcon, aq as formatDateTime, p as StatusBadge, a3 as CircleCheck, k as Trash2, t as Checkbox, ar as formatDuration, O as TablePagination, as as Link, at as FileBraces, Q as getDefaultPaymentIcon, au as Clock, a4 as CircleAlert, av as CircleX } from "./index-CTVVHBwu.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CT2F7wj8.js";
-import { u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useTableSelection-DvrD0Ws3.js";
-import { S as Skeleton } from "./Skeleton-CKxsIkDq.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-ChBIEGJW.js";
+import { u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useTableSelection-DDYSRM-X.js";
+import { S as Skeleton } from "./Skeleton-BnszPCiR.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -408,6 +408,23 @@ const formatElapsedTime = (seconds) => {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+};
+const formatInterval = (interval) => {
+  if (!interval) return "-";
+  switch (interval) {
+    case "0":
+      return "Einmalig";
+    case "1":
+      return "Monatlich";
+    case "3":
+      return "Quartal";
+    case "6":
+      return "Halbjahr";
+    case "12":
+      return "Jährlich";
+    default:
+      return interval;
+  }
 };
 const RunningTimer = reactExports.memo((t0) => {
   const $ = dist.c(11);
@@ -1038,6 +1055,8 @@ const TestResults = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[70px] text-left", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 14, className: "inline" }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 min-w-[160px]", children: "Formular" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 min-w-[160px]", children: "Bezahlmethode" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[80px]", children: "Betrag" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[100px]", children: "Intervall" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[150px]", children: "Gestartet" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[70px]", children: "Dauer" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-4 w-[90px]", children: "Status" }),
@@ -1066,6 +1085,8 @@ const TestResults = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getPaymentMethodIcon(testRun_2.paymentMethodId), 14) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_2.paymentMethodName })
             ] }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-xs font-mono text-gray-600 dark:text-gray-400", children: testRun_2.amount ? `${testRun_2.amount} €` : "-" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-xs text-gray-600 dark:text-gray-400", children: formatInterval(testRun_2.interval) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDateTime(testRun_2.runAt) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(RunningTimer, { runAt: testRun_2.runAt, isRunning }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: testRun_2.status }) }),
@@ -1107,6 +1128,8 @@ const TestResults = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[70px] text-left justify-left", sortDirection: getSortDirection("isScheduled"), onSort: () => requestSort("isScheduled"), children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 14, className: "inline" }) }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 min-w-[180px]", sortDirection: getSortDirection("formName"), onSort: () => requestSort("formName"), children: "Formular" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 min-w-[200px]", sortDirection: getSortDirection("paymentMethodName"), onSort: () => requestSort("paymentMethodName"), children: "Bezahlmethode" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[80px]", sortDirection: getSortDirection("amount"), onSort: () => requestSort("amount"), children: "Betrag" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[100px]", sortDirection: getSortDirection("interval"), onSort: () => requestSort("interval"), children: "Intervall" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[150px]", sortDirection: getSortDirection("runAt"), onSort: () => requestSort("runAt"), children: "Datum" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[70px]", sortDirection: getSortDirection("durationMs"), onSort: () => requestSort("durationMs"), children: "Dauer" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(SortableTableHead, { className: "px-4 w-[90px]", sortDirection: getSortDirection("status"), onSort: () => requestSort("status"), children: "Status" }),
@@ -1135,6 +1158,8 @@ const TestResults = () => {
                 /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flex-shrink-0 text-gray-500 dark:text-gray-400", children: renderIcon(getPaymentMethodIcon(testRun_3.paymentMethodId), 14) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-xs font-medium text-gray-900 dark:text-white truncate", children: testRun_3.paymentMethodName })
               ] }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-xs font-mono text-gray-600 dark:text-gray-400", children: testRun_3.amount ? `${testRun_3.amount} €` : "-" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-xs text-gray-600 dark:text-gray-400", children: formatInterval(testRun_3.interval) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap", children: formatDateTime(testRun_3.runAt) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400", children: formatDuration(testRun_3.durationMs) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx(StatusBadge, { status: testRun_3.status }) }),
@@ -1213,6 +1238,14 @@ const TestResults = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Zeitpunkt" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white font-mono", children: formatDateTime(selectedTestRunData.runAt) })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Betrag" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white font-mono", children: selectedTestRunData.amount ? `${selectedTestRunData.amount} €` : "-" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400", children: "Intervall" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white", children: formatInterval(selectedTestRunData.interval) })
             ] })
           ] }) }) })
         ] }),

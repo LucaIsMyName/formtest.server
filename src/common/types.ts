@@ -111,6 +111,8 @@ export interface TestRun {
   durationMs?: number;
   isScheduled?: boolean;
   notes?: string;
+  amount?: string;    // Test amount in EUR
+  interval?: string;  // Test interval (0=one-time, 1=monthly, etc.)
   runAt: Date;
 }
 

@@ -652,6 +652,26 @@ function migrateTestRunScheduled() {
     console.error("Database: Test run scheduled migration error:", error);
   }
 }
+function migrateTestRunAmountInterval() {
+  console.log("Database: Checking for test_runs amount/interval columns...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasAmount = columns.some((col) => col.name === "amount");
+    const hasInterval = columns.some((col) => col.name === "interval");
+    if (!hasAmount) {
+      console.log("Database: Adding amount column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN amount TEXT");
+      console.log("Database: Amount column added to test_runs");
+    }
+    if (!hasInterval) {
+      console.log("Database: Adding interval column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN interval TEXT");
+      console.log("Database: Interval column added to test_runs");
+    }
+  } catch (error) {
+    console.error("Database: Test run amount/interval migration error:", error);
+  }
+}
 function migrateFormFieldMappings() {
   console.log("Database: Checking for forms fieldMappings column...");
   try {
@@ -891,6 +911,7 @@ function initDatabase() {
   migrateTestScheduleIcon();
   migrateIconColumns();
   migrateFormFieldMappings();
+  migrateTestRunAmountInterval();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
   });
@@ -1347,7 +1368,7 @@ const testRunQueries = {
       isScheduled: Boolean(row.isScheduled)
     }));
   },
-  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
+  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0, testRun.amount, testRun.interval),
   updateStatus: (id, status, errorMessage, durationMs, steps, screenshotPath) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ?, screenshotPath = ? WHERE id = ? AND status != 'STOPPED'");
     return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), screenshotPath || null, id);
@@ -2492,7 +2513,9 @@ async function createAndRunTest(formId, paymentMethodId) {
       screenshotPath: void 0,
       errorMessage: void 0,
       durationMs: void 0,
-      isScheduled: true
+      isScheduled: true,
+      amount: settingsMap["default_donation_amount"] || "5",
+      interval: settingsMap["default_interval"] || "0"
     });
     const testRunId = testRun.lastInsertRowid;
     const testQueue = getTestQueue();
@@ -2905,7 +2928,9 @@ async function handleRequest(req, res) {
             logDetails: void 0,
             steps: [],
             durationMs: void 0,
-            isScheduled: false
+            isScheduled: false,
+            amount: settingsMap["default_donation_amount"] || "5",
+            interval: settingsMap["default_interval"] || "0"
           });
           const testId = result.lastInsertRowid;
           testIds.push(testId);
@@ -3230,7 +3255,9 @@ function setupIpcHandlers() {
             screenshotPath: void 0,
             errorMessage: void 0,
             durationMs: void 0,
-            isScheduled: false
+            isScheduled: false,
+            amount: settingsMap["default_donation_amount"] || "5",
+            interval: settingsMap["default_donation_interval"] || settingsMap["default_interval"] || "0"
           });
           testRunIds.push(testRun.lastInsertRowid);
           const testQueue = getTestQueue();

@@ -1,7 +1,7 @@
-import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Globe, a6 as Database, a7 as Mail, a8 as Sun, a9 as SlidersVertical, aa as Copy, ab as RefreshCw, ac as Moon, ad as Monitor, t as Checkbox } from "./index-DzJQkFUp.js";
+import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Shield, a6 as Globe, a7 as Database, a8 as Mail, a9 as Sun, aa as SlidersVertical, ab as Lock, ac as Copy, ad as RefreshCw, ae as Moon, af as Monitor, t as Checkbox } from "./index-CTVVHBwu.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CT2F7wj8.js";
-import { S as Skeleton } from "./Skeleton-CKxsIkDq.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-ChBIEGJW.js";
+import { S as Skeleton } from "./Skeleton-BnszPCiR.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -1196,11 +1196,19 @@ const Settings = () => {
   const [isDeleting, setIsDeleting] = reactExports.useState(false);
   const [searchTerm, setSearchTerm] = reactExports.useState("");
   const [categoryFilter, setCategoryFilter] = reactExports.useState(void 0);
-  const [apiEnabled, setApiEnabled] = reactExports.useState(false);
   const [apiPort, setApiPort] = reactExports.useState("3847");
   const [apiKey, setApiKey] = reactExports.useState("");
   const [apiServerRunning, setApiServerRunning] = reactExports.useState(false);
   const [apiStatusMessage, setApiStatusMessage] = reactExports.useState(null);
+  const [passwordEnabled, setPasswordEnabled] = reactExports.useState(false);
+  const [newPassword, setNewPassword] = reactExports.useState("");
+  const [confirmPassword, setConfirmPassword] = reactExports.useState("");
+  const [currentPassword, setCurrentPassword] = reactExports.useState("");
+  const [passwordMessage, setPasswordMessage] = reactExports.useState(null);
+  const [isSettingPassword, setIsSettingPassword] = reactExports.useState(false);
+  const [showNewPassword, setShowNewPassword] = reactExports.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = reactExports.useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = reactExports.useState(false);
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
@@ -1220,7 +1228,6 @@ const Settings = () => {
     settings.forEach((setting) => {
       switch (setting.key) {
         case "api_enabled":
-          setApiEnabled(setting.value === "true");
           break;
         case "api_port":
           setApiPort(setting.value);
@@ -1231,6 +1238,17 @@ const Settings = () => {
       }
     });
   }, [settings]);
+  reactExports.useEffect(() => {
+    const checkPasswordStatus = async () => {
+      try {
+        const isEnabled = await window.api.password.isEnabled();
+        setPasswordEnabled(isEnabled);
+      } catch (error_1) {
+        console.error("Failed to check password status:", error_1);
+      }
+    };
+    checkPasswordStatus();
+  }, []);
   const applyTheme = (themeValue) => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
@@ -1305,7 +1323,7 @@ const Settings = () => {
       const api_0 = window.api;
       const result = await api_0.email.testConnection();
       setEmailTestResult(result);
-    } catch (error_1) {
+    } catch (error_2) {
       setEmailTestResult({
         success: false,
         message: "Fehler beim Senden"
@@ -1324,7 +1342,7 @@ const Settings = () => {
       } else {
         setExportMessage(`Export fehlgeschlagen`);
       }
-    } catch (error_2) {
+    } catch (error_3) {
       setExportMessage("Export fehlgeschlagen");
     } finally {
       setIsExporting(false);
@@ -1341,7 +1359,7 @@ const Settings = () => {
           loadSettings();
         }
       }
-    } catch (error_3) {
+    } catch (error_4) {
       setImportResult({
         success: false,
         imported: {
@@ -1385,11 +1403,11 @@ const Settings = () => {
           message: "Kein Key generiert"
         });
       }
-    } catch (error_4) {
-      console.error("Error generating API key:", error_4);
+    } catch (error_5) {
+      console.error("Error generating API key:", error_5);
       setApiStatusMessage({
         type: "error",
-        message: `Fehler: ${error_4 instanceof Error ? error_4.message : "Unbekannt"}`
+        message: `Fehler: ${error_5 instanceof Error ? error_5.message : "Unbekannt"}`
       });
     }
   }, [updateSetting]);
@@ -1410,7 +1428,6 @@ const Settings = () => {
         const result_2 = await api_2.apiServer.stop();
         if (result_2.success) {
           setApiServerRunning(false);
-          setApiEnabled(false);
           await updateSetting("api_enabled", "false", "API aktiviert");
           setApiStatusMessage({
             type: "success",
@@ -1434,7 +1451,6 @@ const Settings = () => {
         const result_3 = await api_2.apiServer.start(port, apiKey);
         if (result_3.success) {
           setApiServerRunning(true);
-          setApiEnabled(true);
           await updateSetting("api_enabled", "true", "API aktiviert");
           await updateSetting("api_port", String(port), "API Port");
           setApiStatusMessage({
@@ -1449,13 +1465,96 @@ const Settings = () => {
         }
       }
       setTimeout(() => setApiStatusMessage(null), 3e3);
-    } catch (error_5) {
+    } catch (error_6) {
       setApiStatusMessage({
         type: "error",
         message: "Unerwarteter Fehler"
       });
     }
   }, [apiServerRunning, apiKey, apiPort, updateSetting]);
+  const handleSetPassword = reactExports.useCallback(async () => {
+    if (!newPassword) {
+      setPasswordMessage({
+        type: "error",
+        message: "Bitte Passwort eingeben"
+      });
+      return;
+    }
+    if (newPassword.length < 4) {
+      setPasswordMessage({
+        type: "error",
+        message: "Passwort muss mindestens 4 Zeichen haben"
+      });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage({
+        type: "error",
+        message: "Passwörter stimmen nicht überein"
+      });
+      return;
+    }
+    setIsSettingPassword(true);
+    try {
+      const result_4 = await window.api.password.set(newPassword);
+      if (result_4.success) {
+        setPasswordEnabled(true);
+        setNewPassword("");
+        setConfirmPassword("");
+        setPasswordMessage({
+          type: "success",
+          message: "Master-Passwort aktiviert"
+        });
+      } else {
+        setPasswordMessage({
+          type: "error",
+          message: result_4.error || "Fehler beim Setzen"
+        });
+      }
+    } catch (error_7) {
+      setPasswordMessage({
+        type: "error",
+        message: "Unerwarteter Fehler"
+      });
+    } finally {
+      setIsSettingPassword(false);
+      setTimeout(() => setPasswordMessage(null), 3e3);
+    }
+  }, [newPassword, confirmPassword]);
+  const handleDisablePassword = reactExports.useCallback(async () => {
+    if (!currentPassword) {
+      setPasswordMessage({
+        type: "error",
+        message: "Bitte aktuelles Passwort eingeben"
+      });
+      return;
+    }
+    setIsSettingPassword(true);
+    try {
+      const result_5 = await window.api.password.disable(currentPassword);
+      if (result_5.success) {
+        setPasswordEnabled(false);
+        setCurrentPassword("");
+        setPasswordMessage({
+          type: "success",
+          message: "Master-Passwort deaktiviert"
+        });
+      } else {
+        setPasswordMessage({
+          type: "error",
+          message: result_5.error || "Falsches Passwort"
+        });
+      }
+    } catch (error_8) {
+      setPasswordMessage({
+        type: "error",
+        message: "Unerwarteter Fehler"
+      });
+    } finally {
+      setIsSettingPassword(false);
+      setTimeout(() => setPasswordMessage(null), 3e3);
+    }
+  }, [currentPassword]);
   const settingsItems = reactExports.useMemo(() => [
     // Test Settings
     {
@@ -1800,8 +1899,18 @@ const Settings = () => {
       description: "Authentifizierungs-Key für API-Zugriffe",
       type: "api-key",
       value: apiKey
+    },
+    // Security
+    {
+      id: "master_password",
+      category: "security",
+      name: "Master-Passwort",
+      description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen",
+      type: "password",
+      value: "",
+      fullWidth: true
     }
-  ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer]);
+  ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled]);
   const filteredSettings = reactExports.useMemo(() => {
     return settingsItems.filter((item) => {
       const matchesSearch = !searchTerm || item.name.toLowerCase().includes(searchTerm.toLowerCase()) || item.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -1936,8 +2045,8 @@ const Settings = () => {
           break;
       }
       setDeleteConfirmation(null);
-    } catch (error_6) {
-      console.error("Delete failed:", error_6);
+    } catch (error_9) {
+      console.error("Delete failed:", error_9);
     } finally {
       setIsDeleting(false);
     }
@@ -1956,6 +2065,8 @@ const Settings = () => {
         return "Selektoren";
       case "api":
         return "API";
+      case "security":
+        return "Sicherheit";
       default:
         return category;
     }
@@ -1974,6 +2085,8 @@ const Settings = () => {
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Code, { size: 14, className: "text-cyan-500" });
       case "api":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 14, className: "text-orange-500" });
+      case "security":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { size: 14, className: "text-red-500" });
       default:
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Settings2, { size: 14 });
     }
@@ -1982,7 +2095,7 @@ const Settings = () => {
     const isDisabled = isLoading || item_0.disabled;
     switch (item_0.type) {
       case "input":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: item_0.id.includes("port") || item_0.id.includes("timeout") || item_0.id.includes("amount") ? "number" : item_0.id.includes("pass") ? "password" : "text", value: item_0.value, onChange: (e) => handleSettingChange(item_0.id, e.target.value), onBlur: () => handleSettingBlur(item_0.id), className: `h-7 text-xs w-full ${isDisabled ? "opacity-50" : ""}`, disabled: isDisabled });
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: item_0.id.includes("port") || item_0.id.includes("timeout") || item_0.id.includes("amount") ? "number" : item_0.id.includes("pass") ? "password" : "text", value: item_0.value, onChange: (e_2) => handleSettingChange(item_0.id, e_2.target.value), onBlur: () => handleSettingBlur(item_0.id), className: `h-7 text-xs w-full ${isDisabled ? "opacity-50" : ""}`, disabled: isDisabled });
       case "select":
         return /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: item_0.value, onValueChange: (v) => handleSettingChange(item_0.id, v), disabled: isDisabled, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { className: `h-7 text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) }),
@@ -2020,6 +2133,49 @@ const Settings = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: handleCopyApiKey, disabled: !item_0.value, className: "text-xs h-7 px-2", title: "Kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: handleGenerateApiKey, className: "text-xs h-7 px-2", title: "Neuen Key generieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 12 }) })
         ] });
+      case "password":
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-gray-400"}` }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm text-gray-600 dark:text-gray-400", children: passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv" })
+          ] }),
+          passwordEnabled ? (
+            // Disable password form
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Lock, { size: 14 }),
+                "Passwortschutz deaktivieren"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: showCurrentPassword ? "text" : "password", value: currentPassword, onChange: (e) => setCurrentPassword(e.target.value), placeholder: "Aktuelles Passwort", className: "h-9 pr-10" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowCurrentPassword(!showCurrentPassword), className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", children: showCurrentPassword ? /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { size: 16 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { size: 16 }) })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "danger", size: "sm", onClick: handleDisablePassword, disabled: isSettingPassword || !currentPassword, isLoading: isSettingPassword, className: "w-full justify-center", children: "Deaktivieren" })
+            ] })
+          ) : (
+            // Set password form
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Shield, { size: 14 }),
+                "Passwortschutz aktivieren"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: showNewPassword ? "text" : "password", value: newPassword, onChange: (e_0) => setNewPassword(e_0.target.value), placeholder: "Neues Passwort (min. 4 Zeichen)", className: "h-9 pr-10" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowNewPassword(!showNewPassword), className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", children: showNewPassword ? /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { size: 16 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { size: 16 }) })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: showConfirmPassword ? "text" : "password", value: confirmPassword, onChange: (e_1) => setConfirmPassword(e_1.target.value), placeholder: "Passwort bestätigen", className: "h-9 pr-10" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowConfirmPassword(!showConfirmPassword), className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", children: showConfirmPassword ? /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { size: 16 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { size: 16 }) })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "primary", size: "sm", onClick: handleSetPassword, disabled: isSettingPassword || !newPassword || !confirmPassword, isLoading: isSettingPassword, className: "w-full justify-center", children: "Aktivieren" })
+            ] })
+          ),
+          passwordMessage && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `flex items-center gap-2 text-sm ${passwordMessage.type === "success" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`, children: [
+            passwordMessage.type === "success" ? /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { size: 14 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 14 }),
+            passwordMessage.message
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400", children: "Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset" })
+        ] });
       default:
         return null;
     }
@@ -2055,6 +2211,9 @@ const Settings = () => {
       }, {
         value: "api",
         label: "API"
+      }, {
+        value: "security",
+        label: "Sicherheit"
       }], statusLabel: "Kategorie", onClear: () => {
         setSearchTerm("");
         setCategoryFilter(void 0);

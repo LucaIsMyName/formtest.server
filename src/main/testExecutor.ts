@@ -123,6 +123,8 @@ export async function createAndRunTest(formId: number, paymentMethodId: number) 
       errorMessage: undefined,
       durationMs: undefined,
       isScheduled: true,
+      amount: settingsMap['default_donation_amount'] || '5',
+      interval: settingsMap['default_interval'] || '0',
     });
 
     const testRunId = testRun.lastInsertRowid as number;

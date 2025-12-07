@@ -46,6 +46,19 @@ const formatElapsedTime = (seconds: number): string => {
   return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
 };
 
+// Format interval value to human-readable text
+const formatInterval = (interval: string | undefined): string => {
+  if (!interval) return "-";
+  switch (interval) {
+    case "0": return "Einmalig";
+    case "1": return "Monatlich";
+    case "3": return "Quartal";
+    case "6": return "Halbjahr";
+    case "12": return "Jährlich";
+    default: return interval;
+  }
+};
+
 // Separate component for the timer cell - only this re-renders every second
 const RunningTimer: React.FC<{ runAt: Date | string; isRunning: boolean }> = memo(({ runAt, isRunning }) => {
   const [elapsed, setElapsed] = useState(() => {
@@ -748,6 +761,8 @@ const TestResults: React.FC = () => {
                     <TableHead className="px-4 w-[70px] text-left"><Bot size={14} className="inline" /></TableHead>
                     <TableHead className="px-4 min-w-[160px]">Formular</TableHead>
                     <TableHead className="px-4 min-w-[160px]">Bezahlmethode</TableHead>
+                    <TableHead className="px-4 w-[80px]">Betrag</TableHead>
+                    <TableHead className="px-4 w-[100px]">Intervall</TableHead>
                     <TableHead className="px-4 w-[150px]">Gestartet</TableHead>
                     <TableHead className="px-4 w-[70px]">Dauer</TableHead>
                     <TableHead className="px-4 w-[90px]">Status</TableHead>
@@ -812,6 +827,12 @@ const TestResults: React.FC = () => {
                               {testRun.paymentMethodName}
                             </div>
                           </div>
+                        </TableCell>
+                        <TableCell className="px-4 text-xs font-mono text-gray-600 dark:text-gray-400">
+                          {testRun.amount ? `${testRun.amount} €` : "-"}
+                        </TableCell>
+                        <TableCell className="px-4 text-xs text-gray-600 dark:text-gray-400">
+                          {formatInterval(testRun.interval)}
                         </TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4">
@@ -935,6 +956,18 @@ const TestResults: React.FC = () => {
                       Bezahlmethode
                     </SortableTableHead>
                     <SortableTableHead
+                      className="px-4 w-[80px]"
+                      sortDirection={getSortDirection("amount")}
+                      onSort={() => requestSort("amount")}>
+                      Betrag
+                    </SortableTableHead>
+                    <SortableTableHead
+                      className="px-4 w-[100px]"
+                      sortDirection={getSortDirection("interval")}
+                      onSort={() => requestSort("interval")}>
+                      Intervall
+                    </SortableTableHead>
+                    <SortableTableHead
                       className="px-4 w-[150px]"
                       sortDirection={getSortDirection("runAt")}
                       onSort={() => requestSort("runAt")}>
@@ -1019,6 +1052,12 @@ const TestResults: React.FC = () => {
                               {testRun.paymentMethodName}
                             </div>
                           </div>
+                        </TableCell>
+                        <TableCell className="px-4 text-xs font-mono text-gray-600 dark:text-gray-400">
+                          {testRun.amount ? `${testRun.amount} €` : "-"}
+                        </TableCell>
+                        <TableCell className="px-4 text-xs text-gray-600 dark:text-gray-400">
+                          {formatInterval(testRun.interval)}
                         </TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
@@ -1188,6 +1227,14 @@ const TestResults: React.FC = () => {
                         <TableRow>
                           <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Zeitpunkt</TableCell>
                           <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(selectedTestRunData.runAt)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Betrag</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{selectedTestRunData.amount ? `${selectedTestRunData.amount} €` : "-"}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Intervall</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{formatInterval(selectedTestRunData.interval)}</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>

@@ -199,6 +199,8 @@ export function setupIpcHandlers(): void {
             errorMessage: undefined,
             durationMs: undefined,
             isScheduled: false,
+            amount: settingsMap['default_donation_amount'] || '5',
+            interval: settingsMap['default_donation_interval'] || settingsMap['default_interval'] || '0',
           });
 
           testRunIds.push(testRun.lastInsertRowid as number);

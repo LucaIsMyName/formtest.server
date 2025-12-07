@@ -211,6 +211,33 @@ function migrateTestRunScheduled(): void {
 }
 
 /**
+ * Migrate test_runs table to add amount and interval columns
+ */
+function migrateTestRunAmountInterval(): void {
+  console.log("Database: Checking for test_runs amount/interval columns...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasAmount = columns.some(col => col.name === 'amount');
+    const hasInterval = columns.some(col => col.name === 'interval');
+    
+    if (!hasAmount) {
+      console.log("Database: Adding amount column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN amount TEXT");
+      console.log("Database: Amount column added to test_runs");
+    }
+    
+    if (!hasInterval) {
+      console.log("Database: Adding interval column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN interval TEXT");
+      console.log("Database: Interval column added to test_runs");
+    }
+  } catch (error) {
+    console.error("Database: Test run amount/interval migration error:", error);
+  }
+}
+
+/**
  * Migrate forms table to add fieldMappings column
  */
 function migrateFormFieldMappings(): void {
@@ -522,6 +549,9 @@ export function initDatabase(): void {
   
   // Migrate form fieldMappings column
   migrateFormFieldMappings();
+  
+  // Migrate test run amount/interval columns
+  migrateTestRunAmountInterval();
   
   // Migrate existing unencrypted payment methods
   migratePaymentMethodEncryption().catch((error) => {
@@ -1080,7 +1110,7 @@ export const testRunQueries = {
       isScheduled: Boolean(row.isScheduled)
     })) as TestRun[];
   },
-  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
+  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0, testRun.amount, testRun.interval),
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"], screenshotPath?: string) => {
     // Don't overwrite STOPPED status - if a test was manually stopped, keep that status
     // This prevents the runner from changing STOPPED to FAILURE when it eventually completes

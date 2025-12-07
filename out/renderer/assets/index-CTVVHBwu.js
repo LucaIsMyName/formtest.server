@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-w2eBIvPC.js","./app.config-b2lfEN4K.js","./Skeleton-CKxsIkDq.js","./Forms-DIxDs5Bt.js","./MiniSparkline-8nKLp5MJ.js","./useTableSelection-DvrD0Ws3.js","./TableFilter-CT2F7wj8.js","./PaymentMethods-BanfFu-b.js","./Settings-CL8OXrnC.js","./TestResults-Bz3NGDB3.js","./Schedules-CdswGPvn.js","./Legal-DmciM84c.js","./Docs-CjaQ0vxh.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-lPFtu_hl.js","./app.config-b2lfEN4K.js","./Skeleton-BnszPCiR.js","./Forms-CAbQhbb8.js","./MiniSparkline-COit6sJq.js","./useTableSelection-DDYSRM-X.js","./TableFilter-ChBIEGJW.js","./PaymentMethods-C3vJ51nK.js","./Settings-mNh7460C.js","./TestResults-C4we_YNj.js","./Schedules-BxxEPe29.js","./Legal-B0s8GPk0.js","./Docs-DVGO04iI.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -61570,19 +61570,133 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-w2eBIvPC.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-DIxDs5Bt.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-BanfFu-b.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-CL8OXrnC.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-Bz3NGDB3.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-CdswGPvn.js"), true ? __vite__mapDeps([10,1,5,6,2,4]) : void 0, import.meta.url));
-const Legal = reactExports.lazy(() => __vitePreload(() => import("./Legal-DmciM84c.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
-const Docs = reactExports.lazy(() => __vitePreload(() => import("./Docs-CjaQ0vxh.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const LockScreen = ({
+  onUnlock
+}) => {
+  const [password, setPassword] = reactExports.useState("");
+  const [error, setError] = reactExports.useState("");
+  const [isLoading, setIsLoading] = reactExports.useState(false);
+  const [showPassword, setShowPassword] = reactExports.useState(false);
+  const [shiftHeld, setShiftHeld] = reactExports.useState(false);
+  const inputRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+  reactExports.useEffect(() => {
+    const handleKeyDown = (e2) => {
+      if (e2.key === "Shift") {
+        setShiftHeld(true);
+      }
+    };
+    const handleKeyUp = (e_0) => {
+      if (e_0.key === "Shift") {
+        setShiftHeld(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+  const handleSubmit = async (e_1) => {
+    e_1.preventDefault();
+    if (!password.trim()) {
+      setError("Bitte Passwort eingeben");
+      return;
+    }
+    setIsLoading(true);
+    setError("");
+    try {
+      const result = await window.api.password.verify(password);
+      if (result.success) {
+        onUnlock();
+      } else {
+        setError(result.error || "Falsches Passwort");
+        setPassword("");
+        inputRef.current?.focus();
+      }
+    } catch (err) {
+      setError("Fehler bei der Überprüfung");
+      console.error("Password verification error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleEmergencyReset = async () => {
+    if (!confirm("Passwortschutz wirklich deaktivieren?\n\nDies entfernt das Master-Passwort dauerhaft.")) {
+      return;
+    }
+    try {
+      const result_0 = await window.api.password.emergencyReset();
+      if (result_0.success) {
+        onUnlock();
+      } else {
+        setError("Reset fehlgeschlagen");
+      }
+    } catch (err_0) {
+      setError("Reset fehlgeschlagen");
+      console.error("Emergency reset error:", err_0);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-gray-100 dark:bg-gray-900", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 opacity-5 dark:opacity-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0", style: {
+      backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+    } }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative w-full max-w-sm mx-4", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 p-8", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-center mb-6", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Lock, { className: "w-8 h-8 text-gray-600 dark:text-gray-300" }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "text-xl font-semibold text-center text-gray-900 dark:text-white mb-2", children: "FormTest Server" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-center text-gray-500 dark:text-gray-400 mb-6", children: "Bitte Master-Passwort eingeben" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "space-y-4", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { ref: inputRef, type: showPassword ? "text" : "password", value: password, onChange: (e_2) => setPassword(e_2.target.value), placeholder: "Passwort", className: "pr-10", disabled: isLoading, autoComplete: "current-password" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: () => setShowPassword(!showPassword), className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300", tabIndex: -1, children: showPassword ? /* @__PURE__ */ jsxRuntimeExports.jsx(EyeOff, { size: 18 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(Eye, { size: 18 }) })
+          ] }),
+          error && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-sm text-red-600 dark:text-red-400", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { size: 14 }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: error })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { type: "submit", variant: "primary", size: "lg", className: "w-full justify-center", isLoading, disabled: isLoading, children: "Entsperren" })
+        ] }),
+        shiftHeld && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mt-6 pt-4 border-t border-gray-200 dark:border-gray-700", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: handleEmergencyReset, className: "w-full text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300", children: "Passwortschutz deaktivieren (Notfall-Reset)" }) })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-center text-gray-400 dark:text-gray-500 mt-4", children: "Shift gedrückt halten für Notfall-Optionen" })
+    ] })
+  ] });
+};
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-lPFtu_hl.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-CAbQhbb8.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-C3vJ51nK.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-mNh7460C.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-C4we_YNj.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-BxxEPe29.js"), true ? __vite__mapDeps([10,1,5,6,2,4]) : void 0, import.meta.url));
+const Legal = reactExports.lazy(() => __vitePreload(() => import("./Legal-B0s8GPk0.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Docs = reactExports.lazy(() => __vitePreload(() => import("./Docs-DVGO04iI.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
     loadSettings
   } = useSettingsStore();
+  const [isLocked, setIsLocked] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    const checkLockStatus = async () => {
+      try {
+        const isEnabled = await window.api.password.isEnabled();
+        if (!isEnabled) {
+          setIsLocked(false);
+          return;
+        }
+        const isUnlocked = await window.api.password.isSessionUnlocked();
+        setIsLocked(!isUnlocked);
+      } catch (error) {
+        console.error("Failed to check lock status:", error);
+        setIsLocked(false);
+      }
+    };
+    checkLockStatus();
+  }, []);
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
@@ -61602,6 +61716,12 @@ function App() {
       root.classList.add(themeValue);
     }
   };
+  if (isLocked === null) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 border-2 border-gray-300 dark:border-gray-700 border-t-transparent rounded-full animate-spin" }) });
+  }
+  if (isLocked) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(LockScreen, { onUnlock: () => setIsLocked(false) });
+  }
   return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-start ", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-col items-center gap-3", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-12 h-12 border-2 border-gray-300 dark:border-gray-700 border-6 border-t-transparent rounded-full animate-spin" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm text-gray-600 dark:text-gray-400 sr-only", children: "Loading..." })
@@ -61652,55 +61772,57 @@ export {
   React$3 as a2,
   CircleCheck as a3,
   CircleAlert as a4,
-  Globe as a5,
-  Database as a6,
-  Mail as a7,
-  Sun as a8,
-  SlidersVertical as a9,
-  DialogContent as aA,
-  Dialog as aB,
-  Root$1 as aC,
-  cn as aD,
-  Portal$1 as aE,
-  Content as aF,
-  Overlay as aG,
-  Close as aH,
-  Title as aI,
-  Description as aJ,
-  ChevronsUpDown as aK,
-  TriangleAlert as aL,
-  DialogDescription as aM,
-  DialogFooter as aN,
-  Badge as aO,
-  KEYBOARD_SHORTCUTS as aP,
-  Keyboard as aQ,
-  formatShortcut as aR,
-  Copy as aa,
-  RefreshCw as ab,
-  Moon as ac,
-  Monitor as ad,
-  LoaderCircle as ae,
-  Square as af,
-  Image as ag,
-  Maximize2 as ah,
-  ZoomOut as ai,
-  ZoomIn as aj,
-  Download as ak,
-  FileSpreadsheet as al,
-  Bot as am,
-  User as an,
-  formatDateTime as ao,
-  formatDuration as ap,
-  Link$1 as aq,
-  FileBraces as ar,
-  Clock as as,
-  CircleX as at,
-  getDefaultScheduleIcon as au,
-  useSchedulesStore as av,
-  getAllIconNames as aw,
-  DialogHeader as ax,
-  DialogTitle as ay,
-  Search as az,
+  Shield as a5,
+  Globe as a6,
+  Database as a7,
+  Mail as a8,
+  Sun as a9,
+  DialogTitle as aA,
+  Search as aB,
+  DialogContent as aC,
+  Dialog as aD,
+  Root$1 as aE,
+  cn as aF,
+  Portal$1 as aG,
+  Content as aH,
+  Overlay as aI,
+  Close as aJ,
+  Title as aK,
+  Description as aL,
+  ChevronsUpDown as aM,
+  TriangleAlert as aN,
+  DialogDescription as aO,
+  DialogFooter as aP,
+  Badge as aQ,
+  KEYBOARD_SHORTCUTS as aR,
+  Keyboard as aS,
+  formatShortcut as aT,
+  SlidersVertical as aa,
+  Lock as ab,
+  Copy as ac,
+  RefreshCw as ad,
+  Moon as ae,
+  Monitor as af,
+  LoaderCircle as ag,
+  Square as ah,
+  Image as ai,
+  Maximize2 as aj,
+  ZoomOut as ak,
+  ZoomIn as al,
+  Download as am,
+  FileSpreadsheet as an,
+  Bot as ao,
+  User as ap,
+  formatDateTime as aq,
+  formatDuration as ar,
+  Link$1 as as,
+  FileBraces as at,
+  Clock as au,
+  CircleX as av,
+  getDefaultScheduleIcon as aw,
+  useSchedulesStore as ax,
+  getAllIconNames as ay,
+  DialogHeader as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,

@@ -186,7 +186,9 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise
             logDetails: undefined,
             steps: [],
             durationMs: undefined,
-            isScheduled: false
+            isScheduled: false,
+            amount: settingsMap['default_donation_amount'] || '5',
+            interval: settingsMap['default_interval'] || '0',
           });
 
           const testId = result.lastInsertRowid as number;
