@@ -548,6 +548,10 @@ video {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
 }
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 .my-6 {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
@@ -749,6 +753,9 @@ video {
 }
 .max-h-\[90vh\] {
   max-height: 90vh;
+}
+.min-h-\[36px\] {
+  min-height: 36px;
 }
 .\!w-\[calc\(100vw-6rem\)\] {
   width: calc(100vw - 6rem) !important;
@@ -1063,6 +1070,11 @@ video {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.5rem * var(--tw-space-x-reverse));
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+.space-y-0\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.125rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.125rem * var(--tw-space-y-reverse));
 }
 .space-y-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
@@ -1580,6 +1592,9 @@ video {
 }
 .text-\[clamp\(0\.66rem\2c 1\.075vw\2c 0\.925rem\)\] {
   font-size: clamp(0.66rem,1.075vw,0.925rem);
+}
+.text-\[clamp\(0\.6rem\2c 0\.95vw\2c 0\.825rem\)\] {
+  font-size: clamp(0.6rem,0.95vw,0.825rem);
 }
 .text-\[clamp\(2rem\2c 2\.5vw\2c 2\.33rem\)\] {
   font-size: clamp(2rem,2.5vw,2.33rem);

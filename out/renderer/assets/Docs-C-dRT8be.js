@@ -1,49 +1,18 @@
-import { i as dist, as as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, at as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, au as formatShortcut } from "./index-BmL3LNRX.js";
+import { i as dist, aN as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, aO as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, aP as formatShortcut } from "./index-luwXbL62.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-const InfoDoku = () => {
-  const $ = dist.c(9);
+const Docs = () => {
+  const $ = dist.c(8);
   let t0;
   let t1;
   let t2;
   let t3;
-  let t4;
   if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
     const navigationShortcuts = KEYBOARD_SHORTCUTS.filter(_temp);
     const actionShortcuts = KEYBOARD_SHORTCUTS.filter(_temp2);
     const generalShortcuts = KEYBOARD_SHORTCUTS.filter(_temp3);
     t0 = "max-w-4xl";
-    t1 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Info & Doku" });
-    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "select-auto my-6", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Impressum" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-          "Luca Mack",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          "Lorystrasse 71",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          "1110 Wien",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          "Österreich"
-        ] }) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "my-6", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Lizenz & Rechtliches" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-4", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2", children: "MIT License" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "mb-2", children: "Copyright (c) 2025 Luca Mack" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed", children: 'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:' }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2", children: "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed mt-2 font-semibold", children: 'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.' })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "py-4 border-t border-gray-200 dark:border-gray-700", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "font-semibold text-lg mb-2", children: "Haftungsausschluss" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm leading-relaxed", children: "Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko." })
-          ] })
-        ] })
-      ] })
-    ] });
-    t3 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-auto border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6", children: [
+    t1 = /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Dokumentation" });
+    t2 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-auto border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 my-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Benutzer-Dokumentation" }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6 text-gray-700 dark:text-gray-300", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
@@ -258,7 +227,7 @@ const InfoDoku = () => {
         ] })
       ] })
     ] });
-    t4 = /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "my-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6", children: [
+    t3 = /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "my-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Keyboard, { size: 18, className: "text-white" }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white", children: "Tastenkürzel" })
@@ -299,47 +268,44 @@ const InfoDoku = () => {
     $[1] = t1;
     $[2] = t2;
     $[3] = t3;
-    $[4] = t4;
   } else {
     t0 = $[0];
     t1 = $[1];
     t2 = $[2];
     t3 = $[3];
+  }
+  let t4;
+  if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
+    t4 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Version & Technologie" });
+    $[4] = t4;
+  } else {
     t4 = $[4];
   }
   let t5;
+  let t6;
   if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white mb-4", children: "Version & Technologie" });
+    t5 = /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
+      " 1.0.26"
+    ] });
+    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Tech:" }) });
     $[5] = t5;
+    $[6] = t6;
   } else {
     t5 = $[5];
-  }
-  let t6;
-  let t7;
-  if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Version:" }),
-      " 1.0.23"
-    ] });
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Tech:" }) });
-    $[6] = t6;
-    $[7] = t7;
-  } else {
     t6 = $[6];
-    t7 = $[7];
   }
-  let t8;
-  if ($[8] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t0, children: [
+  let t7;
+  if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t0, children: [
       t1,
       t2,
       t3,
-      t4,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6", children: [
-        t5,
+        t4,
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 dark:text-gray-300 space-y-2", children: [
+          t5,
           t6,
-          t7,
           /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "list-disc list-inside ml-4 text-sm space-y-1", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Electron" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "React" }),
@@ -352,11 +318,11 @@ const InfoDoku = () => {
         ] })
       ] })
     ] });
-    $[8] = t8;
+    $[7] = t7;
   } else {
-    t8 = $[8];
+    t7 = $[7];
   }
-  return t8;
+  return t7;
 };
 function _temp(s) {
   return s.category === "navigation";
@@ -386,5 +352,5 @@ function _temp6(shortcut_1, index_1) {
   ] }, index_1);
 }
 export {
-  InfoDoku as default
+  Docs as default
 };

@@ -4,7 +4,7 @@ import CustomTitleBar from "./CustomTitleBar";
 import Button from "./ui/Button";
 import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
-import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot, Scale } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
@@ -90,14 +90,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
   }, []);
 
-  const navigation = [
+  const primaryNavigation = [
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Formulare", href: "/forms", icon: FileText },
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
     { name: "Autopilot", href: "/schedules", icon: Bot },
     { name: "Tests", href: "/test-results", icon: BarChart3 },
+  ];
+
+  const secondaryNavigation = [
     { name: "Einstellungen", href: "/settings", icon: Settings },
-    { name: "Info & Doku", href: "/info-doku", icon: BookOpen },
+    { name: "Rechtliches", href: "/legal", icon: Scale },
+    { name: "Doku", href: "/docs", icon: BookOpen },
   ];
 
   return (
@@ -115,24 +119,51 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div
           className="bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
-          <nav className="flex-1 p-2">
-            {navigation.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <Button
-                  key={item.name}
-                  variant="ghost"
-                  to={item.href}
-                  className={`w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`}>
-                  <IconComponent
-                    className={`${location.pathname === item.href ? ` stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-700 dark:text-gray-400 transition-all`}
-                    size={18}
-                    strokeWidth={location.pathname === item.href ? 1.75 : 1.75}
-                  />
-                  <span style={{ fontStretch: "115%"}} className={`transition-all text-[clamp(0.66rem,1.075vw,0.925rem)] ${location.pathname === item.href ? `` : null}`}>{item.name}</span>
-                </Button>
-              );
-            })}
+          <nav className="flex-1 flex flex-col">
+            {/* Primary Navigation */}
+            <div className="space-y-0">
+              {primaryNavigation.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <Button
+                    key={item.name}
+                    variant="ghost"
+                    to={item.href}
+                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-4 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`}>
+                    <IconComponent
+                      className={`${location.pathname === item.href ? ` stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-700 dark:text-gray-400 transition-all`}
+                      size={18}
+                      strokeWidth={location.pathname === item.href ? 2 : 1.75}
+                    />
+                    <span style={{ fontStretch: "115%"}} className={`transition-all text-[clamp(0.66rem,1.075vw,0.925rem)]`}>{item.name}</span>
+                  </Button>
+                );
+              })}
+            </div>
+
+            {/* Divider */}
+            <hr className="my-0 border-gray-200 dark:border-gray-800" />
+
+            {/* Secondary Navigation */}
+            <div className="space-y-0">
+              {secondaryNavigation.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <Button
+                    key={item.name}
+                    variant="ghost"
+                    to={item.href}
+                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`}>
+                    <IconComponent
+                      className={`${location.pathname === item.href ? `stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-500 dark:text-gray-500 transition-all`}
+                      size={16}
+                      strokeWidth={location.pathname === item.href ? 1.75 : 1}
+                    />
+                    <span style={{ fontStretch: "100%"}} className={`transition-all text-[clamp(0.6rem,0.95vw,0.825rem)]`}>{item.name}</span>
+                  </Button>
+                );
+              })}
+            </div>
           </nav>
         </div>
 

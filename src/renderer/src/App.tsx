@@ -9,8 +9,9 @@ const Forms = lazy(() => import("./pages/Forms"));
 const PaymentMethods = lazy(() => import("./pages/PaymentMethods"));
 const Settings = lazy(() => import("./pages/Settings"));
 const TestResults = lazy(() => import("./pages/TestResults"));
-const InfoDoku = lazy(() => import("./pages/InfoDoku"));
 const Schedules = lazy(() => import("./pages/Schedules"));
+const Legal = lazy(() => import("./pages/Legal"));
+const Docs = lazy(() => import("./pages/Docs"));
 
 function App() {
   const { settings, loadSettings } = useSettingsStore();
@@ -77,8 +78,12 @@ function App() {
               element={<Schedules />}
             />
             <Route
-              path="/info-doku"
-              element={<InfoDoku />}
+              path="/legal"
+              element={<Legal />}
+            />
+            <Route
+              path="/docs"
+              element={<Docs />}
             />
           </Routes>
         </Suspense>

@@ -1,4 +1,4 @@
-import { i as dist, j as jsxRuntimeExports, aM as TriangleAlert, ay as DialogHeader, az as DialogTitle, aN as DialogDescription, B as Button, aO as DialogFooter, aB as DialogContent, aC as Dialog, y as Select, z as SelectTrigger, D as SelectContent, G as SelectItem, p as StatusBadge, aP as Badge, aA as Search, I as Input, X } from "./index-BmL3LNRX.js";
+import { i as dist, j as jsxRuntimeExports, aJ as TriangleAlert, av as DialogHeader, aw as DialogTitle, aK as DialogDescription, B as Button, aL as DialogFooter, ay as DialogContent, az as Dialog, y as Select, z as SelectTrigger, D as SelectContent, G as SelectItem, p as StatusBadge, aM as Badge, ax as Search, I as Input, X } from "./index-luwXbL62.js";
 const DeleteConfirmDialog = (t0) => {
   const $ = dist.c(31);
   const {
@@ -264,7 +264,7 @@ const TableFilter = (t0) => {
   }
   let t13;
   if ($[31] !== t10 || $[32] !== t11 || $[33] !== t12 || $[34] !== t9) {
-    t13 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4", children: [
+    t13 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3 mb-4 min-h-[36px]", children: [
       t9,
       t10,
       t11,

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-CMO5_K1p.js","./app.config-b2lfEN4K.js","./Skeleton-CrXQDtcG.js","./Forms-CK6e7vvB.js","./MiniSparkline-DLGHBjvs.js","./useTableSelection-COD78lcy.js","./TableFilter-2m6Jxly7.js","./PaymentMethods-wSzyNlTw.js","./Settings-P6KK8CuU.js","./TestResults-g4bVzj9M.js","./InfoDoku-CvUcVySp.js","./Schedules-DrztYPjZ.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-CW-1pU-v.js","./app.config-b2lfEN4K.js","./Skeleton-DOsbhKVY.js","./Forms-BWRtRLm7.js","./MiniSparkline-BIrzbm17.js","./useTableSelection-DurgU-II.js","./TableFilter-D6adxD0P.js","./PaymentMethods-l1dPXuT_.js","./Settings-D-LjRwHZ.js","./TestResults-BfLeYZxX.js","./Schedules-NepLSC2o.js","./Legal-C_xGmLSd.js","./Docs-C-dRT8be.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -61207,7 +61207,7 @@ function formatShortcut(shortcut) {
   return parts.join(" + ");
 }
 const Layout = (t0) => {
-  const $2 = dist.c(47);
+  const $2 = dist.c(54);
   const {
     children
   } = t0;
@@ -61394,141 +61394,190 @@ const Layout = (t0) => {
       name: "Tests",
       href: "/test-results",
       icon: ChartColumn
-    }, {
-      name: "Einstellungen",
-      href: "/settings",
-      icon: Settings$1
-    }, {
-      name: "Info & Doku",
-      href: "/info-doku",
-      icon: BookOpen
     }];
     $2[20] = t15;
   } else {
     t15 = $2[20];
   }
-  const navigation = t15;
+  const primaryNavigation = t15;
   let t16;
-  if ($2[21] !== currentTheme || $2[22] !== handleOpenSettings || $2[23] !== handleToggleTheme) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
-    $2[21] = currentTheme;
-    $2[22] = handleOpenSettings;
-    $2[23] = handleToggleTheme;
-    $2[24] = t16;
+  if ($2[21] === Symbol.for("react.memo_cache_sentinel")) {
+    t16 = [{
+      name: "Einstellungen",
+      href: "/settings",
+      icon: Settings$1
+    }, {
+      name: "Rechtliches",
+      href: "/legal",
+      icon: Scale
+    }, {
+      name: "Doku",
+      href: "/docs",
+      icon: BookOpen
+    }];
+    $2[21] = t16;
   } else {
-    t16 = $2[24];
+    t16 = $2[21];
   }
+  const secondaryNavigation = t16;
   let t17;
-  if ($2[25] === Symbol.for("react.memo_cache_sentinel")) {
-    t17 = {
-      width: "clamp(16rem, 22.5vw, 40rem)"
-    };
+  if ($2[22] !== currentTheme || $2[23] !== handleOpenSettings || $2[24] !== handleToggleTheme) {
+    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
+    $2[22] = currentTheme;
+    $2[23] = handleOpenSettings;
+    $2[24] = handleToggleTheme;
     $2[25] = t17;
   } else {
     t17 = $2[25];
   }
   let t18;
-  if ($2[26] !== location.pathname) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t17, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
+  if ($2[26] === Symbol.for("react.memo_cache_sentinel")) {
+    t18 = {
+      width: "clamp(16rem, 22.5vw, 40rem)"
+    };
+    $2[26] = t18;
+  } else {
+    t18 = $2[26];
+  }
+  let t19;
+  if ($2[27] !== location.pathname) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-0.5", children: primaryNavigation.map((item) => {
       const IconComponent = item.icon;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 1.75 : 1.75 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
           fontStretch: "115%"
-        }, className: `transition-all text-[clamp(0.66rem,1.075vw,0.925rem)] ${location.pathname === item.href ? "" : null}`, children: item.name })
+        }, className: "transition-all text-[clamp(0.66rem,1.075vw,0.925rem)]", children: item.name })
       ] }, item.name);
-    }) }) });
-    $2[26] = location.pathname;
-    $2[27] = t18;
+    }) });
+    $2[27] = location.pathname;
+    $2[28] = t19;
   } else {
-    t18 = $2[27];
-  }
-  let t19;
-  if ($2[28] !== children) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full max-w-[1240px]", children }) }) });
-    $2[28] = children;
-    $2[29] = t19;
-  } else {
-    t19 = $2[29];
+    t19 = $2[28];
   }
   let t20;
-  if ($2[30] !== t18 || $2[31] !== t19) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
-      t18,
-      t19
-    ] });
-    $2[30] = t18;
-    $2[31] = t19;
-    $2[32] = t20;
+  if ($2[29] === Symbol.for("react.memo_cache_sentinel")) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { className: "my-3 border-gray-200 dark:border-gray-700" });
+    $2[29] = t20;
   } else {
-    t20 = $2[32];
+    t20 = $2[29];
   }
   let t21;
-  if ($2[33] === Symbol.for("react.memo_cache_sentinel")) {
-    t21 = () => {
+  if ($2[30] !== location.pathname) {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-0.5", children: secondaryNavigation.map((item_0) => {
+      const IconComponent_0 = item_0.icon;
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item_0.href, className: `w-full text-left flex items-center gap-3 px-4 py-2 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item_0.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent_0, { className: `${location.pathname === item_0.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-500 dark:text-gray-500 transition-all`, size: 16, strokeWidth: location.pathname === item_0.href ? 1.75 : 1.5 }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+          fontStretch: "115%"
+        }, className: "transition-all text-[clamp(0.6rem,0.95vw,0.825rem)]", children: item_0.name })
+      ] }, item_0.name);
+    }) });
+    $2[30] = location.pathname;
+    $2[31] = t21;
+  } else {
+    t21 = $2[31];
+  }
+  let t22;
+  if ($2[32] !== t19 || $2[33] !== t21) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t18, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "flex-1 p-2 flex flex-col", children: [
+      t19,
+      t20,
+      t21
+    ] }) });
+    $2[32] = t19;
+    $2[33] = t21;
+    $2[34] = t22;
+  } else {
+    t22 = $2[34];
+  }
+  let t23;
+  if ($2[35] !== children) {
+    t23 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full max-w-[1240px]", children }) }) });
+    $2[35] = children;
+    $2[36] = t23;
+  } else {
+    t23 = $2[36];
+  }
+  let t24;
+  if ($2[37] !== t22 || $2[38] !== t23) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
+      t22,
+      t23
+    ] });
+    $2[37] = t22;
+    $2[38] = t23;
+    $2[39] = t24;
+  } else {
+    t24 = $2[39];
+  }
+  let t25;
+  if ($2[40] === Symbol.for("react.memo_cache_sentinel")) {
+    t25 = () => {
       setShowTestDialog(false);
       setPreselectAll(false);
       setPreselectedFormIds([]);
       setPreselectedPaymentMethodIds([]);
     };
-    $2[33] = t21;
+    $2[40] = t25;
   } else {
-    t21 = $2[33];
+    t25 = $2[40];
   }
-  let t22;
-  if ($2[34] !== preselectAll || $2[35] !== preselectedFormIds || $2[36] !== preselectedPaymentMethodIds || $2[37] !== showTestDialog) {
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t21, preselectAll, preselectedFormIds, preselectedPaymentMethodIds });
-    $2[34] = preselectAll;
-    $2[35] = preselectedFormIds;
-    $2[36] = preselectedPaymentMethodIds;
-    $2[37] = showTestDialog;
-    $2[38] = t22;
+  let t26;
+  if ($2[41] !== preselectAll || $2[42] !== preselectedFormIds || $2[43] !== preselectedPaymentMethodIds || $2[44] !== showTestDialog) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t25, preselectAll, preselectedFormIds, preselectedPaymentMethodIds });
+    $2[41] = preselectAll;
+    $2[42] = preselectedFormIds;
+    $2[43] = preselectedPaymentMethodIds;
+    $2[44] = showTestDialog;
+    $2[45] = t26;
   } else {
-    t22 = $2[38];
+    t26 = $2[45];
   }
-  let t23;
-  if ($2[39] === Symbol.for("react.memo_cache_sentinel")) {
-    t23 = () => setShowSearch(false);
-    $2[39] = t23;
+  let t27;
+  if ($2[46] === Symbol.for("react.memo_cache_sentinel")) {
+    t27 = () => setShowSearch(false);
+    $2[46] = t27;
   } else {
-    t23 = $2[39];
+    t27 = $2[46];
   }
-  let t24;
-  if ($2[40] !== showSearch) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t23 });
-    $2[40] = showSearch;
-    $2[41] = t24;
+  let t28;
+  if ($2[47] !== showSearch) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t27 });
+    $2[47] = showSearch;
+    $2[48] = t28;
   } else {
-    t24 = $2[41];
+    t28 = $2[48];
   }
-  let t25;
-  if ($2[42] !== t16 || $2[43] !== t20 || $2[44] !== t22 || $2[45] !== t24) {
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
-      t16,
-      t20,
-      t22,
-      t24
+  let t29;
+  if ($2[49] !== t17 || $2[50] !== t24 || $2[51] !== t26 || $2[52] !== t28) {
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
+      t17,
+      t24,
+      t26,
+      t28
     ] });
-    $2[42] = t16;
-    $2[43] = t20;
-    $2[44] = t22;
-    $2[45] = t24;
-    $2[46] = t25;
+    $2[49] = t17;
+    $2[50] = t24;
+    $2[51] = t26;
+    $2[52] = t28;
+    $2[53] = t29;
   } else {
-    t25 = $2[46];
+    t29 = $2[53];
   }
-  return t25;
+  return t29;
 };
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-CMO5_K1p.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-CK6e7vvB.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-wSzyNlTw.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-P6KK8CuU.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-g4bVzj9M.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-CvUcVySp.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DrztYPjZ.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-CW-1pU-v.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BWRtRLm7.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-l1dPXuT_.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-D-LjRwHZ.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-BfLeYZxX.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-NepLSC2o.js"), true ? __vite__mapDeps([10,1,5,6,2,4]) : void 0, import.meta.url));
+const Legal = reactExports.lazy(() => __vitePreload(() => import("./Legal-C_xGmLSd.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Docs = reactExports.lazy(() => __vitePreload(() => import("./Docs-C-dRT8be.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -61563,7 +61612,8 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "/settings", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, {}) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "/test-results", element: /* @__PURE__ */ jsxRuntimeExports.jsx(TestResults, {}) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "/schedules", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Schedules, {}) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "/info-doku", element: /* @__PURE__ */ jsxRuntimeExports.jsx(InfoDoku, {}) })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "/legal", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Legal, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route$1, { path: "/docs", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Docs, {}) })
   ] }) }) }) });
 }
 client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsxRuntimeExports.jsx(React$3.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) }) }));
@@ -61607,22 +61657,22 @@ export {
   Sun as a7,
   SlidersVertical as a8,
   Moon as a9,
-  Search as aA,
-  DialogContent as aB,
-  Dialog as aC,
-  Root$1 as aD,
-  cn as aE,
-  Portal$1 as aF,
-  Content as aG,
-  Overlay as aH,
-  Close as aI,
-  Title as aJ,
-  Description as aK,
-  ChevronsUpDown as aL,
-  TriangleAlert as aM,
-  DialogDescription as aN,
-  DialogFooter as aO,
-  Badge as aP,
+  Root$1 as aA,
+  cn as aB,
+  Portal$1 as aC,
+  Content as aD,
+  Overlay as aE,
+  Close as aF,
+  Title as aG,
+  Description as aH,
+  ChevronsUpDown as aI,
+  TriangleAlert as aJ,
+  DialogDescription as aK,
+  DialogFooter as aL,
+  Badge as aM,
+  KEYBOARD_SHORTCUTS as aN,
+  Keyboard as aO,
+  formatShortcut as aP,
   Monitor as aa,
   LoaderCircle as ab,
   Square as ac,
@@ -61641,14 +61691,14 @@ export {
   FileBraces as ap,
   Clock as aq,
   CircleX as ar,
-  KEYBOARD_SHORTCUTS as as,
-  Keyboard as at,
-  formatShortcut as au,
-  getDefaultScheduleIcon as av,
-  useSchedulesStore as aw,
-  getAllIconNames as ax,
-  DialogHeader as ay,
-  DialogTitle as az,
+  getDefaultScheduleIcon as as,
+  useSchedulesStore as at,
+  getAllIconNames as au,
+  DialogHeader as av,
+  DialogTitle as aw,
+  Search as ax,
+  DialogContent as ay,
+  Dialog as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,
