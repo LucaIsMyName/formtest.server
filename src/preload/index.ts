@@ -154,6 +154,24 @@ const api = {
       ipcRenderer.invoke('api:status'),
     generateKey: (): Promise<string> => 
       ipcRenderer.invoke('api:generateKey')
+  },
+
+  // Master Password operations
+  password: {
+    isEnabled: (): Promise<boolean> => 
+      ipcRenderer.invoke('password:isEnabled'),
+    isSessionUnlocked: (): Promise<boolean> => 
+      ipcRenderer.invoke('password:isSessionUnlocked'),
+    verify: (password: string): Promise<{ success: boolean; error?: string }> => 
+      ipcRenderer.invoke('password:verify', password),
+    set: (password: string): Promise<{ success: boolean; error?: string }> => 
+      ipcRenderer.invoke('password:set', password),
+    change: (currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> => 
+      ipcRenderer.invoke('password:change', currentPassword, newPassword),
+    disable: (currentPassword: string): Promise<{ success: boolean; error?: string }> => 
+      ipcRenderer.invoke('password:disable', currentPassword),
+    emergencyReset: (): Promise<{ success: boolean; error?: string }> => 
+      ipcRenderer.invoke('password:emergencyReset')
   }
 }
 

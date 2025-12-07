@@ -116,6 +116,16 @@ const api = {
     stop: () => electron.ipcRenderer.invoke("api:stop"),
     status: () => electron.ipcRenderer.invoke("api:status"),
     generateKey: () => electron.ipcRenderer.invoke("api:generateKey")
+  },
+  // Master Password operations
+  password: {
+    isEnabled: () => electron.ipcRenderer.invoke("password:isEnabled"),
+    isSessionUnlocked: () => electron.ipcRenderer.invoke("password:isSessionUnlocked"),
+    verify: (password) => electron.ipcRenderer.invoke("password:verify", password),
+    set: (password) => electron.ipcRenderer.invoke("password:set", password),
+    change: (currentPassword, newPassword) => electron.ipcRenderer.invoke("password:change", currentPassword, newPassword),
+    disable: (currentPassword) => electron.ipcRenderer.invoke("password:disable", currentPassword),
+    emergencyReset: () => electron.ipcRenderer.invoke("password:emergencyReset")
   }
 };
 if (process.contextIsolated) {

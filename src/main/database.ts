@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import { app } from "electron";
 import { join } from "path";
-import { randomUUID } from "crypto";
+import { randomUUID, scryptSync, randomBytes, timingSafeEqual } from "crypto";
 import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult, GlobalFieldDefaults } from "../common/types";
 import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 import { SELECTOR_CONFIG, mergeSelectorsConfig, type SelectorOverride, type SelectorConfig } from "../common/selectors.config";
@@ -957,6 +957,100 @@ export const settingsQueries = {
       value,
       'Global default field values that override Faker.js'
     );
+  },
+};
+
+// Password management using Node's built-in crypto
+const SALT_LENGTH = 32;
+const KEY_LENGTH = 64;
+
+function hashPassword(password: string): string {
+  const salt = randomBytes(SALT_LENGTH).toString('hex');
+  const hash = scryptSync(password, salt, KEY_LENGTH).toString('hex');
+  return `${salt}:${hash}`;
+}
+
+function verifyPassword(password: string, storedHash: string): boolean {
+  try {
+    const [salt, hash] = storedHash.split(':');
+    if (!salt || !hash) return false;
+    const hashBuffer = Buffer.from(hash, 'hex');
+    const suppliedHashBuffer = scryptSync(password, salt, KEY_LENGTH);
+    return timingSafeEqual(hashBuffer, suppliedHashBuffer);
+  } catch {
+    return false;
+  }
+}
+
+// Session state - tracks if password has been verified this session
+let sessionUnlocked = false;
+
+export const passwordQueries = {
+  /** Check if master password is enabled */
+  isEnabled: (): boolean => {
+    const setting = settingsQueries.get('master_password_enabled');
+    return setting?.value === 'true';
+  },
+  
+  /** Get the stored password hash */
+  getHash: (): string | null => {
+    const setting = settingsQueries.get('master_password_hash');
+    return setting?.value || null;
+  },
+  
+  /** Set master password (hashes it before storing) */
+  setPassword: (password: string): void => {
+    const hash = hashPassword(password);
+    settingsQueries.set('master_password_hash', hash, 'Hashed master password');
+    settingsQueries.set('master_password_enabled', 'true', 'Master password protection enabled');
+  },
+  
+  /** Verify password against stored hash */
+  verify: (password: string): boolean => {
+    const storedHash = passwordQueries.getHash();
+    if (!storedHash) return false;
+    const isValid = verifyPassword(password, storedHash);
+    if (isValid) {
+      sessionUnlocked = true;
+    }
+    return isValid;
+  },
+  
+  /** Disable master password (requires current password verification first) */
+  disable: (currentPassword: string): boolean => {
+    if (!passwordQueries.verify(currentPassword)) {
+      return false;
+    }
+    settingsQueries.set('master_password_enabled', 'false', 'Master password protection disabled');
+    settingsQueries.set('master_password_hash', '', 'Cleared password hash');
+    return true;
+  },
+  
+  /** Change password (requires current password verification first) */
+  changePassword: (currentPassword: string, newPassword: string): boolean => {
+    if (!passwordQueries.verify(currentPassword)) {
+      return false;
+    }
+    const hash = hashPassword(newPassword);
+    settingsQueries.set('master_password_hash', hash, 'Hashed master password');
+    return true;
+  },
+  
+  /** Check if session is unlocked */
+  isSessionUnlocked: (): boolean => {
+    return sessionUnlocked;
+  },
+  
+  /** Reset session (for testing or manual lock) */
+  lockSession: (): void => {
+    sessionUnlocked = false;
+  },
+  
+  /** Unlock session without password (emergency reset - hold Shift on startup) */
+  emergencyReset: (): void => {
+    settingsQueries.set('master_password_enabled', 'false', 'Master password protection disabled');
+    settingsQueries.set('master_password_hash', '', 'Cleared password hash');
+    sessionUnlocked = true;
   },
 };
 

@@ -1,7 +1,7 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig } from "./database";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries } from "./database";
 import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults } from "../common/types";
 import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
@@ -507,5 +507,64 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("api:generateKey", () => {
     return generateApiKey();
+  });
+
+  // Master Password handlers
+  ipcMain.handle("password:isEnabled", () => {
+    return passwordQueries.isEnabled();
+  });
+
+  ipcMain.handle("password:isSessionUnlocked", () => {
+    return passwordQueries.isSessionUnlocked();
+  });
+
+  ipcMain.handle("password:verify", (_, password: string) => {
+    try {
+      const isValid = passwordQueries.verify(password);
+      return { success: isValid, error: isValid ? undefined : "Falsches Passwort" };
+    } catch (error) {
+      console.error("IPC Error - password:verify:", error);
+      return { success: false, error: "Fehler bei der Passwort-Überprüfung" };
+    }
+  });
+
+  ipcMain.handle("password:set", (_, password: string) => {
+    try {
+      passwordQueries.setPassword(password);
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - password:set:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+
+  ipcMain.handle("password:change", (_, currentPassword: string, newPassword: string) => {
+    try {
+      const success = passwordQueries.changePassword(currentPassword, newPassword);
+      return { success, error: success ? undefined : "Aktuelles Passwort ist falsch" };
+    } catch (error) {
+      console.error("IPC Error - password:change:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+
+  ipcMain.handle("password:disable", (_, currentPassword: string) => {
+    try {
+      const success = passwordQueries.disable(currentPassword);
+      return { success, error: success ? undefined : "Passwort ist falsch" };
+    } catch (error) {
+      console.error("IPC Error - password:disable:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+
+  ipcMain.handle("password:emergencyReset", () => {
+    try {
+      passwordQueries.emergencyReset();
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - password:emergencyReset:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
   });
 }

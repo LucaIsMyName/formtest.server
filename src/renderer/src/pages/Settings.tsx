@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
-import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code, Globe, Copy, RefreshCw } from "lucide-react";
+import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code, Globe, Copy, RefreshCw, Lock, Eye, EyeOff, Shield } from "lucide-react";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
@@ -17,10 +17,10 @@ import { TableFilter } from "../components/ui/TableFilter";
 // Setting item interface
 interface SettingItem {
   id: string;
-  category: "test" | "ui" | "email" | "data" | "selectors" | "api";
+  category: "test" | "ui" | "email" | "data" | "selectors" | "api" | "security";
   name: string;
   description: string;
-  type: "input" | "select" | "checkbox" | "theme" | "action" | "component" | "api-key";
+  type: "input" | "select" | "checkbox" | "theme" | "action" | "component" | "api-key" | "password";
   value: string;
   options?: { value: string; label: string }[];
   disabled?: boolean;
@@ -96,11 +96,21 @@ const Settings: React.FC = () => {
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined);
 
   // API Server state
-  const [apiEnabled, setApiEnabled] = useState(false);
   const [apiPort, setApiPort] = useState("3847");
   const [apiKey, setApiKey] = useState("");
   const [apiServerRunning, setApiServerRunning] = useState(false);
   const [apiStatusMessage, setApiStatusMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  // Master Password state
+  const [passwordEnabled, setPasswordEnabled] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [isSettingPassword, setIsSettingPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -125,7 +135,7 @@ const Settings: React.FC = () => {
     settings.forEach((setting) => {
       switch (setting.key) {
         case "api_enabled":
-          setApiEnabled(setting.value === "true");
+          // API enabled state is derived from apiServerRunning
           break;
         case "api_port":
           setApiPort(setting.value);
@@ -136,6 +146,19 @@ const Settings: React.FC = () => {
       }
     });
   }, [settings]);
+
+  // Load password status on mount
+  useEffect(() => {
+    const checkPasswordStatus = async () => {
+      try {
+        const isEnabled = await window.api.password.isEnabled();
+        setPasswordEnabled(isEnabled);
+      } catch (error) {
+        console.error("Failed to check password status:", error);
+      }
+    };
+    checkPasswordStatus();
+  }, []);
 
   // Theme application function
   const applyTheme = (themeValue: string) => {
@@ -294,7 +317,6 @@ const Settings: React.FC = () => {
         const result = await api.apiServer.stop();
         if (result.success) {
           setApiServerRunning(false);
-          setApiEnabled(false);
           await updateSetting("api_enabled", "false", "API aktiviert");
           setApiStatusMessage({ type: "success", message: "API Server gestoppt" });
         } else {
@@ -309,7 +331,6 @@ const Settings: React.FC = () => {
         const result = await api.apiServer.start(port, apiKey);
         if (result.success) {
           setApiServerRunning(true);
-          setApiEnabled(true);
           await updateSetting("api_enabled", "true", "API aktiviert");
           await updateSetting("api_port", String(port), "API Port");
           setApiStatusMessage({ type: "success", message: `API Server gestartet auf Port ${port}` });
@@ -322,6 +343,64 @@ const Settings: React.FC = () => {
       setApiStatusMessage({ type: "error", message: "Unerwarteter Fehler" });
     }
   }, [apiServerRunning, apiKey, apiPort, updateSetting]);
+
+  // Password handlers
+  const handleSetPassword = useCallback(async () => {
+    if (!newPassword) {
+      setPasswordMessage({ type: "error", message: "Bitte Passwort eingeben" });
+      return;
+    }
+    if (newPassword.length < 4) {
+      setPasswordMessage({ type: "error", message: "Passwort muss mindestens 4 Zeichen haben" });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage({ type: "error", message: "Passwörter stimmen nicht überein" });
+      return;
+    }
+
+    setIsSettingPassword(true);
+    try {
+      const result = await window.api.password.set(newPassword);
+      if (result.success) {
+        setPasswordEnabled(true);
+        setNewPassword("");
+        setConfirmPassword("");
+        setPasswordMessage({ type: "success", message: "Master-Passwort aktiviert" });
+      } else {
+        setPasswordMessage({ type: "error", message: result.error || "Fehler beim Setzen" });
+      }
+    } catch (error) {
+      setPasswordMessage({ type: "error", message: "Unerwarteter Fehler" });
+    } finally {
+      setIsSettingPassword(false);
+      setTimeout(() => setPasswordMessage(null), 3000);
+    }
+  }, [newPassword, confirmPassword]);
+
+  const handleDisablePassword = useCallback(async () => {
+    if (!currentPassword) {
+      setPasswordMessage({ type: "error", message: "Bitte aktuelles Passwort eingeben" });
+      return;
+    }
+
+    setIsSettingPassword(true);
+    try {
+      const result = await window.api.password.disable(currentPassword);
+      if (result.success) {
+        setPasswordEnabled(false);
+        setCurrentPassword("");
+        setPasswordMessage({ type: "success", message: "Master-Passwort deaktiviert" });
+      } else {
+        setPasswordMessage({ type: "error", message: result.error || "Falsches Passwort" });
+      }
+    } catch (error) {
+      setPasswordMessage({ type: "error", message: "Unerwarteter Fehler" });
+    } finally {
+      setIsSettingPassword(false);
+      setTimeout(() => setPasswordMessage(null), 3000);
+    }
+  }, [currentPassword]);
 
   // Build settings items for table
   const settingsItems: SettingItem[] = useMemo(
@@ -401,8 +480,10 @@ const Settings: React.FC = () => {
       { id: "api_toggle", category: "api", name: "API Server", description: apiServerRunning ? `Läuft auf Port ${apiPort}` : "Server starten für externe Zugriffe (CI/CD)", type: "action", value: "", actionLabel: apiServerRunning ? "Stoppen" : "Starten", action: handleToggleApiServer, actionVariant: apiServerRunning ? "danger" : "primary" },
       { id: "api_port", category: "api", name: "Port", description: "Port für den API Server (Standard: 3847)", type: "input", value: apiPort, disabled: apiServerRunning },
       { id: "api_key", category: "api", name: "API Key", description: "Authentifizierungs-Key für API-Zugriffe", type: "api-key", value: apiKey },
+      // Security
+      { id: "master_password", category: "security", name: "Master-Passwort", description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen", type: "password", value: "", fullWidth: true },
     ],
-    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer]
+    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled]
   );
 
   // Filter settings
@@ -565,6 +646,8 @@ const Settings: React.FC = () => {
         return "Selektoren";
       case "api":
         return "API";
+      case "security":
+        return "Sicherheit";
       default:
         return category;
     }
@@ -612,6 +695,13 @@ const Settings: React.FC = () => {
           <Globe
             size={14}
             className="text-orange-500"
+          />
+        );
+      case "security":
+        return (
+          <Shield
+            size={14}
+            className="text-red-500"
           />
         );
       default:
@@ -729,6 +819,116 @@ const Settings: React.FC = () => {
             </Button>
           </div>
         );
+      case "password":
+        return (
+          <div className="space-y-4">
+            {/* Status indicator */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-gray-400"}`} />
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                {passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}
+              </span>
+            </div>
+
+            {passwordEnabled ? (
+              // Disable password form
+              <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <Lock size={14} />
+                  Passwortschutz deaktivieren
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Aktuelles Passwort"
+                    className="h-9 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={handleDisablePassword}
+                  disabled={isSettingPassword || !currentPassword}
+                  isLoading={isSettingPassword}
+                  className="w-full justify-center"
+                >
+                  Deaktivieren
+                </Button>
+              </div>
+            ) : (
+              // Set password form
+              <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <Shield size={14} />
+                  Passwortschutz aktivieren
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Neues Passwort (min. 4 Zeichen)"
+                    className="h-9 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Passwort bestätigen"
+                    className="h-9 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleSetPassword}
+                  disabled={isSettingPassword || !newPassword || !confirmPassword}
+                  isLoading={isSettingPassword}
+                  className="w-full justify-center"
+                >
+                  Aktivieren
+                </Button>
+              </div>
+            )}
+
+            {/* Status message */}
+            {passwordMessage && (
+              <div className={`flex items-center gap-2 text-sm ${passwordMessage.type === "success" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+                {passwordMessage.type === "success" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                {passwordMessage.message}
+              </div>
+            )}
+
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset
+            </p>
+          </div>
+        );
       default:
         return null;
     }
@@ -773,6 +973,7 @@ const Settings: React.FC = () => {
             { value: "data", label: "Daten" },
             { value: "selectors", label: "Selektoren" },
             { value: "api", label: "API" },
+            { value: "security", label: "Sicherheit" },
           ]}
           statusLabel="Kategorie"
           onClear={() => {

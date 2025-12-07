@@ -32,9 +32,9 @@ const cron__namespace = /* @__PURE__ */ _interopNamespaceDefault(cron);
 const SERVICE_NAME = "FormTestServer";
 const ACCOUNT_NAME = "payment-encryption-key";
 const ALGORITHM = "aes-256-gcm";
-const KEY_LENGTH = 32;
+const KEY_LENGTH$1 = 32;
 const IV_LENGTH = 16;
-const SALT_LENGTH = 64;
+const SALT_LENGTH$1 = 64;
 async function getEncryptionKey() {
   try {
     const existingKey = await keytar__namespace.getPassword(SERVICE_NAME, ACCOUNT_NAME);
@@ -43,7 +43,7 @@ async function getEncryptionKey() {
       return Buffer.from(existingKey, "hex");
     }
     console.log("Encryption: Generating new encryption key");
-    const newKey = crypto.randomBytes(KEY_LENGTH);
+    const newKey = crypto.randomBytes(KEY_LENGTH$1);
     await keytar__namespace.setPassword(SERVICE_NAME, ACCOUNT_NAME, newKey.toString("hex"));
     console.log("Encryption: New key stored in keychain");
     return newKey;
@@ -57,8 +57,8 @@ async function encrypt(plaintext) {
     const plaintextStr = typeof plaintext === "string" ? plaintext : JSON.stringify(plaintext);
     const masterKey = await getEncryptionKey();
     const iv = crypto.randomBytes(IV_LENGTH);
-    const salt = crypto.randomBytes(SALT_LENGTH);
-    const key = crypto.scryptSync(masterKey, salt, KEY_LENGTH);
+    const salt = crypto.randomBytes(SALT_LENGTH$1);
+    const key = crypto.scryptSync(masterKey, salt, KEY_LENGTH$1);
     const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
     let encrypted = cipher.update(plaintextStr, "utf8", "base64");
     encrypted += cipher.final("base64");
@@ -86,7 +86,7 @@ async function decrypt(encryptedData) {
     const authTag = Buffer.from(authTagBase64, "base64");
     const salt = Buffer.from(saltBase64, "base64");
     const masterKey = await getEncryptionKey();
-    const key = crypto.scryptSync(masterKey, salt, KEY_LENGTH);
+    const key = crypto.scryptSync(masterKey, salt, KEY_LENGTH$1);
     const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
     decipher.setAuthTag(authTag);
     let decrypted = decipher.update(ciphertext, "base64", "utf8");
@@ -1240,6 +1240,85 @@ const settingsQueries = {
       value,
       "Global default field values that override Faker.js"
     );
+  }
+};
+const SALT_LENGTH = 32;
+const KEY_LENGTH = 64;
+function hashPassword(password) {
+  const salt = crypto.randomBytes(SALT_LENGTH).toString("hex");
+  const hash = crypto.scryptSync(password, salt, KEY_LENGTH).toString("hex");
+  return `${salt}:${hash}`;
+}
+function verifyPassword(password, storedHash) {
+  try {
+    const [salt, hash] = storedHash.split(":");
+    if (!salt || !hash) return false;
+    const hashBuffer = Buffer.from(hash, "hex");
+    const suppliedHashBuffer = crypto.scryptSync(password, salt, KEY_LENGTH);
+    return crypto.timingSafeEqual(hashBuffer, suppliedHashBuffer);
+  } catch {
+    return false;
+  }
+}
+let sessionUnlocked = false;
+const passwordQueries = {
+  /** Check if master password is enabled */
+  isEnabled: () => {
+    const setting = settingsQueries.get("master_password_enabled");
+    return setting?.value === "true";
+  },
+  /** Get the stored password hash */
+  getHash: () => {
+    const setting = settingsQueries.get("master_password_hash");
+    return setting?.value || null;
+  },
+  /** Set master password (hashes it before storing) */
+  setPassword: (password) => {
+    const hash = hashPassword(password);
+    settingsQueries.set("master_password_hash", hash, "Hashed master password");
+    settingsQueries.set("master_password_enabled", "true", "Master password protection enabled");
+  },
+  /** Verify password against stored hash */
+  verify: (password) => {
+    const storedHash = passwordQueries.getHash();
+    if (!storedHash) return false;
+    const isValid = verifyPassword(password, storedHash);
+    if (isValid) {
+      sessionUnlocked = true;
+    }
+    return isValid;
+  },
+  /** Disable master password (requires current password verification first) */
+  disable: (currentPassword) => {
+    if (!passwordQueries.verify(currentPassword)) {
+      return false;
+    }
+    settingsQueries.set("master_password_enabled", "false", "Master password protection disabled");
+    settingsQueries.set("master_password_hash", "", "Cleared password hash");
+    return true;
+  },
+  /** Change password (requires current password verification first) */
+  changePassword: (currentPassword, newPassword) => {
+    if (!passwordQueries.verify(currentPassword)) {
+      return false;
+    }
+    const hash = hashPassword(newPassword);
+    settingsQueries.set("master_password_hash", hash, "Hashed master password");
+    return true;
+  },
+  /** Check if session is unlocked */
+  isSessionUnlocked: () => {
+    return sessionUnlocked;
+  },
+  /** Reset session (for testing or manual lock) */
+  lockSession: () => {
+    sessionUnlocked = false;
+  },
+  /** Unlock session without password (emergency reset - hold Shift on startup) */
+  emergencyReset: () => {
+    settingsQueries.set("master_password_enabled", "false", "Master password protection disabled");
+    settingsQueries.set("master_password_hash", "", "Cleared password hash");
+    sessionUnlocked = true;
   }
 };
 const testRunQueries = {
@@ -3384,6 +3463,57 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("api:generateKey", () => {
     return generateApiKey();
+  });
+  electron.ipcMain.handle("password:isEnabled", () => {
+    return passwordQueries.isEnabled();
+  });
+  electron.ipcMain.handle("password:isSessionUnlocked", () => {
+    return passwordQueries.isSessionUnlocked();
+  });
+  electron.ipcMain.handle("password:verify", (_, password) => {
+    try {
+      const isValid = passwordQueries.verify(password);
+      return { success: isValid, error: isValid ? void 0 : "Falsches Passwort" };
+    } catch (error) {
+      console.error("IPC Error - password:verify:", error);
+      return { success: false, error: "Fehler bei der Passwort-Überprüfung" };
+    }
+  });
+  electron.ipcMain.handle("password:set", (_, password) => {
+    try {
+      passwordQueries.setPassword(password);
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - password:set:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+  electron.ipcMain.handle("password:change", (_, currentPassword, newPassword) => {
+    try {
+      const success = passwordQueries.changePassword(currentPassword, newPassword);
+      return { success, error: success ? void 0 : "Aktuelles Passwort ist falsch" };
+    } catch (error) {
+      console.error("IPC Error - password:change:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+  electron.ipcMain.handle("password:disable", (_, currentPassword) => {
+    try {
+      const success = passwordQueries.disable(currentPassword);
+      return { success, error: success ? void 0 : "Passwort ist falsch" };
+    } catch (error) {
+      console.error("IPC Error - password:disable:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+  electron.ipcMain.handle("password:emergencyReset", () => {
+    try {
+      passwordQueries.emergencyReset();
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - password:emergencyReset:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
   });
 }
 let mainWindow;

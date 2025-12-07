@@ -1,7 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import { useEffect, Suspense, lazy } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import { useSettingsStore } from "./store/useSettingsStore";
 import Layout from "./components/Layout";
+import LockScreen from "./components/LockScreen";
 
 // Lazy load page components
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -15,6 +16,28 @@ const Docs = lazy(() => import("./pages/Docs"));
 
 function App() {
   const { settings, loadSettings } = useSettingsStore();
+  const [isLocked, setIsLocked] = useState<boolean | null>(null); // null = checking
+
+  // Check if password protection is enabled and session is locked
+  useEffect(() => {
+    const checkLockStatus = async () => {
+      try {
+        const isEnabled = await window.api.password.isEnabled();
+        if (!isEnabled) {
+          setIsLocked(false);
+          return;
+        }
+        
+        const isUnlocked = await window.api.password.isSessionUnlocked();
+        setIsLocked(!isUnlocked);
+      } catch (error) {
+        console.error("Failed to check lock status:", error);
+        setIsLocked(false); // Default to unlocked on error
+      }
+    };
+    
+    checkLockStatus();
+  }, []);
 
   // Load settings on app startup
   useEffect(() => {
@@ -40,6 +63,20 @@ function App() {
       root.classList.add(themeValue);
     }
   };
+
+  // Show loading state while checking lock status
+  if (isLocked === null) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Show lock screen if locked
+  if (isLocked) {
+    return <LockScreen onUnlock={() => setIsLocked(false)} />;
+  }
 
   return (
     <>

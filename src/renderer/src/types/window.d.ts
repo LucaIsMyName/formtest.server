@@ -95,6 +95,21 @@ declare global {
         getBase: () => Promise<SelectorConfig>
         getCategories: () => Promise<{ category: string; keys: string[]; label: string }[]>
       }
+      apiServer: {
+        start: (port: number, apiKey: string) => Promise<{ success: boolean; error?: string }>
+        stop: () => Promise<{ success: boolean; error?: string }>
+        status: () => Promise<{ running: boolean }>
+        generateKey: () => Promise<string>
+      }
+      password: {
+        isEnabled: () => Promise<boolean>
+        isSessionUnlocked: () => Promise<boolean>
+        verify: (password: string) => Promise<{ success: boolean; error?: string }>
+        set: (password: string) => Promise<{ success: boolean; error?: string }>
+        change: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>
+        disable: (currentPassword: string) => Promise<{ success: boolean; error?: string }>
+        emergencyReset: () => Promise<{ success: boolean; error?: string }>
+      }
     }
   }
 }
