@@ -10,7 +10,7 @@ import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
 import { StatusBadge } from "./ui/Badge";
-import { Trash2 } from "lucide-react";
+import { Trash2, Play } from "lucide-react";
 import { CONFIG } from "@/app.config";
 import { formatDate } from "../utils/formatters";
 
@@ -313,19 +313,35 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
       <DrawerContent>
         {/* Top Title Bar with Action Buttons */}
         <div className="pb-4 flex-shrink-0">
-          {editMethod && onDelete && (
+          {editMethod && (
             <div className="flex items-center gap-2 flex-shrink-0">
+              {onDelete && (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    onDelete(editMethod.id);
+                    onClose();
+                  }}
+                  variant="danger"
+                  size="sm"
+                  className="gap-1.5">
+                  <Trash2 size={14} />
+                  Löschen
+                </Button>
+              )}
               <Button
                 type="button"
                 onClick={() => {
-                  onDelete(editMethod.id);
+                  window.dispatchEvent(new CustomEvent("openTestDialog", { 
+                    detail: { paymentMethodIds: [editMethod.id] } 
+                  }));
                   onClose();
                 }}
-                variant="danger"
+                variant="secondary"
                 size="sm"
                 className="gap-1.5">
-                <Trash2 size={14} />
-                Löschen
+                <Play size={14} />
+                Test starten
               </Button>
             </div>
           )}

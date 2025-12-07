@@ -1,9 +1,9 @@
-import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, J as useSearchParams, d as usePaymentMethodsStore, e as useTestRunsStore, H as Plus, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, i as dist } from "./index-By5QLJ5S.js";
+import { r as reactExports, Q as getDefaultPaymentIcon, j as jsxRuntimeExports, B as Button, k as Trash2, P as Play, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, s as renderIcon, t as Checkbox, J as useSearchParams, d as usePaymentMethodsStore, e as useTestRunsStore, H as Plus, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, i as dist } from "./index-BmL3LNRX.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-Drc8Y-aX.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead } from "./useTableSelection-DxQWlfY2.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-juunrBHA.js";
-import { S as Skeleton } from "./Skeleton-C5ne5Gwp.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-DLGHBjvs.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead } from "./useTableSelection-COD78lcy.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-2m6Jxly7.js";
+import { S as Skeleton } from "./Skeleton-CrXQDtcG.js";
 const PaymentMethodDrawer = ({
   isOpen,
   onClose,
@@ -172,13 +172,26 @@ const PaymentMethodDrawer = ({
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Drawer, { open: isOpen, onOpenChange: (open) => !open && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(DrawerContent, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pb-4 flex-shrink-0", children: [
-      editMethod && onDelete && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center gap-2 flex-shrink-0", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
-        onDelete(editMethod.id);
-        onClose();
-      }, variant: "danger", size: "sm", className: "gap-1.5", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
-        "Löschen"
-      ] }) }),
+      editMethod && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 flex-shrink-0", children: [
+        onDelete && /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
+          onDelete(editMethod.id);
+          onClose();
+        }, variant: "danger", size: "sm", className: "gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
+          "Löschen"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
+          window.dispatchEvent(new CustomEvent("openTestDialog", {
+            detail: {
+              paymentMethodIds: [editMethod.id]
+            }
+          }));
+          onClose();
+        }, variant: "secondary", size: "sm", className: "gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 }),
+          "Test starten"
+        ] })
+      ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 mt-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(Label, { htmlFor: "name", className: "sr-only", children: "Name der Bezahlmethode *" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "name", value: methodData.name, onChange: (e_7) => setMethodData({
@@ -584,10 +597,18 @@ const PaymentMethods = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_2) => {
                 e_2.stopPropagation();
-                handleEditMethod(method_5);
-              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+                window.dispatchEvent(new CustomEvent("openTestDialog", {
+                  detail: {
+                    paymentMethodIds: [method_5.id]
+                  }
+                }));
+              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Test starten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_3) => {
                 e_3.stopPropagation();
+                handleEditMethod(method_5);
+              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_4) => {
+                e_4.stopPropagation();
                 handleDeleteMethod(method_5);
               }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
             ] }) })

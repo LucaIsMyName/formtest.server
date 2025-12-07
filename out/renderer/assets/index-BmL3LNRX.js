@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-BYq_OcBf.js","./app.config-b2lfEN4K.js","./Skeleton-C5ne5Gwp.js","./Forms-BPd8r6-L.js","./MiniSparkline-Drc8Y-aX.js","./useTableSelection-DxQWlfY2.js","./TableFilter-juunrBHA.js","./PaymentMethods-D-KUcXS3.js","./Settings-DOqo9PgO.js","./TestResults-0GzX7e74.js","./InfoDoku-DboAa5JN.js","./Schedules-DGauAENY.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-CMO5_K1p.js","./app.config-b2lfEN4K.js","./Skeleton-CrXQDtcG.js","./Forms-CK6e7vvB.js","./MiniSparkline-DLGHBjvs.js","./useTableSelection-COD78lcy.js","./TableFilter-2m6Jxly7.js","./PaymentMethods-wSzyNlTw.js","./Settings-P6KK8CuU.js","./TestResults-g4bVzj9M.js","./InfoDoku-CvUcVySp.js","./Schedules-DrztYPjZ.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -58992,13 +58992,33 @@ const getDefaultScheduleIcon = (cronExpression) => {
   return "Play";
 };
 const TestRunDialog = (t0) => {
-  const $2 = dist.c(159);
+  const $2 = dist.c(165);
   const {
     isOpen,
     onClose,
-    preselectAll: t1
+    preselectAll: t1,
+    preselectedFormIds: t2,
+    preselectedPaymentMethodIds: t3
   } = t0;
   const preselectAll = t1 === void 0 ? false : t1;
+  let t4;
+  if ($2[0] !== t2) {
+    t4 = t2 === void 0 ? [] : t2;
+    $2[0] = t2;
+    $2[1] = t4;
+  } else {
+    t4 = $2[1];
+  }
+  const preselectedFormIds = t4;
+  let t5;
+  if ($2[2] !== t3) {
+    t5 = t3 === void 0 ? [] : t3;
+    $2[2] = t3;
+    $2[3] = t5;
+  } else {
+    t5 = $2[3];
+  }
+  const preselectedPaymentMethodIds = t5;
   const {
     forms,
     loadForms
@@ -59016,29 +59036,29 @@ const TestRunDialog = (t0) => {
     loadSettings,
     getSetting
   } = useSettingsStore();
-  let t2;
-  if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = [];
-    $2[0] = t2;
+  let t6;
+  if ($2[4] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = [];
+    $2[4] = t6;
   } else {
-    t2 = $2[0];
+    t6 = $2[4];
   }
-  const [selectedFormIds, setSelectedFormIds] = reactExports.useState(t2);
-  let t3;
-  if ($2[1] === Symbol.for("react.memo_cache_sentinel")) {
-    t3 = [];
-    $2[1] = t3;
+  const [selectedFormIds, setSelectedFormIds] = reactExports.useState(t6);
+  let t7;
+  if ($2[5] === Symbol.for("react.memo_cache_sentinel")) {
+    t7 = [];
+    $2[5] = t7;
   } else {
-    t3 = $2[1];
+    t7 = $2[5];
   }
-  const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = reactExports.useState(t3);
+  const [selectedPaymentMethodIds, setSelectedPaymentMethodIds] = reactExports.useState(t7);
   const [error, setError] = reactExports.useState(null);
   const [customAmount, setCustomAmount] = reactExports.useState("");
   const [customInterval, setCustomInterval] = reactExports.useState("");
-  let t4;
-  let t5;
-  if ($2[2] !== isOpen || $2[3] !== loadForms || $2[4] !== loadPaymentMethods || $2[5] !== loadSettings) {
-    t4 = () => {
+  let t8;
+  let t9;
+  if ($2[6] !== isOpen || $2[7] !== loadForms || $2[8] !== loadPaymentMethods || $2[9] !== loadSettings) {
+    t8 = () => {
       if (isOpen) {
         loadForms();
         loadPaymentMethods();
@@ -59046,21 +59066,21 @@ const TestRunDialog = (t0) => {
         setError(null);
       }
     };
-    t5 = [isOpen, loadForms, loadPaymentMethods, loadSettings];
-    $2[2] = isOpen;
-    $2[3] = loadForms;
-    $2[4] = loadPaymentMethods;
-    $2[5] = loadSettings;
-    $2[6] = t4;
-    $2[7] = t5;
+    t9 = [isOpen, loadForms, loadPaymentMethods, loadSettings];
+    $2[6] = isOpen;
+    $2[7] = loadForms;
+    $2[8] = loadPaymentMethods;
+    $2[9] = loadSettings;
+    $2[10] = t8;
+    $2[11] = t9;
   } else {
-    t4 = $2[6];
-    t5 = $2[7];
+    t8 = $2[10];
+    t9 = $2[11];
   }
-  reactExports.useEffect(t4, t5);
-  let t6;
-  if ($2[8] !== getSetting || $2[9] !== settings.length) {
-    t6 = () => {
+  reactExports.useEffect(t8, t9);
+  let t10;
+  if ($2[12] !== getSetting || $2[13] !== settings.length) {
+    t10 = () => {
       if (settings.length > 0) {
         const defaultAmount = getSetting("default_donation_amount")?.value || "10";
         const defaultInterval = getSetting("default_donation_interval")?.value || "0";
@@ -59068,123 +59088,130 @@ const TestRunDialog = (t0) => {
         setCustomInterval(defaultInterval);
       }
     };
-    $2[8] = getSetting;
-    $2[9] = settings.length;
-    $2[10] = t6;
+    $2[12] = getSetting;
+    $2[13] = settings.length;
+    $2[14] = t10;
   } else {
-    t6 = $2[10];
+    t10 = $2[14];
   }
-  let t7;
-  if ($2[11] !== getSetting || $2[12] !== settings) {
-    t7 = [settings, getSetting];
-    $2[11] = getSetting;
-    $2[12] = settings;
-    $2[13] = t7;
+  let t11;
+  if ($2[15] !== getSetting || $2[16] !== settings) {
+    t11 = [settings, getSetting];
+    $2[15] = getSetting;
+    $2[16] = settings;
+    $2[17] = t11;
   } else {
-    t7 = $2[13];
+    t11 = $2[17];
   }
-  reactExports.useEffect(t6, t7);
-  let t8;
-  let t9;
-  if ($2[14] !== forms || $2[15] !== isOpen || $2[16] !== paymentMethods || $2[17] !== preselectAll) {
-    t8 = () => {
-      if (isOpen && preselectAll) {
-        const activeForms = forms.filter(_temp$1);
-        const activePaymentMethods = paymentMethods.filter(_temp2);
-        setSelectedFormIds(activeForms.map(_temp3));
-        setSelectedPaymentMethodIds(activePaymentMethods.map(_temp4));
-      } else {
-        if (isOpen && !preselectAll) {
-          setSelectedFormIds([]);
-          setSelectedPaymentMethodIds([]);
+  reactExports.useEffect(t10, t11);
+  let t12;
+  let t13;
+  if ($2[18] !== forms || $2[19] !== isOpen || $2[20] !== paymentMethods || $2[21] !== preselectAll || $2[22] !== preselectedFormIds || $2[23] !== preselectedPaymentMethodIds) {
+    t12 = () => {
+      if (isOpen) {
+        if (preselectAll) {
+          const activeForms = forms.filter(_temp$1);
+          const activePaymentMethods = paymentMethods.filter(_temp2);
+          setSelectedFormIds(activeForms.map(_temp3));
+          setSelectedPaymentMethodIds(activePaymentMethods.map(_temp4));
+        } else {
+          if (preselectedFormIds.length > 0 || preselectedPaymentMethodIds.length > 0) {
+            setSelectedFormIds(preselectedFormIds);
+            setSelectedPaymentMethodIds(preselectedPaymentMethodIds);
+          } else {
+            setSelectedFormIds([]);
+            setSelectedPaymentMethodIds([]);
+          }
         }
       }
     };
-    t9 = [isOpen, preselectAll, forms, paymentMethods];
-    $2[14] = forms;
-    $2[15] = isOpen;
-    $2[16] = paymentMethods;
-    $2[17] = preselectAll;
-    $2[18] = t8;
-    $2[19] = t9;
-  } else {
-    t8 = $2[18];
-    t9 = $2[19];
-  }
-  reactExports.useEffect(t8, t9);
-  let t10;
-  if ($2[20] !== forms) {
-    t10 = forms.filter(_temp5);
-    $2[20] = forms;
-    $2[21] = t10;
-  } else {
-    t10 = $2[21];
-  }
-  const activeForms_0 = t10;
-  let t11;
-  if ($2[22] !== paymentMethods) {
-    t11 = paymentMethods.filter(_temp6);
-    $2[22] = paymentMethods;
-    $2[23] = t11;
-  } else {
-    t11 = $2[23];
-  }
-  const activePaymentMethods_0 = t11;
-  let t12;
-  if ($2[24] === Symbol.for("react.memo_cache_sentinel")) {
-    t12 = (formId) => {
-      setSelectedFormIds((prev) => prev.includes(formId) ? prev.filter((id2) => id2 !== formId) : [...prev, formId]);
-    };
+    t13 = [isOpen, preselectAll, preselectedFormIds, preselectedPaymentMethodIds, forms, paymentMethods];
+    $2[18] = forms;
+    $2[19] = isOpen;
+    $2[20] = paymentMethods;
+    $2[21] = preselectAll;
+    $2[22] = preselectedFormIds;
+    $2[23] = preselectedPaymentMethodIds;
     $2[24] = t12;
-  } else {
-    t12 = $2[24];
-  }
-  const handleFormToggle = t12;
-  let t13;
-  if ($2[25] === Symbol.for("react.memo_cache_sentinel")) {
-    t13 = (pmId) => {
-      setSelectedPaymentMethodIds((prev_0) => prev_0.includes(pmId) ? prev_0.filter((id_0) => id_0 !== pmId) : [...prev_0, pmId]);
-    };
     $2[25] = t13;
   } else {
+    t12 = $2[24];
     t13 = $2[25];
   }
-  const handlePaymentMethodToggle = t13;
+  reactExports.useEffect(t12, t13);
   let t14;
-  if ($2[26] !== activeForms_0 || $2[27] !== selectedFormIds.length) {
-    t14 = () => {
+  if ($2[26] !== forms) {
+    t14 = forms.filter(_temp5);
+    $2[26] = forms;
+    $2[27] = t14;
+  } else {
+    t14 = $2[27];
+  }
+  const activeForms_0 = t14;
+  let t15;
+  if ($2[28] !== paymentMethods) {
+    t15 = paymentMethods.filter(_temp6);
+    $2[28] = paymentMethods;
+    $2[29] = t15;
+  } else {
+    t15 = $2[29];
+  }
+  const activePaymentMethods_0 = t15;
+  let t16;
+  if ($2[30] === Symbol.for("react.memo_cache_sentinel")) {
+    t16 = (formId) => {
+      setSelectedFormIds((prev) => prev.includes(formId) ? prev.filter((id2) => id2 !== formId) : [...prev, formId]);
+    };
+    $2[30] = t16;
+  } else {
+    t16 = $2[30];
+  }
+  const handleFormToggle = t16;
+  let t17;
+  if ($2[31] === Symbol.for("react.memo_cache_sentinel")) {
+    t17 = (pmId) => {
+      setSelectedPaymentMethodIds((prev_0) => prev_0.includes(pmId) ? prev_0.filter((id_0) => id_0 !== pmId) : [...prev_0, pmId]);
+    };
+    $2[31] = t17;
+  } else {
+    t17 = $2[31];
+  }
+  const handlePaymentMethodToggle = t17;
+  let t18;
+  if ($2[32] !== activeForms_0 || $2[33] !== selectedFormIds.length) {
+    t18 = () => {
       if (selectedFormIds.length === activeForms_0.length) {
         setSelectedFormIds([]);
       } else {
         setSelectedFormIds(activeForms_0.map(_temp7));
       }
     };
-    $2[26] = activeForms_0;
-    $2[27] = selectedFormIds.length;
-    $2[28] = t14;
+    $2[32] = activeForms_0;
+    $2[33] = selectedFormIds.length;
+    $2[34] = t18;
   } else {
-    t14 = $2[28];
+    t18 = $2[34];
   }
-  const handleSelectAllForms = t14;
-  let t15;
-  if ($2[29] !== activePaymentMethods_0 || $2[30] !== selectedPaymentMethodIds.length) {
-    t15 = () => {
+  const handleSelectAllForms = t18;
+  let t19;
+  if ($2[35] !== activePaymentMethods_0 || $2[36] !== selectedPaymentMethodIds.length) {
+    t19 = () => {
       if (selectedPaymentMethodIds.length === activePaymentMethods_0.length) {
         setSelectedPaymentMethodIds([]);
       } else {
         setSelectedPaymentMethodIds(activePaymentMethods_0.map(_temp8));
       }
     };
-    $2[29] = activePaymentMethods_0;
-    $2[30] = selectedPaymentMethodIds.length;
-    $2[31] = t15;
+    $2[35] = activePaymentMethods_0;
+    $2[36] = selectedPaymentMethodIds.length;
+    $2[37] = t19;
   } else {
-    t15 = $2[31];
+    t19 = $2[37];
   }
-  const handleSelectAllPaymentMethods = t15;
-  let t16;
-  if ($2[32] !== customAmount || $2[33] !== customInterval || $2[34] !== onClose || $2[35] !== runTests || $2[36] !== selectedFormIds || $2[37] !== selectedPaymentMethodIds) {
-    t16 = async () => {
+  const handleSelectAllPaymentMethods = t19;
+  let t20;
+  if ($2[38] !== customAmount || $2[39] !== customInterval || $2[40] !== onClose || $2[41] !== runTests || $2[42] !== selectedFormIds || $2[43] !== selectedPaymentMethodIds) {
+    t20 = async () => {
       if (selectedFormIds.length === 0) {
         setError("Bitte wähle mindestens ein Formular aus");
         return;
@@ -59199,118 +59226,118 @@ const TestRunDialog = (t0) => {
           customInterval
         });
         onClose();
-      } catch (t172) {
-        const error_0 = t172;
+      } catch (t212) {
+        const error_0 = t212;
         setError(error_0 instanceof Error ? error_0.message : "Tests konnten nicht gestartet werden");
       }
     };
-    $2[32] = customAmount;
-    $2[33] = customInterval;
-    $2[34] = onClose;
-    $2[35] = runTests;
-    $2[36] = selectedFormIds;
-    $2[37] = selectedPaymentMethodIds;
-    $2[38] = t16;
+    $2[38] = customAmount;
+    $2[39] = customInterval;
+    $2[40] = onClose;
+    $2[41] = runTests;
+    $2[42] = selectedFormIds;
+    $2[43] = selectedPaymentMethodIds;
+    $2[44] = t20;
   } else {
-    t16 = $2[38];
+    t20 = $2[44];
   }
-  const handleRunTests = t16;
+  const handleRunTests = t20;
   const totalTests = selectedFormIds.length * selectedPaymentMethodIds.length;
   const getPaymentTypeLabel = _temp9;
-  let t17;
-  if ($2[39] !== isRunning || $2[40] !== onClose) {
-    t17 = (open) => !open && !isRunning && onClose();
-    $2[39] = isRunning;
-    $2[40] = onClose;
-    $2[41] = t17;
+  let t21;
+  if ($2[45] !== isRunning || $2[46] !== onClose) {
+    t21 = (open) => !open && !isRunning && onClose();
+    $2[45] = isRunning;
+    $2[46] = onClose;
+    $2[47] = t21;
   } else {
-    t17 = $2[41];
+    t21 = $2[47];
   }
-  let t18;
-  if ($2[42] === Symbol.for("react.memo_cache_sentinel")) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { className: "relative p-4 pb-4 border-b border-gray-200 dark:border-gray-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+  let t22;
+  if ($2[48] === Symbol.for("react.memo_cache_sentinel")) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx(DialogHeader, { className: "relative p-4 pb-4 border-b border-gray-200 dark:border-gray-800", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 18, className: "text-white ml-0.5" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(DialogTitle, { className: "text-xl font-semibold", children: "Tests ausführen" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-0.5", children: "Wähle Formulare & Bezahlmethoden für den Testlauf" })
       ] })
     ] }) });
-    $2[42] = t18;
+    $2[48] = t22;
   } else {
-    t18 = $2[42];
+    t22 = $2[48];
   }
-  let t19;
-  if ($2[43] !== error) {
-    t19 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-4 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-800 dark:text-red-200 text-sm", children: error }) });
-    $2[43] = error;
-    $2[44] = t19;
+  let t23;
+  if ($2[49] !== error) {
+    t23 = error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mx-4 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-red-800 dark:text-red-200 text-sm", children: error }) });
+    $2[49] = error;
+    $2[50] = t23;
   } else {
-    t19 = $2[44];
+    t23 = $2[50];
   }
-  let t20;
-  let t21;
-  if ($2[45] === Symbol.for("react.memo_cache_sentinel")) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 14, className: "text-gray-500" });
-    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-gray-700 dark:text-gray-300", children: "Formulare" });
-    $2[45] = t20;
-    $2[46] = t21;
+  let t24;
+  let t25;
+  if ($2[51] === Symbol.for("react.memo_cache_sentinel")) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 14, className: "text-gray-500" });
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-gray-700 dark:text-gray-300", children: "Formulare" });
+    $2[51] = t24;
+    $2[52] = t25;
   } else {
-    t20 = $2[45];
-    t21 = $2[46];
+    t24 = $2[51];
+    t25 = $2[52];
   }
-  let t22;
-  if ($2[47] !== activeForms_0.length || $2[48] !== selectedFormIds.length) {
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
-      t20,
-      t21,
+  let t26;
+  if ($2[53] !== activeForms_0.length || $2[54] !== selectedFormIds.length) {
+    t26 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+      t24,
+      t25,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] text-gray-400 font-mono", children: [
         selectedFormIds.length,
         "/",
         activeForms_0.length
       ] })
     ] });
-    $2[47] = activeForms_0.length;
-    $2[48] = selectedFormIds.length;
-    $2[49] = t22;
+    $2[53] = activeForms_0.length;
+    $2[54] = selectedFormIds.length;
+    $2[55] = t26;
   } else {
-    t22 = $2[49];
+    t26 = $2[55];
   }
-  const t23 = selectedFormIds.length === activeForms_0.length ? "Keine" : "Alle";
-  let t24;
-  if ($2[50] !== handleSelectAllForms || $2[51] !== isRunning || $2[52] !== t23) {
-    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSelectAllForms, disabled: isRunning, size: "sm", variant: "ghost", className: "h-6 text-xs px-2", children: t23 });
-    $2[50] = handleSelectAllForms;
-    $2[51] = isRunning;
-    $2[52] = t23;
-    $2[53] = t24;
+  const t27 = selectedFormIds.length === activeForms_0.length ? "Keine" : "Alle";
+  let t28;
+  if ($2[56] !== handleSelectAllForms || $2[57] !== isRunning || $2[58] !== t27) {
+    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSelectAllForms, disabled: isRunning, size: "sm", variant: "ghost", className: "h-6 text-xs px-2", children: t27 });
+    $2[56] = handleSelectAllForms;
+    $2[57] = isRunning;
+    $2[58] = t27;
+    $2[59] = t28;
   } else {
-    t24 = $2[53];
+    t28 = $2[59];
   }
-  let t25;
-  if ($2[54] !== t22 || $2[55] !== t24) {
-    t25 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-1", children: [
-      t22,
-      t24
+  let t29;
+  if ($2[60] !== t26 || $2[61] !== t28) {
+    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-1", children: [
+      t26,
+      t28
     ] });
-    $2[54] = t22;
-    $2[55] = t24;
-    $2[56] = t25;
+    $2[60] = t26;
+    $2[61] = t28;
+    $2[62] = t29;
   } else {
-    t25 = $2[56];
+    t29 = $2[62];
   }
-  let t26;
-  if ($2[57] === Symbol.for("react.memo_cache_sentinel")) {
-    t26 = /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "bg-gray-50 dark:bg-gray-800/50", children: [
+  let t30;
+  if ($2[63] === Symbol.for("react.memo_cache_sentinel")) {
+    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "bg-gray-50 dark:bg-gray-800/50", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-10 px-3" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-3 text-xs", children: "Name" })
     ] }) });
-    $2[57] = t26;
+    $2[63] = t30;
   } else {
-    t26 = $2[57];
+    t30 = $2[63];
   }
-  let t27;
-  if ($2[58] !== activeForms_0 || $2[59] !== isRunning || $2[60] !== selectedFormIds) {
-    t27 = activeForms_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(TableRow, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { colSpan: 2, className: "text-center py-8 text-gray-400 text-xs", children: "Keine aktiven Formulare" }) }) : activeForms_0.map((form_1) => {
+  let t31;
+  if ($2[64] !== activeForms_0 || $2[65] !== isRunning || $2[66] !== selectedFormIds) {
+    t31 = activeForms_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(TableRow, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { colSpan: 2, className: "text-center py-8 text-gray-400 text-xs", children: "Keine aktiven Formulare" }) }) : activeForms_0.map((form_1) => {
       const isSelected = selectedFormIds.includes(form_1.id);
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: `cursor-pointer transition-colors ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-800/50"}`, onClick: () => !isRunning && handleFormToggle(form_1.id), children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: isSelected, onCheckedChange: () => handleFormToggle(form_1.id), disabled: isRunning }) }),
@@ -59320,101 +59347,101 @@ const TestRunDialog = (t0) => {
         ] }) })
       ] }, form_1.id);
     });
-    $2[58] = activeForms_0;
-    $2[59] = isRunning;
-    $2[60] = selectedFormIds;
-    $2[61] = t27;
+    $2[64] = activeForms_0;
+    $2[65] = isRunning;
+    $2[66] = selectedFormIds;
+    $2[67] = t31;
   } else {
-    t27 = $2[61];
-  }
-  let t28;
-  if ($2[62] !== t27) {
-    t28 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-[200px] overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
-      t26,
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: t27 })
-    ] }) }) });
-    $2[62] = t27;
-    $2[63] = t28;
-  } else {
-    t28 = $2[63];
-  }
-  let t29;
-  if ($2[64] !== t25 || $2[65] !== t28) {
-    t29 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-      t25,
-      t28
-    ] });
-    $2[64] = t25;
-    $2[65] = t28;
-    $2[66] = t29;
-  } else {
-    t29 = $2[66];
-  }
-  let t30;
-  let t31;
-  if ($2[67] === Symbol.for("react.memo_cache_sentinel")) {
-    t30 = /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 14, className: "text-gray-500" });
-    t31 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-gray-700 dark:text-gray-300", children: "Bezahlmethoden" });
-    $2[67] = t30;
-    $2[68] = t31;
-  } else {
-    t30 = $2[67];
-    t31 = $2[68];
+    t31 = $2[67];
   }
   let t32;
-  if ($2[69] !== activePaymentMethods_0.length || $2[70] !== selectedPaymentMethodIds.length) {
-    t32 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+  if ($2[68] !== t31) {
+    t32 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-[200px] overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
       t30,
-      t31,
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: t31 })
+    ] }) }) });
+    $2[68] = t31;
+    $2[69] = t32;
+  } else {
+    t32 = $2[69];
+  }
+  let t33;
+  if ($2[70] !== t29 || $2[71] !== t32) {
+    t33 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+      t29,
+      t32
+    ] });
+    $2[70] = t29;
+    $2[71] = t32;
+    $2[72] = t33;
+  } else {
+    t33 = $2[72];
+  }
+  let t34;
+  let t35;
+  if ($2[73] === Symbol.for("react.memo_cache_sentinel")) {
+    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 14, className: "text-gray-500" });
+    t35 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-gray-700 dark:text-gray-300", children: "Bezahlmethoden" });
+    $2[73] = t34;
+    $2[74] = t35;
+  } else {
+    t34 = $2[73];
+    t35 = $2[74];
+  }
+  let t36;
+  if ($2[75] !== activePaymentMethods_0.length || $2[76] !== selectedPaymentMethodIds.length) {
+    t36 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+      t34,
+      t35,
       /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] text-gray-400 font-mono", children: [
         selectedPaymentMethodIds.length,
         "/",
         activePaymentMethods_0.length
       ] })
     ] });
-    $2[69] = activePaymentMethods_0.length;
-    $2[70] = selectedPaymentMethodIds.length;
-    $2[71] = t32;
+    $2[75] = activePaymentMethods_0.length;
+    $2[76] = selectedPaymentMethodIds.length;
+    $2[77] = t36;
   } else {
-    t32 = $2[71];
+    t36 = $2[77];
   }
-  const t33 = selectedPaymentMethodIds.length === activePaymentMethods_0.length ? "Keine" : "Alle";
-  let t34;
-  if ($2[72] !== handleSelectAllPaymentMethods || $2[73] !== isRunning || $2[74] !== t33) {
-    t34 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSelectAllPaymentMethods, disabled: isRunning, size: "sm", variant: "ghost", className: "h-6 text-xs px-2", children: t33 });
-    $2[72] = handleSelectAllPaymentMethods;
-    $2[73] = isRunning;
-    $2[74] = t33;
-    $2[75] = t34;
+  const t37 = selectedPaymentMethodIds.length === activePaymentMethods_0.length ? "Keine" : "Alle";
+  let t38;
+  if ($2[78] !== handleSelectAllPaymentMethods || $2[79] !== isRunning || $2[80] !== t37) {
+    t38 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: handleSelectAllPaymentMethods, disabled: isRunning, size: "sm", variant: "ghost", className: "h-6 text-xs px-2", children: t37 });
+    $2[78] = handleSelectAllPaymentMethods;
+    $2[79] = isRunning;
+    $2[80] = t37;
+    $2[81] = t38;
   } else {
-    t34 = $2[75];
+    t38 = $2[81];
   }
-  let t35;
-  if ($2[76] !== t32 || $2[77] !== t34) {
-    t35 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-1", children: [
-      t32,
-      t34
+  let t39;
+  if ($2[82] !== t36 || $2[83] !== t38) {
+    t39 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between px-1", children: [
+      t36,
+      t38
     ] });
-    $2[76] = t32;
-    $2[77] = t34;
-    $2[78] = t35;
+    $2[82] = t36;
+    $2[83] = t38;
+    $2[84] = t39;
   } else {
-    t35 = $2[78];
+    t39 = $2[84];
   }
-  let t36;
-  if ($2[79] === Symbol.for("react.memo_cache_sentinel")) {
-    t36 = /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "bg-gray-50 dark:bg-gray-800/50", children: [
+  let t40;
+  if ($2[85] === Symbol.for("react.memo_cache_sentinel")) {
+    t40 = /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: "bg-gray-50 dark:bg-gray-800/50", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "w-10 px-3" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-3 text-xs", children: "Name" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableHead, { className: "px-3 text-xs", children: "Typ" })
     ] }) });
-    $2[79] = t36;
+    $2[85] = t40;
   } else {
-    t36 = $2[79];
+    t40 = $2[85];
   }
-  let t37;
-  if ($2[80] !== activePaymentMethods_0 || $2[81] !== isRunning || $2[82] !== selectedPaymentMethodIds) {
-    t37 = activePaymentMethods_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(TableRow, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { colSpan: 3, className: "text-center py-8 text-gray-400 text-xs", children: "Keine aktiven Bezahlmethoden" }) }) : activePaymentMethods_0.map((pm_3) => {
+  let t41;
+  if ($2[86] !== activePaymentMethods_0 || $2[87] !== isRunning || $2[88] !== selectedPaymentMethodIds) {
+    t41 = activePaymentMethods_0.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx(TableRow, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { colSpan: 3, className: "text-center py-8 text-gray-400 text-xs", children: "Keine aktiven Bezahlmethoden" }) }) : activePaymentMethods_0.map((pm_3) => {
       const isSelected_0 = selectedPaymentMethodIds.includes(pm_3.id);
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { className: `cursor-pointer transition-colors ${isSelected_0 ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-800/50"}`, onClick: () => !isRunning && handlePaymentMethodToggle(pm_3.id), children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Checkbox, { checked: isSelected_0, onCheckedChange: () => handlePaymentMethodToggle(pm_3.id), disabled: isRunning }) }),
@@ -59425,92 +59452,53 @@ const TestRunDialog = (t0) => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400 font-mono uppercase", children: getPaymentTypeLabel(pm_3.type) }) })
       ] }, pm_3.id);
     });
-    $2[80] = activePaymentMethods_0;
-    $2[81] = isRunning;
-    $2[82] = selectedPaymentMethodIds;
-    $2[83] = t37;
+    $2[86] = activePaymentMethods_0;
+    $2[87] = isRunning;
+    $2[88] = selectedPaymentMethodIds;
+    $2[89] = t41;
   } else {
-    t37 = $2[83];
-  }
-  let t38;
-  if ($2[84] !== t37) {
-    t38 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-[200px] overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
-      t36,
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: t37 })
-    ] }) }) });
-    $2[84] = t37;
-    $2[85] = t38;
-  } else {
-    t38 = $2[85];
-  }
-  let t39;
-  if ($2[86] !== t35 || $2[87] !== t38) {
-    t39 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-      t35,
-      t38
-    ] });
-    $2[86] = t35;
-    $2[87] = t38;
-    $2[88] = t39;
-  } else {
-    t39 = $2[88];
-  }
-  let t40;
-  if ($2[89] !== t29 || $2[90] !== t39) {
-    t40 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 grid grid-cols-2 gap-4", children: [
-      t29,
-      t39
-    ] });
-    $2[89] = t29;
-    $2[90] = t39;
-    $2[91] = t40;
-  } else {
-    t40 = $2[91];
-  }
-  let t41;
-  if ($2[92] === Symbol.for("react.memo_cache_sentinel")) {
-    t41 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-3", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Settings2, { size: 12, className: "text-gray-500" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide", children: "Parameter für diesen Testlauf" })
-    ] });
-    $2[92] = t41;
-  } else {
-    t41 = $2[92];
+    t41 = $2[89];
   }
   let t42;
-  if ($2[93] === Symbol.for("react.memo_cache_sentinel")) {
-    t42 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Label$1, { htmlFor: "test-amount", className: "text-[10px] text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wide", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Euro, { size: 10, className: "inline mr-1" }),
-      "Betrag (€)"
-    ] });
-    $2[93] = t42;
+  if ($2[90] !== t41) {
+    t42 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-h-[200px] overflow-y-auto", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { children: [
+      t40,
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: t41 })
+    ] }) }) });
+    $2[90] = t41;
+    $2[91] = t42;
   } else {
-    t42 = $2[93];
+    t42 = $2[91];
   }
   let t43;
-  if ($2[94] === Symbol.for("react.memo_cache_sentinel")) {
-    t43 = (e2) => setCustomAmount(e2.target.value);
+  if ($2[92] !== t39 || $2[93] !== t42) {
+    t43 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
+      t39,
+      t42
+    ] });
+    $2[92] = t39;
+    $2[93] = t42;
     $2[94] = t43;
   } else {
     t43 = $2[94];
   }
   let t44;
-  if ($2[95] !== customAmount || $2[96] !== isRunning) {
-    t44 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-      t42,
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "test-amount", type: "number", min: "1", value: customAmount, onChange: t43, disabled: isRunning, className: "h-8 bg-white dark:bg-gray-900 font-mono text-sm" })
+  if ($2[95] !== t33 || $2[96] !== t43) {
+    t44 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-4 grid grid-cols-2 gap-4", children: [
+      t33,
+      t43
     ] });
-    $2[95] = customAmount;
-    $2[96] = isRunning;
+    $2[95] = t33;
+    $2[96] = t43;
     $2[97] = t44;
   } else {
     t44 = $2[97];
   }
   let t45;
   if ($2[98] === Symbol.for("react.memo_cache_sentinel")) {
-    t45 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Label$1, { htmlFor: "test-interval", className: "text-[10px] text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wide", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 10, className: "inline mr-1" }),
-      "Intervall"
+    t45 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 mb-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Settings2, { size: 12, className: "text-gray-500" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide", children: "Parameter für diesen Testlauf" })
     ] });
     $2[98] = t45;
   } else {
@@ -59518,272 +59506,311 @@ const TestRunDialog = (t0) => {
   }
   let t46;
   if ($2[99] === Symbol.for("react.memo_cache_sentinel")) {
-    t46 = /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "test-interval", className: "h-8 bg-white dark:bg-gray-900 text-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) });
+    t46 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Label$1, { htmlFor: "test-amount", className: "text-[10px] text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wide", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Euro, { size: 10, className: "inline mr-1" }),
+      "Betrag (€)"
+    ] });
     $2[99] = t46;
   } else {
     t46 = $2[99];
   }
   let t47;
   if ($2[100] === Symbol.for("react.memo_cache_sentinel")) {
-    t47 = /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Einmalig" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1", children: "Monatlich" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "3", children: "Vierteljährlich" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "6", children: "Halbjährlich" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "12", children: "Jährlich" })
-    ] });
+    t47 = (e2) => setCustomAmount(e2.target.value);
     $2[100] = t47;
   } else {
     t47 = $2[100];
   }
   let t48;
-  if ($2[101] !== customInterval || $2[102] !== isRunning) {
+  if ($2[101] !== customAmount || $2[102] !== isRunning) {
     t48 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
-      t45,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: customInterval, onValueChange: setCustomInterval, disabled: isRunning, children: [
-        t46,
-        t47
-      ] })
+      t46,
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { id: "test-amount", type: "number", min: "1", value: customAmount, onChange: t47, disabled: isRunning, className: "h-8 bg-white dark:bg-gray-900 font-mono text-sm" })
     ] });
-    $2[101] = customInterval;
+    $2[101] = customAmount;
     $2[102] = isRunning;
     $2[103] = t48;
   } else {
     t48 = $2[103];
   }
   let t49;
-  if ($2[104] !== t44 || $2[105] !== t48) {
-    t49 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 pb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-50 dark:bg-gray-800/50 rounded-md border border-gray-200 dark:border-gray-700 p-3", children: [
-      t41,
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-4", children: [
-        t44,
-        t48
-      ] })
-    ] }) });
-    $2[104] = t44;
-    $2[105] = t48;
-    $2[106] = t49;
+  if ($2[104] === Symbol.for("react.memo_cache_sentinel")) {
+    t49 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Label$1, { htmlFor: "test-interval", className: "text-[10px] text-gray-500 dark:text-gray-400 mb-1 block uppercase tracking-wide", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 10, className: "inline mr-1" }),
+      "Intervall"
+    ] });
+    $2[104] = t49;
   } else {
-    t49 = $2[106];
+    t49 = $2[104];
   }
   let t50;
-  if ($2[107] !== t19 || $2[108] !== t40 || $2[109] !== t49) {
-    t50 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 overflow-y-auto", children: [
-      t19,
-      t40,
-      t49
-    ] });
-    $2[107] = t19;
-    $2[108] = t40;
-    $2[109] = t49;
-    $2[110] = t50;
+  if ($2[105] === Symbol.for("react.memo_cache_sentinel")) {
+    t50 = /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { id: "test-interval", className: "h-8 bg-white dark:bg-gray-900 text-sm", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, {}) });
+    $2[105] = t50;
   } else {
-    t50 = $2[110];
+    t50 = $2[105];
   }
   let t51;
-  if ($2[111] === Symbol.for("react.memo_cache_sentinel")) {
-    t51 = /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 12, className: "text-gray-500" });
-    $2[111] = t51;
+  if ($2[106] === Symbol.for("react.memo_cache_sentinel")) {
+    t51 = /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "0", children: "Einmalig" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "1", children: "Monatlich" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "3", children: "Vierteljährlich" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "6", children: "Halbjährlich" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "12", children: "Jährlich" })
+    ] });
+    $2[106] = t51;
   } else {
-    t51 = $2[111];
+    t51 = $2[106];
   }
   let t52;
-  if ($2[112] !== selectedFormIds.length) {
-    t52 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
-      t51,
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-mono font-medium text-gray-900 dark:text-white", children: selectedFormIds.length })
+  if ($2[107] !== customInterval || $2[108] !== isRunning) {
+    t52 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
+      t49,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: customInterval, onValueChange: setCustomInterval, disabled: isRunning, children: [
+        t50,
+        t51
+      ] })
     ] });
-    $2[112] = selectedFormIds.length;
-    $2[113] = t52;
+    $2[107] = customInterval;
+    $2[108] = isRunning;
+    $2[109] = t52;
   } else {
-    t52 = $2[113];
+    t52 = $2[109];
   }
   let t53;
-  if ($2[114] === Symbol.for("react.memo_cache_sentinel")) {
-    t53 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "×" });
-    $2[114] = t53;
+  if ($2[110] !== t48 || $2[111] !== t52) {
+    t53 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "px-4 pb-4", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gray-50 dark:bg-gray-800/50 rounded-md border border-gray-200 dark:border-gray-700 p-3", children: [
+      t45,
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-4", children: [
+        t48,
+        t52
+      ] })
+    ] }) });
+    $2[110] = t48;
+    $2[111] = t52;
+    $2[112] = t53;
   } else {
-    t53 = $2[114];
+    t53 = $2[112];
   }
   let t54;
-  if ($2[115] === Symbol.for("react.memo_cache_sentinel")) {
-    t54 = /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 12, className: "text-gray-500" });
-    $2[115] = t54;
+  if ($2[113] !== t23 || $2[114] !== t44 || $2[115] !== t53) {
+    t54 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 overflow-y-auto", children: [
+      t23,
+      t44,
+      t53
+    ] });
+    $2[113] = t23;
+    $2[114] = t44;
+    $2[115] = t53;
+    $2[116] = t54;
   } else {
-    t54 = $2[115];
+    t54 = $2[116];
   }
   let t55;
-  if ($2[116] !== selectedPaymentMethodIds.length) {
-    t55 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
-      t54,
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-mono font-medium text-gray-900 dark:text-white", children: selectedPaymentMethodIds.length })
-    ] });
-    $2[116] = selectedPaymentMethodIds.length;
+  if ($2[117] === Symbol.for("react.memo_cache_sentinel")) {
+    t55 = /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 12, className: "text-gray-500" });
     $2[117] = t55;
   } else {
     t55 = $2[117];
   }
   let t56;
-  if ($2[118] === Symbol.for("react.memo_cache_sentinel")) {
-    t56 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "=" });
-    $2[118] = t56;
-  } else {
-    t56 = $2[118];
-  }
-  const t57 = totalTests > 0 ? "text-blue-500" : "text-gray-400";
-  let t58;
-  if ($2[119] !== t57) {
-    t58 = /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 12, className: t57 });
-    $2[119] = t57;
-    $2[120] = t58;
-  } else {
-    t58 = $2[120];
-  }
-  const t59 = `text-sm font-mono font-bold ${totalTests > 0 ? "text-gray-900 dark:text-white" : "text-gray-400"}`;
-  let t60;
-  if ($2[121] !== t59 || $2[122] !== totalTests) {
-    t60 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: t59, children: totalTests });
-    $2[121] = t59;
-    $2[122] = totalTests;
-    $2[123] = t60;
-  } else {
-    t60 = $2[123];
-  }
-  let t61;
-  if ($2[124] !== t58 || $2[125] !== t60) {
-    t61 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
-      t58,
-      t60
-    ] });
-    $2[124] = t58;
-    $2[125] = t60;
-    $2[126] = t61;
-  } else {
-    t61 = $2[126];
-  }
-  let t62;
-  if ($2[127] !== t52 || $2[128] !== t55 || $2[129] !== t61) {
-    t62 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700", children: [
-      t52,
-      t53,
+  if ($2[118] !== selectedFormIds.length) {
+    t56 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
       t55,
-      t56,
-      t61
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-mono font-medium text-gray-900 dark:text-white", children: selectedFormIds.length })
     ] });
-    $2[127] = t52;
-    $2[128] = t55;
-    $2[129] = t61;
-    $2[130] = t62;
+    $2[118] = selectedFormIds.length;
+    $2[119] = t56;
   } else {
-    t62 = $2[130];
+    t56 = $2[119];
   }
-  let t63;
-  if ($2[131] !== isRunning) {
-    t63 = isRunning && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center text-sm text-blue-600 dark:text-blue-400", children: [
+  let t57;
+  if ($2[120] === Symbol.for("react.memo_cache_sentinel")) {
+    t57 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "×" });
+    $2[120] = t57;
+  } else {
+    t57 = $2[120];
+  }
+  let t58;
+  if ($2[121] === Symbol.for("react.memo_cache_sentinel")) {
+    t58 = /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { size: 12, className: "text-gray-500" });
+    $2[121] = t58;
+  } else {
+    t58 = $2[121];
+  }
+  let t59;
+  if ($2[122] !== selectedPaymentMethodIds.length) {
+    t59 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+      t58,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-mono font-medium text-gray-900 dark:text-white", children: selectedPaymentMethodIds.length })
+    ] });
+    $2[122] = selectedPaymentMethodIds.length;
+    $2[123] = t59;
+  } else {
+    t59 = $2[123];
+  }
+  let t60;
+  if ($2[124] === Symbol.for("react.memo_cache_sentinel")) {
+    t60 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "=" });
+    $2[124] = t60;
+  } else {
+    t60 = $2[124];
+  }
+  const t61 = totalTests > 0 ? "text-blue-500" : "text-gray-400";
+  let t62;
+  if ($2[125] !== t61) {
+    t62 = /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 12, className: t61 });
+    $2[125] = t61;
+    $2[126] = t62;
+  } else {
+    t62 = $2[126];
+  }
+  const t63 = `text-sm font-mono font-bold ${totalTests > 0 ? "text-gray-900 dark:text-white" : "text-gray-400"}`;
+  let t64;
+  if ($2[127] !== t63 || $2[128] !== totalTests) {
+    t64 = /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: t63, children: totalTests });
+    $2[127] = t63;
+    $2[128] = totalTests;
+    $2[129] = t64;
+  } else {
+    t64 = $2[129];
+  }
+  let t65;
+  if ($2[130] !== t62 || $2[131] !== t64) {
+    t65 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-1.5", children: [
+      t62,
+      t64
+    ] });
+    $2[130] = t62;
+    $2[131] = t64;
+    $2[132] = t65;
+  } else {
+    t65 = $2[132];
+  }
+  let t66;
+  if ($2[133] !== t56 || $2[134] !== t59 || $2[135] !== t65) {
+    t66 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700", children: [
+      t56,
+      t57,
+      t59,
+      t60,
+      t65
+    ] });
+    $2[133] = t56;
+    $2[134] = t59;
+    $2[135] = t65;
+    $2[136] = t66;
+  } else {
+    t66 = $2[136];
+  }
+  let t67;
+  if ($2[137] !== isRunning) {
+    t67 = isRunning && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex items-center text-sm text-blue-600 dark:text-blue-400", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2" }),
       "Tests werden gestartet..."
     ] });
-    $2[131] = isRunning;
-    $2[132] = t63;
+    $2[137] = isRunning;
+    $2[138] = t67;
   } else {
-    t63 = $2[132];
+    t67 = $2[138];
   }
-  let t64;
-  if ($2[133] !== t62 || $2[134] !== t63) {
-    t64 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
-      t62,
-      t63
+  let t68;
+  if ($2[139] !== t66 || $2[140] !== t67) {
+    t68 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-3", children: [
+      t66,
+      t67
     ] });
-    $2[133] = t62;
-    $2[134] = t63;
-    $2[135] = t64;
+    $2[139] = t66;
+    $2[140] = t67;
+    $2[141] = t68;
   } else {
-    t64 = $2[135];
+    t68 = $2[141];
   }
-  let t65;
-  if ($2[136] !== isRunning || $2[137] !== onClose) {
-    t65 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: onClose, variant: "secondary", size: "md", disabled: isRunning, children: "Abbrechen" });
-    $2[136] = isRunning;
-    $2[137] = onClose;
-    $2[138] = t65;
-  } else {
-    t65 = $2[138];
-  }
-  const t66 = isRunning || totalTests === 0;
-  let t67;
-  if ($2[139] === Symbol.for("react.memo_cache_sentinel")) {
-    t67 = /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 });
-    $2[139] = t67;
-  } else {
-    t67 = $2[139];
-  }
-  const t68 = totalTests !== 1 ? "s" : "";
   let t69;
-  if ($2[140] !== handleRunTests || $2[141] !== isRunning || $2[142] !== t66 || $2[143] !== t68 || $2[144] !== totalTests) {
-    t69 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleRunTests, variant: "primary", size: "md", isLoading: isRunning, disabled: t66, className: "gap-2 min-w-[140px]", children: [
-      t67,
+  if ($2[142] !== isRunning || $2[143] !== onClose) {
+    t69 = /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: onClose, variant: "secondary", size: "md", disabled: isRunning, children: "Abbrechen" });
+    $2[142] = isRunning;
+    $2[143] = onClose;
+    $2[144] = t69;
+  } else {
+    t69 = $2[144];
+  }
+  const t70 = isRunning || totalTests === 0;
+  let t71;
+  if ($2[145] === Symbol.for("react.memo_cache_sentinel")) {
+    t71 = /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 });
+    $2[145] = t71;
+  } else {
+    t71 = $2[145];
+  }
+  const t72 = totalTests !== 1 ? "s" : "";
+  let t73;
+  if ($2[146] !== handleRunTests || $2[147] !== isRunning || $2[148] !== t70 || $2[149] !== t72 || $2[150] !== totalTests) {
+    t73 = /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { onClick: handleRunTests, variant: "primary", size: "md", isLoading: isRunning, disabled: t70, className: "gap-2 min-w-[140px]", children: [
+      t71,
       totalTests,
       " Test",
-      t68,
+      t72,
       " starten"
     ] });
-    $2[140] = handleRunTests;
-    $2[141] = isRunning;
-    $2[142] = t66;
-    $2[143] = t68;
-    $2[144] = totalTests;
-    $2[145] = t69;
-  } else {
-    t69 = $2[145];
-  }
-  let t70;
-  if ($2[146] !== t65 || $2[147] !== t69) {
-    t70 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
-      t65,
-      t69
-    ] });
-    $2[146] = t65;
-    $2[147] = t69;
+    $2[146] = handleRunTests;
+    $2[147] = isRunning;
     $2[148] = t70;
+    $2[149] = t72;
+    $2[150] = totalTests;
+    $2[151] = t73;
   } else {
-    t70 = $2[148];
+    t73 = $2[151];
   }
-  let t71;
-  if ($2[149] !== t64 || $2[150] !== t70) {
-    t71 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 sm:justify-between gap-4", children: [
-      t64,
-      t70
+  let t74;
+  if ($2[152] !== t69 || $2[153] !== t73) {
+    t74 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex gap-2", children: [
+      t69,
+      t73
     ] });
-    $2[149] = t64;
-    $2[150] = t70;
-    $2[151] = t71;
+    $2[152] = t69;
+    $2[153] = t73;
+    $2[154] = t74;
   } else {
-    t71 = $2[151];
+    t74 = $2[154];
   }
-  let t72;
-  if ($2[152] !== t50 || $2[153] !== t71) {
-    t72 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "!w-[calc(100vw-6rem)] !max-w-4xl !h-auto !max-h-[calc(100vh-6rem)] flex flex-col p-0 gap-0 overflow-hidden", children: [
-      t18,
-      t50,
-      t71
+  let t75;
+  if ($2[155] !== t68 || $2[156] !== t74) {
+    t75 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogFooter, { className: "p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 sm:justify-between gap-4", children: [
+      t68,
+      t74
     ] });
-    $2[152] = t50;
-    $2[153] = t71;
-    $2[154] = t72;
+    $2[155] = t68;
+    $2[156] = t74;
+    $2[157] = t75;
   } else {
-    t72 = $2[154];
+    t75 = $2[157];
   }
-  let t73;
-  if ($2[155] !== isOpen || $2[156] !== t17 || $2[157] !== t72) {
-    t73 = /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: t17, children: t72 });
-    $2[155] = isOpen;
-    $2[156] = t17;
-    $2[157] = t72;
-    $2[158] = t73;
+  let t76;
+  if ($2[158] !== t54 || $2[159] !== t75) {
+    t76 = /* @__PURE__ */ jsxRuntimeExports.jsxs(DialogContent, { className: "!w-[calc(100vw-6rem)] !max-w-4xl !h-auto !max-h-[calc(100vh-6rem)] flex flex-col p-0 gap-0 overflow-hidden", children: [
+      t22,
+      t54,
+      t75
+    ] });
+    $2[158] = t54;
+    $2[159] = t75;
+    $2[160] = t76;
   } else {
-    t73 = $2[158];
+    t76 = $2[160];
   }
-  return t73;
+  let t77;
+  if ($2[161] !== isOpen || $2[162] !== t21 || $2[163] !== t76) {
+    t77 = /* @__PURE__ */ jsxRuntimeExports.jsx(Dialog, { open: isOpen, onOpenChange: t21, children: t76 });
+    $2[161] = isOpen;
+    $2[162] = t21;
+    $2[163] = t76;
+    $2[164] = t77;
+  } else {
+    t77 = $2[164];
+  }
+  return t77;
 };
 function _temp$1(f2) {
   return f2.isActive;
@@ -61180,7 +61207,7 @@ function formatShortcut(shortcut) {
   return parts.join(" + ");
 }
 const Layout = (t0) => {
-  const $2 = dist.c(43);
+  const $2 = dist.c(47);
   const {
     children
   } = t0;
@@ -61189,123 +61216,145 @@ const Layout = (t0) => {
   const mainContentRef = reactExports.useRef(null);
   const [showTestDialog, setShowTestDialog] = reactExports.useState(false);
   const [preselectAll, setPreselectAll] = reactExports.useState(false);
+  let t1;
+  if ($2[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t1 = [];
+    $2[0] = t1;
+  } else {
+    t1 = $2[0];
+  }
+  const [preselectedFormIds, setPreselectedFormIds] = reactExports.useState(t1);
+  let t2;
+  if ($2[1] === Symbol.for("react.memo_cache_sentinel")) {
+    t2 = [];
+    $2[1] = t2;
+  } else {
+    t2 = $2[1];
+  }
+  const [preselectedPaymentMethodIds, setPreselectedPaymentMethodIds] = reactExports.useState(t2);
   const [showSearch, setShowSearch] = reactExports.useState(false);
   const {
     updateSetting,
     loadSettings,
     settings
   } = useSettingsStore();
-  let t1;
-  if ($2[0] !== settings) {
-    t1 = settings.find(_temp);
-    $2[0] = settings;
-    $2[1] = t1;
-  } else {
-    t1 = $2[1];
-  }
-  const themeSetting = t1;
-  const currentTheme = themeSetting?.value || "system";
-  let t2;
   let t3;
-  if ($2[2] !== loadSettings) {
-    t2 = () => {
+  if ($2[2] !== settings) {
+    t3 = settings.find(_temp);
+    $2[2] = settings;
+    $2[3] = t3;
+  } else {
+    t3 = $2[3];
+  }
+  const themeSetting = t3;
+  const currentTheme = themeSetting?.value || "system";
+  let t4;
+  let t5;
+  if ($2[4] !== loadSettings) {
+    t4 = () => {
       loadSettings();
     };
-    t3 = [loadSettings];
-    $2[2] = loadSettings;
-    $2[3] = t2;
-    $2[4] = t3;
+    t5 = [loadSettings];
+    $2[4] = loadSettings;
+    $2[5] = t4;
+    $2[6] = t5;
   } else {
-    t2 = $2[3];
-    t3 = $2[4];
+    t4 = $2[5];
+    t5 = $2[6];
   }
-  reactExports.useEffect(t2, t3);
-  let t4;
-  if ($2[5] === Symbol.for("react.memo_cache_sentinel")) {
-    t4 = () => {
+  reactExports.useEffect(t4, t5);
+  let t6;
+  if ($2[7] === Symbol.for("react.memo_cache_sentinel")) {
+    t6 = () => {
       if (mainContentRef.current) {
         mainContentRef.current.scrollTop = 0;
       }
     };
-    $2[5] = t4;
+    $2[7] = t6;
   } else {
-    t4 = $2[5];
+    t6 = $2[7];
   }
-  let t5;
-  if ($2[6] !== location.pathname) {
-    t5 = [location.pathname];
-    $2[6] = location.pathname;
-    $2[7] = t5;
-  } else {
-    t5 = $2[7];
-  }
-  reactExports.useEffect(t4, t5);
-  let t6;
-  if ($2[8] === Symbol.for("react.memo_cache_sentinel")) {
-    t6 = () => {
-      setPreselectAll(false);
-      setShowTestDialog(true);
-    };
-    $2[8] = t6;
-  } else {
-    t6 = $2[8];
-  }
-  const handleRunAllTests = t6;
   let t7;
-  if ($2[9] === Symbol.for("react.memo_cache_sentinel")) {
-    t7 = () => {
-      setShowSearch(true);
-    };
+  if ($2[8] !== location.pathname) {
+    t7 = [location.pathname];
+    $2[8] = location.pathname;
     $2[9] = t7;
   } else {
     t7 = $2[9];
   }
-  const handleOpenSearch = t7;
+  reactExports.useEffect(t6, t7);
   let t8;
-  if ($2[10] !== currentTheme || $2[11] !== updateSetting) {
-    t8 = async () => {
+  if ($2[10] === Symbol.for("react.memo_cache_sentinel")) {
+    t8 = () => {
+      setPreselectAll(false);
+      setShowTestDialog(true);
+    };
+    $2[10] = t8;
+  } else {
+    t8 = $2[10];
+  }
+  const handleRunAllTests = t8;
+  let t9;
+  if ($2[11] === Symbol.for("react.memo_cache_sentinel")) {
+    t9 = () => {
+      setShowSearch(true);
+    };
+    $2[11] = t9;
+  } else {
+    t9 = $2[11];
+  }
+  const handleOpenSearch = t9;
+  let t10;
+  if ($2[12] !== currentTheme || $2[13] !== updateSetting) {
+    t10 = async () => {
       const nextTheme = currentTheme === "system" ? "light" : currentTheme === "light" ? "dark" : "system";
       await updateSetting("theme", nextTheme, "UI-Theme-Präferenz (system, light, dark)");
     };
-    $2[10] = currentTheme;
-    $2[11] = updateSetting;
-    $2[12] = t8;
+    $2[12] = currentTheme;
+    $2[13] = updateSetting;
+    $2[14] = t10;
   } else {
-    t8 = $2[12];
+    t10 = $2[14];
   }
-  const handleToggleTheme = t8;
-  let t9;
-  if ($2[13] !== navigate) {
-    t9 = () => {
+  const handleToggleTheme = t10;
+  let t11;
+  if ($2[15] !== navigate) {
+    t11 = () => {
       navigate("/settings");
     };
-    $2[13] = navigate;
-    $2[14] = t9;
+    $2[15] = navigate;
+    $2[16] = t11;
   } else {
-    t9 = $2[14];
+    t11 = $2[16];
   }
-  const handleOpenSettings = t9;
-  let t10;
-  if ($2[15] === Symbol.for("react.memo_cache_sentinel")) {
-    t10 = {
+  const handleOpenSettings = t11;
+  let t12;
+  if ($2[17] === Symbol.for("react.memo_cache_sentinel")) {
+    t12 = {
       onOpenSearch: handleOpenSearch,
       onOpenTestDialog: handleRunAllTests
     };
-    $2[15] = t10;
+    $2[17] = t12;
   } else {
-    t10 = $2[15];
+    t12 = $2[17];
   }
-  useKeyboardShortcuts(t10);
-  let t11;
-  let t12;
-  if ($2[16] === Symbol.for("react.memo_cache_sentinel")) {
-    t11 = () => {
+  useKeyboardShortcuts(t12);
+  let t13;
+  let t14;
+  if ($2[18] === Symbol.for("react.memo_cache_sentinel")) {
+    t13 = () => {
       const handleKeyDown = (e2) => {
         if (e2.key === "Escape") {
           setShowSearch(false);
         }
       };
-      const handleOpenTestDialogEvent = () => {
+      const handleOpenTestDialogEvent = (e_0) => {
+        const customEvent = e_0;
+        if (customEvent.detail) {
+          setPreselectedFormIds(customEvent.detail.formIds || []);
+          setPreselectedPaymentMethodIds(customEvent.detail.paymentMethodIds || []);
+          setPreselectAll(false);
+        }
         setShowTestDialog(true);
       };
       window.addEventListener("keydown", handleKeyDown);
@@ -61315,17 +61364,17 @@ const Layout = (t0) => {
         window.removeEventListener("openTestDialog", handleOpenTestDialogEvent);
       };
     };
-    t12 = [];
-    $2[16] = t11;
-    $2[17] = t12;
+    t14 = [];
+    $2[18] = t13;
+    $2[19] = t14;
   } else {
-    t11 = $2[16];
-    t12 = $2[17];
+    t13 = $2[18];
+    t14 = $2[19];
   }
-  reactExports.useEffect(t11, t12);
-  let t13;
-  if ($2[18] === Symbol.for("react.memo_cache_sentinel")) {
-    t13 = [{
+  reactExports.useEffect(t13, t14);
+  let t15;
+  if ($2[20] === Symbol.for("react.memo_cache_sentinel")) {
+    t15 = [{
       name: "Dashboard",
       href: "/",
       icon: LayoutDashboard
@@ -61340,7 +61389,7 @@ const Layout = (t0) => {
     }, {
       name: "Autopilot",
       href: "/schedules",
-      icon: Play
+      icon: Bot
     }, {
       name: "Tests",
       href: "/test-results",
@@ -61354,33 +61403,33 @@ const Layout = (t0) => {
       href: "/info-doku",
       icon: BookOpen
     }];
-    $2[18] = t13;
+    $2[20] = t15;
   } else {
-    t13 = $2[18];
+    t15 = $2[20];
   }
-  const navigation = t13;
-  let t14;
-  if ($2[19] !== currentTheme || $2[20] !== handleOpenSettings || $2[21] !== handleToggleTheme) {
-    t14 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
-    $2[19] = currentTheme;
-    $2[20] = handleOpenSettings;
-    $2[21] = handleToggleTheme;
-    $2[22] = t14;
+  const navigation = t15;
+  let t16;
+  if ($2[21] !== currentTheme || $2[22] !== handleOpenSettings || $2[23] !== handleToggleTheme) {
+    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx(CustomTitleBar, { onRunAllTests: handleRunAllTests, onOpenSearch: handleOpenSearch, onToggleTheme: handleToggleTheme, onOpenSettings: handleOpenSettings, currentTheme });
+    $2[21] = currentTheme;
+    $2[22] = handleOpenSettings;
+    $2[23] = handleToggleTheme;
+    $2[24] = t16;
   } else {
-    t14 = $2[22];
+    t16 = $2[24];
   }
-  let t15;
-  if ($2[23] === Symbol.for("react.memo_cache_sentinel")) {
-    t15 = {
+  let t17;
+  if ($2[25] === Symbol.for("react.memo_cache_sentinel")) {
+    t17 = {
       width: "clamp(16rem, 22.5vw, 40rem)"
     };
-    $2[23] = t15;
+    $2[25] = t17;
   } else {
-    t15 = $2[23];
+    t17 = $2[25];
   }
-  let t16;
-  if ($2[24] !== location.pathname) {
-    t16 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t15, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
+  let t18;
+  if ($2[26] !== location.pathname) {
+    t18 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t17, children: /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "flex-1 p-2", children: navigation.map((item) => {
       const IconComponent = item.icon;
       return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 1.75 : 1.75 }),
@@ -61389,93 +61438,97 @@ const Layout = (t0) => {
         }, className: `transition-all text-[clamp(0.66rem,1.075vw,0.925rem)] ${location.pathname === item.href ? "" : null}`, children: item.name })
       ] }, item.name);
     }) }) });
-    $2[24] = location.pathname;
-    $2[25] = t16;
+    $2[26] = location.pathname;
+    $2[27] = t18;
   } else {
-    t16 = $2[25];
-  }
-  let t17;
-  if ($2[26] !== children) {
-    t17 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full max-w-[1240px]", children }) }) });
-    $2[26] = children;
-    $2[27] = t17;
-  } else {
-    t17 = $2[27];
-  }
-  let t18;
-  if ($2[28] !== t16 || $2[29] !== t17) {
-    t18 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
-      t16,
-      t17
-    ] });
-    $2[28] = t16;
-    $2[29] = t17;
-    $2[30] = t18;
-  } else {
-    t18 = $2[30];
+    t18 = $2[27];
   }
   let t19;
-  if ($2[31] === Symbol.for("react.memo_cache_sentinel")) {
-    t19 = () => {
-      setShowTestDialog(false);
-      setPreselectAll(false);
-    };
-    $2[31] = t19;
+  if ($2[28] !== children) {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1  flex flex-col overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx("main", { ref: mainContentRef, className: "flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-full max-w-[1240px]", children }) }) });
+    $2[28] = children;
+    $2[29] = t19;
   } else {
-    t19 = $2[31];
+    t19 = $2[29];
   }
   let t20;
-  if ($2[32] !== preselectAll || $2[33] !== showTestDialog) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t19, preselectAll });
-    $2[32] = preselectAll;
-    $2[33] = showTestDialog;
-    $2[34] = t20;
+  if ($2[30] !== t18 || $2[31] !== t19) {
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex flex-1 overflow-hidden", children: [
+      t18,
+      t19
+    ] });
+    $2[30] = t18;
+    $2[31] = t19;
+    $2[32] = t20;
   } else {
-    t20 = $2[34];
+    t20 = $2[32];
   }
   let t21;
-  if ($2[35] === Symbol.for("react.memo_cache_sentinel")) {
-    t21 = () => setShowSearch(false);
-    $2[35] = t21;
+  if ($2[33] === Symbol.for("react.memo_cache_sentinel")) {
+    t21 = () => {
+      setShowTestDialog(false);
+      setPreselectAll(false);
+      setPreselectedFormIds([]);
+      setPreselectedPaymentMethodIds([]);
+    };
+    $2[33] = t21;
   } else {
-    t21 = $2[35];
+    t21 = $2[33];
   }
   let t22;
-  if ($2[36] !== showSearch) {
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t21 });
-    $2[36] = showSearch;
-    $2[37] = t22;
+  if ($2[34] !== preselectAll || $2[35] !== preselectedFormIds || $2[36] !== preselectedPaymentMethodIds || $2[37] !== showTestDialog) {
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx(TestRunDialog, { isOpen: showTestDialog, onClose: t21, preselectAll, preselectedFormIds, preselectedPaymentMethodIds });
+    $2[34] = preselectAll;
+    $2[35] = preselectedFormIds;
+    $2[36] = preselectedPaymentMethodIds;
+    $2[37] = showTestDialog;
+    $2[38] = t22;
   } else {
-    t22 = $2[37];
+    t22 = $2[38];
   }
   let t23;
-  if ($2[38] !== t14 || $2[39] !== t18 || $2[40] !== t20 || $2[41] !== t22) {
-    t23 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
-      t14,
-      t18,
-      t20,
-      t22
-    ] });
-    $2[38] = t14;
-    $2[39] = t18;
-    $2[40] = t20;
-    $2[41] = t22;
-    $2[42] = t23;
+  if ($2[39] === Symbol.for("react.memo_cache_sentinel")) {
+    t23 = () => setShowSearch(false);
+    $2[39] = t23;
   } else {
-    t23 = $2[42];
+    t23 = $2[39];
   }
-  return t23;
+  let t24;
+  if ($2[40] !== showSearch) {
+    t24 = /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalSearch, { isOpen: showSearch, onClose: t23 });
+    $2[40] = showSearch;
+    $2[41] = t24;
+  } else {
+    t24 = $2[41];
+  }
+  let t25;
+  if ($2[42] !== t16 || $2[43] !== t20 || $2[44] !== t22 || $2[45] !== t24) {
+    t25 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative", children: [
+      t16,
+      t20,
+      t22,
+      t24
+    ] });
+    $2[42] = t16;
+    $2[43] = t20;
+    $2[44] = t22;
+    $2[45] = t24;
+    $2[46] = t25;
+  } else {
+    t25 = $2[46];
+  }
+  return t25;
 };
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-BYq_OcBf.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BPd8r6-L.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-D-KUcXS3.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-DOqo9PgO.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-0GzX7e74.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
-const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-DboAa5JN.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DGauAENY.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-CMO5_K1p.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-CK6e7vvB.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-wSzyNlTw.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-P6KK8CuU.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-g4bVzj9M.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
+const InfoDoku = reactExports.lazy(() => __vitePreload(() => import("./InfoDoku-CvUcVySp.js"), true ? __vite__mapDeps([10,1]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-DrztYPjZ.js"), true ? __vite__mapDeps([11,1,5,6,2,4]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -61554,21 +61607,22 @@ export {
   Sun as a7,
   SlidersVertical as a8,
   Moon as a9,
-  DialogContent as aA,
-  Dialog as aB,
-  Root$1 as aC,
-  cn as aD,
-  Portal$1 as aE,
-  Content as aF,
-  Overlay as aG,
-  Close as aH,
-  Title as aI,
-  Description as aJ,
-  ChevronsUpDown as aK,
-  TriangleAlert as aL,
-  DialogDescription as aM,
-  DialogFooter as aN,
-  Badge as aO,
+  Search as aA,
+  DialogContent as aB,
+  Dialog as aC,
+  Root$1 as aD,
+  cn as aE,
+  Portal$1 as aF,
+  Content as aG,
+  Overlay as aH,
+  Close as aI,
+  Title as aJ,
+  Description as aK,
+  ChevronsUpDown as aL,
+  TriangleAlert as aM,
+  DialogDescription as aN,
+  DialogFooter as aO,
+  Badge as aP,
   Monitor as aa,
   LoaderCircle as ab,
   Square as ac,
@@ -61585,16 +61639,16 @@ export {
   formatDuration as an,
   Link$1 as ao,
   FileBraces as ap,
-  CircleX as aq,
-  KEYBOARD_SHORTCUTS as ar,
-  Keyboard as as,
-  formatShortcut as at,
-  getDefaultScheduleIcon as au,
-  useSchedulesStore as av,
-  getAllIconNames as aw,
-  DialogHeader as ax,
-  DialogTitle as ay,
-  Search as az,
+  Clock as aq,
+  CircleX as ar,
+  KEYBOARD_SHORTCUTS as as,
+  Keyboard as at,
+  formatShortcut as au,
+  getDefaultScheduleIcon as av,
+  useSchedulesStore as aw,
+  getAllIconNames as ax,
+  DialogHeader as ay,
+  DialogTitle as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,

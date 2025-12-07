@@ -4,7 +4,7 @@ import CustomTitleBar from "./CustomTitleBar";
 import Button from "./ui/Button";
 import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
-import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Play } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
@@ -18,6 +18,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [showTestDialog, setShowTestDialog] = useState(false);
   const [preselectAll, setPreselectAll] = useState(false);
+  const [preselectedFormIds, setPreselectedFormIds] = useState<number[]>([]);
+  const [preselectedPaymentMethodIds, setPreselectedPaymentMethodIds] = useState<number[]>([]);
   const [showSearch, setShowSearch] = useState(false);
 
   const { updateSetting, loadSettings, settings } = useSettingsStore();
@@ -69,16 +71,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
 
     // Global event listener for opening test dialog from any page
-    const handleOpenTestDialogEvent = () => {
+    const handleOpenTestDialogEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ formIds?: number[]; paymentMethodIds?: number[] }>;
+      if (customEvent.detail) {
+        setPreselectedFormIds(customEvent.detail.formIds || []);
+        setPreselectedPaymentMethodIds(customEvent.detail.paymentMethodIds || []);
+        setPreselectAll(false);
+      }
       setShowTestDialog(true);
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("openTestDialog", handleOpenTestDialogEvent);
+    window.addEventListener("openTestDialog", handleOpenTestDialogEvent as EventListener);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("openTestDialog", handleOpenTestDialogEvent);
+      window.removeEventListener("openTestDialog", handleOpenTestDialogEvent as EventListener);
     };
   }, []);
 
@@ -86,7 +94,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: "Dashboard", href: "/", icon: LayoutDashboard },
     { name: "Formulare", href: "/forms", icon: FileText },
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
-    { name: "Autopilot", href: "/schedules", icon: Play },
+    { name: "Autopilot", href: "/schedules", icon: Bot },
     { name: "Tests", href: "/test-results", icon: BarChart3 },
     { name: "Einstellungen", href: "/settings", icon: Settings },
     { name: "Info & Doku", href: "/info-doku", icon: BookOpen },
@@ -144,8 +152,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         onClose={() => {
           setShowTestDialog(false);
           setPreselectAll(false);
+          setPreselectedFormIds([]);
+          setPreselectedPaymentMethodIds([]);
         }}
         preselectAll={preselectAll}
+        preselectedFormIds={preselectedFormIds}
+        preselectedPaymentMethodIds={preselectedPaymentMethodIds}
       />
 
       {/* Global Search */}

@@ -1,9 +1,9 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, i as dist } from "./index-By5QLJ5S.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, E as ExternalLink, k as Trash2, P as Play, L as Label, I as Input, l as Table, m as TableBody, n as TableRow, o as TableCell, p as StatusBadge, q as formatDate, s as renderIcon, t as Checkbox, v as ChevronUp, x as ChevronDown, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, H as Plus, J as useSearchParams, b as useFormsStore, e as useTestRunsStore, K as TableHeader, M as TableHead, N as Pen, O as TablePagination, i as dist } from "./index-BmL3LNRX.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-Drc8Y-aX.js";
-import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead } from "./useTableSelection-DxQWlfY2.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-juunrBHA.js";
-import { S as Skeleton } from "./Skeleton-C5ne5Gwp.js";
+import { I as IconPicker, u as useSparklineData, M as MiniSparkline } from "./MiniSparkline-DLGHBjvs.js";
+import { D as Drawer, a as DrawerContent, b as DrawerHeader, c as DrawerFooter, u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead } from "./useTableSelection-COD78lcy.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-2m6Jxly7.js";
+import { S as Skeleton } from "./Skeleton-CrXQDtcG.js";
 const FIELD_TYPE_OPTIONS = [{
   value: "amount",
   label: "Betrag (Preset)"
@@ -181,6 +181,17 @@ const FormDrawer = ({
         }, variant: "danger", size: "sm", className: "gap-1.5", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 14 }),
           "Löschen"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { type: "button", onClick: () => {
+          window.dispatchEvent(new CustomEvent("openTestDialog", {
+            detail: {
+              formIds: [editForm.id]
+            }
+          }));
+          onClose();
+        }, variant: "secondary", size: "sm", className: "gap-1.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 14 }),
+          "Test starten"
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 mt-4", children: [
@@ -591,10 +602,18 @@ const Forms = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "text-right text-sm font-medium", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_3) => {
                 e_3.stopPropagation();
-                handleEditForm(form_2);
-              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+                window.dispatchEvent(new CustomEvent("openTestDialog", {
+                  detail: {
+                    formIds: [form_2.id]
+                  }
+                }));
+              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Test starten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { size: 16, className: "text-green-600 dark:text-green-400" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_4) => {
                 e_4.stopPropagation();
+                handleEditForm(form_2);
+              }, variant: "ghost", size: "sm", disabled: isLoading, title: "Bearbeiten", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Pen, { size: 16, className: "text-blue-600 dark:text-blue-400" }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { onClick: (e_5) => {
+                e_5.stopPropagation();
                 handleDeleteForm(form_2);
               }, variant: "ghost", size: "sm", disabled: isLoading, title: "Löschen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { size: 16, className: "text-red-600 dark:text-red-400" }) })
             ] }) })

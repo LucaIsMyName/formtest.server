@@ -16,7 +16,7 @@ import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePagination } from "../components/ui/Table";
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
-import { Edit2, Trash2, Plus } from "lucide-react";
+import { Edit2, Trash2, Plus, Play } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
@@ -468,6 +468,19 @@ const PaymentMethods: React.FC = () => {
                   </TableCell>
                   <TableCell className="text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
+                      <Button
+                        onClick={(e) => { 
+                          e.stopPropagation(); 
+                          window.dispatchEvent(new CustomEvent("openTestDialog", { 
+                            detail: { paymentMethodIds: [method.id] } 
+                          }));
+                        }}
+                        variant="ghost"
+                        size="sm"
+                        disabled={isLoading}
+                        title="Test starten">
+                        <Play size={16} className="text-green-600 dark:text-green-400" />
+                      </Button>
                       <Button
                         onClick={(e) => { e.stopPropagation(); handleEditMethod(method); }}
                         variant="ghost"

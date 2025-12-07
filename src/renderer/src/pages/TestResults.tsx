@@ -11,7 +11,7 @@ import SelectionActionBar from "../components/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
-import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet } from "lucide-react";
+import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
@@ -119,116 +119,140 @@ const TestDetailsSkeleton = () => (
   </div>
 );
 
-interface TimelineStep {
-  timestamp?: string;
-  message: string;
-  type: "info" | "success" | "error" | "warning";
-}
-
-const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: string }> = ({ steps: structuredSteps, logDetails, status }) => {
-  const parseLogDetails = (logs?: string): TimelineStep[] => {
-    if (!logs) return [];
-
-    try {
-      // Try to parse as JSON array first
-      const parsed = JSON.parse(logs);
-      if (Array.isArray(parsed)) {
-        return parsed.map((log: string) => parseLogEntry(log));
-      }
-    } catch {
-      // If JSON parsing fails, split by newlines
-      const lines = logs.split("\n").filter((line) => line.trim());
-      return lines.map((line) => parseLogEntry(line));
-    }
-
-    return [];
-  };
-
-  const parseLogEntry = (log: string): TimelineStep => {
-    // Extract timestamp if present [YYYY-MM-DDTHH:mm:ss.sssZ]
-    const timestampMatch = log.match(/^\[([^\]]+)\]/);
-    const timestamp = timestampMatch ? timestampMatch[1] : undefined;
-    const message = timestamp ? log.replace(/^\[[^\]]+\]\s*/, "") : log;
-
-    // Determine step type based on message content
-    let type: TimelineStep["type"] = "info";
-    const lowerMessage = message.toLowerCase();
-
-    if (lowerMessage.includes("error") || lowerMessage.includes("failed") || lowerMessage.includes("timeout")) {
-      type = "error";
-    } else if (lowerMessage.includes("success") || lowerMessage.includes("completed") || lowerMessage.includes("detected success")) {
-      type = "success";
-    } else if (lowerMessage.includes("warning") || lowerMessage.includes("skipping")) {
-      type = "warning";
-    }
-
-    return { timestamp, message, type };
-  };
-
-  // Convert structured steps to timeline format or fallback to log parsing
-  const convertStructuredSteps = (steps: TestStep[]): TimelineStep[] => {
-    return steps.map((step) => ({
-      timestamp: step.startTime,
-      message: step.message || step.name,
-      type: step.status === "success" ? "success" : step.status === "error" ? "error" : step.status === "skipped" ? "warning" : "info",
-    }));
-  };
-
-  const timelineSteps = structuredSteps?.length ? convertStructuredSteps(structuredSteps) : parseLogDetails(logDetails);
-
-  // Add final status step
-  const finalStep: TimelineStep = {
-    message: status === "SUCCESS" ? "Test completed successfully" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : "Test läuft",
-    type: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "warning" : "info",
-  };
-
-  const allSteps = [...timelineSteps, finalStep];
-
-  const getStepIcon = (type: TimelineStep["type"]) => {
-    switch (type) {
+const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: string }> = ({ steps: structuredSteps, status }) => {
+  const getStepIcon = (stepStatus: string) => {
+    switch (stepStatus) {
       case "success":
-        return <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />;
+        return <CheckCircle2 className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />;
       case "error":
-        return <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />;
-      case "warning":
-        return <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
+        return <XCircle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />;
+      case "skipped":
+        return <AlertCircle className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400" />;
+      case "running":
+        return <Play className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-pulse" />;
       default:
-        return <Play className="w-4 h-4 text-blue-600 dark:text-blue-400" />;
+        return <Clock className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />;
+    }
+  };
+
+  const getTextColor = (stepStatus: string) => {
+    switch (stepStatus) {
+      case "success":
+        return "text-green-700 dark:text-green-400";
+      case "error":
+        return "text-red-700 dark:text-red-400";
+      case "skipped":
+        return "text-yellow-700 dark:text-yellow-400";
+      default:
+        return "text-gray-700 dark:text-gray-300";
     }
   };
 
   const formatTimestamp = (timestamp?: string) => {
     if (!timestamp) return null;
     try {
-      return new Date(timestamp).toLocaleTimeString();
+      return new Date(timestamp).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     } catch {
       return timestamp;
     }
   };
 
+  const formatDurationMs = (ms?: number) => {
+    if (!ms) return null;
+    if (ms < 1000) return `${ms}ms`;
+    return `${(ms / 1000).toFixed(2)}s`;
+  };
+
+  // Format metadata inline
+  const formatMetadataInline = (metadata?: Record<string, any>): string | null => {
+    if (!metadata || Object.keys(metadata).length === 0) return null;
+    
+    const parts: string[] = [];
+    if (metadata.fieldsFound) parts.push(`${metadata.fieldsFound} Felder`);
+    if (metadata.fieldsFilled) parts.push(`${metadata.fieldsFilled} ausgefüllt`);
+    if (metadata.formType) parts.push(metadata.formType);
+    if (metadata.paymentMethod) parts.push(metadata.paymentMethod);
+    if (metadata.cookieBannerFound !== undefined) parts.push(metadata.cookieBannerFound ? "Cookie-Banner" : "Kein Cookie-Banner");
+    if (metadata.redirectUrl) parts.push(metadata.redirectUrl);
+    if (metadata.paymentProvider && metadata.paymentProvider !== "Unknown") parts.push(metadata.paymentProvider);
+    
+    return parts.length > 0 ? parts.join(" · ") : null;
+  };
+
+  // Add final status step
+  const finalStep: TestStep = {
+    id: "final",
+    name: status === "SUCCESS" ? "Test erfolgreich abgeschlossen" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : "Test läuft",
+    status: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "skipped" : "running",
+    startTime: new Date().toISOString(),
+    message: status === "SUCCESS" ? "Alle Schritte erfolgreich durchgeführt" : status === "FAILURE" ? "Test mit Fehlern beendet" : undefined,
+  };
+
+  const allSteps = structuredSteps?.length ? [...structuredSteps, finalStep] : [finalStep];
+
   return (
     <div className="mb-6 pb-6 border-b dark:border-gray-700">
       <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Test Timeline</label>
-      <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-        <Table>
-          <TableBody>
-            {allSteps.map((step, index) => (
-              <TableRow key={index}>
-                <TableCell className="px-3 py-2 w-[40px] bg-gray-50 dark:bg-gray-800/50">
-                  {getStepIcon(step.type)}
-                </TableCell>
-                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">
-                  {step.message}
-                </TableCell>
-                {step.timestamp && (
-                  <TableCell className="px-3 py-2 w-[80px] text-right">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{formatTimestamp(step.timestamp)}</span>
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="relative pl-4">
+        {/* Vertical timeline line */}
+        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gray-200 dark:bg-gray-700" />
+        
+        <div className="space-y-3">
+          {allSteps.map((step, index) => {
+            const metadataText = formatMetadataInline(step.metadata);
+            
+            return (
+              <div key={step.id || index} className="relative flex items-start gap-3">
+                {/* Timeline dot */}
+                <div className="relative z-10 flex-shrink-0 -ml-4 mt-0.5">
+                  {getStepIcon(step.status)}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 -mt-0.5">
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className={`text-sm font-medium ${getTextColor(step.status)}`}>
+                      {step.name}
+                    </span>
+                    {step.duration && (
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono">
+                        {formatDurationMs(step.duration)}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Message - only show if different from name AND error */}
+                  {step.message && step.message !== step.name && step.message !== step.error && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      {step.message}
+                    </p>
+                  )}
+                  
+                  {/* Inline metadata */}
+                  {metadataText && (
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500 font-mono mt-0.5">
+                      {metadataText}
+                    </p>
+                  )}
+                  
+                  {/* Error - shown in gray like other messages */}
+                  {step.error && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      {step.error}
+                    </p>
+                  )}
+                </div>
+
+                {/* Timestamp */}
+                <div className="flex-shrink-0 text-right">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono">
+                    {formatTimestamp(step.startTime)}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -239,6 +263,25 @@ interface TestRunWithComputed extends TestRun {
   formName?: string;
   paymentMethodName?: string;
 }
+
+// Helper function for status-based row background colors
+const getStatusRowBg = (status: string, isSelected: boolean, isChecked: boolean): string => {
+  if (isChecked) return "bg-blue-50 dark:bg-blue-900/30";
+  if (isSelected) return "bg-gray-100 dark:bg-gray-700/50";
+  
+  switch (status) {
+    case "SUCCESS":
+      return "bg-green-50 dark:bg-green-950/30";
+    case "FAILURE":
+      return "bg-red-50 dark:bg-red-950/30";
+    case "STOPPED":
+      return "bg-purple-50 dark:bg-purple-950/30";
+    case "SKIPPED":
+      return "bg-yellow-50 dark:bg-yellow-950/30";
+    default:
+      return "bg-white dark:bg-gray-800";
+  }
+};
 
 const TestResults: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -922,7 +965,7 @@ const TestResults: React.FC = () => {
                         tabIndex={0}
                         role="button"
                         aria-selected={isRowSelected}
-                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : isRowSelected ? "bg-gray-50 dark:bg-gray-700/50" : "bg-white dark:bg-gray-800"}`}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${getStatusRowBg(testRun.status, isRowSelected, isChecked)}`}
                         onClick={() => handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {

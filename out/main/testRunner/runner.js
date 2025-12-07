@@ -447,14 +447,14 @@ class TestRunner {
 
     // Step 1: Browser Initialization (if needed)
     if (!this.page) {
-      const browserStep = this.startStep('browser-init', 'Initialize Browser', {
+      const browserStep = this.startStep('browser-init', 'Browser initialisieren', {
         browserType: 'chromium',
         headless: this.config.headless
       })
       
       try {
         await this.initializeBrowser()
-        this.completeStep('browser-init', 'success', 'Browser initialized successfully')
+        this.completeStep('browser-init', 'success', 'Browser erfolgreich gestartet')
       } catch (error) {
         this.failStep('browser-init', error.message)
         throw error
@@ -465,7 +465,7 @@ class TestRunner {
     const targetUrl = this.buildPrefilledUrl(form)
 
     // Step 2: Page Navigation
-    const navStep = this.startStep('page-navigation', 'Navigate to URL', {
+    const navStep = this.startStep('page-navigation', 'Zur URL navigieren', {
       url: targetUrl,
       originalUrl: form.url
     })
@@ -485,7 +485,7 @@ class TestRunner {
       await this.page.waitForTimeout(2000)
 
       const loadTime = Date.now() - navStartTime
-      this.completeStep('page-navigation', 'success', `Page loaded in ${loadTime}ms`, {
+      this.completeStep('page-navigation', 'success', `Seite in ${loadTime}ms geladen`, {
         loadTime,
         strategy: 'domcontentloaded'
       })
@@ -502,19 +502,19 @@ class TestRunner {
         this.log('Page loaded with load event')
         
         const loadTime = Date.now() - navStartTime
-        this.completeStep('page-navigation', 'success', `Page loaded in ${loadTime}ms (fallback)`, {
+        this.completeStep('page-navigation', 'success', `Seite in ${loadTime}ms geladen (Fallback)`, {
           loadTime,
           strategy: 'load'
         })
       } catch (fallbackError) {
         this.log(`Navigation with load failed: ${fallbackError.message}`)
-        this.failStep('page-navigation', `Failed to navigate: ${fallbackError.message}`)
+        this.failStep('page-navigation', `Navigation fehlgeschlagen: ${fallbackError.message}`)
         throw new Error(`Failed to navigate to ${targetUrl}: ${fallbackError.message}`)
       }
     }
 
     // Step 3: Cookie Handling
-    const cookieStep = this.startStep('cookie-handling', 'Handle Cookie Banner')
+    const cookieStep = this.startStep('cookie-handling', 'Cookie-Banner behandeln')
     await this.handleCookieConsent()
 
     // Step 3.5: Switch to iframe if form is embedded
@@ -524,30 +524,30 @@ class TestRunner {
     const screenshotPath = await this.takeScreenshot('initial')
 
     // Step 4: Form Analysis & Fill
-    const analysisStep = this.startStep('form-analysis', 'Analyze and Fill Form')
+    const analysisStep = this.startStep('form-analysis', 'Formular analysieren und ausfüllen')
     let formAnalysis
     try {
       formAnalysis = await this.analyzeAndFillForm()
-      this.completeStep('form-analysis', 'success', `Analyzed and filled ${formAnalysis.fields?.length || 0} form fields`, {
+      this.completeStep('form-analysis', 'success', `${formAnalysis.fields?.length || 0} Formularfelder analysiert und ausgefüllt`, {
         fieldsFound: formAnalysis.fields?.length || 0,
         formType: 'donation'
       })
     } catch (error) {
-      this.failStep('form-analysis', `Form analysis/fill failed: ${error.message}`)
+      this.failStep('form-analysis', `Formularanalyse fehlgeschlagen: ${error.message}`)
       throw error
     }
 
     // Step 5: Payment Method Selection
-    const paymentStep = this.startStep('payment-selection', 'Select Payment Method', {
+    const paymentStep = this.startStep('payment-selection', 'Zahlungsmethode auswählen', {
       paymentMethod: paymentMethod.type
     })
     await this.handlePaymentMethod(paymentMethod, formAnalysis)
-    this.completeStep('payment-selection', 'success', `Selected payment method: ${paymentMethod.type}`, {
+    this.completeStep('payment-selection', 'success', `Zahlungsmethode ausgewählt: ${paymentMethod.type}`, {
       paymentMethod: paymentMethod.type
     })
 
     // Step 6: Validation Check
-    const validationStep = this.startStep('validation-check', 'Validate Form Data')
+    const validationStep = this.startStep('validation-check', 'Formulardaten validieren')
     const interval = parseInt(this.config.defaultInterval || '0')
     const isRecurring = interval > 0
     const isSepa = paymentMethod.type.toLowerCase() === 'sepa'
@@ -556,7 +556,7 @@ class TestRunner {
       this.log(`VALIDATION: Recurring payment (interval=${interval}) requires SEPA. Found: ${paymentMethod.type}`)
       this.log('Skipping submission as this combination should not be submitted.')
       
-      this.completeStep('validation-check', 'success', 'Invalid recurring payment combination detected', {
+      this.completeStep('validation-check', 'success', 'Ungültige Kombination für wiederkehrende Zahlung erkannt', {
         isValid: false,
         validationRules: ['recurring_requires_sepa'],
         interval,
@@ -564,9 +564,9 @@ class TestRunner {
       })
 
       // Step 7: Screenshot Capture (skipped)
-      const screenshotStep = this.startStep('screenshot-capture', 'Capture Screenshot')
+      const screenshotStep = this.startStep('screenshot-capture', 'Screenshot aufnehmen')
       const finalScreenshotPath = await this.takeScreenshot('final_skipped')
-      this.completeStep('screenshot-capture', 'success', 'Screenshot captured (test skipped)', {
+      this.completeStep('screenshot-capture', 'success', 'Screenshot aufgenommen (Test übersprungen)', {
         screenshotPath: finalScreenshotPath,
         screenshotType: 'final_skipped'
       })
@@ -585,7 +585,7 @@ class TestRunner {
       }
     }
 
-    this.completeStep('validation-check', 'success', 'Form data validation passed', {
+    this.completeStep('validation-check', 'success', 'Formulardaten-Validierung bestanden', {
       isValid: true,
       validationRules: ['recurring_requires_sepa'],
       interval,
@@ -593,17 +593,17 @@ class TestRunner {
     })
 
     // Step 7: Form Submission
-    const submissionStep = this.startStep('form-submission', 'Submit Form')
+    const submissionStep = this.startStep('form-submission', 'Formular absenden')
     try {
       await this.submitForm()
-      this.completeStep('form-submission', 'success', 'Form submitted successfully')
+      this.completeStep('form-submission', 'success', 'Formular erfolgreich abgesendet')
     } catch (error) {
-      this.failStep('form-submission', `Form submission failed: ${error.message}`)
+      this.failStep('form-submission', `Formular-Absendung fehlgeschlagen: ${error.message}`)
       throw error
     }
 
     // Step 8: Success Detection (payment-method-specific)
-    const successStep = this.startStep('redirect-detection', 'Detect Payment Redirect')
+    const successStep = this.startStep('redirect-detection', 'Zahlungs-Weiterleitung erkennen')
     try {
       const successResult = await this.waitForSuccessRedirect(paymentMethod.type)
       this.completeStep('redirect-detection', 'success', `${successResult.message || 'Success detected'}`, {
@@ -614,16 +614,16 @@ class TestRunner {
       })
 
       // Step 9: Success Confirmation
-      const confirmationStep = this.startStep('success-confirmation', 'Confirm Test Success')
-      this.completeStep('success-confirmation', 'success', 'Test completed successfully', {
+      const confirmationStep = this.startStep('success-confirmation', 'Testerfolg bestätigen')
+      this.completeStep('success-confirmation', 'success', 'Test erfolgreich abgeschlossen', {
         successType: 'redirect',
         finalUrl: successResult.url
       })
 
       // Step 10: Screenshot Capture
-      const screenshotStep = this.startStep('screenshot-capture', 'Capture Screenshot')
+      const screenshotStep = this.startStep('screenshot-capture', 'Screenshot aufnehmen')
       const finalScreenshotPath = await this.takeScreenshot('final')
-      this.completeStep('screenshot-capture', 'success', 'Final screenshot captured', {
+      this.completeStep('screenshot-capture', 'success', 'Finaler Screenshot aufgenommen', {
         screenshotPath: finalScreenshotPath,
         screenshotType: 'final'
       })
@@ -640,7 +640,7 @@ class TestRunner {
         redirectUrl: successResult.url
       }
     } catch (error) {
-      this.failStep('redirect-detection', `Success detection failed: ${error.message}`)
+      this.failStep('redirect-detection', `Erfolgserkennung fehlgeschlagen: ${error.message}`)
       throw error
     }
   }
@@ -859,7 +859,7 @@ class TestRunner {
         url: initialUrl,
         detectedProvider: alreadyOnPaymentProvider,
         matchedExpected: true,
-        message: `Already redirected to ${alreadyOnPaymentProvider}`
+        message: `Bereits zu ${alreadyOnPaymentProvider} weitergeleitet`
       }
     }
     
@@ -1081,7 +1081,7 @@ class TestRunner {
               type: 'same-page-success',
               detectedProvider: 'Same Page',
               matchedExpected: expectedConfig.allowSuccessPage,
-              message: `Success message on same page (${expectedConfig.name})`
+              message: `Erfolgsmeldung auf gleicher Seite (${expectedConfig.name})`
             }
           }
         } catch (e) {
@@ -1105,8 +1105,8 @@ class TestRunner {
         detectedProvider: finalValidation.detectedProvider,
         matchedExpected,
         message: matchedExpected 
-          ? `Redirected to ${finalValidation.detectedProvider || 'success page'}`
-          : `Redirected to ${finalValidation.detectedProvider} (expected ${expectedConfig.name})`
+          ? `Zu ${finalValidation.detectedProvider || 'Erfolgsseite'} weitergeleitet`
+          : `Zu ${finalValidation.detectedProvider} weitergeleitet (erwartet: ${expectedConfig.name})` 
       }
       
     } catch (error) {
@@ -1129,8 +1129,8 @@ class TestRunner {
             detectedProvider: finalValidation.detectedProvider,
             matchedExpected,
             message: matchedExpected 
-              ? `Redirected to ${finalValidation.detectedProvider || 'success page'}`
-              : `Redirected to ${finalValidation.detectedProvider} (expected ${expectedConfig.name})`
+              ? `Zu ${finalValidation.detectedProvider || 'Erfolgsseite'} weitergeleitet`
+              : `Zu ${finalValidation.detectedProvider} weitergeleitet (erwartet: ${expectedConfig.name})`
           }
         }
       }
@@ -1138,10 +1138,10 @@ class TestRunner {
       // Check for errors on the page
       const hasError = await this.checkForFormErrors(pageForUrlCheck, errorPatterns)
       if (hasError) {
-        throw new Error('Form submission failed - validation errors on page')
+        throw new Error('Formular-Absendung fehlgeschlagen - Validierungsfehler auf der Seite')
       }
 
-      throw new Error(`Form submission did not redirect to expected ${expectedConfig.name} provider or success page`)
+      throw new Error(`Formular wurde nicht zu ${expectedConfig.name} oder Erfolgsseite weitergeleitet`)
     }
   }
   
@@ -2127,7 +2127,7 @@ class TestRunner {
                 this.log('Cookie banner handling completed')
               })
 
-              this.completeStep('cookie-handling', 'success', 'Cookie banner accepted', {
+              this.completeStep('cookie-handling', 'success', 'Cookie-Banner akzeptiert', {
                 cookieBannerFound: true,
                 action: 'accepted',
                 buttonSelector: selector
@@ -2140,14 +2140,14 @@ class TestRunner {
         }
 
         this.log('Could not find accept button, trying to close banner')
-        this.completeStep('cookie-handling', 'success', 'Cookie banner found but could not accept', {
+        this.completeStep('cookie-handling', 'success', 'Cookie-Banner gefunden, konnte nicht akzeptiert werden', {
           cookieBannerFound: true,
           action: 'none'
         })
       }
     } catch (error) {
       this.log('No cookie banner found or timeout - continuing with form')
-      this.completeStep('cookie-handling', 'success', 'No cookie banner detected', {
+      this.completeStep('cookie-handling', 'success', 'Kein Cookie-Banner erkannt', {
         cookieBannerFound: false,
         action: 'none'
       })

@@ -17,10 +17,10 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
     const processManager = getTestProcessManager();
     const result = await processManager.runTest(testRunId, form, paymentMethod, settings);
 
-    // Update test run with results including steps
-    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps);
+    // Update test run with results including steps and screenshot
+    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps, result.screenshot);
 
-    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps`);
+    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps, screenshot: ${result.screenshot || 'none'}`);
 
     // Create notification for scheduled test completion
     if (isScheduled) {

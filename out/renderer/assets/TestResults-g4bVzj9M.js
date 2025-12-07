@@ -1,8 +1,8 @@
-import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, k as Trash2, t as Checkbox, an as formatDuration, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, a4 as CircleAlert, aq as CircleX } from "./index-By5QLJ5S.js";
+import { r as reactExports, j as jsxRuntimeExports, B as Button, ab as LoaderCircle, ac as Square, i as dist, ad as Image, ae as Maximize2, af as ZoomOut, ag as ZoomIn, ah as Download, X, J as useSearchParams, e as useTestRunsStore, b as useFormsStore, d as usePaymentMethodsStore, ai as FileSpreadsheet, P as Play, l as Table, K as TableHeader, n as TableRow, M as TableHead, aj as Bot, m as TableBody, o as TableCell, ak as Copy, al as User, s as renderIcon, am as formatDateTime, p as StatusBadge, a3 as CircleCheck, k as Trash2, t as Checkbox, an as formatDuration, O as TablePagination, ao as Link, ap as FileBraces, Q as getDefaultPaymentIcon, aq as Clock, a4 as CircleAlert, ar as CircleX } from "./index-BmL3LNRX.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-juunrBHA.js";
-import { u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useTableSelection-DxQWlfY2.js";
-import { S as Skeleton } from "./Skeleton-C5ne5Gwp.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-2m6Jxly7.js";
+import { u as useTableSelection, d as useFilterableData, e as useSortableData, S as SelectionActionBar, f as computeIsPartialSelected, g as computeIsAllSelected, h as SortableTableHead, D as Drawer, a as DrawerContent, b as DrawerHeader } from "./useTableSelection-COD78lcy.js";
+import { S as Skeleton } from "./Skeleton-CrXQDtcG.js";
 const TestQueueStatus = ({
   onRefresh
 }) => {
@@ -314,7 +314,7 @@ const ScreenshotViewer = (t0) => {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: handleDownload, className: "text-white hover:bg-white/20", title: "Herunterladen", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Download, { size: 20 }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "sm", onClick: () => setIsLightboxOpen(false), className: "text-white hover:bg-white/20", title: "Schließen (Esc)", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 20 }) })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[90vw] max-h-[90vh] overflow-auto", onClick: _temp7$1, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: screenshotPath, alt: `Screenshot: ${testName}`, className: "transition-transform duration-200", style: {
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "max-w-[90vw] max-h-[90vh] overflow-auto", onClick: _temp7, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: screenshotPath, alt: `Screenshot: ${testName}`, className: "transition-transform duration-200", style: {
         transform: `scale(${zoomLevel})`,
         transformOrigin: "center center"
       } }) }),
@@ -365,7 +365,7 @@ function _temp5$1(prev_1) {
 function _temp6$1(prev_2) {
   return Math.min(prev_2 + 0.25, 3);
 }
-function _temp7$1(e_1) {
+function _temp7(e_1) {
   return e_1.stopPropagation();
 }
 const getStartTime = (runAt) => {
@@ -492,114 +492,131 @@ const TestTimeline = (t0) => {
   const $ = dist.c(23);
   const {
     steps: structuredSteps,
-    logDetails,
     status
   } = t0;
-  let T0;
-  let T1;
-  let t1;
-  let t2;
+  const getStepIcon = _temp2;
+  const getTextColor = _temp3;
+  const formatTimestamp = _temp4;
+  const formatDurationMs = _temp5;
+  const formatMetadataInline = _temp6;
+  const t1 = status === "SUCCESS" ? "Test erfolgreich abgeschlossen" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : "Test läuft";
+  const t2 = status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "skipped" : "running";
   let t3;
   let t4;
-  if ($[0] !== logDetails || $[1] !== status || $[2] !== structuredSteps) {
-    const parseLogDetails = (logs) => {
-      if (!logs) {
-        return [];
-      }
-      try {
-        const parsed = JSON.parse(logs);
-        if (Array.isArray(parsed)) {
-          return parsed.map((log) => parseLogEntry(log));
-        }
-      } catch {
-        const lines = logs.split("\n").filter(_temp2);
-        return lines.map((line_0) => parseLogEntry(line_0));
-      }
-      return [];
-    };
-    const parseLogEntry = _temp3;
-    const convertStructuredSteps = _temp5;
-    const timelineSteps = structuredSteps?.length ? convertStructuredSteps(structuredSteps) : parseLogDetails(logDetails);
-    const finalStep = {
-      message: status === "SUCCESS" ? "Test completed successfully" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : "Test läuft",
-      type: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "warning" : "info"
-    };
-    const allSteps = [...timelineSteps, finalStep];
-    const getStepIcon = _temp6;
-    const formatTimestamp = _temp7;
-    t3 = "mb-6 pb-6 border-b dark:border-gray-700";
-    if ($[9] === Symbol.for("react.memo_cache_sentinel")) {
-      t4 = /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3", children: "Test Timeline" });
-      $[9] = t4;
-    } else {
-      t4 = $[9];
-    }
-    t2 = "border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden";
-    T1 = Table;
-    T0 = TableBody;
-    t1 = allSteps.map((step_0, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[40px] bg-gray-50 dark:bg-gray-800/50", children: getStepIcon(step_0.type) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 text-sm text-gray-900 dark:text-white", children: step_0.message }),
-      step_0.timestamp && /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { className: "px-3 py-2 w-[80px] text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs text-gray-500 dark:text-gray-400 font-mono", children: formatTimestamp(step_0.timestamp) }) })
-    ] }, index));
-    $[0] = logDetails;
-    $[1] = status;
-    $[2] = structuredSteps;
-    $[3] = T0;
-    $[4] = T1;
-    $[5] = t1;
-    $[6] = t2;
-    $[7] = t3;
-    $[8] = t4;
-  } else {
-    T0 = $[3];
-    T1 = $[4];
-    t1 = $[5];
-    t2 = $[6];
-    t3 = $[7];
-    t4 = $[8];
-  }
   let t5;
-  if ($[10] !== T0 || $[11] !== t1) {
-    t5 = /* @__PURE__ */ jsxRuntimeExports.jsx(T0, { children: t1 });
-    $[10] = T0;
-    $[11] = t1;
-    $[12] = t5;
-  } else {
-    t5 = $[12];
-  }
   let t6;
-  if ($[13] !== T1 || $[14] !== t5) {
-    t6 = /* @__PURE__ */ jsxRuntimeExports.jsx(T1, { children: t5 });
-    $[13] = T1;
-    $[14] = t5;
-    $[15] = t6;
-  } else {
-    t6 = $[15];
-  }
   let t7;
-  if ($[16] !== t2 || $[17] !== t6) {
-    t7 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t2, children: t6 });
-    $[16] = t2;
-    $[17] = t6;
-    $[18] = t7;
-  } else {
-    t7 = $[18];
-  }
   let t8;
-  if ($[19] !== t3 || $[20] !== t4 || $[21] !== t7) {
-    t8 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t3, children: [
-      t4,
-      t7
-    ] });
-    $[19] = t3;
-    $[20] = t4;
-    $[21] = t7;
-    $[22] = t8;
+  if ($[0] !== status || $[1] !== structuredSteps || $[2] !== t1 || $[3] !== t2) {
+    const finalStep = {
+      id: "final",
+      name: t1,
+      status: t2,
+      startTime: (/* @__PURE__ */ new Date()).toISOString(),
+      message: status === "SUCCESS" ? "Alle Schritte erfolgreich durchgeführt" : status === "FAILURE" ? "Test mit Fehlern beendet" : void 0
+    };
+    const allSteps = structuredSteps?.length ? [...structuredSteps, finalStep] : [finalStep];
+    t7 = "mb-6 pb-6 border-b dark:border-gray-700";
+    if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
+      t8 = /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3", children: "Test Timeline" });
+      $[10] = t8;
+    } else {
+      t8 = $[10];
+    }
+    t5 = "relative pl-4";
+    if ($[11] === Symbol.for("react.memo_cache_sentinel")) {
+      t6 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-[7px] top-2 bottom-2 w-px bg-gray-200 dark:bg-gray-700" });
+      $[11] = t6;
+    } else {
+      t6 = $[11];
+    }
+    t3 = "space-y-3";
+    t4 = allSteps.map((step, index) => {
+      const metadataText = formatMetadataInline(step.metadata);
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative flex items-start gap-3", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "relative z-10 flex-shrink-0 -ml-4 mt-0.5", children: getStepIcon(step.status) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 min-w-0 -mt-0.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-baseline gap-2 flex-wrap", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `text-sm font-medium ${getTextColor(step.status)}`, children: step.name }),
+            step.duration && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-gray-400 dark:text-gray-500 font-mono", children: formatDurationMs(step.duration) })
+          ] }),
+          step.message && step.message !== step.name && step.message !== step.error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-0.5", children: step.message }),
+          metadataText && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-[10px] text-gray-400 dark:text-gray-500 font-mono mt-0.5", children: metadataText }),
+          step.error && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-gray-500 dark:text-gray-400 mt-0.5", children: step.error })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-shrink-0 text-right", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-gray-400 dark:text-gray-500 font-mono", children: formatTimestamp(step.startTime) }) })
+      ] }, step.id || index);
+    });
+    $[0] = status;
+    $[1] = structuredSteps;
+    $[2] = t1;
+    $[3] = t2;
+    $[4] = t3;
+    $[5] = t4;
+    $[6] = t5;
+    $[7] = t6;
+    $[8] = t7;
+    $[9] = t8;
   } else {
-    t8 = $[22];
+    t3 = $[4];
+    t4 = $[5];
+    t5 = $[6];
+    t6 = $[7];
+    t7 = $[8];
+    t8 = $[9];
   }
-  return t8;
+  let t9;
+  if ($[12] !== t3 || $[13] !== t4) {
+    t9 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: t3, children: t4 });
+    $[12] = t3;
+    $[13] = t4;
+    $[14] = t9;
+  } else {
+    t9 = $[14];
+  }
+  let t10;
+  if ($[15] !== t5 || $[16] !== t6 || $[17] !== t9) {
+    t10 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t5, children: [
+      t6,
+      t9
+    ] });
+    $[15] = t5;
+    $[16] = t6;
+    $[17] = t9;
+    $[18] = t10;
+  } else {
+    t10 = $[18];
+  }
+  let t11;
+  if ($[19] !== t10 || $[20] !== t7 || $[21] !== t8) {
+    t11 = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: t7, children: [
+      t8,
+      t10
+    ] });
+    $[19] = t10;
+    $[20] = t7;
+    $[21] = t8;
+    $[22] = t11;
+  } else {
+    t11 = $[22];
+  }
+  return t11;
+};
+const getStatusRowBg = (status, isSelected, isChecked) => {
+  if (isChecked) return "bg-blue-50 dark:bg-blue-900/30";
+  if (isSelected) return "bg-gray-100 dark:bg-gray-700/50";
+  switch (status) {
+    case "SUCCESS":
+      return "bg-green-50 dark:bg-green-950/30";
+    case "FAILURE":
+      return "bg-red-50 dark:bg-red-950/30";
+    case "STOPPED":
+      return "bg-purple-50 dark:bg-purple-950/30";
+    case "SKIPPED":
+      return "bg-yellow-50 dark:bg-yellow-950/30";
+    default:
+      return "bg-white dark:bg-gray-800";
+  }
 };
 const TestResults = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -1073,7 +1090,7 @@ const TestResults = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableBody, { children: sortedFinishedTests.map((testRun_3) => {
             const isRowSelected = selectedTestRun === testRun_3.id;
             const isChecked = isSelected(testRun_3.id);
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isRowSelected, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : isRowSelected ? "bg-gray-50 dark:bg-gray-700/50" : "bg-white dark:bg-gray-800"}`, onClick: () => handleSelectTestRun(testRun_3.id), onKeyDown: (e_3) => {
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { tabIndex: 0, role: "button", "aria-selected": isRowSelected, className: `cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${getStatusRowBg(testRun_3.status, isRowSelected, isChecked)}`, onClick: () => handleSelectTestRun(testRun_3.id), onKeyDown: (e_3) => {
               if (e_3.key === "Enter" || e_3.key === " ") {
                 e_3.preventDefault();
                 handleSelectTestRun(testRun_3.id);
@@ -1286,67 +1303,91 @@ function _temp(_, i) {
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 flex justify-end", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Skeleton, { className: "h-8 w-20" }) })
   ] }, i);
 }
-function _temp2(line) {
-  return line.trim();
-}
-function _temp3(log_0) {
-  const timestampMatch = log_0.match(/^\[([^\]]+)\]/);
-  const timestamp = timestampMatch ? timestampMatch[1] : void 0;
-  const message = timestamp ? log_0.replace(/^\[[^\]]+\]\s*/, "") : log_0;
-  let type = "info";
-  const lowerMessage = message.toLowerCase();
-  if (lowerMessage.includes("error") || lowerMessage.includes("failed") || lowerMessage.includes("timeout")) {
-    type = "error";
-  } else {
-    if (lowerMessage.includes("success") || lowerMessage.includes("completed") || lowerMessage.includes("detected success")) {
-      type = "success";
-    } else {
-      if (lowerMessage.includes("warning") || lowerMessage.includes("skipping")) {
-        type = "warning";
-      }
-    }
-  }
-  return {
-    timestamp,
-    message,
-    type
-  };
-}
-function _temp4(step) {
-  return {
-    timestamp: step.startTime,
-    message: step.message || step.name,
-    type: step.status === "success" ? "success" : step.status === "error" ? "error" : step.status === "skipped" ? "warning" : "info"
-  };
-}
-function _temp5(steps) {
-  return steps.map(_temp4);
-}
-function _temp6(type_0) {
-  switch (type_0) {
+function _temp2(stepStatus) {
+  switch (stepStatus) {
     case "success": {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "w-4 h-4 text-green-600 dark:text-green-400" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleCheck, { className: "w-3.5 h-3.5 text-green-600 dark:text-green-400" });
     }
     case "error": {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { className: "w-4 h-4 text-red-600 dark:text-red-400" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleX, { className: "w-3.5 h-3.5 text-red-600 dark:text-red-400" });
     }
-    case "warning": {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "w-4 h-4 text-yellow-600 dark:text-yellow-400" });
+    case "skipped": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CircleAlert, { className: "w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400" });
+    }
+    case "running": {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { className: "w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-pulse" });
     }
     default: {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Play, { className: "w-4 h-4 text-blue-600 dark:text-blue-400" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "w-3.5 h-3.5 text-gray-400 dark:text-gray-500" });
     }
   }
 }
-function _temp7(timestamp_0) {
-  if (!timestamp_0) {
+function _temp3(stepStatus_0) {
+  switch (stepStatus_0) {
+    case "success": {
+      return "text-green-700 dark:text-green-400";
+    }
+    case "error": {
+      return "text-red-700 dark:text-red-400";
+    }
+    case "skipped": {
+      return "text-yellow-700 dark:text-yellow-400";
+    }
+    default: {
+      return "text-gray-700 dark:text-gray-300";
+    }
+  }
+}
+function _temp4(timestamp) {
+  if (!timestamp) {
     return null;
   }
   try {
-    return new Date(timestamp_0).toLocaleTimeString();
+    return new Date(timestamp).toLocaleTimeString("de-DE", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
   } catch {
-    return timestamp_0;
+    return timestamp;
   }
+}
+function _temp5(ms) {
+  if (!ms) {
+    return null;
+  }
+  if (ms < 1e3) {
+    return `${ms}ms`;
+  }
+  return `${(ms / 1e3).toFixed(2)}s`;
+}
+function _temp6(metadata) {
+  if (!metadata || Object.keys(metadata).length === 0) {
+    return null;
+  }
+  const parts = [];
+  if (metadata.fieldsFound) {
+    parts.push(`${metadata.fieldsFound} Felder`);
+  }
+  if (metadata.fieldsFilled) {
+    parts.push(`${metadata.fieldsFilled} ausgefüllt`);
+  }
+  if (metadata.formType) {
+    parts.push(metadata.formType);
+  }
+  if (metadata.paymentMethod) {
+    parts.push(metadata.paymentMethod);
+  }
+  if (metadata.cookieBannerFound !== void 0) {
+    parts.push(metadata.cookieBannerFound ? "Cookie-Banner" : "Kein Cookie-Banner");
+  }
+  if (metadata.redirectUrl) {
+    parts.push(metadata.redirectUrl);
+  }
+  if (metadata.paymentProvider && metadata.paymentProvider !== "Unknown") {
+    parts.push(metadata.paymentProvider);
+  }
+  return parts.length > 0 ? parts.join(" · ") : null;
 }
 export {
   TestResults as default

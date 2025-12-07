@@ -17,9 +17,17 @@ interface TestRunDialogProps {
   isOpen: boolean;
   onClose: () => void;
   preselectAll?: boolean;
+  preselectedFormIds?: number[];
+  preselectedPaymentMethodIds?: number[];
 }
 
-const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselectAll = false }) => {
+const TestRunDialog: React.FC<TestRunDialogProps> = ({ 
+  isOpen, 
+  onClose, 
+  preselectAll = false,
+  preselectedFormIds = [],
+  preselectedPaymentMethodIds = []
+}) => {
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const { runTests, isRunning } = useTestRunsStore();
@@ -54,16 +62,24 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({ isOpen, onClose, preselec
 
   // Handle preselection when dialog opens
   useEffect(() => {
-    if (isOpen && preselectAll) {
-      const activeForms = forms.filter((f) => f.isActive);
-      const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);
-      setSelectedFormIds(activeForms.map((f) => f.id));
-      setSelectedPaymentMethodIds(activePaymentMethods.map((pm) => pm.id));
-    } else if (isOpen && !preselectAll) {
-      setSelectedFormIds([]);
-      setSelectedPaymentMethodIds([]);
+    if (isOpen) {
+      if (preselectAll) {
+        // Select all active forms and payment methods
+        const activeForms = forms.filter((f) => f.isActive);
+        const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);
+        setSelectedFormIds(activeForms.map((f) => f.id));
+        setSelectedPaymentMethodIds(activePaymentMethods.map((pm) => pm.id));
+      } else if (preselectedFormIds.length > 0 || preselectedPaymentMethodIds.length > 0) {
+        // Use specific preselected IDs
+        setSelectedFormIds(preselectedFormIds);
+        setSelectedPaymentMethodIds(preselectedPaymentMethodIds);
+      } else {
+        // Clear selection
+        setSelectedFormIds([]);
+        setSelectedPaymentMethodIds([]);
+      }
     }
-  }, [isOpen, preselectAll, forms, paymentMethods]);
+  }, [isOpen, preselectAll, preselectedFormIds, preselectedPaymentMethodIds, forms, paymentMethods]);
 
   const activeForms = forms.filter((form) => form.isActive);
   const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive);

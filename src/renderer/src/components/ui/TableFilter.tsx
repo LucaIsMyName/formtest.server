@@ -60,7 +60,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
   };
 
   return (
-    <div className="flex items-center gap-3 mb-4">
+    <div className="flex items-center gap-3 mb-4 min-h-[36px]">
       <div className="relative max-w-md flex-1">
         <Search
           size={16}

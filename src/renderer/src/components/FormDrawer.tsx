@@ -10,7 +10,7 @@ import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
 import { StatusBadge } from "./ui/Badge";
-import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink, Play } from "lucide-react";
 import { CONFIG } from "@/app.config";
 import { formatDate } from "../utils/formatters";
 
@@ -197,6 +197,20 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                   Löschen
                 </Button>
               )}
+              <Button
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("openTestDialog", { 
+                    detail: { formIds: [editForm.id] } 
+                  }));
+                  onClose();
+                }}
+                variant="secondary"
+                size="sm"
+                className="gap-1.5">
+                <Play size={14} />
+                Test starten
+              </Button>
             </div>
           )}
           <div className="flex-1 min-w-0 mt-4">

@@ -1268,9 +1268,9 @@ const testRunQueries = {
     }));
   },
   create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
-  updateStatus: (id, status, errorMessage, durationMs, steps) => {
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ? AND status != 'STOPPED'");
-    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
+  updateStatus: (id, status, errorMessage, durationMs, steps, screenshotPath) => {
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ?, screenshotPath = ? WHERE id = ? AND status != 'STOPPED'");
+    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), screenshotPath || null, id);
   },
   updateNotes: (id, notes) => {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
@@ -2331,8 +2331,8 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
   try {
     const processManager2 = getTestProcessManager();
     const result = await processManager2.runTest(testRunId, form, paymentMethod, settings);
-    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps);
-    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps`);
+    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps, result.screenshot);
+    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps, screenshot: ${result.screenshot || "none"}`);
     if (isScheduled) {
       notificationQueries.create({
         type: result.success ? "test_complete" : "test_failed",

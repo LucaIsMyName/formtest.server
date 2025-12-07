@@ -987,11 +987,11 @@ export const testRunQueries = {
     })) as TestRun[];
   },
   create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0),
-  updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"]) => {
+  updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"], screenshotPath?: string) => {
     // Don't overwrite STOPPED status - if a test was manually stopped, keep that status
     // This prevents the runner from changing STOPPED to FAILURE when it eventually completes
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ? AND status != 'STOPPED'");
-    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ?, screenshotPath = ? WHERE id = ? AND status != 'STOPPED'");
+    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), screenshotPath || null, id);
   },
   updateNotes: (id: number, notes: string) => {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
