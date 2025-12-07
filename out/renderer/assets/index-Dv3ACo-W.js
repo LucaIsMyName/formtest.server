@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-CW-1pU-v.js","./app.config-b2lfEN4K.js","./Skeleton-DOsbhKVY.js","./Forms-BWRtRLm7.js","./MiniSparkline-BIrzbm17.js","./useTableSelection-DurgU-II.js","./TableFilter-D6adxD0P.js","./PaymentMethods-l1dPXuT_.js","./Settings-D-LjRwHZ.js","./TestResults-BfLeYZxX.js","./Schedules-NepLSC2o.js","./Legal-C_xGmLSd.js","./Docs-C-dRT8be.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./Dashboard-BUQiWAOm.js","./app.config-b2lfEN4K.js","./Skeleton-CGByWWzo.js","./Forms-Hpb3RMzc.js","./MiniSparkline-q7KuVRmK.js","./useTableSelection-C2oY0UGu.js","./TableFilter-9mgHt9i4.js","./PaymentMethods-qUAxc011.js","./Settings-5k_eyaL7.js","./TestResults-DdqpkUIG.js","./Schedules-D8tMZVdM.js","./Legal-xVG3Xh9_.js","./Docs-9SedGLRn.js"])))=>i.map(i=>d[i]);
 function _mergeNamespaces(n2, m2) {
   for (var i2 = 0; i2 < m2.length; i2++) {
     const e2 = m2[i2];
@@ -55834,7 +55834,7 @@ const TableRow = React$3.forwardRef((t0, ref) => {
   }
   let t1;
   if ($2[3] !== className) {
-    t1 = cn("hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors", className);
+    t1 = cn("", className);
     $2[3] = className;
     $2[4] = t1;
   } else {
@@ -61441,10 +61441,10 @@ const Layout = (t0) => {
   }
   let t19;
   if ($2[27] !== location.pathname) {
-    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-0.5", children: primaryNavigation.map((item) => {
+    t19 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-0", children: primaryNavigation.map((item) => {
       const IconComponent = item.icon;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `w-full text-left flex items-center gap-3 px-4 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 1.75 : 1.75 }),
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item.href, className: `rounded-none w-full text-left flex items-center gap-3 px-6 py-4 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent, { className: `${location.pathname === item.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-700 dark:text-gray-400 transition-all`, size: 18, strokeWidth: location.pathname === item.href ? 2 : 1.75 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
           fontStretch: "115%"
         }, className: "transition-all text-[clamp(0.66rem,1.075vw,0.925rem)]", children: item.name })
@@ -61457,19 +61457,19 @@ const Layout = (t0) => {
   }
   let t20;
   if ($2[29] === Symbol.for("react.memo_cache_sentinel")) {
-    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { className: "my-3 border-gray-200 dark:border-gray-700" });
+    t20 = /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { className: "my-0 border-gray-200 dark:border-gray-800" });
     $2[29] = t20;
   } else {
     t20 = $2[29];
   }
   let t21;
   if ($2[30] !== location.pathname) {
-    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-0.5", children: secondaryNavigation.map((item_0) => {
+    t21 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-0", children: secondaryNavigation.map((item_0) => {
       const IconComponent_0 = item_0.icon;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item_0.href, className: `w-full text-left flex items-center gap-3 px-4 py-2 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item_0.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent_0, { className: `${location.pathname === item_0.href ? " stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-500 dark:text-gray-500 transition-all`, size: 16, strokeWidth: location.pathname === item_0.href ? 1.75 : 1.5 }),
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { variant: "ghost", to: item_0.href, className: `rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item_0.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(IconComponent_0, { className: `${location.pathname === item_0.href ? "stroke-gray-900 dark:stroke-gray-100" : ""} text-gray-500 dark:text-gray-500 transition-all`, size: 16, strokeWidth: location.pathname === item_0.href ? 1.75 : 1 }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
-          fontStretch: "115%"
+          fontStretch: "100%"
         }, className: "transition-all text-[clamp(0.6rem,0.95vw,0.825rem)]", children: item_0.name })
       ] }, item_0.name);
     }) });
@@ -61480,7 +61480,7 @@ const Layout = (t0) => {
   }
   let t22;
   if ($2[32] !== t19 || $2[33] !== t21) {
-    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t18, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "flex-1 p-2 flex flex-col", children: [
+    t22 = /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none", style: t18, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("nav", { className: "flex-1 flex flex-col", children: [
       t19,
       t20,
       t21
@@ -61570,14 +61570,14 @@ const Layout = (t0) => {
 function _temp(s2) {
   return s2.key === "theme";
 }
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-CW-1pU-v.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
-const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-BWRtRLm7.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
-const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-l1dPXuT_.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
-const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-D-LjRwHZ.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
-const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-BfLeYZxX.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
-const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-NepLSC2o.js"), true ? __vite__mapDeps([10,1,5,6,2,4]) : void 0, import.meta.url));
-const Legal = reactExports.lazy(() => __vitePreload(() => import("./Legal-C_xGmLSd.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
-const Docs = reactExports.lazy(() => __vitePreload(() => import("./Docs-C-dRT8be.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
+const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-BUQiWAOm.js"), true ? __vite__mapDeps([0,1,2]) : void 0, import.meta.url));
+const Forms = reactExports.lazy(() => __vitePreload(() => import("./Forms-Hpb3RMzc.js"), true ? __vite__mapDeps([3,1,4,5,6,2]) : void 0, import.meta.url));
+const PaymentMethods = reactExports.lazy(() => __vitePreload(() => import("./PaymentMethods-qUAxc011.js"), true ? __vite__mapDeps([7,1,4,5,6,2]) : void 0, import.meta.url));
+const Settings = reactExports.lazy(() => __vitePreload(() => import("./Settings-5k_eyaL7.js"), true ? __vite__mapDeps([8,1,6,2]) : void 0, import.meta.url));
+const TestResults = reactExports.lazy(() => __vitePreload(() => import("./TestResults-DdqpkUIG.js"), true ? __vite__mapDeps([9,1,6,5,2]) : void 0, import.meta.url));
+const Schedules = reactExports.lazy(() => __vitePreload(() => import("./Schedules-D8tMZVdM.js"), true ? __vite__mapDeps([10,1,5,6,2,4]) : void 0, import.meta.url));
+const Legal = reactExports.lazy(() => __vitePreload(() => import("./Legal-xVG3Xh9_.js"), true ? __vite__mapDeps([11,1]) : void 0, import.meta.url));
+const Docs = reactExports.lazy(() => __vitePreload(() => import("./Docs-9SedGLRn.js"), true ? __vite__mapDeps([12,1]) : void 0, import.meta.url));
 function App() {
   const {
     settings,
@@ -61652,53 +61652,55 @@ export {
   React$3 as a2,
   CircleCheck as a3,
   CircleAlert as a4,
-  Database as a5,
-  Mail as a6,
-  Sun as a7,
-  SlidersVertical as a8,
-  Moon as a9,
-  Root$1 as aA,
-  cn as aB,
-  Portal$1 as aC,
-  Content as aD,
-  Overlay as aE,
-  Close as aF,
-  Title as aG,
-  Description as aH,
-  ChevronsUpDown as aI,
-  TriangleAlert as aJ,
-  DialogDescription as aK,
-  DialogFooter as aL,
-  Badge as aM,
-  KEYBOARD_SHORTCUTS as aN,
-  Keyboard as aO,
-  formatShortcut as aP,
-  Monitor as aa,
-  LoaderCircle as ab,
-  Square as ac,
-  Image as ad,
-  Maximize2 as ae,
-  ZoomOut as af,
-  ZoomIn as ag,
-  Download as ah,
-  FileSpreadsheet as ai,
-  Bot as aj,
-  Copy as ak,
-  User as al,
-  formatDateTime as am,
-  formatDuration as an,
-  Link$1 as ao,
-  FileBraces as ap,
-  Clock as aq,
-  CircleX as ar,
-  getDefaultScheduleIcon as as,
-  useSchedulesStore as at,
-  getAllIconNames as au,
-  DialogHeader as av,
-  DialogTitle as aw,
-  Search as ax,
-  DialogContent as ay,
-  Dialog as az,
+  Globe as a5,
+  Database as a6,
+  Mail as a7,
+  Sun as a8,
+  SlidersVertical as a9,
+  DialogContent as aA,
+  Dialog as aB,
+  Root$1 as aC,
+  cn as aD,
+  Portal$1 as aE,
+  Content as aF,
+  Overlay as aG,
+  Close as aH,
+  Title as aI,
+  Description as aJ,
+  ChevronsUpDown as aK,
+  TriangleAlert as aL,
+  DialogDescription as aM,
+  DialogFooter as aN,
+  Badge as aO,
+  KEYBOARD_SHORTCUTS as aP,
+  Keyboard as aQ,
+  formatShortcut as aR,
+  Copy as aa,
+  RefreshCw as ab,
+  Moon as ac,
+  Monitor as ad,
+  LoaderCircle as ae,
+  Square as af,
+  Image as ag,
+  Maximize2 as ah,
+  ZoomOut as ai,
+  ZoomIn as aj,
+  Download as ak,
+  FileSpreadsheet as al,
+  Bot as am,
+  User as an,
+  formatDateTime as ao,
+  formatDuration as ap,
+  Link$1 as aq,
+  FileBraces as ar,
+  Clock as as,
+  CircleX as at,
+  getDefaultScheduleIcon as au,
+  useSchedulesStore as av,
+  getAllIconNames as aw,
+  DialogHeader as ax,
+  DialogTitle as ay,
+  Search as az,
   useFormsStore as b,
   clsx as c,
   usePaymentMethodsStore as d,

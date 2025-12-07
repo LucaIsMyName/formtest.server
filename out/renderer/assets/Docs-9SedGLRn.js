@@ -1,4 +1,4 @@
-import { i as dist, aN as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, aO as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, aP as formatShortcut } from "./index-luwXbL62.js";
+import { i as dist, aP as KEYBOARD_SHORTCUTS, j as jsxRuntimeExports, aQ as Keyboard, l as Table, K as TableHeader, n as TableRow, M as TableHead, m as TableBody, o as TableCell, aR as formatShortcut } from "./index-Dv3ACo-W.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
 const Docs = () => {
   const $ = dist.c(8);

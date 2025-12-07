@@ -10,6 +10,7 @@ const child_process = require("child_process");
 const events = require("events");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
+const http = require("http");
 function _interopNamespaceDefault(e) {
   const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
   if (e) {
@@ -2681,6 +2682,325 @@ class SchedulerService {
   }
 }
 const scheduler = new SchedulerService();
+let server = null;
+let apiKey = null;
+async function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+    req.on("data", (chunk) => body += chunk.toString());
+    req.on("end", () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch {
+        reject(new Error("Invalid JSON"));
+      }
+    });
+    req.on("error", reject);
+  });
+}
+function sendJson(res, statusCode, data) {
+  res.writeHead(statusCode, {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, X-API-Key"
+  });
+  res.end(JSON.stringify(data));
+}
+function authenticate(req) {
+  const providedKey = req.headers["x-api-key"];
+  if (!apiKey || !providedKey) return false;
+  return providedKey === apiKey;
+}
+async function handleRequest(req, res) {
+  const url = new URL(req.url || "/", `http://${req.headers.host}`);
+  const path2 = url.pathname;
+  const method = req.method || "GET";
+  if (method === "OPTIONS") {
+    res.writeHead(204, {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, X-API-Key"
+    });
+    res.end();
+    return;
+  }
+  if (path2 === "/api/health" && method === "GET") {
+    sendJson(res, 200, {
+      status: "ok",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      version: "1.0.0"
+    });
+    return;
+  }
+  if (!authenticate(req)) {
+    sendJson(res, 401, { error: "Unauthorized", message: "Invalid or missing X-API-Key header" });
+    return;
+  }
+  try {
+    if (path2 === "/api/forms" && method === "GET") {
+      const forms = formQueries.getAll();
+      sendJson(res, 200, {
+        success: true,
+        count: forms.length,
+        data: forms.map((f) => ({
+          id: f.id,
+          name: f.name,
+          url: f.url,
+          isActive: f.isActive
+        }))
+      });
+      return;
+    }
+    if (path2 === "/api/payment-methods" && method === "GET") {
+      const methods = await paymentMethodQueries.getAll();
+      sendJson(res, 200, {
+        success: true,
+        count: methods.length,
+        data: methods.map((m) => ({
+          id: m.id,
+          name: m.name,
+          type: m.type,
+          isActive: m.isActive
+          // Note: details are intentionally excluded for security
+        }))
+      });
+      return;
+    }
+    if (path2 === "/api/schedules" && method === "GET") {
+      const schedules = testScheduleQueries.getAll();
+      sendJson(res, 200, {
+        success: true,
+        count: schedules.length,
+        data: schedules.map((s) => ({
+          id: s.id,
+          name: s.name,
+          formId: s.formId,
+          paymentMethodId: s.paymentMethodId,
+          cronExpression: s.cronExpression,
+          isActive: s.isActive,
+          lastRun: s.lastRun
+        }))
+      });
+      return;
+    }
+    if (path2 === "/api/tests/run" && method === "POST") {
+      const body = await parseBody(req);
+      const { formIds, paymentMethodIds } = body;
+      if (!formIds || !Array.isArray(formIds) || formIds.length === 0) {
+        sendJson(res, 400, { error: "Bad Request", message: "formIds array is required" });
+        return;
+      }
+      if (!paymentMethodIds || !Array.isArray(paymentMethodIds) || paymentMethodIds.length === 0) {
+        sendJson(res, 400, { error: "Bad Request", message: "paymentMethodIds array is required" });
+        return;
+      }
+      const forms = formQueries.getAll().filter((f) => formIds.includes(f.id));
+      const methods = await paymentMethodQueries.getAll();
+      const filteredMethods = methods.filter((m) => paymentMethodIds.includes(m.id));
+      if (forms.length === 0) {
+        sendJson(res, 404, { error: "Not Found", message: "No forms found with provided IDs" });
+        return;
+      }
+      if (filteredMethods.length === 0) {
+        sendJson(res, 404, { error: "Not Found", message: "No payment methods found with provided IDs" });
+        return;
+      }
+      const allSettings = settingsQueries.getAll();
+      const settingsMap = {};
+      allSettings.forEach((s) => {
+        settingsMap[s.key] = s.value;
+      });
+      const testIds = [];
+      const testUuids = [];
+      for (const form of forms) {
+        for (const pm of filteredMethods) {
+          const uuid = crypto.randomUUID();
+          const result = testRunQueries.create({
+            uuid,
+            formId: form.id,
+            paymentMethodId: pm.id,
+            status: "QUEUED",
+            errorMessage: void 0,
+            screenshotPath: void 0,
+            logDetails: void 0,
+            steps: [],
+            durationMs: void 0,
+            isScheduled: false
+          });
+          const testId = result.lastInsertRowid;
+          testIds.push(testId);
+          testUuids.push(uuid);
+          getTestQueue().enqueue(testId, form, pm, settingsMap);
+        }
+      }
+      sendJson(res, 200, {
+        success: true,
+        message: `${testIds.length} test(s) queued`,
+        testIds,
+        testUuids
+      });
+      return;
+    }
+    if (path2 === "/api/tests" && method === "GET") {
+      const limit = parseInt(url.searchParams.get("limit") || "50");
+      const status = url.searchParams.get("status");
+      let tests = testRunQueries.getAll();
+      if (status) {
+        tests = tests.filter((t) => t.status === status.toUpperCase());
+      }
+      tests = tests.slice(0, Math.min(limit, 100));
+      sendJson(res, 200, {
+        success: true,
+        count: tests.length,
+        data: tests.map((t) => ({
+          id: t.id,
+          uuid: t.uuid,
+          formId: t.formId,
+          paymentMethodId: t.paymentMethodId,
+          status: t.status,
+          durationMs: t.durationMs,
+          runAt: t.runAt,
+          errorMessage: t.errorMessage
+        }))
+      });
+      return;
+    }
+    const testByIdMatch = path2.match(/^\/api\/tests\/(\d+)$/);
+    if (testByIdMatch && method === "GET") {
+      const testId = parseInt(testByIdMatch[1]);
+      const test = testRunQueries.getById(testId);
+      if (!test) {
+        sendJson(res, 404, { error: "Not Found", message: "Test not found" });
+        return;
+      }
+      sendJson(res, 200, {
+        success: true,
+        data: {
+          id: test.id,
+          uuid: test.uuid,
+          formId: test.formId,
+          paymentMethodId: test.paymentMethodId,
+          status: test.status,
+          durationMs: test.durationMs,
+          runAt: test.runAt,
+          errorMessage: test.errorMessage,
+          steps: test.steps,
+          notes: test.notes
+        }
+      });
+      return;
+    }
+    const testStatusMatch = path2.match(/^\/api\/tests\/(\d+)\/status$/);
+    if (testStatusMatch && method === "GET") {
+      const testId = parseInt(testStatusMatch[1]);
+      const test = testRunQueries.getById(testId);
+      if (!test) {
+        sendJson(res, 404, { error: "Not Found", message: "Test not found" });
+        return;
+      }
+      sendJson(res, 200, {
+        success: true,
+        data: {
+          id: test.id,
+          uuid: test.uuid,
+          status: test.status,
+          durationMs: test.durationMs,
+          errorMessage: test.errorMessage
+        }
+      });
+      return;
+    }
+    const testByUuidMatch = path2.match(/^\/api\/tests\/uuid\/([a-f0-9-]+)$/i);
+    if (testByUuidMatch && method === "GET") {
+      const uuid = testByUuidMatch[1];
+      const tests = testRunQueries.getAll();
+      const test = tests.find((t) => t.uuid === uuid);
+      if (!test) {
+        sendJson(res, 404, { error: "Not Found", message: "Test not found" });
+        return;
+      }
+      sendJson(res, 200, {
+        success: true,
+        data: {
+          id: test.id,
+          uuid: test.uuid,
+          formId: test.formId,
+          paymentMethodId: test.paymentMethodId,
+          status: test.status,
+          durationMs: test.durationMs,
+          runAt: test.runAt,
+          errorMessage: test.errorMessage,
+          steps: test.steps
+        }
+      });
+      return;
+    }
+    if (path2 === "/api/queue/status" && method === "GET") {
+      const status = getTestQueue().getStatus();
+      sendJson(res, 200, {
+        success: true,
+        data: status
+      });
+      return;
+    }
+    sendJson(res, 404, { error: "Not Found", message: `Unknown endpoint: ${method} ${path2}` });
+  } catch (error) {
+    console.error("[API] Error handling request:", error);
+    sendJson(res, 500, {
+      error: "Internal Server Error",
+      message: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+}
+function startApiServer(port, key) {
+  return new Promise((resolve, reject) => {
+    if (server) {
+      console.log("[API] Server already running");
+      resolve();
+      return;
+    }
+    apiKey = key;
+    server = http.createServer((req, res) => {
+      handleRequest(req, res).catch((error) => {
+        console.error("[API] Unhandled error:", error);
+        sendJson(res, 500, { error: "Internal Server Error" });
+      });
+    });
+    server.on("error", (error) => {
+      if (error.code === "EADDRINUSE") {
+        console.error(`[API] Port ${port} is already in use`);
+        reject(new Error(`Port ${port} is already in use`));
+      } else {
+        reject(error);
+      }
+    });
+    server.listen(port, "127.0.0.1", () => {
+      console.log(`[API] Server running on http://127.0.0.1:${port}`);
+      resolve();
+    });
+  });
+}
+function stopApiServer() {
+  return new Promise((resolve) => {
+    if (!server) {
+      resolve();
+      return;
+    }
+    server.close(() => {
+      console.log("[API] Server stopped");
+      server = null;
+      apiKey = null;
+      resolve();
+    });
+  });
+}
+function isApiServerRunning() {
+  return server !== null && server.listening;
+}
+function generateApiKey() {
+  return crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
+}
 function setupIpcHandlers() {
   electron.ipcMain.handle("forms:getAll", async () => {
     try {
@@ -3040,6 +3360,30 @@ function setupIpcHandlers() {
   });
   electron.ipcMain.handle("email:getConfig", () => {
     return emailService.loadConfig();
+  });
+  electron.ipcMain.handle("api:start", async (_, port, apiKey2) => {
+    try {
+      await startApiServer(port, apiKey2);
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - api:start:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+  electron.ipcMain.handle("api:stop", async () => {
+    try {
+      await stopApiServer();
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - api:stop:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+  electron.ipcMain.handle("api:status", () => {
+    return { running: isApiServerRunning() };
+  });
+  electron.ipcMain.handle("api:generateKey", () => {
+    return generateApiKey();
   });
 }
 let mainWindow;

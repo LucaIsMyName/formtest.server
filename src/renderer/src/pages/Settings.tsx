@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
-import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code } from "lucide-react";
+import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code, Globe, Copy, RefreshCw } from "lucide-react";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
@@ -17,10 +17,10 @@ import { TableFilter } from "../components/ui/TableFilter";
 // Setting item interface
 interface SettingItem {
   id: string;
-  category: "test" | "ui" | "email" | "data" | "selectors";
+  category: "test" | "ui" | "email" | "data" | "selectors" | "api";
   name: string;
   description: string;
-  type: "input" | "select" | "checkbox" | "theme" | "action" | "component";
+  type: "input" | "select" | "checkbox" | "theme" | "action" | "component" | "api-key";
   value: string;
   options?: { value: string; label: string }[];
   disabled?: boolean;
@@ -95,9 +95,47 @@ const Settings: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>(undefined);
 
+  // API Server state
+  const [apiEnabled, setApiEnabled] = useState(false);
+  const [apiPort, setApiPort] = useState("3847");
+  const [apiKey, setApiKey] = useState("");
+  const [apiServerRunning, setApiServerRunning] = useState(false);
+  const [apiStatusMessage, setApiStatusMessage] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
+
+  // Load API server status on mount
+  useEffect(() => {
+    const checkApiStatus = async () => {
+      try {
+        const api = window.api as any;
+        const status = await api.apiServer.status();
+        setApiServerRunning(status.running);
+      } catch (error) {
+        console.error("Failed to check API status:", error);
+      }
+    };
+    checkApiStatus();
+  }, []);
+
+  // Load API settings from stored settings
+  useEffect(() => {
+    settings.forEach((setting) => {
+      switch (setting.key) {
+        case "api_enabled":
+          setApiEnabled(setting.value === "true");
+          break;
+        case "api_port":
+          setApiPort(setting.value);
+          break;
+        case "api_key":
+          setApiKey(setting.value);
+          break;
+      }
+    });
+  }, [settings]);
 
   // Theme application function
   const applyTheme = (themeValue: string) => {
@@ -220,6 +258,71 @@ const Settings: React.FC = () => {
     }
   }, [importMode, exportOptions, loadSettings]);
 
+  // API Server handlers
+  const handleGenerateApiKey = useCallback(async () => {
+    try {
+      const api = window.api as any;
+      console.log("Generating API key...");
+      const newKey = await api.apiServer.generateKey();
+      console.log("Generated key:", newKey ? "success" : "empty");
+      if (newKey) {
+        setApiKey(newKey);
+        await updateSetting("api_key", newKey, "API Key");
+        setApiStatusMessage({ type: "success", message: "Neuer API-Key generiert" });
+        setTimeout(() => setApiStatusMessage(null), 3000);
+      } else {
+        setApiStatusMessage({ type: "error", message: "Kein Key generiert" });
+      }
+    } catch (error) {
+      console.error("Error generating API key:", error);
+      setApiStatusMessage({ type: "error", message: `Fehler: ${error instanceof Error ? error.message : "Unbekannt"}` });
+    }
+  }, [updateSetting]);
+
+  const handleCopyApiKey = useCallback(() => {
+    if (apiKey) {
+      navigator.clipboard.writeText(apiKey);
+      setApiStatusMessage({ type: "success", message: "API-Key kopiert" });
+      setTimeout(() => setApiStatusMessage(null), 2000);
+    }
+  }, [apiKey]);
+
+  const handleToggleApiServer = useCallback(async () => {
+    try {
+      const api = window.api as any;
+      if (apiServerRunning) {
+        const result = await api.apiServer.stop();
+        if (result.success) {
+          setApiServerRunning(false);
+          setApiEnabled(false);
+          await updateSetting("api_enabled", "false", "API aktiviert");
+          setApiStatusMessage({ type: "success", message: "API Server gestoppt" });
+        } else {
+          setApiStatusMessage({ type: "error", message: result.error || "Fehler beim Stoppen" });
+        }
+      } else {
+        if (!apiKey) {
+          setApiStatusMessage({ type: "error", message: "Bitte zuerst einen API-Key generieren" });
+          return;
+        }
+        const port = parseInt(apiPort) || 3847;
+        const result = await api.apiServer.start(port, apiKey);
+        if (result.success) {
+          setApiServerRunning(true);
+          setApiEnabled(true);
+          await updateSetting("api_enabled", "true", "API aktiviert");
+          await updateSetting("api_port", String(port), "API Port");
+          setApiStatusMessage({ type: "success", message: `API Server gestartet auf Port ${port}` });
+        } else {
+          setApiStatusMessage({ type: "error", message: result.error || "Fehler beim Starten" });
+        }
+      }
+      setTimeout(() => setApiStatusMessage(null), 3000);
+    } catch (error) {
+      setApiStatusMessage({ type: "error", message: "Unerwarteter Fehler" });
+    }
+  }, [apiServerRunning, apiKey, apiPort, updateSetting]);
+
   // Build settings items for table
   const settingsItems: SettingItem[] = useMemo(
     () => [
@@ -294,8 +397,12 @@ const Settings: React.FC = () => {
       { id: "selectors", category: "selectors", name: "Selektor-Konfiguration", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: true },
       // Global Defaults
       { id: "global_defaults", category: "selectors", name: "Globale Standardwerte", description: "Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.", type: "component", value: "", fullWidth: true },
+      // API Server
+      { id: "api_toggle", category: "api", name: "API Server", description: apiServerRunning ? `Läuft auf Port ${apiPort}` : "Server starten für externe Zugriffe (CI/CD)", type: "action", value: "", actionLabel: apiServerRunning ? "Stoppen" : "Starten", action: handleToggleApiServer, actionVariant: apiServerRunning ? "danger" : "primary" },
+      { id: "api_port", category: "api", name: "Port", description: "Port für den API Server (Standard: 3847)", type: "input", value: apiPort, disabled: apiServerRunning },
+      { id: "api_key", category: "api", name: "API Key", description: "Authentifizierungs-Key für API-Zugriffe", type: "api-key", value: apiKey },
     ],
-    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport]
+    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer]
   );
 
   // Filter settings
@@ -370,6 +477,9 @@ const Settings: React.FC = () => {
         setEmailNotifyFailure(value === "true");
         await updateSetting("email_notify_failure", value, "Bei Fehler benachrichtigen");
         break;
+      case "api_port":
+        setApiPort(value);
+        break;
     }
   };
 
@@ -401,6 +511,9 @@ const Settings: React.FC = () => {
         break;
       case "email_to_email":
         await updateSetting("email_to_email", emailToEmail, "Empfänger E-Mail");
+        break;
+      case "api_port":
+        await updateSetting("api_port", apiPort, "API Port");
         break;
     }
   };
@@ -450,6 +563,8 @@ const Settings: React.FC = () => {
         return "Daten";
       case "selectors":
         return "Selektoren";
+      case "api":
+        return "API";
       default:
         return category;
     }
@@ -490,6 +605,13 @@ const Settings: React.FC = () => {
           <Code
             size={14}
             className="text-cyan-500"
+          />
+        );
+      case "api":
+        return (
+          <Globe
+            size={14}
+            className="text-orange-500"
           />
         );
       default:
@@ -579,6 +701,34 @@ const Settings: React.FC = () => {
           return <GlobalDefaultsEditor />;
         }
         return null;
+      case "api-key":
+        return (
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              value={item.value || "Kein Key generiert"}
+              readOnly
+              className={`h-7 text-xs font-mono flex-1 ${!item.value ? "text-gray-400 italic" : ""}`}
+            />
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleCopyApiKey}
+              disabled={!item.value}
+              className="text-xs h-7 px-2"
+              title="Kopieren">
+              <Copy size={12} />
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleGenerateApiKey}
+              className="text-xs h-7 px-2"
+              title="Neuen Key generieren">
+              <RefreshCw size={12} />
+            </Button>
+          </div>
+        );
       default:
         return null;
     }
@@ -601,6 +751,12 @@ const Settings: React.FC = () => {
 
       {error && <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800 text-sm">{error}</div>}
 
+      {apiStatusMessage && (
+        <div className={`mb-4 p-3 rounded-md border text-sm ${apiStatusMessage.type === "success" ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800"}`}>
+          {apiStatusMessage.message}
+        </div>
+      )}
+
       {/* Settings Table */}
       <div className="space-y-6">
         {/* Filter Bar */}
@@ -616,6 +772,7 @@ const Settings: React.FC = () => {
             { value: "email", label: "E-Mail" },
             { value: "data", label: "Daten" },
             { value: "selectors", label: "Selektoren" },
+            { value: "api", label: "API" },
           ]}
           statusLabel="Kategorie"
           onClear={() => {

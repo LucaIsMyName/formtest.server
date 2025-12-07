@@ -1,4 +1,4 @@
-import { i as dist, j as jsxRuntimeExports } from "./index-luwXbL62.js";
+import { i as dist, j as jsxRuntimeExports } from "./index-Dv3ACo-W.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
 const Legal = () => {
   const $ = dist.c(10);

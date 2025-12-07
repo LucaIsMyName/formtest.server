@@ -109,6 +109,13 @@ const api = {
   email: {
     testConnection: () => electron.ipcRenderer.invoke("email:testConnection"),
     getConfig: () => electron.ipcRenderer.invoke("email:getConfig")
+  },
+  // API Server operations
+  apiServer: {
+    start: (port, apiKey) => electron.ipcRenderer.invoke("api:start", port, apiKey),
+    stop: () => electron.ipcRenderer.invoke("api:stop"),
+    status: () => electron.ipcRenderer.invoke("api:status"),
+    generateKey: () => electron.ipcRenderer.invoke("api:generateKey")
   }
 };
 if (process.contextIsolated) {

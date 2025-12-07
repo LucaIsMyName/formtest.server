@@ -1,7 +1,7 @@
-import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Database, a6 as Mail, a7 as Sun, a8 as SlidersVertical, a9 as Moon, aa as Monitor, t as Checkbox } from "./index-luwXbL62.js";
+import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Globe, a6 as Database, a7 as Mail, a8 as Sun, a9 as SlidersVertical, aa as Copy, ab as RefreshCw, ac as Moon, ad as Monitor, t as Checkbox } from "./index-Dv3ACo-W.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-D6adxD0P.js";
-import { S as Skeleton } from "./Skeleton-DOsbhKVY.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-9mgHt9i4.js";
+import { S as Skeleton } from "./Skeleton-CGByWWzo.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -1196,9 +1196,41 @@ const Settings = () => {
   const [isDeleting, setIsDeleting] = reactExports.useState(false);
   const [searchTerm, setSearchTerm] = reactExports.useState("");
   const [categoryFilter, setCategoryFilter] = reactExports.useState(void 0);
+  const [apiEnabled, setApiEnabled] = reactExports.useState(false);
+  const [apiPort, setApiPort] = reactExports.useState("3847");
+  const [apiKey, setApiKey] = reactExports.useState("");
+  const [apiServerRunning, setApiServerRunning] = reactExports.useState(false);
+  const [apiStatusMessage, setApiStatusMessage] = reactExports.useState(null);
   reactExports.useEffect(() => {
     loadSettings();
   }, [loadSettings]);
+  reactExports.useEffect(() => {
+    const checkApiStatus = async () => {
+      try {
+        const api = window.api;
+        const status = await api.apiServer.status();
+        setApiServerRunning(status.running);
+      } catch (error_0) {
+        console.error("Failed to check API status:", error_0);
+      }
+    };
+    checkApiStatus();
+  }, []);
+  reactExports.useEffect(() => {
+    settings.forEach((setting) => {
+      switch (setting.key) {
+        case "api_enabled":
+          setApiEnabled(setting.value === "true");
+          break;
+        case "api_port":
+          setApiPort(setting.value);
+          break;
+        case "api_key":
+          setApiKey(setting.value);
+          break;
+      }
+    });
+  }, [settings]);
   const applyTheme = (themeValue) => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
@@ -1210,58 +1242,58 @@ const Settings = () => {
     }
   };
   reactExports.useEffect(() => {
-    settings.forEach((setting) => {
-      switch (setting.key) {
+    settings.forEach((setting_0) => {
+      switch (setting_0.key) {
         case "default_donation_amount":
-          setDonationAmount(setting.value);
+          setDonationAmount(setting_0.value);
           break;
         case "default_interval":
-          setDonationInterval(setting.value);
+          setDonationInterval(setting_0.value);
           break;
         case "test_timeout":
-          setTestTimeout(setting.value);
+          setTestTimeout(setting_0.value);
           break;
         case "headless_mode":
-          setHeadlessMode(setting.value);
+          setHeadlessMode(setting_0.value);
           break;
         case "slow_motion":
-          setSlowMotion(setting.value);
+          setSlowMotion(setting_0.value);
           break;
         case "theme":
-          setTheme(setting.value);
+          setTheme(setting_0.value);
           break;
         case "email_enabled":
-          setEmailEnabled(setting.value === "true");
+          setEmailEnabled(setting_0.value === "true");
           break;
         case "email_smtp_host":
-          setEmailSmtpHost(setting.value);
+          setEmailSmtpHost(setting_0.value);
           break;
         case "email_smtp_port":
-          setEmailSmtpPort(setting.value);
+          setEmailSmtpPort(setting_0.value);
           break;
         case "email_smtp_secure":
-          setEmailSmtpSecure(setting.value === "true");
+          setEmailSmtpSecure(setting_0.value === "true");
           break;
         case "email_smtp_user":
-          setEmailSmtpUser(setting.value);
+          setEmailSmtpUser(setting_0.value);
           break;
         case "email_smtp_pass":
-          setEmailSmtpPass(setting.value);
+          setEmailSmtpPass(setting_0.value);
           break;
         case "email_from_email":
-          setEmailFromEmail(setting.value);
+          setEmailFromEmail(setting_0.value);
           break;
         case "email_from_name":
-          setEmailFromName(setting.value);
+          setEmailFromName(setting_0.value);
           break;
         case "email_to_email":
-          setEmailToEmail(setting.value);
+          setEmailToEmail(setting_0.value);
           break;
         case "email_notify_success":
-          setEmailNotifySuccess(setting.value === "true");
+          setEmailNotifySuccess(setting_0.value === "true");
           break;
         case "email_notify_failure":
-          setEmailNotifyFailure(setting.value === "true");
+          setEmailNotifyFailure(setting_0.value === "true");
           break;
       }
     });
@@ -1270,10 +1302,10 @@ const Settings = () => {
     setIsSendingTestEmail(true);
     setEmailTestResult(null);
     try {
-      const api = window.api;
-      const result = await api.email.testConnection();
+      const api_0 = window.api;
+      const result = await api_0.email.testConnection();
       setEmailTestResult(result);
-    } catch (error_0) {
+    } catch (error_1) {
       setEmailTestResult({
         success: false,
         message: "Fehler beim Senden"
@@ -1292,7 +1324,7 @@ const Settings = () => {
       } else {
         setExportMessage(`Export fehlgeschlagen`);
       }
-    } catch (error_1) {
+    } catch (error_2) {
       setExportMessage("Export fehlgeschlagen");
     } finally {
       setIsExporting(false);
@@ -1309,7 +1341,7 @@ const Settings = () => {
           loadSettings();
         }
       }
-    } catch (error_2) {
+    } catch (error_3) {
       setImportResult({
         success: false,
         imported: {
@@ -1333,6 +1365,87 @@ const Settings = () => {
       setIsImporting(false);
     }
   }, [importMode, exportOptions, loadSettings]);
+  const handleGenerateApiKey = reactExports.useCallback(async () => {
+    try {
+      const api_1 = window.api;
+      const newKey = await api_1.apiServer.generateKey();
+      setApiKey(newKey);
+      await updateSetting("api_key", newKey, "API Key");
+      setApiStatusMessage({
+        type: "success",
+        message: "Neuer API-Key generiert"
+      });
+      setTimeout(() => setApiStatusMessage(null), 3e3);
+    } catch (error_4) {
+      setApiStatusMessage({
+        type: "error",
+        message: "Fehler beim Generieren"
+      });
+    }
+  }, [updateSetting]);
+  const handleCopyApiKey = reactExports.useCallback(() => {
+    if (apiKey) {
+      navigator.clipboard.writeText(apiKey);
+      setApiStatusMessage({
+        type: "success",
+        message: "API-Key kopiert"
+      });
+      setTimeout(() => setApiStatusMessage(null), 2e3);
+    }
+  }, [apiKey]);
+  const handleToggleApiServer = reactExports.useCallback(async () => {
+    try {
+      const api_2 = window.api;
+      if (apiServerRunning) {
+        const result_2 = await api_2.apiServer.stop();
+        if (result_2.success) {
+          setApiServerRunning(false);
+          setApiEnabled(false);
+          await updateSetting("api_enabled", "false", "API aktiviert");
+          setApiStatusMessage({
+            type: "success",
+            message: "API Server gestoppt"
+          });
+        } else {
+          setApiStatusMessage({
+            type: "error",
+            message: result_2.error || "Fehler beim Stoppen"
+          });
+        }
+      } else {
+        if (!apiKey) {
+          setApiStatusMessage({
+            type: "error",
+            message: "Bitte zuerst einen API-Key generieren"
+          });
+          return;
+        }
+        const port = parseInt(apiPort) || 3847;
+        const result_3 = await api_2.apiServer.start(port, apiKey);
+        if (result_3.success) {
+          setApiServerRunning(true);
+          setApiEnabled(true);
+          await updateSetting("api_enabled", "true", "API aktiviert");
+          await updateSetting("api_port", String(port), "API Port");
+          setApiStatusMessage({
+            type: "success",
+            message: `API Server gestartet auf Port ${port}`
+          });
+        } else {
+          setApiStatusMessage({
+            type: "error",
+            message: result_3.error || "Fehler beim Starten"
+          });
+        }
+      }
+      setTimeout(() => setApiStatusMessage(null), 3e3);
+    } catch (error_5) {
+      setApiStatusMessage({
+        type: "error",
+        message: "Unerwarteter Fehler"
+      });
+    }
+  }, [apiServerRunning, apiKey, apiPort, updateSetting]);
   const settingsItems = reactExports.useMemo(() => [
     // Test Settings
     {
@@ -1648,8 +1761,37 @@ const Settings = () => {
       type: "component",
       value: "",
       fullWidth: true
+    },
+    // API Server
+    {
+      id: "api_toggle",
+      category: "api",
+      name: "API Server",
+      description: apiServerRunning ? `Läuft auf Port ${apiPort}` : "Server starten für externe Zugriffe (CI/CD)",
+      type: "action",
+      value: "",
+      actionLabel: apiServerRunning ? "Stoppen" : "Starten",
+      action: handleToggleApiServer,
+      actionVariant: apiServerRunning ? "danger" : "primary"
+    },
+    {
+      id: "api_port",
+      category: "api",
+      name: "Port",
+      description: "Port für den API Server (Standard: 3847)",
+      type: "input",
+      value: apiPort,
+      disabled: apiServerRunning
+    },
+    {
+      id: "api_key",
+      category: "api",
+      name: "API Key",
+      description: "Authentifizierungs-Key für API-Zugriffe",
+      type: "api-key",
+      value: apiKey
     }
-  ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport]);
+  ], [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer]);
   const filteredSettings = reactExports.useMemo(() => {
     return settingsItems.filter((item) => {
       const matchesSearch = !searchTerm || item.name.toLowerCase().includes(searchTerm.toLowerCase()) || item.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -1719,6 +1861,9 @@ const Settings = () => {
         setEmailNotifyFailure(value === "true");
         await updateSetting("email_notify_failure", value, "Bei Fehler benachrichtigen");
         break;
+      case "api_port":
+        setApiPort(value);
+        break;
     }
   };
   const handleSettingBlur = async (id_0) => {
@@ -1750,36 +1895,39 @@ const Settings = () => {
       case "email_to_email":
         await updateSetting("email_to_email", emailToEmail, "Empfänger E-Mail");
         break;
+      case "api_port":
+        await updateSetting("api_port", apiPort, "API Port");
+        break;
     }
   };
   const handleDelete = async () => {
     if (!deleteConfirmation) return;
     setIsDeleting(true);
     try {
-      const api_0 = window.api;
+      const api_3 = window.api;
       switch (deleteConfirmation.type) {
         case "forms":
-          await api_0.forms.deleteAll();
+          await api_3.forms.deleteAll();
           break;
         case "paymentMethods":
-          await api_0.paymentMethods.deleteAll();
+          await api_3.paymentMethods.deleteAll();
           break;
         case "testRuns":
-          await api_0.testRuns.deleteAll();
+          await api_3.testRuns.deleteAll();
           break;
         case "schedules":
-          await api_0.schedules.deleteAll();
+          await api_3.schedules.deleteAll();
           break;
         case "all":
-          await api_0.forms.deleteAll();
-          await api_0.paymentMethods.deleteAll();
-          await api_0.testRuns.deleteAll();
-          await api_0.schedules.deleteAll();
+          await api_3.forms.deleteAll();
+          await api_3.paymentMethods.deleteAll();
+          await api_3.testRuns.deleteAll();
+          await api_3.schedules.deleteAll();
           break;
       }
       setDeleteConfirmation(null);
-    } catch (error_3) {
-      console.error("Delete failed:", error_3);
+    } catch (error_6) {
+      console.error("Delete failed:", error_6);
     } finally {
       setIsDeleting(false);
     }
@@ -1796,6 +1944,8 @@ const Settings = () => {
         return "Daten";
       case "selectors":
         return "Selektoren";
+      case "api":
+        return "API";
       default:
         return category;
     }
@@ -1812,6 +1962,8 @@ const Settings = () => {
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Database, { size: 14, className: "text-purple-500" });
       case "selectors":
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Code, { size: 14, className: "text-cyan-500" });
+      case "api":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(Globe, { size: 14, className: "text-orange-500" });
       default:
         return /* @__PURE__ */ jsxRuntimeExports.jsx(Settings2, { size: 14 });
     }
@@ -1852,6 +2004,12 @@ const Settings = () => {
           return /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalDefaultsEditor, {});
         }
         return null;
+      case "api-key":
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Input, { type: "text", value: item_0.value || "Kein Key generiert", readOnly: true, className: `h-7 text-xs font-mono flex-1 ${!item_0.value ? "text-gray-400 italic" : ""}` }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: handleCopyApiKey, disabled: !item_0.value, className: "text-xs h-7 px-2", title: "Kopieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Copy, { size: 12 }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "secondary", size: "sm", onClick: handleGenerateApiKey, className: "text-xs h-7 px-2", title: "Neuen Key generieren", children: /* @__PURE__ */ jsxRuntimeExports.jsx(RefreshCw, { size: 12 }) })
+        ] });
       default:
         return null;
     }
@@ -1867,6 +2025,7 @@ const Settings = () => {
     /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: CONFIG.style.title.className, children: "Einstellungen" }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-500 dark:text-gray-400 mb-6", children: "Globale Optionen für Formular-Tests konfigurieren" }),
     error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800 text-sm", children: error }),
+    apiStatusMessage && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `mb-4 p-3 rounded-md border text-sm ${apiStatusMessage.type === "success" ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800"}`, children: apiStatusMessage.message }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-6", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, { searchTerm, onSearchChange: setSearchTerm, placeholder: "Einstellung suchen...", statusFilter: categoryFilter, onStatusFilterChange: setCategoryFilter, statusOptions: [{
         value: "test",
@@ -1883,6 +2042,9 @@ const Settings = () => {
       }, {
         value: "selectors",
         label: "Selektoren"
+      }, {
+        value: "api",
+        label: "API"
       }], statusLabel: "Kategorie", onClear: () => {
         setSearchTerm("");
         setCategoryFilter(void 0);

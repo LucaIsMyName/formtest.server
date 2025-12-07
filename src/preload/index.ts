@@ -142,6 +142,18 @@ const api = {
       notifyOnSuccess: boolean;
       notifyOnFailure: boolean;
     }> => ipcRenderer.invoke('email:getConfig')
+  },
+
+  // API Server operations
+  apiServer: {
+    start: (port: number, apiKey: string): Promise<{ success: boolean; error?: string }> => 
+      ipcRenderer.invoke('api:start', port, apiKey),
+    stop: (): Promise<{ success: boolean; error?: string }> => 
+      ipcRenderer.invoke('api:stop'),
+    status: (): Promise<{ running: boolean }> => 
+      ipcRenderer.invoke('api:status'),
+    generateKey: (): Promise<string> => 
+      ipcRenderer.invoke('api:generateKey')
   }
 }
 

@@ -7,6 +7,7 @@ import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
 import { getConfigurableCategories } from "../common/selectors.config";
 import { emailService } from "./emailService";
+import { startApiServer, stopApiServer, isApiServerRunning, generateApiKey } from "./apiServer";
 
 export function setupIpcHandlers(): void {
   // Form handlers with error handling
@@ -477,5 +478,34 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("email:getConfig", () => {
     return emailService.loadConfig();
+  });
+
+  // API Server handlers
+  ipcMain.handle("api:start", async (_, port: number, apiKey: string) => {
+    try {
+      await startApiServer(port, apiKey);
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - api:start:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+
+  ipcMain.handle("api:stop", async () => {
+    try {
+      await stopApiServer();
+      return { success: true };
+    } catch (error) {
+      console.error("IPC Error - api:stop:", error);
+      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+
+  ipcMain.handle("api:status", () => {
+    return { running: isApiServerRunning() };
+  });
+
+  ipcMain.handle("api:generateKey", () => {
+    return generateApiKey();
   });
 }
