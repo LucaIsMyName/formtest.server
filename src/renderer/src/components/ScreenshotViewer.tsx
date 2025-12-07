@@ -9,6 +9,27 @@ interface ScreenshotViewerProps {
 }
 
 /**
+ * Convert a local file path to the custom local-file:// protocol URL
+ * This allows the renderer process to load local files securely
+ */
+function getScreenshotUrl(filePath: string | undefined): string | undefined {
+  if (!filePath) return undefined;
+  
+  // If it's already a URL (http, https, data, local-file), return as-is
+  if (filePath.startsWith('http://') || 
+      filePath.startsWith('https://') || 
+      filePath.startsWith('data:') ||
+      filePath.startsWith('local-file://')) {
+    return filePath;
+  }
+  
+  // Convert absolute file path to local-file:// protocol
+  // Encode the path to handle special characters
+  const encodedPath = encodeURIComponent(filePath).replace(/%2F/g, '/');
+  return `local-file://${encodedPath}`;
+}
+
+/**
  * Screenshot Viewer Component
  * Displays test screenshots with lightbox zoom functionality
  */
@@ -21,6 +42,9 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
   const [zoomLevel, setZoomLevel] = useState(1);
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  
+  // Convert file path to protocol URL
+  const imageUrl = getScreenshotUrl(screenshotPath);
 
   // Reset states when screenshot changes
   useEffect(() => {
@@ -68,17 +92,17 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
   }, [isLightboxOpen]);
 
   const handleDownload = () => {
-    if (!screenshotPath) return;
+    if (!imageUrl) return;
     
     const link = document.createElement("a");
-    link.href = screenshotPath;
+    link.href = imageUrl;
     link.download = `screenshot_${testName.replace(/\s+/g, "_")}_${new Date().toISOString().split("T")[0]}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  if (!screenshotPath) {
+  if (!imageUrl) {
     return (
       <div className={`flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md ${className}`}>
         <div className="text-center text-gray-400 dark:text-gray-500">
@@ -118,11 +142,14 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
             </div>
           )}
           <img
-            src={screenshotPath}
+            src={imageUrl}
             alt={`Screenshot: ${testName}`}
             className={`w-full transition-opacity ${imageLoaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setImageLoaded(true)}
-            onError={() => setImageError(true)}
+            onError={() => {
+              console.error('Failed to load screenshot:', imageUrl);
+              setImageError(true);
+            }}
           />
           {/* Hover overlay */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
@@ -195,7 +222,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src={screenshotPath}
+              src={imageUrl}
               alt={`Screenshot: ${testName}`}
               className="transition-transform duration-200"
               style={{ 

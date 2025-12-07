@@ -1,5 +1,6 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow, ipcMain, protocol, net } from "electron";
 import { join } from "path";
+import { existsSync } from "fs";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { initDatabase } from "./database";
 import { setupIpcHandlers } from "./ipcHandlers";
@@ -44,8 +45,44 @@ function createWindow(): void {
   }
 }
 
+// Register custom protocol for serving local files (screenshots)
+// Must be registered before app is ready
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'local-file', privileges: { secure: true, standard: true, supportFetchAPI: true, stream: true } }
+]);
+
 app.whenReady().then(() => {
   electronApp.setAppUserModelId("com.formtest.server");
+
+  // Register the local-file protocol handler
+  protocol.handle('local-file', (request) => {
+    // URL format: local-file:///absolute/path/to/file.png
+    const url = request.url;
+    let filePath = decodeURIComponent(url.replace('local-file://', ''));
+    
+    // Handle Windows paths that might have an extra slash
+    if (process.platform === 'win32' && filePath.startsWith('/')) {
+      filePath = filePath.substring(1);
+    }
+    
+    console.log(`[local-file protocol] Serving: ${filePath}`);
+    
+    // Security check: only allow files from screenshots directory
+    const screenshotsDir = join(process.cwd(), 'screenshots');
+    if (!filePath.startsWith(screenshotsDir)) {
+      console.error(`[local-file protocol] Access denied: ${filePath} is not in screenshots directory`);
+      return new Response('Access denied', { status: 403 });
+    }
+    
+    // Check if file exists
+    if (!existsSync(filePath)) {
+      console.error(`[local-file protocol] File not found: ${filePath}`);
+      return new Response('File not found', { status: 404 });
+    }
+    
+    // Serve the file using net.fetch with file:// protocol
+    return net.fetch(`file://${filePath}`);
+  });
 
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);

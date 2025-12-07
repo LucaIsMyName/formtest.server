@@ -115,4 +115,80 @@ describe('ScreenshotViewer', () => {
       expect(path.startsWith('file://')).toBe(true);
     });
   });
+
+  describe('getScreenshotUrl function', () => {
+    // Replicate the function logic for testing
+    function getScreenshotUrl(filePath: string | undefined): string | undefined {
+      if (!filePath) return undefined;
+      
+      if (filePath.startsWith('http://') || 
+          filePath.startsWith('https://') || 
+          filePath.startsWith('data:') ||
+          filePath.startsWith('local-file://')) {
+        return filePath;
+      }
+      
+      const encodedPath = encodeURIComponent(filePath).replace(/%2F/g, '/');
+      return `local-file://${encodedPath}`;
+    }
+
+    it('should return undefined for undefined input', () => {
+      expect(getScreenshotUrl(undefined)).toBeUndefined();
+    });
+
+    it('should return undefined for empty string', () => {
+      // Empty string is falsy, so it returns undefined
+      expect(getScreenshotUrl('')).toBeUndefined();
+    });
+
+    it('should pass through http:// URLs unchanged', () => {
+      const url = 'http://example.com/image.png';
+      expect(getScreenshotUrl(url)).toBe(url);
+    });
+
+    it('should pass through https:// URLs unchanged', () => {
+      const url = 'https://example.com/image.png';
+      expect(getScreenshotUrl(url)).toBe(url);
+    });
+
+    it('should pass through data: URLs unchanged', () => {
+      const url = 'data:image/png;base64,iVBORw0KGgo=';
+      expect(getScreenshotUrl(url)).toBe(url);
+    });
+
+    it('should pass through local-file:// URLs unchanged', () => {
+      const url = 'local-file:///Users/test/screenshots/test.png';
+      expect(getScreenshotUrl(url)).toBe(url);
+    });
+
+    it('should convert absolute Unix path to local-file:// protocol', () => {
+      const path = '/Users/test/screenshots/success/test.png';
+      const result = getScreenshotUrl(path);
+      expect(result).toBe('local-file:///Users/test/screenshots/success/test.png');
+    });
+
+    it('should convert relative path to local-file:// protocol', () => {
+      const path = 'screenshots/success/test.png';
+      const result = getScreenshotUrl(path);
+      expect(result).toBe('local-file://screenshots/success/test.png');
+    });
+
+    it('should handle paths with spaces', () => {
+      const path = '/Users/test/My Screenshots/test file.png';
+      const result = getScreenshotUrl(path);
+      expect(result).toBe('local-file:///Users/test/My%20Screenshots/test%20file.png');
+    });
+
+    it('should handle paths with special characters', () => {
+      const path = '/Users/test/screenshots/final-176512727385.png';
+      const result = getScreenshotUrl(path);
+      expect(result).toBe('local-file:///Users/test/screenshots/final-176512727385.png');
+    });
+
+    it('should preserve forward slashes in path', () => {
+      const path = '/a/b/c/d/e.png';
+      const result = getScreenshotUrl(path);
+      expect(result).toBe('local-file:///a/b/c/d/e.png');
+    });
+  });
 });

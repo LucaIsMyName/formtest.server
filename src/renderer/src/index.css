@@ -65,11 +65,11 @@
 /* Reset and base styles */
 * {
   box-sizing: border-box;
-  user-select: none;
+  /* user-select: none; */
 }
 
 table {
-  user-select: all !important;
+  /* user-select: all !important; */
 }
 
 :where(a) {

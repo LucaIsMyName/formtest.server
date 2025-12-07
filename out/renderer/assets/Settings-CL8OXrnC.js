@@ -1,7 +1,7 @@
-import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Globe, a6 as Database, a7 as Mail, a8 as Sun, a9 as SlidersVertical, aa as Copy, ab as RefreshCw, ac as Moon, ad as Monitor, t as Checkbox } from "./index-Dv3ACo-W.js";
+import { U as create, i as dist, r as reactExports, j as jsxRuntimeExports, B as Button, V as Check, X, W as RotateCcw, x as ChevronDown, Y as ChevronRight, Z as Code, I as Input, H as Plus, _ as Eye, $ as EyeOff, a0 as Settings2, n as TableRow, o as TableCell, y as Select, z as SelectTrigger, A as SelectValue, D as SelectContent, G as SelectItem, l as Table, m as TableBody, a1 as useSettingsStore, K as TableHeader, M as TableHead, a2 as React, a3 as CircleCheck, a4 as CircleAlert, a5 as Globe, a6 as Database, a7 as Mail, a8 as Sun, a9 as SlidersVertical, aa as Copy, ab as RefreshCw, ac as Moon, ad as Monitor, t as Checkbox } from "./index-DzJQkFUp.js";
 import { C as CONFIG } from "./app.config-b2lfEN4K.js";
-import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-9mgHt9i4.js";
-import { S as Skeleton } from "./Skeleton-CGByWWzo.js";
+import { T as TableFilter, D as DeleteConfirmDialog } from "./TableFilter-CT2F7wj8.js";
+import { S as Skeleton } from "./Skeleton-CKxsIkDq.js";
 const useSelectorsStore = create((set, get) => ({
   // Initial state
   overrides: [],
@@ -1368,18 +1368,28 @@ const Settings = () => {
   const handleGenerateApiKey = reactExports.useCallback(async () => {
     try {
       const api_1 = window.api;
+      console.log("Generating API key...");
       const newKey = await api_1.apiServer.generateKey();
-      setApiKey(newKey);
-      await updateSetting("api_key", newKey, "API Key");
-      setApiStatusMessage({
-        type: "success",
-        message: "Neuer API-Key generiert"
-      });
-      setTimeout(() => setApiStatusMessage(null), 3e3);
+      console.log("Generated key:", newKey ? "success" : "empty");
+      if (newKey) {
+        setApiKey(newKey);
+        await updateSetting("api_key", newKey, "API Key");
+        setApiStatusMessage({
+          type: "success",
+          message: "Neuer API-Key generiert"
+        });
+        setTimeout(() => setApiStatusMessage(null), 3e3);
+      } else {
+        setApiStatusMessage({
+          type: "error",
+          message: "Kein Key generiert"
+        });
+      }
     } catch (error_4) {
+      console.error("Error generating API key:", error_4);
       setApiStatusMessage({
         type: "error",
-        message: "Fehler beim Generieren"
+        message: `Fehler: ${error_4 instanceof Error ? error_4.message : "Unbekannt"}`
       });
     }
   }, [updateSetting]);

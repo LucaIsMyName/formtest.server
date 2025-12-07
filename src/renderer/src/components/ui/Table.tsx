@@ -82,7 +82,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(({ clas
   return (
     <td
       ref={ref}
-      className={cn("select-normal px-4 py-3 whitespace-nowrap", showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0", className)}
+      className={cn(" px-4 py-3 whitespace-nowrap", showDivider && "border-r border-gray-200 dark:border-gray-700 last:border-r-0", className)}
       {...props}
     />
   );

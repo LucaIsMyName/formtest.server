@@ -2045,15 +2045,11 @@ video {
 /* Reset and base styles */
 * {
   box-sizing: border-box;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
+  /* user-select: none; */
 }
 
 table {
-  -webkit-user-select: all !important;
-     -moz-user-select: all !important;
-          user-select: all !important;
+  /* user-select: all !important; */
 }
 
 :where(a) {

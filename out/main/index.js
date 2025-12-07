@@ -1,11 +1,11 @@
 "use strict";
 const electron = require("electron");
 const path = require("path");
+const fs = require("fs");
 const utils = require("@electron-toolkit/utils");
 const Database = require("better-sqlite3");
 const crypto = require("crypto");
 const keytar = require("keytar");
-const fs = require("fs");
 const child_process = require("child_process");
 const events = require("events");
 const nodemailer = require("nodemailer");
@@ -3423,8 +3423,29 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 }
+electron.protocol.registerSchemesAsPrivileged([
+  { scheme: "local-file", privileges: { secure: true, standard: true, supportFetchAPI: true, stream: true } }
+]);
 electron.app.whenReady().then(() => {
   utils.electronApp.setAppUserModelId("com.formtest.server");
+  electron.protocol.handle("local-file", (request) => {
+    const url = request.url;
+    let filePath = decodeURIComponent(url.replace("local-file://", ""));
+    if (process.platform === "win32" && filePath.startsWith("/")) {
+      filePath = filePath.substring(1);
+    }
+    console.log(`[local-file protocol] Serving: ${filePath}`);
+    const screenshotsDir = path.join(process.cwd(), "screenshots");
+    if (!filePath.startsWith(screenshotsDir)) {
+      console.error(`[local-file protocol] Access denied: ${filePath} is not in screenshots directory`);
+      return new Response("Access denied", { status: 403 });
+    }
+    if (!fs.existsSync(filePath)) {
+      console.error(`[local-file protocol] File not found: ${filePath}`);
+      return new Response("File not found", { status: 404 });
+    }
+    return electron.net.fetch(`file://${filePath}`);
+  });
   electron.app.on("browser-window-created", (_, window) => {
     utils.optimizer.watchWindowShortcuts(window);
   });

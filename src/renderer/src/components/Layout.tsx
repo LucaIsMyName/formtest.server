@@ -117,7 +117,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div
-          className="bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none"
+          className="select-none bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
           <nav className="flex-1 flex flex-col">
             {/* Primary Navigation */}
