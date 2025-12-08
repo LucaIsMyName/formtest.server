@@ -2,114 +2,82 @@
 
 A desktop application for automated testing of donation forms using Electron, Vite, TypeScript, and Playwright.
 
-## 🎯 Project Overview
+## 🎯 Overview
 
-This application automates the testing of FundraisingBox donation forms across multiple payment methods (PayPal, SEPA, Credit Card, EPS) to ensure form functionality and payment processing reliability.
+FormTest Server automates testing of donation forms (originally built for FundraisingBox) across multiple payment methods. It validates form functionality, payment processing flows, and provides detailed reporting.
 
-## 🏗️ Tech Stack
+**Key Capabilities:**
+- Test donation forms with PayPal, SEPA, Credit Card, EPS
+- Schedule automated test runs (Autopilot)
+- REST API for CI/CD integration
+- Master password protection
+- Import/Export configurations
+- Email notifications on test failures
 
-- **Electron**: Desktop application framework
-- **Vite**: Fast build tool and dev server  
-- **TypeScript**: Type-safe development
-- **React**: UI framework with React Router
-- **Tailwind CSS**: Utility-first CSS framework
-- **Playwright**: Browser automation for testing
-- **SQLite**: Local database storage (better-sqlite3)
-- **Vitest**: Unit testing framework
-- **Zustand**: State management
-- **Recharts**: Dashboard analytics charts
+---
 
-## ✅ Implemented Features
+## 🏗️ Architecture
 
-### Core Features
-- [x] **Forms Management** - Full CRUD with field mappings, icons, active/inactive toggle
-- [x] **Payment Methods** - PayPal, SEPA, Credit Card, EPS with encrypted storage (AES-256-GCM)
-- [x] **Test Execution** - Sequential test queue with real-time status updates
-- [x] **Test Results** - Full CRUD, filtering, sorting, timeline view, notes
-- [x] **Dashboard** - Real-time statistics, charts (line, bar, pie), quick actions
-- [x] **Settings** - Theme, test parameters, import/export, data management
-- [x] **Autopilot (Schedules)** - Cron-based scheduled test runs
-- [x] **Notifications** - In-app notification system for scheduled tests
-- [x] **Selector Overrides** - User-configurable CSS selectors for form fields
+### Tech Stack
 
-### Browser Automation
-- [x] **Child Process Architecture** - Isolated Playwright process for stability
-- [x] **Cookie Consent Handling** - Automatic detection and acceptance
-- [x] **Smart Form Detection** - FundraisingBox-specific + generic form support
-- [x] **Field Mappings** - Custom CSS selectors per form
-- [x] **URL Prefill** - Amount and interval via URL parameters
-- [x] **Payment Provider Detection** - PayPal, Stripe, Klarna, etc.
-- [x] **Step Logging** - Detailed test execution timeline
+| Layer | Technology |
+|-------|------------|
+| Desktop Framework | Electron |
+| Build Tool | Vite |
+| Language | TypeScript |
+| UI Framework | React + React Router |
+| Styling | Tailwind CSS |
+| State Management | Zustand |
+| Database | SQLite (better-sqlite3) |
+| Browser Automation | Playwright |
+| Testing | Vitest |
+| Charts | Recharts |
 
-### UI/UX
-- [x] **Custom Title Bar** - Frameless window with custom traffic lights
-- [x] **Dark/Light/System Theme** - Full theme support
-- [x] **Global Search** - Cmd+K search across all entities
-- [x] **Skeleton Loaders** - Loading states for all pages
-- [x] **Toast Notifications** - User feedback system
-- [x] **Responsive Tables** - Sorting, filtering, pagination
-- [x] **Keyboard Navigation** - Full keyboard shortcuts for navigation and actions
-- [x] **Accessibility** - Focusable table rows, ARIA attributes, keyboard support
+### Process Architecture
 
-## ⌨️ Keyboard Shortcuts
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    MAIN PROCESS (Electron)                  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │  database   │  │ ipcHandlers │  │   schedulerService  │  │
+│  │   .ts       │  │    .ts      │  │        .ts          │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │  testQueue  │  │ apiServer   │  │   processManager    │  │
+│  │    .ts      │  │    .ts      │  │        .ts          │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+                            │ IPC
+┌─────────────────────────────────────────────────────────────┐
+│                   PRELOAD (Bridge)                          │
+│                     index.ts                                │
+└─────────────────────────────────────────────────────────────┘
+                            │ Context Bridge
+┌─────────────────────────────────────────────────────────────┐
+│                 RENDERER PROCESS (React)                    │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │   pages/    │  │ components/ │  │      store/         │  │
+│  │  Dashboard  │  │   ui/       │  │   (Zustand)         │  │
+│  │  Forms      │  │   Drawer    │  │                     │  │
+│  │  Tests      │  │   Dialog    │  │                     │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+                            │ Child Process
+┌─────────────────────────────────────────────────────────────┐
+│              TEST RUNNER (Isolated Node.js)                 │
+│                    runner.js (Playwright)                   │
+└─────────────────────────────────────────────────────────────┘
+```
 
-| Shortcut | Action |
-|----------|--------|
-| `⌘ + K` | Open global search |
-| `⌘ + ⇧ + T` | Open test run dialog |
-| `⌘ + 1` | Go to Dashboard |
-| `⌘ + 2` | Go to Formulare |
-| `⌘ + 3` | Go to Bezahlmethoden |
-| `⌘ + 4` | Go to Autopilot |
-| `⌘ + 5` | Go to Tests |
-| `⌘ + 6` | Go to Einstellungen |
-| `⌘ + 7` | Go to Info & Doku |
-| `Esc` | Close dialog/drawer |
-| `Enter` | Open selected item |
-| `↑ / ↓` | Navigate list items |
+### Why Child Process for Playwright?
 
-### Data Management
-- [x] **Import/Export** - Full database backup/restore (JSON)
-- [x] **Encrypted Storage** - Payment credentials via macOS Keychain
-- [x] **Database Migrations** - Automatic schema updates
+The test runner (`runner.js`) runs as an isolated child process because:
+1. **Stability** - Playwright crashes don't affect the main app
+2. **Memory** - Browser instances are properly cleaned up
+3. **Isolation** - Tests can't interfere with Electron's renderer
+4. **Logging** - Separate stdout/stderr streams for test output
 
-## 🚧 Implementation Roadmap
-
-### Phase B: Export Features ✅
-- [x] CSV export for test results
-- [x] JSON export for test results  
-- [x] Download buttons in TestResults page
-
-### Phase C: Screenshot Gallery ✅
-- [x] Screenshot viewer component with lightbox
-- [x] Zoom controls (+/- and keyboard shortcuts)
-- [x] Download functionality
-- [x] Error handling for missing/broken images
-
-### Phase D: Enhanced Reporting ✅
-- [x] Success rate trends over time (7-day chart)
-- [x] Form reliability metrics with progress bars
-- [x] Payment method reliability metrics
-- [x] Average test duration per form
-
-### Phase E: Email Notifications ✅
-- [x] Email settings configuration in Settings page
-- [x] Nodemailer integration with SMTP support
-- [x] Scheduled test failure/success alerts
-- [x] Notification preferences (success/failure toggle)
-- [x] Test email functionality
-
-### CLI Test Tool ✅
-- [x] Command-line interface for testing forms and payment methods
-- [x] Payment method validation (SEPA all intervals, EPS/Credit/PayPal one-time only)
-- [x] List forms and payment methods from CLI
-- [x] Dry-run mode for validation without execution
-
-### Phase F: Advanced Browser Features
-- [ ] Firefox/Safari browser support
-- [ ] Mobile viewport presets
-- [ ] Network throttling options
-- [ ] Video recording
+---
 
 ## 🗂️ Project Structure
 
@@ -155,6 +123,8 @@ src/
     └── selectors.config.ts   # Form field selectors
 ```
 
+---
+
 ## 🚀 Development
 
 ### Prerequisites
@@ -177,9 +147,6 @@ npm run dist
 
 # Run unit tests (Vitest)
 npm test
-
-# Run Playwright e2e tests
-npm run test:playwright
 ```
 
 ### Troubleshooting
@@ -196,59 +163,310 @@ npx electron-rebuild -f -w better-sqlite3
 npm run rebuild:sqlite
 ```
 
+---
+
+## �️ Developer Guide: Adapting for Your Use Case
+
+This section explains how to customize FormTest Server for different form types or organizations.
+
+### 1. UI Components Already Available
+
+The app includes a comprehensive UI component library in `src/renderer/src/components/ui/`:
+
+| Component | File | Usage |
+|-----------|------|-------|
+| Button | `Button.tsx` | Primary, secondary, danger, ghost variants |
+| Input | `Input.tsx` | Text, password, number inputs with icons |
+| Select | `Select.tsx` | Dropdown with search, multi-select |
+| Checkbox | `Checkbox.tsx` | Styled checkbox with label |
+| Table | `Table.tsx` | Sortable, paginated tables |
+| Drawer | `Drawer.tsx` | Slide-in panels for forms |
+| Dialog | `Dialog.tsx` | Modal dialogs |
+| Badge | `Badge.tsx` | Status badges (success, failure, etc.) |
+| Skeleton | `Skeleton.tsx` | Loading placeholders |
+| Toast | `Toast.tsx` | Notification toasts |
+
+**Example: Using existing components**
+```tsx
+import Button from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Drawer, DrawerContent, DrawerHeader } from "../components/ui/Drawer";
+
+// In your component:
+<Button variant="primary" onClick={handleSave}>Save</Button>
+<Input placeholder="Enter name" value={name} onChange={setName} />
+```
+
+### 2. Adapting Form Selectors
+
+Form field detection is configured in `src/common/selectors.config.ts`. This file defines CSS selectors for each field type.
+
+**To add selectors for a new form provider:**
+
+```typescript
+// src/common/selectors.config.ts
+export const DEFAULT_SELECTORS: FormSelectors = {
+  amount: [
+    // FundraisingBox selectors
+    "#payment_amount_suggestion-0",
+    "#payment_amount_suggestion-1",
+    // Add your form provider's selectors:
+    ".your-provider-amount-btn",
+    "[data-amount]",
+  ],
+  firstName: [
+    "#payment_first_name",
+    // Your provider:
+    "#donor_firstname",
+    "input[name='first_name']",
+  ],
+  // ... other fields
+};
+```
+
+**User-configurable overrides:** Users can also override selectors in Settings → Selektoren without modifying code.
+
+### 3. Modifying the Test Runner
+
+The browser automation logic lives in `src/main/testRunner/runner.js`. Key functions:
+
+| Function | Purpose |
+|----------|---------|
+| `fillForm()` | Main form filling logic |
+| `selectAmount()` | Amount selection |
+| `selectInterval()` | Interval selection |
+| `fillPersonalData()` | Name, email, address |
+| `selectPaymentMethod()` | Payment method selection |
+| `fillPaymentDetails()` | IBAN, card details |
+| `submitForm()` | Form submission |
+| `waitForSuccessRedirect()` | Success detection |
+
+**To support a new form type:**
+
+1. Add selectors to `selectors.config.ts`
+2. Modify `runner.js` if the form has unique behavior
+3. Test with headless mode disabled (`Settings → Headless-Modus → Deaktiviert`)
+
+### 4. Adding New Payment Methods
+
+Payment methods are defined in `src/common/types.ts`:
+
+```typescript
+export interface PaymentMethod {
+  id: number;
+  name: string;
+  type: "paypal" | "sepa" | "creditcard" | "eps" | "your_new_type";
+  // ...
+}
+```
+
+**Steps to add a new payment type:**
+
+1. Add type to `PaymentMethod.type` union in `types.ts`
+2. Add details interface in `PaymentMethodDetails`
+3. Update `PaymentMethodDrawer.tsx` with form fields
+4. Update `runner.js` to handle the new payment flow
+5. Add icon mapping in `iconHelper.ts`
+
+### 5. Adding New Pages
+
+1. Create page component in `src/renderer/src/pages/YourPage.tsx`
+2. Add route in `src/renderer/src/App.tsx`
+3. Add navigation item in `src/renderer/src/components/Layout.tsx`
+4. Add keyboard shortcut if needed
+
+### 6. Database Migrations
+
+When adding new columns, create a migration function in `database.ts`:
+
+```typescript
+function migrateYourNewColumn(): void {
+  const columns = db.prepare("PRAGMA table_info(your_table)").all();
+  const hasColumn = columns.some(col => col.name === 'your_column');
+  
+  if (!hasColumn) {
+    db.exec("ALTER TABLE your_table ADD COLUMN your_column TEXT");
+  }
+}
+
+// Call in initDatabase():
+migrateYourNewColumn();
+```
+
+---
+
+## 🌐 REST API
+
+The app includes a REST API server for CI/CD integration. Enable it in Settings → API Server.
+
+### Authentication
+
+All endpoints (except `/api/health`) require the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: your-api-key" http://localhost:3847/api/forms
+```
+
+### Endpoints
+
+#### Health Check
+```
+GET /api/health
+```
+No authentication required. Returns server status.
+
+#### List Forms
+```
+GET /api/forms
+```
+Returns all forms with id, name, url, isActive.
+
+#### List Payment Methods
+```
+GET /api/payment-methods
+```
+Returns payment methods (without sensitive details).
+
+#### List Schedules
+```
+GET /api/schedules
+```
+Returns all scheduled test configurations.
+
+#### Trigger Test Run
+```
+POST /api/tests/run
+Content-Type: application/json
+
+{
+  "formIds": [1, 2],
+  "paymentMethodIds": [1, 3]
+}
+```
+Queues tests for all combinations of forms × payment methods.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "4 test(s) queued",
+  "testIds": [101, 102, 103, 104],
+  "testUuids": ["uuid-1", "uuid-2", "uuid-3", "uuid-4"]
+}
+```
+
+#### List Tests
+```
+GET /api/tests?limit=50&status=SUCCESS
+```
+Query parameters:
+- `limit` - Max results (default: 50, max: 100)
+- `status` - Filter by status (SUCCESS, FAILURE, RUNNING, QUEUED)
+
+#### Get Test by ID
+```
+GET /api/tests/:id
+```
+Returns full test details including steps.
+
+#### Get Test Status (Polling)
+```
+GET /api/tests/:id/status
+```
+Lightweight endpoint for polling test completion.
+
+#### Get Test by UUID
+```
+GET /api/tests/uuid/:uuid
+```
+Find test by its UUID (useful after triggering via API).
+
+#### Queue Status
+```
+GET /api/queue/status
+```
+Returns current queue state (running test, queued count).
+
+#### Delete Test
+```
+DELETE /api/tests/:id
+```
+Deletes a test run.
+
+### CI/CD Example (GitHub Actions)
+
+```yaml
+name: Form Tests
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger tests
+        run: |
+          RESPONSE=$(curl -s -X POST \
+            -H "X-API-Key: ${{ secrets.FORMTEST_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"formIds": [1], "paymentMethodIds": [1, 2]}' \
+            http://your-server:3847/api/tests/run)
+          
+          TEST_IDS=$(echo $RESPONSE | jq -r '.testIds[]')
+          
+          # Poll for completion
+          for ID in $TEST_IDS; do
+            while true; do
+              STATUS=$(curl -s -H "X-API-Key: ${{ secrets.FORMTEST_API_KEY }}" \
+                http://your-server:3847/api/tests/$ID/status | jq -r '.data.status')
+              
+              if [ "$STATUS" = "SUCCESS" ] || [ "$STATUS" = "FAILURE" ]; then
+                echo "Test $ID: $STATUS"
+                break
+              fi
+              sleep 5
+            done
+          done
+```
+
+---
+
 ## 📊 Database Schema
 
-### Forms Table
-- `id`, `name`, `url`, `hash`, `icon`, `fieldMappings`, `isActive`, `createdAt`, `updatedAt`
+| Table | Key Columns |
+|-------|-------------|
+| `forms` | id, name, url, icon, fieldMappings, isActive |
+| `payment_methods` | id, name, type, icon, details (encrypted), isActive |
+| `test_runs` | id, uuid, formId, paymentMethodId, status, amount, interval, durationMs, steps, screenshotPath |
+| `test_schedules` | id, name, formId, paymentMethodId, cronExpression, isActive |
+| `global_settings` | key, value, description |
+| `notifications` | id, type, title, message, testRunId, isRead |
+| `selector_overrides` | id, category, key, selectors, isActive |
 
-### PaymentMethods Table  
-- `id`, `name`, `type`, `icon`, `isActive`, `details` (encrypted), `createdAt`, `updatedAt`
+---
 
-### GlobalSettings Table
-- `key`, `value`, `description`
+## ⌨️ Keyboard Shortcuts
 
-### TestRuns Table
-- `id`, `uuid`, `formId`, `paymentMethodId`, `status`, `errorMessage`, `screenshotPath`, `logDetails`, `steps`, `durationMs`, `isScheduled`, `notes`, `runAt`
+| Shortcut | Action |
+|----------|--------|
+| `⌘ + K` | Global search |
+| `⌘ + ⇧ + T` | Open test dialog |
+| `⌘ + 1-7` | Navigate to pages |
+| `Esc` | Close dialog/drawer |
+| `Enter` | Open selected item |
+| `↑ / ↓` | Navigate lists |
 
-### TestSchedules Table
-- `id`, `name`, `formId`, `paymentMethodId`, `cronExpression`, `icon`, `isActive`, `lastRun`, `createdAt`
-
-### Notifications Table
-- `id`, `type`, `title`, `message`, `testRunId`, `isRead`, `createdAt`
-
-### SelectorOverrides Table
-- `id`, `category`, `key`, `selectors`, `isActive`, `createdAt`, `updatedAt`
+---
 
 ## 🔐 Security
 
-- Payment credentials encrypted with AES-256-GCM
-- Encryption key stored in macOS Keychain (via keytar)
-- Test-only payment data (no real transactions)
-- Secure IPC communication with context isolation
-- Frameless window with custom controls
+- **Payment Encryption**: AES-256-GCM with key in macOS Keychain
+- **Master Password**: Optional app-level password protection
+- **IPC Isolation**: Context-isolated preload scripts
+- **API Authentication**: API key required for all endpoints
 
-## 🎯 Field Mappings
-
-Custom field mappings allow overriding automatic form detection:
-
-| Field Type | Description | Example Selector |
-|------------|-------------|------------------|
-| `amount` | Preset amount button | `#payment_amount_suggestion-0` |
-| `customAmount` | Free amount input | `#payment_customAmount` |
-| `interval` | Payment frequency | `#payment_interval` |
-| `firstName` | First name field | `#payment_first_name` |
-| `lastName` | Last name field | `#payment_last_name` |
-| `email` | Email field | `#payment_email` |
-| `paymentMethod` | Payment method selector | `label[for="sepa_direct_debit"]` |
-| `iban` | IBAN field | `#payment_bank_iban` |
-| `accountHolder` | Account holder | `#payment_bank_account_owner` |
-
-### Actions
-- `type` - Type text into input
-- `click` - Click element
-- `select` - Select dropdown option
-- `check` - Check checkbox
-- `waitAndClick` - Wait 500ms then click
+---
 
 ## 📄 License
 
