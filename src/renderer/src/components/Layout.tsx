@@ -7,6 +7,7 @@ import GlobalSearch from "./GlobalSearch";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot, Scale } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { cn } from "@/utils/cn";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -129,13 +130,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     key={item.name}
                     variant="ghost"
                     to={item.href}
-                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-4 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`}>
+                    className={cn(``, `rounded-none w-full text-left flex items-center gap-3 px-6 py-4 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`)}>
                     <IconComponent
                       className={`${location.pathname === item.href ? ` stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-700 dark:text-gray-400 transition-all`}
                       size={18}
                       strokeWidth={location.pathname === item.href ? 2 : 1.75}
                     />
-                    <span style={{ fontStretch: "115%"}} className={`transition-all text-[clamp(0.66rem,1.075vw,0.925rem)]`}>{item.name}</span>
+                    <span
+                      style={{ fontStretch: "115%" }}
+                      className={`transition-all text-[clamp(0.66rem,1.075vw,0.925rem)]`}>
+                      {item.name}
+                    </span>
                   </Button>
                 );
               })}
@@ -153,13 +158,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     key={item.name}
                     variant="ghost"
                     to={item.href}
-                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-normal no-underline transition-colors rounded ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`}>
+                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-medium tracking-wide no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`}>
                     <IconComponent
                       className={`${location.pathname === item.href ? `stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-500 dark:text-gray-500 transition-all`}
                       size={16}
                       strokeWidth={location.pathname === item.href ? 1.75 : 1}
                     />
-                    <span style={{ fontStretch: "100%"}} className={`transition-all text-[clamp(0.6rem,0.95vw,0.825rem)]`}>{item.name}</span>
+                    <span
+                      style={{ fontStretch: "100%" }}
+                      className={`transition-all text-[clamp(0.6rem,1vw,0.825rem)]`}>
+                      {item.name}
+                    </span>
                   </Button>
                 );
               })}

@@ -214,11 +214,17 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
                               key={form.id}
                               className={`cursor-pointer transition-colors ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-800/50"}`}
                               onClick={() => !isRunning && handleFormToggle(form.id)}>
-                              <TableCell className="px-3 py-2">
+                              <TableCell 
+                                className="px-3 py-2 cursor-pointer" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!isRunning) handleFormToggle(form.id);
+                                }}
+                              >
                                 <Checkbox
                                   checked={isSelected}
-                                  onCheckedChange={() => handleFormToggle(form.id)}
                                   disabled={isRunning}
+                                  className="pointer-events-none"
                                 />
                               </TableCell>
                               <TableCell className="px-3 py-2">
@@ -286,11 +292,17 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
                               key={pm.id}
                               className={`cursor-pointer transition-colors ${isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-800/50"}`}
                               onClick={() => !isRunning && handlePaymentMethodToggle(pm.id)}>
-                              <TableCell className="px-3 py-2">
+                              <TableCell 
+                                className="px-3 py-2 cursor-pointer" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!isRunning) handlePaymentMethodToggle(pm.id);
+                                }}
+                              >
                                 <Checkbox
                                   checked={isSelected}
-                                  onCheckedChange={() => handlePaymentMethodToggle(pm.id)}
                                   disabled={isRunning}
+                                  className="pointer-events-none"
                                 />
                               </TableCell>
                               <TableCell className="px-3 py-2">

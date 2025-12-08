@@ -4,7 +4,7 @@ A desktop application for automated testing of donation forms using Electron, Vi
 
 ## 🎯 Overview
 
-FormTest Server automates testing of donation forms (originally built for FundraisingBox) across multiple payment methods. It validates form functionality, payment processing flows, and provides detailed reporting.
+FormTest Server automates testing of donation forms across multiple payment methods. It validates form functionality, payment processing flows, and provides detailed reporting.
 
 **Key Capabilities:**
 - Test donation forms with PayPal, SEPA, Credit Card, EPS
@@ -470,4 +470,5 @@ jobs:
 
 ## 📄 License
 
-MIT - Copyright (c) 2025 Luca Mack
+<span class="font-mono">FormTest.Server 1.0.31<br />
+MIT - &copy; 2025 Luca Mack</span>
