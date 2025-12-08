@@ -464,6 +464,10 @@ const Settings: React.FC = () => {
       { id: "email_notify_success", category: "email", name: "Bei Erfolg", description: "Bei erfolgreichen Tests benachrichtigen", type: "checkbox", value: String(emailNotifySuccess), disabled: !emailEnabled },
       { id: "email_notify_failure", category: "email", name: "Bei Fehler", description: "Bei fehlgeschlagenen Tests benachrichtigen", type: "checkbox", value: String(emailNotifyFailure), disabled: !emailEnabled },
       { id: "email_test", category: "email", name: "Test-E-Mail", description: "Konfiguration testen", type: "action", value: "", actionLabel: isSendingTestEmail ? "Sende..." : "Senden", action: handleSendTestEmail, actionVariant: "secondary", disabled: !emailEnabled || !emailSmtpHost || !emailToEmail },
+      // API Server
+      { id: "api_toggle", category: "api", name: "API Server", description: apiServerRunning ? `Läuft auf Port ${apiPort}` : "Server starten für externe Zugriffe (CI/CD)", type: "action", value: "", actionLabel: apiServerRunning ? "Stoppen" : "Starten", action: handleToggleApiServer, actionVariant: apiServerRunning ? "danger" : "primary" },
+      { id: "api_port", category: "api", name: "Port", description: "Port für den API Server (Standard: 3847)", type: "input", value: apiPort, disabled: apiServerRunning },
+      { id: "api_key", category: "api", name: "API Key", description: "Authentifizierungs-Key für API-Zugriffe", type: "api-key", value: apiKey },
       // Data Management
       { id: "data_export", category: "data", name: "Daten exportieren", description: "Formulare, Bezahlmethoden, Tests exportieren", type: "action", value: "", actionLabel: isExporting ? "Exportiere..." : "Exportieren", action: handleExport, actionVariant: "secondary" },
       { id: "data_import", category: "data", name: "Daten importieren", description: "Daten aus Backup wiederherstellen", type: "action", value: "", actionLabel: isImporting ? "Importiere..." : "Importieren", action: handleImport, actionVariant: "secondary" },
@@ -476,10 +480,6 @@ const Settings: React.FC = () => {
       { id: "selectors", category: "selectors", name: "Selektor-Konfiguration", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: true },
       // Global Defaults
       { id: "global_defaults", category: "selectors", name: "Globale Standardwerte", description: "Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.", type: "component", value: "", fullWidth: true },
-      // API Server
-      { id: "api_toggle", category: "api", name: "API Server", description: apiServerRunning ? `Läuft auf Port ${apiPort}` : "Server starten für externe Zugriffe (CI/CD)", type: "action", value: "", actionLabel: apiServerRunning ? "Stoppen" : "Starten", action: handleToggleApiServer, actionVariant: apiServerRunning ? "danger" : "primary" },
-      { id: "api_port", category: "api", name: "Port", description: "Port für den API Server (Standard: 3847)", type: "input", value: apiPort, disabled: apiServerRunning },
-      { id: "api_key", category: "api", name: "API Key", description: "Authentifizierungs-Key für API-Zugriffe", type: "api-key", value: apiKey },
       // Security
       { id: "master_password", category: "security", name: "Master-Passwort", description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen", type: "password", value: "", fullWidth: true },
     ],
@@ -650,6 +650,27 @@ const Settings: React.FC = () => {
         return "Sicherheit";
       default:
         return category;
+    }
+  };
+
+  const getCategoryBgColor = (category: string) => {
+    switch (category) {
+      case "test":
+        return "bg-blue-50/50 dark:bg-blue-950/30";
+      case "ui":
+        return "bg-yellow-50/50 dark:bg-yellow-950/30";
+      case "email":
+        return "bg-green-50/50 dark:bg-green-950/30";
+      case "data":
+        return "bg-purple-50/50 dark:bg-purple-950/30";
+      case "selectors":
+        return "bg-cyan-50/50 dark:bg-cyan-950/30";
+      case "api":
+        return "bg-orange-50/50 dark:bg-orange-950/30";
+      case "security":
+        return "bg-red-50/50 dark:bg-red-950/30";
+      default:
+        return "";
     }
   };
 
@@ -986,11 +1007,11 @@ const Settings: React.FC = () => {
                 {filteredSettings.map((item) =>
                   item.fullWidth ? (
                     <React.Fragment key={item.id}>
-                      <TableRow>
+                      <TableRow className={getCategoryBgColor(item.category)}>
                         <TableCell
                           colSpan={3}
                           className="p-0">
-                          <div className="px-4 py-3 bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700">
+                          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                             <div className="flex items-center gap-2 mb-1">
                               {getCategoryIcon(item.category)}
                               <span className="text-xs font-medium text-gray-900 dark:text-white">{item.name}</span>
@@ -1002,7 +1023,7 @@ const Settings: React.FC = () => {
                       </TableRow>
                     </React.Fragment>
                   ) : (
-                    <TableRow key={item.id}>
+                    <TableRow key={item.id} className={getCategoryBgColor(item.category)}>
                       <TableCell>
                         <div className="flex items-center gap-1.5">
                           {getCategoryIcon(item.category)}

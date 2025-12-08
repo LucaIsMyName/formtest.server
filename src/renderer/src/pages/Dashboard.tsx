@@ -6,7 +6,8 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/ui/Button";
-import { FileText, CreditCard, Terminal, BarChart3, Settings, Play } from "lucide-react";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
+import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -217,18 +218,36 @@ const Dashboard: React.FC = () => {
         (r) => r.formId === form.id && r.status !== "RUNNING" && r.status !== "QUEUED"
       );
       const successful = formRuns.filter((r) => r.status === "SUCCESS").length;
+      const failed = formRuns.filter((r) => r.status === "FAILURE").length;
+      const skipped = formRuns.filter((r) => r.status === "SKIPPED" || r.status === "STOPPED").length;
       const total = formRuns.length;
       const rate = total > 0 ? (successful / total) * 100 : 0;
       const avgDuration = formRuns.length > 0
         ? formRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / formRuns.length
         : 0;
       
+      // Calculate last 7 days trend
+      const now = new Date();
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const recentRuns = formRuns.filter((r) => new Date(r.runAt) >= sevenDaysAgo);
+      const recentSuccessful = recentRuns.filter((r) => r.status === "SUCCESS").length;
+      const recentRate = recentRuns.length > 0 ? (recentSuccessful / recentRuns.length) * 100 : 0;
+      const trend = recentRuns.length > 0 ? Math.round(recentRate) - Math.round(rate) : 0;
+      
+      // Get last test date
+      const lastRun = formRuns.sort((a, b) => new Date(b.runAt).getTime() - new Date(a.runAt).getTime())[0];
+      
       return {
         name: form.name,
         rate: Math.round(rate),
         total,
+        successful,
+        failed,
+        skipped,
         avgDuration: Math.round(avgDuration / 1000), // in seconds
         isActive: form.isActive,
+        trend,
+        lastRun: lastRun ? new Date(lastRun.runAt) : null,
       };
     }).filter((f) => f.total > 0).sort((a, b) => b.rate - a.rate);
     
@@ -242,15 +261,37 @@ const Dashboard: React.FC = () => {
         (r) => r.paymentMethodId === pm.id && r.status !== "RUNNING" && r.status !== "QUEUED"
       );
       const successful = pmRuns.filter((r) => r.status === "SUCCESS").length;
+      const failed = pmRuns.filter((r) => r.status === "FAILURE").length;
+      const skipped = pmRuns.filter((r) => r.status === "SKIPPED" || r.status === "STOPPED").length;
       const total = pmRuns.length;
       const rate = total > 0 ? (successful / total) * 100 : 0;
+      const avgDuration = pmRuns.length > 0
+        ? pmRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / pmRuns.length
+        : 0;
+      
+      // Calculate last 7 days trend
+      const now = new Date();
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const recentRuns = pmRuns.filter((r) => new Date(r.runAt) >= sevenDaysAgo);
+      const recentSuccessful = recentRuns.filter((r) => r.status === "SUCCESS").length;
+      const recentRate = recentRuns.length > 0 ? (recentSuccessful / recentRuns.length) * 100 : 0;
+      const trend = recentRuns.length > 0 ? Math.round(recentRate) - Math.round(rate) : 0;
+      
+      // Get last test date
+      const lastRun = pmRuns.sort((a, b) => new Date(b.runAt).getTime() - new Date(a.runAt).getTime())[0];
       
       return {
         name: pm.name,
         type: pm.type,
         rate: Math.round(rate),
         total,
+        successful,
+        failed,
+        skipped,
+        avgDuration: Math.round(avgDuration / 1000),
         isActive: pm.isActive,
+        trend,
+        lastRun: lastRun ? new Date(lastRun.runAt) : null,
       };
     }).filter((p) => p.total > 0).sort((a, b) => b.rate - a.rate);
     
@@ -700,61 +741,149 @@ const Dashboard: React.FC = () => {
           {/* Reliability Metrics */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Form Reliability */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Formular Zuverlässigkeit</h3>
-              <div className="space-y-3 max-h-[300px] overflow-y-auto">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                  <FileText size={16} className="text-blue-500" />
+                  Formular Zuverlässigkeit
+                </h3>
+              </div>
+              <div className="max-h-[320px] overflow-y-auto">
                 {prepareFormReliability().length > 0 ? (
-                  prepareFormReliability().map((form, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{form.name}</p>
-                        <p className="text-xs text-gray-500">{form.total} Tests • Ø {form.avgDuration}s</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${form.rate >= 80 ? "bg-green-500" : form.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
-                            style={{ width: `${form.rate}%` }}
-                          />
-                        </div>
-                        <span className={`text-sm font-mono ${form.rate >= 80 ? "text-green-600" : form.rate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
-                          {form.rate}%
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                  <Table dividers={false}>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                        <TableHead className="text-[11px]">Formular</TableHead>
+                        <TableHead className="text-[11px] text-center w-16">Tests</TableHead>
+                        <TableHead className="text-[11px] text-center w-20">Ergebnis</TableHead>
+                        <TableHead className="text-[11px] text-center w-14">Zeit</TableHead>
+                        <TableHead className="text-[11px] text-right w-20">Rate</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {prepareFormReliability().map((form, idx) => (
+                        <TableRow key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                          <TableCell className="py-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[140px]">{form.name}</span>
+                              {form.trend !== 0 && (
+                                <span className={`flex items-center text-[11px] ${form.trend > 0 ? "text-green-600" : "text-red-600"}`}>
+                                  {form.trend > 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                                </span>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-2 text-center">
+                            <span className="text-xs font-mono text-gray-600 dark:text-gray-400">{form.total}</span>
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <div className="flex items-center justify-center gap-1">
+                              <span className="flex items-center gap-0.5 text-[11px] text-green-600">
+                                <CheckCircle2 size={10} />
+                                {form.successful}
+                              </span>
+                              <span className="flex items-center gap-0.5 text-[11px] text-red-600">
+                                <XCircle size={10} />
+                                {form.failed}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-2 text-center">
+                            <span className="text-[11px] font-mono text-gray-500">{form.avgDuration}s</span>
+                          </TableCell>
+                          <TableCell className="py-2 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full ${form.rate >= 80 ? "bg-green-500" : form.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
+                                  style={{ width: `${form.rate}%` }}
+                                />
+                              </div>
+                              <span className={`text-xs font-mono font-medium w-8 text-right ${form.rate >= 80 ? "text-green-600" : form.rate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
+                                {form.rate}%
+                              </span>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 ) : (
-                  <p className="text-sm text-gray-500 text-center py-4">Keine Testdaten verfügbar</p>
+                  <p className="text-sm text-gray-500 text-center py-8">Keine Testdaten verfügbar</p>
                 )}
               </div>
             </div>
 
             {/* Payment Method Reliability */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Bezahlmethoden Zuverlässigkeit</h3>
-              <div className="space-y-3 max-h-[300px] overflow-y-auto">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                  <CreditCard size={16} className="text-purple-500" />
+                  Bezahlmethoden Zuverlässigkeit
+                </h3>
+              </div>
+              <div className="max-h-[320px] overflow-y-auto">
                 {preparePaymentMethodReliability().length > 0 ? (
-                  preparePaymentMethodReliability().map((pm, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-700">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{pm.name}</p>
-                        <p className="text-xs text-gray-500 uppercase">{pm.type} • {pm.total} Tests</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${pm.rate >= 80 ? "bg-green-500" : pm.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
-                            style={{ width: `${pm.rate}%` }}
-                          />
-                        </div>
-                        <span className={`text-sm font-mono ${pm.rate >= 80 ? "text-green-600" : pm.rate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
-                          {pm.rate}%
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                  <Table dividers={false}>
+                    <TableHeader>
+                      <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                        <TableHead className="text-[11px]">Methode</TableHead>
+                        <TableHead className="text-[11px] w-20">Typ</TableHead>
+                        <TableHead className="text-[11px] text-center w-16">Tests</TableHead>
+                        <TableHead className="text-[11px] text-center w-20">Ergebnis</TableHead>
+                        <TableHead className="text-[11px] text-right w-20">Rate</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {preparePaymentMethodReliability().map((pm, idx) => (
+                        <TableRow key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                          <TableCell className="py-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">{pm.name}</span>
+                              {pm.trend !== 0 && (
+                                <span className={`flex items-center text-[11px] ${pm.trend > 0 ? "text-green-600" : "text-red-600"}`}>
+                                  {pm.trend > 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                                </span>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <span className="text-[11px] font-mono uppercase text-gray-500 dark:text-gray-400">{pm.type}</span>
+                          </TableCell>
+                          <TableCell className="py-2 text-center">
+                            <span className="text-xs font-mono text-gray-600 dark:text-gray-400">{pm.total}</span>
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <div className="flex items-center justify-center gap-1">
+                              <span className="flex items-center gap-0.5 text-[11px] text-green-600">
+                                <CheckCircle2 size={10} />
+                                {pm.successful}
+                              </span>
+                              <span className="flex items-center gap-0.5 text-[11px] text-red-600">
+                                <XCircle size={10} />
+                                {pm.failed}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-2 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div
+                                  className={`h-full rounded-full ${pm.rate >= 80 ? "bg-green-500" : pm.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
+                                  style={{ width: `${pm.rate}%` }}
+                                />
+                              </div>
+                              <span className={`text-xs font-mono font-medium w-8 text-right ${pm.rate >= 80 ? "text-green-600" : pm.rate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
+                                {pm.rate}%
+                              </span>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 ) : (
-                  <p className="text-sm text-gray-500 text-center py-4">Keine Testdaten verfügbar</p>
+                  <p className="text-sm text-gray-500 text-center py-8">Keine Testdaten verfügbar</p>
                 )}
               </div>
             </div>
