@@ -4,6 +4,7 @@ import { EventEmitter } from "events";
 import type { Form, PaymentMethod, TestStep, GlobalFieldDefaults } from "../../common/types";
 import { getMergedSelectorConfig, settingsQueries } from "../database";
 import type { SelectorConfig } from "../../common/selectors.config";
+import type { TestSettings } from "../testQueue";
 
 export interface TestMessage {
   id: string;
@@ -12,7 +13,7 @@ export interface TestMessage {
     testRunId?: number;
     form?: Form;
     paymentMethod?: PaymentMethod;
-    settings?: Record<string, string>;
+    settings?: TestSettings;
     selectorConfig?: SelectorConfig;
     globalFieldDefaults?: GlobalFieldDefaults;
     success?: boolean;
@@ -186,7 +187,7 @@ export class TestProcessManager extends EventEmitter {
     this.process = null;
   }
 
-  async runTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>, retryCount: number = 0): Promise<TestResult> {
+  async runTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, retryCount: number = 0): Promise<TestResult> {
     const maxRetries = 2;
     const testTimeout = parseInt(settings.test_timeout || "180000"); // Default 3 minutes
 

@@ -198,3 +198,74 @@ export interface ImportResult {
   errors: string[];
   warnings: string[];
 }
+
+// ============================================
+// Custom Scripts Types
+// ============================================
+
+/**
+ * Hook points where custom scripts can be executed during a test run.
+ * Scripts are executed in order at each hook point.
+ */
+export type ScriptHookPoint =
+  | "before_navigation"    // Before page.goto()
+  | "after_navigation"     // After page loads
+  | "before_cookie_banner" // Before cookie handling
+  | "after_cookie_banner"  // After cookie handling
+  | "before_form_fill"     // Before form analysis and filling
+  | "after_form_fill"      // After fields are filled
+  | "before_payment"       // Before payment method selection
+  | "after_payment"        // After payment method handling
+  | "before_submit"        // Before form submission
+  | "after_submit"         // After submission
+  | "on_success"           // On successful redirect detection
+  | "on_error";            // When any error occurs
+
+/**
+ * Custom script definition
+ */
+export interface CustomScript {
+  id: number;
+  name: string;
+  description?: string;
+  code: string;
+  hookPoint: ScriptHookPoint;
+  isActive: boolean;
+  isGlobal: boolean;        // If true, runs for all forms
+  stopOnError: boolean;     // If true, test fails when script fails
+  timeout: number;          // Max execution time in ms
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Junction table for form-specific script assignments
+ */
+export interface FormScript {
+  id: number;
+  formId: number;
+  scriptId: number;
+  executionOrder: number;   // Order of execution at the hook point
+}
+
+/**
+ * Result of a custom script execution
+ */
+export interface ScriptExecutionResult {
+  scriptId: number;
+  scriptName: string;
+  hookPoint: ScriptHookPoint;
+  success: boolean;
+  duration: number;
+  error?: string;
+  logs: string[];
+}
+
+/**
+ * Validation result for script code
+ */
+export interface ScriptValidationResult {
+  valid: boolean;
+  errors: string[];
+  warnings: string[];
+}

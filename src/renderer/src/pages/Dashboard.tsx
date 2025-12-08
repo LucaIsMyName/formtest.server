@@ -777,7 +777,7 @@ const Dashboard: React.FC = () => {
                             <span className="text-xs font-mono text-gray-600 dark:text-gray-400">{form.total}</span>
                           </TableCell>
                           <TableCell className="py-2">
-                            <div className="flex items-center justify-center gap-1">
+                            <div className="font-mono flex items-center justify-center gap-3">
                               <span className="flex items-center gap-0.5 text-[11px] text-green-600">
                                 <CheckCircle2 size={10} />
                                 {form.successful}
@@ -854,7 +854,7 @@ const Dashboard: React.FC = () => {
                             <span className="text-xs font-mono text-gray-600 dark:text-gray-400">{pm.total}</span>
                           </TableCell>
                           <TableCell className="py-2">
-                            <div className="flex items-center justify-center gap-1">
+                            <div className="font-mono  flex items-center justify-center gap-3">
                               <span className="flex items-center gap-0.5 text-[11px] text-green-600">
                                 <CheckCircle2 size={10} />
                                 {pm.successful}

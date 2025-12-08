@@ -10,13 +10,18 @@
 import { runSingleTest } from "./testExecutor";
 import { testRunQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
-import type { Form, PaymentMethod } from "../common/types";
+import type { Form, PaymentMethod, CustomScript } from "../common/types";
+
+// Extended settings type that includes custom scripts
+export interface TestSettings extends Record<string, any> {
+  customScripts?: CustomScript[];
+}
 
 interface QueuedTest {
   testRunId: number;
   form: Form;
   paymentMethod: PaymentMethod;
-  settings: Record<string, string>;
+  settings: TestSettings;
   addedAt: number;
 }
 
@@ -28,7 +33,7 @@ class TestQueue {
   /**
    * Add a test to the queue
    */
-  enqueue(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>): void {
+  enqueue(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings): void {
     const queuedTest: QueuedTest = {
       testRunId,
       form,

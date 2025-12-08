@@ -672,6 +672,68 @@ function migrateTestRunAmountInterval() {
     console.error("Database: Test run amount/interval migration error:", error);
   }
 }
+function migrateCustomScripts() {
+  console.log("Database: Checking for custom_scripts tables...");
+  try {
+    const customScriptsExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='custom_scripts'"
+    ).get();
+    if (!customScriptsExists) {
+      console.log("Database: Creating custom_scripts table...");
+      db.exec(`
+        CREATE TABLE custom_scripts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT,
+          code TEXT NOT NULL,
+          hookPoint TEXT NOT NULL CHECK (hookPoint IN (
+            'before_navigation', 'after_navigation',
+            'before_cookie_banner', 'after_cookie_banner',
+            'before_form_fill', 'after_form_fill',
+            'before_payment', 'after_payment',
+            'before_submit', 'after_submit',
+            'on_success', 'on_error'
+          )),
+          isActive INTEGER DEFAULT 1,
+          isGlobal INTEGER DEFAULT 0,
+          stopOnError INTEGER DEFAULT 0,
+          timeout INTEGER DEFAULT 30000,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE INDEX idx_custom_scripts_hook ON custom_scripts(hookPoint);
+        CREATE INDEX idx_custom_scripts_active ON custom_scripts(isActive);
+        CREATE INDEX idx_custom_scripts_global ON custom_scripts(isGlobal);
+      `);
+      console.log("Database: custom_scripts table created");
+    }
+    const formScriptsExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='form_scripts'"
+    ).get();
+    if (!formScriptsExists) {
+      console.log("Database: Creating form_scripts table...");
+      db.exec(`
+        CREATE TABLE form_scripts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          formId INTEGER NOT NULL,
+          scriptId INTEGER NOT NULL,
+          executionOrder INTEGER DEFAULT 0,
+          FOREIGN KEY (formId) REFERENCES forms(id) ON DELETE CASCADE,
+          FOREIGN KEY (scriptId) REFERENCES custom_scripts(id) ON DELETE CASCADE,
+          UNIQUE(formId, scriptId)
+        );
+        
+        CREATE INDEX idx_form_scripts_form ON form_scripts(formId);
+        CREATE INDEX idx_form_scripts_script ON form_scripts(scriptId);
+      `);
+      console.log("Database: form_scripts table created");
+    }
+    console.log("Database: Custom scripts migration complete");
+  } catch (error) {
+    console.error("Database: Custom scripts migration error:", error);
+  }
+}
 function migrateFormFieldMappings() {
   console.log("Database: Checking for forms fieldMappings column...");
   try {
@@ -912,6 +974,7 @@ function initDatabase() {
   migrateIconColumns();
   migrateFormFieldMappings();
   migrateTestRunAmountInterval();
+  migrateCustomScripts();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
   });
@@ -1959,6 +2022,198 @@ function getMergedSelectorConfig() {
 function getBaseSelectorConfig() {
   return SELECTOR_CONFIG;
 }
+const customScriptQueries = {
+  getAll: () => {
+    const scripts = db.prepare("SELECT * FROM custom_scripts ORDER BY name").all();
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
+    }));
+  },
+  getById: (id) => {
+    const script = db.prepare("SELECT * FROM custom_scripts WHERE id = ?").get(id);
+    if (!script) return void 0;
+    return {
+      ...script,
+      isActive: Boolean(script.isActive),
+      isGlobal: Boolean(script.isGlobal),
+      stopOnError: Boolean(script.stopOnError),
+      createdAt: new Date(script.createdAt),
+      updatedAt: new Date(script.updatedAt)
+    };
+  },
+  getByHookPoint: (hookPoint) => {
+    const scripts = db.prepare(
+      "SELECT * FROM custom_scripts WHERE hookPoint = ? AND isActive = 1 ORDER BY name"
+    ).all(hookPoint);
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
+    }));
+  },
+  getGlobalScripts: () => {
+    const scripts = db.prepare(
+      "SELECT * FROM custom_scripts WHERE isGlobal = 1 AND isActive = 1 ORDER BY hookPoint, name"
+    ).all();
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
+    }));
+  },
+  getByFormId: (formId) => {
+    const scripts = db.prepare(`
+      SELECT cs.*, fs.executionOrder
+      FROM custom_scripts cs
+      INNER JOIN form_scripts fs ON cs.id = fs.scriptId
+      WHERE fs.formId = ? AND cs.isActive = 1
+      ORDER BY cs.hookPoint, fs.executionOrder, cs.name
+    `).all(formId);
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
+    }));
+  },
+  getScriptsForTest: (formId) => {
+    const scripts = db.prepare(`
+      SELECT DISTINCT cs.*, COALESCE(fs.executionOrder, 0) as executionOrder
+      FROM custom_scripts cs
+      LEFT JOIN form_scripts fs ON cs.id = fs.scriptId AND fs.formId = ?
+      WHERE cs.isActive = 1 AND (cs.isGlobal = 1 OR fs.formId IS NOT NULL)
+      ORDER BY cs.hookPoint, executionOrder, cs.name
+    `).all(formId);
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
+    }));
+  },
+  create: (script) => {
+    const stmt = db.prepare(`
+      INSERT INTO custom_scripts (name, description, code, hookPoint, isActive, isGlobal, stopOnError, timeout)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const result = stmt.run(
+      script.name,
+      script.description || null,
+      script.code,
+      script.hookPoint,
+      script.isActive ? 1 : 0,
+      script.isGlobal ? 1 : 0,
+      script.stopOnError ? 1 : 0,
+      script.timeout || 3e4
+    );
+    return { ...result, id: result.lastInsertRowid };
+  },
+  update: (id, script) => {
+    const updates = [];
+    const values = [];
+    if (script.name !== void 0) {
+      updates.push("name = ?");
+      values.push(script.name);
+    }
+    if (script.description !== void 0) {
+      updates.push("description = ?");
+      values.push(script.description);
+    }
+    if (script.code !== void 0) {
+      updates.push("code = ?");
+      values.push(script.code);
+    }
+    if (script.hookPoint !== void 0) {
+      updates.push("hookPoint = ?");
+      values.push(script.hookPoint);
+    }
+    if (script.isActive !== void 0) {
+      updates.push("isActive = ?");
+      values.push(script.isActive ? 1 : 0);
+    }
+    if (script.isGlobal !== void 0) {
+      updates.push("isGlobal = ?");
+      values.push(script.isGlobal ? 1 : 0);
+    }
+    if (script.stopOnError !== void 0) {
+      updates.push("stopOnError = ?");
+      values.push(script.stopOnError ? 1 : 0);
+    }
+    if (script.timeout !== void 0) {
+      updates.push("timeout = ?");
+      values.push(script.timeout);
+    }
+    if (updates.length === 0) return;
+    updates.push("updatedAt = CURRENT_TIMESTAMP");
+    values.push(id);
+    const stmt = db.prepare(`UPDATE custom_scripts SET ${updates.join(", ")} WHERE id = ?`);
+    return stmt.run(...values);
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM custom_scripts WHERE id = ?");
+    return stmt.run(id);
+  },
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM custom_scripts");
+    return stmt.run();
+  }
+};
+const formScriptQueries = {
+  getByFormId: (formId) => {
+    const rows = db.prepare(
+      "SELECT * FROM form_scripts WHERE formId = ? ORDER BY executionOrder"
+    ).all(formId);
+    return rows;
+  },
+  getByScriptId: (scriptId) => {
+    const rows = db.prepare(
+      "SELECT * FROM form_scripts WHERE scriptId = ?"
+    ).all(scriptId);
+    return rows;
+  },
+  attach: (formId, scriptId, executionOrder = 0) => {
+    const stmt = db.prepare(`
+      INSERT OR REPLACE INTO form_scripts (formId, scriptId, executionOrder)
+      VALUES (?, ?, ?)
+    `);
+    return stmt.run(formId, scriptId, executionOrder);
+  },
+  detach: (formId, scriptId) => {
+    const stmt = db.prepare(
+      "DELETE FROM form_scripts WHERE formId = ? AND scriptId = ?"
+    );
+    return stmt.run(formId, scriptId);
+  },
+  detachAllFromForm: (formId) => {
+    const stmt = db.prepare("DELETE FROM form_scripts WHERE formId = ?");
+    return stmt.run(formId);
+  },
+  detachAllFromScript: (scriptId) => {
+    const stmt = db.prepare("DELETE FROM form_scripts WHERE scriptId = ?");
+    return stmt.run(scriptId);
+  },
+  updateOrder: (formId, scriptId, executionOrder) => {
+    const stmt = db.prepare(
+      "UPDATE form_scripts SET executionOrder = ? WHERE formId = ? AND scriptId = ?"
+    );
+    return stmt.run(executionOrder, formId, scriptId);
+  }
+};
 class TestProcessManager extends events.EventEmitter {
   constructor() {
     super();
@@ -3244,6 +3499,7 @@ function setupIpcHandlers() {
         settingsMap["default_donation_interval"] = options.customInterval;
       }
       for (const form of forms) {
+        const customScripts = customScriptQueries.getScriptsForTest(form.id);
         for (const paymentMethod of paymentMethods) {
           console.log(`Creating test run for form "${form.name}" with payment method "${paymentMethod.name}"`);
           const testRun = testRunQueries.create({
@@ -3261,7 +3517,8 @@ function setupIpcHandlers() {
           });
           testRunIds.push(testRun.lastInsertRowid);
           const testQueue = getTestQueue();
-          testQueue.enqueue(testRun.lastInsertRowid, form, paymentMethod, settingsMap);
+          const settingsWithScripts = { ...settingsMap, customScripts };
+          testQueue.enqueue(testRun.lastInsertRowid, form, paymentMethod, settingsWithScripts);
         }
       }
       return {
@@ -3540,6 +3797,130 @@ function setupIpcHandlers() {
     } catch (error) {
       console.error("IPC Error - password:emergencyReset:", error);
       return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+  electron.ipcMain.handle("customScripts:getAll", async () => {
+    try {
+      return customScriptQueries.getAll();
+    } catch (error) {
+      console.error("IPC Error - customScripts:getAll:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:getById", async (_, id) => {
+    try {
+      return customScriptQueries.getById(id);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getById:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:getByHookPoint", async (_, hookPoint) => {
+    try {
+      return customScriptQueries.getByHookPoint(hookPoint);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getByHookPoint:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:getGlobal", async () => {
+    try {
+      return customScriptQueries.getGlobalScripts();
+    } catch (error) {
+      console.error("IPC Error - customScripts:getGlobal:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:getByFormId", async (_, formId) => {
+    try {
+      return customScriptQueries.getByFormId(formId);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getByFormId:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:getForTest", async (_, formId) => {
+    try {
+      return customScriptQueries.getScriptsForTest(formId);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getForTest:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:create", async (_, script) => {
+    try {
+      return customScriptQueries.create(script);
+    } catch (error) {
+      console.error("IPC Error - customScripts:create:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:update", async (_, id, script) => {
+    try {
+      return customScriptQueries.update(id, script);
+    } catch (error) {
+      console.error("IPC Error - customScripts:update:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:delete", async (_, id) => {
+    try {
+      return customScriptQueries.delete(id);
+    } catch (error) {
+      console.error("IPC Error - customScripts:delete:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:deleteAll", async () => {
+    try {
+      return customScriptQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - customScripts:deleteAll:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("customScripts:validate", async (_, code) => {
+    try {
+      new Function("ctx", `with(ctx) { ${code} }`);
+      return { valid: true, errors: [], warnings: [] };
+    } catch (error) {
+      return {
+        valid: false,
+        errors: [error instanceof Error ? error.message : "Syntax error"],
+        warnings: []
+      };
+    }
+  });
+  electron.ipcMain.handle("formScripts:getByFormId", async (_, formId) => {
+    try {
+      return formScriptQueries.getByFormId(formId);
+    } catch (error) {
+      console.error("IPC Error - formScripts:getByFormId:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("formScripts:attach", async (_, formId, scriptId, executionOrder) => {
+    try {
+      return formScriptQueries.attach(formId, scriptId, executionOrder || 0);
+    } catch (error) {
+      console.error("IPC Error - formScripts:attach:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("formScripts:detach", async (_, formId, scriptId) => {
+    try {
+      return formScriptQueries.detach(formId, scriptId);
+    } catch (error) {
+      console.error("IPC Error - formScripts:detach:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("formScripts:updateOrder", async (_, formId, scriptId, executionOrder) => {
+    try {
+      return formScriptQueries.updateOrder(formId, scriptId, executionOrder);
+    } catch (error) {
+      console.error("IPC Error - formScripts:updateOrder:", error);
+      throw error;
     }
   });
 }

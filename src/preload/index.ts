@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule, GlobalFieldDefaults } from '../common/types'
+import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, ScriptValidationResult, FormScript } from '../common/types'
 import type { SelectorOverride, SelectorConfig } from '../common/selectors.config'
 
 // Custom APIs for renderer
@@ -172,6 +172,44 @@ const api = {
       ipcRenderer.invoke('password:disable', currentPassword),
     emergencyReset: (): Promise<{ success: boolean; error?: string }> => 
       ipcRenderer.invoke('password:emergencyReset')
+  },
+
+  // Custom Scripts operations
+  customScripts: {
+    getAll: (): Promise<CustomScript[]> => 
+      ipcRenderer.invoke('customScripts:getAll'),
+    getById: (id: number): Promise<CustomScript | undefined> => 
+      ipcRenderer.invoke('customScripts:getById', id),
+    getByHookPoint: (hookPoint: ScriptHookPoint): Promise<CustomScript[]> => 
+      ipcRenderer.invoke('customScripts:getByHookPoint', hookPoint),
+    getGlobal: (): Promise<CustomScript[]> => 
+      ipcRenderer.invoke('customScripts:getGlobal'),
+    getByFormId: (formId: number): Promise<CustomScript[]> => 
+      ipcRenderer.invoke('customScripts:getByFormId', formId),
+    getForTest: (formId: number): Promise<CustomScript[]> => 
+      ipcRenderer.invoke('customScripts:getForTest', formId),
+    create: (script: Omit<CustomScript, 'id' | 'createdAt' | 'updatedAt'>) => 
+      ipcRenderer.invoke('customScripts:create', script),
+    update: (id: number, script: Partial<CustomScript>) => 
+      ipcRenderer.invoke('customScripts:update', id, script),
+    delete: (id: number) => 
+      ipcRenderer.invoke('customScripts:delete', id),
+    deleteAll: () => 
+      ipcRenderer.invoke('customScripts:deleteAll'),
+    validate: (code: string): Promise<ScriptValidationResult> => 
+      ipcRenderer.invoke('customScripts:validate', code)
+  },
+
+  // Form-Script junction operations
+  formScripts: {
+    getByFormId: (formId: number): Promise<FormScript[]> => 
+      ipcRenderer.invoke('formScripts:getByFormId', formId),
+    attach: (formId: number, scriptId: number, executionOrder?: number) => 
+      ipcRenderer.invoke('formScripts:attach', formId, scriptId, executionOrder),
+    detach: (formId: number, scriptId: number) => 
+      ipcRenderer.invoke('formScripts:detach', formId, scriptId),
+    updateOrder: (formId: number, scriptId: number, executionOrder: number) => 
+      ipcRenderer.invoke('formScripts:updateOrder', formId, scriptId, executionOrder)
   }
 }
 

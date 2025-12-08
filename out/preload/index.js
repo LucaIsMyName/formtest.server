@@ -126,6 +126,27 @@ const api = {
     change: (currentPassword, newPassword) => electron.ipcRenderer.invoke("password:change", currentPassword, newPassword),
     disable: (currentPassword) => electron.ipcRenderer.invoke("password:disable", currentPassword),
     emergencyReset: () => electron.ipcRenderer.invoke("password:emergencyReset")
+  },
+  // Custom Scripts operations
+  customScripts: {
+    getAll: () => electron.ipcRenderer.invoke("customScripts:getAll"),
+    getById: (id) => electron.ipcRenderer.invoke("customScripts:getById", id),
+    getByHookPoint: (hookPoint) => electron.ipcRenderer.invoke("customScripts:getByHookPoint", hookPoint),
+    getGlobal: () => electron.ipcRenderer.invoke("customScripts:getGlobal"),
+    getByFormId: (formId) => electron.ipcRenderer.invoke("customScripts:getByFormId", formId),
+    getForTest: (formId) => electron.ipcRenderer.invoke("customScripts:getForTest", formId),
+    create: (script) => electron.ipcRenderer.invoke("customScripts:create", script),
+    update: (id, script) => electron.ipcRenderer.invoke("customScripts:update", id, script),
+    delete: (id) => electron.ipcRenderer.invoke("customScripts:delete", id),
+    deleteAll: () => electron.ipcRenderer.invoke("customScripts:deleteAll"),
+    validate: (code) => electron.ipcRenderer.invoke("customScripts:validate", code)
+  },
+  // Form-Script junction operations
+  formScripts: {
+    getByFormId: (formId) => electron.ipcRenderer.invoke("formScripts:getByFormId", formId),
+    attach: (formId, scriptId, executionOrder) => electron.ipcRenderer.invoke("formScripts:attach", formId, scriptId, executionOrder),
+    detach: (formId, scriptId) => electron.ipcRenderer.invoke("formScripts:detach", formId, scriptId),
+    updateOrder: (formId, scriptId, executionOrder) => electron.ipcRenderer.invoke("formScripts:updateOrder", formId, scriptId, executionOrder)
   }
 };
 if (process.contextIsolated) {

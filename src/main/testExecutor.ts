@@ -1,12 +1,12 @@
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, notificationQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
-import { getTestQueue } from "./testQueue";
+import { getTestQueue, TestSettings } from "./testQueue";
 import type { Form, PaymentMethod } from "../common/types";
 import { randomUUID } from "crypto";
 import { BrowserWindow } from "electron";
 import { emailService } from "./emailService";
 
-export async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: Record<string, string>) {
+export async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
 
   // Check if this is a scheduled test

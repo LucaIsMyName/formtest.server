@@ -11,6 +11,7 @@ const PaymentMethods = lazy(() => import("./pages/PaymentMethods"));
 const Settings = lazy(() => import("./pages/Settings"));
 const TestResults = lazy(() => import("./pages/TestResults"));
 const Schedules = lazy(() => import("./pages/Schedules"));
+const Scripts = lazy(() => import("./pages/Scripts"));
 const Legal = lazy(() => import("./pages/Legal"));
 const Docs = lazy(() => import("./pages/Docs"));
 
@@ -113,6 +114,10 @@ function App() {
             <Route
               path="/schedules"
               element={<Schedules />}
+            />
+            <Route
+              path="/scripts"
+              element={<Scripts />}
             />
             <Route
               path="/legal"

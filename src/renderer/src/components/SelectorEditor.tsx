@@ -18,7 +18,7 @@ const CATEGORY_LABELS: CategoryLabels = {
   successPatterns: "Erfolgs-Erkennung",
   formDetection: "Formular-Erkennung",
   submitButtons: "Submit-Buttons",
-  iframeDetection: "Iframe-Erkennung"
+  iframeDetection: "Iframe-Erkennung",
 };
 
 const KEY_LABELS: Record<string, Record<string, string>> = {
@@ -37,13 +37,13 @@ const KEY_LABELS: Record<string, Record<string, string>> = {
     phone: "Telefon",
     address: "Adresse",
     city: "Stadt",
-    zipCode: "PLZ"
+    zipCode: "PLZ",
   },
   paymentMethods: {
     sepa: "SEPA",
     creditcard: "Kreditkarte",
     paypal: "PayPal",
-    eps: "EPS"
+    eps: "EPS",
   },
   paymentFields: {
     iban: "IBAN",
@@ -52,27 +52,29 @@ const KEY_LABELS: Record<string, Record<string, string>> = {
     cardHolder: "Karteninhaber",
     expiryDate: "Ablaufdatum",
     cvv: "CVV",
-    bankSelect: "Bank-Auswahl"
+    bankSelect: "Bank-Auswahl",
   },
   cookieConsent: {
     banners: "Banner-Selektoren",
-    acceptButtons: "Accept-Buttons"
+    acceptButtons: "Accept-Buttons",
   },
   successPatterns: {
     redirectUrls: "Redirect-URLs",
     successMessages: "Erfolgsmeldungen",
-    successSelectors: "Erfolgs-Selektoren"
+    successSelectors: "Erfolgs-Selektoren",
   },
   formDetection: {
     fundraisingBox: "FundraisingBox",
-    genericForm: "Generische Formulare"
-  }
+    genericForm: "Generische Formulare",
+  },
 };
 
 const SelectorEditorSkeleton = () => (
   <div className="space-y-4">
     {[...Array(3)].map((_, i) => (
-      <div key={i} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+      <div
+        key={i}
+        className="border border-gray-300 dark:border-gray-700 rounded-lg p-4">
         <Skeleton className="h-6 w-48 mb-3" />
         <div className="space-y-2">
           <Skeleton className="h-4 w-full" />
@@ -92,24 +94,17 @@ interface SelectorItemProps {
 }
 
 const SelectorItem: React.FC<SelectorItemProps> = ({ selector, isDefault, isActive = true, onRemove, onToggle }) => (
-  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-mono ${
-    isDefault 
-      ? "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400" 
-      : isActive
-        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-        : "bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 line-through"
-  }`}>
+  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-mono ${isDefault ? "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400" : isActive ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" : "bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 line-through"}`}>
     <code className="flex-1 truncate text-xs">{selector}</code>
     {isDefault ? (
-      <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">(Standard)</span>
+      <span className="text-xs dar  dark:text-gray-900 whitespace-nowrap">(Standard)</span>
     ) : (
       <div className="flex items-center gap-1">
         {onToggle && (
           <button
             onClick={onToggle}
-            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
-            title={isActive ? "Deaktivieren" : "Aktivieren"}
-          >
+            className="p-1"
+            title={isActive ? "Deaktivieren" : "Aktivieren"}>
             {isActive ? <Eye size={14} /> : <EyeOff size={14} />}
           </button>
         )}
@@ -117,8 +112,7 @@ const SelectorItem: React.FC<SelectorItemProps> = ({ selector, isDefault, isActi
           <button
             onClick={onRemove}
             className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 rounded"
-            title="Entfernen"
-          >
+            title="Entfernen">
             <X size={14} />
           </button>
         )}
@@ -137,15 +131,7 @@ interface CategorySectionProps {
   onToggleOverride: (id: number, isActive: boolean) => void;
 }
 
-const CategorySection: React.FC<CategorySectionProps> = ({
-  category,
-  keys,
-  defaultSelectors,
-  overrides,
-  onAddSelector,
-  onRemoveSelector,
-  onToggleOverride
-}) => {
+const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defaultSelectors, overrides, onAddSelector, onRemoveSelector, onToggleOverride }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedKeys, setExpandedKeys] = useState<Set<string>>(new Set());
   const [newSelectors, setNewSelectors] = useState<Record<string, string>>({});
@@ -169,35 +155,33 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   };
 
   const getOverrideForKey = (key: string) => {
-    return overrides.find(o => o.category === category && o.key === key);
+    return overrides.find((o) => o.category === category && o.key === key);
   };
 
   const categoryLabel = CATEGORY_LABELS[category] || category;
   const keyLabels = KEY_LABELS[category] || {};
-  const hasOverrides = overrides.some(o => o.category === category);
+  const hasOverrides = overrides.some((o) => o.category === category);
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+    <div className=" overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-      >
+        className="w-full flex items-center justify-between pb-4 ">
         <div className="flex items-center gap-2 text-gray-800 dark:text-gray-200">
           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
           <span className="font-medium text-gray-900 dark:text-white">{categoryLabel}</span>
           <span className="text-xs text-gray-500 dark:text-gray-400">({keys.length} Felder)</span>
-          {hasOverrides && (
-            <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">
-              Angepasst
-            </span>
-          )}
+          {hasOverrides && <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">Angepasst</span>}
         </div>
-        <Settings2 size={16} className="text-gray-400" />
+        <Settings2
+          size={16}
+          className="text-gray-400"
+        />
       </button>
 
       {isExpanded && (
-        <div className="p-4 text-gray-800 dark:text-gray-200 space-y-4 bg-white dark:bg-gray-800/50">
-          {keys.map(key => {
+        <div className="px-4 text-gray-800 dark:text-gray-200 space-y-4 ">
+          {keys.map((key) => {
             const keyLabel = keyLabels[key] || key;
             const defaults = defaultSelectors[key] || [];
             const override = getOverrideForKey(key);
@@ -205,22 +189,24 @@ const CategorySection: React.FC<CategorySectionProps> = ({
             const isKeyExpanded = expandedKeys.has(key);
 
             return (
-              <div key={key} className="border border-gray-100 dark:border-gray-700 rounded-lg overflow-hidden">
+              <div
+                key={key}
+                className=" overflow-hidden">
                 <button
                   onClick={() => toggleKey(key)}
-                  className="w-full flex items-center justify-between px-3 py-2 bg-gray-50/50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                >
+                  className="w-full flex items-center justify-between px-3 py-2 transition-colors">
                   <div className="flex items-center gap-2">
                     {isKeyExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                     <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{keyLabel}</span>
                     <span className="text-xs text-gray-400">
-                      {userSelectors.length > 0 && (
-                        <span className="text-blue-500">+{userSelectors.length} eigene, </span>
-                      )}
+                      {userSelectors.length > 0 && <span className="text-blue-500">+{userSelectors.length} eigene, </span>}
                       {defaults.length} Standard
                     </span>
                   </div>
-                  <Code size={14} className="text-gray-400" />
+                  <Code
+                    size={14}
+                    className="text-gray-400"
+                  />
                 </button>
 
                 {isKeyExpanded && (
@@ -252,11 +238,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                           isDefault={true}
                         />
                       ))}
-                      {defaults.length > 5 && (
-                        <p className="text-xs text-gray-400 italic pl-3">
-                          ... und {defaults.length - 5} weitere
-                        </p>
-                      )}
+                      {defaults.length > 5 && <p className="text-xs text-gray-400 italic pl-3">... und {defaults.length - 5} weitere</p>}
                     </div>
 
                     {/* Add new selector */}
@@ -276,8 +258,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                         size="sm"
                         variant="outline"
                         onClick={() => handleAddSelector(key)}
-                        disabled={!newSelectors[key]?.trim()}
-                      >
+                        disabled={!newSelectors[key]?.trim()}>
                         <Plus size={16} />
                       </Button>
                     </div>
@@ -293,16 +274,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
 };
 
 const SelectorEditor: React.FC = () => {
-  const {
-    overrides,
-    baseConfig,
-    categories,
-    isLoading,
-    loadAll,
-    upsertOverride,
-    deleteOverrideByKey,
-    deleteAllOverrides
-  } = useSelectorsStore();
+  const { overrides, baseConfig, categories, isLoading, loadAll, upsertOverride, deleteOverrideByKey, deleteAllOverrides } = useSelectorsStore();
 
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
@@ -311,9 +283,9 @@ const SelectorEditor: React.FC = () => {
   }, [loadAll]);
 
   const handleAddSelector = async (category: string, key: string, selector: string) => {
-    const existingOverride = overrides.find(o => o.category === category && o.key === key);
+    const existingOverride = overrides.find((o) => o.category === category && o.key === key);
     const existingSelectors = existingOverride?.selectors || [];
-    
+
     // Don't add duplicates
     if (existingSelectors.includes(selector)) {
       return;
@@ -323,16 +295,16 @@ const SelectorEditor: React.FC = () => {
       category,
       key,
       selectors: [selector, ...existingSelectors],
-      isActive: true
+      isActive: true,
     });
   };
 
   const handleRemoveSelector = async (category: string, key: string, selectorIndex: number) => {
-    const existingOverride = overrides.find(o => o.category === category && o.key === key);
+    const existingOverride = overrides.find((o) => o.category === category && o.key === key);
     if (!existingOverride) return;
 
     const newSelectors = existingOverride.selectors.filter((_, idx) => idx !== selectorIndex);
-    
+
     if (newSelectors.length === 0) {
       // Remove the override entirely if no selectors left
       await deleteOverrideByKey(category, key);
@@ -341,20 +313,20 @@ const SelectorEditor: React.FC = () => {
         category,
         key,
         selectors: newSelectors,
-        isActive: existingOverride.isActive
+        isActive: existingOverride.isActive,
       });
     }
   };
 
   const handleToggleOverride = async (id: number, isActive: boolean) => {
-    const override = overrides.find(o => o.id === id);
+    const override = overrides.find((o) => o.id === id);
     if (!override) return;
 
     await upsertOverride({
       category: override.category,
       key: override.key,
       selectors: override.selectors,
-      isActive
+      isActive,
     });
   };
 
@@ -365,10 +337,10 @@ const SelectorEditor: React.FC = () => {
 
   const getDefaultSelectorsForCategory = (category: string): Record<string, string[]> => {
     if (!baseConfig) return {};
-    
+
     const categoryData = baseConfig[category as keyof typeof baseConfig];
-    if (!categoryData || typeof categoryData !== 'object') return {};
-    
+    if (!categoryData || typeof categoryData !== "object") return {};
+
     const result: Record<string, string[]> = {};
     for (const [key, value] of Object.entries(categoryData)) {
       if (Array.isArray(value)) {
@@ -385,35 +357,40 @@ const SelectorEditor: React.FC = () => {
   const hasAnyOverrides = overrides.length > 0;
 
   // Fallback categories if API didn't return them
-  const displayCategories = categories.length > 0 ? categories : [
-    { category: 'formFields', keys: ['amount', 'customAmount', 'interval', 'salutation', 'firstName', 'lastName', 'email', 'country', 'privacy', 'newsletter', 'phone', 'address', 'city', 'zipCode'], label: 'Formularfelder' },
-    { category: 'paymentMethods', keys: ['sepa', 'creditcard', 'paypal', 'eps'], label: 'Zahlungsmethoden' },
-    { category: 'paymentFields', keys: ['iban', 'accountHolder', 'cardNumber', 'cardHolder', 'expiryDate', 'cvv', 'bankSelect'], label: 'Zahlungsfelder' },
-    { category: 'cookieConsent', keys: ['banners', 'acceptButtons'], label: 'Cookie-Zustimmung' },
-    { category: 'successPatterns', keys: ['redirectUrls', 'successMessages', 'successSelectors'], label: 'Erfolgs-Erkennung' },
-    { category: 'formDetection', keys: ['fundraisingBox', 'genericForm'], label: 'Formular-Erkennung' }
-  ];
+  const displayCategories =
+    categories.length > 0
+      ? categories
+      : [
+          { category: "formFields", keys: ["amount", "customAmount", "interval", "salutation", "firstName", "lastName", "email", "country", "privacy", "newsletter", "phone", "address", "city", "zipCode"], label: "Formularfelder" },
+          { category: "paymentMethods", keys: ["sepa", "creditcard", "paypal", "eps"], label: "Zahlungsmethoden" },
+          { category: "paymentFields", keys: ["iban", "accountHolder", "cardNumber", "cardHolder", "expiryDate", "cvv", "bankSelect"], label: "Zahlungsfelder" },
+          { category: "cookieConsent", keys: ["banners", "acceptButtons"], label: "Cookie-Zustimmung" },
+          { category: "successPatterns", keys: ["redirectUrls", "successMessages", "successSelectors"], label: "Erfolgs-Erkennung" },
+          { category: "formDetection", keys: ["fundraisingBox", "genericForm"], label: "Formular-Erkennung" },
+        ];
 
   return (
     <div className="space-y-0 p-4">
       <div className="flex items-center justify-between">
         <div className="sr-only">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-            Selektor-Konfiguration
-          </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Eigene CSS-Selektoren haben Priorität vor Standard-Selektoren. Per-Form Mappings überschreiben globale Einstellungen.
-          </p>
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Selektor-Konfiguration</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Eigene CSS-Selektoren haben Priorität vor Standard-Selektoren. Per-Form Mappings überschreiben globale Einstellungen.</p>
         </div>
         {hasAnyOverrides && (
           <div className="relative">
             {showResetConfirm ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-red-600 dark:text-red-400">Alle zurücksetzen?</span>
-                <Button size="sm" variant="danger" onClick={handleResetAll}>
+                <Button
+                  size="sm"
+                  variant="danger"
+                  onClick={handleResetAll}>
                   <Check size={14} />
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => setShowResetConfirm(false)}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowResetConfirm(false)}>
                   <X size={14} />
                 </Button>
               </div>
@@ -422,9 +399,11 @@ const SelectorEditor: React.FC = () => {
                 size="sm"
                 variant="outline"
                 onClick={() => setShowResetConfirm(true)}
-                className="text-gray-500 hover:text-red-500"
-              >
-                <RotateCcw size={14} className="mr-1" />
+                className="text-gray-500 hover:text-red-500">
+                <RotateCcw
+                  size={14}
+                  className="mr-1"
+                />
                 Zurücksetzen
               </Button>
             )}
@@ -432,8 +411,8 @@ const SelectorEditor: React.FC = () => {
         )}
       </div>
 
-      <div className="space-y-3">
-        {displayCategories.map(cat => (
+      <div className="space-y-3 bg-transparent">
+        {displayCategories.map((cat) => (
           <CategorySection
             key={cat.category}
             category={cat.category}

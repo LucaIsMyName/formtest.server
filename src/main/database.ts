@@ -2,7 +2,7 @@ import Database from "better-sqlite3";
 import { app } from "electron";
 import { join } from "path";
 import { randomUUID, scryptSync, randomBytes, timingSafeEqual } from "crypto";
-import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult, GlobalFieldDefaults } from "../common/types";
+import type { Form, PaymentMethod, GlobalSetting, TestRun, ExportData, ImportOptions, ImportResult, GlobalFieldDefaults, CustomScript, FormScript, ScriptHookPoint } from "../common/types";
 import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 import { SELECTOR_CONFIG, mergeSelectorsConfig, type SelectorOverride, type SelectorConfig } from "../common/selectors.config";
 
@@ -234,6 +234,79 @@ function migrateTestRunAmountInterval(): void {
     }
   } catch (error) {
     console.error("Database: Test run amount/interval migration error:", error);
+  }
+}
+
+/**
+ * Migrate to add custom_scripts and form_scripts tables
+ */
+function migrateCustomScripts(): void {
+  console.log("Database: Checking for custom_scripts tables...");
+  
+  try {
+    // Check if custom_scripts table exists
+    const customScriptsExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='custom_scripts'"
+    ).get();
+    
+    if (!customScriptsExists) {
+      console.log("Database: Creating custom_scripts table...");
+      db.exec(`
+        CREATE TABLE custom_scripts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT,
+          code TEXT NOT NULL,
+          hookPoint TEXT NOT NULL CHECK (hookPoint IN (
+            'before_navigation', 'after_navigation',
+            'before_cookie_banner', 'after_cookie_banner',
+            'before_form_fill', 'after_form_fill',
+            'before_payment', 'after_payment',
+            'before_submit', 'after_submit',
+            'on_success', 'on_error'
+          )),
+          isActive INTEGER DEFAULT 1,
+          isGlobal INTEGER DEFAULT 0,
+          stopOnError INTEGER DEFAULT 0,
+          timeout INTEGER DEFAULT 30000,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE INDEX idx_custom_scripts_hook ON custom_scripts(hookPoint);
+        CREATE INDEX idx_custom_scripts_active ON custom_scripts(isActive);
+        CREATE INDEX idx_custom_scripts_global ON custom_scripts(isGlobal);
+      `);
+      console.log("Database: custom_scripts table created");
+    }
+    
+    // Check if form_scripts junction table exists
+    const formScriptsExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='form_scripts'"
+    ).get();
+    
+    if (!formScriptsExists) {
+      console.log("Database: Creating form_scripts table...");
+      db.exec(`
+        CREATE TABLE form_scripts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          formId INTEGER NOT NULL,
+          scriptId INTEGER NOT NULL,
+          executionOrder INTEGER DEFAULT 0,
+          FOREIGN KEY (formId) REFERENCES forms(id) ON DELETE CASCADE,
+          FOREIGN KEY (scriptId) REFERENCES custom_scripts(id) ON DELETE CASCADE,
+          UNIQUE(formId, scriptId)
+        );
+        
+        CREATE INDEX idx_form_scripts_form ON form_scripts(formId);
+        CREATE INDEX idx_form_scripts_script ON form_scripts(scriptId);
+      `);
+      console.log("Database: form_scripts table created");
+    }
+    
+    console.log("Database: Custom scripts migration complete");
+  } catch (error) {
+    console.error("Database: Custom scripts migration error:", error);
   }
 }
 
@@ -552,6 +625,9 @@ export function initDatabase(): void {
   
   // Migrate test run amount/interval columns
   migrateTestRunAmountInterval();
+  
+  // Migrate custom scripts tables
+  migrateCustomScripts();
   
   // Migrate existing unencrypted payment methods
   migratePaymentMethodEncryption().catch((error) => {
@@ -1803,3 +1879,222 @@ export function getMergedSelectorConfig(): SelectorConfig {
 export function getBaseSelectorConfig(): SelectorConfig {
   return SELECTOR_CONFIG;
 }
+
+// ============================================
+// Custom Scripts Operations
+// ============================================
+
+export const customScriptQueries = {
+  getAll: (): CustomScript[] => {
+    const scripts = db.prepare("SELECT * FROM custom_scripts ORDER BY name").all() as any[];
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt),
+    }));
+  },
+
+  getById: (id: number): CustomScript | undefined => {
+    const script = db.prepare("SELECT * FROM custom_scripts WHERE id = ?").get(id) as any;
+    if (!script) return undefined;
+    return {
+      ...script,
+      isActive: Boolean(script.isActive),
+      isGlobal: Boolean(script.isGlobal),
+      stopOnError: Boolean(script.stopOnError),
+      createdAt: new Date(script.createdAt),
+      updatedAt: new Date(script.updatedAt),
+    };
+  },
+
+  getByHookPoint: (hookPoint: ScriptHookPoint): CustomScript[] => {
+    const scripts = db.prepare(
+      "SELECT * FROM custom_scripts WHERE hookPoint = ? AND isActive = 1 ORDER BY name"
+    ).all(hookPoint) as any[];
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt),
+    }));
+  },
+
+  getGlobalScripts: (): CustomScript[] => {
+    const scripts = db.prepare(
+      "SELECT * FROM custom_scripts WHERE isGlobal = 1 AND isActive = 1 ORDER BY hookPoint, name"
+    ).all() as any[];
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt),
+    }));
+  },
+
+  getByFormId: (formId: number): CustomScript[] => {
+    const scripts = db.prepare(`
+      SELECT cs.*, fs.executionOrder
+      FROM custom_scripts cs
+      INNER JOIN form_scripts fs ON cs.id = fs.scriptId
+      WHERE fs.formId = ? AND cs.isActive = 1
+      ORDER BY cs.hookPoint, fs.executionOrder, cs.name
+    `).all(formId) as any[];
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt),
+    }));
+  },
+
+  getScriptsForTest: (formId: number): CustomScript[] => {
+    // Get both global scripts and form-specific scripts, ordered by hook point
+    const scripts = db.prepare(`
+      SELECT DISTINCT cs.*, COALESCE(fs.executionOrder, 0) as executionOrder
+      FROM custom_scripts cs
+      LEFT JOIN form_scripts fs ON cs.id = fs.scriptId AND fs.formId = ?
+      WHERE cs.isActive = 1 AND (cs.isGlobal = 1 OR fs.formId IS NOT NULL)
+      ORDER BY cs.hookPoint, executionOrder, cs.name
+    `).all(formId) as any[];
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt),
+    }));
+  },
+
+  create: (script: Omit<CustomScript, "id" | "createdAt" | "updatedAt">) => {
+    const stmt = db.prepare(`
+      INSERT INTO custom_scripts (name, description, code, hookPoint, isActive, isGlobal, stopOnError, timeout)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+    const result = stmt.run(
+      script.name,
+      script.description || null,
+      script.code,
+      script.hookPoint,
+      script.isActive ? 1 : 0,
+      script.isGlobal ? 1 : 0,
+      script.stopOnError ? 1 : 0,
+      script.timeout || 30000
+    );
+    return { ...result, id: result.lastInsertRowid };
+  },
+
+  update: (id: number, script: Partial<CustomScript>) => {
+    const updates: string[] = [];
+    const values: any[] = [];
+
+    if (script.name !== undefined) {
+      updates.push("name = ?");
+      values.push(script.name);
+    }
+    if (script.description !== undefined) {
+      updates.push("description = ?");
+      values.push(script.description);
+    }
+    if (script.code !== undefined) {
+      updates.push("code = ?");
+      values.push(script.code);
+    }
+    if (script.hookPoint !== undefined) {
+      updates.push("hookPoint = ?");
+      values.push(script.hookPoint);
+    }
+    if (script.isActive !== undefined) {
+      updates.push("isActive = ?");
+      values.push(script.isActive ? 1 : 0);
+    }
+    if (script.isGlobal !== undefined) {
+      updates.push("isGlobal = ?");
+      values.push(script.isGlobal ? 1 : 0);
+    }
+    if (script.stopOnError !== undefined) {
+      updates.push("stopOnError = ?");
+      values.push(script.stopOnError ? 1 : 0);
+    }
+    if (script.timeout !== undefined) {
+      updates.push("timeout = ?");
+      values.push(script.timeout);
+    }
+
+    if (updates.length === 0) return;
+
+    updates.push("updatedAt = CURRENT_TIMESTAMP");
+    values.push(id);
+
+    const stmt = db.prepare(`UPDATE custom_scripts SET ${updates.join(", ")} WHERE id = ?`);
+    return stmt.run(...values);
+  },
+
+  delete: (id: number) => {
+    const stmt = db.prepare("DELETE FROM custom_scripts WHERE id = ?");
+    return stmt.run(id);
+  },
+
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM custom_scripts");
+    return stmt.run();
+  },
+};
+
+// Form-Script junction table operations
+export const formScriptQueries = {
+  getByFormId: (formId: number): FormScript[] => {
+    const rows = db.prepare(
+      "SELECT * FROM form_scripts WHERE formId = ? ORDER BY executionOrder"
+    ).all(formId) as any[];
+    return rows;
+  },
+
+  getByScriptId: (scriptId: number): FormScript[] => {
+    const rows = db.prepare(
+      "SELECT * FROM form_scripts WHERE scriptId = ?"
+    ).all(scriptId) as any[];
+    return rows;
+  },
+
+  attach: (formId: number, scriptId: number, executionOrder: number = 0) => {
+    const stmt = db.prepare(`
+      INSERT OR REPLACE INTO form_scripts (formId, scriptId, executionOrder)
+      VALUES (?, ?, ?)
+    `);
+    return stmt.run(formId, scriptId, executionOrder);
+  },
+
+  detach: (formId: number, scriptId: number) => {
+    const stmt = db.prepare(
+      "DELETE FROM form_scripts WHERE formId = ? AND scriptId = ?"
+    );
+    return stmt.run(formId, scriptId);
+  },
+
+  detachAllFromForm: (formId: number) => {
+    const stmt = db.prepare("DELETE FROM form_scripts WHERE formId = ?");
+    return stmt.run(formId);
+  },
+
+  detachAllFromScript: (scriptId: number) => {
+    const stmt = db.prepare("DELETE FROM form_scripts WHERE scriptId = ?");
+    return stmt.run(scriptId);
+  },
+
+  updateOrder: (formId: number, scriptId: number, executionOrder: number) => {
+    const stmt = db.prepare(
+      "UPDATE form_scripts SET executionOrder = ? WHERE formId = ? AND scriptId = ?"
+    );
+    return stmt.run(executionOrder, formId, scriptId);
+  },
+};

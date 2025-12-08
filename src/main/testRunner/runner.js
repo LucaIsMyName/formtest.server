@@ -11,6 +11,7 @@ const { chromium, firefox, webkit } = require('playwright')
 const { faker } = require('@faker-js/faker')
 const fs = require('fs').promises
 const path = require('path')
+const ScriptExecutor = require('./scriptExecutor')
 
 class TestRunner {
   constructor() {
@@ -27,6 +28,10 @@ class TestRunner {
     // URL prefill flags - track what's already set via URL params
     this.prefilledAmount = false
     this.prefilledInterval = false
+
+    // Custom script executor
+    this.scriptExecutor = new ScriptExecutor(this)
+    this.customScripts = []
 
     this.buffer = ''
     this.isTestRunning = false
@@ -120,6 +125,40 @@ class TestRunner {
    */
   skipStep(stepId, reason, metadata = {}) {
     this.completeStep(stepId, 'skipped', reason, metadata)
+  }
+
+  /**
+   * Run custom scripts at a specific hook point
+   * @param {string} hookPoint - The hook point identifier
+   * @param {Object} form - Current form being tested
+   * @param {Object} paymentMethod - Current payment method
+   * @param {Object} testRunInfo - Current test run information
+   * @returns {Array} Array of script execution results
+   */
+  async runScriptsAtHook(hookPoint, form, paymentMethod, testRunInfo = {}) {
+    if (!this.customScripts || this.customScripts.length === 0) {
+      return []
+    }
+
+    const results = await this.scriptExecutor.executeAtHookPoint(
+      this.customScripts,
+      hookPoint,
+      form,
+      paymentMethod,
+      testRunInfo
+    )
+
+    // Check if any script with stopOnError failed
+    for (const result of results) {
+      if (!result.success) {
+        const script = this.customScripts.find(s => s.id === result.scriptId)
+        if (script && script.stopOnError) {
+          throw new Error(`Custom script "${result.scriptName}" failed: ${result.error}`)
+        }
+      }
+    }
+
+    return results
   }
 
   /**
@@ -445,6 +484,21 @@ class TestRunner {
     this.fieldMappings = form.fieldMappings || []
     this.log(`Form has ${this.fieldMappings.length} custom field mappings`)
 
+    // Store custom scripts for this test (passed via config)
+    this.customScripts = this.config.customScripts || []
+    if (this.customScripts.length > 0) {
+      this.log(`Test has ${this.customScripts.length} custom script(s) configured`)
+    }
+
+    // Test run info for script context
+    const testRunInfo = {
+      startTime,
+      formId: form.id,
+      formName: form.name,
+      paymentMethodId: paymentMethod.id,
+      paymentMethodType: paymentMethod.type,
+    }
+
     // Step 1: Browser Initialization (if needed)
     if (!this.page) {
       const browserStep = this.startStep('browser-init', 'Browser initialisieren', {
@@ -454,15 +508,23 @@ class TestRunner {
       
       try {
         await this.initializeBrowser()
+        // Set page for script executor
+        this.scriptExecutor.setPage(this.page)
         this.completeStep('browser-init', 'success', 'Browser erfolgreich gestartet')
       } catch (error) {
         this.failStep('browser-init', error.message)
         throw error
       }
+    } else {
+      // Ensure script executor has the page reference
+      this.scriptExecutor.setPage(this.page)
     }
 
     // Build prefilled URL for FundraisingBox forms
     const targetUrl = this.buildPrefilledUrl(form)
+
+    // HOOK: before_navigation
+    await this.runScriptsAtHook('before_navigation', form, paymentMethod, testRunInfo)
 
     // Step 2: Page Navigation
     const navStep = this.startStep('page-navigation', 'Zur URL navigieren', {
@@ -513,15 +575,28 @@ class TestRunner {
       }
     }
 
+    // HOOK: after_navigation
+    await this.runScriptsAtHook('after_navigation', form, paymentMethod, testRunInfo)
+
     // Step 3: Cookie Handling
     const cookieStep = this.startStep('cookie-handling', 'Cookie-Banner behandeln')
+    
+    // HOOK: before_cookie_banner
+    await this.runScriptsAtHook('before_cookie_banner', form, paymentMethod, testRunInfo)
+    
     await this.handleCookieConsent()
+    
+    // HOOK: after_cookie_banner
+    await this.runScriptsAtHook('after_cookie_banner', form, paymentMethod, testRunInfo)
 
     // Step 3.5: Switch to iframe if form is embedded
     await this.switchToFormFrame()
 
     // Take initial screenshot
     const screenshotPath = await this.takeScreenshot('initial')
+
+    // HOOK: before_form_fill
+    await this.runScriptsAtHook('before_form_fill', form, paymentMethod, testRunInfo)
 
     // Step 4: Form Analysis & Fill
     const analysisStep = this.startStep('form-analysis', 'Formular analysieren und ausfüllen')
@@ -537,6 +612,12 @@ class TestRunner {
       throw error
     }
 
+    // HOOK: after_form_fill
+    await this.runScriptsAtHook('after_form_fill', form, paymentMethod, testRunInfo)
+
+    // HOOK: before_payment
+    await this.runScriptsAtHook('before_payment', form, paymentMethod, testRunInfo)
+
     // Step 5: Payment Method Selection
     const paymentStep = this.startStep('payment-selection', 'Zahlungsmethode auswählen', {
       paymentMethod: paymentMethod.type
@@ -545,6 +626,9 @@ class TestRunner {
     this.completeStep('payment-selection', 'success', `Zahlungsmethode ausgewählt: ${paymentMethod.type}`, {
       paymentMethod: paymentMethod.type
     })
+
+    // HOOK: after_payment
+    await this.runScriptsAtHook('after_payment', form, paymentMethod, testRunInfo)
 
     // Step 6: Validation Check
     const validationStep = this.startStep('validation-check', 'Formulardaten validieren')
@@ -592,6 +676,9 @@ class TestRunner {
       paymentMethod: paymentMethod.type
     })
 
+    // HOOK: before_submit
+    await this.runScriptsAtHook('before_submit', form, paymentMethod, testRunInfo)
+
     // Step 7: Form Submission
     const submissionStep = this.startStep('form-submission', 'Formular absenden')
     try {
@@ -599,8 +686,13 @@ class TestRunner {
       this.completeStep('form-submission', 'success', 'Formular erfolgreich abgesendet')
     } catch (error) {
       this.failStep('form-submission', `Formular-Absendung fehlgeschlagen: ${error.message}`)
+      // HOOK: on_error
+      await this.runScriptsAtHook('on_error', form, paymentMethod, { ...testRunInfo, error: error.message })
       throw error
     }
+
+    // HOOK: after_submit
+    await this.runScriptsAtHook('after_submit', form, paymentMethod, testRunInfo)
 
     // Step 8: Success Detection (payment-method-specific)
     const successStep = this.startStep('redirect-detection', 'Zahlungs-Weiterleitung erkennen')
@@ -612,6 +704,9 @@ class TestRunner {
         expectedProvider: paymentMethod.type,
         matchedExpected: successResult.matchedExpected
       })
+
+      // HOOK: on_success
+      await this.runScriptsAtHook('on_success', form, paymentMethod, { ...testRunInfo, redirectUrl: successResult.url })
 
       // Step 9: Success Confirmation
       const confirmationStep = this.startStep('success-confirmation', 'Testerfolg bestätigen')
@@ -641,6 +736,8 @@ class TestRunner {
       }
     } catch (error) {
       this.failStep('redirect-detection', `Erfolgserkennung fehlgeschlagen: ${error.message}`)
+      // HOOK: on_error
+      await this.runScriptsAtHook('on_error', form, paymentMethod, { ...testRunInfo, error: error.message })
       throw error
     }
   }

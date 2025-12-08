@@ -1,8 +1,8 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries } from "./database";
-import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults } from "../common/types";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries, customScriptQueries, formScriptQueries } from "./database";
+import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint } from "../common/types";
 import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
 import { getConfigurableCategories } from "../common/selectors.config";
@@ -186,6 +186,9 @@ export function setupIpcHandlers(): void {
 
       // Create test runs for each combination
       for (const form of forms) {
+        // Fetch custom scripts for this form (global + form-specific)
+        const customScripts = customScriptQueries.getScriptsForTest(form.id);
+        
         for (const paymentMethod of paymentMethods) {
           console.log(`Creating test run for form "${form.name}" with payment method "${paymentMethod.name}"`);
 
@@ -206,8 +209,10 @@ export function setupIpcHandlers(): void {
           testRunIds.push(testRun.lastInsertRowid as number);
 
           // Add test to the queue - tests will run sequentially to prevent log mixing
+          // Include custom scripts in settings for the runner
           const testQueue = getTestQueue();
-          testQueue.enqueue(testRun.lastInsertRowid as number, form, paymentMethod, settingsMap);
+          const settingsWithScripts = { ...settingsMap, customScripts };
+          testQueue.enqueue(testRun.lastInsertRowid as number, form, paymentMethod, settingsWithScripts);
         }
       }
 
@@ -567,6 +572,155 @@ export function setupIpcHandlers(): void {
     } catch (error) {
       console.error("IPC Error - password:emergencyReset:", error);
       return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    }
+  });
+
+  // ============================================
+  // Custom Scripts handlers
+  // ============================================
+
+  ipcMain.handle("customScripts:getAll", async () => {
+    try {
+      return customScriptQueries.getAll();
+    } catch (error) {
+      console.error("IPC Error - customScripts:getAll:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:getById", async (_, id: number) => {
+    try {
+      return customScriptQueries.getById(id);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getById:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:getByHookPoint", async (_, hookPoint: ScriptHookPoint) => {
+    try {
+      return customScriptQueries.getByHookPoint(hookPoint);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getByHookPoint:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:getGlobal", async () => {
+    try {
+      return customScriptQueries.getGlobalScripts();
+    } catch (error) {
+      console.error("IPC Error - customScripts:getGlobal:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:getByFormId", async (_, formId: number) => {
+    try {
+      return customScriptQueries.getByFormId(formId);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getByFormId:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:getForTest", async (_, formId: number) => {
+    try {
+      return customScriptQueries.getScriptsForTest(formId);
+    } catch (error) {
+      console.error("IPC Error - customScripts:getForTest:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:create", async (_, script: Omit<CustomScript, "id" | "createdAt" | "updatedAt">) => {
+    try {
+      return customScriptQueries.create(script);
+    } catch (error) {
+      console.error("IPC Error - customScripts:create:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:update", async (_, id: number, script: Partial<CustomScript>) => {
+    try {
+      return customScriptQueries.update(id, script);
+    } catch (error) {
+      console.error("IPC Error - customScripts:update:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:delete", async (_, id: number) => {
+    try {
+      return customScriptQueries.delete(id);
+    } catch (error) {
+      console.error("IPC Error - customScripts:delete:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("customScripts:deleteAll", async () => {
+    try {
+      return customScriptQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - customScripts:deleteAll:", error);
+      throw error;
+    }
+  });
+
+  // Validate script code (basic syntax check)
+  ipcMain.handle("customScripts:validate", async (_, code: string) => {
+    try {
+      // Try to parse the code as a function body
+      new Function('ctx', `with(ctx) { ${code} }`);
+      return { valid: true, errors: [], warnings: [] };
+    } catch (error) {
+      return { 
+        valid: false, 
+        errors: [error instanceof Error ? error.message : "Syntax error"], 
+        warnings: [] 
+      };
+    }
+  });
+
+  // ============================================
+  // Form-Script junction handlers
+  // ============================================
+
+  ipcMain.handle("formScripts:getByFormId", async (_, formId: number) => {
+    try {
+      return formScriptQueries.getByFormId(formId);
+    } catch (error) {
+      console.error("IPC Error - formScripts:getByFormId:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("formScripts:attach", async (_, formId: number, scriptId: number, executionOrder?: number) => {
+    try {
+      return formScriptQueries.attach(formId, scriptId, executionOrder || 0);
+    } catch (error) {
+      console.error("IPC Error - formScripts:attach:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("formScripts:detach", async (_, formId: number, scriptId: number) => {
+    try {
+      return formScriptQueries.detach(formId, scriptId);
+    } catch (error) {
+      console.error("IPC Error - formScripts:detach:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("formScripts:updateOrder", async (_, formId: number, scriptId: number, executionOrder: number) => {
+    try {
+      return formScriptQueries.updateOrder(formId, scriptId, executionOrder);
+    } catch (error) {
+      console.error("IPC Error - formScripts:updateOrder:", error);
+      throw error;
     }
   });
 }

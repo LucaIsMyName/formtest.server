@@ -4,7 +4,7 @@ import CustomTitleBar from "./CustomTitleBar";
 import Button from "./ui/Button";
 import TestRunDialog from "./TestRunDialog";
 import GlobalSearch from "./GlobalSearch";
-import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot, Scale } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot, Scale, Code } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { cn } from "@/utils/cn";
@@ -96,6 +96,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: "Formulare", href: "/forms", icon: FileText },
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
     { name: "Autopilot", href: "/schedules", icon: Bot },
+    { name: "Scripts", href: "/scripts", icon: Code },
     { name: "Tests", href: "/test-results", icon: BarChart3 },
   ];
 
@@ -181,7 +182,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <main
             ref={mainContentRef}
             className="flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4">
-            <div className="w-full max-w-[1240px]">{children}</div>
+            <div className="w-full max-w-[1280px]">{children}</div>
           </main>
         </div>
       </div>
