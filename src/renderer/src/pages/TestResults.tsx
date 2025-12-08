@@ -176,18 +176,22 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
     return `${(ms / 1000).toFixed(2)}s`;
   };
 
-  // Format metadata inline
+  // Format metadata inline - only show specific useful fields
   const formatMetadataInline = (metadata?: Record<string, any>): string | null => {
     if (!metadata || Object.keys(metadata).length === 0) return null;
     
     const parts: string[] = [];
-    if (metadata.fieldsFound) parts.push(`${metadata.fieldsFound} Felder`);
-    if (metadata.fieldsFilled) parts.push(`${metadata.fieldsFilled} ausgefüllt`);
-    if (metadata.formType) parts.push(metadata.formType);
-    if (metadata.paymentMethod) parts.push(metadata.paymentMethod);
+    // Only include specific fields we want to display, ignore numeric 0 values and internal fields
+    if (metadata.fieldsFound && metadata.fieldsFound > 0) parts.push(`${metadata.fieldsFound} Felder`);
+    if (metadata.fieldsFilled && metadata.fieldsFilled > 0) parts.push(`${metadata.fieldsFilled} ausgefüllt`);
+    if (metadata.formType && typeof metadata.formType === 'string') parts.push(metadata.formType);
+    if (metadata.paymentMethod && typeof metadata.paymentMethod === 'string') parts.push(metadata.paymentMethod);
     if (metadata.cookieBannerFound !== undefined) parts.push(metadata.cookieBannerFound ? "Cookie-Banner" : "Kein Cookie-Banner");
-    if (metadata.redirectUrl) parts.push(metadata.redirectUrl);
-    if (metadata.paymentProvider && metadata.paymentProvider !== "Unknown") parts.push(metadata.paymentProvider);
+    if (metadata.redirectUrl && typeof metadata.redirectUrl === 'string') parts.push(metadata.redirectUrl);
+    if (metadata.paymentProvider && metadata.paymentProvider !== "Unknown" && typeof metadata.paymentProvider === 'string') parts.push(metadata.paymentProvider);
+    
+    // Explicitly ignore: interval, isValid, validationRules, successType, finalUrl, screenshotPath, screenshotType
+    // These are internal fields that shouldn't be displayed to the user
     
     return parts.length > 0 ? parts.join(" · ") : null;
   };
@@ -249,7 +253,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                   )}
                   
                   {/* Error - shown in gray like other messages */}
-                  {step.error && (
+                  {step.error && typeof step.error === 'string' && step.error.length > 0 && (
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                       {step.error}
                     </p>
@@ -509,8 +513,11 @@ const TestResults: React.FC = () => {
         return;
       }
 
-      // Run the test again using the same API as the TestRunDialog
-      await window.api.tests.run([form.id], [paymentMethod.id]);
+      // Run the test again with the same amount and interval as the original test
+      await window.api.tests.run([form.id], [paymentMethod.id], {
+        customAmount: testRun.amount || undefined,
+        customInterval: testRun.interval || undefined,
+      });
 
       // Refresh the test runs list
       await loadTestRuns();
@@ -557,21 +564,29 @@ const TestResults: React.FC = () => {
 
     setIsBulkRunning(true);
     try {
-      // Get unique form/payment method combinations from selected tests
+      // Get unique form/payment method/amount/interval combinations from selected tests
       const selectedTests = finishedTests.filter((tr) => ids.includes(tr.id));
       
-      // Group by form and payment method to avoid duplicate runs
-      const combinations = new Map<string, { formId: number; paymentMethodId: number }>();
+      // Group by form, payment method, amount, and interval to preserve original test parameters
+      const combinations = new Map<string, { formId: number; paymentMethodId: number; amount?: string; interval?: string }>();
       for (const test of selectedTests) {
-        const key = `${test.formId}-${test.paymentMethodId}`;
+        const key = `${test.formId}-${test.paymentMethodId}-${test.amount ?? 'default'}-${test.interval ?? 'default'}`;
         if (!combinations.has(key)) {
-          combinations.set(key, { formId: test.formId, paymentMethodId: test.paymentMethodId });
+          combinations.set(key, { 
+            formId: test.formId, 
+            paymentMethodId: test.paymentMethodId,
+            amount: test.amount,
+            interval: test.interval
+          });
         }
       }
 
-      // Run each unique combination
+      // Run each unique combination with its original amount and interval
       for (const combo of combinations.values()) {
-        await window.api.tests.run([combo.formId], [combo.paymentMethodId]);
+        await window.api.tests.run([combo.formId], [combo.paymentMethodId], {
+          customAmount: combo.amount || undefined,
+          customInterval: combo.interval || undefined,
+        });
       }
 
       await loadTestRuns();
@@ -828,10 +843,10 @@ const TestResults: React.FC = () => {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-xs font-mono text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
                           {testRun.amount ? `${testRun.amount} €` : "-"}
                         </TableCell>
-                        <TableCell className="px-4 text-xs text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
                           {formatInterval(testRun.interval)}
                         </TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
@@ -1053,10 +1068,10 @@ const TestResults: React.FC = () => {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-xs font-mono text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
                           {testRun.amount ? `${testRun.amount} €` : "-"}
                         </TableCell>
-                        <TableCell className="px-4 text-xs text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
                           {formatInterval(testRun.interval)}
                         </TableCell>
                         <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>

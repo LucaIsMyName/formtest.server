@@ -2,7 +2,7 @@
 
 A desktop application for automated testing of donation forms using Electron, Vite, TypeScript, and Playwright.
 
-## 🎯 Overview
+## Overview
 
 FormTest Server automates testing of donation forms across multiple payment methods. It validates form functionality, payment processing flows, and provides detailed reporting.
 
@@ -16,7 +16,7 @@ FormTest Server automates testing of donation forms across multiple payment meth
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### Tech Stack
 
@@ -79,7 +79,7 @@ The test runner (`runner.js`) runs as an isolated child process because:
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 src/
@@ -165,7 +165,7 @@ npm run rebuild:sqlite
 
 ---
 
-## �️ Developer Guide: Adapting for Your Use Case
+## Developer Guide: Adapting for Your Use Case
 
 This section explains how to customize FormTest Server for different form types or organizations.
 
@@ -295,7 +295,7 @@ migrateYourNewColumn();
 
 ---
 
-## 🌐 REST API
+## REST API
 
 The app includes a REST API server for CI/CD integration. Enable it in Settings → API Server.
 
@@ -432,7 +432,7 @@ jobs:
 
 ---
 
-## 📊 Database Schema
+## Database Schema
 
 | Table | Key Columns |
 |-------|-------------|
@@ -459,7 +459,7 @@ jobs:
 
 ---
 
-## 🔐 Security
+## Security
 
 - **Payment Encryption**: AES-256-GCM with key in macOS Keychain
 - **Master Password**: Optional app-level password protection
@@ -468,7 +468,7 @@ jobs:
 
 ---
 
-## 📄 License
+## License
 
 <span class="font-mono">FormTest.Server 1.0.31<br />
 MIT - &copy; 2025 Luca Mack</span>

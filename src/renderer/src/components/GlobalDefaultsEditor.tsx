@@ -175,14 +175,14 @@ const GlobalDefaultsEditor: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-0 p-0">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
+        <div className="sr-only">
           <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Globale Standardwerte
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0">
             Diese Werte überschreiben Faker.js, werden aber von Form-spezifischen Mappings überschrieben.
           </p>
         </div>
@@ -201,11 +201,11 @@ const GlobalDefaultsEditor: React.FC = () => {
       </div>
 
       {/* Table Layout */}
-      <Table dividers={false} className="bg-transparent">
+      <Table dividers={true} className="bg-transparent p-0">
         <TableBody className="">
           {FIELD_ORDER.map(field => (
             <TableRow key={field}>
-              <TableCell className="w-40 text-xs text-gray-600 dark:text-gray-400 font-medium pl-0">
+              <TableCell className="w-40 !px-4 text-xs text-gray-600 dark:text-gray-400 font-medium pl-0">
                 {FIELD_LABELS[field]}
               </TableCell>
               <TableCell>

@@ -772,25 +772,6 @@ const Settings: React.FC = () => {
             ))}
           </div>
         );
-      case "action":
-        return (
-          <Button
-            variant={item.actionVariant || "secondary"}
-            size="sm"
-            onClick={item.action}
-            disabled={isDisabled}
-            className="text-xs h-7">
-            {item.actionLabel}
-          </Button>
-        );
-      case "component":
-        if (item.id === "selectors") {
-          return <SelectorEditor />;
-        }
-        if (item.id === "global_defaults") {
-          return <GlobalDefaultsEditor />;
-        }
-        return null;
       case "api-key":
         return (
           <div className="flex items-center gap-2">
@@ -819,15 +800,33 @@ const Settings: React.FC = () => {
             </Button>
           </div>
         );
+      case "action":
+        return (
+          <Button
+            variant={item.actionVariant || "secondary"}
+            size="sm"
+            onClick={item.action}
+            disabled={isDisabled}
+            className="text-xs h-7">
+            {item.actionLabel}
+          </Button>
+        );
+      case "component":
+        if (item.id === "selectors") {
+          return <SelectorEditor />;
+        }
+        if (item.id === "global_defaults") {
+          return <GlobalDefaultsEditor />;
+        }
+        return null;
+
       case "password":
         return (
-          <div className="space-y-4">
+          <div className="space-y-4 p-4">
             {/* Status indicator */}
             <div className="flex items-center gap-2 mb-4">
               <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-gray-400"}`} />
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                {passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}
-              </span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">{passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}</span>
             </div>
 
             {passwordEnabled ? (
@@ -848,8 +847,7 @@ const Settings: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                     {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -859,8 +857,7 @@ const Settings: React.FC = () => {
                   onClick={handleDisablePassword}
                   disabled={isSettingPassword || !currentPassword}
                   isLoading={isSettingPassword}
-                  className="w-full justify-center"
-                >
+                  className="w-full justify-center">
                   Deaktivieren
                 </Button>
               </div>
@@ -882,8 +879,7 @@ const Settings: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                     {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -898,8 +894,7 @@ const Settings: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                     {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -909,8 +904,7 @@ const Settings: React.FC = () => {
                   onClick={handleSetPassword}
                   disabled={isSettingPassword || !newPassword || !confirmPassword}
                   isLoading={isSettingPassword}
-                  className="w-full justify-center"
-                >
+                  className="w-full justify-center">
                   Aktivieren
                 </Button>
               </div>
@@ -924,9 +918,7 @@ const Settings: React.FC = () => {
               </div>
             )}
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset
-            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset</p>
           </div>
         );
       default:
@@ -951,11 +943,7 @@ const Settings: React.FC = () => {
 
       {error && <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800 text-sm">{error}</div>}
 
-      {apiStatusMessage && (
-        <div className={`mb-4 p-3 rounded-md border text-sm ${apiStatusMessage.type === "success" ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800"}`}>
-          {apiStatusMessage.message}
-        </div>
-      )}
+      {apiStatusMessage && <div className={`mb-4 p-3 rounded-md border text-sm ${apiStatusMessage.type === "success" ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-red-200 dark:border-red-800"}`}>{apiStatusMessage.message}</div>}
 
       {/* Settings Table */}
       <div className="space-y-6">
@@ -1009,7 +997,7 @@ const Settings: React.FC = () => {
                             </div>
                             <div className="text-[10px] text-gray-500 dark:text-gray-400">{item.description}</div>
                           </div>
-                          <div className="p-4">{renderSettingControl(item)}</div>
+                          <div className="p-0">{renderSettingControl(item)}</div>
                         </TableCell>
                       </TableRow>
                     </React.Fragment>
@@ -1023,7 +1011,11 @@ const Settings: React.FC = () => {
                       </TableCell>
                       <TableCell>
                         <div>
-                          <div style={{ fontStretch: "125%" }} className="text-sm font-medium text-gray-900 dark:text-white">{item.name}</div>
+                          <div
+                            style={{ fontStretch: "125%" }}
+                            className="text-sm font-medium text-gray-900 dark:text-white">
+                            {item.name}
+                          </div>
                           <div
                             style={{ fontStretch: "100%" }}
                             className="text-xs text-gray-500 dark:text-gray-400">

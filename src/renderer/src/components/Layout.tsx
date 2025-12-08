@@ -158,15 +158,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     key={item.name}
                     variant="ghost"
                     to={item.href}
-                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-medium tracking-wide no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`}>
+                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-normal tracking-wide no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`}>
                     <IconComponent
                       className={`${location.pathname === item.href ? `stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-500 dark:text-gray-500 transition-all`}
                       size={16}
                       strokeWidth={location.pathname === item.href ? 1.75 : 1}
                     />
                     <span
-                      style={{ fontStretch: "100%" }}
-                      className={`transition-all text-[clamp(0.6rem,1vw,0.825rem)]`}>
+                      style={{ fontStretch: "115%" }}
+                      className={`transition-all font-mono uppercase text-[clamp(0.6rem,1vw,0.725rem)]`}>
                       {item.name}
                     </span>
                   </Button>

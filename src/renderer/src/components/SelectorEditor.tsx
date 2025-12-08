@@ -395,9 +395,9 @@ const SelectorEditor: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-0 p-4">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="sr-only">
           <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Selektor-Konfiguration
           </h3>
