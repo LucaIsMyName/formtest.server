@@ -9,7 +9,7 @@ import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import type { CustomScript, ScriptHookPoint } from "../../../common/types";
 import { Edit2, Trash2, Plus, Code, Globe, FileCode, AlertTriangle, Clock } from "lucide-react";
 import ScriptDrawer from "../components/ScriptDrawer";
-
+import { CONFIG } from "../app.config";
 // Hook point labels for display
 const HOOK_POINT_LABELS: Record<ScriptHookPoint, string> = {
   before_navigation: "Vor Navigation",
@@ -47,7 +47,9 @@ const ScriptsSkeleton = () => (
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-4">
+          <div
+            key={i}
+            className="flex items-center gap-4">
             <Skeleton className="h-6 w-1/4" />
             <Skeleton className="h-6 w-1/3" />
             <Skeleton className="h-6 w-20" />
@@ -98,7 +100,7 @@ const Scripts: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Custom Scripts</h1>
+          <h1 className={CONFIG.style.title.className}>Custom Scripts</h1>
         </div>
         <ScriptsSkeleton />
       </div>
@@ -109,7 +111,9 @@ const Scripts: React.FC = () => {
     return (
       <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg">
         <p>Fehler beim Laden der Scripts: {error}</p>
-        <Button onClick={loadScripts} className="mt-2">
+        <Button
+          onClick={loadScripts}
+          className="mt-2">
           Erneut versuchen
         </Button>
       </div>
@@ -121,13 +125,14 @@ const Scripts: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Custom Scripts</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Playwright-Snippets für erweiterte Test-Automatisierung
-          </p>
+          <h1 className={CONFIG.style.title.className}>Custom Scripts</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Playwright-Snippets für erweiterte Test-Automatisierung</p>
         </div>
         <Button onClick={() => setIsDrawerOpen(true)}>
-          <Plus size={16} className="mr-2" />
+          <Plus
+            size={16}
+            className="mr-2"
+          />
           Neues Script
         </Button>
       </div>
@@ -149,39 +154,42 @@ const Scripts: React.FC = () => {
           <TableBody>
             {scripts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <TableCell
+                  colSpan={7}
+                  className="text-center text-sm py-8 text-gray-500 dark:text-gray-400">
                   Noch keine Custom Scripts erstellt. Klicke auf "Neues Script" um zu beginnen.
                 </TableCell>
               </TableRow>
             ) : (
               scripts.map((script) => (
                 <TableRow key={script.id}>
-                  <TableCell>
+                  <TableCell className="text-xs">
                     <div className="flex items-center gap-2">
-                      <Code size={16} className="text-gray-400" />
+                      <Code
+                        size={16}
+                        className="text-gray-400"
+                      />
                       <div>
                         <div className="font-medium text-gray-900 dark:text-white">{script.name}</div>
-                        {script.description && (
-                          <div className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-xs">
-                            {script.description}
-                          </div>
-                        )}
+                        {script.description && <div className="text-gray-500 dark:text-gray-400 truncate max-w-xs">{script.description}</div>}
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <StatusBadge status={HOOK_POINT_COLORS[script.hookPoint]}>
+                    <StatusBadge
+                      size="sm"
+                      status={HOOK_POINT_COLORS[script.hookPoint]}>
                       {HOOK_POINT_LABELS[script.hookPoint]}
                     </StatusBadge>
                   </TableCell>
                   <TableCell>
                     {script.isGlobal ? (
-                      <span className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400">
+                      <span className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400">
                         <Globe size={14} />
                         Global
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                      <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                         <FileCode size={14} />
                         Form-spezifisch
                       </span>
@@ -189,16 +197,16 @@ const Scripts: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     {script.stopOnError ? (
-                      <span className="flex items-center gap-1 text-sm text-orange-600 dark:text-orange-400">
+                      <span className="flex items-center gap-1 text-[11px] font-mono uppercase text-orange-600 dark:text-orange-400">
                         <AlertTriangle size={14} />
                         Ja
                       </span>
                     ) : (
-                      <span className="text-sm text-gray-400">Nein</span>
+                      <span className="text-[11px] font-mono uppercase text-gray-400">Nein</span>
                     )}
                   </TableCell>
                   <TableCell>
-                    <span className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-300">
+                    <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300">
                       <Clock size={14} />
                       {(script.timeout / 1000).toFixed(0)}s
                     </span>
@@ -207,23 +215,26 @@ const Scripts: React.FC = () => {
                     <button
                       onClick={() => handleToggleActive(script)}
                       className="focus:outline-none"
-                      title={script.isActive ? "Deaktivieren" : "Aktivieren"}
-                    >
-                      <StatusBadge status={script.isActive ? "success" : "default"}>
+                      title={script.isActive ? "Deaktivieren" : "Aktivieren"}>
+                      <StatusBadge
+                        size="sm"
+                        status={script.isActive ? "success" : "default"}>
                         {script.isActive ? "Aktiv" : "Inaktiv"}
                       </StatusBadge>
                     </button>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button size="sm" variant="outline" onClick={() => handleEdit(script)}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEdit(script)}>
                         <Edit2 size={14} />
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => setDeleteConfirm({ id: script.id, name: script.name })}
-                      >
+                        onClick={() => setDeleteConfirm({ id: script.id, name: script.name })}>
                         <Trash2 size={14} />
                       </Button>
                     </div>

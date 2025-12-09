@@ -142,7 +142,7 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
           </p>
         </DrawerHeader>
 
-        <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className=" pt-6 space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
           {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="name">Name *</Label>
