@@ -298,7 +298,7 @@ class TestRunner {
         this.log(`Failed to take error screenshot: ${screenshotError.message}`)
       }
 
-      // Send error result WITH steps (important for debugging!)
+      // Send error result WITH steps and quality results (important for debugging!)
       this.sendMessage({
         type: 'TEST_COMPLETE',
         id,
@@ -313,7 +313,10 @@ class TestRunner {
             logs: [...this.logs],
             steps: [...this.steps],
             screenshot: errorScreenshot,
-            error: error.message
+            error: error.message,
+            // Include quality test results even on failure - they run before submission
+            seoResults: this.qualityResults?.seoResults || null,
+            accessibilityResults: this.qualityResults?.accessibilityResults || null
           }
         }
       })
