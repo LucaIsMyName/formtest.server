@@ -1,4 +1,4 @@
-# FormTest Server
+# FormTest.Server
 
 A desktop application for automated testing of donation forms using Electron, Vite, TypeScript, and Playwright.
 

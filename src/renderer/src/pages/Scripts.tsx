@@ -163,7 +163,7 @@ const Scripts: React.FC = () => {
             ) : (
               scripts.map((script) => (
                 <TableRow key={script.id}>
-                  <TableCell className="text-xs">
+                  <TableCell className="text-sm">
                     <div className="flex items-center gap-2">
                       <Code
                         size={16}

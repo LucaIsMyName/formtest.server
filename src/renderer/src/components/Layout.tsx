@@ -139,7 +139,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     />
                     <span
                       style={{ fontStretch: "115%" }}
-                      className={`transition-all text-[clamp(0.66rem,1.075vw,0.925rem)]`}>
+                      className={`transition-all text-[clamp(0.8rem,1.075vw,0.9rem)]`}>
                       {item.name}
                     </span>
                   </Button>
@@ -167,7 +167,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     />
                     <span
                       style={{ fontStretch: "115%" }}
-                      className={`transition-all font-mono uppercase text-[clamp(0.6rem,1vw,0.725rem)]`}>
+                      className={`transition-all font-mono uppercase text-[clamp(0.5675rem,0.9vw,0.725rem)]`}>
                       {item.name}
                     </span>
                   </Button>
@@ -182,7 +182,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <main
             ref={mainContentRef}
             className="flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4">
-            <div className="w-full max-w-[1280px]">{children}</div>
+            <div className="w-full max-w-[1340px]">{children}</div>
           </main>
         </div>
       </div>
