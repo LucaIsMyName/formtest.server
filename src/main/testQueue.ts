@@ -10,7 +10,7 @@
 import { runSingleTest } from "./testExecutor";
 import { testRunQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
-import type { Form, PaymentMethod, CustomScript } from "../common/types";
+import type { Form, PaymentMethod, CustomScript, QualityTestOptions } from "../common/types";
 
 // Extended settings type that includes custom scripts
 export interface TestSettings extends Record<string, any> {
@@ -22,6 +22,7 @@ interface QueuedTest {
   form: Form;
   paymentMethod: PaymentMethod;
   settings: TestSettings;
+  qualityTestOptions?: QualityTestOptions;
   addedAt: number;
 }
 
@@ -33,12 +34,13 @@ class TestQueue {
   /**
    * Add a test to the queue
    */
-  enqueue(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings): void {
+  enqueue(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, qualityTestOptions?: QualityTestOptions): void {
     const queuedTest: QueuedTest = {
       testRunId,
       form,
       paymentMethod,
       settings,
+      qualityTestOptions,
       addedAt: Date.now()
     };
 
@@ -68,7 +70,7 @@ class TestQueue {
     this.isProcessing = true;
     this.currentTest = this.queue.shift()!;
 
-    const { testRunId, form, paymentMethod, settings } = this.currentTest;
+    const { testRunId, form, paymentMethod, settings, qualityTestOptions } = this.currentTest;
     const waitTime = Date.now() - this.currentTest.addedAt;
 
     console.log(`[TestQueue] Starting test ${testRunId} (waited ${waitTime}ms in queue). Remaining in queue: ${this.queue.length}`);
@@ -78,7 +80,7 @@ class TestQueue {
       testRunQueries.updateStatus(testRunId, "RUNNING");
       
       // Run the test - this is synchronous from the queue's perspective
-      await runSingleTest(testRunId, form, paymentMethod, settings);
+      await runSingleTest(testRunId, form, paymentMethod, settings, qualityTestOptions);
       console.log(`[TestQueue] Test ${testRunId} completed`);
     } catch (error) {
       console.error(`[TestQueue] Test ${testRunId} failed with error:`, error);

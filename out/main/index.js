@@ -734,6 +734,46 @@ function migrateCustomScripts() {
     console.error("Database: Custom scripts migration error:", error);
   }
 }
+function migrateQualityTestResults() {
+  console.log("Database: Checking for quality test results columns...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasSeoResults = columns.some((col) => col.name === "seoResults");
+    const hasA11yResults = columns.some((col) => col.name === "accessibilityResults");
+    if (!hasSeoResults) {
+      console.log("Database: Adding seoResults column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN seoResults TEXT");
+      console.log("Database: seoResults column added to test_runs");
+    }
+    if (!hasA11yResults) {
+      console.log("Database: Adding accessibilityResults column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN accessibilityResults TEXT");
+      console.log("Database: accessibilityResults column added to test_runs");
+    }
+  } catch (error) {
+    console.error("Database: Quality test results migration error:", error);
+  }
+}
+function migrateScheduleQualityOptions() {
+  console.log("Database: Checking for schedule quality test options columns...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_schedules)").all();
+    const hasEnableSeoTest = columns.some((col) => col.name === "enableSeoTest");
+    const hasEnableA11yTest = columns.some((col) => col.name === "enableAccessibilityTest");
+    if (!hasEnableSeoTest) {
+      console.log("Database: Adding enableSeoTest column to test_schedules...");
+      db.exec("ALTER TABLE test_schedules ADD COLUMN enableSeoTest INTEGER DEFAULT 0");
+      console.log("Database: enableSeoTest column added to test_schedules");
+    }
+    if (!hasEnableA11yTest) {
+      console.log("Database: Adding enableAccessibilityTest column to test_schedules...");
+      db.exec("ALTER TABLE test_schedules ADD COLUMN enableAccessibilityTest INTEGER DEFAULT 0");
+      console.log("Database: enableAccessibilityTest column added to test_schedules");
+    }
+  } catch (error) {
+    console.error("Database: Schedule quality options migration error:", error);
+  }
+}
 function migrateFormFieldMappings() {
   console.log("Database: Checking for forms fieldMappings column...");
   try {
@@ -975,6 +1015,8 @@ function initDatabase() {
   migrateFormFieldMappings();
   migrateTestRunAmountInterval();
   migrateCustomScripts();
+  migrateQualityTestResults();
+  migrateScheduleQualityOptions();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
   });
@@ -1411,7 +1453,9 @@ const testRunQueries = {
     return rows.map((row) => ({
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
-      isScheduled: Boolean(row.isScheduled)
+      isScheduled: Boolean(row.isScheduled),
+      seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
+      accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     }));
   },
   getById: (id) => {
@@ -1420,7 +1464,9 @@ const testRunQueries = {
     return {
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
-      isScheduled: Boolean(row.isScheduled)
+      isScheduled: Boolean(row.isScheduled),
+      seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
+      accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     };
   },
   getByForm: (formId) => {
@@ -1428,13 +1474,38 @@ const testRunQueries = {
     return rows.map((row) => ({
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
-      isScheduled: Boolean(row.isScheduled)
+      isScheduled: Boolean(row.isScheduled),
+      seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
+      accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     }));
   },
-  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0, testRun.amount, testRun.interval),
+  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
+    testRun.uuid,
+    testRun.formId,
+    testRun.paymentMethodId,
+    testRun.status,
+    testRun.errorMessage,
+    testRun.screenshotPath,
+    testRun.logDetails,
+    JSON.stringify(testRun.steps || []),
+    testRun.durationMs,
+    testRun.isScheduled ? 1 : 0,
+    testRun.amount,
+    testRun.interval,
+    testRun.seoResults ? JSON.stringify(testRun.seoResults) : null,
+    testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null
+  ),
   updateStatus: (id, status, errorMessage, durationMs, steps, screenshotPath) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ?, screenshotPath = ? WHERE id = ? AND status != 'STOPPED'");
     return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), screenshotPath || null, id);
+  },
+  updateQualityResults: (id, seoResults, accessibilityResults) => {
+    const stmt = db.prepare("UPDATE test_runs SET seoResults = ?, accessibilityResults = ? WHERE id = ?");
+    return stmt.run(
+      seoResults ? JSON.stringify(seoResults) : null,
+      accessibilityResults ? JSON.stringify(accessibilityResults) : null,
+      id
+    );
   },
   updateNotes: (id, notes) => {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
@@ -1470,6 +1541,8 @@ const testScheduleQueries = {
     return schedules.map((s) => ({
       ...s,
       isActive: Boolean(s.isActive),
+      enableSeoTest: Boolean(s.enableSeoTest),
+      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
       lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
       createdAt: new Date(s.createdAt)
     }));
@@ -1480,12 +1553,23 @@ const testScheduleQueries = {
     return {
       ...s,
       isActive: Boolean(s.isActive),
+      enableSeoTest: Boolean(s.enableSeoTest),
+      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
       lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
       createdAt: new Date(s.createdAt)
     };
   },
   create: (schedule) => {
-    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive, icon) VALUES (?, ?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0, schedule.icon || "Play");
+    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive, icon, enableSeoTest, enableAccessibilityTest) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(
+      schedule.name,
+      schedule.formId,
+      schedule.paymentMethodId,
+      schedule.cronExpression,
+      schedule.isActive ? 1 : 0,
+      schedule.icon || "Play",
+      schedule.enableSeoTest ? 1 : 0,
+      schedule.enableAccessibilityTest ? 1 : 0
+    );
   },
   update: (id, schedule) => {
     const updates = [];
@@ -1517,6 +1601,14 @@ const testScheduleQueries = {
     if (schedule.lastRun !== void 0) {
       updates.push("lastRun = ?");
       values.push(schedule.lastRun.toISOString());
+    }
+    if (schedule.enableSeoTest !== void 0) {
+      updates.push("enableSeoTest = ?");
+      values.push(schedule.enableSeoTest ? 1 : 0);
+    }
+    if (schedule.enableAccessibilityTest !== void 0) {
+      updates.push("enableAccessibilityTest = ?");
+      values.push(schedule.enableAccessibilityTest ? 1 : 0);
     }
     if (updates.length === 0) return { changes: 0 };
     values.push(id);
@@ -2327,7 +2419,7 @@ class TestProcessManager extends events.EventEmitter {
     this.isRunning = false;
     this.process = null;
   }
-  async runTest(testRunId, form, paymentMethod, settings, retryCount = 0) {
+  async runTest(testRunId, form, paymentMethod, settings, qualityTestOptions, retryCount = 0) {
     const maxRetries = 2;
     const testTimeout = parseInt(settings.test_timeout || "180000");
     try {
@@ -2355,7 +2447,8 @@ class TestProcessManager extends events.EventEmitter {
           paymentMethod,
           settings,
           selectorConfig,
-          globalFieldDefaults
+          globalFieldDefaults,
+          qualityTestOptions
         }
       };
       const response = await this.sendMessage(message, testTimeout + 3e4);
@@ -2367,7 +2460,9 @@ class TestProcessManager extends events.EventEmitter {
           logs: response.payload.result?.logs || [],
           steps: response.payload.result?.steps || [],
           screenshot: response.payload.result?.screenshot,
-          formAnalysis: response.payload.result?.formAnalysis
+          formAnalysis: response.payload.result?.formAnalysis,
+          seoResults: response.payload.result?.seoResults,
+          accessibilityResults: response.payload.result?.accessibilityResults
         };
       } else {
         return {
@@ -2376,7 +2471,9 @@ class TestProcessManager extends events.EventEmitter {
           duration: response.payload?.result?.duration || 0,
           logs: response.payload?.result?.logs || response.payload?.logs || [],
           steps: response.payload?.result?.steps || [],
-          screenshot: response.payload?.result?.screenshot
+          screenshot: response.payload?.result?.screenshot,
+          seoResults: response.payload?.result?.seoResults,
+          accessibilityResults: response.payload?.result?.accessibilityResults
         };
       }
     } catch (error) {
@@ -2398,7 +2495,7 @@ class TestProcessManager extends events.EventEmitter {
           this.messageQueue.clear();
         }
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
-        return this.runTest(testRunId, form, paymentMethod, settings, retryCount + 1);
+        return this.runTest(testRunId, form, paymentMethod, settings, qualityTestOptions, retryCount + 1);
       }
       return {
         success: false,
@@ -2680,14 +2777,18 @@ FormTest Server
   }
 }
 const emailService = new EmailService();
-async function runSingleTest(testRunId, form, paymentMethod, settings) {
+async function runSingleTest(testRunId, form, paymentMethod, settings, qualityTestOptions) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
   const testRun = testRunQueries.getById(testRunId);
   const isScheduled = testRun?.isScheduled;
   try {
     const processManager2 = getTestProcessManager();
-    const result = await processManager2.runTest(testRunId, form, paymentMethod, settings);
+    const result = await processManager2.runTest(testRunId, form, paymentMethod, settings, qualityTestOptions);
     await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps, result.screenshot);
+    if (result.seoResults || result.accessibilityResults) {
+      testRunQueries.updateQualityResults(testRunId, result.seoResults, result.accessibilityResults);
+      console.log(`Test ${testRunId} quality results: SEO=${result.seoResults?.score ?? "N/A"}, A11y=${result.accessibilityResults?.score ?? "N/A"}`);
+    }
     console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps, screenshot: ${result.screenshot || "none"}`);
     if (isScheduled) {
       notificationQueries.create({
@@ -2747,7 +2848,7 @@ async function runSingleTest(testRunId, form, paymentMethod, settings) {
     }
   }
 }
-async function createAndRunTest(formId, paymentMethodId) {
+async function createAndRunTest(formId, paymentMethodId, qualityTestOptions) {
   try {
     const form = formQueries.getById(formId);
     const paymentMethod = await paymentMethodQueries.getById(paymentMethodId);
@@ -2774,7 +2875,7 @@ async function createAndRunTest(formId, paymentMethodId) {
     });
     const testRunId = testRun.lastInsertRowid;
     const testQueue = getTestQueue();
-    testQueue.enqueue(testRunId, form, paymentMethod, settingsMap);
+    testQueue.enqueue(testRunId, form, paymentMethod, settingsMap, qualityTestOptions);
     console.log(`[Scheduler] Test ${testRunId} added to queue for ${form.name} × ${paymentMethod.name}`);
     return testRunId;
   } catch (error) {
@@ -2791,12 +2892,13 @@ class TestQueue {
   /**
    * Add a test to the queue
    */
-  enqueue(testRunId, form, paymentMethod, settings) {
+  enqueue(testRunId, form, paymentMethod, settings, qualityTestOptions) {
     const queuedTest = {
       testRunId,
       form,
       paymentMethod,
       settings,
+      qualityTestOptions,
       addedAt: Date.now()
     };
     this.queue.push(queuedTest);
@@ -2819,12 +2921,12 @@ class TestQueue {
     }
     this.isProcessing = true;
     this.currentTest = this.queue.shift();
-    const { testRunId, form, paymentMethod, settings } = this.currentTest;
+    const { testRunId, form, paymentMethod, settings, qualityTestOptions } = this.currentTest;
     const waitTime = Date.now() - this.currentTest.addedAt;
     console.log(`[TestQueue] Starting test ${testRunId} (waited ${waitTime}ms in queue). Remaining in queue: ${this.queue.length}`);
     try {
       testRunQueries.updateStatus(testRunId, "RUNNING");
-      await runSingleTest(testRunId, form, paymentMethod, settings);
+      await runSingleTest(testRunId, form, paymentMethod, settings, qualityTestOptions);
       console.log(`[TestQueue] Test ${testRunId} completed`);
     } catch (error) {
       console.error(`[TestQueue] Test ${testRunId} failed with error:`, error);
@@ -2985,7 +3087,11 @@ class SchedulerService {
     const task = cron__namespace.schedule(schedule.cronExpression, async () => {
       console.log(`Scheduler: Executing job ${schedule.id} (${schedule.name})...`);
       try {
-        await createAndRunTest(schedule.formId, schedule.paymentMethodId);
+        const qualityTestOptions = {
+          enableSeoTest: schedule.enableSeoTest || false,
+          enableAccessibilityTest: schedule.enableAccessibilityTest || false
+        };
+        await createAndRunTest(schedule.formId, schedule.paymentMethodId, qualityTestOptions);
         testScheduleQueries.update(schedule.id, { lastRun: /* @__PURE__ */ new Date() });
         console.log(`Scheduler: Job ${schedule.id} execution initiated successfully`);
       } catch (error) {
@@ -3004,7 +3110,11 @@ class SchedulerService {
     }
     console.log(`Scheduler: Manually executing job ${schedule.id} (${schedule.name})...`);
     try {
-      await createAndRunTest(schedule.formId, schedule.paymentMethodId);
+      const qualityTestOptions = {
+        enableSeoTest: schedule.enableSeoTest || false,
+        enableAccessibilityTest: schedule.enableAccessibilityTest || false
+      };
+      await createAndRunTest(schedule.formId, schedule.paymentMethodId, qualityTestOptions);
       testScheduleQueries.update(schedule.id, { lastRun: /* @__PURE__ */ new Date() });
       console.log(`Scheduler: Manual job ${schedule.id} execution initiated successfully`);
       return { success: true };
@@ -3518,7 +3628,11 @@ function setupIpcHandlers() {
           testRunIds.push(testRun.lastInsertRowid);
           const testQueue = getTestQueue();
           const settingsWithScripts = { ...settingsMap, customScripts };
-          testQueue.enqueue(testRun.lastInsertRowid, form, paymentMethod, settingsWithScripts);
+          const qualityTestOptions = {
+            enableSeoTest: options?.enableSeoTest || false,
+            enableAccessibilityTest: options?.enableAccessibilityTest || false
+          };
+          testQueue.enqueue(testRun.lastInsertRowid, form, paymentMethod, settingsWithScripts, qualityTestOptions);
         }
       }
       return {

@@ -1,7 +1,7 @@
 import { spawn, ChildProcess } from "child_process";
 import { join } from "path";
 import { EventEmitter } from "events";
-import type { Form, PaymentMethod, TestStep, GlobalFieldDefaults } from "../../common/types";
+import type { Form, PaymentMethod, TestStep, GlobalFieldDefaults, QualityTestOptions, SeoTestResult, AccessibilityTestResult } from "../../common/types";
 import { getMergedSelectorConfig, settingsQueries } from "../database";
 import type { SelectorConfig } from "../../common/selectors.config";
 import type { TestSettings } from "../testQueue";
@@ -16,6 +16,7 @@ export interface TestMessage {
     settings?: TestSettings;
     selectorConfig?: SelectorConfig;
     globalFieldDefaults?: GlobalFieldDefaults;
+    qualityTestOptions?: QualityTestOptions;
     success?: boolean;
     result?: any;
     error?: string;
@@ -31,6 +32,8 @@ export interface TestResult {
   steps?: TestStep[];
   screenshot?: string;
   formAnalysis?: any;
+  seoResults?: SeoTestResult;
+  accessibilityResults?: AccessibilityTestResult;
 }
 
 export class TestProcessManager extends EventEmitter {
@@ -187,7 +190,7 @@ export class TestProcessManager extends EventEmitter {
     this.process = null;
   }
 
-  async runTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, retryCount: number = 0): Promise<TestResult> {
+  async runTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, qualityTestOptions?: QualityTestOptions, retryCount: number = 0): Promise<TestResult> {
     const maxRetries = 2;
     const testTimeout = parseInt(settings.test_timeout || "180000"); // Default 3 minutes
 
@@ -226,6 +229,7 @@ export class TestProcessManager extends EventEmitter {
           settings,
           selectorConfig,
           globalFieldDefaults,
+          qualityTestOptions,
         },
       };
 
@@ -242,6 +246,8 @@ export class TestProcessManager extends EventEmitter {
           steps: response.payload.result?.steps || [],
           screenshot: response.payload.result?.screenshot,
           formAnalysis: response.payload.result?.formAnalysis,
+          seoResults: response.payload.result?.seoResults,
+          accessibilityResults: response.payload.result?.accessibilityResults,
         };
       } else {
         // Return failure result WITH steps for debugging (don't throw)
@@ -252,6 +258,8 @@ export class TestProcessManager extends EventEmitter {
           logs: response.payload?.result?.logs || response.payload?.logs || [],
           steps: response.payload?.result?.steps || [],
           screenshot: response.payload?.result?.screenshot,
+          seoResults: response.payload?.result?.seoResults,
+          accessibilityResults: response.payload?.result?.accessibilityResults,
         };
       }
     } catch (error) {
@@ -283,7 +291,7 @@ export class TestProcessManager extends EventEmitter {
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
 
         // Retry the test
-        return this.runTest(testRunId, form, paymentMethod, settings, retryCount + 1);
+        return this.runTest(testRunId, form, paymentMethod, settings, qualityTestOptions, retryCount + 1);
       }
 
       // Final failure after all retries

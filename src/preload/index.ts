@@ -50,7 +50,7 @@ const api = {
 
   // Test execution
   tests: {
-    run: (formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string }) => 
+    run: (formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string; enableSeoTest?: boolean; enableAccessibilityTest?: boolean }) => 
       ipcRenderer.invoke('tests:run', formIds, paymentMethodIds, options)
   },
 

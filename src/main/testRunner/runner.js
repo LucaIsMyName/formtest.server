@@ -12,6 +12,8 @@ const { faker } = require('@faker-js/faker')
 const fs = require('fs').promises
 const path = require('path')
 const ScriptExecutor = require('./scriptExecutor')
+const { SeoAnalyzer } = require('./seoAnalyzer')
+const { AccessibilityAnalyzer } = require('./accessibilityAnalyzer')
 
 class TestRunner {
   constructor() {
@@ -225,16 +227,22 @@ class TestRunner {
 
   async startTest(message) {
     const { id, payload } = message
-    const { testRunId, form, paymentMethod, settings, selectorConfig, globalFieldDefaults } = payload
+    const { testRunId, form, paymentMethod, settings, selectorConfig, globalFieldDefaults, qualityTestOptions } = payload
 
     // IMPORTANT: Reset logs and steps for each new test run
     // This prevents accumulation from previous test runs
     this.logs = []
     this.steps = []
     this.currentStep = null
+    
+    // Store quality test options (default to disabled)
+    this.qualityTestOptions = qualityTestOptions || { enableSeoTest: false, enableAccessibilityTest: false }
 
     try {
       this.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name}`)
+      if (this.qualityTestOptions.enableSeoTest || this.qualityTestOptions.enableAccessibilityTest) {
+        this.log(`Quality tests enabled: SEO=${this.qualityTestOptions.enableSeoTest}, A11y=${this.qualityTestOptions.enableAccessibilityTest}`)
+      }
 
       // Store selector config (merged base + user overrides)
       this.selectorConfig = selectorConfig || null
@@ -615,6 +623,47 @@ class TestRunner {
     // HOOK: after_form_fill
     await this.runScriptsAtHook('after_form_fill', form, paymentMethod, testRunInfo)
 
+    // Quality Tests (SEO & Accessibility) - run after form is analyzed but before payment
+    let seoResults = null
+    let accessibilityResults = null
+    
+    if (this.qualityTestOptions?.enableSeoTest) {
+      const seoStep = this.startStep('seo-analysis', 'SEO-Analyse durchführen')
+      try {
+        const seoAnalyzer = new SeoAnalyzer(this.page, this.log.bind(this))
+        seoResults = await seoAnalyzer.analyze()
+        this.completeStep('seo-analysis', 'success', `SEO Score: ${seoResults.score}/100 (${seoResults.issues.length} Issues)`, {
+          score: seoResults.score,
+          issueCount: seoResults.issues.length,
+          passedCount: seoResults.passedChecks.length
+        })
+      } catch (error) {
+        this.log(`SEO analysis failed: ${error.message}`)
+        this.completeStep('seo-analysis', 'error', `SEO-Analyse fehlgeschlagen: ${error.message}`)
+        // Don't throw - quality tests should not fail the main test
+      }
+    }
+    
+    if (this.qualityTestOptions?.enableAccessibilityTest) {
+      const a11yStep = this.startStep('accessibility-analysis', 'Barrierefreiheit prüfen (WCAG 2.1 AA)')
+      try {
+        const a11yAnalyzer = new AccessibilityAnalyzer(this.page, this.log.bind(this))
+        accessibilityResults = await a11yAnalyzer.analyze()
+        this.completeStep('accessibility-analysis', 'success', `A11y Score: ${accessibilityResults.score}/100 (${accessibilityResults.violations.length} Violations)`, {
+          score: accessibilityResults.score,
+          violationCount: accessibilityResults.violations.length,
+          passedCount: accessibilityResults.passes
+        })
+      } catch (error) {
+        this.log(`Accessibility analysis failed: ${error.message}`)
+        this.completeStep('accessibility-analysis', 'error', `Barrierefreiheit-Prüfung fehlgeschlagen: ${error.message}`)
+        // Don't throw - quality tests should not fail the main test
+      }
+    }
+    
+    // Store quality results for inclusion in final result
+    this.qualityResults = { seoResults, accessibilityResults }
+
     // HOOK: before_payment
     await this.runScriptsAtHook('before_payment', form, paymentMethod, testRunInfo)
 
@@ -665,7 +714,10 @@ class TestRunner {
         screenshot: finalScreenshotPath,
         formAnalysis,
         skippedSubmission: true,
-        reason: 'Invalid payment method for recurring donation'
+        reason: 'Invalid payment method for recurring donation',
+        // Include quality test results
+        seoResults: this.qualityResults?.seoResults || null,
+        accessibilityResults: this.qualityResults?.accessibilityResults || null
       }
     }
 
@@ -732,7 +784,10 @@ class TestRunner {
         steps: [...this.steps],
         screenshot: finalScreenshotPath,
         formAnalysis,
-        redirectUrl: successResult.url
+        redirectUrl: successResult.url,
+        // Include quality test results
+        seoResults: this.qualityResults?.seoResults || null,
+        accessibilityResults: this.qualityResults?.accessibilityResults || null
       }
     } catch (error) {
       this.failStep('redirect-detection', `Erfolgserkennung fehlgeschlagen: ${error.message}`)

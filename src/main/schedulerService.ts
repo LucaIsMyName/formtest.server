@@ -41,7 +41,13 @@ class SchedulerService {
     const task = cron.schedule(schedule.cronExpression, async () => {
       console.log(`Scheduler: Executing job ${schedule.id} (${schedule.name})...`);
       try {
-        await createAndRunTest(schedule.formId, schedule.paymentMethodId);
+        // Build quality test options from schedule settings
+        const qualityTestOptions = {
+          enableSeoTest: schedule.enableSeoTest || false,
+          enableAccessibilityTest: schedule.enableAccessibilityTest || false,
+        };
+        
+        await createAndRunTest(schedule.formId, schedule.paymentMethodId, qualityTestOptions);
         
         // Update lastRun
         testScheduleQueries.update(schedule.id, { lastRun: new Date() });
@@ -65,7 +71,13 @@ class SchedulerService {
 
     console.log(`Scheduler: Manually executing job ${schedule.id} (${schedule.name})...`);
     try {
-      await createAndRunTest(schedule.formId, schedule.paymentMethodId);
+      // Build quality test options from schedule settings
+      const qualityTestOptions = {
+        enableSeoTest: schedule.enableSeoTest || false,
+        enableAccessibilityTest: schedule.enableAccessibilityTest || false,
+      };
+      
+      await createAndRunTest(schedule.formId, schedule.paymentMethodId, qualityTestOptions);
 
       // Update lastRun
       testScheduleQueries.update(schedule.id, { lastRun: new Date() });

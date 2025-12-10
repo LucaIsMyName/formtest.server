@@ -1,12 +1,12 @@
 import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, notificationQueries } from "./database";
 import { getTestProcessManager } from "./testRunner/processManager";
 import { getTestQueue, TestSettings } from "./testQueue";
-import type { Form, PaymentMethod } from "../common/types";
+import type { Form, PaymentMethod, QualityTestOptions } from "../common/types";
 import { randomUUID } from "crypto";
 import { BrowserWindow } from "electron";
 import { emailService } from "./emailService";
 
-export async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings) {
+export async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, qualityTestOptions?: QualityTestOptions) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
 
   // Check if this is a scheduled test
@@ -15,10 +15,16 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
 
   try {
     const processManager = getTestProcessManager();
-    const result = await processManager.runTest(testRunId, form, paymentMethod, settings);
+    const result = await processManager.runTest(testRunId, form, paymentMethod, settings, qualityTestOptions);
 
     // Update test run with results including steps and screenshot
     await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps, result.screenshot);
+    
+    // Update quality test results if present
+    if (result.seoResults || result.accessibilityResults) {
+      testRunQueries.updateQualityResults(testRunId, result.seoResults, result.accessibilityResults);
+      console.log(`Test ${testRunId} quality results: SEO=${result.seoResults?.score ?? 'N/A'}, A11y=${result.accessibilityResults?.score ?? 'N/A'}`);
+    }
 
     console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps, screenshot: ${result.screenshot || 'none'}`);
 
@@ -96,7 +102,7 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
   }
 }
 
-export async function createAndRunTest(formId: number, paymentMethodId: number) {
+export async function createAndRunTest(formId: number, paymentMethodId: number, qualityTestOptions?: QualityTestOptions) {
   try {
     const form = formQueries.getById(formId);
     const paymentMethod = await paymentMethodQueries.getById(paymentMethodId);
@@ -131,7 +137,7 @@ export async function createAndRunTest(formId: number, paymentMethodId: number) 
 
     // Add to queue instead of running directly - prevents concurrent test issues
     const testQueue = getTestQueue();
-    testQueue.enqueue(testRunId, form, paymentMethod, settingsMap);
+    testQueue.enqueue(testRunId, form, paymentMethod, settingsMap, qualityTestOptions);
 
     console.log(`[Scheduler] Test ${testRunId} added to queue for ${form.name} × ${paymentMethod.name}`);
 

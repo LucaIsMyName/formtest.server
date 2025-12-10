@@ -25,6 +25,8 @@ import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
 import ScreenshotViewer from "../components/ScreenshotViewer";
+import SeoResultsCard from "../components/SeoResultsCard";
+import AccessibilityResultsCard from "../components/AccessibilityResultsCard";
 
 // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
 const getStartTime = (runAt: Date | string): number => {
@@ -1376,6 +1378,21 @@ const TestResults: React.FC = () => {
                   <div className="mb-6 pb-6 border-b dark:border-gray-700 ">
                     <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Error Message</label>
                     <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-800 dark:text-red-200 font-mono">{selectedTestRunData.errorMessage}</div>
+                  </div>
+                )}
+
+                {/* Quality Test Results */}
+                {(selectedTestRunData.seoResults || selectedTestRunData.accessibilityResults) && (
+                  <div className="mb-6 pb-6 border-b dark:border-gray-700">
+                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Qualitätstests</label>
+                    <div className="space-y-3">
+                      {selectedTestRunData.seoResults && (
+                        <SeoResultsCard results={selectedTestRunData.seoResults} />
+                      )}
+                      {selectedTestRunData.accessibilityResults && (
+                        <AccessibilityResultsCard results={selectedTestRunData.accessibilityResults} />
+                      )}
+                    </div>
                   </div>
                 )}
 

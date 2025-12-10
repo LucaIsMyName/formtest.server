@@ -12,14 +12,14 @@ import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
 import { StatusBadge } from "./ui/Badge";
-import { Trash2, Play } from "lucide-react";
+import { Trash2, Play, Search, Accessibility } from "lucide-react";
 import { CONFIG } from "@/app.config";
 import { formatDateTime } from "../utils/formatters";
 
 interface ScheduleDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon?: string }) => Promise<void>;
+  onSave: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon?: string; enableSeoTest?: boolean; enableAccessibilityTest?: boolean }) => Promise<void>;
   initialData?: TestSchedule;
   title?: string;
   onDelete?: (id: number) => void;
@@ -104,6 +104,10 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Quality test options
+  const [enableSeoTest, setEnableSeoTest] = useState(false);
+  const [enableAccessibilityTest, setEnableAccessibilityTest] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -115,6 +119,8 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
         setPaymentMethodId(String(initialData.paymentMethodId));
         setIsActive(initialData.isActive);
         setIcon(initialData.icon || getDefaultScheduleIcon(initialData.cronExpression));
+        setEnableSeoTest(initialData.enableSeoTest || false);
+        setEnableAccessibilityTest(initialData.enableAccessibilityTest || false);
 
         const knownFreq = FREQUENCY_OPTIONS.find((f) => f.value === initialData.cronExpression);
         if (knownFreq) {
@@ -132,6 +138,8 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
         setCustomCron("");
         setIsActive(true);
         setIcon("Play");
+        setEnableSeoTest(false);
+        setEnableAccessibilityTest(false);
       }
       setError(null);
     }
@@ -161,6 +169,8 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
         cronExpression,
         isActive,
         icon,
+        enableSeoTest,
+        enableAccessibilityTest,
       });
       onClose();
     } catch (err) {
@@ -402,6 +412,41 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                           className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
                           Zeitplan aktiv
                         </Label>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Qualitätstests</TableCell>
+                    <TableCell className="px-3 py-2">
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="enableSeoTest"
+                            checked={enableSeoTest}
+                            onCheckedChange={(checked) => setEnableSeoTest(checked === true)}
+                            disabled={isSubmitting}
+                          />
+                          <Label
+                            htmlFor="enableSeoTest"
+                            className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer flex items-center gap-1.5">
+                            <Search size={12} className="text-gray-500" />
+                            SEO-Analyse
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="enableAccessibilityTest"
+                            checked={enableAccessibilityTest}
+                            onCheckedChange={(checked) => setEnableAccessibilityTest(checked === true)}
+                            disabled={isSubmitting}
+                          />
+                          <Label
+                            htmlFor="enableAccessibilityTest"
+                            className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer flex items-center gap-1.5">
+                            <Accessibility size={12} className="text-gray-500" />
+                            Barrierefreiheit (WCAG 2.1 AA)
+                          </Label>
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>

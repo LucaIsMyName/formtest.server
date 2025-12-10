@@ -113,6 +113,9 @@ export interface TestRun {
   notes?: string;
   amount?: string;    // Test amount in EUR
   interval?: string;  // Test interval (0=one-time, 1=monthly, etc.)
+  // Quality test results (optional, stored as JSON)
+  seoResults?: SeoTestResult;
+  accessibilityResults?: AccessibilityTestResult;
   runAt: Date;
 }
 
@@ -126,6 +129,9 @@ export interface TestSchedule {
   icon?: string;
   lastRun?: Date;
   nextRun?: Date; // Computed property, not in DB
+  // Quality test options for scheduled tests
+  enableSeoTest?: boolean;
+  enableAccessibilityTest?: boolean;
   createdAt: Date;
 }
 
@@ -268,4 +274,81 @@ export interface ScriptValidationResult {
   valid: boolean;
   errors: string[];
   warnings: string[];
+}
+
+// ============================================
+// SEO & Accessibility Quality Tests Types
+// ============================================
+
+/**
+ * Options for enabling quality tests during a test run
+ */
+export interface QualityTestOptions {
+  enableSeoTest: boolean;
+  enableAccessibilityTest: boolean;
+}
+
+/**
+ * Individual SEO issue found during analysis
+ */
+export interface SeoIssue {
+  type: 'error' | 'warning' | 'info';
+  rule: string;
+  message: string;
+  element?: string; // CSS selector or element description
+}
+
+/**
+ * SEO analysis result
+ */
+export interface SeoTestResult {
+  score: number; // 0-100
+  issues: SeoIssue[];
+  passedChecks: string[];
+  metadata: {
+    title?: string;
+    description?: string;
+    h1Count: number;
+    imgCount: number;
+    imgWithoutAlt: number;
+    hasViewport: boolean;
+    hasCanonical: boolean;
+    hasOpenGraph: boolean;
+  };
+}
+
+/**
+ * Individual accessibility violation node
+ */
+export interface AccessibilityViolationNode {
+  html: string;
+  target: string[];
+  failureSummary?: string;
+}
+
+/**
+ * Individual accessibility violation
+ */
+export interface AccessibilityViolation {
+  id: string;
+  impact: 'critical' | 'serious' | 'moderate' | 'minor';
+  description: string;
+  help: string;
+  helpUrl: string;
+  nodes: AccessibilityViolationNode[];
+}
+
+/**
+ * Accessibility analysis result (WCAG 2.1 Level AA)
+ */
+export interface AccessibilityTestResult {
+  score: number; // 0-100
+  violations: AccessibilityViolation[];
+  passes: number;
+  incomplete: number;
+  inapplicable: number;
+  metadata: {
+    wcagLevel: 'A' | 'AA' | 'AAA';
+    totalChecks: number;
+  };
 }

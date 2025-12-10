@@ -4,6 +4,8 @@ import type { TestRun } from "../../../common/types";
 interface TestRunOptions {
   customAmount?: string;
   customInterval?: string;
+  enableSeoTest?: boolean;
+  enableAccessibilityTest?: boolean;
 }
 
 interface TestRunsState {

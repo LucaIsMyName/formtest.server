@@ -153,7 +153,7 @@ export function setupIpcHandlers(): void {
   });
 
   // Test execution handlers
-  ipcMain.handle("tests:run", async (_, formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string }) => {
+  ipcMain.handle("tests:run", async (_, formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string; enableSeoTest?: boolean; enableAccessibilityTest?: boolean }) => {
     try {
       console.log("Starting test execution for forms:", formIds, "with payment methods:", paymentMethodIds, "options:", options);
 
@@ -212,7 +212,14 @@ export function setupIpcHandlers(): void {
           // Include custom scripts in settings for the runner
           const testQueue = getTestQueue();
           const settingsWithScripts = { ...settingsMap, customScripts };
-          testQueue.enqueue(testRun.lastInsertRowid as number, form, paymentMethod, settingsWithScripts);
+          
+          // Build quality test options from request options
+          const qualityTestOptions = {
+            enableSeoTest: options?.enableSeoTest || false,
+            enableAccessibilityTest: options?.enableAccessibilityTest || false,
+          };
+          
+          testQueue.enqueue(testRun.lastInsertRowid as number, form, paymentMethod, settingsWithScripts, qualityTestOptions);
         }
       }
 

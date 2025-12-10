@@ -6,7 +6,7 @@ import { useSettingsStore } from "../store/useSettingsStore";
 import Button from "./ui/Button";
 import { Input } from "./ui/Input";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "./ui/Table";
-import { CreditCard, Play, Globe, Settings2, Euro, RefreshCw } from "lucide-react";
+import { CreditCard, Play, Globe, Settings2, Euro, RefreshCw, ShieldCheck, Search, Accessibility } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/Dialog";
 import { Label } from "./ui/Label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
@@ -40,6 +40,10 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
   // Custom test parameters
   const [customAmount, setCustomAmount] = useState<string>("");
   const [customInterval, setCustomInterval] = useState<string>("");
+  
+  // Quality test options
+  const [enableSeoTest, setEnableSeoTest] = useState<boolean>(false);
+  const [enableAccessibilityTest, setEnableAccessibilityTest] = useState<boolean>(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -47,6 +51,9 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
       loadPaymentMethods();
       loadSettings();
       setError(null);
+      // Reset quality test options when dialog opens
+      setEnableSeoTest(false);
+      setEnableAccessibilityTest(false);
     }
   }, [isOpen, loadForms, loadPaymentMethods, loadSettings]);
 
@@ -122,6 +129,8 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
       await runTests(selectedFormIds, selectedPaymentMethodIds, {
         customAmount,
         customInterval,
+        enableSeoTest,
+        enableAccessibilityTest,
       });
       onClose();
     } catch (error) {
@@ -372,6 +381,42 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Quality Tests Section */}
+          <div className="px-4 pb-4">
+            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-md border border-gray-200 dark:border-gray-700 p-3">
+              <div className="flex items-center gap-2 mb-3">
+                <ShieldCheck size={12} className="text-gray-500" />
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Qualitätstests (Optional)</span>
+              </div>
+              <div className="flex gap-6">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <Checkbox
+                    checked={enableSeoTest}
+                    onCheckedChange={(checked) => setEnableSeoTest(checked === true)}
+                    disabled={isRunning}
+                  />
+                  <div className="flex items-center gap-1.5">
+                    <Search size={12} className="text-gray-500 group-hover:text-blue-500 transition-colors" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">SEO-Analyse</span>
+                  </div>
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500">Meta-Tags, Überschriften, Alt-Texte</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <Checkbox
+                    checked={enableAccessibilityTest}
+                    onCheckedChange={(checked) => setEnableAccessibilityTest(checked === true)}
+                    disabled={isRunning}
+                  />
+                  <div className="flex items-center gap-1.5">
+                    <Accessibility size={12} className="text-gray-500 group-hover:text-blue-500 transition-colors" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Barrierefreiheit</span>
+                  </div>
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500">WCAG 2.1 AA</span>
+                </label>
               </div>
             </div>
           </div>

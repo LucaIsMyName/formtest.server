@@ -311,6 +311,60 @@ function migrateCustomScripts(): void {
 }
 
 /**
+ * Migrate test_runs table to add SEO and Accessibility results columns
+ */
+function migrateQualityTestResults(): void {
+  console.log("Database: Checking for quality test results columns...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasSeoResults = columns.some(col => col.name === 'seoResults');
+    const hasA11yResults = columns.some(col => col.name === 'accessibilityResults');
+    
+    if (!hasSeoResults) {
+      console.log("Database: Adding seoResults column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN seoResults TEXT");
+      console.log("Database: seoResults column added to test_runs");
+    }
+    
+    if (!hasA11yResults) {
+      console.log("Database: Adding accessibilityResults column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN accessibilityResults TEXT");
+      console.log("Database: accessibilityResults column added to test_runs");
+    }
+  } catch (error) {
+    console.error("Database: Quality test results migration error:", error);
+  }
+}
+
+/**
+ * Migrate test_schedules table to add quality test options columns
+ */
+function migrateScheduleQualityOptions(): void {
+  console.log("Database: Checking for schedule quality test options columns...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_schedules)").all() as Array<{name: string}>;
+    const hasEnableSeoTest = columns.some(col => col.name === 'enableSeoTest');
+    const hasEnableA11yTest = columns.some(col => col.name === 'enableAccessibilityTest');
+    
+    if (!hasEnableSeoTest) {
+      console.log("Database: Adding enableSeoTest column to test_schedules...");
+      db.exec("ALTER TABLE test_schedules ADD COLUMN enableSeoTest INTEGER DEFAULT 0");
+      console.log("Database: enableSeoTest column added to test_schedules");
+    }
+    
+    if (!hasEnableA11yTest) {
+      console.log("Database: Adding enableAccessibilityTest column to test_schedules...");
+      db.exec("ALTER TABLE test_schedules ADD COLUMN enableAccessibilityTest INTEGER DEFAULT 0");
+      console.log("Database: enableAccessibilityTest column added to test_schedules");
+    }
+  } catch (error) {
+    console.error("Database: Schedule quality options migration error:", error);
+  }
+}
+
+/**
  * Migrate forms table to add fieldMappings column
  */
 function migrateFormFieldMappings(): void {
@@ -628,6 +682,12 @@ export function initDatabase(): void {
   
   // Migrate custom scripts tables
   migrateCustomScripts();
+  
+  // Migrate quality test results columns
+  migrateQualityTestResults();
+  
+  // Migrate schedule quality options columns
+  migrateScheduleQualityOptions();
   
   // Migrate existing unencrypted payment methods
   migratePaymentMethodEncryption().catch((error) => {
@@ -1166,7 +1226,9 @@ export const testRunQueries = {
     return rows.map(row => ({
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
-      isScheduled: Boolean(row.isScheduled)
+      isScheduled: Boolean(row.isScheduled),
+      seoResults: row.seoResults ? JSON.parse(row.seoResults) : undefined,
+      accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : undefined,
     })) as TestRun[];
   },
   getById: (id: number) => {
@@ -1175,7 +1237,9 @@ export const testRunQueries = {
     return {
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
-      isScheduled: Boolean(row.isScheduled)
+      isScheduled: Boolean(row.isScheduled),
+      seoResults: row.seoResults ? JSON.parse(row.seoResults) : undefined,
+      accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : undefined,
     } as TestRun;
   },
   getByForm: (formId: number) => {
@@ -1183,15 +1247,40 @@ export const testRunQueries = {
     return rows.map(row => ({
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
-      isScheduled: Boolean(row.isScheduled)
+      isScheduled: Boolean(row.isScheduled),
+      seoResults: row.seoResults ? JSON.parse(row.seoResults) : undefined,
+      accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : undefined,
     })) as TestRun[];
   },
-  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(testRun.uuid, testRun.formId, testRun.paymentMethodId, testRun.status, testRun.errorMessage, testRun.screenshotPath, testRun.logDetails, JSON.stringify(testRun.steps || []), testRun.durationMs, testRun.isScheduled ? 1 : 0, testRun.amount, testRun.interval),
+  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
+    testRun.uuid, 
+    testRun.formId, 
+    testRun.paymentMethodId, 
+    testRun.status, 
+    testRun.errorMessage, 
+    testRun.screenshotPath, 
+    testRun.logDetails, 
+    JSON.stringify(testRun.steps || []), 
+    testRun.durationMs, 
+    testRun.isScheduled ? 1 : 0, 
+    testRun.amount, 
+    testRun.interval,
+    testRun.seoResults ? JSON.stringify(testRun.seoResults) : null,
+    testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null
+  ),
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"], screenshotPath?: string) => {
     // Don't overwrite STOPPED status - if a test was manually stopped, keep that status
     // This prevents the runner from changing STOPPED to FAILURE when it eventually completes
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ?, screenshotPath = ? WHERE id = ? AND status != 'STOPPED'");
     return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), screenshotPath || null, id);
+  },
+  updateQualityResults: (id: number, seoResults?: any, accessibilityResults?: any) => {
+    const stmt = db.prepare("UPDATE test_runs SET seoResults = ?, accessibilityResults = ? WHERE id = ?");
+    return stmt.run(
+      seoResults ? JSON.stringify(seoResults) : null,
+      accessibilityResults ? JSON.stringify(accessibilityResults) : null,
+      id
+    );
   },
   updateNotes: (id: number, notes: string) => {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
@@ -1233,6 +1322,8 @@ export const testScheduleQueries = {
     return schedules.map((s) => ({
       ...s,
       isActive: Boolean(s.isActive),
+      enableSeoTest: Boolean(s.enableSeoTest),
+      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
       lastRun: s.lastRun ? new Date(s.lastRun) : undefined,
       createdAt: new Date(s.createdAt),
     }));
@@ -1243,14 +1334,25 @@ export const testScheduleQueries = {
     return {
       ...s,
       isActive: Boolean(s.isActive),
+      enableSeoTest: Boolean(s.enableSeoTest),
+      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
       lastRun: s.lastRun ? new Date(s.lastRun) : undefined,
       createdAt: new Date(s.createdAt),
     };
   },
-  create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon?: string }) => {
-    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive, icon) VALUES (?, ?, ?, ?, ?, ?)").run(schedule.name, schedule.formId, schedule.paymentMethodId, schedule.cronExpression, schedule.isActive ? 1 : 0, schedule.icon || 'Play');
+  create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon?: string; enableSeoTest?: boolean; enableAccessibilityTest?: boolean }) => {
+    return db.prepare("INSERT INTO test_schedules (name, formId, paymentMethodId, cronExpression, isActive, icon, enableSeoTest, enableAccessibilityTest) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(
+      schedule.name, 
+      schedule.formId, 
+      schedule.paymentMethodId, 
+      schedule.cronExpression, 
+      schedule.isActive ? 1 : 0, 
+      schedule.icon || 'Play',
+      schedule.enableSeoTest ? 1 : 0,
+      schedule.enableAccessibilityTest ? 1 : 0
+    );
   },
-  update: (id: number, schedule: Partial<{ name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon: string; lastRun: Date }>) => {
+  update: (id: number, schedule: Partial<{ name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean; icon: string; lastRun: Date; enableSeoTest: boolean; enableAccessibilityTest: boolean }>) => {
     const updates: string[] = [];
     const values: any[] = [];
 
@@ -1261,6 +1363,8 @@ export const testScheduleQueries = {
     if (schedule.isActive !== undefined) { updates.push("isActive = ?"); values.push(schedule.isActive ? 1 : 0); }
     if (schedule.icon !== undefined) { updates.push("icon = ?"); values.push(schedule.icon); }
     if (schedule.lastRun !== undefined) { updates.push("lastRun = ?"); values.push(schedule.lastRun.toISOString()); }
+    if (schedule.enableSeoTest !== undefined) { updates.push("enableSeoTest = ?"); values.push(schedule.enableSeoTest ? 1 : 0); }
+    if (schedule.enableAccessibilityTest !== undefined) { updates.push("enableAccessibilityTest = ?"); values.push(schedule.enableAccessibilityTest ? 1 : 0); }
 
     if (updates.length === 0) return { changes: 0 };
 
