@@ -52,7 +52,7 @@
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.16",
     "babel-plugin-react-compiler": "^1.0.0",
-    "electron": "^28.3.3",
+    "electron": "^39.2.6",
     "electron-builder": "^24.13.3",
     "electron-icon-builder": "^2.0.1",
     "electron-vite": "^2.0.0",
