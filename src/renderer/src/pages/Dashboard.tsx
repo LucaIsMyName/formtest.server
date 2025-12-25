@@ -7,7 +7,7 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/ui/Button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
-import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, Clock, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -88,44 +88,104 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showTestDialog, setShowTestDialog] = useState(false);
 
-  // Prepare chart data - grouped by 6-hour intervals for last 7 days
+  // Prepare chart data - grouped by dynamic intervals for all-time data
   const prepareTimelineData = () => {
-    const now = new Date();
-    const hoursBack = 168; // Show last 7 days (7 * 24 = 168 hours)
-    const intervalHours = 6; // Group by 6-hour intervals
+    if (testRuns.length === 0) return [];
     
-    // Create time slots for the last 7 days in 6-hour intervals
+    // Filter out running/queued tests
+    const completedRuns = testRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
+    if (completedRuns.length === 0) return [];
+    
+    // Find earliest and latest test dates
+    const dates = completedRuns.map(run => new Date(run.runAt));
+    const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    
+    // Calculate time span in days
+    const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
+    
+    // Determine appropriate interval based on time span
+    let intervalType: 'hour' | 'day' | 'week' | 'month';
+    let intervalCount: number;
+    let formatOptions: Intl.DateTimeFormatOptions;
+    
+    if (timeSpanDays <= 2) {
+      intervalType = 'hour';
+      intervalCount = 6; // 6-hour intervals
+      formatOptions = { day: '2-digit', month: '2-digit', hour: '2-digit' };
+    } else if (timeSpanDays <= 30) {
+      intervalType = 'day';
+      intervalCount = 1; // Daily intervals
+      formatOptions = { day: '2-digit', month: '2-digit' };
+    } else if (timeSpanDays <= 365) {
+      intervalType = 'week';
+      intervalCount = 1; // Weekly intervals
+      formatOptions = { day: '2-digit', month: '2-digit' };
+    } else {
+      intervalType = 'month';
+      intervalCount = 1; // Monthly intervals
+      formatOptions = { month: '2-digit', year: '2-digit' };
+    }
+    
+    // Create time slots
     const slots: Record<string, { date: string; success: number; failure: number; stopped: number }> = {};
     
-    for (let i = hoursBack; i >= 0; i -= intervalHours) {
-      const slotTime = new Date(now);
-      slotTime.setHours(slotTime.getHours() - i);
-      slotTime.setMinutes(0, 0, 0);
-      // Round down to nearest 6-hour interval
-      slotTime.setHours(Math.floor(slotTime.getHours() / intervalHours) * intervalHours);
+    // Generate slots from earliest to latest date
+    let currentDate = new Date(earliestDate);
+    
+    // Round down to appropriate interval start
+    if (intervalType === 'hour') {
+      currentDate.setMinutes(0, 0, 0);
+      currentDate.setHours(Math.floor(currentDate.getHours() / intervalCount) * intervalCount);
+    } else if (intervalType === 'day') {
+      currentDate.setHours(0, 0, 0, 0);
+    } else if (intervalType === 'week') {
+      const dayOfWeek = currentDate.getDay();
+      currentDate.setDate(currentDate.getDate() - dayOfWeek);
+      currentDate.setHours(0, 0, 0, 0);
+    } else if (intervalType === 'month') {
+      currentDate.setDate(1);
+      currentDate.setHours(0, 0, 0, 0);
+    }
+    
+    while (currentDate <= latestDate) {
+      const slotKey = currentDate.toISOString();
+      const label = currentDate.toLocaleDateString("de-DE", formatOptions);
       
-      const slotKey = slotTime.toISOString();
-      const label = `${slotTime.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} ${slotTime.getHours().toString().padStart(2, "0")}:00`;
+      slots[slotKey] = { date: label, success: 0, failure: 0, stopped: 0 };
       
-      if (!slots[slotKey]) {
-        slots[slotKey] = { date: label, success: 0, failure: 0, stopped: 0 };
+      // Move to next interval
+      if (intervalType === 'hour') {
+        currentDate.setHours(currentDate.getHours() + intervalCount);
+      } else if (intervalType === 'day') {
+        currentDate.setDate(currentDate.getDate() + intervalCount);
+      } else if (intervalType === 'week') {
+        currentDate.setDate(currentDate.getDate() + 7);
+      } else if (intervalType === 'month') {
+        currentDate.setMonth(currentDate.getMonth() + 1);
       }
     }
     
     // Group test runs into slots
-    testRuns.forEach((run) => {
-      if (run.status === "RUNNING" || run.status === "QUEUED") return;
-      
+    completedRuns.forEach((run) => {
       const runDate = new Date(run.runAt);
-      const hoursDiff = (now.getTime() - runDate.getTime()) / (1000 * 60 * 60);
       
-      // Only include runs from the last 7 days
-      if (hoursDiff > hoursBack) return;
+      // Find the appropriate slot for this run
+      let slotTime = new Date(runDate);
       
-      // Round to nearest 6-hour slot
-      const slotTime = new Date(runDate);
-      slotTime.setMinutes(0, 0, 0);
-      slotTime.setHours(Math.floor(slotTime.getHours() / intervalHours) * intervalHours);
+      if (intervalType === 'hour') {
+        slotTime.setMinutes(0, 0, 0);
+        slotTime.setHours(Math.floor(slotTime.getHours() / intervalCount) * intervalCount);
+      } else if (intervalType === 'day') {
+        slotTime.setHours(0, 0, 0, 0);
+      } else if (intervalType === 'week') {
+        const dayOfWeek = slotTime.getDay();
+        slotTime.setDate(slotTime.getDate() - dayOfWeek);
+        slotTime.setHours(0, 0, 0, 0);
+      } else if (intervalType === 'month') {
+        slotTime.setDate(1);
+        slotTime.setHours(0, 0, 0, 0);
+      }
       
       const slotKey = slotTime.toISOString();
       
@@ -186,29 +246,66 @@ const Dashboard: React.FC = () => {
     return data;
   };
 
-  // Prepare success rate trend over time (last 7 days)
+  // Prepare success rate trend over time (all-time data)
   const prepareSuccessRateTrend = () => {
-    const last7Days: { date: string; rate: number; total: number }[] = [];
-    const now = new Date();
+    if (testRuns.length === 0) return [];
     
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(now);
-      date.setDate(date.getDate() - i);
-      const dateStr = date.toLocaleDateString("de-DE");
-      
-      const dayRuns = testRuns.filter((r) => {
-        const runDate = new Date(r.runAt).toLocaleDateString("de-DE");
-        return runDate === dateStr && r.status !== "RUNNING" && r.status !== "QUEUED";
-      });
-      
-      const successful = dayRuns.filter((r) => r.status === "SUCCESS").length;
-      const total = dayRuns.length;
-      const rate = total > 0 ? (successful / total) * 100 : 0;
-      
-      last7Days.push({ date: dateStr, rate: Math.round(rate), total });
+    // Filter out running/queued tests
+    const completedRuns = testRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
+    if (completedRuns.length === 0) return [];
+    
+    // Find earliest and latest test dates
+    const dates = completedRuns.map(run => new Date(run.runAt));
+    const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    
+    // Calculate time span in days
+    const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
+    
+    // Determine appropriate grouping
+    let groupByDays: number;
+    if (timeSpanDays <= 7) {
+      groupByDays = 1; // Daily
+    } else if (timeSpanDays <= 30) {
+      groupByDays = 2; // Every 2 days
+    } else if (timeSpanDays <= 90) {
+      groupByDays = 7; // Weekly
+    } else {
+      groupByDays = 30; // Monthly
     }
     
-    return last7Days;
+    const trendData: { date: string; rate: number; total: number }[] = [];
+    
+    // Group data by the determined interval
+    let currentDate = new Date(earliestDate);
+    currentDate.setHours(0, 0, 0, 0);
+    
+    while (currentDate <= latestDate) {
+      const endDate = new Date(currentDate);
+      endDate.setDate(endDate.getDate() + groupByDays - 1);
+      endDate.setHours(23, 59, 59, 999);
+      
+      const periodRuns = completedRuns.filter((r) => {
+        const runDate = new Date(r.runAt);
+        return runDate >= currentDate && runDate <= endDate;
+      });
+      
+      const successful = periodRuns.filter((r) => r.status === "SUCCESS").length;
+      const total = periodRuns.length;
+      const rate = total > 0 ? (successful / total) * 100 : 0;
+      
+      const dateStr = groupByDays === 1 
+        ? currentDate.toLocaleDateString("de-DE")
+        : groupByDays === 7
+          ? `KW ${Math.ceil((currentDate.getTime() - new Date(currentDate.getFullYear(), 0, 1).getTime()) / (7 * 24 * 60 * 60 * 1000))}`
+          : currentDate.toLocaleDateString("de-DE", { month: '2-digit', year: '2-digit' });
+      
+      trendData.push({ date: dateStr, rate: Math.round(rate), total });
+      
+      currentDate.setDate(currentDate.getDate() + groupByDays);
+    }
+    
+    return trendData;
   };
 
   // Prepare reliability metrics per form
@@ -226,10 +323,10 @@ const Dashboard: React.FC = () => {
         ? formRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / formRuns.length
         : 0;
       
-      // Calculate last 7 days trend
-      const now = new Date();
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const recentRuns = formRuns.filter((r) => new Date(r.runAt) >= sevenDaysAgo);
+      // Calculate trend based on recent vs overall performance
+      const sortedRuns = formRuns.sort((a, b) => new Date(a.runAt).getTime() - new Date(b.runAt).getTime());
+      const halfPoint = Math.floor(sortedRuns.length / 2);
+      const recentRuns = sortedRuns.slice(halfPoint);
       const recentSuccessful = recentRuns.filter((r) => r.status === "SUCCESS").length;
       const recentRate = recentRuns.length > 0 ? (recentSuccessful / recentRuns.length) * 100 : 0;
       const trend = recentRuns.length > 0 ? Math.round(recentRate) - Math.round(rate) : 0;
@@ -269,10 +366,10 @@ const Dashboard: React.FC = () => {
         ? pmRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / pmRuns.length
         : 0;
       
-      // Calculate last 7 days trend
-      const now = new Date();
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const recentRuns = pmRuns.filter((r) => new Date(r.runAt) >= sevenDaysAgo);
+      // Calculate trend based on recent vs overall performance
+      const sortedRuns = pmRuns.sort((a, b) => new Date(a.runAt).getTime() - new Date(b.runAt).getTime());
+      const halfPoint = Math.floor(sortedRuns.length / 2);
+      const recentRuns = sortedRuns.slice(halfPoint);
       const recentSuccessful = recentRuns.filter((r) => r.status === "SUCCESS").length;
       const recentRate = recentRuns.length > 0 ? (recentSuccessful / recentRuns.length) * 100 : 0;
       const trend = recentRuns.length > 0 ? Math.round(recentRate) - Math.round(rate) : 0;
@@ -502,7 +599,7 @@ const Dashboard: React.FC = () => {
         <div className="space-y-6 mb-8">
           {/* Timeline Chart */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf (Letzte 7 Tage)</h3>
+            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf (Gesamter Zeitraum)</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>
@@ -695,7 +792,7 @@ const Dashboard: React.FC = () => {
 
           {/* Success Rate Trend (Last 7 Days) */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Erfolgsrate (Letzte 7 Tage)</h3>
+            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Erfolgsrate (Gesamter Zeitraum)</h3>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={prepareSuccessRateTrend()}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
