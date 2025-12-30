@@ -2569,10 +2569,13 @@ class TestRunner {
   async fillStripeElements(details) {
     this.log('Attempting to fill Stripe Elements iframes...')
 
-    // Get test card details or use Stripe test card
-    const cardNumber = details.cardNumber || '4242424242424242'  // Stripe test card
-    const cardExpiry = details.cardExpiry || '12/30'  // MM/YY format
-    const cardCvc = details.cardCvc || '123'
+    // Get card details from payment method DB - use correct field names from types.ts
+    // Fields: cardNumber, expiryDate, cvv, cardholderName
+    const cardNumber = details.cardNumber || '4242424242424242'  // Fallback to Stripe test card
+    const cardExpiry = details.expiryDate || '12/30'  // MM/YY format - field is 'expiryDate' in DB
+    const cardCvc = details.cvv || '123'  // Field is 'cvv' in DB
+
+    this.log(`Card details from payment method: number=${cardNumber ? cardNumber.substring(0, 4) + '****' : 'none'}, expiry=${cardExpiry}, cvv=${cardCvc ? '***' : 'none'}`)
 
     const stripeFields = [
       {
@@ -2716,9 +2719,47 @@ class TestRunner {
       }
       const filled = await this.tryFillFieldWithVisibilityCheck(field.selectors, field.value, field.name)
       if (!filled) {
-        this.log(`⚠ Could not fill ${field.name} - field not found or not visible`)
+        this.log(`Could not fill ${field.name} - field not found or not visible`)
       }
     }
+
+    // Check and click bank confirmation checkbox if present
+    await this.checkBankConfirmation()
+  }
+
+  /**
+   * Check the bank confirmation checkbox if present
+   * This checkbox appears for SEPA payments with tax-related notices
+   */
+  async checkBankConfirmation() {
+    const confirmationSelectors = [
+      '#payment_bank_confirmation',
+      'input[name="payment[bank_confirmation]"]',
+      'input.input-checkbox[name*="bank_confirmation"]',
+      '#bankAccountForm input[type="checkbox"]'
+    ]
+
+    for (const selector of confirmationSelectors) {
+      try {
+        const checkbox = await this.page.$(selector)
+        if (checkbox) {
+          const isVisible = await checkbox.isVisible()
+          if (isVisible) {
+            const isChecked = await checkbox.isChecked()
+            if (!isChecked) {
+              await checkbox.check()
+              this.log('Bank confirmation checkbox checked')
+            } else {
+              this.log('Bank confirmation checkbox already checked')
+            }
+            return
+          }
+        }
+      } catch (e) {
+        // Try next selector
+      }
+    }
+    this.log('No bank confirmation checkbox found (may not be required)')
   }
 
   /**

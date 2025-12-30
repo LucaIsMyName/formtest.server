@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Command } from "cmdk";
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, FileText, CreditCard, TestTube, Settings, BookOpen, Search, ChevronRight, Clock } from "lucide-react";
+import { LayoutDashboard, FileText, CreditCard, TestTube, Settings, BookOpen, Search, ChevronRight, Clock, Code, Scale } from "lucide-react";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
@@ -253,6 +253,18 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
             </Command.Group>
           )}
 
+          {/* Scripts */}
+          <Command.Group
+            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Scripts</span>}
+            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+            <Command.Item
+              onSelect={() => handleSelect("/scripts")}
+              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+              <Code className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span>Scripts</span>
+            </Command.Item>
+          </Command.Group>
+
           {/* Einstellungen */}
           <Command.Group
             heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Einstellungen</span>}
@@ -265,15 +277,27 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
             </Command.Item>
           </Command.Group>
 
-          {/* Info & Doku */}
+          {/* Rechtliches */}
           <Command.Group
-            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Info & Doku</span>}
+            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Rechtliches</span>}
             className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
             <Command.Item
-              onSelect={() => handleSelect("/info-doku")}
+              onSelect={() => handleSelect("/legal")}
+              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+              <Scale className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+              <span>Rechtliches</span>
+            </Command.Item>
+          </Command.Group>
+
+          {/* Doku */}
+          <Command.Group
+            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Dokumentation</span>}
+            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+            <Command.Item
+              onSelect={() => handleSelect("/docs")}
               className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
               <BookOpen className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              <span>Info & Doku</span>
+              <span>Doku</span>
             </Command.Item>
           </Command.Group>
         </Command.List>
