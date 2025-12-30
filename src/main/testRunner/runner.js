@@ -2528,31 +2528,19 @@ class TestRunner {
     if (creditCardForm) {
       const isVisible = await creditCardForm.isVisible()
       if (!isVisible) {
-        this.log('⚠ Warning: Credit card form (#creditCardForm) is not visible')
+        this.log('Warning: Credit card form (#creditCardForm) is not visible')
         await this.logPaymentFormState()
         return
       }
-      this.log('✓ Credit card form is visible')
+      this.log('Credit card form is visible')
     } else {
-      this.log('⚠ Warning: Credit card form (#creditCardForm) not found in DOM')
+      this.log('Warning: Credit card form (#creditCardForm) not found in DOM')
       return
     }
 
-    // IMPORTANT: FundraisingBox uses Stripe Elements for card number, CVV, and expiry
-    // These are rendered in iframes and CANNOT be filled directly by Playwright
-    // Only the card holder/owner field is a regular input we can fill
-    
-    // Check for Stripe iframes
-    const stripeIframes = await this.page.$$('#creditCardForm iframe[name*="__privateStripeFrame"]')
-    if (stripeIframes.length > 0) {
-      this.log(`⚠ Detected ${stripeIframes.length} Stripe iframe(s) - card number/CVV/expiry cannot be automated`)
-      this.log('Note: Stripe Elements are secure iframes that prevent automation')
-      this.log('Test will fill card holder only and proceed to submission')
-    }
-
-    // Fill card holder/owner - this is a regular input field
+    // Fill card holder/owner - this is a regular input field (not in iframe)
     const cardHolderSelectors = [
-      '#creditCardForm #payment_credit_card_owner',  // Most specific
+      '#creditCardForm #payment_credit_card_owner',
       '#payment_credit_card_owner',
       '#creditCardForm input[name*="credit_card_owner"]',
       'input[name="payment[credit_card_owner]"]',
@@ -2562,20 +2550,104 @@ class TestRunner {
     ]
 
     const cardHolderValue = details.cardholderName || `${faker.person.firstName()} ${faker.person.lastName()}`
-    const filled = await this.tryFillFieldWithVisibilityCheck(cardHolderSelectors, cardHolderValue, 'credit card holder')
+    const holderFilled = await this.tryFillFieldWithVisibilityCheck(cardHolderSelectors, cardHolderValue, 'credit card holder')
     
-    if (filled) {
-      this.log('✓ Credit card holder filled successfully')
+    if (holderFilled) {
+      this.log('Credit card holder filled successfully')
     } else {
-      this.log('⚠ Could not fill credit card holder field')
+      this.log('Could not fill credit card holder field')
     }
 
-    // Log what we cannot fill due to Stripe iframes
-    this.log('ℹ Stripe iframe fields (cannot be automated):')
-    this.log('  - Card number (#payment_credit_card_number)')
-    this.log('  - CVV/CVC (#payment_credit_card_secure_id)')
-    this.log('  - Expiry date (#payment_credit_card_expiry)')
-    this.log('These fields require manual entry or Stripe test mode configuration')
+    // Handle Stripe Elements iframes using Playwright's frameLocator
+    await this.fillStripeElements(details)
+  }
+
+  /**
+   * Fill Stripe Elements iframes (card number, expiry, CVC)
+   * Playwright CAN interact with cross-origin iframes using frameLocator()
+   */
+  async fillStripeElements(details) {
+    this.log('Attempting to fill Stripe Elements iframes...')
+
+    // Get test card details or use Stripe test card
+    const cardNumber = details.cardNumber || '4242424242424242'  // Stripe test card
+    const cardExpiry = details.cardExpiry || '12/30'  // MM/YY format
+    const cardCvc = details.cardCvc || '123'
+
+    const stripeFields = [
+      {
+        containerSelector: '#payment_credit_card_number',
+        iframeSelector: 'iframe[name*="__privateStripeFrame"]',
+        inputSelector: 'input[name="cardnumber"], input[data-elements-stable-field-name="cardNumber"]',
+        value: cardNumber,
+        name: 'Card Number'
+      },
+      {
+        containerSelector: '#payment_credit_card_expiry',
+        iframeSelector: 'iframe[name*="__privateStripeFrame"]',
+        inputSelector: 'input[name="exp-date"], input[data-elements-stable-field-name="cardExpiry"]',
+        value: cardExpiry,
+        name: 'Expiry Date'
+      },
+      {
+        containerSelector: '#payment_credit_card_secure_id',
+        iframeSelector: 'iframe[name*="__privateStripeFrame"]',
+        inputSelector: 'input[name="cvc"], input[data-elements-stable-field-name="cardCvc"]',
+        value: cardCvc,
+        name: 'CVC'
+      }
+    ]
+
+    for (const field of stripeFields) {
+      try {
+        const container = await this.page.$(field.containerSelector)
+        if (!container) {
+          this.log(`Container ${field.containerSelector} not found for ${field.name}`)
+          continue
+        }
+
+        // Use frameLocator to access the Stripe iframe
+        const frameLocator = this.page.frameLocator(`${field.containerSelector} ${field.iframeSelector}`)
+        const inputSelectors = field.inputSelector.split(', ')
+        let filled = false
+
+        for (const inputSel of inputSelectors) {
+          try {
+            const input = frameLocator.locator(inputSel)
+            await input.waitFor({ state: 'visible', timeout: 5000 }).catch(() => null)
+            
+            if (await input.isVisible().catch(() => false)) {
+              await input.click()
+              await input.type(field.value, { delay: 50 })
+              this.log(`Filled ${field.name} via Stripe iframe`)
+              filled = true
+              break
+            }
+          } catch (e) {
+            // Try next selector
+          }
+        }
+
+        if (!filled) {
+          // Fallback: click container and type via keyboard
+          this.log(`Trying fallback method for ${field.name}...`)
+          try {
+            await container.click()
+            await this.page.waitForTimeout(200)
+            await this.page.keyboard.type(field.value, { delay: 50 })
+            this.log(`Filled ${field.name} via keyboard fallback`)
+          } catch (e) {
+            this.log(`Could not fill ${field.name}: ${e.message}`)
+          }
+        }
+
+        await this.page.waitForTimeout(300)
+      } catch (error) {
+        this.log(`Error filling ${field.name}: ${error.message}`)
+      }
+    }
+
+    this.log('Stripe Elements filling complete')
   }
 
   async fillSepaFields(details) {
