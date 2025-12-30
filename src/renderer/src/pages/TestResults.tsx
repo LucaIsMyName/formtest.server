@@ -778,14 +778,39 @@ const TestResults: React.FC = () => {
         <div className="flex items-center gap-3">
           {finishedTests.length > 0 && (
             <>
-              <Button
-                onClick={handleToggleComparisonMode}
-                variant={comparisonMode ? "primary" : "ghost"}
-                size="sm"
-                className="gap-2 font-mono text-[10px]">
-                <GitCompare size={12} />
-                {comparisonMode ? "Vergleich beenden" : "Vergleichen"}
-              </Button>
+              {comparisonMode && (
+                <>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    {!canCompare ? "Wähle zwei Tests aus" : `#${comparisonIds[0]} & #${comparisonIds[1]}`}
+                  </span>
+                  <Button
+                    onClick={() => setShowComparison(true)}
+                    variant="primary"
+                    size="sm"
+                    disabled={!canCompare}
+                    className="gap-2 font-mono text-[10px]">
+                    <GitCompare size={12} />
+                    Vergleichen
+                  </Button>
+                  <Button
+                    onClick={handleToggleComparisonMode}
+                    variant="secondary"
+                    size="sm"
+                    className="gap-2 font-mono text-[10px] border border-gray-300 dark:border-gray-600">
+                    Vergleich beenden
+                  </Button>
+                </>
+              )}
+              {!comparisonMode && (
+                <Button
+                  onClick={handleToggleComparisonMode}
+                  variant="ghost"
+                  size="sm"
+                  className="gap-2 font-mono text-[10px]">
+                  <GitCompare size={12} />
+                  Vergleichen
+                </Button>
+              )}
               <Button
                 onClick={handleExportCsv}
                 variant="ghost"

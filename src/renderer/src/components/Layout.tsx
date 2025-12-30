@@ -96,11 +96,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: "Formulare", href: "/forms", icon: FileText },
     { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
     { name: "Autopilot", href: "/schedules", icon: Bot },
-    { name: "Scripts", href: "/scripts", icon: Code },
     { name: "Tests", href: "/test-results", icon: BarChart3 },
   ];
 
   const secondaryNavigation = [
+    { name: "Scripts", href: "/scripts", icon: Code },
     { name: "Einstellungen", href: "/settings", icon: Settings },
     { name: "Rechtliches", href: "/legal", icon: Scale },
     { name: "Doku", href: "/docs", icon: BookOpen },
