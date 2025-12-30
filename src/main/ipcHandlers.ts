@@ -1,7 +1,7 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries, customScriptQueries, formScriptQueries } from "./database";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries, customScriptQueries, formScriptQueries, cleanupOldTestRuns } from "./database";
 import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint } from "../common/types";
 import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
@@ -144,6 +144,12 @@ export function setupIpcHandlers(): void {
     testQueue.removeFromQueue(id);
     // Update database status
     return testRunQueries.stop(id);
+  });
+
+  // Test run cleanup handler
+  ipcMain.handle("testRuns:cleanup", () => {
+    const deleted = cleanupOldTestRuns();
+    return { success: true, deleted };
   });
 
   // Toast notification handlers

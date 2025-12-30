@@ -125,7 +125,7 @@ src/
 
 ---
 
-## 🚀 Development
+## Development
 
 ### Prerequisites
 - Node.js 18+
@@ -470,5 +470,5 @@ jobs:
 
 ## License
 
-<span class="font-mono">FormTest.Server 1.0.31<br />
+<span class="font-mono">FormTest.Server 1.0.36<br />
 MIT - &copy; 2025 Luca Mack</span>

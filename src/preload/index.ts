@@ -45,7 +45,8 @@ const api = {
     delete: (id: number) => ipcRenderer.invoke('testRuns:delete', id),
     deleteAll: () => ipcRenderer.invoke('testRuns:deleteAll'),
     updateNotes: (id: number, notes: string) => ipcRenderer.invoke('testRuns:updateNotes', id, notes),
-    stop: (id: number) => ipcRenderer.invoke('testRuns:stop', id)
+    stop: (id: number) => ipcRenderer.invoke('testRuns:stop', id),
+    cleanup: (): Promise<{ success: boolean; deleted: number }> => ipcRenderer.invoke('testRuns:cleanup')
   },
 
   // Test execution

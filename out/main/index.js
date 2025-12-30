@@ -860,6 +860,8 @@ function initDatabase() {
     console.log("Database: SQLite connection established");
     db.pragma("foreign_keys = ON");
     console.log("Database: Foreign key constraints enabled");
+    db.pragma("journal_mode = WAL");
+    console.log("Database: WAL mode enabled");
   } catch (dbError) {
     console.error("Database: Failed to create SQLite connection:", dbError);
     throw dbError;
@@ -995,7 +997,8 @@ function initDatabase() {
     { key: "test_timeout", value: "30000", description: "Test timeout in milliseconds" },
     { key: "headless_mode", value: "true", description: "Run tests in headless mode" },
     { key: "slow_motion", value: "0", description: "Slow motion delay in ms (0=off, 500=slow, 1000=very slow)" },
-    { key: "theme", value: "system", description: "UI theme preference (system, light, dark)" }
+    { key: "theme", value: "system", description: "UI theme preference (system, light, dark)" },
+    { key: "test_retention_days", value: "365", description: "Number of days to keep test runs (0=forever)" }
   ];
   const insertSetting = db.prepare(`
     INSERT OR IGNORE INTO global_settings (key, value, description) 
@@ -1021,6 +1024,7 @@ function initDatabase() {
     console.error("Database: Failed to migrate payment methods:", error);
   });
   cleanupOrphanedTests();
+  cleanupOldTestRuns();
   console.log("Database: Initialization complete");
 }
 function cleanupOrphanedTests() {
@@ -1042,6 +1046,34 @@ function cleanupOrphanedTests() {
     }
   } catch (error) {
     console.error("Database: Error cleaning up orphaned tests:", error);
+  }
+}
+function cleanupOldTestRuns() {
+  try {
+    const retentionSetting = db.prepare(
+      "SELECT value FROM global_settings WHERE key = 'test_retention_days'"
+    ).get();
+    const retentionDays = parseInt(retentionSetting?.value || "365");
+    if (retentionDays <= 0) {
+      console.log("Database: Test retention disabled (0 days), skipping cleanup");
+      return 0;
+    }
+    const cutoffDate = /* @__PURE__ */ new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
+    const cutoffDateStr = cutoffDate.toISOString();
+    console.log(`Database: Cleaning up test runs older than ${retentionDays} days (before ${cutoffDateStr})`);
+    const result = db.prepare(
+      "DELETE FROM test_runs WHERE runAt < ?"
+    ).run(cutoffDateStr);
+    if (result.changes > 0) {
+      console.log(`Database: Deleted ${result.changes} old test run(s)`);
+    } else {
+      console.log("Database: No old test runs to clean up");
+    }
+    return result.changes;
+  } catch (error) {
+    console.error("Database: Error cleaning up old test runs:", error);
+    return 0;
   }
 }
 const formQueries = {
@@ -3584,6 +3616,10 @@ function setupIpcHandlers() {
     const testQueue = getTestQueue();
     testQueue.removeFromQueue(id);
     return testRunQueries.stop(id);
+  });
+  electron.ipcMain.handle("testRuns:cleanup", () => {
+    const deleted = cleanupOldTestRuns();
+    return { success: true, deleted };
   });
   electron.ipcMain.handle("toast:show", (event, type, message, description) => {
     event.sender.send("toast:display", { type, message, description });

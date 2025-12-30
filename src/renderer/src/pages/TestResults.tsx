@@ -11,7 +11,7 @@ import SelectionActionBar from "../components/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
-import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock } from "lucide-react";
+import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock, GitCompare } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
@@ -27,6 +27,7 @@ import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } fro
 import ScreenshotViewer from "../components/ScreenshotViewer";
 import SeoResultsCard from "../components/SeoResultsCard";
 import AccessibilityResultsCard from "../components/AccessibilityResultsCard";
+import TestRunComparison from "../components/TestRunComparison";
 
 // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
 const getStartTime = (runAt: Date | string): number => {
@@ -315,6 +316,11 @@ const TestResults: React.FC = () => {
   const [notes, setNotes] = useState<string>("");
   const [isSavingNotes, setIsSavingNotes] = useState(false);
   
+  // Comparison mode state
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const [comparisonIds, setComparisonIds] = useState<[number | null, number | null]>([null, null]);
+  const [showComparison, setShowComparison] = useState(false);
+  
   // Table selection
   const {
     selectedIds,
@@ -466,6 +472,60 @@ const TestResults: React.FC = () => {
   const getPaymentMethodDetails = (pmId: number) => {
     return paymentMethods.find((p) => p.id === pmId);
   };
+
+  // Comparison handlers
+  const handleToggleComparisonMode = () => {
+    if (comparisonMode) {
+      // Exit comparison mode
+      setComparisonMode(false);
+      setComparisonIds([null, null]);
+      setShowComparison(false);
+    } else {
+      // Enter comparison mode
+      setComparisonMode(true);
+      setComparisonIds([null, null]);
+    }
+  };
+
+  const handleComparisonSelect = (id: number) => {
+    if (!comparisonMode) return;
+    
+    const [first, second] = comparisonIds;
+    
+    if (first === id) {
+      // Deselect first
+      setComparisonIds([second, null]);
+    } else if (second === id) {
+      // Deselect second
+      setComparisonIds([first, null]);
+    } else if (first === null) {
+      // Select as first
+      setComparisonIds([id, second]);
+    } else if (second === null) {
+      // Select as second
+      setComparisonIds([first, id]);
+    } else {
+      // Both selected, replace second
+      setComparisonIds([first, id]);
+    }
+  };
+
+  const isComparisonSelected = (id: number) => {
+    return comparisonIds[0] === id || comparisonIds[1] === id;
+  };
+
+  const canCompare = comparisonIds[0] !== null && comparisonIds[1] !== null;
+
+  const comparisonRuns = useMemo(() => {
+    if (!canCompare) return null;
+    const left = testRuns.find((tr) => tr.id === comparisonIds[0]);
+    const right = testRuns.find((tr) => tr.id === comparisonIds[1]);
+    if (!left || !right) return null;
+    // Sort by date - older first
+    const leftDate = new Date(left.runAt).getTime();
+    const rightDate = new Date(right.runAt).getTime();
+    return leftDate <= rightDate ? { left, right } : { left: right, right: left };
+  }, [comparisonIds, testRuns, canCompare]);
 
   const handleDeleteClick = (testRun: any) => {
     const formName = getFormName(testRun.formId);
@@ -719,10 +779,18 @@ const TestResults: React.FC = () => {
           {finishedTests.length > 0 && (
             <>
               <Button
+                onClick={handleToggleComparisonMode}
+                variant={comparisonMode ? "primary" : "ghost"}
+                size="sm"
+                className="gap-2 font-mono text-[10px]">
+                <GitCompare size={12} />
+                {comparisonMode ? "Vergleich beenden" : "Vergleichen"}
+              </Button>
+              <Button
                 onClick={handleExportCsv}
                 variant="ghost"
                 size="sm"
-                className="gap-2 font-mono font-[10px]">
+                className="gap-2 font-mono text-[10px]">
                 <FileSpreadsheet size={12} />
                 CSV
               </Button>
@@ -730,7 +798,7 @@ const TestResults: React.FC = () => {
                 onClick={handleExportAllJson}
                 variant="ghost"
                 size="sm"
-                 className="gap-2 font-mono font-[10px]">
+                 className="gap-2 font-mono text-[10px]">
                 <Download size={12} />
                 JSON
               </Button>
@@ -757,6 +825,7 @@ const TestResults: React.FC = () => {
           </div>
         </div>
       )}
+
 
       {/* Running Tests Table */}
       {activeTests.length > 0 && (
@@ -1009,18 +1078,23 @@ const TestResults: React.FC = () => {
                   {sortedFinishedTests.map((testRun) => {
                     const isRowSelected = selectedTestRun === testRun.id;
                     const isChecked = isSelected(testRun.id);
+                    const isCompSelected = isComparisonSelected(testRun.id);
                     return (
                       <TableRow
                         key={testRun.id}
                         tabIndex={0}
                         role="button"
                         aria-selected={isRowSelected}
-                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${getStatusRowBg(testRun.status, isRowSelected, isChecked)}`}
-                        onClick={() => handleSelectTestRun(testRun.id)}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
+                          comparisonMode && isCompSelected 
+                            ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset" 
+                            : getStatusRowBg(testRun.status, isRowSelected, isChecked)
+                        }`}
+                        onClick={() => comparisonMode ? handleComparisonSelect(testRun.id) : handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            handleSelectTestRun(testRun.id);
+                            comparisonMode ? handleComparisonSelect(testRun.id) : handleSelectTestRun(testRun.id);
                           }
                         }}>
                         <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
@@ -1464,6 +1538,24 @@ const TestResults: React.FC = () => {
         itemName={`${selectedCount} ausgewählte Tests`}
         isLoading={isBulkDeleting}
       />
+
+      {/* Comparison Drawer */}
+      <Drawer
+        open={showComparison && comparisonRuns !== null}
+        onOpenChange={(open) => !open && setShowComparison(false)}>
+        <DrawerContent className="w-[900px]">
+          {comparisonRuns && (
+            <TestRunComparison
+              leftRun={comparisonRuns.left}
+              rightRun={comparisonRuns.right}
+              leftFormName={getFormName(comparisonRuns.left.formId)}
+              rightFormName={getFormName(comparisonRuns.right.formId)}
+              leftPaymentName={getPaymentMethodName(comparisonRuns.left.paymentMethodId)}
+              rightPaymentName={getPaymentMethodName(comparisonRuns.right.paymentMethodId)}
+            />
+          )}
+        </DrawerContent>
+      </Drawer>
 
       {/* TestRunDialog is handled by Layout component via global events */}
     </div>

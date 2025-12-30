@@ -38,7 +38,8 @@ const api = {
     delete: (id) => electron.ipcRenderer.invoke("testRuns:delete", id),
     deleteAll: () => electron.ipcRenderer.invoke("testRuns:deleteAll"),
     updateNotes: (id, notes) => electron.ipcRenderer.invoke("testRuns:updateNotes", id, notes),
-    stop: (id) => electron.ipcRenderer.invoke("testRuns:stop", id)
+    stop: (id) => electron.ipcRenderer.invoke("testRuns:stop", id),
+    cleanup: () => electron.ipcRenderer.invoke("testRuns:cleanup")
   },
   // Test execution
   tests: {

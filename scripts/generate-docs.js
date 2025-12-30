@@ -34,7 +34,7 @@ function markdownToHtml(markdown) {
   html = html.replace(/^####\s+(.+)$/gm, '<h4 class="text-lg font-semibold mt-5 mb-2 text-gray-900 dark:text-white">$1</h4>');
   html = html.replace(/^###\s+(.+)$/gm, '<h3 class="text-xl font-semibold mt-6 mb-3 text-gray-900 dark:text-white">$1</h3>');
   html = html.replace(/^##\s+(.+)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">$1</h2>');
-  html = html.replace(/^#\s+(.+)$/gm, '<h1 class="flex-1 extra-expanded w-full leading-[1] text-[clamp(2rem,2.5vw,2.33rem)] mt-0 font-light text-gray-600 dark:text-gray-300">$1</h1>');
+  html = html.replace(/^#\s+(.+)$/gm, '<h1 class="flex-1 extra-expanded w-full leading-[1] text-[clamp(2rem,2.5vw,2rem)] mt-0 font-light text-gray-600 dark:text-gray-300 truncate">$1</h1>');
   
   // Horizontal rules
   html = html.replace(/^---$/gm, '<hr class="my-8 border-gray-200 dark:border-gray-700" />');

@@ -53,6 +53,9 @@ const Settings: React.FC = () => {
   const [headlessMode, setHeadlessMode] = useState("true");
   const [slowMotion, setSlowMotion] = useState("0");
   const [theme, setTheme] = useState("system");
+  const [retentionDays, setRetentionDays] = useState("365");
+  const [isCleaningUp, setIsCleaningUp] = useState(false);
+  const [cleanupResult, setCleanupResult] = useState<{ deleted: number } | null>(null);
 
   // Email settings state
   const [emailEnabled, setEmailEnabled] = useState(false);
@@ -227,6 +230,9 @@ const Settings: React.FC = () => {
         case "email_notify_failure":
           setEmailNotifyFailure(setting.value === "true");
           break;
+        case "test_retention_days":
+          setRetentionDays(setting.value);
+          break;
       }
     });
   }, [settings]);
@@ -280,6 +286,23 @@ const Settings: React.FC = () => {
       setIsImporting(false);
     }
   }, [importMode, exportOptions, loadSettings]);
+
+  // Test retention cleanup handler
+  const handleCleanupOldTests = useCallback(async () => {
+    setIsCleaningUp(true);
+    setCleanupResult(null);
+    try {
+      const result = await window.api.testRuns.cleanup();
+      if (result.success) {
+        setCleanupResult({ deleted: result.deleted });
+        setTimeout(() => setCleanupResult(null), 5000);
+      }
+    } catch (error) {
+      console.error("Cleanup failed:", error);
+    } finally {
+      setIsCleaningUp(false);
+    }
+  }, []);
 
   // API Server handlers
   const handleGenerateApiKey = useCallback(async () => {
@@ -469,6 +492,8 @@ const Settings: React.FC = () => {
       { id: "api_port", category: "api", name: "Port", description: "Port für den API Server (Standard: 3847)", type: "input", value: apiPort, disabled: apiServerRunning },
       { id: "api_key", category: "api", name: "API Key", description: "Authentifizierungs-Key für API-Zugriffe", type: "api-key", value: apiKey },
       // Data Management
+      { id: "retention_days", category: "data", name: "Test-Aufbewahrung (Tage)", description: cleanupResult ? `${cleanupResult.deleted} alte Tests gelöscht` : "Testergebnisse älter als X Tage automatisch löschen (0=nie)", type: "input", value: retentionDays },
+      { id: "cleanup_now", category: "data", name: "Alte Tests bereinigen", description: "Jetzt alte Testergebnisse gemäß Aufbewahrungsfrist löschen", type: "action", value: "", actionLabel: isCleaningUp ? "Bereinige..." : "Jetzt bereinigen", action: handleCleanupOldTests, actionVariant: "secondary" },
       { id: "data_export", category: "data", name: "Daten exportieren", description: "Formulare, Bezahlmethoden, Tests exportieren", type: "action", value: "", actionLabel: isExporting ? "Exportiere..." : "Exportieren", action: handleExport, actionVariant: "secondary" },
       { id: "data_import", category: "data", name: "Daten importieren", description: "Daten aus Backup wiederherstellen", type: "action", value: "", actionLabel: isImporting ? "Importiere..." : "Importieren", action: handleImport, actionVariant: "secondary" },
       { id: "delete_forms", category: "data", name: "Formulare löschen", description: "Alle Formulare und zugehörige Tests löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "forms", title: "Alle Formulare löschen", message: "Alle Formulare und zugehörige Tests werden gelöscht." }), actionVariant: "danger" },
@@ -483,7 +508,7 @@ const Settings: React.FC = () => {
       // Security
       { id: "master_password", category: "security", name: "Master-Passwort", description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen", type: "password", value: "", fullWidth: true },
     ],
-    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled]
+    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled, retentionDays, isCleaningUp, cleanupResult, handleCleanupOldTests]
   );
 
   // Filter settings
@@ -561,6 +586,9 @@ const Settings: React.FC = () => {
       case "api_port":
         setApiPort(value);
         break;
+      case "retention_days":
+        setRetentionDays(value);
+        break;
     }
   };
 
@@ -595,6 +623,9 @@ const Settings: React.FC = () => {
         break;
       case "api_port":
         await updateSetting("api_port", apiPort, "API Port");
+        break;
+      case "retention_days":
+        await updateSetting("test_retention_days", retentionDays, "Test-Aufbewahrungsfrist in Tagen");
         break;
     }
   };

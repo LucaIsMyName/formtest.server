@@ -34,6 +34,7 @@ declare global {
         delete: (id: number) => Promise<void>
         updateNotes: (id: number, notes: string) => Promise<void>
         stop: (id: number) => Promise<void>
+        cleanup: () => Promise<{ success: boolean; deleted: number }>
       }
       testSchedules: {
         getAll: () => Promise<TestSchedule[]>

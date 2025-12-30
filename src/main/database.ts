@@ -491,6 +491,10 @@ export function initDatabase(): void {
     // Enable foreign key constraints
     db.pragma("foreign_keys = ON");
     console.log("Database: Foreign key constraints enabled");
+    
+    // Enable WAL mode for better concurrent read/write performance
+    db.pragma("journal_mode = WAL");
+    console.log("Database: WAL mode enabled");
   } catch (dbError) {
     console.error("Database: Failed to create SQLite connection:", dbError);
     throw dbError;
@@ -640,6 +644,7 @@ export function initDatabase(): void {
     { key: "headless_mode", value: "true", description: "Run tests in headless mode" },
     { key: "slow_motion", value: "0", description: "Slow motion delay in ms (0=off, 500=slow, 1000=very slow)" },
     { key: "theme", value: "system", description: "UI theme preference (system, light, dark)" },
+    { key: "test_retention_days", value: "365", description: "Number of days to keep test runs (0=forever)" },
   ];
 
   const insertSetting = db.prepare(`
@@ -697,6 +702,9 @@ export function initDatabase(): void {
   // Clean up orphaned tests (RUNNING/QUEUED from previous session)
   cleanupOrphanedTests();
   
+  // Clean up old test runs based on retention policy
+  cleanupOldTestRuns();
+  
   console.log("Database: Initialization complete");
 }
 
@@ -727,6 +735,50 @@ function cleanupOrphanedTests(): void {
     }
   } catch (error) {
     console.error("Database: Error cleaning up orphaned tests:", error);
+  }
+}
+
+/**
+ * Clean up old test runs based on retention policy
+ * Deletes test runs older than the configured retention period
+ * @returns Number of deleted test runs
+ */
+export function cleanupOldTestRuns(): number {
+  try {
+    const retentionSetting = db.prepare(
+      "SELECT value FROM global_settings WHERE key = 'test_retention_days'"
+    ).get() as { value: string } | undefined;
+    
+    const retentionDays = parseInt(retentionSetting?.value || "365");
+    
+    // 0 means keep forever
+    if (retentionDays <= 0) {
+      console.log("Database: Test retention disabled (0 days), skipping cleanup");
+      return 0;
+    }
+    
+    // Calculate cutoff date
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
+    const cutoffDateStr = cutoffDate.toISOString();
+    
+    console.log(`Database: Cleaning up test runs older than ${retentionDays} days (before ${cutoffDateStr})`);
+    
+    // Delete old test runs (notifications will cascade delete)
+    const result = db.prepare(
+      "DELETE FROM test_runs WHERE runAt < ?"
+    ).run(cutoffDateStr);
+    
+    if (result.changes > 0) {
+      console.log(`Database: Deleted ${result.changes} old test run(s)`);
+    } else {
+      console.log("Database: No old test runs to clean up");
+    }
+    
+    return result.changes;
+  } catch (error) {
+    console.error("Database: Error cleaning up old test runs:", error);
+    return 0;
   }
 }
 
