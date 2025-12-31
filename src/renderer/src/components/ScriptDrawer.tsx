@@ -151,8 +151,9 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="z.B. Cookie Banner schließen"
-              error={errors.name}
+              className={errors.name ? 'border-red-500' : ''}
             />
+            {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
           </div>
 
           {/* Description */}
@@ -266,8 +267,9 @@ log('Button geklickt');
                 max={300}
                 value={formData.timeout / 1000}
                 onChange={(e) => setFormData({ ...formData, timeout: parseInt(e.target.value) * 1000 || 30000 })}
-                error={errors.timeout}
+                className={errors.timeout ? 'border-red-500' : ''}
               />
+              {errors.timeout && <p className="text-xs text-red-500">{errors.timeout}</p>}
             </div>
 
             {/* Global/Form-specific */}
@@ -294,7 +296,7 @@ log('Button geklickt');
               <Checkbox
                 id="isActive"
                 checked={formData.isActive}
-                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
               />
               <Label htmlFor="isActive" className="cursor-pointer">
                 Script ist aktiv
@@ -305,7 +307,7 @@ log('Button geklickt');
               <Checkbox
                 id="stopOnError"
                 checked={formData.stopOnError}
-                onChange={(e) => setFormData({ ...formData, stopOnError: e.target.checked })}
+                onCheckedChange={(checked) => setFormData({ ...formData, stopOnError: checked === true })}
               />
               <Label htmlFor="stopOnError" className="cursor-pointer flex items-center gap-1">
                 <AlertTriangle size={14} className="text-orange-500" />

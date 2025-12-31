@@ -1,4 +1,4 @@
-import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule, GlobalFieldDefaults } from '../../../common/types'
+import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, ScriptValidationResult, FormScript } from '../../../common/types'
 import type { SelectorOverride, SelectorConfig } from '../../../common/selectors.config'
 
 declare global {
@@ -10,6 +10,7 @@ declare global {
         create: (form: Omit<Form, 'id' | 'createdAt' | 'updatedAt'>) => Promise<any>
         update: (id: number, form: Partial<Form>) => Promise<any>
         delete: (id: number) => Promise<any>
+        deleteAll: () => Promise<any>
       }
       paymentMethods: {
         getAll: () => Promise<PaymentMethod[]>
@@ -17,6 +18,7 @@ declare global {
         create: (method: Omit<PaymentMethod, 'id' | 'createdAt' | 'updatedAt'>) => Promise<any>
         update: (id: number, method: Partial<PaymentMethod>) => Promise<any>
         delete: (id: number) => Promise<any>
+        deleteAll: () => Promise<any>
       }
       settings: {
         getAll: () => Promise<GlobalSetting[]>
@@ -32,6 +34,7 @@ declare global {
         create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => Promise<TestRun>
         updateStatus: (id: number, status: TestRun['status'], errorMessage?: string, durationMs?: number) => Promise<void>
         delete: (id: number) => Promise<void>
+        deleteAll: () => Promise<void>
         updateNotes: (id: number, notes: string) => Promise<void>
         stop: (id: number) => Promise<void>
         cleanup: () => Promise<{ success: boolean; deleted: number }>
@@ -43,9 +46,10 @@ declare global {
         create: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => Promise<any>
         update: (id: number, schedule: Partial<TestSchedule>) => Promise<any>
         delete: (id: number) => Promise<void>
+        deleteAll: () => Promise<any>
       }
       tests: {
-        run: (formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string }) => Promise<any>
+        run: (formIds: number[], paymentMethodIds: number[], options?: { customAmount?: string; customInterval?: string; enableSeoTest?: boolean; enableAccessibilityTest?: boolean }) => Promise<any>
       }
       testQueue: {
         getStatus: () => Promise<{
@@ -110,6 +114,25 @@ declare global {
         change: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>
         disable: (currentPassword: string) => Promise<{ success: boolean; error?: string }>
         emergencyReset: () => Promise<{ success: boolean; error?: string }>
+      }
+      customScripts: {
+        getAll: () => Promise<CustomScript[]>
+        getById: (id: number) => Promise<CustomScript | undefined>
+        getByHookPoint: (hookPoint: ScriptHookPoint) => Promise<CustomScript[]>
+        getGlobal: () => Promise<CustomScript[]>
+        getByFormId: (formId: number) => Promise<CustomScript[]>
+        getForTest: (formId: number) => Promise<CustomScript[]>
+        create: (script: Omit<CustomScript, 'id' | 'createdAt' | 'updatedAt'>) => Promise<any>
+        update: (id: number, script: Partial<CustomScript>) => Promise<any>
+        delete: (id: number) => Promise<any>
+        deleteAll: () => Promise<any>
+        validate: (code: string) => Promise<ScriptValidationResult>
+      }
+      formScripts: {
+        getByFormId: (formId: number) => Promise<FormScript[]>
+        attach: (formId: number, scriptId: number, executionOrder?: number) => Promise<any>
+        detach: (formId: number, scriptId: number) => Promise<any>
+        updateOrder: (formId: number, scriptId: number, executionOrder: number) => Promise<any>
       }
     }
   }

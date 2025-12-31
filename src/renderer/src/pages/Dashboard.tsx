@@ -742,7 +742,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Form Performance */}
-          <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+          <div className="sr-only bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
             <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Formular Performance</h3>
             <ResponsiveContainer
               width="100%"
