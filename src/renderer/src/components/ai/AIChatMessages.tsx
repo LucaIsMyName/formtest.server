@@ -384,7 +384,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
 
   if (messages.length === 0 && !isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center h-full">
+      <div className="flex-1 flex flex-col items-start justify-start p-4 text-left h-full">
         <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
           <MessagesSquare
             size={24}
@@ -392,8 +392,8 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
           />
         </div>
         <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100 mb-1">Wie kann ich helfen?</h3>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-6">Frag mich nach Formularen, Bezahlmethoden, Testergebnissen oder lass mich deine Daten analysieren.</p>
-        <div className="flex flex-wrap justify-center gap-2 max-w-lg">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-6 text-left">Frag mich nach Formularen, Bezahlmethoden, Testergebnissen oder lass mich deine Daten analysieren.</p>
+        <div className="flex flex-wrap justify-start gap-2 max-w-lg">
           {SUGGESTIONS.map((suggestion, i) => (
             <button
               key={i}

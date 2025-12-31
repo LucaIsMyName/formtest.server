@@ -73,6 +73,7 @@ LINKS:
 
 REGELN:
 - Antworte IMMER als JSON-Array, auch für einfache Antworten
+- KEINE Kommentare im JSON (// oder /* */ sind NICHT erlaubt!)
 - Nutze Charts bei Analysen und Statistiken
 - Nutze Tabellen für detaillierte Daten
 - Zeige URLs immer als klickbare Links
