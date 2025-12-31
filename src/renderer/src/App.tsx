@@ -14,6 +14,7 @@ const Schedules = lazy(() => import("./pages/Schedules"));
 const Scripts = lazy(() => import("./pages/Scripts"));
 const Legal = lazy(() => import("./pages/Legal"));
 const Docs = lazy(() => import("./pages/Docs"));
+const AIChat = lazy(() => import("./pages/AIChat"));
 
 function App() {
   const { settings, loadSettings } = useSettingsStore();
@@ -126,6 +127,10 @@ function App() {
             <Route
               path="/docs"
               element={<Docs />}
+            />
+            <Route
+              path="/ai-chat"
+              element={<AIChat />}
             />
           </Routes>
         </Suspense>

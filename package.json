@@ -1,6 +1,6 @@
 {
   "name": "formtest-server",
-  "version": "1.0.46",
+  "version": "1.0.47",
   "description": "Donation form testing application with Electron, Vite, TypeScript, and Playwright",
   "main": "out/main/index.js",
   "scripts": {
@@ -93,15 +93,17 @@
     "react": "^18.2.0",
     "react-compiler-runtime": "^1.0.0",
     "react-dom": "^18.2.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.20.0",
     "recharts": "^3.5.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.4.0",
     "zustand": "^4.4.7"
   },
   "build": {
     "appId": "com.formtest.server",
     "productName": "FormTest Server",
-    "copyright": "Copyright © 2025 Luca",
+    "copyright": "Copyright © 2026 Luca",
     "directories": {
       "output": "dist-electron",
       "buildResources": "build"

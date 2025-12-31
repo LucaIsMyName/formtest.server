@@ -365,6 +365,64 @@ function migrateScheduleQualityOptions(): void {
 }
 
 /**
+ * Migrate to add AI chat tables
+ */
+function migrateAIChatTables(): void {
+  console.log("Database: Checking for AI chat tables...");
+  
+  try {
+    // Check if ai_chats table exists
+    const aiChatsExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='ai_chats'"
+    ).get();
+    
+    if (!aiChatsExists) {
+      console.log("Database: Creating ai_chats table...");
+      db.exec(`
+        CREATE TABLE ai_chats (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL DEFAULT 'Neuer Chat',
+          context TEXT,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE INDEX idx_ai_chats_created ON ai_chats(createdAt);
+      `);
+      console.log("Database: ai_chats table created");
+    }
+    
+    // Check if ai_messages table exists
+    const aiMessagesExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='ai_messages'"
+    ).get();
+    
+    if (!aiMessagesExists) {
+      console.log("Database: Creating ai_messages table...");
+      db.exec(`
+        CREATE TABLE ai_messages (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          chatId INTEGER NOT NULL,
+          role TEXT NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
+          content TEXT NOT NULL,
+          metadata TEXT,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (chatId) REFERENCES ai_chats(id) ON DELETE CASCADE
+        );
+        
+        CREATE INDEX idx_ai_messages_chat ON ai_messages(chatId);
+        CREATE INDEX idx_ai_messages_created ON ai_messages(createdAt);
+      `);
+      console.log("Database: ai_messages table created");
+    }
+    
+    console.log("Database: AI chat tables migration complete");
+  } catch (error) {
+    console.error("Database: AI chat tables migration error:", error);
+  }
+}
+
+/**
  * Migrate forms table to add fieldMappings column
  */
 function migrateFormFieldMappings(): void {
@@ -693,6 +751,9 @@ export function initDatabase(): void {
   
   // Migrate schedule quality options columns
   migrateScheduleQualityOptions();
+  
+  // Migrate AI chat tables
+  migrateAIChatTables();
   
   // Migrate existing unencrypted payment methods
   migratePaymentMethodEncryption().catch((error) => {
@@ -2252,5 +2313,119 @@ export const formScriptQueries = {
       "UPDATE form_scripts SET executionOrder = ? WHERE formId = ? AND scriptId = ?"
     );
     return stmt.run(executionOrder, formId, scriptId);
+  },
+};
+
+// ============================================
+// AI Chat Operations
+// ============================================
+
+export interface AIChat {
+  id: number;
+  title: string;
+  context: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AIMessage {
+  id: number;
+  chatId: number;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  metadata: string | null;
+  createdAt: Date;
+}
+
+export const aiChatQueries = {
+  getAll: (): AIChat[] => {
+    const chats = db.prepare("SELECT * FROM ai_chats ORDER BY updatedAt DESC").all() as any[];
+    return chats.map((c) => ({
+      ...c,
+      createdAt: new Date(c.createdAt),
+      updatedAt: new Date(c.updatedAt),
+    }));
+  },
+
+  getById: (id: number): AIChat | undefined => {
+    const chat = db.prepare("SELECT * FROM ai_chats WHERE id = ?").get(id) as any;
+    if (!chat) return undefined;
+    return {
+      ...chat,
+      createdAt: new Date(chat.createdAt),
+      updatedAt: new Date(chat.updatedAt),
+    };
+  },
+
+  create: (title: string = "Neuer Chat", context?: string): AIChat => {
+    const stmt = db.prepare(`
+      INSERT INTO ai_chats (title, context)
+      VALUES (?, ?)
+    `);
+    const result = stmt.run(title, context || null);
+    return aiChatQueries.getById(Number(result.lastInsertRowid))!;
+  },
+
+  updateTitle: (id: number, title: string) => {
+    const stmt = db.prepare(`
+      UPDATE ai_chats SET title = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?
+    `);
+    return stmt.run(title, id);
+  },
+
+  updateTimestamp: (id: number) => {
+    const stmt = db.prepare(`
+      UPDATE ai_chats SET updatedAt = CURRENT_TIMESTAMP WHERE id = ?
+    `);
+    return stmt.run(id);
+  },
+
+  delete: (id: number) => {
+    const stmt = db.prepare("DELETE FROM ai_chats WHERE id = ?");
+    return stmt.run(id);
+  },
+
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM ai_chats");
+    return stmt.run();
+  },
+};
+
+export const aiMessageQueries = {
+  getByChatId: (chatId: number): AIMessage[] => {
+    const messages = db.prepare(
+      "SELECT * FROM ai_messages WHERE chatId = ? ORDER BY createdAt ASC"
+    ).all(chatId) as any[];
+    return messages.map((m) => ({
+      ...m,
+      createdAt: new Date(m.createdAt),
+    }));
+  },
+
+  create: (chatId: number, role: 'user' | 'assistant' | 'system', content: string, metadata?: string): AIMessage => {
+    const stmt = db.prepare(`
+      INSERT INTO ai_messages (chatId, role, content, metadata)
+      VALUES (?, ?, ?, ?)
+    `);
+    const result = stmt.run(chatId, role, content, metadata || null);
+    
+    // Update chat timestamp
+    aiChatQueries.updateTimestamp(chatId);
+    
+    const message = db.prepare("SELECT * FROM ai_messages WHERE id = ?").get(Number(result.lastInsertRowid)) as any;
+    return {
+      ...message,
+      createdAt: new Date(message.createdAt),
+    };
+  },
+
+  delete: (id: number) => {
+    const stmt = db.prepare("DELETE FROM ai_messages WHERE id = ?");
+    return stmt.run(id);
+  },
+
+  deleteByChatId: (chatId: number) => {
+    const stmt = db.prepare("DELETE FROM ai_messages WHERE chatId = ?");
+    return stmt.run(chatId);
   },
 };

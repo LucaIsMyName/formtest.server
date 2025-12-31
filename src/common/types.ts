@@ -352,3 +352,46 @@ export interface AccessibilityTestResult {
     totalChecks: number;
   };
 }
+
+// ============================================
+// AI Types
+// ============================================
+
+export type AIProvider = 'openai' | 'anthropic' | 'google' | 'ollama';
+
+export interface AISettings {
+  enabled: boolean;
+  provider: AIProvider;
+  apiKey: string;
+  model: string;
+  ollamaBaseUrl?: string;
+}
+
+export interface AIChat {
+  id: number;
+  title: string;
+  context?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AIMessage {
+  id: number;
+  chatId: number;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  metadata?: string | null;
+  createdAt: Date;
+}
+
+export interface AIContextData {
+  forms: { id: number; name: string; url: string; isActive: boolean }[];
+  paymentMethods: { id: number; name: string; type: string; isActive: boolean }[];
+  recentTests: {
+    total: number;
+    success: number;
+    failed: number;
+    successRate: number;
+  };
+  schedules: { id: number; name: string; isActive: boolean; cronExpression: string }[];
+}

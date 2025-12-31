@@ -1,13 +1,14 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries, customScriptQueries, formScriptQueries, cleanupOldTestRuns } from "./database";
-import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint } from "../common/types";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries, customScriptQueries, formScriptQueries, cleanupOldTestRuns, aiChatQueries, aiMessageQueries } from "./database";
+import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, AIProvider } from "../common/types";
 import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
 import { getConfigurableCategories } from "../common/selectors.config";
 import { emailService } from "./emailService";
 import { startApiServer, stopApiServer, isApiServerRunning, generateApiKey } from "./apiServer";
+import { aiService, ChatMessage } from "./ai";
 
 export function setupIpcHandlers(): void {
   // Form handlers with error handling
@@ -31,7 +32,7 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("forms:create", async (_, form: Omit<Form, "id" | "createdAt" | "updatedAt">) => {
     try {
-      return formQueries.create(form);
+      return formQueries.create(form);s
     } catch (error) {
       console.error("IPC Error - forms:create:", error);
       throw error;
@@ -733,6 +734,165 @@ export function setupIpcHandlers(): void {
       return formScriptQueries.updateOrder(formId, scriptId, executionOrder);
     } catch (error) {
       console.error("IPC Error - formScripts:updateOrder:", error);
+      throw error;
+    }
+  });
+
+  // ============================================
+  // AI Settings handlers
+  // ============================================
+
+  ipcMain.handle("ai:getSettings", async () => {
+    try {
+      return await aiService.loadSettings();
+    } catch (error) {
+      console.error("IPC Error - ai:getSettings:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:updateSettings", async (_, settings: Partial<{ enabled: boolean; provider: AIProvider; apiKey: string; model: string; ollamaBaseUrl: string }>) => {
+    try {
+      return await aiService.updateSettings(settings);
+    } catch (error) {
+      console.error("IPC Error - ai:updateSettings:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:validateKey", async (_, provider: AIProvider, apiKey: string, ollamaUrl?: string) => {
+    try {
+      return await aiService.validateKey(provider, apiKey, ollamaUrl);
+    } catch (error) {
+      console.error("IPC Error - ai:validateKey:", error);
+      return false;
+    }
+  });
+
+  ipcMain.handle("ai:getModels", async (_, provider: AIProvider, apiKey?: string, ollamaUrl?: string) => {
+    try {
+      return await aiService.getModels(provider, apiKey, ollamaUrl);
+    } catch (error) {
+      console.error("IPC Error - ai:getModels:", error);
+      return [];
+    }
+  });
+
+  ipcMain.handle("ai:isConfigured", async () => {
+    try {
+      await aiService.loadSettings();
+      return aiService.isConfigured();
+    } catch (error) {
+      console.error("IPC Error - ai:isConfigured:", error);
+      return false;
+    }
+  });
+
+  // ============================================
+  // AI Chat handlers
+  // ============================================
+
+  ipcMain.handle("ai:chats:getAll", async () => {
+    try {
+      return aiChatQueries.getAll();
+    } catch (error) {
+      console.error("IPC Error - ai:chats:getAll:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:chats:getById", async (_, id: number) => {
+    try {
+      return aiChatQueries.getById(id);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:getById:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:chats:create", async (_, title?: string, context?: string) => {
+    try {
+      return aiChatQueries.create(title, context);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:create:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:chats:updateTitle", async (_, id: number, title: string) => {
+    try {
+      return aiChatQueries.updateTitle(id, title);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:updateTitle:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:chats:delete", async (_, id: number) => {
+    try {
+      return aiChatQueries.delete(id);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:delete:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:chats:deleteAll", async () => {
+    try {
+      return aiChatQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - ai:chats:deleteAll:", error);
+      throw error;
+    }
+  });
+
+  // ============================================
+  // AI Message handlers
+  // ============================================
+
+  ipcMain.handle("ai:messages:getByChatId", async (_, chatId: number) => {
+    try {
+      return aiMessageQueries.getByChatId(chatId);
+    } catch (error) {
+      console.error("IPC Error - ai:messages:getByChatId:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:messages:send", async (_, chatId: number, content: string) => {
+    try {
+      // Save user message
+      const userMessage = aiMessageQueries.create(chatId, 'user', content);
+      
+      // Get all messages for context
+      const allMessages = aiMessageQueries.getByChatId(chatId);
+      const chatMessages: ChatMessage[] = allMessages.map(m => ({
+        role: m.role,
+        content: m.content,
+      }));
+      
+      // Get AI response
+      const response = await aiService.chat(chatMessages);
+      
+      // Save assistant message
+      const assistantMessage = aiMessageQueries.create(chatId, 'assistant', response.content);
+      
+      return {
+        userMessage,
+        assistantMessage,
+        usage: response.usage,
+      };
+    } catch (error) {
+      console.error("IPC Error - ai:messages:send:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:context:getData", async () => {
+    try {
+      return await aiService.buildContextData();
+    } catch (error) {
+      console.error("IPC Error - ai:context:getData:", error);
       throw error;
     }
   });

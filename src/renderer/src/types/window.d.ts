@@ -1,4 +1,4 @@
-import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, ScriptValidationResult, FormScript } from '../../../common/types'
+import type { Form, PaymentMethod, TestRun, GlobalSetting, ImportOptions, ImportResult, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, ScriptValidationResult, FormScript, AIProvider, AISettings, AIChat, AIMessage, AIContextData } from '../../../common/types'
 import type { SelectorOverride, SelectorConfig } from '../../../common/selectors.config'
 
 declare global {
@@ -133,6 +133,28 @@ declare global {
         attach: (formId: number, scriptId: number, executionOrder?: number) => Promise<any>
         detach: (formId: number, scriptId: number) => Promise<any>
         updateOrder: (formId: number, scriptId: number, executionOrder: number) => Promise<any>
+      }
+      ai: {
+        getSettings: () => Promise<AISettings>
+        updateSettings: (settings: Partial<AISettings>) => Promise<AISettings>
+        validateKey: (provider: AIProvider, apiKey: string, ollamaUrl?: string) => Promise<boolean>
+        getModels: (provider: AIProvider, apiKey?: string, ollamaUrl?: string) => Promise<string[]>
+        isConfigured: () => Promise<boolean>
+        chats: {
+          getAll: () => Promise<AIChat[]>
+          getById: (id: number) => Promise<AIChat | undefined>
+          create: (title?: string, context?: string) => Promise<AIChat>
+          updateTitle: (id: number, title: string) => Promise<void>
+          delete: (id: number) => Promise<void>
+          deleteAll: () => Promise<void>
+        }
+        messages: {
+          getByChatId: (chatId: number) => Promise<AIMessage[]>
+          send: (chatId: number, content: string) => Promise<{ userMessage: AIMessage; assistantMessage: AIMessage; usage?: { promptTokens: number; completionTokens: number } }>
+        }
+        context: {
+          getData: () => Promise<AIContextData>
+        }
       }
     }
   }

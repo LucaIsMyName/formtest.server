@@ -148,6 +148,33 @@ const api = {
     attach: (formId, scriptId, executionOrder) => electron.ipcRenderer.invoke("formScripts:attach", formId, scriptId, executionOrder),
     detach: (formId, scriptId) => electron.ipcRenderer.invoke("formScripts:detach", formId, scriptId),
     updateOrder: (formId, scriptId, executionOrder) => electron.ipcRenderer.invoke("formScripts:updateOrder", formId, scriptId, executionOrder)
+  },
+  // AI operations
+  ai: {
+    // Settings
+    getSettings: () => electron.ipcRenderer.invoke("ai:getSettings"),
+    updateSettings: (settings) => electron.ipcRenderer.invoke("ai:updateSettings", settings),
+    validateKey: (provider, apiKey, ollamaUrl) => electron.ipcRenderer.invoke("ai:validateKey", provider, apiKey, ollamaUrl),
+    getModels: (provider, apiKey, ollamaUrl) => electron.ipcRenderer.invoke("ai:getModels", provider, apiKey, ollamaUrl),
+    isConfigured: () => electron.ipcRenderer.invoke("ai:isConfigured"),
+    // Chats
+    chats: {
+      getAll: () => electron.ipcRenderer.invoke("ai:chats:getAll"),
+      getById: (id) => electron.ipcRenderer.invoke("ai:chats:getById", id),
+      create: (title, context) => electron.ipcRenderer.invoke("ai:chats:create", title, context),
+      updateTitle: (id, title) => electron.ipcRenderer.invoke("ai:chats:updateTitle", id, title),
+      delete: (id) => electron.ipcRenderer.invoke("ai:chats:delete", id),
+      deleteAll: () => electron.ipcRenderer.invoke("ai:chats:deleteAll")
+    },
+    // Messages
+    messages: {
+      getByChatId: (chatId) => electron.ipcRenderer.invoke("ai:messages:getByChatId", chatId),
+      send: (chatId, content) => electron.ipcRenderer.invoke("ai:messages:send", chatId, content)
+    },
+    // Context
+    context: {
+      getData: () => electron.ipcRenderer.invoke("ai:context:getData")
+    }
   }
 };
 if (process.contextIsolated) {

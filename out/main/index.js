@@ -774,6 +774,53 @@ function migrateScheduleQualityOptions() {
     console.error("Database: Schedule quality options migration error:", error);
   }
 }
+function migrateAIChatTables() {
+  console.log("Database: Checking for AI chat tables...");
+  try {
+    const aiChatsExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='ai_chats'"
+    ).get();
+    if (!aiChatsExists) {
+      console.log("Database: Creating ai_chats table...");
+      db.exec(`
+        CREATE TABLE ai_chats (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL DEFAULT 'Neuer Chat',
+          context TEXT,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE INDEX idx_ai_chats_created ON ai_chats(createdAt);
+      `);
+      console.log("Database: ai_chats table created");
+    }
+    const aiMessagesExists = db.prepare(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='ai_messages'"
+    ).get();
+    if (!aiMessagesExists) {
+      console.log("Database: Creating ai_messages table...");
+      db.exec(`
+        CREATE TABLE ai_messages (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          chatId INTEGER NOT NULL,
+          role TEXT NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
+          content TEXT NOT NULL,
+          metadata TEXT,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (chatId) REFERENCES ai_chats(id) ON DELETE CASCADE
+        );
+        
+        CREATE INDEX idx_ai_messages_chat ON ai_messages(chatId);
+        CREATE INDEX idx_ai_messages_created ON ai_messages(createdAt);
+      `);
+      console.log("Database: ai_messages table created");
+    }
+    console.log("Database: AI chat tables migration complete");
+  } catch (error) {
+    console.error("Database: AI chat tables migration error:", error);
+  }
+}
 function migrateFormFieldMappings() {
   console.log("Database: Checking for forms fieldMappings column...");
   try {
@@ -1020,6 +1067,7 @@ function initDatabase() {
   migrateCustomScripts();
   migrateQualityTestResults();
   migrateScheduleQualityOptions();
+  migrateAIChatTables();
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
   });
@@ -1570,25 +1618,25 @@ const testRunQueries = {
 const testScheduleQueries = {
   getAll: () => {
     const schedules = db.prepare("SELECT * FROM test_schedules ORDER BY createdAt DESC").all();
-    return schedules.map((s) => ({
-      ...s,
-      isActive: Boolean(s.isActive),
-      enableSeoTest: Boolean(s.enableSeoTest),
-      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
-      lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
-      createdAt: new Date(s.createdAt)
+    return schedules.map((s2) => ({
+      ...s2,
+      isActive: Boolean(s2.isActive),
+      enableSeoTest: Boolean(s2.enableSeoTest),
+      enableAccessibilityTest: Boolean(s2.enableAccessibilityTest),
+      lastRun: s2.lastRun ? new Date(s2.lastRun) : void 0,
+      createdAt: new Date(s2.createdAt)
     }));
   },
   getById: (id) => {
-    const s = db.prepare("SELECT * FROM test_schedules WHERE id = ?").get(id);
-    if (!s) return void 0;
+    const s2 = db.prepare("SELECT * FROM test_schedules WHERE id = ?").get(id);
+    if (!s2) return void 0;
     return {
-      ...s,
-      isActive: Boolean(s.isActive),
-      enableSeoTest: Boolean(s.enableSeoTest),
-      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
-      lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
-      createdAt: new Date(s.createdAt)
+      ...s2,
+      isActive: Boolean(s2.isActive),
+      enableSeoTest: Boolean(s2.enableSeoTest),
+      enableAccessibilityTest: Boolean(s2.enableAccessibilityTest),
+      lastRun: s2.lastRun ? new Date(s2.lastRun) : void 0,
+      createdAt: new Date(s2.createdAt)
     };
   },
   create: (schedule) => {
@@ -1936,7 +1984,7 @@ const importQueries = {
           try {
             const newFormId = idMap.forms.get(schedule.formId) || schedule.formId;
             const newPaymentMethodId = idMap.paymentMethods.get(schedule.paymentMethodId) || schedule.paymentMethodId;
-            const existing = existingSchedules.find((s) => s.name === schedule.name);
+            const existing = existingSchedules.find((s2) => s2.name === schedule.name);
             if (existing) {
               testScheduleQueries.update(existing.id, {
                 formId: newFormId,
@@ -2149,13 +2197,13 @@ function getBaseSelectorConfig() {
 const customScriptQueries = {
   getAll: () => {
     const scripts = db.prepare("SELECT * FROM custom_scripts ORDER BY name").all();
-    return scripts.map((s) => ({
-      ...s,
-      isActive: Boolean(s.isActive),
-      isGlobal: Boolean(s.isGlobal),
-      stopOnError: Boolean(s.stopOnError),
-      createdAt: new Date(s.createdAt),
-      updatedAt: new Date(s.updatedAt)
+    return scripts.map((s2) => ({
+      ...s2,
+      isActive: Boolean(s2.isActive),
+      isGlobal: Boolean(s2.isGlobal),
+      stopOnError: Boolean(s2.stopOnError),
+      createdAt: new Date(s2.createdAt),
+      updatedAt: new Date(s2.updatedAt)
     }));
   },
   getById: (id) => {
@@ -2174,26 +2222,26 @@ const customScriptQueries = {
     const scripts = db.prepare(
       "SELECT * FROM custom_scripts WHERE hookPoint = ? AND isActive = 1 ORDER BY name"
     ).all(hookPoint);
-    return scripts.map((s) => ({
-      ...s,
-      isActive: Boolean(s.isActive),
-      isGlobal: Boolean(s.isGlobal),
-      stopOnError: Boolean(s.stopOnError),
-      createdAt: new Date(s.createdAt),
-      updatedAt: new Date(s.updatedAt)
+    return scripts.map((s2) => ({
+      ...s2,
+      isActive: Boolean(s2.isActive),
+      isGlobal: Boolean(s2.isGlobal),
+      stopOnError: Boolean(s2.stopOnError),
+      createdAt: new Date(s2.createdAt),
+      updatedAt: new Date(s2.updatedAt)
     }));
   },
   getGlobalScripts: () => {
     const scripts = db.prepare(
       "SELECT * FROM custom_scripts WHERE isGlobal = 1 AND isActive = 1 ORDER BY hookPoint, name"
     ).all();
-    return scripts.map((s) => ({
-      ...s,
-      isActive: Boolean(s.isActive),
-      isGlobal: Boolean(s.isGlobal),
-      stopOnError: Boolean(s.stopOnError),
-      createdAt: new Date(s.createdAt),
-      updatedAt: new Date(s.updatedAt)
+    return scripts.map((s2) => ({
+      ...s2,
+      isActive: Boolean(s2.isActive),
+      isGlobal: Boolean(s2.isGlobal),
+      stopOnError: Boolean(s2.stopOnError),
+      createdAt: new Date(s2.createdAt),
+      updatedAt: new Date(s2.updatedAt)
     }));
   },
   getByFormId: (formId) => {
@@ -2204,13 +2252,13 @@ const customScriptQueries = {
       WHERE fs.formId = ? AND cs.isActive = 1
       ORDER BY cs.hookPoint, fs.executionOrder, cs.name
     `).all(formId);
-    return scripts.map((s) => ({
-      ...s,
-      isActive: Boolean(s.isActive),
-      isGlobal: Boolean(s.isGlobal),
-      stopOnError: Boolean(s.stopOnError),
-      createdAt: new Date(s.createdAt),
-      updatedAt: new Date(s.updatedAt)
+    return scripts.map((s2) => ({
+      ...s2,
+      isActive: Boolean(s2.isActive),
+      isGlobal: Boolean(s2.isGlobal),
+      stopOnError: Boolean(s2.stopOnError),
+      createdAt: new Date(s2.createdAt),
+      updatedAt: new Date(s2.updatedAt)
     }));
   },
   getScriptsForTest: (formId) => {
@@ -2221,13 +2269,13 @@ const customScriptQueries = {
       WHERE cs.isActive = 1 AND (cs.isGlobal = 1 OR fs.formId IS NOT NULL)
       ORDER BY cs.hookPoint, executionOrder, cs.name
     `).all(formId);
-    return scripts.map((s) => ({
-      ...s,
-      isActive: Boolean(s.isActive),
-      isGlobal: Boolean(s.isGlobal),
-      stopOnError: Boolean(s.stopOnError),
-      createdAt: new Date(s.createdAt),
-      updatedAt: new Date(s.updatedAt)
+    return scripts.map((s2) => ({
+      ...s2,
+      isActive: Boolean(s2.isActive),
+      isGlobal: Boolean(s2.isGlobal),
+      stopOnError: Boolean(s2.stopOnError),
+      createdAt: new Date(s2.createdAt),
+      updatedAt: new Date(s2.updatedAt)
     }));
   },
   create: (script) => {
@@ -2336,6 +2384,85 @@ const formScriptQueries = {
       "UPDATE form_scripts SET executionOrder = ? WHERE formId = ? AND scriptId = ?"
     );
     return stmt.run(executionOrder, formId, scriptId);
+  }
+};
+const aiChatQueries = {
+  getAll: () => {
+    const chats = db.prepare("SELECT * FROM ai_chats ORDER BY updatedAt DESC").all();
+    return chats.map((c) => ({
+      ...c,
+      createdAt: new Date(c.createdAt),
+      updatedAt: new Date(c.updatedAt)
+    }));
+  },
+  getById: (id) => {
+    const chat = db.prepare("SELECT * FROM ai_chats WHERE id = ?").get(id);
+    if (!chat) return void 0;
+    return {
+      ...chat,
+      createdAt: new Date(chat.createdAt),
+      updatedAt: new Date(chat.updatedAt)
+    };
+  },
+  create: (title = "Neuer Chat", context) => {
+    const stmt = db.prepare(`
+      INSERT INTO ai_chats (title, context)
+      VALUES (?, ?)
+    `);
+    const result = stmt.run(title, context || null);
+    return aiChatQueries.getById(Number(result.lastInsertRowid));
+  },
+  updateTitle: (id, title) => {
+    const stmt = db.prepare(`
+      UPDATE ai_chats SET title = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?
+    `);
+    return stmt.run(title, id);
+  },
+  updateTimestamp: (id) => {
+    const stmt = db.prepare(`
+      UPDATE ai_chats SET updatedAt = CURRENT_TIMESTAMP WHERE id = ?
+    `);
+    return stmt.run(id);
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM ai_chats WHERE id = ?");
+    return stmt.run(id);
+  },
+  deleteAll: () => {
+    const stmt = db.prepare("DELETE FROM ai_chats");
+    return stmt.run();
+  }
+};
+const aiMessageQueries = {
+  getByChatId: (chatId) => {
+    const messages = db.prepare(
+      "SELECT * FROM ai_messages WHERE chatId = ? ORDER BY createdAt ASC"
+    ).all(chatId);
+    return messages.map((m) => ({
+      ...m,
+      createdAt: new Date(m.createdAt)
+    }));
+  },
+  create: (chatId, role, content, metadata) => {
+    const stmt = db.prepare(`
+      INSERT INTO ai_messages (chatId, role, content, metadata)
+      VALUES (?, ?, ?, ?)
+    `);
+    const result = stmt.run(chatId, role, content, metadata || null);
+    aiChatQueries.updateTimestamp(chatId);
+    const message = db.prepare("SELECT * FROM ai_messages WHERE id = ?").get(Number(result.lastInsertRowid));
+    return {
+      ...message,
+      createdAt: new Date(message.createdAt)
+    };
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM ai_messages WHERE id = ?");
+    return stmt.run(id);
+  },
+  deleteByChatId: (chatId) => {
+    const stmt = db.prepare("DELETE FROM ai_messages WHERE chatId = ?");
+    return stmt.run(chatId);
   }
 };
 class TestProcessManager extends events.EventEmitter {
@@ -3275,14 +3402,14 @@ async function handleRequest(req, res) {
       sendJson(res, 200, {
         success: true,
         count: schedules.length,
-        data: schedules.map((s) => ({
-          id: s.id,
-          name: s.name,
-          formId: s.formId,
-          paymentMethodId: s.paymentMethodId,
-          cronExpression: s.cronExpression,
-          isActive: s.isActive,
-          lastRun: s.lastRun
+        data: schedules.map((s2) => ({
+          id: s2.id,
+          name: s2.name,
+          formId: s2.formId,
+          paymentMethodId: s2.paymentMethodId,
+          cronExpression: s2.cronExpression,
+          isActive: s2.isActive,
+          lastRun: s2.lastRun
         }))
       });
       return;
@@ -3311,8 +3438,8 @@ async function handleRequest(req, res) {
       }
       const allSettings = settingsQueries.getAll();
       const settingsMap = {};
-      allSettings.forEach((s) => {
-        settingsMap[s.key] = s.value;
+      allSettings.forEach((s2) => {
+        settingsMap[s2.key] = s2.value;
       });
       const testIds = [];
       const testUuids = [];
@@ -3506,6 +3633,817 @@ function isApiServerRunning() {
 function generateApiKey() {
   return crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
 }
+class BaseAIProvider {
+  constructor(config) {
+    this.config = config;
+  }
+}
+class OpenAIProvider extends BaseAIProvider {
+  constructor(config) {
+    super(config);
+    this.baseUrl = "https://api.openai.com/v1";
+    if (config.baseUrl) {
+      this.baseUrl = config.baseUrl;
+    }
+  }
+  get name() {
+    return "OpenAI";
+  }
+  async chat(messages, systemPrompt) {
+    const allMessages = [];
+    if (systemPrompt) {
+      allMessages.push({ role: "system", content: systemPrompt });
+    }
+    allMessages.push(...messages);
+    const response = await fetch(`${this.baseUrl}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.config.apiKey}`
+      },
+      body: JSON.stringify({
+        model: this.config.model,
+        messages: allMessages,
+        temperature: 0.7,
+        max_tokens: 4096
+      })
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+      throw new Error(error.error?.message || `OpenAI API error: ${response.status}`);
+    }
+    const data = await response.json();
+    return {
+      content: data.choices[0]?.message?.content || "",
+      usage: data.usage ? {
+        promptTokens: data.usage.prompt_tokens,
+        completionTokens: data.usage.completion_tokens
+      } : void 0
+    };
+  }
+  async streamChat(messages, systemPrompt, callbacks) {
+    const allMessages = [];
+    if (systemPrompt) {
+      allMessages.push({ role: "system", content: systemPrompt });
+    }
+    allMessages.push(...messages);
+    const response = await fetch(`${this.baseUrl}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.config.apiKey}`
+      },
+      body: JSON.stringify({
+        model: this.config.model,
+        messages: allMessages,
+        temperature: 0.7,
+        max_tokens: 4096,
+        stream: true
+      })
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+      throw new Error(error.error?.message || `OpenAI API error: ${response.status}`);
+    }
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("No response body");
+    }
+    const decoder = new TextDecoder();
+    let fullContent = "";
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6);
+            if (data === "[DONE]") continue;
+            try {
+              const parsed = JSON.parse(data);
+              const content = parsed.choices[0]?.delta?.content || "";
+              if (content) {
+                fullContent += content;
+                callbacks.onToken?.(content);
+              }
+            } catch {
+            }
+          }
+        }
+      }
+      callbacks.onComplete?.(fullContent);
+    } catch (error) {
+      callbacks.onError?.(error);
+      throw error;
+    }
+  }
+  async validateKey() {
+    try {
+      const response = await fetch(`${this.baseUrl}/models`, {
+        headers: {
+          "Authorization": `Bearer ${this.config.apiKey}`
+        }
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+  async getAvailableModels() {
+    try {
+      const response = await fetch(`${this.baseUrl}/models`, {
+        headers: {
+          "Authorization": `Bearer ${this.config.apiKey}`
+        }
+      });
+      if (!response.ok) return this.getDefaultModels();
+      const data = await response.json();
+      const chatModels = data.data.filter((m) => m.id.includes("gpt")).map((m) => m.id).sort();
+      return chatModels.length > 0 ? chatModels : this.getDefaultModels();
+    } catch {
+      return this.getDefaultModels();
+    }
+  }
+  getDefaultModels() {
+    return ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"];
+  }
+}
+class AnthropicProvider extends BaseAIProvider {
+  constructor() {
+    super(...arguments);
+    this.baseUrl = "https://api.anthropic.com/v1";
+  }
+  get name() {
+    return "Anthropic";
+  }
+  async chat(messages, systemPrompt) {
+    const anthropicMessages = messages.filter((m) => m.role !== "system").map((m) => ({
+      role: m.role,
+      content: m.content
+    }));
+    const response = await fetch(`${this.baseUrl}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": this.config.apiKey,
+        "anthropic-version": "2023-06-01"
+      },
+      body: JSON.stringify({
+        model: this.config.model,
+        max_tokens: 4096,
+        system: systemPrompt || "",
+        messages: anthropicMessages
+      })
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+      throw new Error(error.error?.message || `Anthropic API error: ${response.status}`);
+    }
+    const data = await response.json();
+    return {
+      content: data.content[0]?.text || "",
+      usage: data.usage ? {
+        promptTokens: data.usage.input_tokens,
+        completionTokens: data.usage.output_tokens
+      } : void 0
+    };
+  }
+  async streamChat(messages, systemPrompt, callbacks) {
+    const anthropicMessages = messages.filter((m) => m.role !== "system").map((m) => ({
+      role: m.role,
+      content: m.content
+    }));
+    const response = await fetch(`${this.baseUrl}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": this.config.apiKey,
+        "anthropic-version": "2023-06-01"
+      },
+      body: JSON.stringify({
+        model: this.config.model,
+        max_tokens: 4096,
+        system: systemPrompt || "",
+        messages: anthropicMessages,
+        stream: true
+      })
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+      throw new Error(error.error?.message || `Anthropic API error: ${response.status}`);
+    }
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("No response body");
+    }
+    const decoder = new TextDecoder();
+    let fullContent = "";
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6);
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.type === "content_block_delta") {
+                const content = parsed.delta?.text || "";
+                if (content) {
+                  fullContent += content;
+                  callbacks.onToken?.(content);
+                }
+              }
+            } catch {
+            }
+          }
+        }
+      }
+      callbacks.onComplete?.(fullContent);
+    } catch (error) {
+      callbacks.onError?.(error);
+      throw error;
+    }
+  }
+  async validateKey() {
+    try {
+      const response = await fetch(`${this.baseUrl}/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": this.config.apiKey,
+          "anthropic-version": "2023-06-01"
+        },
+        body: JSON.stringify({
+          model: "claude-3-haiku-20240307",
+          max_tokens: 1,
+          messages: [{ role: "user", content: "Hi" }]
+        })
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+  async getAvailableModels() {
+    return [
+      "claude-sonnet-4-20250514",
+      "claude-3-5-sonnet-20241022",
+      "claude-3-5-haiku-20241022",
+      "claude-3-opus-20240229",
+      "claude-3-sonnet-20240229",
+      "claude-3-haiku-20240307"
+    ];
+  }
+}
+class GoogleProvider extends BaseAIProvider {
+  constructor(config) {
+    super(config);
+    this.baseUrl = "https://generativelanguage.googleapis.com/v1beta";
+  }
+  get name() {
+    return "Google";
+  }
+  async chat(messages, systemPrompt) {
+    const contents = messages.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }]
+    }));
+    const body = {
+      contents,
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 4096
+      }
+    };
+    if (systemPrompt) {
+      body.systemInstruction = {
+        parts: [{ text: systemPrompt }]
+      };
+    }
+    const response = await fetch(
+      `${this.baseUrl}/models/${this.config.model}:generateContent?key=${this.config.apiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+      throw new Error(error.error?.message || `Google API error: ${response.status}`);
+    }
+    const data = await response.json();
+    return {
+      content: data.candidates?.[0]?.content?.parts?.[0]?.text || "",
+      usage: data.usageMetadata ? {
+        promptTokens: data.usageMetadata.promptTokenCount || 0,
+        completionTokens: data.usageMetadata.candidatesTokenCount || 0
+      } : void 0
+    };
+  }
+  async streamChat(messages, systemPrompt, callbacks) {
+    const contents = messages.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }]
+    }));
+    const body = {
+      contents,
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 4096
+      }
+    };
+    if (systemPrompt) {
+      body.systemInstruction = {
+        parts: [{ text: systemPrompt }]
+      };
+    }
+    const response = await fetch(
+      `${this.baseUrl}/models/${this.config.model}:streamGenerateContent?key=${this.config.apiKey}&alt=sse`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+      throw new Error(error.error?.message || `Google API error: ${response.status}`);
+    }
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("No response body");
+    }
+    const decoder = new TextDecoder();
+    let fullContent = "";
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6);
+            try {
+              const parsed = JSON.parse(data);
+              const content = parsed.candidates?.[0]?.content?.parts?.[0]?.text || "";
+              if (content) {
+                fullContent += content;
+                callbacks.onToken?.(content);
+              }
+            } catch {
+            }
+          }
+        }
+      }
+      callbacks.onComplete?.(fullContent);
+    } catch (error) {
+      callbacks.onError?.(error);
+      throw error;
+    }
+  }
+  async validateKey() {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/models?key=${this.config.apiKey}`
+      );
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+  async getAvailableModels() {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/models?key=${this.config.apiKey}`
+      );
+      if (!response.ok) return this.getDefaultModels();
+      const data = await response.json();
+      const models = data.models?.filter((m) => m.supportedGenerationMethods?.includes("generateContent"))?.map((m) => m.name.replace("models/", ""))?.filter((name) => name.includes("gemini"))?.sort() || [];
+      return models.length > 0 ? models : this.getDefaultModels();
+    } catch {
+      return this.getDefaultModels();
+    }
+  }
+  getDefaultModels() {
+    return [
+      "gemini-2.0-flash",
+      "gemini-1.5-pro",
+      "gemini-1.5-flash",
+      "gemini-1.5-flash-8b"
+    ];
+  }
+}
+class OllamaProvider extends BaseAIProvider {
+  constructor(config) {
+    super(config);
+    this.baseUrl = config.baseUrl || "http://localhost:11434";
+  }
+  get name() {
+    return "Ollama";
+  }
+  async chat(messages, systemPrompt) {
+    const allMessages = [];
+    if (systemPrompt) {
+      allMessages.push({ role: "system", content: systemPrompt });
+    }
+    allMessages.push(...messages);
+    const response = await fetch(`${this.baseUrl}/api/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: this.config.model,
+        messages: allMessages,
+        stream: false
+      })
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: response.statusText }));
+      throw new Error(error.error || `Ollama API error: ${response.status}`);
+    }
+    const data = await response.json();
+    return {
+      content: data.message?.content || "",
+      usage: data.eval_count ? {
+        promptTokens: data.prompt_eval_count || 0,
+        completionTokens: data.eval_count || 0
+      } : void 0
+    };
+  }
+  async streamChat(messages, systemPrompt, callbacks) {
+    const allMessages = [];
+    if (systemPrompt) {
+      allMessages.push({ role: "system", content: systemPrompt });
+    }
+    allMessages.push(...messages);
+    const response = await fetch(`${this.baseUrl}/api/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: this.config.model,
+        messages: allMessages,
+        stream: true
+      })
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ error: response.statusText }));
+      throw new Error(error.error || `Ollama API error: ${response.status}`);
+    }
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error("No response body");
+    }
+    const decoder = new TextDecoder();
+    let fullContent = "";
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+        for (const line of lines) {
+          try {
+            const parsed = JSON.parse(line);
+            const content = parsed.message?.content || "";
+            if (content) {
+              fullContent += content;
+              callbacks.onToken?.(content);
+            }
+          } catch {
+          }
+        }
+      }
+      callbacks.onComplete?.(fullContent);
+    } catch (error) {
+      callbacks.onError?.(error);
+      throw error;
+    }
+  }
+  async validateKey() {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/tags`);
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+  async getAvailableModels() {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/tags`);
+      if (!response.ok) return this.getDefaultModels();
+      const data = await response.json();
+      const models = data.models?.map((m) => m.name) || [];
+      return models.length > 0 ? models : this.getDefaultModels();
+    } catch {
+      return this.getDefaultModels();
+    }
+  }
+  getDefaultModels() {
+    return [
+      "llama3.2",
+      "llama3.1",
+      "mistral",
+      "codellama",
+      "phi3",
+      "gemma2"
+    ];
+  }
+}
+const SYSTEM_PROMPT = `Du bist ein hilfreicher Assistent für die FormTest Server Anwendung - eine Desktop-App zum automatisierten Testen von Spendenformularen.
+
+DEINE FÄHIGKEITEN:
+- Formulare, Bezahlmethoden, Tests und Zeitpläne suchen und analysieren
+- Testdaten zusammenfassen und Trends erkennen
+- Probleme identifizieren und Lösungen vorschlagen
+- Fragen zur Anwendung beantworten
+
+FORMATIERUNG:
+- Antworte in der Sprache des Nutzers (Deutsch wenn auf Deutsch gefragt, English if asked in English)
+- Verwende Markdown für Formatierung
+- Nutze Tabellen für strukturierte Daten
+- Nutze Listen für Aufzählungen
+- Sei präzise und hilfreich
+
+KONTEXT:
+Du hast Zugriff auf aktuelle App-Daten wie Formulare, Bezahlmethoden, Testergebnisse und Zeitpläne.
+Diese werden dir als Kontext mitgegeben.
+
+Sei freundlich, präzise und proaktiv bei der Analyse. Wenn du unsicher bist, frage nach.`;
+class AIService {
+  constructor() {
+    this.provider = null;
+    this.settings = null;
+  }
+  /**
+   * Load AI settings from database
+   */
+  async loadSettings() {
+    const enabled = settingsQueries.get("ai_enabled")?.value === "true";
+    const provider = settingsQueries.get("ai_provider")?.value || "openai";
+    const encryptedKey = settingsQueries.get("ai_api_key")?.value || "";
+    const model = settingsQueries.get("ai_model")?.value || this.getDefaultModel(provider);
+    const ollamaBaseUrl = settingsQueries.get("ai_ollama_url")?.value || "http://localhost:11434";
+    let apiKey2 = "";
+    if (encryptedKey) {
+      try {
+        apiKey2 = await decrypt(encryptedKey);
+      } catch {
+        apiKey2 = encryptedKey;
+      }
+    }
+    this.settings = {
+      enabled,
+      provider,
+      apiKey: apiKey2,
+      model,
+      ollamaBaseUrl
+    };
+    if (enabled && (apiKey2 || provider === "ollama")) {
+      this.initProvider();
+    }
+    return this.settings;
+  }
+  /**
+   * Update AI settings
+   */
+  async updateSettings(updates) {
+    if (updates.enabled !== void 0) {
+      settingsQueries.set("ai_enabled", String(updates.enabled), "AI assistant enabled");
+    }
+    if (updates.provider !== void 0) {
+      settingsQueries.set("ai_provider", updates.provider, "AI provider (openai, anthropic, google, ollama)");
+    }
+    if (updates.apiKey !== void 0) {
+      const encryptedKey = updates.apiKey ? await encrypt(updates.apiKey) : "";
+      settingsQueries.set("ai_api_key", encryptedKey, "AI API key (encrypted)");
+    }
+    if (updates.model !== void 0) {
+      settingsQueries.set("ai_model", updates.model, "AI model name");
+    }
+    if (updates.ollamaBaseUrl !== void 0) {
+      settingsQueries.set("ai_ollama_url", updates.ollamaBaseUrl, "Ollama server URL");
+    }
+    return this.loadSettings();
+  }
+  /**
+   * Get current settings
+   */
+  getSettings() {
+    return this.settings;
+  }
+  /**
+   * Check if AI is enabled and configured
+   */
+  isConfigured() {
+    if (!this.settings) return false;
+    if (!this.settings.enabled) return false;
+    if (this.settings.provider === "ollama") return true;
+    return Boolean(this.settings.apiKey);
+  }
+  /**
+   * Initialize the AI provider based on settings
+   */
+  initProvider() {
+    if (!this.settings) return;
+    const config = {
+      apiKey: this.settings.apiKey,
+      model: this.settings.model,
+      baseUrl: this.settings.provider === "ollama" ? this.settings.ollamaBaseUrl : void 0
+    };
+    switch (this.settings.provider) {
+      case "openai":
+        this.provider = new OpenAIProvider(config);
+        break;
+      case "anthropic":
+        this.provider = new AnthropicProvider(config);
+        break;
+      case "google":
+        this.provider = new GoogleProvider(config);
+        break;
+      case "ollama":
+        this.provider = new OllamaProvider(config);
+        break;
+      default:
+        this.provider = null;
+    }
+  }
+  /**
+   * Get default model for a provider
+   */
+  getDefaultModel(provider) {
+    switch (provider) {
+      case "openai":
+        return "gpt-4o-mini";
+      case "anthropic":
+        return "claude-3-5-sonnet-20241022";
+      case "google":
+        return "gemini-1.5-flash";
+      case "ollama":
+        return "llama3.2";
+      default:
+        return "gpt-4o-mini";
+    }
+  }
+  /**
+   * Validate API key for a provider
+   */
+  async validateKey(provider, apiKey2, ollamaUrl) {
+    const config = {
+      apiKey: apiKey2,
+      model: this.getDefaultModel(provider),
+      baseUrl: provider === "ollama" ? ollamaUrl || "http://localhost:11434" : void 0
+    };
+    let testProvider;
+    switch (provider) {
+      case "openai":
+        testProvider = new OpenAIProvider(config);
+        break;
+      case "anthropic":
+        testProvider = new AnthropicProvider(config);
+        break;
+      case "google":
+        testProvider = new GoogleProvider(config);
+        break;
+      case "ollama":
+        testProvider = new OllamaProvider(config);
+        break;
+      default:
+        return false;
+    }
+    return testProvider.validateKey();
+  }
+  /**
+   * Get available models for a provider
+   */
+  async getModels(provider, apiKey2, ollamaUrl) {
+    const config = {
+      apiKey: apiKey2 || this.settings?.apiKey || "",
+      model: this.getDefaultModel(provider),
+      baseUrl: provider === "ollama" ? ollamaUrl || this.settings?.ollamaBaseUrl || "http://localhost:11434" : void 0
+    };
+    let testProvider;
+    switch (provider) {
+      case "openai":
+        testProvider = new OpenAIProvider(config);
+        break;
+      case "anthropic":
+        testProvider = new AnthropicProvider(config);
+        break;
+      case "google":
+        testProvider = new GoogleProvider(config);
+        break;
+      case "ollama":
+        testProvider = new OllamaProvider(config);
+        break;
+      default:
+        return [];
+    }
+    return testProvider.getAvailableModels();
+  }
+  /**
+   * Build context data from app state
+   */
+  async buildContextData() {
+    const forms = formQueries.getAll().map((f) => ({
+      id: f.id,
+      name: f.name,
+      url: f.url,
+      isActive: f.isActive
+    }));
+    const allPaymentMethods = await paymentMethodQueries.getAll();
+    const paymentMethods = allPaymentMethods.map((pm) => ({
+      id: pm.id,
+      name: pm.name,
+      type: pm.type,
+      isActive: pm.isActive
+    }));
+    const allTests = testRunQueries.getAll();
+    const recentTests = {
+      total: allTests.length,
+      success: allTests.filter((t) => t.status === "SUCCESS").length,
+      failed: allTests.filter((t) => t.status === "FAILURE").length,
+      successRate: allTests.length > 0 ? Math.round(allTests.filter((t) => t.status === "SUCCESS").length / allTests.length * 100) : 0
+    };
+    const schedules = testScheduleQueries.getAll().map((s2) => ({
+      id: s2.id,
+      name: s2.name,
+      isActive: s2.isActive,
+      cronExpression: s2.cronExpression
+    }));
+    return { forms, paymentMethods, recentTests, schedules };
+  }
+  /**
+   * Build context string for AI prompt
+   */
+  async buildContextString() {
+    const data = await this.buildContextData();
+    return `
+AKTUELLE APP-DATEN:
+
+FORMULARE (${data.forms.length}):
+${data.forms.map((f) => `- ${f.name} (${f.isActive ? "aktiv" : "inaktiv"}): ${f.url}`).join("\n") || "- Keine Formulare vorhanden"}
+
+BEZAHLMETHODEN (${data.paymentMethods.length}):
+${data.paymentMethods.map((pm) => `- ${pm.name} (${pm.type}, ${pm.isActive ? "aktiv" : "inaktiv"})`).join("\n") || "- Keine Bezahlmethoden vorhanden"}
+
+TESTERGEBNISSE:
+- Gesamt: ${data.recentTests.total}
+- Erfolgreich: ${data.recentTests.success}
+- Fehlgeschlagen: ${data.recentTests.failed}
+- Erfolgsrate: ${data.recentTests.successRate}%
+
+ZEITPLÄNE (${data.schedules.length}):
+${data.schedules.map((s2) => `- ${s2.name}: ${s2.cronExpression} (${s2.isActive ? "aktiv" : "inaktiv"})`).join("\n") || "- Keine Zeitpläne vorhanden"}
+`;
+  }
+  /**
+   * Send a chat message and get a response
+   */
+  async chat(messages) {
+    if (!this.provider) {
+      await this.loadSettings();
+      if (!this.provider) {
+        throw new Error("AI ist nicht konfiguriert. Bitte konfiguriere einen AI-Provider in den Einstellungen.");
+      }
+    }
+    const contextString = await this.buildContextString();
+    const fullSystemPrompt = `${SYSTEM_PROMPT}
+
+${contextString}`;
+    return this.provider.chat(messages, fullSystemPrompt);
+  }
+  /**
+   * Stream a chat response
+   */
+  async streamChat(messages, callbacks) {
+    if (!this.provider) {
+      await this.loadSettings();
+      if (!this.provider) {
+        throw new Error("AI ist nicht konfiguriert. Bitte konfiguriere einen AI-Provider in den Einstellungen.");
+      }
+    }
+    const contextString = await this.buildContextString();
+    const fullSystemPrompt = `${SYSTEM_PROMPT}
+
+${contextString}`;
+    return this.provider.streamChat(messages, fullSystemPrompt, callbacks);
+  }
+}
+const aiService = new AIService();
 function setupIpcHandlers() {
   electron.ipcMain.handle("forms:getAll", async () => {
     try {
@@ -3526,6 +4464,7 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("forms:create", async (_, form) => {
     try {
       return formQueries.create(form);
+      s;
     } catch (error) {
       console.error("IPC Error - forms:create:", error);
       throw error;
@@ -4074,6 +5013,131 @@ function setupIpcHandlers() {
       return formScriptQueries.updateOrder(formId, scriptId, executionOrder);
     } catch (error) {
       console.error("IPC Error - formScripts:updateOrder:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:getSettings", async () => {
+    try {
+      return await aiService.loadSettings();
+    } catch (error) {
+      console.error("IPC Error - ai:getSettings:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:updateSettings", async (_, settings) => {
+    try {
+      return await aiService.updateSettings(settings);
+    } catch (error) {
+      console.error("IPC Error - ai:updateSettings:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:validateKey", async (_, provider, apiKey2, ollamaUrl) => {
+    try {
+      return await aiService.validateKey(provider, apiKey2, ollamaUrl);
+    } catch (error) {
+      console.error("IPC Error - ai:validateKey:", error);
+      return false;
+    }
+  });
+  electron.ipcMain.handle("ai:getModels", async (_, provider, apiKey2, ollamaUrl) => {
+    try {
+      return await aiService.getModels(provider, apiKey2, ollamaUrl);
+    } catch (error) {
+      console.error("IPC Error - ai:getModels:", error);
+      return [];
+    }
+  });
+  electron.ipcMain.handle("ai:isConfigured", async () => {
+    try {
+      await aiService.loadSettings();
+      return aiService.isConfigured();
+    } catch (error) {
+      console.error("IPC Error - ai:isConfigured:", error);
+      return false;
+    }
+  });
+  electron.ipcMain.handle("ai:chats:getAll", async () => {
+    try {
+      return aiChatQueries.getAll();
+    } catch (error) {
+      console.error("IPC Error - ai:chats:getAll:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:chats:getById", async (_, id) => {
+    try {
+      return aiChatQueries.getById(id);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:getById:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:chats:create", async (_, title, context) => {
+    try {
+      return aiChatQueries.create(title, context);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:create:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:chats:updateTitle", async (_, id, title) => {
+    try {
+      return aiChatQueries.updateTitle(id, title);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:updateTitle:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:chats:delete", async (_, id) => {
+    try {
+      return aiChatQueries.delete(id);
+    } catch (error) {
+      console.error("IPC Error - ai:chats:delete:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:chats:deleteAll", async () => {
+    try {
+      return aiChatQueries.deleteAll();
+    } catch (error) {
+      console.error("IPC Error - ai:chats:deleteAll:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:messages:getByChatId", async (_, chatId) => {
+    try {
+      return aiMessageQueries.getByChatId(chatId);
+    } catch (error) {
+      console.error("IPC Error - ai:messages:getByChatId:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:messages:send", async (_, chatId, content) => {
+    try {
+      const userMessage = aiMessageQueries.create(chatId, "user", content);
+      const allMessages = aiMessageQueries.getByChatId(chatId);
+      const chatMessages = allMessages.map((m) => ({
+        role: m.role,
+        content: m.content
+      }));
+      const response = await aiService.chat(chatMessages);
+      const assistantMessage = aiMessageQueries.create(chatId, "assistant", response.content);
+      return {
+        userMessage,
+        assistantMessage,
+        usage: response.usage
+      };
+    } catch (error) {
+      console.error("IPC Error - ai:messages:send:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:context:getData", async () => {
+    try {
+      return await aiService.buildContextData();
+    } catch (error) {
+      console.error("IPC Error - ai:context:getData:", error);
       throw error;
     }
   });

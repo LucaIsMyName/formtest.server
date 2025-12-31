@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import TrafficLights from "./TrafficLights";
 import NotificationButton from "./NotificationButton";
-import { Terminal, Search, Sun, Moon, Monitor, Settings, ChevronLeft, ChevronRight } from "lucide-react";
+import  Button  from "./ui/Button";
+import { Terminal, Search, Sun, Moon, Monitor, Settings, ChevronLeft, ChevronRight, Bot } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import { useAIStore } from "../store/useAIStore";
 
 interface CustomTitleBarProps {
   onRunAllTests?: () => void;
@@ -18,6 +20,21 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
   const location = useLocation();
   const [isMaximized, setIsMaximized] = useState(false);
   const [canGoBack, setCanGoBack] = useState(false);
+  const { isConfigured, loadSettings } = useAIStore();
+  const [aiEnabled, setAiEnabled] = useState(false);
+
+  // Check AI configuration status
+  useEffect(() => {
+    const checkAI = async () => {
+      await loadSettings();
+    };
+    checkAI();
+  }, [loadSettings]);
+
+  // Update aiEnabled when isConfigured changes
+  useEffect(() => {
+    setAiEnabled(isConfigured);
+  }, [isConfigured]);
 
   // Track navigation history
   useEffect(() => {
@@ -173,25 +190,27 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
               {/* Notifications */}
               <NotificationButton />
 
-              {/* Run All Tests */}
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <button
-                    onClick={onRunAllTests}
-                    className="p-1.5 rounded-md border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-neutral-600 dark:text-neutral-400"
-                    aria-label="Alle Tests ausführen">
-                    <Terminal size={14} />
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-neutral-900 dark:bg-neutral-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
-                    sideOffset={5}>
-                    Alle Tests ausführen
-                    <Tooltip.Arrow className="fill-neutral-900 dark:fill-neutral-700" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
+              {/* AI Assistant - Only show when configured */}
+              {aiEnabled && (
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      onClick={() => navigate('/ai-chat')}
+                      className="p-1.5 rounded-md border border-violet-200 dark:border-violet-700 bg-violet-50 dark:bg-violet-900/30 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors text-violet-600 dark:text-violet-400"
+                      aria-label="AI Assistent">
+                      <Bot size={14} />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="bg-neutral-900 dark:bg-neutral-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+                      sideOffset={5}>
+                      AI Assistent
+                      <Tooltip.Arrow className="fill-neutral-900 dark:fill-neutral-700" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              )}
 
               {/* Toggle Theme */}
               <Tooltip.Root>
@@ -232,6 +251,27 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                   </Tooltip.Content>
                 </Tooltip.Portal>
               </Tooltip.Root>
+                {/* Run All Tests */}
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <Button
+                    onClick={onRunAllTests}
+                    variant={"primary"}
+                    className="p-1.5 !px-1.5 !py-1.5"
+                    aria-label="Alle Tests ausführen">
+                    <Terminal size={14} />
+                  </Button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-neutral-900 dark:bg-neutral-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+                    sideOffset={5}>
+                    Alle Tests ausführen
+                    <Tooltip.Arrow className="fill-neutral-900 dark:fill-neutral-700" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+
             </div>
           </div>
         </div>

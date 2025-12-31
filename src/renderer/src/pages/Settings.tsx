@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
-import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code, Globe, Copy, RefreshCw, Lock, Eye, EyeOff, Shield } from "lucide-react";
+import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code, Globe, Copy, RefreshCw, Lock, Eye, EyeOff, Shield, Bot } from "lucide-react";
 import { CONFIG } from "../app.config";
 import Button from "../components/ui/Button";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import SelectorEditor from "../components/SelectorEditor";
 import GlobalDefaultsEditor from "../components/GlobalDefaultsEditor";
+import AISettingsSection from "../components/AISettingsSection";
 import type { ImportOptions, ImportResult } from "../../../common/types";
 import { Input } from "../components/ui/Input";
 import { Checkbox } from "../components/ui/Checkbox";
@@ -17,7 +18,7 @@ import { TableFilter } from "../components/ui/TableFilter";
 // Setting item interface
 interface SettingItem {
   id: string;
-  category: "test" | "ui" | "email" | "data" | "selectors" | "api" | "security";
+  category: "test" | "ui" | "email" | "data" | "selectors" | "api" | "security" | "ai";
   name: string;
   description: string;
   type: "input" | "select" | "checkbox" | "theme" | "action" | "component" | "api-key" | "password";
@@ -507,6 +508,8 @@ const Settings: React.FC = () => {
       { id: "global_defaults", category: "selectors", name: "Globale Standardwerte", description: "Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.", type: "component", value: "", fullWidth: true },
       // Security
       { id: "master_password", category: "security", name: "Master-Passwort", description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen", type: "password", value: "", fullWidth: true },
+      // AI
+      { id: "ai_settings", category: "ai", name: "AI-Assistent", description: "Konfiguriere den AI-Assistenten für Chat und Analyse-Funktionen.", type: "component", value: "", fullWidth: true },
     ],
     [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled, retentionDays, isCleaningUp, cleanupResult, handleCleanupOldTests]
   );
@@ -679,6 +682,8 @@ const Settings: React.FC = () => {
         return "API";
       case "security":
         return "Sicherheit";
+      case "ai":
+        return "AI";
       default:
         return category;
     }
@@ -700,6 +705,8 @@ const Settings: React.FC = () => {
         return "bg-orange-50/50 dark:bg-orange-950/30";
       case "security":
         return "bg-red-50/50 dark:bg-red-950/30";
+      case "ai":
+        return "bg-violet-50/50 dark:bg-violet-950/30";
       default:
         return "";
     }
@@ -754,6 +761,13 @@ const Settings: React.FC = () => {
           <Shield
             size={14}
             className="text-red-500"
+          />
+        );
+      case "ai":
+        return (
+          <Bot
+            size={14}
+            className="text-violet-500"
           />
         );
       default:
@@ -869,6 +883,9 @@ const Settings: React.FC = () => {
         }
         if (item.id === "global_defaults") {
           return <GlobalDefaultsEditor />;
+        }
+        if (item.id === "ai_settings") {
+          return <AISettingsSection />;
         }
         return null;
 
@@ -1014,6 +1031,7 @@ const Settings: React.FC = () => {
             { value: "selectors", label: "Selektoren" },
             { value: "api", label: "API" },
             { value: "security", label: "Sicherheit" },
+            { value: "ai", label: "AI" },
           ]}
           statusLabel="Kategorie"
           onClear={() => {

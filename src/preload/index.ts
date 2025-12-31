@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, ScriptValidationResult, FormScript } from '../common/types'
+import type { Form, PaymentMethod, TestRun, ImportOptions, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, ScriptValidationResult, FormScript, AIProvider, AISettings, AIChat, AIMessage, AIContextData } from '../common/types'
 import type { SelectorOverride, SelectorConfig } from '../common/selectors.config'
 
 // Custom APIs for renderer
@@ -211,6 +211,51 @@ const api = {
       ipcRenderer.invoke('formScripts:detach', formId, scriptId),
     updateOrder: (formId: number, scriptId: number, executionOrder: number) => 
       ipcRenderer.invoke('formScripts:updateOrder', formId, scriptId, executionOrder)
+  },
+
+  // AI operations
+  ai: {
+    // Settings
+    getSettings: (): Promise<AISettings> => 
+      ipcRenderer.invoke('ai:getSettings'),
+    updateSettings: (settings: Partial<AISettings>): Promise<AISettings> => 
+      ipcRenderer.invoke('ai:updateSettings', settings),
+    validateKey: (provider: AIProvider, apiKey: string, ollamaUrl?: string): Promise<boolean> => 
+      ipcRenderer.invoke('ai:validateKey', provider, apiKey, ollamaUrl),
+    getModels: (provider: AIProvider, apiKey?: string, ollamaUrl?: string): Promise<string[]> => 
+      ipcRenderer.invoke('ai:getModels', provider, apiKey, ollamaUrl),
+    isConfigured: (): Promise<boolean> => 
+      ipcRenderer.invoke('ai:isConfigured'),
+
+    // Chats
+    chats: {
+      getAll: (): Promise<AIChat[]> => 
+        ipcRenderer.invoke('ai:chats:getAll'),
+      getById: (id: number): Promise<AIChat | undefined> => 
+        ipcRenderer.invoke('ai:chats:getById', id),
+      create: (title?: string, context?: string): Promise<AIChat> => 
+        ipcRenderer.invoke('ai:chats:create', title, context),
+      updateTitle: (id: number, title: string): Promise<void> => 
+        ipcRenderer.invoke('ai:chats:updateTitle', id, title),
+      delete: (id: number): Promise<void> => 
+        ipcRenderer.invoke('ai:chats:delete', id),
+      deleteAll: (): Promise<void> => 
+        ipcRenderer.invoke('ai:chats:deleteAll')
+    },
+
+    // Messages
+    messages: {
+      getByChatId: (chatId: number): Promise<AIMessage[]> => 
+        ipcRenderer.invoke('ai:messages:getByChatId', chatId),
+      send: (chatId: number, content: string): Promise<{ userMessage: AIMessage; assistantMessage: AIMessage; usage?: { promptTokens: number; completionTokens: number } }> => 
+        ipcRenderer.invoke('ai:messages:send', chatId, content)
+    },
+
+    // Context
+    context: {
+      getData: (): Promise<AIContextData> => 
+        ipcRenderer.invoke('ai:context:getData')
+    }
   }
 }
 
