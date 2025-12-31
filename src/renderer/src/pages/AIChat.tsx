@@ -68,9 +68,9 @@ const AIChat: React.FC = () => {
   }
 
   return (
-    <div className="flex h-[calc(100vh-theme(spacing.14))] -mx-4 -mb-4 -mt-4 overflow-hidden border-r border-neutral-200 dark:border-neutral-900">
+    <div className="flex h-[calc(100vh-theme(spacing.14))] -mx-4 mr-0 -mb-4 -mt-4 overflow-hidden border-r border-neutral-200 dark:border-neutral-700">
       {/* Sidebar - Chat List - matching main sidebar style */}
-      <div className="w-[calc(clamp(16rem,22.5vw,40rem)/1.33)] border-r border-neutral-200 dark:border-neutral-700 flex flex-col ">
+      <div className="w-[calc(clamp(16rem,22.5vw,40rem)/1.33)] border-r border-neutral-200 dark:border-neutral-700 flex flex-col">
         {/* Sidebar Header */}
         <div className="border-b border-neutral-200 dark:border-neutral-800 flex-shrink-0">
           <Button
@@ -78,7 +78,11 @@ const AIChat: React.FC = () => {
             className="w-full gap-3 !px-6 !py-[23.5px] rounded-none"
             variant="primary">
             <Plus size={18} />
-            <span style={{ fontStretch: "115%" }} className="text-[clamp(0.8rem,1.075vw,0.9rem)]">Neuer Chat</span>
+            <span
+              style={{ fontStretch: "115%" }}
+              className="text-[clamp(0.8rem,1.075vw,0.9rem)]">
+              Chat
+            </span>
           </Button>
         </div>
 
@@ -98,7 +102,7 @@ const AIChat: React.FC = () => {
           <div className="border-t border-neutral-200 dark:border-neutral-800 flex-shrink-0 flex-grow-1">
             <button
               onClick={() => setShowDeleteAll(true)}
-              className="w-full !px-5 !py-7 flex items-center justify-start gap-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
+              className="w-full !px-6 !py-[31.5px] flex items-center justify-start gap-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
               <Trash2 size={14} />
               Alle Chats löschen
             </button>
@@ -127,8 +131,16 @@ const AIChat: React.FC = () => {
           </div>
           {settings && (
             <div className="flex items-center gap-2">
-              <Badge variant="info" size="sm">{settings.provider.toUpperCase()}</Badge>
-              <Badge variant="default" size="sm">{settings.model}</Badge>
+              <Badge
+                variant="info"
+                size="sm">
+                {settings.provider.toUpperCase()}
+              </Badge>
+              <Badge
+                variant="default"
+                size="sm">
+                {settings.model}
+              </Badge>
             </div>
           )}
         </div>

@@ -20,6 +20,13 @@ DEINE FÄHIGKEITEN:
 - Testdaten zusammenfassen und Trends erkennen
 - Probleme identifizieren und Lösungen vorschlagen
 - Fragen zur Anwendung beantworten
+- Formular-Analyse mit Empfehlungen zur Verbesserung der Erfolgsrate
+- Beste und schlechteste Formular+Bezahlmethode Kombinationen analysieren
+
+SPEZIELLE ANALYSEN:
+- Du hast Zugriff auf Statistiken zu Formular+Bezahlmethode Kombinationen
+- Nutze diese für Empfehlungen welche Kombinationen gut/schlecht funktionieren
+- Bei Formular-Analysen: Gib konkrete Handlungsempfehlungen
 
 AUSGABEFORMAT - SEHR WICHTIG:
 Du MUSST deine Antwort als JSON-Array von Blöcken formatieren. Jeder Block hat einen "type" und weitere Felder.
@@ -325,12 +332,59 @@ class AIService {
   }
 
   /**
+   * Get form + payment method combination statistics
+   */
+  async getCombinationStats(): Promise<{ formName: string; paymentMethod: string; total: number; success: number; failed: number; successRate: number }[]> {
+    const allTests = testRunQueries.getAll();
+    const forms = formQueries.getAll();
+    const paymentMethods = await paymentMethodQueries.getAll();
+    
+    // Group by form + payment method combination
+    const combinations = new Map<string, { formName: string; paymentMethod: string; total: number; success: number; failed: number }>();
+    
+    for (const test of allTests) {
+      const form = forms.find(f => f.id === test.formId);
+      const pm = paymentMethods.find(p => p.id === test.paymentMethodId);
+      const key = `${test.formId}-${test.paymentMethodId}`;
+      
+      if (!combinations.has(key)) {
+        combinations.set(key, {
+          formName: form?.name || `Form #${test.formId}`,
+          paymentMethod: pm?.name || `PM #${test.paymentMethodId}`,
+          total: 0,
+          success: 0,
+          failed: 0,
+        });
+      }
+      
+      const combo = combinations.get(key)!;
+      combo.total++;
+      if (test.status === 'SUCCESS') combo.success++;
+      if (test.status === 'FAILURE') combo.failed++;
+    }
+    
+    // Convert to array and calculate success rate
+    return Array.from(combinations.values())
+      .map(c => ({
+        ...c,
+        successRate: c.total > 0 ? Math.round((c.success / c.total) * 100) : 0,
+      }))
+      .sort((a, b) => b.total - a.total); // Sort by most tested
+  }
+
+  /**
    * Build context string for AI prompt
    */
   private async buildContextString(): Promise<string> {
     const data = await this.buildContextData();
     const detailedTests = this.getDetailedTestResults();
     const failedTests = detailedTests.filter(t => t.status === 'FAILURE');
+    const combinationStats = await this.getCombinationStats();
+    
+    // Best and worst combinations
+    const sortedByRate = [...combinationStats].filter(c => c.total >= 3).sort((a, b) => b.successRate - a.successRate);
+    const bestCombos = sortedByRate.slice(0, 5);
+    const worstCombos = sortedByRate.slice(-5).reverse();
     
     return `
 AKTUELLE APP-DATEN:
@@ -346,6 +400,12 @@ TESTERGEBNISSE ÜBERSICHT:
 - Erfolgreich: ${data.recentTests.success}
 - Fehlgeschlagen: ${data.recentTests.failed}
 - Erfolgsrate: ${data.recentTests.successRate}%
+
+BESTE FORMULAR+BEZAHLMETHODE KOMBINATIONEN (mind. 3 Tests):
+${bestCombos.map(c => `- ${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten'}
+
+SCHLECHTESTE FORMULAR+BEZAHLMETHODE KOMBINATIONEN (mind. 3 Tests):
+${worstCombos.map(c => `- ${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten'}
 
 LETZTE FEHLGESCHLAGENE TESTS (${failedTests.length}):
 ${failedTests.slice(0, 10).map(t => `- ${t.formName}: ${t.error || 'Unbekannter Fehler'} (${t.runAt})`).join('\n') || '- Keine fehlgeschlagenen Tests'}
