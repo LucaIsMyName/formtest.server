@@ -21,12 +21,17 @@ DEINE FÄHIGKEITEN:
 - Probleme identifizieren und Lösungen vorschlagen
 - Fragen zur Anwendung beantworten
 
-FORMATIERUNG:
+FORMATIERUNG - SEHR WICHTIG:
 - Antworte in der Sprache des Nutzers (Deutsch wenn auf Deutsch gefragt, English if asked in English)
 - Verwende Markdown für Formatierung
-- Nutze Tabellen für strukturierte Daten
+- WICHTIG: Für tabellarische Daten IMMER echte Markdown-Tabellen verwenden mit | und ---
+- Beispiel für Tabellen:
+  | Kategorie | Anzahl |
+  |-----------|--------|
+  | Erfolgreich | 208 |
+  | Fehlgeschlagen | 29 |
 - Nutze Listen für Aufzählungen
-- Sei präzise und hilfreich
+- Sei präzise und kompakt
 
 KONTEXT:
 Du hast Zugriff auf aktuelle App-Daten wie Formulare, Bezahlmethoden, Testergebnisse und Zeitpläne.
@@ -264,10 +269,32 @@ class AIService {
   }
 
   /**
+   * Get detailed test results for AI context
+   */
+  getDetailedTestResults(): { formName: string; paymentMethodId: number; status: string; error?: string; runAt: string }[] {
+    const allTests = testRunQueries.getAll();
+    const forms = formQueries.getAll();
+    
+    // Get last 50 tests with details
+    return allTests.slice(0, 50).map(t => {
+      const form = forms.find(f => f.id === t.formId);
+      return {
+        formName: form?.name || `Form #${t.formId}`,
+        paymentMethodId: t.paymentMethodId,
+        status: t.status,
+        error: t.errorMessage || undefined,
+        runAt: t.runAt instanceof Date ? t.runAt.toISOString() : String(t.runAt),
+      };
+    });
+  }
+
+  /**
    * Build context string for AI prompt
    */
   private async buildContextString(): Promise<string> {
     const data = await this.buildContextData();
+    const detailedTests = this.getDetailedTestResults();
+    const failedTests = detailedTests.filter(t => t.status === 'FAILURE');
     
     return `
 AKTUELLE APP-DATEN:
@@ -278,11 +305,17 @@ ${data.forms.map(f => `- ${f.name} (${f.isActive ? 'aktiv' : 'inaktiv'}): ${f.ur
 BEZAHLMETHODEN (${data.paymentMethods.length}):
 ${data.paymentMethods.map(pm => `- ${pm.name} (${pm.type}, ${pm.isActive ? 'aktiv' : 'inaktiv'})`).join('\n') || '- Keine Bezahlmethoden vorhanden'}
 
-TESTERGEBNISSE:
+TESTERGEBNISSE ÜBERSICHT:
 - Gesamt: ${data.recentTests.total}
 - Erfolgreich: ${data.recentTests.success}
 - Fehlgeschlagen: ${data.recentTests.failed}
 - Erfolgsrate: ${data.recentTests.successRate}%
+
+LETZTE FEHLGESCHLAGENE TESTS (${failedTests.length}):
+${failedTests.slice(0, 10).map(t => `- ${t.formName}: ${t.error || 'Unbekannter Fehler'} (${t.runAt})`).join('\n') || '- Keine fehlgeschlagenen Tests'}
+
+LETZTE 10 TESTS:
+${detailedTests.slice(0, 10).map(t => `- ${t.formName}: ${t.status} (${t.runAt})`).join('\n') || '- Keine Tests vorhanden'}
 
 ZEITPLÄNE (${data.schedules.length}):
 ${data.schedules.map(s => `- ${s.name}: ${s.cronExpression} (${s.isActive ? 'aktiv' : 'inaktiv'})`).join('\n') || '- Keine Zeitpläne vorhanden'}
