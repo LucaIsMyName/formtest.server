@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "./ui/Button";
 import IconPicker from "./IconPicker";
+import FormStatistics from "./FormStatistics";
 import { renderIcon } from "../utils/iconHelper";
 import type { Form, FormFieldMapping, FieldMappingType, FieldMappingAction } from "../../../common/types";
 import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "./ui/Drawer";
@@ -10,7 +11,7 @@ import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
 import { StatusBadge } from "./ui/Badge";
-import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink, Play } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink, Play, BarChart3 } from "lucide-react";
 import { CONFIG } from "@/app.config";
 import { formatDate } from "../utils/formatters";
 
@@ -273,6 +274,17 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                 </TableBody>
               </Table>
             </div>
+          </div>
+        )}
+
+        {/* Statistics Section - only shown when editing */}
+        {editForm && (
+          <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3 flex items-center gap-2">
+              <BarChart3 size={14} />
+              Test-Statistiken
+            </label>
+            <FormStatistics formId={editForm.id} formName={editForm.name} />
           </div>
         )}
 
