@@ -1,9 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { Bot, User, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { AIMessage } from '../../../../common/types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/Table';
+import { StatusBadge } from '../ui/Badge';
 
 // Types for structured AI response blocks
 interface TextBlock {
@@ -131,22 +133,68 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
       return <HeadingTag className={headingClasses[block.level]}>{block.content}</HeadingTag>;
 
     case 'table':
+      // Check if this is a test results table (has columns like Formular, Ergebnis, etc.)
+      const isTestTable = block.headers.some(h => 
+        h.toLowerCase().includes('formular') || 
+        h.toLowerCase().includes('ergebnis') ||
+        h.toLowerCase().includes('status')
+      );
+      
+      // Helper to check if cell is a status value
+      const isStatusCell = (cell: string, header: string) => {
+        const statusValues = ['success', 'failure', 'running', 'pending', 'stopped', 'queued', 'active', 'inactive'];
+        return statusValues.includes(cell.toLowerCase()) || 
+               header.toLowerCase().includes('ergebnis') ||
+               header.toLowerCase().includes('status');
+      };
+      
+      // Helper to check if cell looks like a date/time
+      const isDateCell = (cell: string, header: string) => {
+        return header.toLowerCase().includes('datum') ||
+               header.toLowerCase().includes('zeit') ||
+               header.toLowerCase().includes('uhrzeit') ||
+               header.toLowerCase().includes('date') ||
+               /^\d{4}-\d{2}-\d{2}/.test(cell) ||
+               /^\d{2}\.\d{2}\.\d{4}/.test(cell);
+      };
+      
       return (
         <div className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-600">
           <Table dividers={false}>
             <TableHeader>
               <TableRow>
                 {block.headers.map((header, i) => (
-                  <TableHead key={i}>{header}</TableHead>
+                  <TableHead key={i} className="text-[10px] py-2 px-3">{header}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
               {block.rows.map((row, i) => (
-                <TableRow key={i}>
-                  {row.map((cell, j) => (
-                    <TableCell key={j}>{cell}</TableCell>
-                  ))}
+                <TableRow key={i} className="hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
+                  {row.map((cell, j) => {
+                    const header = block.headers[j] || '';
+                    const isFirstCol = j === 0;
+                    const shouldLink = isTestTable && isFirstCol;
+                    const isStatus = isStatusCell(cell, header);
+                    const isDate = isDateCell(cell, header);
+                    
+                    return (
+                      <TableCell key={j} className={`text-sm py-2 px-3 ${isDate ? 'font-mono text-xs' : ''}`}>
+                        {shouldLink ? (
+                          <Link 
+                            to="/test-results" 
+                            className="text-blue-600 dark:text-blue-400 hover:underline"
+                          >
+                            {cell}
+                          </Link>
+                        ) : isStatus ? (
+                          <StatusBadge status={cell.toUpperCase()} size="sm" />
+                        ) : (
+                          cell
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))}
             </TableBody>
