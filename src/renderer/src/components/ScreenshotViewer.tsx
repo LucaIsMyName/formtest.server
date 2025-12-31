@@ -104,7 +104,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
 
   if (!imageUrl) {
     return (
-      <div className={`flex items-center justify-center p-8 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-md ${className}`}>
+      <div className={`sr-only flex items-center justify-center p-8 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-md ${className}`}>
         <div className="text-center text-neutral-400 dark:text-neutral-500">
           <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
           <p className="text-sm">Kein Screenshot verfügbar</p>
@@ -115,7 +115,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
 
   if (imageError) {
     return (
-      <div className={`flex items-center justify-center p-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md ${className}`}>
+      <div className={`sr-only flex items-center justify-center p-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md ${className}`}>
         <div className="text-center text-red-500 dark:text-red-400">
           <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
           <p className="text-sm">Screenshot konnte nicht geladen werden</p>
@@ -129,7 +129,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
     <>
       {/* Thumbnail View */}
       <div className={`relative group ${className}`}>
-        <label className="block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
+        <label className="sr-only block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
           Screenshot
         </label>
         <div 
@@ -137,7 +137,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
           onClick={() => setIsLightboxOpen(true)}
         >
           {!imageLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
+            <div className="sr-only absolute inset-0 flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
               <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
             </div>
           )}
