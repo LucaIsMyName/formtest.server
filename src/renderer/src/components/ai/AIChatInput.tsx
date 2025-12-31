@@ -36,7 +36,7 @@ const AIChatInput: React.FC<AIChatInputProps> = ({ onSend, disabled, isSending }
 
   return (
     <form onSubmit={handleSubmit} className="p-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-end gap-3">
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
@@ -46,13 +46,13 @@ const AIChatInput: React.FC<AIChatInputProps> = ({ onSend, disabled, isSending }
             placeholder="Nachricht eingeben..."
             disabled={disabled || isSending}
             rows={1}
-            className="w-full px-4 py-3 pr-12 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-2.5 pr-12 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm disabled:opacity-50 disabled:cursor-not-allowed min-h-[40px]"
           />
         </div>
         <button
           type="submit"
           disabled={!message.trim() || disabled || isSending}
-          className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white flex items-center justify-center transition-colors"
+          className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-300 dark:disabled:bg-neutral-700 disabled:cursor-not-allowed text-white flex items-center justify-center transition-colors mb-px"
         >
           {isSending ? (
             <Loader2 size={18} className="animate-spin" />
