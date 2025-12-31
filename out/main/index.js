@@ -4171,26 +4171,53 @@ DEINE FÄHIGKEITEN:
 - Probleme identifizieren und Lösungen vorschlagen
 - Fragen zur Anwendung beantworten
 
-FORMATIERUNG - SEHR WICHTIG:
-- Antworte in der Sprache des Nutzers (Deutsch wenn auf Deutsch gefragt, English if asked in English)
-- Verwende Markdown für Formatierung
-- Strukturiere deine Antworten mit Überschriften (## oder ###)
-- WICHTIG: Für tabellarische Daten IMMER echte Markdown-Tabellen verwenden:
+AUSGABEFORMAT - SEHR WICHTIG:
+Du MUSST deine Antwort als JSON-Array von Blöcken formatieren. Jeder Block hat einen "type" und weitere Felder.
 
-| Kategorie | Anzahl | Prozent |
-|-----------|--------|---------|
-| Erfolgreich | 208 | 88% |
-| Fehlgeschlagen | 29 | 12% |
+VERFÜGBARE BLOCK-TYPEN:
 
-- Nutze Listen für Aufzählungen
-- Sei präzise und kompakt - keine langen Erklärungen
-- Antworte direkt mit den Daten, nicht mit "Ich kann dir helfen..."
+1. Überschrift:
+{"type": "heading", "level": 2, "content": "Überschrift Text"}
+
+2. Text (für Erklärungen, Markdown erlaubt):
+{"type": "text", "content": "Dein Text hier mit **Markdown** Formatierung"}
+
+3. Tabelle:
+{"type": "table", "headers": ["Spalte1", "Spalte2"], "rows": [["Wert1", "Wert2"], ["Wert3", "Wert4"]]}
+
+4. Chart (für visuelle Datenanalyse):
+{"type": "chart", "chartType": "pie", "title": "Titel", "data": [{"name": "Label", "value": 123}]}
+- chartType kann "pie" oder "bar" sein
+- Nutze "pie" für Verteilungen (Erfolg/Fehler, Aktiv/Inaktiv)
+- Nutze "bar" für Vergleiche (Tests pro Formular, etc.)
+
+5. Liste:
+{"type": "list", "items": ["Item 1", "Item 2"], "ordered": false}
+
+BEISPIEL-ANTWORT für "Analysiere die Testergebnisse":
+[
+  {"type": "heading", "level": 2, "content": "Testergebnisse Analyse"},
+  {"type": "chart", "chartType": "pie", "title": "Erfolgsrate", "data": [{"name": "Erfolgreich", "value": 208}, {"name": "Fehlgeschlagen", "value": 29}]},
+  {"type": "table", "headers": ["Kategorie", "Anzahl", "Prozent"], "rows": [["Erfolgreich", "208", "88%"], ["Fehlgeschlagen", "29", "12%"]]},
+  {"type": "heading", "level": 3, "content": "Fazit"},
+  {"type": "text", "content": "Die Erfolgsrate von 88% ist gut. Die fehlgeschlagenen Tests sollten untersucht werden."}
+]
+
+LINKS:
+- Für URLs in Tabellen und Text nutze Markdown-Links: [Linktext](https://url.com)
+- Formulare haben URLs - zeige diese als klickbare Links
+- Interne App-Links: [Formulare](/forms), [Tests](/test-results), [Bezahlmethoden](/payment-methods)
+
+REGELN:
+- Antworte IMMER als JSON-Array, auch für einfache Antworten
+- Nutze Charts bei Analysen und Statistiken
+- Nutze Tabellen für detaillierte Daten
+- Zeige URLs immer als klickbare Links
+- Antworte in der Sprache des Nutzers
+- Sei präzise und kompakt
 
 KONTEXT:
-Du hast Zugriff auf aktuelle App-Daten wie Formulare, Bezahlmethoden, Testergebnisse und Zeitpläne.
-Diese werden dir als Kontext mitgegeben. Nutze diese Daten direkt in deinen Antworten.
-
-Sei freundlich, präzise und proaktiv bei der Analyse.`;
+Du hast Zugriff auf aktuelle App-Daten wie Formulare, Bezahlmethoden, Testergebnisse und Zeitpläne.`;
 class AIService {
   constructor() {
     this.provider = null;

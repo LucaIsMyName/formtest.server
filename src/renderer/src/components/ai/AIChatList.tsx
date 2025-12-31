@@ -65,35 +65,37 @@ const AIChatList: React.FC<AIChatListProps> = ({
           >
             <MessageSquare size={18} strokeWidth={activeChat?.id === chat.id ? 2 : 1.75} className={`flex-shrink-0 ${activeChat?.id === chat.id ? 'text-neutral-900 dark:text-neutral-100' : 'text-neutral-500 dark:text-neutral-400'}`} />
             
-            <div className="flex-1 min-w-0">
-              {editingId === chat.id ? (
-                <Input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSaveEdit(chat.id);
-                    if (e.key === 'Escape') handleCancelEdit();
-                  }}
-                  className="h-7 text-sm w-full"
-                  autoFocus
-                  onClick={(e) => e.stopPropagation()}
-                />
-              ) : (
-                <>
-                  <p style={{ fontStretch: "115%" }} className="text-[clamp(0.8rem,1.075vw,0.9rem)] truncate">{chat.title}</p>
-                  <p className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 mt-0.5">
-                    {new Date(chat.updatedAt).toLocaleDateString('de-DE', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
-                </>
+            <div className="flex-1 min-w-0 relative">
+              {/* Always render the text to maintain height */}
+              <p style={{ fontStretch: "115%" }} className={`text-[clamp(0.8rem,1.075vw,0.9rem)] truncate ${editingId === chat.id ? 'invisible' : ''}`}>{chat.title}</p>
+              <p className={`text-[10px] font-mono text-neutral-400 dark:text-neutral-500 mt-0.5 ${editingId === chat.id ? 'invisible' : ''}`}>
+                {new Date(chat.updatedAt).toLocaleDateString('de-DE', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+              {/* Overlay input when editing */}
+              {editingId === chat.id && (
+                <div className="absolute inset-0 flex items-center">
+                  <Input
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveEdit(chat.id);
+                      if (e.key === 'Escape') handleCancelEdit();
+                    }}
+                    className="h-7 text-sm w-full"
+                    autoFocus
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
               )}
             </div>
             
-            <div className="flex items-center gap-1 flex-shrink-0">
+            {/* Action buttons - always same width container */}
+            <div className="flex items-center gap-1 flex-shrink-0 w-14 justify-end">
               {editingId === chat.id ? (
                 <>
                   <button

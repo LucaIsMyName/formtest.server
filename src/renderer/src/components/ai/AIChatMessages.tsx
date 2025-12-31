@@ -11,6 +11,61 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveCo
 // Chart colors
 const CHART_COLORS = ['#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
 
+// Helper to render markdown links [text](url) as clickable anchors
+const renderWithLinks = (text: string): React.ReactNode => {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+  let key = 0;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    // Add text before the link
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    
+    const linkText = match[1];
+    const url = match[2];
+    
+    // Check if it's an internal or external link
+    const isExternal = url.startsWith('http://') || url.startsWith('https://');
+    
+    if (isExternal) {
+      parts.push(
+        <a
+          key={key++}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          {linkText}
+        </a>
+      );
+    } else {
+      parts.push(
+        <Link
+          key={key++}
+          to={url}
+          className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          {linkText}
+        </Link>
+      );
+    }
+    
+    lastIndex = match.index + match[0].length;
+  }
+  
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  
+  return parts.length > 0 ? parts : text;
+};
+
 // Types for structured AI response blocks
 interface TextBlock {
   type: 'text';
@@ -201,7 +256,7 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
                         ) : isStatus ? (
                           <StatusBadge status={cell.toUpperCase()} size="sm" />
                         ) : (
-                          cell
+                          renderWithLinks(cell)
                         )}
                       </TableCell>
                     );

@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { formatDateTime } from "../utils/formatters";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import Button from "./ui/Button";
 
 const NotificationButton: React.FC = () => {
   const navigate = useNavigate();
@@ -56,8 +57,9 @@ const NotificationButton: React.FC = () => {
         <Tooltip.Root>
           <Tooltip.Trigger asChild>
             <DropdownMenu.Trigger asChild>
-              <button
-                className="relative p-1.5 rounded-md border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-neutral-600 dark:text-neutral-400"
+              <Button
+                   variant="secondary"
+                    className="p-1.5 !px-1.5 !py-1.5"
                 aria-label="Benachrichtigungen">
                 <Bell size={14} />
                 {unreadCount > 0 && (
@@ -65,7 +67,7 @@ const NotificationButton: React.FC = () => {
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}
-              </button>
+              </Button>
             </DropdownMenu.Trigger>
           </Tooltip.Trigger>
           <Tooltip.Portal>
