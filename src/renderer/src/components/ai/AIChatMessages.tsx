@@ -294,9 +294,14 @@ interface AIChatMessagesProps {
 }
 
 const SUGGESTIONS = [
-  'Zeige mir alle fehlgeschlagenen Tests',
-  'Welche Formulare haben die beste Erfolgsrate?',
-  'Analysiere die letzten Testergebnisse',
+  'Fehlgeschlagene Tests',
+  'Erfolgsrate der Formulare',
+  'Letzte Testergebnisse',
+  'Aktive Formulare',
+  'Bezahlmethoden Status',
+  'Test-Statistiken',
+  'Probleme identifizieren',
+  'Zeitplan-Übersicht',
 ];
 
 const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, onSuggestionClick }) => {
@@ -309,22 +314,22 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
 
   if (messages.length === 0 && !isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center min-h-[400px]">
-        <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-          <Bot size={32} className="text-blue-500" />
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center h-full">
+        <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
+          <Bot size={24} className="text-blue-500" />
         </div>
-        <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+        <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100 mb-1">
           Wie kann ich helfen?
         </h3>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-sm mb-6">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-6">
           Frag mich nach Formularen, Bezahlmethoden, Testergebnissen oder lass mich deine Daten analysieren.
         </p>
-        <div className="grid grid-cols-1 gap-2 w-full max-w-md">
+        <div className="flex flex-wrap justify-center gap-2 max-w-lg">
           {SUGGESTIONS.map((suggestion, i) => (
             <button
               key={i}
               onClick={() => onSuggestionClick?.(suggestion)}
-              className="text-left text-sm px-4 py-3 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
+              className="text-xs px-3 py-1.5 rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               {suggestion}
             </button>

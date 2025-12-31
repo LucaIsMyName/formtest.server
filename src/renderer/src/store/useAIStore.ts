@@ -212,10 +212,14 @@ export const useAIStore = create<AIState>((set, get) => ({
     
     // Create a new chat if none is active
     let chatId = activeChat?.id;
+    let isNewChat = false;
     if (!chatId) {
-      const newChat = await get().createChat();
+      // Create chat with initial prompt as title (truncated)
+      const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+      const newChat = await get().createChat(title);
       if (!newChat) return;
       chatId = newChat.id;
+      isNewChat = true;
     }
 
     set({ isSending: true, error: null });
@@ -226,7 +230,10 @@ export const useAIStore = create<AIState>((set, get) => ({
       const messages = await window.api.ai.messages.getByChatId(chatId);
       const chats = await window.api.ai.chats.getAll();
       
-      set({ messages, chats, isSending: false });
+      // Update activeChat if it was just created
+      const updatedActiveChat = isNewChat ? chats.find(c => c.id === chatId) || get().activeChat : get().activeChat;
+      
+      set({ messages, chats, activeChat: updatedActiveChat, isSending: false });
     } catch (error) {
       console.error('Failed to send message:', error);
       set({ 
