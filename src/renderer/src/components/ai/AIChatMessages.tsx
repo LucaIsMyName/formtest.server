@@ -6,6 +6,10 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/Table';
 import { StatusBadge } from '../ui/Badge';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+
+// Chart colors
+const CHART_COLORS = ['#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
 
 // Types for structured AI response blocks
 interface TextBlock {
@@ -31,7 +35,14 @@ interface ListBlock {
   ordered?: boolean;
 }
 
-type ContentBlock = TextBlock | HeadingBlock | TableBlock | ListBlock;
+interface ChartBlock {
+  type: 'chart';
+  chartType: 'pie' | 'bar';
+  data: { name: string; value: number }[];
+  title?: string;
+}
+
+type ContentBlock = TextBlock | HeadingBlock | TableBlock | ListBlock | ChartBlock;
 
 // Parse AI response to extract structured blocks
 function parseAIResponse(content: string): ContentBlock[] {
@@ -212,8 +223,47 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
         </ListTag>
       );
 
+    case 'chart':
+      return (
+        <div className="rounded-lg border border-neutral-200 dark:border-neutral-600 p-4 bg-white dark:bg-neutral-800">
+          {block.title && (
+            <h4 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-3">{block.title}</h4>
+          )}
+          <ResponsiveContainer width="100%" height={200}>
+            {block.chartType === 'pie' ? (
+              <PieChart>
+                <Pie
+                  data={block.data}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={70}
+                  paddingAngle={2}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                  labelLine={false}
+                >
+                  {block.data.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            ) : (
+              <BarChart data={block.data}>
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                <YAxis tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            )}
+          </ResponsiveContainer>
+        </div>
+      );
+
     case 'text':
     default:
+      if (!('content' in block)) return null;
       return (
         <div className="text-sm leading-relaxed">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -313,10 +363,10 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
             }`}
           >
             <div
-              className={`inline-block px-4 py-2 rounded-2xl ${
+              className={`inline-block max-w-full ${
                 message.role === 'user'
-                  ? 'bg-blue-500 text-white rounded-br-md'
-                  : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-900 dark:text-neutral-100 rounded-bl-md'
+                  ? 'px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md'
+                  : 'text-neutral-900 dark:text-neutral-100'
               }`}
             >
               {message.role === 'user' ? (
