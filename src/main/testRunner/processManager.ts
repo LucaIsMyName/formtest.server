@@ -287,9 +287,10 @@ export class TestProcessManager extends EventEmitter {
           }
           this.isRunning = false;
           this.process = null;
-          // Clear any pending messages
+          // Clear any pending messages and reject their promises
           for (const { reject, timeout } of this.messageQueue.values()) {
             clearTimeout(timeout);
+            reject(new Error('Process force stopped for retry'));
           }
           this.messageQueue.clear();
         }

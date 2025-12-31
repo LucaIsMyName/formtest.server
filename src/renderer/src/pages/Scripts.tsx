@@ -100,7 +100,7 @@ const Scripts: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className={CONFIG.style.title.className}>Custom Scripts</h1>
+          <h1 className={CONFIG.style.title.className}>Skripte</h1>
         </div>
         <ScriptsSkeleton />
       </div>
@@ -125,15 +125,15 @@ const Scripts: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className={CONFIG.style.title.className}>Custom Scripts</h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Playwright-Snippets für erweiterte Test-Automatisierung</p>
+          <h1 className={CONFIG.style.title.className}>Skripte</h1>
+          <p className="sr-only text-sm text-neutral-500 dark:text-neutral-400 mt-1">Playwright-Snippets für erweiterte Test-Automatisierung</p>
         </div>
         <Button onClick={() => setIsDrawerOpen(true)}>
           <Plus
             size={16}
             className="mr-2"
           />
-          Neues Script
+          Neues Skript
         </Button>
       </div>
 
@@ -156,7 +156,7 @@ const Scripts: React.FC = () => {
               <TableRow>
                 <TableCell
                   colSpan={7}
-                  className="text-center text-sm py-8 text-neutral-500 dark:text-neutral-400">
+                  className="text-left text-sm py-4 text-neutral-500 dark:text-neutral-400">
                   Noch keine Custom Scripts erstellt. Klicke auf "Neues Script" um zu beginnen.
                 </TableCell>
               </TableRow>

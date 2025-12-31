@@ -2526,6 +2526,7 @@ class TestProcessManager extends events.EventEmitter {
           this.process = null;
           for (const { reject, timeout } of this.messageQueue.values()) {
             clearTimeout(timeout);
+            reject(new Error("Process force stopped for retry"));
           }
           this.messageQueue.clear();
         }

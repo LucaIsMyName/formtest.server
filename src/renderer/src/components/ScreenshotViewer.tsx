@@ -23,8 +23,17 @@ function getScreenshotUrl(filePath: string | undefined): string | undefined {
     return filePath;
   }
   
-  // Convert absolute file path to local-file:// protocol
-  // Encode the path to handle special characters
+  // For absolute paths (starting with /), use file:// URL format
+  // local-file:// protocol expects: local-file:///absolute/path
+  // The triple slash is: local-file:// + / (root) + path
+  if (filePath.startsWith('/')) {
+    // Absolute Unix path - don't encode slashes, just encode special chars in segments
+    const segments = filePath.split('/');
+    const encodedSegments = segments.map(seg => encodeURIComponent(seg));
+    return `local-file://${encodedSegments.join('/')}`;
+  }
+  
+  // Relative path - just encode and prepend protocol
   const encodedPath = encodeURIComponent(filePath).replace(/%2F/g, '/');
   return `local-file://${encodedPath}`;
 }
@@ -104,7 +113,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
 
   if (!imageUrl) {
     return (
-      <div className={`sr-only flex items-center justify-center p-8 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-md ${className}`}>
+      <div className={`flex items-center justify-center p-8 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-md ${className}`}>
         <div className="text-center text-neutral-400 dark:text-neutral-500">
           <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
           <p className="text-sm">Kein Screenshot verfügbar</p>
@@ -115,9 +124,9 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
 
   if (imageError) {
     return (
-      <div className={`sr-only flex items-center justify-center p-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md ${className}`}>
-        <div className="text-center text-red-500 dark:text-red-400">
-          <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
+      <div className={`flex items-center justify-start p-4 bg-red-50 dark:bg-red-950/10 border border-red-200 dark:border-red-900/70 rounded-md ${className}`}>
+        <div className="text-left text-red-500 dark:text-red-500">
+          <ImageIcon className="w-12 h-12 mx-0 mb-2 opacity-50" />
           <p className="text-sm">Screenshot konnte nicht geladen werden</p>
           <p className="text-xs mt-1 opacity-75">{screenshotPath}</p>
         </div>
@@ -129,7 +138,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
     <>
       {/* Thumbnail View */}
       <div className={`relative group ${className}`}>
-        <label className="sr-only block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
+        <label className="block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
           Screenshot
         </label>
         <div 
@@ -137,7 +146,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
           onClick={() => setIsLightboxOpen(true)}
         >
           {!imageLoaded && (
-            <div className="sr-only absolute inset-0 flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
+            <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
               <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
             </div>
           )}

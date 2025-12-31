@@ -1513,13 +1513,13 @@ const TestResults: React.FC = () => {
                 {/* Notes */}
                 <div className="mb-6 pb-6 border-b dark:border-neutral-700">
                   <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-2">
-                    Notes
+                    Notizen
                     {isSavingNotes && <span className="ml-2 text-xs text-neutral-400">(saving...)</span>}
                   </label>
                   <textarea
                     value={notes}
                     onChange={(e) => handleNotesChange(e.target.value)}
-                    placeholder="Add notes about this test run..."
+                    placeholder="Notizen zu diesen Test hinzufügen"
                     className="w-full h-24 px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-900 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 rounded-md resize-none !focus:outline-0 !focus:ring-0 !focus:ring-offset-0 !focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                 </div>
