@@ -35,7 +35,7 @@ const PaymentMethodSparkline: React.FC<{ paymentMethodId: number; testRuns: any[
 };
 
 const PaymentMethodsSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+  <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
@@ -272,7 +272,7 @@ const PaymentMethods: React.FC = () => {
 
   const getPaymentMethodIcon = (method: PaymentMethod) => {
     const iconName = method.icon || getDefaultPaymentIcon(method.type);
-    const colorClass = method.type === "paypal" ? "text-blue-600 dark:text-blue-400" : method.type === "sepa" ? "text-green-600 dark:text-green-400" : method.type === "creditcard" ? "text-purple-600 dark:text-purple-400" : method.type === "eps" ? "text-orange-600 dark:text-orange-400" : "text-gray-600 dark:text-gray-400";
+    const colorClass = method.type === "paypal" ? "text-blue-600 dark:text-blue-400" : method.type === "sepa" ? "text-green-600 dark:text-green-400" : method.type === "creditcard" ? "text-purple-600 dark:text-purple-400" : method.type === "eps" ? "text-orange-600 dark:text-orange-400" : "text-neutral-600 dark:text-neutral-400";
     return renderIcon(iconName, 14, colorClass);
   };
 
@@ -351,10 +351,10 @@ const PaymentMethods: React.FC = () => {
       {isLoading && paymentMethods.length === 0 ? (
         <PaymentMethodsSkeleton />
       ) : paymentMethods.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-gray-500 dark:text-gray-400 mb-4">Noch keine Bezahlmethoden konfiguriert.</div>
+              <div className="text-neutral-500 dark:text-neutral-400 mb-4">Noch keine Bezahlmethoden konfiguriert.</div>
               <Button
                 onClick={handleAddMethod}
                 variant="primary"
@@ -366,16 +366,16 @@ const PaymentMethods: React.FC = () => {
           </div>
         </div>
       ) : displayedMethods.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-gray-500 dark:text-gray-400 mb-4">Keine Bezahlmethoden gefunden.</div>
-              <p className="text-gray-500 dark:text-gray-400">Versuche andere Suchbegriffe oder Filter.</p>
+              <div className="text-neutral-500 dark:text-neutral-400 mb-4">Keine Bezahlmethoden gefunden.</div>
+              <p className="text-neutral-500 dark:text-neutral-400">Versuche andere Suchbegriffe oder Filter.</p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
@@ -425,7 +425,7 @@ const PaymentMethods: React.FC = () => {
                   key={method.id}
                   tabIndex={0}
                   role="button"
-                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                  className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
                   onClick={() => handleEditMethod(method)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -443,14 +443,14 @@ const PaymentMethods: React.FC = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {getPaymentMethodIcon(method)}
-                      <span className="font-medium text-sm text-gray-900 dark:text-white">{method.name}</span>
+                      <span className="font-medium text-sm text-neutral-900 dark:text-white">{method.name}</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <span className="text-[10px] font-mono text-gray-900 dark:text-gray-300">{method.typeLabel}</span>
+                    <span className="text-[10px] font-mono text-neutral-900 dark:text-neutral-300">{method.typeLabel}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{maskSensitiveData(method)}</span>
+                    <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{maskSensitiveData(method)}</span>
                   </TableCell>
                   <TableCell className="w-120px">
                     <button
@@ -462,7 +462,7 @@ const PaymentMethods: React.FC = () => {
                       </StatusBadge>
                     </button>
                   </TableCell>
-                  <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(method.createdAt)}</TableCell>
+                  <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{formatDate(method.createdAt)}</TableCell>
                   <TableCell className="text-left">
                     <PaymentMethodSparkline paymentMethodId={method.id} testRuns={testRuns} />
                   </TableCell>

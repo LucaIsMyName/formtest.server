@@ -81,14 +81,14 @@ const RunningTimer: React.FC<{ runAt: Date | string; isRunning: boolean }> = mem
   }, [runAt, isRunning]);
 
   return (
-    <span className={`text-[10px] font-mono tabular-nums ${isRunning ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>
+    <span className={`text-[10px] font-mono tabular-nums ${isRunning ? "text-neutral-900 dark:text-white" : "text-neutral-500 dark:text-neutral-400"}`}>
       {formatElapsedTime(elapsed)}
     </span>
   );
 });
 
 const TestResultsSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+  <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
@@ -147,7 +147,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
       case "running":
         return <Play className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 animate-pulse" />;
       default:
-        return <Clock className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />;
+        return <Clock className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500" />;
     }
   };
 
@@ -160,7 +160,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
       case "skipped":
         return "text-yellow-700 dark:text-yellow-400";
       default:
-        return "text-gray-700 dark:text-gray-300";
+        return "text-neutral-700 dark:text-neutral-300";
     }
   };
 
@@ -211,11 +211,11 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   const allSteps = structuredSteps?.length ? [...structuredSteps, finalStep] : [finalStep];
 
   return (
-    <div className="mb-6 pb-6 border-b dark:border-gray-700">
-      <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Test Timeline</label>
+    <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+      <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Test Timeline</label>
       <div className="relative pl-4">
         {/* Vertical timeline line */}
-        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gray-200 dark:bg-gray-700" />
+        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-neutral-200 dark:bg-neutral-700" />
         
         <div className="space-y-3">
           {allSteps.map((step, index) => {
@@ -235,7 +235,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                       {step.name}
                     </span>
                     {step.duration && (
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono">
+                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono">
                         {formatDurationMs(step.duration)}
                       </span>
                     )}
@@ -243,21 +243,21 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                   
                   {/* Message - only show if different from name AND error */}
                   {step.message && step.message !== step.name && step.message !== step.error && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                       {step.message}
                     </p>
                   )}
                   
                   {/* Inline metadata */}
                   {metadataText && (
-                    <p className="text-[10px] text-gray-400 dark:text-gray-500 font-mono mt-0.5">
+                    <p className="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono mt-0.5">
                       {metadataText}
                     </p>
                   )}
                   
                   {/* Error - shown in gray like other messages */}
                   {step.error && typeof step.error === 'string' && step.error.length > 0 && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                       {step.error}
                     </p>
                   )}
@@ -265,7 +265,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
 
                 {/* Timestamp */}
                 <div className="flex-shrink-0 text-right">
-                  <span className="text-[10px] text-gray-400 dark:text-gray-500 font-mono">
+                  <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono">
                     {formatTimestamp(step.startTime)}
                   </span>
                 </div>
@@ -287,7 +287,7 @@ interface TestRunWithComputed extends TestRun {
 // Helper function for status-based row background colors
 const getStatusRowBg = (status: string, isSelected: boolean, isChecked: boolean): string => {
   if (isChecked) return "bg-blue-50 dark:bg-blue-900/30";
-  if (isSelected) return "bg-gray-100 dark:bg-gray-700/50";
+  if (isSelected) return "bg-neutral-100 dark:bg-neutral-700/50";
   
   switch (status) {
     case "SUCCESS":
@@ -299,7 +299,7 @@ const getStatusRowBg = (status: string, isSelected: boolean, isChecked: boolean)
     case "SKIPPED":
       return "bg-yellow-50 dark:bg-yellow-950/30";
     default:
-      return "bg-white dark:bg-gray-800";
+      return "bg-white dark:bg-neutral-800";
   }
 };
 
@@ -780,7 +780,7 @@ const TestResults: React.FC = () => {
             <>
               {comparisonMode && (
                 <>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400">
                     {!canCompare ? "Wähle zwei Tests aus" : `#${comparisonIds[0]} & #${comparisonIds[1]}`}
                   </span>
                   <Button
@@ -796,7 +796,7 @@ const TestResults: React.FC = () => {
                     onClick={handleToggleComparisonMode}
                     variant="secondary"
                     size="sm"
-                    className="gap-2 font-mono text-[10px] border border-gray-300 dark:border-gray-600">
+                    className="gap-2 font-mono text-[10px] border border-neutral-300 dark:border-neutral-600">
                     Vergleich beenden
                   </Button>
                 </>
@@ -856,14 +856,14 @@ const TestResults: React.FC = () => {
       {activeTests.length > 0 && (
         <div className="mt-4 mb-6">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
               Laufende Tests ({runningTests.length}
               {queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
             </h2>
             <TestQueueStatus onRefresh={loadTestRuns} />
           </div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -891,7 +891,7 @@ const TestResults: React.FC = () => {
                         tabIndex={0}
                         role="button"
                         aria-selected={isSelected}
-                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-gray-100 dark:bg-gray-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-gray-50/50 dark:bg-gray-800/50" : "bg-white dark:bg-gray-800"}`}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-neutral-100 dark:bg-neutral-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-neutral-50/50 dark:bg-neutral-800/50" : "bg-white dark:bg-neutral-800"}`}
                         onClick={() => handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
@@ -901,11 +901,11 @@ const TestResults: React.FC = () => {
                         }}>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1 group">
-                            <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
                             {testRun.uuid && (
                               <button
                                 onClick={(e) => handleCopyUuid(e, testRun.uuid)}
-                                className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
                                 title="ID kopieren">
                                 <Copy size={10} />
                               </button>
@@ -921,31 +921,31 @@ const TestResults: React.FC = () => {
                         </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
                               {renderIcon(getFormIcon(testRun.formId), 14)}
                             </span>
-                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate">
                               {testRun.formName}
                             </div>
                           </div>
                         </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
                               {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
                             </span>
-                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate">
                               {testRun.paymentMethodName}
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
                           {testRun.amount ? `${testRun.amount} €` : "-"}
                         </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
                           {formatInterval(testRun.interval)}
                         </TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4">
                           <RunningTimer runAt={testRun.runAt} isRunning={isRunning} />
                         </TableCell>
@@ -983,8 +983,8 @@ const TestResults: React.FC = () => {
       {/* Finished Test Runs List */}
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-            <CheckCircle2 size={12} className="text-gray-400 dark:text-gray-500" />
+          <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
+            <CheckCircle2 size={12} className="text-neutral-400 dark:text-neutral-500" />
             Ausgeführte Tests ({totalFilteredItems})
           </h2>
         </div>
@@ -1024,14 +1024,14 @@ const TestResults: React.FC = () => {
           }
         />
 
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
           {isLoading && testRuns.length === 0 ? (
             <TestResultsSkeleton />
           ) : sortedFinishedTests.length === 0 ? (
             <div className="p-6">
               <div className="text-center py-8">
-                <div className="text-gray-500 dark:text-gray-400 mb-4">{finishedTests.length === 0 ? "Noch keine abgeschlossenen Tests." : "Keine Tests gefunden."}</div>
-                <p className="text-gray-500 dark:text-gray-400">{finishedTests.length === 0 ? "Führe Tests aus, um Ergebnisse hier zu sehen." : "Versuche andere Suchbegriffe oder Filter."}</p>
+                <div className="text-neutral-500 dark:text-neutral-400 mb-4">{finishedTests.length === 0 ? "Noch keine abgeschlossenen Tests." : "Keine Tests gefunden."}</div>
+                <p className="text-neutral-500 dark:text-neutral-400">{finishedTests.length === 0 ? "Führe Tests aus, um Ergebnisse hier zu sehen." : "Versuche andere Suchbegriffe oder Filter."}</p>
               </div>
             </div>
           ) : (
@@ -1131,11 +1131,11 @@ const TestResults: React.FC = () => {
                         </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1 group">
-                            <span className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
                             {testRun.uuid && (
                               <button
                                 onClick={(e) => handleCopyUuid(e, testRun.uuid)}
-                                className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
                                 title="ID kopieren">
                                 <Copy size={10} />
                               </button>
@@ -1151,32 +1151,32 @@ const TestResults: React.FC = () => {
                         </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
                               {renderIcon(getFormIcon(testRun.formId), 14)}
                             </span>
-                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate">
                               {testRun.formName}
                             </div>
                           </div>
                         </TableCell>
                         <TableCell className="px-4">
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-gray-500 dark:text-gray-400">
+                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
                               {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
                             </span>
-                            <div className="text-xs font-medium text-gray-900 dark:text-white truncate">
+                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate">
                               {testRun.paymentMethodName}
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
                           {testRun.amount ? `${testRun.amount} €` : "-"}
                         </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-gray-600 dark:text-gray-400">
+                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
                           {formatInterval(testRun.interval)}
                         </TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-gray-500 dark:text-gray-400">{formatDuration(testRun.durationMs)}</TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDuration(testRun.durationMs)}</TableCell>
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
                         </TableCell>
@@ -1231,7 +1231,7 @@ const TestResults: React.FC = () => {
         onOpenChange={(open) => !open && handleSelectTestRun(null)}>
         <DrawerContent className="w-full">
           {/* Top Title Bar with Action Buttons */}
-          <div className="items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <div className="items-center justify-between gap-4 pb-4 border-b border-neutral-200 dark:border-neutral-700 flex-shrink-0">
            
             {/* Action buttons */}
             {selectedTestRunData && (
@@ -1284,12 +1284,12 @@ const TestResults: React.FC = () => {
               <span className={`${CONFIG.style.title.className} flex items-center gap-3`}>
                 {selectedTestRunData && (
                   <>
-                    <span className="text-gray-300 dark:text-gray-700">
+                    <span className="text-neutral-300 dark:text-neutral-700">
                       {renderIcon(getFormIcon(selectedTestRunData.formId), 48)}
                     </span>
                     {getFormName(selectedTestRunData.formId)}
-                    <span className="text-gray-400 dark:text-gray-500 font-normal">×</span>
-                    <span className="text-gray-300 dark:text-gray-700">
+                    <span className="text-neutral-400 dark:text-neutral-500 font-normal">×</span>
+                    <span className="text-neutral-300 dark:text-neutral-700">
                       {renderIcon(getPaymentMethodIcon(selectedTestRunData.paymentMethodId), 48)}
                     </span>
                     {getPaymentMethodName(selectedTestRunData.paymentMethodId)}
@@ -1305,20 +1305,20 @@ const TestResults: React.FC = () => {
             {selectedTestRunData ? (
               <>
                 {/* Basic Info Table */}
-                <div className="mb-6 pb-6 border-b dark:border-gray-700">
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Test Infos</label>
-                  <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+                <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+                  <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Test Infos</label>
+                  <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
                     <Table>
                       <TableBody>
                         <TableRow>
-                          <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">ID</TableCell>
+                          <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">ID</TableCell>
                           <TableCell className="px-3 py-2">
                             <div className="flex items-center gap-2">
-                              <code className="text-xs truncate font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{selectedTestRunData.uuid || selectedTestRunData.id}</code>
+                              <code className="text-xs truncate font-mono bg-neutral-100 dark:bg-neutral-900/50 px-1.5 py-0.5 rounded text-neutral-800 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">{selectedTestRunData.uuid || selectedTestRunData.id}</code>
                               {selectedTestRunData.uuid && (
                                 <button
                                   onClick={(e) => handleCopyUuid(e, selectedTestRunData.uuid!)}
-                                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                  className="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
                                   title="ID kopieren">
                                   <Copy size={12} />
                                 </button>
@@ -1327,12 +1327,12 @@ const TestResults: React.FC = () => {
                           </TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                          <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                           <TableCell className="px-3 py-2"><StatusBadge status={selectedTestRunData.status} /></TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Dauer</TableCell>
-                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">
+                          <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Dauer</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">
                             {selectedTestRunData.status === "RUNNING" ? (
                               <RunningTimer runAt={selectedTestRunData.runAt} isRunning={true} />
                             ) : (
@@ -1341,16 +1341,16 @@ const TestResults: React.FC = () => {
                           </TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Zeitpunkt</TableCell>
-                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(selectedTestRunData.runAt)}</TableCell>
+                          <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Zeitpunkt</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{formatDateTime(selectedTestRunData.runAt)}</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Betrag</TableCell>
-                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{selectedTestRunData.amount ? `${selectedTestRunData.amount} €` : "-"}</TableCell>
+                          <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Betrag</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{selectedTestRunData.amount ? `${selectedTestRunData.amount} €` : "-"}</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Intervall</TableCell>
-                          <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{formatInterval(selectedTestRunData.interval)}</TableCell>
+                          <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Intervall</TableCell>
+                          <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">{formatInterval(selectedTestRunData.interval)}</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -1362,28 +1362,28 @@ const TestResults: React.FC = () => {
                   const formDetails = getFormDetails(selectedTestRunData.formId);
                   return (
                     formDetails && (
-                      <div className="mb-6 pb-6 border-b dark:border-gray-700">
+                      <div className="mb-6 pb-6 border-b dark:border-neutral-700">
                         <div className="flex items-center justify-between mb-3">
-                          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">Formular</label>
+                          <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400">Formular</label>
                           <Link
                             to={`/forms?id=${formDetails.id}`}
                             className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
                             Öffnen
                           </Link>
                         </div>
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+                        <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
                           <Table>
                             <TableBody>
                               <TableRow>
-                                <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Name</TableCell>
-                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{formDetails.name}</TableCell>
+                                <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Name</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">{formDetails.name}</TableCell>
                               </TableRow>
                               <TableRow>
-                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                                <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                                 <TableCell className="px-3 py-2"><StatusBadge status={formDetails.isActive ? "active" : "inactive"} /></TableCell>
                               </TableRow>
                               <TableRow>
-                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">URL</TableCell>
+                                <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">URL</TableCell>
                                 <TableCell className="px-3 py-2">
                                   <a
                                     href={formDetails.url}
@@ -1436,33 +1436,33 @@ const TestResults: React.FC = () => {
                   };
                   return (
                     pmDetails && (
-                      <div className="mb-6 pb-6 border-b dark:border-gray-700">
+                      <div className="mb-6 pb-6 border-b dark:border-neutral-700">
                         <div className="flex items-center justify-between mb-3">
-                          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400">Bezahlmethode</label>
+                          <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400">Bezahlmethode</label>
                           <Link
                             to={`/payment-methods?id=${pmDetails.id}`}
                             className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
                             Öffnen
                           </Link>
                         </div>
-                        <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+                        <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
                           <Table>
                             <TableBody>
                               <TableRow>
-                                <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Name</TableCell>
-                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{pmDetails.name}</TableCell>
+                                <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Name</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">{pmDetails.name}</TableCell>
                               </TableRow>
                               <TableRow>
-                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                                <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                                 <TableCell className="px-3 py-2"><StatusBadge status={pmDetails.isActive ? "active" : "inactive"} /></TableCell>
                               </TableRow>
                               <TableRow>
-                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Typ</TableCell>
-                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{getPaymentTypeLabel(pmDetails.type)}</TableCell>
+                                <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Typ</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">{getPaymentTypeLabel(pmDetails.type)}</TableCell>
                               </TableRow>
                               <TableRow>
-                                <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Details</TableCell>
-                                <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{getMaskedDetails(pmDetails)}</TableCell>
+                                <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Details</TableCell>
+                                <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{getMaskedDetails(pmDetails)}</TableCell>
                               </TableRow>
                             </TableBody>
                           </Table>
@@ -1474,16 +1474,16 @@ const TestResults: React.FC = () => {
 
                 {/* Error Message */}
                 {selectedTestRunData.errorMessage && (
-                  <div className="mb-6 pb-6 border-b dark:border-gray-700 ">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Error Message</label>
+                  <div className="mb-6 pb-6 border-b dark:border-neutral-700 ">
+                    <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-2">Error Message</label>
                     <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-sm text-red-800 dark:text-red-200 font-mono">{selectedTestRunData.errorMessage}</div>
                   </div>
                 )}
 
                 {/* Quality Test Results */}
                 {(selectedTestRunData.seoResults || selectedTestRunData.accessibilityResults) && (
-                  <div className="mb-6 pb-6 border-b dark:border-gray-700">
-                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Qualitätstests</label>
+                  <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+                    <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Qualitätstests</label>
                     <div className="space-y-3">
                       {selectedTestRunData.seoResults && (
                         <SeoResultsCard results={selectedTestRunData.seoResults} />
@@ -1511,21 +1511,21 @@ const TestResults: React.FC = () => {
                 />
 
                 {/* Notes */}
-                <div className="mb-6 pb-6 border-b dark:border-gray-700">
-                  <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+                  <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-2">
                     Notes
-                    {isSavingNotes && <span className="ml-2 text-xs text-gray-400">(saving...)</span>}
+                    {isSavingNotes && <span className="ml-2 text-xs text-neutral-400">(saving...)</span>}
                   </label>
                   <textarea
                     value={notes}
                     onChange={(e) => handleNotesChange(e.target.value)}
                     placeholder="Add notes about this test run..."
-                    className="w-full h-24 px-3 py-2 text-sm bg-gray-50 dark:bg-gray-900 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-md resize-none !focus:outline-0 !focus:ring-0 !focus:ring-offset-0 !focus:ring-blue-500 dark:focus:ring-blue-400"
+                    className="w-full h-24 px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-900 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 rounded-md resize-none !focus:outline-0 !focus:ring-0 !focus:ring-offset-0 !focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                 </div>
 
                 {/* Export Button */}
-                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="pt-4 border-t border-neutral-200 dark:border-neutral-700">
                   <Button
                     variant="secondary"
                     size="sm"

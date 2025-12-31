@@ -239,49 +239,49 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
 
         {/* Details Table - only shown when editing */}
         {initialData && (
-          <div className="mb-6 pb-6 border-b dark:border-gray-700">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Autopilot Details</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+          <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Autopilot Details</label>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">ID</TableCell>
+                    <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">ID</TableCell>
                     <TableCell className="px-3 py-2">
-                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{initialData.id}</code>
+                      <code className="text-xs font-mono bg-neutral-100 dark:bg-neutral-900/50 px-1.5 py-0.5 rounded text-neutral-800 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">{initialData.id}</code>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                     <TableCell className="px-3 py-2"><StatusBadge status={initialData.isActive ? "active" : "inactive"} /></TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Formular</TableCell>
-                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Formular</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">
                       {forms.find(f => f.id === initialData.formId)?.name || `ID: ${initialData.formId}`}
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Bezahlmethode</TableCell>
-                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Bezahlmethode</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">
                       {paymentMethods.find(p => p.id === initialData.paymentMethodId)?.name || `ID: ${initialData.paymentMethodId}`}
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Zeitplan</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Zeitplan</TableCell>
                     <TableCell className="px-3 py-2">
-                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{initialData.cronExpression}</code>
+                      <code className="text-xs font-mono bg-neutral-100 dark:bg-neutral-900/50 px-1.5 py-0.5 rounded text-neutral-800 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">{initialData.cronExpression}</code>
                     </TableCell>
                   </TableRow>
                   {initialData.lastRun && (
                     <TableRow>
-                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Letzter Lauf</TableCell>
-                      <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(initialData.lastRun)}</TableCell>
+                      <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Letzter Lauf</TableCell>
+                      <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{formatDateTime(initialData.lastRun)}</TableCell>
                     </TableRow>
                   )}
                   {initialData.nextRun && (
                     <TableRow>
-                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Nächster Lauf</TableCell>
-                      <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDateTime(initialData.nextRun)}</TableCell>
+                      <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Nächster Lauf</TableCell>
+                      <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{formatDateTime(initialData.nextRun)}</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -297,12 +297,12 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
 
           {/* Schedule Fields Table */}
           <div className="mb-6">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Autopilot Einstellungen</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Autopilot Einstellungen</label>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Formular *</TableCell>
+                    <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Formular *</TableCell>
                     <TableCell className="px-3 py-2">
                       <Select
                         value={formId}
@@ -324,7 +324,7 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Bezahlmethode *</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Bezahlmethode *</TableCell>
                     <TableCell className="px-3 py-2">
                       <Select
                         value={paymentMethodId}
@@ -346,7 +346,7 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Häufigkeit *</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Häufigkeit *</TableCell>
                     <TableCell className="px-3 py-2">
                       <Select
                         value={frequency}
@@ -369,7 +369,7 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                   </TableRow>
                   {frequency === "custom" && (
                     <TableRow>
-                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Cron *</TableCell>
+                      <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Cron *</TableCell>
                       <TableCell className="px-3 py-2">
                         <Input
                           id="customCron"
@@ -380,25 +380,25 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                           disabled={isSubmitting}
                           className="text-sm"
                         />
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Format: Sekunde Minute Stunde Tag Monat Wochentag</p>
+                        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Format: Sekunde Minute Stunde Tag Monat Wochentag</p>
                       </TableCell>
                     </TableRow>
                   )}
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Icon</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Icon</TableCell>
                     <TableCell className="px-3 py-2">
                       <button
                         type="button"
                         onClick={() => setShowIconPicker(true)}
                         disabled={isSubmitting}
-                        className="flex items-center gap-3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+                        className="flex items-center gap-3 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
                         {renderIcon(icon, 18, "text-blue-600 dark:text-blue-400")}
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{icon}</span>
+                        <span className="text-sm text-neutral-700 dark:text-neutral-300">{icon}</span>
                       </button>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                     <TableCell className="px-3 py-2">
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -409,14 +409,14 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                         />
                         <Label
                           htmlFor="isActive"
-                          className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+                          className="text-sm text-neutral-600 dark:text-neutral-400 font-normal cursor-pointer">
                           Zeitplan aktiv
                         </Label>
                       </div>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Qualitätstests</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Qualitätstests</TableCell>
                     <TableCell className="px-3 py-2">
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
@@ -428,8 +428,8 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                           />
                           <Label
                             htmlFor="enableSeoTest"
-                            className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer flex items-center gap-1.5">
-                            <Search size={12} className="text-gray-500" />
+                            className="text-sm text-neutral-600 dark:text-neutral-400 font-normal cursor-pointer flex items-center gap-1.5">
+                            <Search size={12} className="text-neutral-500" />
                             SEO-Analyse
                           </Label>
                         </div>
@@ -442,8 +442,8 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                           />
                           <Label
                             htmlFor="enableAccessibilityTest"
-                            className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer flex items-center gap-1.5">
-                            <Accessibility size={12} className="text-gray-500" />
+                            className="text-sm text-neutral-600 dark:text-neutral-400 font-normal cursor-pointer flex items-center gap-1.5">
+                            <Accessibility size={12} className="text-neutral-500" />
                             Barrierefreiheit (WCAG 2.1 AA)
                           </Label>
                         </div>

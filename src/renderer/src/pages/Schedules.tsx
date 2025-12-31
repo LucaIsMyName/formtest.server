@@ -226,7 +226,7 @@ const Schedules: React.FC = () => {
         }
       />
 
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
         {isLoading && schedules.length === 0 ? (
           <div className="p-6 space-y-4">
             {[...Array(3)].map((_, i) => (
@@ -237,9 +237,9 @@ const Schedules: React.FC = () => {
             ))}
           </div>
         ) : enrichedSchedules.length === 0 ? (
-          <div className="p-12 text-center text-gray-500 dark:text-gray-400">Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen.</div>
+          <div className="p-12 text-center text-neutral-500 dark:text-neutral-400">Keine Zeitpläne vorhanden. Erstellen Sie einen neuen Zeitplan, um Tests automatisch auszuführen.</div>
         ) : displayedSchedules.length === 0 ? (
-          <div className="p-12 text-center text-gray-500 dark:text-gray-400">Keine Ergebnisse für die aktuelle Filterung.</div>
+          <div className="p-12 text-center text-neutral-500 dark:text-neutral-400">Keine Ergebnisse für die aktuelle Filterung.</div>
         ) : (
           <>
             <Table>
@@ -299,7 +299,7 @@ const Schedules: React.FC = () => {
                     key={schedule.id}
                     tabIndex={0}
                     role="button"
-                    className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                    className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
                     onClick={() => setEditingSchedule(schedule)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
@@ -316,27 +316,27 @@ const Schedules: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {renderIcon(schedule.icon || "Play", 16, "text-gray-600 dark:text-gray-400")}
-                        <span className="font-medium text-sm text-gray-900 dark:text-white">{schedule.name}</span>
+                        {renderIcon(schedule.icon || "Play", 16, "text-neutral-600 dark:text-neutral-400")}
+                        <span className="font-medium text-sm text-neutral-900 dark:text-white">{schedule.name}</span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-xs text-gray-600 dark:text-gray-300">
+                      <div className="text-xs text-neutral-600 dark:text-neutral-300">
                         {getFormName(schedule.formId)}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-xs text-gray-600 dark:text-gray-300">
+                      <div className="text-xs text-neutral-600 dark:text-neutral-300">
                         {getPaymentMethodName(schedule.paymentMethodId)}
                       </div>
                     </TableCell>
                     <TableCell className="min-w-[160px]">
                       <div className="flex items-center gap-2">
-                        <code className="w-full px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600">{schedule.cronExpression}</code>
+                        <code className="w-full px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-700 rounded text-[10px] font-mono text-neutral-800 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-600">{schedule.cronExpression}</code>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-[10px] font-mono text-gray-500 dark:text-gray-400">{formatDateTime(schedule.lastRun)}</div>
+                      <div className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDateTime(schedule.lastRun)}</div>
                     </TableCell>
                     <TableCell className="w-[120px]">
                       <StatusBadge status={schedule.isActive ? "active" : "inactive"}>{schedule.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>

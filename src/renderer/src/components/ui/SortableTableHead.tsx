@@ -20,7 +20,7 @@ export const SortableTableHead: React.FC<SortableTableHeadProps> = ({
 
   return (
     <TableHead
-      className={`${className} ${isSortable ? 'cursor-pointer select-none hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors' : ''}`}
+      className={`${className} ${isSortable ? 'cursor-pointer select-none hover:bg-neutral-100 dark:hover:bg-neutral-700/50 transition-colors' : ''}`}
       onClick={onSort}>
       <div className="flex items-center gap-1">
         <span className='block flex-1'>{children}</span>
@@ -31,7 +31,7 @@ export const SortableTableHead: React.FC<SortableTableHeadProps> = ({
             ) : sortDirection === 'desc' ? (
               <ChevronDown size={14} className="text-blue-600 dark:text-blue-400" />
             ) : (
-              <ChevronsUpDown size={14} className="text-gray-400" />
+              <ChevronsUpDown size={14} className="text-neutral-400" />
             )}
           </span>
         )}

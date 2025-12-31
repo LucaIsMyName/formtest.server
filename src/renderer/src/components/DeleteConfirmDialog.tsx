@@ -34,11 +34,11 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({ isOpen, onClo
         </DialogHeader>
         
         <div className="py-4">
-          <DialogDescription className="text-gray-600 dark:text-gray-400 text-base">
+          <DialogDescription className="text-neutral-600 dark:text-neutral-400 text-base">
             {message}
           </DialogDescription>
           {itemName && (
-            <p className="text-sm font-medium text-gray-900 dark:text-white mt-2">"{itemName}"</p>
+            <p className="text-sm font-medium text-neutral-900 dark:text-white mt-2">"{itemName}"</p>
           )}
         </div>
 

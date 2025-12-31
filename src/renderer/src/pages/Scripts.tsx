@@ -43,7 +43,7 @@ const HOOK_POINT_COLORS: Record<ScriptHookPoint, "default" | "success" | "warnin
 };
 
 const ScriptsSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+  <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
@@ -126,7 +126,7 @@ const Scripts: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className={CONFIG.style.title.className}>Custom Scripts</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Playwright-Snippets für erweiterte Test-Automatisierung</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">Playwright-Snippets für erweiterte Test-Automatisierung</p>
         </div>
         <Button onClick={() => setIsDrawerOpen(true)}>
           <Plus
@@ -138,7 +138,7 @@ const Scripts: React.FC = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -156,7 +156,7 @@ const Scripts: React.FC = () => {
               <TableRow>
                 <TableCell
                   colSpan={7}
-                  className="text-center text-sm py-8 text-gray-500 dark:text-gray-400">
+                  className="text-center text-sm py-8 text-neutral-500 dark:text-neutral-400">
                   Noch keine Custom Scripts erstellt. Klicke auf "Neues Script" um zu beginnen.
                 </TableCell>
               </TableRow>
@@ -167,11 +167,11 @@ const Scripts: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <Code
                         size={16}
-                        className="text-gray-400"
+                        className="text-neutral-400"
                       />
                       <div>
-                        <div className="font-medium text-gray-900 dark:text-white">{script.name}</div>
-                        {script.description && <div className="text-gray-500 dark:text-gray-400 truncate max-w-xs">{script.description}</div>}
+                        <div className="font-medium text-neutral-900 dark:text-white">{script.name}</div>
+                        {script.description && <div className="text-neutral-500 dark:text-neutral-400 truncate max-w-xs">{script.description}</div>}
                       </div>
                     </div>
                   </TableCell>
@@ -189,7 +189,7 @@ const Scripts: React.FC = () => {
                         Global
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                      <span className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
                         <FileCode size={14} />
                         Form-spezifisch
                       </span>
@@ -202,11 +202,11 @@ const Scripts: React.FC = () => {
                         Ja
                       </span>
                     ) : (
-                      <span className="text-[11px] font-mono uppercase text-gray-400">Nein</span>
+                      <span className="text-[11px] font-mono uppercase text-neutral-400">Nein</span>
                     )}
                   </TableCell>
                   <TableCell>
-                    <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300">
+                    <span className="flex items-center gap-1 text-xs text-neutral-600 dark:text-neutral-300">
                       <Clock size={14} />
                       {(script.timeout / 1000).toFixed(0)}s
                     </span>

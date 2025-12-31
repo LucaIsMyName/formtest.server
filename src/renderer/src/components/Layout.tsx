@@ -107,7 +107,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   ];
 
   return (
-    <div className="select-none flex flex-col h-screen bg-gray-50 dark:bg-gray-950 overflow-hidden relative">
+    <div className="select-none flex flex-col h-screen bg-neutral-50 dark:bg-neutral-950 overflow-hidden relative">
       <CustomTitleBar
         onRunAllTests={handleRunAllTests}
         onOpenSearch={handleOpenSearch}
@@ -119,7 +119,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div
-          className="select-none bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col select-none"
+          className="select-none bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col select-none"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
           <nav className="flex-1 flex flex-col">
             {/* Primary Navigation */}
@@ -131,9 +131,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     key={item.name}
                     variant="ghost"
                     to={item.href}
-                    className={cn(``, `rounded-none w-full text-left flex items-center gap-3 px-6 py-4 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-700 dark:text-gray-300"}`)}>
+                    className={cn(``, `rounded-none w-full text-left flex items-center gap-3 px-6 py-4 text-sm font-normal no-underline transition-colors ${location.pathname === item.href ? "text-neutral-900 dark:text-neutral-100 !bg-neutral-100 dark:!bg-neutral-950 " : "text-neutral-700 dark:text-neutral-300"}`)}>
                     <IconComponent
-                      className={`${location.pathname === item.href ? ` stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-700 dark:text-gray-400 transition-all`}
+                      className={`${location.pathname === item.href ? ` stroke-neutral-900 dark:stroke-neutral-100` : ""} text-neutral-700 dark:text-neutral-400 transition-all`}
                       size={18}
                       strokeWidth={location.pathname === item.href ? 2 : 1.75}
                     />
@@ -148,7 +148,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
 
             {/* Divider */}
-            <hr className="my-0 border-gray-200 dark:border-gray-800" />
+            <hr className="my-0 border-neutral-200 dark:border-neutral-800" />
 
             {/* Secondary Navigation */}
             <div className="space-y-0">
@@ -159,9 +159,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     key={item.name}
                     variant="ghost"
                     to={item.href}
-                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-normal tracking-wide no-underline transition-colors ${location.pathname === item.href ? "text-gray-900 dark:text-gray-100 !bg-gray-100 dark:!bg-gray-950 " : "text-gray-500 dark:text-gray-400"}`}>
+                    className={`rounded-none w-full text-left flex items-center gap-3 px-6 py-3 text-sm font-normal tracking-wide no-underline transition-colors ${location.pathname === item.href ? "text-neutral-900 dark:text-neutral-100 !bg-neutral-100 dark:!bg-neutral-950 " : "text-neutral-500 dark:text-neutral-400"}`}>
                     <IconComponent
-                      className={`${location.pathname === item.href ? `stroke-gray-900 dark:stroke-gray-100` : ""} text-gray-500 dark:text-gray-500 transition-all`}
+                      className={`${location.pathname === item.href ? `stroke-neutral-900 dark:stroke-neutral-100` : ""} text-neutral-500 dark:text-neutral-500 transition-all`}
                       size={16}
                       strokeWidth={location.pathname === item.href ? 1.75 : 1}
                     />
@@ -181,7 +181,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex-1  flex flex-col overflow-hidden">
           <main
             ref={mainContentRef}
-            className="flex-1  overflow-auto bg-gray-50 dark:bg-gray-900 px-4 py-4">
+            className="flex-1  overflow-auto bg-neutral-50 dark:bg-neutral-900 px-4 py-4">
             <div className="w-full max-w-[1340px]">{children}</div>
           </main>
         </div>

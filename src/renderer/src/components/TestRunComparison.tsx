@@ -77,7 +77,7 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
       case "error":
         return <XCircle size={14} className="text-red-500" />;
       case "skipped":
-        return <Minus size={14} className="text-gray-400" />;
+        return <Minus size={14} className="text-neutral-400" />;
       default:
         return <AlertCircle size={14} className="text-yellow-500" />;
     }
@@ -99,20 +99,20 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-700">
         <h2 className={CONFIG.style.title.className}>Test-Vergleich</h2>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-4 p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="grid grid-cols-2 gap-4 py-4 border-b border-neutral-200 dark:border-neutral-700">
         {/* Left Run */}
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Test A (älter)</div>
+        <div className="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-4">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Test A (älter)</div>
           <div className="flex items-center gap-2 mb-2">
             <StatusBadge status={leftRun.status} />
-            <span className="text-sm font-medium text-gray-900 dark:text-white">#{leftRun.id}</span>
+            <span className="text-sm font-medium text-neutral-900 dark:text-white">#{leftRun.id}</span>
           </div>
-          <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+          <div className="text-xs text-neutral-600 dark:text-neutral-300 space-y-1">
             <div><strong>Form:</strong> {leftFormName || `ID ${leftRun.formId}`}</div>
             <div><strong>Zahlung:</strong> {leftPaymentName || `ID ${leftRun.paymentMethodId}`}</div>
             <div><strong>Datum:</strong> {formatDateTime(leftRun.runAt)}</div>
@@ -121,13 +121,13 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
         </div>
 
         {/* Right Run */}
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Test B (neuer)</div>
+        <div className="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-4">
+          <div className="text-xs text-neutral-500 dark:text-neutral-400 mb-2">Test B (neuer)</div>
           <div className="flex items-center gap-2 mb-2">
             <StatusBadge status={rightRun.status} />
-            <span className="text-sm font-medium text-gray-900 dark:text-white">#{rightRun.id}</span>
+            <span className="text-sm font-medium text-neutral-900 dark:text-white">#{rightRun.id}</span>
           </div>
-          <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+          <div className="text-xs text-neutral-600 dark:text-neutral-300 space-y-1">
             <div><strong>Form:</strong> {rightFormName || `ID ${rightRun.formId}`}</div>
             <div><strong>Zahlung:</strong> {rightPaymentName || `ID ${rightRun.paymentMethodId}`}</div>
             <div><strong>Datum:</strong> {formatDateTime(rightRun.runAt)}</div>
@@ -137,16 +137,16 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
       </div>
 
       {/* Duration Comparison */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="py-4 border-b border-neutral-200 dark:border-neutral-700">
         <div className="flex items-center gap-4">
-          <Clock size={16} className="text-gray-500" />
+          <Clock size={32} strokeWidth={1} className="text-neutral-500" />
           <div className="flex-1">
-            <div className="text-sm font-medium text-gray-900 dark:text-white">Laufzeit-Vergleich</div>
-            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+            <div className="text-sm font-medium text-neutral-900 dark:text-white">Laufzeit-Vergleich</div>
+            <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
               <span>{formatDuration(durationDiff.leftDuration)}</span>
               <ArrowRight size={12} />
               <span>{formatDuration(durationDiff.rightDuration)}</span>
-              <span className={`font-medium ${durationDiff.diff > 0 ? "text-red-500" : durationDiff.diff < 0 ? "text-green-500" : "text-gray-500"}`}>
+              <span className={`font-medium ${durationDiff.diff > 0 ? "text-red-500" : durationDiff.diff < 0 ? "text-green-500" : "text-neutral-500"}`}>
                 ({durationDiff.diff > 0 ? "+" : ""}{formatDuration(Math.abs(durationDiff.diff))}, {durationDiff.percentChange}%)
               </span>
             </div>
@@ -155,11 +155,11 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
       </div>
 
       {/* Steps Comparison */}
-      <div className="flex-1 overflow-auto p-4">
-        <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Schritt-Vergleich</h3>
+      <div className="flex-1 overflow-auto py-4">
+        <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Schritt-Vergleich</h3>
         
 {stepDiffs.length === 0 ? (
-          <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+          <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
             Keine Schritte zum Vergleichen vorhanden
           </div>
         ) : (
@@ -167,20 +167,20 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
             {stepDiffs.map((diff, index) => (
               <div
                 key={index}
-                className={`grid grid-cols-2 gap-4 p-2 rounded-md ${getDiffBgColor(diff.status)}`}
+                className={`grid grid-cols-2 gap-4 py-2 rounded-md ${getDiffBgColor(diff.status)}`}
               >
                 {/* Left Step */}
                 <div className="flex items-center gap-2 text-xs min-w-0">
                   {diff.left ? (
                     <>
                       {getStepStatusIcon(diff.left.status)}
-                      <span className="text-gray-700 dark:text-gray-300 truncate flex-1">{diff.left.name}</span>
+                      <span className="text-neutral-700 dark:text-neutral-300 truncate flex-1">{diff.left.name}</span>
                       {diff.left.duration && (
-                        <span className="text-gray-400 flex-shrink-0">{diff.left.duration}ms</span>
+                        <span className="text-neutral-400 flex-shrink-0">{diff.left.duration}ms</span>
                       )}
                     </>
                   ) : (
-                    <span className="text-gray-400 italic">-</span>
+                    <span className="text-neutral-400 italic">-</span>
                   )}
                 </div>
 
@@ -196,13 +196,13 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
                   {diff.right ? (
                     <>
                       {getStepStatusIcon(diff.right.status)}
-                      <span className="text-gray-700 dark:text-gray-300 truncate flex-1">{diff.right.name}</span>
+                      <span className="text-neutral-700 dark:text-neutral-300 truncate flex-1">{diff.right.name}</span>
                       {diff.right.duration && (
-                        <span className="text-gray-400 flex-shrink-0">{diff.right.duration}ms</span>
+                        <span className="text-neutral-400 flex-shrink-0">{diff.right.duration}ms</span>
                       )}
                     </>
                   ) : (
-                    <span className="text-gray-400 italic">-</span>
+                    <span className="text-neutral-400 italic">-</span>
                   )}
                 </div>
               </div>
@@ -212,8 +212,8 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-        <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
+      <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
+        <div className="flex items-center gap-4 text-xs text-neutral-600 dark:text-neutral-400">
           <span className="flex items-center gap-1"><span className="w-3 h-3 bg-yellow-100 dark:bg-yellow-900 rounded"></span> Unterschiedlich</span>
           <span className="flex items-center gap-1"><span className="w-3 h-3 bg-green-100 dark:bg-green-900 rounded"></span> Neu in B</span>
           <span className="flex items-center gap-1"><span className="w-3 h-3 bg-red-100 dark:bg-red-900 rounded"></span> Fehlt in B</span>

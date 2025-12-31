@@ -59,7 +59,7 @@ const MiniSparkline: React.FC<MiniSparklineProps> = ({
         {Array.from({ length: BULLET_COUNT }).map((_, i) => (
           <div
             key={i}
-            className="w-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0"
+            className="w-1.5 h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-700 flex-shrink-0"
           />
         ))}
       </div>
@@ -82,11 +82,11 @@ const MiniSparkline: React.FC<MiniSparklineProps> = ({
 
       {/* Tooltip on hover */}
       {showTooltip && (
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 bg-neutral-900 dark:bg-neutral-700 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
           <span className={avgRate >= 90 ? "text-green-400" : avgRate >= 80 ? "text-orange-400" : "text-red-400"}>
             {avgRate.toFixed(0)}%
           </span>
-          <span className="text-gray-400 ml-1">
+          <span className="text-neutral-400 ml-1">
             ({totalTests} Tests, 14 Tage)
           </span>
         </div>

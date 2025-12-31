@@ -23,7 +23,7 @@ import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } fro
 import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
 
 const FormsSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+  <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
     <div className="p-6">
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
@@ -267,10 +267,10 @@ const Forms: React.FC = () => {
       {isLoading && forms.length === 0 ? (
         <FormsSkeleton />
       ) : forms.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-gray-500 dark:text-gray-400 mb-4">Noch keine Formulare konfiguriert.</div>
+              <div className="text-neutral-500 dark:text-neutral-400 mb-4">Noch keine Formulare konfiguriert.</div>
               <Button
                 onClick={handleAddForm}
                 variant="primary"
@@ -282,16 +282,16 @@ const Forms: React.FC = () => {
           </div>
         </div>
       ) : displayedForms.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-gray-500 dark:text-gray-400 mb-4">Keine Formulare gefunden.</div>
-              <p className="text-gray-500 dark:text-gray-400">Versuche andere Suchbegriffe oder Filter.</p>
+              <div className="text-neutral-500 dark:text-neutral-400 mb-4">Keine Formulare gefunden.</div>
+              <p className="text-neutral-500 dark:text-neutral-400">Versuche andere Suchbegriffe oder Filter.</p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
@@ -340,7 +340,7 @@ const Forms: React.FC = () => {
                   key={form.id}
                   tabIndex={0}
                   role="button"
-                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                  className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
                   onClick={() => handleEditForm(form)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -357,8 +357,8 @@ const Forms: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2.5">
-                      {renderIcon(form.icon || "FileText", 16, "text-gray-500 dark:text-gray-400")}
-                      <div className="font-medium text-sm text-gray-900 dark:text-white">{form.name}</div>
+                      {renderIcon(form.icon || "FileText", 16, "text-neutral-500 dark:text-neutral-400")}
+                      <div className="font-medium text-sm text-neutral-900 dark:text-white">{form.name}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -371,7 +371,7 @@ const Forms: React.FC = () => {
                       {form.url}
                     </a>
                   </TableCell>
-                  <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">
+                  <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">
                     {form.hash || "—"}
                   </TableCell>
                   <TableCell>
@@ -385,7 +385,7 @@ const Forms: React.FC = () => {
                       <StatusBadge status={form.isActive ? "active" : "inactive"}>{form.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
                     </button>
                   </TableCell>
-                  <TableCell className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">{formatDate(form.createdAt)}</TableCell>
+                  <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{formatDate(form.createdAt)}</TableCell>
                   <TableCell className="text-left">
                     <FormSparkline formId={form.id} testRuns={testRuns} />
                   </TableCell>

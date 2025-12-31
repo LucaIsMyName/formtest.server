@@ -68,8 +68,8 @@ function App() {
   // Show loading state while checking lock status
   if (isLocked === null) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
-        <div className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 border-t-transparent rounded-full animate-spin" />
+      <div className="flex items-center justify-center h-screen bg-neutral-100 dark:bg-neutral-900">
+        <div className="w-12 h-12 border-2 border-neutral-300 dark:border-neutral-700 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -85,8 +85,8 @@ function App() {
         <Suspense fallback={
           <div className="flex items-center justify-start ">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 border-6 border-t-transparent rounded-full animate-spin"></div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 sr-only">Loading...</div>
+              <div className="w-12 h-12 border-2 border-neutral-300 dark:border-neutral-700 border-6 border-t-transparent rounded-full animate-spin"></div>
+              <div className="text-sm text-neutral-600 dark:text-neutral-400 sr-only">Loading...</div>
             </div>
           </div>
         }>

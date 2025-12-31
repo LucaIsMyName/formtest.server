@@ -82,29 +82,29 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center pt-[20vh]">
       <Command
-        className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+        className="w-full max-w-2xl bg-white dark:bg-neutral-800 rounded-lg shadow-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden"
         shouldFilter={true}>
-        <div className="flex items-center border-b border-gray-200 dark:border-gray-700 px-4">
-          <Search className="w-5 h-5 text-gray-400 mr-2" />
+        <div className="flex items-center border-b border-neutral-200 dark:border-neutral-700 px-4">
+          <Search className="w-5 h-5 text-neutral-400 mr-2" />
           <Command.Input
             value={search}
             onValueChange={setSearch}
             placeholder="Suche nach Seiten, Formularen, Bezahlmethoden..."
-            className="w-full py-4 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 outline-none text-base"
+            className="w-full py-4 bg-transparent text-neutral-900 dark:text-white placeholder-neutral-400 outline-none text-base"
             autoFocus
           />
         </div>
 
         <Command.List className="max-h-[400px] overflow-y-auto p-2">
-          <Command.Empty className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">Keine Ergebnisse gefunden.</Command.Empty>
+          <Command.Empty className="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">Keine Ergebnisse gefunden.</Command.Empty>
 
           {/* Dashboard */}
           <Command.Group
-            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Dashboard</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2">
+            heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Dashboard</span>}
+            className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2">
             <Command.Item
               onSelect={() => handleSelect("/")}
-              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
               <LayoutDashboard className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span>Dashboard</span>
             </Command.Item>
@@ -113,12 +113,12 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Formulare */}
           {filteredForms.length > 0 && (
             <Command.Group
-              heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Formulare {isSearching && `(${filteredForms.length} Treffer)`}</span>}
-              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Formulare {isSearching && `(${filteredForms.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
                   onSelect={() => handleSelect("/forms")}
-                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
                   <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
                   <span>Alle Formulare</span>
                 </Command.Item>
@@ -128,7 +128,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                   key={form.id}
                   value={`form-${form.name}-${form.url}`}
                   onSelect={() => handleSelect(`/forms?id=${form.id}`)}
-                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-gray-600 dark:text-gray-400 ml-4">
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-neutral-600 dark:text-neutral-400 ml-4">
                   <ChevronRight className="w-3 h-3 flex-shrink-0" />
                   <span className="text-xs font-normal">{form.name}</span>
                   <StatusBadge
@@ -144,12 +144,12 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Bezahlmethoden */}
           {filteredPaymentMethods.length > 0 && (
             <Command.Group
-              heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Bezahlmethoden {isSearching && `(${filteredPaymentMethods.length} Treffer)`}</span>}
-              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Bezahlmethoden {isSearching && `(${filteredPaymentMethods.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
                   onSelect={() => handleSelect("/payment-methods")}
-                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
                   <CreditCard className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                   <span>Alle Bezahlmethoden</span>
                 </Command.Item>
@@ -159,7 +159,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                   key={pm.id}
                   value={`payment-${pm.name}-${pm.type}`}
                   onSelect={() => handleSelect(`/payment-methods?id=${pm.id}`)}
-                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-gray-600 dark:text-gray-400 ml-4">
+                  className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-neutral-600 dark:text-neutral-400 ml-4">
                   <ChevronRight className="w-3 h-3 flex-shrink-0" />
                   <span className="text-xs font-normal">{pm.name}</span>
                   <StatusBadge
@@ -175,12 +175,12 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Autopilot / Schedules */}
           {filteredSchedules.length > 0 && (
             <Command.Group
-              heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Autopilot {isSearching && `(${filteredSchedules.length} Treffer)`}</span>}
-              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Autopilot {isSearching && `(${filteredSchedules.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
                   onSelect={() => handleSelect("/schedules")}
-                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
                   <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                   <span>Alle Autopiloten</span>
                 </Command.Item>
@@ -193,11 +193,11 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                     key={schedule.id}
                     value={`schedule-${schedule.name}-${formName}-${pmName}`}
                     onSelect={() => handleSelect(`/schedules`)}
-                    className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-gray-600 dark:text-gray-400 ml-4">
+                    className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-neutral-600 dark:text-neutral-400 ml-4">
                     <ChevronRight className="w-3 h-3 flex-shrink-0" />
                     <div className="flex flex-col">
                       <span className="text-xs font-normal">{schedule.name}</span>
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500">
+                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
                         {formName} × {pmName}
                       </span>
                     </div>
@@ -215,12 +215,12 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           {/* Test Resultate */}
           {filteredTestRuns.length > 0 && (
             <Command.Group
-              heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Test Resultate {isSearching && `(${filteredTestRuns.length} Treffer)`}</span>}
-              className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+              heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Test Resultate {isSearching && `(${filteredTestRuns.length} Treffer)`}</span>}
+              className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
               {!isSearching && (
                 <Command.Item
                   onSelect={() => handleSelect("/test-results")}
-                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+                  className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
                   <TestTube className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                   <span>Alle Test Resultate</span>
                 </Command.Item>
@@ -234,13 +234,13 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
                     key={testRun.id}
                     value={`test-${formName}-${pmName}-${uuid}-${testRun.status}`}
                     onSelect={() => handleSelect(`/test-results?id=${testRun.id}`)}
-                    className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-gray-600 dark:text-gray-400 ml-4 group">
+                    className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded cursor-pointer text-neutral-600 dark:text-neutral-400 ml-4 group">
                     <ChevronRight className="w-3 h-3 flex-shrink-0" />
                     <div className="flex flex-col">
                       <span className="text-xs font-normal">
                         {formName} × {pmName}
                       </span>
-                      {uuid && <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500">ID: {uuid.substring(0, 8)}...</span>}
+                      {uuid && <span className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500">ID: {uuid.substring(0, 8)}...</span>}
                     </div>
                     <StatusBadge
                       status={testRun.status}
@@ -255,11 +255,11 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
 
           {/* Scripts */}
           <Command.Group
-            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Scripts</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+            heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Scripts</span>}
+            className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
             <Command.Item
               onSelect={() => handleSelect("/scripts")}
-              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
               <Code className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               <span>Scripts</span>
             </Command.Item>
@@ -267,23 +267,23 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
 
           {/* Einstellungen */}
           <Command.Group
-            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Einstellungen</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+            heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Einstellungen</span>}
+            className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
             <Command.Item
               onSelect={() => handleSelect("/settings")}
-              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
-              <Settings className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
+              <Settings className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
               <span>Einstellungen</span>
             </Command.Item>
           </Command.Group>
 
           {/* Rechtliches */}
           <Command.Group
-            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Rechtliches</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+            heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Rechtliches</span>}
+            className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
             <Command.Item
               onSelect={() => handleSelect("/legal")}
-              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
               <Scale className="w-4 h-4 text-rose-600 dark:text-rose-400" />
               <span>Rechtliches</span>
             </Command.Item>
@@ -291,18 +291,18 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
 
           {/* Doku */}
           <Command.Group
-            heading={<span className="text-[10px] text-gray-500 dark:text-gray-400">Dokumentation</span>}
-            className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-2 mt-2">
+            heading={<span className="text-[10px] text-neutral-500 dark:text-neutral-400">Dokumentation</span>}
+            className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 px-2 py-2 mt-2">
             <Command.Item
               onSelect={() => handleSelect("/docs")}
-              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-gray-900 dark:text-white">
+              className="flex items-center gap-3 py-2 mt-2 rounded cursor-pointer text-neutral-900 dark:text-white">
               <BookOpen className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
               <span>Doku</span>
             </Command.Item>
           </Command.Group>
         </Command.List>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 px-4 py-2 text-xs text-gray-500 dark:text-gray-400 flex items-center justify-between">
+        <div className="border-t border-neutral-200 dark:border-neutral-700 px-4 py-2 text-xs text-neutral-500 dark:text-neutral-400 flex items-center justify-between">
           <span>Drücke ESC zum Schließen</span>
           <span>⌘K zum Öffnen</span>
         </div>

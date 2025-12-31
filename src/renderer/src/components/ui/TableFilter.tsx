@@ -50,7 +50,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
   // Get the current selected status for display in trigger (without icon to avoid duplication)
   const getSelectedStatusDisplay = () => {
     if (!statusFilter || statusFilter === "all") {
-      return <span className="text-gray-600 dark:text-gray-400">Alle {statusLabel}</span>;
+      return <span className="text-neutral-600 dark:text-neutral-400">Alle {statusLabel}</span>;
     }
     const option = statusOptions?.find((o) => o.value === statusFilter);
     if (option) {
@@ -64,7 +64,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
       <div className="relative max-w-md flex-1">
         <Search
           size={16}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
         />
         <Input
           type="text"
@@ -76,7 +76,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
         {searchTerm && (
           <button
             onClick={() => onSearchChange("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
             <X size={14} />
           </button>
         )}
@@ -89,7 +89,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
           <SelectTrigger className=" max-w-[160px]">{getSelectedStatusDisplay()}</SelectTrigger>
           <SelectContent>
             <SelectItem value="all">
-              <span className="text-gray-600 dark:text-gray-400">Alle {statusLabel}</span>
+              <span className="text-neutral-600 dark:text-neutral-400">Alle {statusLabel}</span>
             </SelectItem>
             {statusOptions.map((option) => (
               <SelectItem
@@ -105,7 +105,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
       {hasFilters && onClear && (
         <button
           onClick={onClear}
-          className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+          className="text-sm text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200">
           Filter zurücksetzen
         </button>
       )}

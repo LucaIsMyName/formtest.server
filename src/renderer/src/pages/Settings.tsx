@@ -31,7 +31,7 @@ interface SettingItem {
 }
 
 const SettingsSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+  <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
     <div className="p-4 space-y-3">
       {[...Array(6)].map((_, i) => (
         <Skeleton
@@ -782,7 +782,7 @@ const Settings: React.FC = () => {
             value={item.value}
             onValueChange={(v) => handleSettingChange(item.id, v)}
             disabled={isDisabled}>
-            <SelectTrigger className={`h-7 text-xs w-full border border-gray-200 !dark:border-gray-800 bg-white !dark:bg-gray-800 px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-gray-700 dark:bg-gray-700 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`}>
+            <SelectTrigger className={`h-7 text-xs w-full border border-neutral-200 !dark:border-neutral-800 bg-white !dark:bg-neutral-800 px-3 py-2 text-sm ring-offset-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-neutral-700 dark:bg-neutral-700 dark:ring-offset-neutral-950 dark:placeholder:text-neutral-400 dark:focus:ring-neutral-300 dark:text-white ${isDisabled ? "opacity-50" : ""}`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -817,7 +817,7 @@ const Settings: React.FC = () => {
               <button
                 key={t.value}
                 onClick={() => handleSettingChange("theme", t.value)}
-                className={`p-1.5 rounded text-xs flex items-center gap-1 transition-colors ${theme === t.value ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-transparent hover:border-gray-300 dark:hover:border-gray-600"}`}
+                className={`p-1.5 rounded text-xs flex items-center gap-1 transition-colors ${theme === t.value ? "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700" : "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400 border border-transparent hover:border-neutral-300 dark:hover:border-neutral-600"}`}
                 disabled={isDisabled}>
                 {t.icon}
               </button>
@@ -831,7 +831,7 @@ const Settings: React.FC = () => {
               type="text"
               value={item.value || "Kein Key generiert"}
               readOnly
-              className={`h-7 text-xs font-mono flex-1 ${!item.value ? "text-gray-400 italic" : ""}`}
+              className={`h-7 text-xs font-mono flex-1 ${!item.value ? "text-neutral-400 italic" : ""}`}
             />
             <Button
               variant="secondary"
@@ -877,14 +877,14 @@ const Settings: React.FC = () => {
           <div className="space-y-4 p-4">
             {/* Status indicator */}
             <div className="flex items-center gap-2 mb-4">
-              <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-gray-400"}`} />
-              <span className="text-sm text-gray-600 dark:text-gray-400">{passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}</span>
+              <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-neutral-400"}`} />
+              <span className="text-sm text-neutral-600 dark:text-neutral-400">{passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}</span>
             </div>
 
             {passwordEnabled ? (
               // Disable password form
-              <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
-                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-3 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700">
+                <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                   <Lock size={14} />
                   Passwortschutz deaktivieren
                 </div>
@@ -899,7 +899,7 @@ const Settings: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
                     {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -915,8 +915,8 @@ const Settings: React.FC = () => {
               </div>
             ) : (
               // Set password form
-              <div className="space-y-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
-                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-3 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700">
+                <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                   <Shield size={14} />
                   Passwortschutz aktivieren
                 </div>
@@ -931,7 +931,7 @@ const Settings: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
                     {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -946,7 +946,7 @@ const Settings: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
                     {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -970,7 +970,7 @@ const Settings: React.FC = () => {
               </div>
             )}
 
-            <p className="text-xs text-gray-500 dark:text-gray-400">Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset</p>
           </div>
         );
       default:
@@ -982,7 +982,7 @@ const Settings: React.FC = () => {
     return (
       <div>
         <h1 className={CONFIG.style.title.className}>Einstellungen</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
+        <p className="text-neutral-500 dark:text-neutral-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
         <SettingsSkeleton />
       </div>
     );
@@ -991,7 +991,7 @@ const Settings: React.FC = () => {
   return (
     <div>
       <h1 className={CONFIG.style.title.className}>Einstellungen</h1>
-      <p className="text-gray-500 dark:text-gray-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
+      <p className="text-neutral-500 dark:text-neutral-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
 
       {error && <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800 text-sm">{error}</div>}
 
@@ -1022,9 +1022,9 @@ const Settings: React.FC = () => {
           }}
         />
 
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
           {filteredSettings.length === 0 ? (
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400 text-sm">Keine Einstellungen gefunden.</div>
+            <div className="p-8 text-center text-neutral-500 dark:text-neutral-400 text-sm">Keine Einstellungen gefunden.</div>
           ) : (
             <Table>
               <TableHeader>
@@ -1042,12 +1042,12 @@ const Settings: React.FC = () => {
                         <TableCell
                           colSpan={3}
                           className="p-0">
-                          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                          <div className="px-4 py-3 border-b border-neutral-100 dark:border-neutral-700">
                             <div className="flex items-center gap-2 mb-1">
                               {getCategoryIcon(item.category)}
-                              <span className="text-xs font-medium text-gray-900 dark:text-white">{item.name}</span>
+                              <span className="text-xs font-medium text-neutral-900 dark:text-white">{item.name}</span>
                             </div>
-                            <div className="text-[10px] text-gray-500 dark:text-gray-400">{item.description}</div>
+                            <div className="text-[10px] text-neutral-500 dark:text-neutral-400">{item.description}</div>
                           </div>
                           <div className="p-0">{renderSettingControl(item)}</div>
                         </TableCell>
@@ -1058,19 +1058,19 @@ const Settings: React.FC = () => {
                       <TableCell>
                         <div className="flex items-center gap-1.5">
                           {getCategoryIcon(item.category)}
-                          <span className="text-[10px] font-mono uppercase text-gray-500 dark:text-gray-400">{getCategoryLabel(item.category)}</span>
+                          <span className="text-[10px] font-mono uppercase text-neutral-500 dark:text-neutral-400">{getCategoryLabel(item.category)}</span>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div>
                           <div
                             style={{ fontStretch: "125%" }}
-                            className="text-sm font-medium text-gray-900 dark:text-white">
+                            className="text-sm font-medium text-neutral-900 dark:text-white">
                             {item.name}
                           </div>
                           <div
                             style={{ fontStretch: "100%" }}
-                            className="text-xs text-gray-500 dark:text-gray-400">
+                            className="text-xs text-neutral-500 dark:text-neutral-400">
                             {item.description}
                           </div>
                         </div>
@@ -1093,7 +1093,7 @@ const Settings: React.FC = () => {
         )}
 
         {/* Export/Import Result Messages */}
-        {exportMessage && <div className="p-3 rounded-md border text-xs bg-gray-50 dark:bg-gray-900/20 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">{exportMessage}</div>}
+        {exportMessage && <div className="p-3 rounded-md border text-xs bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700">{exportMessage}</div>}
         {importResult && <div className={`p-3 rounded-md border text-xs ${importResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`}>{importResult.success ? `Importiert: ${importResult.imported.forms} Formulare, ${importResult.imported.paymentMethods} Bezahlmethoden` : importResult.errors.join(", ")}</div>}
       </div>
 

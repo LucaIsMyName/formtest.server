@@ -51,7 +51,7 @@ const SelectionActionBar: React.FC<SelectionActionBarProps> = ({
       {/* Clear button */}
       <button
         onClick={onClear}
-        className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+        className="p-1 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
         title="Auswahl aufheben"
       >
         <X size={14} />

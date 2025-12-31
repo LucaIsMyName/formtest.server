@@ -158,14 +158,14 @@ describe('Toast Styling and Lazy Loading', () => {
         containerClass: 'flex items-center justify-center min-h-[400px]',
         contentClass: 'flex flex-col items-center gap-3',
         spinnerClass: 'w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin',
-        textClass: 'text-sm text-gray-600 dark:text-gray-400',
+        textClass: 'text-sm text-neutral-600 dark:text-neutral-400',
         text: 'Loading...'
       };
 
       expect(fallbackConfig.text).toBe('Loading...');
       expect(fallbackConfig.containerClass).toContain('flex items-center justify-center');
       expect(fallbackConfig.spinnerClass).toContain('animate-spin');
-      expect(fallbackConfig.textClass).toContain('dark:text-gray-400');
+      expect(fallbackConfig.textClass).toContain('dark:text-neutral-400');
     });
   });
 

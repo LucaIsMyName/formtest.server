@@ -29,20 +29,20 @@ function markdownToHtml(markdown) {
   });
   
   // Headers - all with dark mode support
-  html = html.replace(/^######\s+(.+)$/gm, '<h6 class="text-sm font-semibold mt-4 mb-2 text-gray-900 dark:text-white">$1</h6>');
-  html = html.replace(/^#####\s+(.+)$/gm, '<h5 class="text-base font-semibold mt-4 mb-2 text-gray-900 dark:text-white">$1</h5>');
-  html = html.replace(/^####\s+(.+)$/gm, '<h4 class="text-lg font-semibold mt-5 mb-2 text-gray-900 dark:text-white">$1</h4>');
-  html = html.replace(/^###\s+(.+)$/gm, '<h3 class="text-xl font-semibold mt-6 mb-3 text-gray-900 dark:text-white">$1</h3>');
-  html = html.replace(/^##\s+(.+)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">$1</h2>');
-  html = html.replace(/^#\s+(.+)$/gm, '<h1 class="flex-1 extra-expanded w-full leading-[1] text-[clamp(2rem,2.5vw,2rem)] mt-0 font-light text-gray-600 dark:text-gray-300 truncate">$1</h1>');
+  html = html.replace(/^######\s+(.+)$/gm, '<h6 class="text-sm font-semibold mt-4 mb-2 text-neutral-900 dark:text-white">$1</h6>');
+  html = html.replace(/^#####\s+(.+)$/gm, '<h5 class="text-base font-semibold mt-4 mb-2 text-neutral-900 dark:text-white">$1</h5>');
+  html = html.replace(/^####\s+(.+)$/gm, '<h4 class="text-lg font-semibold mt-5 mb-2 text-neutral-900 dark:text-white">$1</h4>');
+  html = html.replace(/^###\s+(.+)$/gm, '<h3 class="text-xl font-semibold mt-6 mb-3 text-neutral-900 dark:text-white">$1</h3>');
+  html = html.replace(/^##\s+(.+)$/gm, '<h2 class="text-2xl font-bold mt-8 mb-4 text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-neutral-700 pb-2">$1</h2>');
+  html = html.replace(/^#\s+(.+)$/gm, '<h1 class="flex-1 extra-expanded w-full leading-[1] text-[clamp(2rem,2.5vw,2rem)] mt-0 font-light text-neutral-600 dark:text-neutral-300 truncate">$1</h1>');
   
   // Horizontal rules
-  html = html.replace(/^---$/gm, '<hr class="my-8 border-gray-200 dark:border-gray-700" />');
+  html = html.replace(/^---$/gm, '<hr class="my-8 border-neutral-200 dark:border-neutral-700" />');
   
   // Bold and italic - with dark mode
-  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong class="font-semibold text-gray-900 dark:text-white"><em>$1</em></strong>');
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900 dark:text-white">$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em class="text-gray-700 dark:text-gray-300">$1</em>');
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong class="font-semibold text-neutral-900 dark:text-white"><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-neutral-900 dark:text-white">$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em class="text-neutral-700 dark:text-neutral-300">$1</em>');
   
   // Links
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>');
@@ -71,14 +71,14 @@ function markdownToHtml(markdown) {
   html = html.replace(/^(\s*)[-*]\s+(.+)$/gm, (match, indent, content) => {
     const level = Math.floor(indent.length / 2);
     const marginClass = level > 0 ? `ml-${level * 4}` : '';
-    return `<li class="list-disc list-inside ${marginClass} text-gray-700 dark:text-gray-300">${content}</li>`;
+    return `<li class="list-disc list-inside ${marginClass} text-neutral-700 dark:text-neutral-300">${content}</li>`;
   });
   
   // Ordered lists - with dark mode
   html = html.replace(/^(\s*)\d+\.\s+(.+)$/gm, (match, indent, content) => {
     const level = Math.floor(indent.length / 2);
     const marginClass = level > 0 ? `ml-${level * 4}` : '';
-    return `<li class="list-decimal list-inside ${marginClass} text-gray-700 dark:text-gray-300">${content}</li>`;
+    return `<li class="list-decimal list-inside ${marginClass} text-neutral-700 dark:text-neutral-300">${content}</li>`;
   });
   
   // Wrap consecutive list items
@@ -98,30 +98,30 @@ function markdownToHtml(markdown) {
     if (block.startsWith('<')) return block;
     if (block.startsWith('__CODE_BLOCK_')) return block;
     if (block.startsWith('__TABLE_')) return block;
-    return `<p class="text-gray-700 dark:text-gray-300 my-3">${block}</p>`;
+    return `<p class="text-neutral-700 dark:text-neutral-300 my-3">${block}</p>`;
   }).join('\n\n');
   
   // Restore tables with proper dark mode styling (matching app's Table component)
   tables.forEach((table, index) => {
     const headerHtml = table.headerCells.map(cell => 
-      `<th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider bg-gray-50 dark:bg-gray-800/50">${cell}</th>`
+      `<th class="px-4 py-3 text-left text-xs font-semibold text-neutral-600 dark:text-neutral-300 uppercase tracking-wider bg-neutral-50 dark:bg-neutral-800/50">${cell}</th>`
     ).join('');
     
     const bodyHtml = table.bodyRows.map(row => 
-      `<tr class="border-b border-gray-100 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-800/30">${
+      `<tr class="border-b border-neutral-100 dark:border-neutral-700/50 hover:bg-neutral-50 dark:hover:bg-neutral-800/30">${
         row.map(cell => 
-          `<td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">${cell}</td>`
+          `<td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">${cell}</td>`
         ).join('')
       }</tr>`
     ).join('');
     
     const tableHtml = `
-      <div class="overflow-x-auto my-4 border border-gray-200 dark:border-gray-700 rounded-md">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <div class="overflow-x-auto my-4 border border-neutral-200 dark:border-neutral-700 rounded-md">
+        <table class="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
           <thead>
             <tr>${headerHtml}</tr>
           </thead>
-          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700/50">
+          <tbody class="bg-white dark:bg-neutral-800 divide-y divide-neutral-100 dark:divide-neutral-700/50">
             ${bodyHtml}
           </tbody>
         </table>
@@ -162,7 +162,7 @@ function markdownToHtml(markdown) {
       .replace(/>/g, '&gt;');
     html = html.replace(
       `__INLINE_CODE_${index}__`,
-      `<code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm font-mono text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">${escapedCode}</code>`
+      `<code class="bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-sm font-mono text-neutral-800 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700">${escapedCode}</code>`
     );
   });
   

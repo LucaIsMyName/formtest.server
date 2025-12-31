@@ -74,7 +74,7 @@ const SelectorEditorSkeleton = () => (
     {[...Array(3)].map((_, i) => (
       <div
         key={i}
-        className="border border-gray-300 dark:border-gray-700 rounded-lg p-4">
+        className="border border-neutral-300 dark:border-neutral-700 rounded-lg p-4">
         <Skeleton className="h-6 w-48 mb-3" />
         <div className="space-y-2">
           <Skeleton className="h-4 w-full" />
@@ -94,10 +94,10 @@ interface SelectorItemProps {
 }
 
 const SelectorItem: React.FC<SelectorItemProps> = ({ selector, isDefault, isActive = true, onRemove, onToggle }) => (
-  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-mono ${isDefault ? "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400" : isActive ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" : "bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 line-through"}`}>
+  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-mono ${isDefault ? "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400" : isActive ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" : "bg-neutral-50 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 line-through"}`}>
     <code className="flex-1 truncate text-xs">{selector}</code>
     {isDefault ? (
-      <span className="text-xs dar  dark:text-gray-900 whitespace-nowrap">(Standard)</span>
+      <span className="text-xs dar  dark:text-neutral-900 whitespace-nowrap">(Standard)</span>
     ) : (
       <div className="flex items-center gap-1">
         {onToggle && (
@@ -167,20 +167,20 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex items-center justify-between pb-4 ">
-        <div className="flex items-center gap-2 text-gray-800 dark:text-gray-200">
+        <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200">
           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-          <span className="font-medium text-gray-900 dark:text-white">{categoryLabel}</span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">({keys.length} Felder)</span>
+          <span className="font-medium text-neutral-900 dark:text-white">{categoryLabel}</span>
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">({keys.length} Felder)</span>
           {hasOverrides && <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">Angepasst</span>}
         </div>
         <Settings2
           size={16}
-          className="text-gray-400"
+          className="text-neutral-400"
         />
       </button>
 
       {isExpanded && (
-        <div className="px-4 text-gray-800 dark:text-gray-200 space-y-4 ">
+        <div className="px-4 text-neutral-800 dark:text-neutral-200 space-y-4 ">
           {keys.map((key) => {
             const keyLabel = keyLabels[key] || key;
             const defaults = defaultSelectors[key] || [];
@@ -197,15 +197,15 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
                   className="w-full flex items-center justify-between px-3 py-2 transition-colors">
                   <div className="flex items-center gap-2">
                     {isKeyExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{keyLabel}</span>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{keyLabel}</span>
+                    <span className="text-xs text-neutral-400">
                       {userSelectors.length > 0 && <span className="text-blue-500">+{userSelectors.length} eigene, </span>}
                       {defaults.length} Standard
                     </span>
                   </div>
                   <Code
                     size={14}
-                    className="text-gray-400"
+                    className="text-neutral-400"
                   />
                 </button>
 
@@ -230,7 +230,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
 
                     {/* Default selectors */}
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Standard-Selektoren:</p>
+                      <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">Standard-Selektoren:</p>
                       {defaults.slice(0, 5).map((selector, idx) => (
                         <SelectorItem
                           key={`default-${idx}`}
@@ -238,11 +238,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
                           isDefault={true}
                         />
                       ))}
-                      {defaults.length > 5 && <p className="text-xs text-gray-400 italic pl-3">... und {defaults.length - 5} weitere</p>}
+                      {defaults.length > 5 && <p className="text-xs text-neutral-400 italic pl-3">... und {defaults.length - 5} weitere</p>}
                     </div>
 
                     {/* Add new selector */}
-                    <div className="flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                    <div className="flex gap-2 pt-2 border-t border-neutral-100 dark:border-neutral-700">
                       <Input
                         placeholder="Neuen Selektor hinzufügen (z.B. #my-field)"
                         value={newSelectors[key] || ""}
@@ -373,8 +373,8 @@ const SelectorEditor: React.FC = () => {
     <div className="space-y-0 p-4">
       <div className="flex items-center justify-between">
         <div className="sr-only">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Selektor-Konfiguration</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Eigene CSS-Selektoren haben Priorität vor Standard-Selektoren. Per-Form Mappings überschreiben globale Einstellungen.</p>
+          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Selektor-Konfiguration</h3>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Eigene CSS-Selektoren haben Priorität vor Standard-Selektoren. Per-Form Mappings überschreiben globale Einstellungen.</p>
         </div>
         {hasAnyOverrides && (
           <div className="relative">
@@ -399,7 +399,7 @@ const SelectorEditor: React.FC = () => {
                 size="sm"
                 variant="outline"
                 onClick={() => setShowResetConfirm(true)}
-                className="text-gray-500 hover:text-red-500">
+                className="text-neutral-500 hover:text-red-500">
                 <RotateCcw
                   size={14}
                   className="mr-1"

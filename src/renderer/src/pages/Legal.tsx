@@ -9,8 +9,8 @@ const Legal: React.FC = () => {
       <section className="select-auto my-6">
         {/* Impressum Section */}
         <div className="">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
-          <div className="text-gray-700 dark:text-gray-300 space-y-2">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Impressum</h2>
+          <div className="text-neutral-700 dark:text-neutral-300 space-y-2">
             <p>
               Luca Mack
               <br />
@@ -25,8 +25,8 @@ const Legal: React.FC = () => {
 
         {/* Legal & License Section */}
         <div className="my-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Lizenz & Rechtliches</h2>
-          <div className="text-gray-700 dark:text-gray-300 space-y-4">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Lizenz & Rechtliches</h2>
+          <div className="text-neutral-700 dark:text-neutral-300 space-y-4">
             <div>
               <h3 className="font-semibold text-lg mb-2">MIT License</h3>
               <p className="mb-2">Copyright (c) 2025 Luca Mack</p>
@@ -40,7 +40,7 @@ const Legal: React.FC = () => {
                 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               </p>
             </div>
-            <div className="py-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="py-4 border-t border-neutral-200 dark:border-neutral-700">
               <h3 className="font-semibold text-lg mb-2">Haftungsausschluss</h3>
               <p className="text-sm leading-relaxed">
                 Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko.
@@ -51,8 +51,8 @@ const Legal: React.FC = () => {
 
         {/* Privacy Section */}
         <div className="my-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Datenschutz</h2>
-          <div className="text-gray-700 dark:text-gray-300 space-y-4">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Datenschutz</h2>
+          <div className="text-neutral-700 dark:text-neutral-300 space-y-4">
             <p className="text-sm leading-relaxed">
               Diese Anwendung speichert alle Daten lokal auf Ihrem Computer. Es werden keine Daten an externe Server übertragen. Die Datenbank befindet sich im Anwendungsverzeichnis und kann jederzeit gelöscht werden.
             </p>

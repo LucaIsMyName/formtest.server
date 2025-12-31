@@ -134,10 +134,10 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DrawerContent className="max-w-2xl">
         <DrawerHeader>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">
             {script ? "Script bearbeiten" : "Neues Script erstellen"}
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
             Playwright-Code für erweiterte Test-Automatisierung
           </p>
         </DrawerHeader>
@@ -185,7 +185,7 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
               </SelectContent>
             </Select>
             {selectedHookPoint && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1">
                 <Info size={12} />
                 {selectedHookPoint.description}
               </p>
@@ -223,11 +223,11 @@ log('Button geklickt');
 // click(), fill(), type(), select(), check()
 // log(), screenshot(), wait()`}
               className={`w-full h-48 px-3 py-2 font-mono text-sm border rounded-md resize-none
-                bg-gray-50 dark:bg-gray-900 
-                text-gray-900 dark:text-gray-100
+                bg-neutral-50 dark:bg-neutral-900 
+                text-neutral-900 dark:text-neutral-100
                 ${errors.code 
                   ? "border-red-500 focus:ring-red-500" 
-                  : "border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                  : "border-neutral-300 dark:border-neutral-600 focus:ring-blue-500"
                 }
                 focus:outline-none focus:ring-2`}
             />

@@ -13,7 +13,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof CheckboxPrimitive.Root
       ref={ref}
       checked={indeterminate ? "indeterminate" : checked}
       className={cn(
-        "peer h-4 w-4 shrink-0 rounded-sm border border-gray-300 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-blue-600 data-[state=checked]:text-gray-50 data-[state=indeterminate]:bg-blue-600 data-[state=indeterminate]:text-gray-50 dark:border-gray-600 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-300 dark:data-[state=checked]:bg-blue-600 dark:data-[state=checked]:text-gray-50 dark:data-[state=indeterminate]:bg-blue-600 dark:data-[state=indeterminate]:text-gray-50",
+        "peer h-4 w-4 shrink-0 rounded-sm border border-neutral-300 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-blue-600 data-[state=checked]:text-neutral-50 data-[state=indeterminate]:bg-blue-600 data-[state=indeterminate]:text-neutral-50 dark:border-neutral-600 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:bg-blue-600 dark:data-[state=checked]:text-neutral-50 dark:data-[state=indeterminate]:bg-blue-600 dark:data-[state=indeterminate]:text-neutral-50",
         className
       )}
       {...props}>

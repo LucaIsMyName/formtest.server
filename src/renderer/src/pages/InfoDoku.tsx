@@ -17,8 +17,8 @@ const InfoDoku: React.FC = () => {
       <section className="select-auto my-6">
         {/* Impressum Section */}
         <div className="">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Impressum</h2>
-          <div className="text-gray-700 dark:text-gray-300 space-y-2">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Impressum</h2>
+          <div className="text-neutral-700 dark:text-neutral-300 space-y-2">
             <p>
               Luca Mack
               <br />
@@ -33,8 +33,8 @@ const InfoDoku: React.FC = () => {
 
         {/* Legal & License Section */}
         <div className="my-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Lizenz & Rechtliches</h2>
-          <div className="text-gray-700 dark:text-gray-300 space-y-4">
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Lizenz & Rechtliches</h2>
+          <div className="text-neutral-700 dark:text-neutral-300 space-y-4">
             <div>
               <h3 className="font-semibold text-lg mb-2">MIT License</h3>
               <p className="mb-2">Copyright (c) 2025 Luca Mack</p>
@@ -42,7 +42,7 @@ const InfoDoku: React.FC = () => {
               <p className="text-sm leading-relaxed mt-2">The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
               <p className="text-sm leading-relaxed mt-2 font-semibold">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
             </div>
-            <div className="py-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="py-4 border-t border-neutral-200 dark:border-neutral-700">
               <h3 className="font-semibold text-lg mb-2">Haftungsausschluss</h3>
               <p className="text-sm leading-relaxed">Diese Software wird zu Testzwecken bereitgestellt. Der Autor übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Software entstehen. Die Verwendung erfolgt auf eigenes Risiko.</p>
             </div>
@@ -50,20 +50,20 @@ const InfoDoku: React.FC = () => {
         </div>
       </section>
       {/* User Documentation Section */}
-      <div className="select-auto border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Benutzer-Dokumentation</h2>
+      <div className="select-auto border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm p-6 mb-6">
+        <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Benutzer-Dokumentation</h2>
 
-        <div className="space-y-6 text-gray-700 dark:text-gray-300">
+        <div className="space-y-6 text-neutral-700 dark:text-neutral-300">
           {/* Getting Started */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Erste Schritte</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Erste Schritte</h3>
             <p className="mb-2">FormTest.Server ist eine Anwendung zum automatisierten Testen von Spendenformularen mit verschiedenen Zahlungsmethoden. Die Anwendung verwendet Playwright für die Browser-Automatisierung und speichert alle Daten lokal in einer SQLite-Datenbank.</p>
             <p>Um mit dem Testen zu beginnen, müssen Sie zunächst Formulare und Zahlungsmethoden konfigurieren.</p>
           </div>
 
           {/* Managing Forms */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Formulare verwalten</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Formulare verwalten</h3>
             <ol className="list-decimal list-inside space-y-2 ml-2">
               <li>Navigieren Sie zur Seite "Formulare"</li>
               <li>Klicken Sie auf "Neues Formular"</li>
@@ -93,7 +93,7 @@ const InfoDoku: React.FC = () => {
 
           {/* Managing Payment Methods */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Zahlungsmethoden verwalten</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Zahlungsmethoden verwalten</h3>
             <ol className="list-decimal list-inside space-y-2 ml-2">
               <li>Navigieren Sie zur Seite "Bezahlmethoden"</li>
               <li>Klicken Sie auf "Neue Bezahlmethode"</li>
@@ -125,7 +125,7 @@ const InfoDoku: React.FC = () => {
 
           {/* Running Tests */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Tests durchführen</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Tests durchführen</h3>
             <ol className="list-decimal list-inside space-y-2 ml-2">
               <li>Stellen Sie sicher, dass mindestens ein Formular und eine Zahlungsmethode aktiv sind</li>
               <li>Klicken Sie auf dem Dashboard auf "Tests starten"</li>
@@ -141,7 +141,7 @@ const InfoDoku: React.FC = () => {
 
           {/* Understanding Results */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Testergebnisse verstehen</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Testergebnisse verstehen</h3>
             <p className="mb-2">Jeder Testlauf wird mit einem der folgenden Status gespeichert:</p>
             <ul className="list-disc list-inside ml-2 space-y-1">
               <li>
@@ -167,7 +167,7 @@ const InfoDoku: React.FC = () => {
 
           {/* Dashboard Statistics */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Dashboard-Statistiken</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Dashboard-Statistiken</h3>
             <p className="mb-2">Das Dashboard bietet eine umfassende Übersicht über Ihre Testaktivitäten:</p>
             <ul className="list-disc list-inside ml-2 space-y-1">
               <li>
@@ -188,7 +188,7 @@ const InfoDoku: React.FC = () => {
 
           {/* Settings */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Einstellungen</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Einstellungen</h3>
             <p className="mb-2">Auf der Einstellungsseite können Sie globale Konfigurationen vornehmen:</p>
             <ul className="list-disc list-inside ml-2 space-y-1">
               <li>
@@ -205,7 +205,7 @@ const InfoDoku: React.FC = () => {
 
           {/* Troubleshooting */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Fehlerbehebung</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Fehlerbehebung</h3>
             <div className="space-y-3">
               <div>
                 <p className="font-semibold">Tests schlagen fehl:</p>
@@ -235,7 +235,7 @@ const InfoDoku: React.FC = () => {
 
           {/* Data Storage */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Datenspeicherung</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Datenspeicherung</h3>
             <p className="mb-2">Alle Daten werden lokal auf Ihrem Computer gespeichert:</p>
             <ul className="list-disc list-inside ml-2 space-y-1">
               <li>
@@ -259,7 +259,7 @@ const InfoDoku: React.FC = () => {
       </div>
       {/* Keyboard Shortcuts Section */}
       <section className="my-6">
-        <div className="border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6 mb-6">
+        <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
               <Keyboard
@@ -267,18 +267,18 @@ const InfoDoku: React.FC = () => {
                 className="text-white"
               />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Tastenkürzel</h2>
+            <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">Tastenkürzel</h2>
           </div>
 
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Nutze diese Tastenkürzel für schnellere Navigation und Aktionen.</p>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">Nutze diese Tastenkürzel für schnellere Navigation und Aktionen.</p>
 
           {/* Navigation Shortcuts */}
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Navigation</h3>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2 uppercase tracking-wide">Navigation</h3>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                  <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
                     <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
                     <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
                   </TableRow>
@@ -287,9 +287,9 @@ const InfoDoku: React.FC = () => {
                   {navigationShortcuts.map((shortcut, index) => (
                     <TableRow key={index}>
                       <TableCell className="px-4 py-2">
-                        <kbd className="px-2 py-1 bg-gray-100 dark:text-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
+                        <kbd className="px-2 py-1 bg-neutral-100 dark:text-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
                       </TableCell>
-                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{shortcut.description}</TableCell>
+                      <TableCell className="px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300">{shortcut.description}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -299,11 +299,11 @@ const InfoDoku: React.FC = () => {
 
           {/* Action Shortcuts */}
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Aktionen</h3>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2 uppercase tracking-wide">Aktionen</h3>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                  <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
                     <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
                     <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
                   </TableRow>
@@ -312,9 +312,9 @@ const InfoDoku: React.FC = () => {
                   {actionShortcuts.map((shortcut, index) => (
                     <TableRow key={index}>
                       <TableCell className="px-4 py-2">
-                        <kbd className="px-2 py-1 dark:text-white bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
+                        <kbd className="px-2 py-1 dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
                       </TableCell>
-                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{shortcut.description}</TableCell>
+                      <TableCell className="px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300">{shortcut.description}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -324,11 +324,11 @@ const InfoDoku: React.FC = () => {
 
           {/* General Shortcuts */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wide">Allgemein</h3>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2 uppercase tracking-wide">Allgemein</h3>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                  <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
                     <TableHead className="px-4 py-2 text-xs w-[150px]">Tastenkürzel</TableHead>
                     <TableHead className="px-4 py-2 text-xs">Aktion</TableHead>
                   </TableRow>
@@ -337,9 +337,9 @@ const InfoDoku: React.FC = () => {
                   {generalShortcuts.map((shortcut, index) => (
                     <TableRow key={index}>
                       <TableCell className="px-4 py-2">
-                        <kbd className="px-2 py-1 dark:text-white bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
+                        <kbd className="px-2 py-1 dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded text-xs font-mono">{formatShortcut(shortcut)}</kbd>
                       </TableCell>
-                      <TableCell className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{shortcut.description}</TableCell>
+                      <TableCell className="px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300">{shortcut.description}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -350,9 +350,9 @@ const InfoDoku: React.FC = () => {
       </section>
 
       {/* Version Info */}
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Version & Technologie</h2>
-        <div className="text-gray-700 dark:text-gray-300 space-y-2">
+      <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-sm p-6">
+        <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Version & Technologie</h2>
+        <div className="text-neutral-700 dark:text-neutral-300 space-y-2">
           <p>
             <strong>Version:</strong> 1.0.23
           </p>

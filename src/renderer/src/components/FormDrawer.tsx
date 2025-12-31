@@ -233,42 +233,42 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
 
         {/* Details Table - only shown when editing */}
         {editForm && (
-          <div className="mb-6 pb-6 border-b dark:border-gray-700">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Formular Details</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+          <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Formular Details</label>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">ID</TableCell>
+                    <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">ID</TableCell>
                     <TableCell className="px-3 py-2">
-                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{editForm.id}</code>
+                      <code className="text-xs font-mono bg-neutral-100 dark:bg-neutral-900/50 px-1.5 py-0.5 rounded text-neutral-800 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">{editForm.id}</code>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                     <TableCell className="px-3 py-2"><StatusBadge status={editForm.isActive ? "active" : "inactive"} /></TableCell>
                   </TableRow>
                   {editForm.hash && (
                     <TableRow>
-                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Hash</TableCell>
+                      <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Hash</TableCell>
                       <TableCell className="px-3 py-2">
-                        <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{editForm.hash}</code>
+                        <code className="text-xs font-mono bg-neutral-100 dark:bg-neutral-900/50 px-1.5 py-0.5 rounded text-neutral-800 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">{editForm.hash}</code>
                       </TableCell>
                     </TableRow>
                   )}
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Erstellt</TableCell>
-                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDate(editForm.createdAt)}</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Erstellt</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{formatDate(editForm.createdAt)}</TableCell>
                   </TableRow>
                   {editForm.updatedAt && (
                     <TableRow>
-                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Aktualisiert</TableCell>
-                      <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDate(editForm.updatedAt)}</TableCell>
+                      <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Aktualisiert</TableCell>
+                      <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{formatDate(editForm.updatedAt)}</TableCell>
                     </TableRow>
                   )}
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Mappings</TableCell>
-                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">{editForm.fieldMappings?.length || 0} Feld-Mappings</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Mappings</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">{editForm.fieldMappings?.length || 0} Feld-Mappings</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -281,12 +281,12 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
           className="space-y-4">
           {/* Form Fields Table */}
           <div className="mb-6">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Formular Einstellungen</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Formular Einstellungen</label>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">URL *</TableCell>
+                    <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">URL *</TableCell>
                     <TableCell className="px-3 py-2">
                       <Input
                         id="url"
@@ -301,7 +301,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Hash</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Hash</TableCell>
                     <TableCell className="px-3 py-2">
                       <Input
                         id="hash"
@@ -311,24 +311,24 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                         disabled={isLoading}
                         className="text-sm"
                       />
-                      <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">Formular-Identifikations-Hash von FundraisingBox</p>
+                      <p className="text-neutral-500 dark:text-neutral-400 text-xs mt-1">Formular-Identifikations-Hash von FundraisingBox</p>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Icon</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Icon</TableCell>
                     <TableCell className="px-3 py-2">
                       <button
                         type="button"
                         onClick={() => setShowIconPicker(true)}
                         disabled={isLoading}
-                        className="flex items-center gap-3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+                        className="flex items-center gap-3 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
                         {renderIcon(formData.icon, 18, "text-blue-600 dark:text-blue-400")}
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{formData.icon}</span>
+                        <span className="text-sm text-neutral-700 dark:text-neutral-300">{formData.icon}</span>
                       </button>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                     <TableCell className="px-3 py-2">
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -339,7 +339,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                         />
                         <Label
                           htmlFor="isActive"
-                          className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+                          className="text-sm text-neutral-600 dark:text-neutral-400 font-normal cursor-pointer">
                           Aktiv (in Tests einbeziehen)
                         </Label>
                       </div>
@@ -351,39 +351,39 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
           </div>
 
           {/* Field Mappings Section */}
-          <div className="border border-gray-200 dark:border-gray-700 rounded-md">
+          <div className="border border-neutral-200 dark:border-neutral-700 rounded-md">
             <button
               type="button"
               onClick={() => setShowFieldMappings(!showFieldMappings)}
-              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Feld-Mappings</span>
+                <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Feld-Mappings</span>
                 {fieldMappings.length > 0 && <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full">{fieldMappings.length}</span>}
               </div>
               {showFieldMappings ? (
                 <ChevronUp
                   size={16}
-                  className="text-gray-500"
+                  className="text-neutral-500"
                 />
               ) : (
                 <ChevronDown
                   size={16}
-                  className="text-gray-500"
+                  className="text-neutral-500"
                 />
               )}
             </button>
 
             {showFieldMappings && (
-              <div className="px-4 pb-4 space-y-3 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-xs text-gray-500 dark:text-gray-400 pt-3">Definieren Sie benutzerdefinierte Selektoren und Werte für Formularfelder. Diese überschreiben die automatische Erkennung.</p>
+              <div className="px-4 pb-4 space-y-3 border-t border-neutral-200 dark:border-neutral-700">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400 pt-3">Definieren Sie benutzerdefinierte Selektoren und Werte für Formularfelder. Diese überschreiben die automatische Erkennung.</p>
 
                 {/* Existing mappings */}
                 {fieldMappings.map((mapping, index) => (
                   <div
                     key={mapping.id}
-                    className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md space-y-2">
+                    className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-md space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Mapping #{index + 1}</span>
+                      <span className="text-xs font-medium text-neutral-600 dark:text-neutral-400">Mapping #{index + 1}</span>
                       <button
                         type="button"
                         onClick={() => removeFieldMapping(mapping.id)}
@@ -394,7 +394,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
 
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <label className="text-xs text-gray-500 dark:text-gray-400">Feldtyp</label>
+                        <label className="text-xs text-neutral-500 dark:text-neutral-400">Feldtyp</label>
                         <Select
                           value={mapping.fieldType}
                           onValueChange={(value) => updateFieldMapping(mapping.id, { fieldType: value as FieldMappingType })}
@@ -414,7 +414,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                         </Select>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs text-gray-500 dark:text-gray-400">Aktion</label>
+                        <label className="text-xs text-neutral-500 dark:text-neutral-400">Aktion</label>
                         <Select
                           value={mapping.action}
                           onValueChange={(value) => updateFieldMapping(mapping.id, { action: value as FieldMappingAction })}
@@ -436,7 +436,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     </div>
 
                     <div>
-                      <label className="text-xs text-gray-500 dark:text-gray-400">CSS Selektor *</label>
+                      <label className="text-xs text-neutral-500 dark:text-neutral-400">CSS Selektor *</label>
                       <Input
                         value={mapping.selector}
                         onChange={(e) => updateFieldMapping(mapping.id, { selector: e.target.value })}
@@ -447,7 +447,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     </div>
 
                     <div>
-                      <label className="text-xs text-gray-500 dark:text-gray-400">Wert (optional)</label>
+                      <label className="text-xs text-neutral-500 dark:text-neutral-400">Wert (optional)</label>
                       <Input
                         value={mapping.value || ""}
                         onChange={(e) => updateFieldMapping(mapping.id, { value: e.target.value })}
@@ -458,7 +458,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     </div>
 
                     <div>
-                      <label className="text-xs text-gray-500 dark:text-gray-400">Beschreibung (optional)</label>
+                      <label className="text-xs text-neutral-500 dark:text-neutral-400">Beschreibung (optional)</label>
                       <Input
                         value={mapping.description || ""}
                         onChange={(e) => updateFieldMapping(mapping.id, { description: e.target.value })}

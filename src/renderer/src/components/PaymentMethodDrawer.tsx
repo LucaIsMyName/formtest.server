@@ -136,7 +136,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
         return (
           <div className="space-y-2">
             <Label
-              className="text-gray-600 dark:text-gray-400"
+              className="text-neutral-600 dark:text-neutral-400"
               htmlFor="email">
               PayPal E-Mail *
             </Label>
@@ -158,7 +158,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
           <>
             <div className="space-y-2">
               <Label
-                className="text-gray-600 dark:text-gray-400"
+                className="text-neutral-600 dark:text-neutral-400"
                 htmlFor="accountHolder">
                 Kontoinhaber *
               </Label>
@@ -175,7 +175,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
             </div>
             <div className="space-y-2">
               <Label
-                className="text-gray-600 dark:text-gray-400"
+                className="text-neutral-600 dark:text-neutral-400"
                 htmlFor="iban">
                 IBAN *
               </Label>
@@ -199,7 +199,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
           <>
             <div className="space-y-2">
               <Label
-                className="text-gray-600 dark:text-gray-400"
+                className="text-neutral-600 dark:text-neutral-400"
                 htmlFor="cardNumber">
                 Kartennummer *
               </Label>
@@ -217,7 +217,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
             </div>
             <div className="space-y-2">
               <Label
-                className="text-gray-600 dark:text-gray-400"
+                className="text-neutral-600 dark:text-neutral-400"
                 htmlFor="cardholderName">
                 Karteninhaber *
               </Label>
@@ -235,7 +235,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label
-                  className="text-gray-600 dark:text-gray-400"
+                  className="text-neutral-600 dark:text-neutral-400"
                   htmlFor="expiryDate">
                   Ablaufdatum *
                 </Label>
@@ -253,7 +253,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               </div>
               <div className="space-y-2">
                 <Label
-                  className="text-gray-600 dark:text-gray-400"
+                  className="text-neutral-600 dark:text-neutral-400"
                   htmlFor="cvv">
                   CVV *
                 </Label>
@@ -277,7 +277,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
         return (
           <div className="space-y-2">
             <Label
-              className="text-gray-600 dark:text-gray-400"
+              className="text-neutral-600 dark:text-neutral-400"
               htmlFor="bankCode">
               Bank *
             </Label>
@@ -367,24 +367,24 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
 
         {/* Details Table - only shown when editing */}
         {editMethod && (
-          <div className="mb-6 pb-6 border-b dark:border-gray-700">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Bezahlmethode Details</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+          <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Bezahlmethode Details</label>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">ID</TableCell>
+                    <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">ID</TableCell>
                     <TableCell className="px-3 py-2">
-                      <code className="text-xs font-mono bg-gray-100 dark:bg-gray-900/50 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-300 border border-gray-200 dark:border-gray-700">{editMethod.id}</code>
+                      <code className="text-xs font-mono bg-neutral-100 dark:bg-neutral-900/50 px-1.5 py-0.5 rounded text-neutral-800 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">{editMethod.id}</code>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                     <TableCell className="px-3 py-2"><StatusBadge status={editMethod.isActive ? "active" : "inactive"} /></TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Typ</TableCell>
-                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white">
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Typ</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white">
                       {editMethod.type === "paypal" ? "PayPal" : 
                        editMethod.type === "sepa" ? "SEPA Lastschrift" : 
                        editMethod.type === "creditcard" ? "Kreditkarte" : 
@@ -392,13 +392,13 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Erstellt</TableCell>
-                    <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDate(editMethod.createdAt)}</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Erstellt</TableCell>
+                    <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{formatDate(editMethod.createdAt)}</TableCell>
                   </TableRow>
                   {editMethod.updatedAt && (
                     <TableRow>
-                      <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Aktualisiert</TableCell>
-                      <TableCell className="px-3 py-2 text-sm text-gray-900 dark:text-white font-mono">{formatDate(editMethod.updatedAt)}</TableCell>
+                      <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Aktualisiert</TableCell>
+                      <TableCell className="px-3 py-2 text-sm text-neutral-900 dark:text-white font-mono">{formatDate(editMethod.updatedAt)}</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -412,12 +412,12 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
           className="space-y-4">
           {/* Payment Method Fields Table */}
           <div className="mb-6">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Bezahlmethode Einstellungen</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Bezahlmethode Einstellungen</label>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden">
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell className="px-3 py-2 w-[120px] bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Typ *</TableCell>
+                    <TableCell className="px-3 py-2 w-[120px] bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Typ *</TableCell>
                     <TableCell className="px-3 py-2">
                       <Select
                         value={methodData.type}
@@ -442,20 +442,20 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400 align-top pt-3">Icon</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400 align-top pt-3">Icon</TableCell>
                     <TableCell className="px-3 py-2">
                       <button
                         type="button"
                         onClick={() => setShowIconPicker(true)}
                         disabled={isLoading}
-                        className="flex items-center gap-3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
+                        className="flex items-center gap-3 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full justify-start">
                         {renderIcon(methodData.icon, 18, "text-blue-600 dark:text-blue-400")}
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{methodData.icon}</span>
+                        <span className="text-sm text-neutral-700 dark:text-neutral-300">{methodData.icon}</span>
                       </button>
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell className="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 text-xs font-medium text-gray-500 dark:text-gray-400">Status</TableCell>
+                    <TableCell className="px-3 py-2 bg-neutral-50 dark:bg-neutral-800/50 text-xs font-medium text-neutral-500 dark:text-neutral-400">Status</TableCell>
                     <TableCell className="px-3 py-2">
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -466,7 +466,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                         />
                         <Label
                           htmlFor="isActive"
-                          className="text-sm text-gray-600 dark:text-gray-400 font-normal cursor-pointer">
+                          className="text-sm text-neutral-600 dark:text-neutral-400 font-normal cursor-pointer">
                           Aktiv (in Tests verwenden)
                         </Label>
                       </div>
@@ -479,8 +479,8 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
 
           {/* Type-specific fields */}
           <div className="mb-6">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-3">Zahlungsdetails</label>
-            <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden p-3 space-y-3">
+            <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-3">Zahlungsdetails</label>
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden p-3 space-y-3">
               {renderTypeSpecificFields()}
             </div>
           </div>

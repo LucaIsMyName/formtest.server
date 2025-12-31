@@ -179,17 +179,17 @@ const GlobalDefaultsEditor: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="sr-only">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Globale Standardwerte
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0">
             Diese Werte überschreiben Faker.js, werden aber von Form-spezifischen Mappings überschrieben.
           </p>
         </div>
         {/* Save status indicator */}
         <div className="flex items-center gap-2">
           {saveStatus === "saving" && (
-            <span className="text-xs text-gray-500 dark:text-gray-400">Speichern...</span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">Speichern...</span>
           )}
           {saveStatus === "saved" && (
             <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
@@ -205,7 +205,7 @@ const GlobalDefaultsEditor: React.FC = () => {
         <TableBody className="">
           {FIELD_ORDER.map(field => (
             <TableRow key={field}>
-              <TableCell className="w-40 !px-4 text-xs text-gray-600 dark:text-gray-400 font-medium pl-0">
+              <TableCell className="w-40 !px-4 text-xs text-neutral-600 dark:text-neutral-400 font-medium pl-0">
                 {FIELD_LABELS[field]}
               </TableCell>
               <TableCell>

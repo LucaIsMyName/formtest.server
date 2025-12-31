@@ -42,7 +42,7 @@ const DashboardSkeleton = () => (
       {[...Array(4)].map((_, i) => (
         <div
           key={i}
-          className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+          className="bg-white dark:bg-neutral-800 p-6 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <Skeleton className="h-4 w-24 mb-2" />
           <Skeleton className="h-8 w-16" />
         </div>
@@ -51,7 +51,7 @@ const DashboardSkeleton = () => (
 
     {/* Charts Placeholder */}
     <div className="space-y-6 mb-8">
-      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
+      <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
         <Skeleton className="h-6 w-32 mb-4" />
         <Skeleton className="h-[300px] w-full" />
       </div>
@@ -60,7 +60,7 @@ const DashboardSkeleton = () => (
         {[...Array(2)].map((_, i) => (
           <div
             key={i}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
+            className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
             <Skeleton className="h-6 w-40 mb-4" />
             <Skeleton className="h-[250px] w-full" />
           </div>
@@ -461,8 +461,8 @@ const Dashboard: React.FC = () => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-md shadow-lg">
-          <p className="text-gray-900 dark:text-white mb-2">{label}</p>
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-3 rounded-md shadow-lg">
+          <p className="text-neutral-900 dark:text-white mb-2">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p
               key={index}
@@ -492,82 +492,82 @@ const Dashboard: React.FC = () => {
           variant="outline"
           size="sm"
           // condensed={true}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm hover:border-purple-300 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed group px-4 py-2.5 h-auto text-neutral-700 dark:text-neutral-300">
           <Terminal className="w-4 h-4 text-purple-500 dark:text-purple-400 mr-2 transition-transform" />
-          <span className="text-gray-900 dark:text-white">{isRunning ? "Tests laufen..." : "Tests starten"}</span>
+          <span className="text-neutral-900 dark:text-white">{isRunning ? "Tests laufen..." : "Tests starten"}</span>
         </Button>
 
         <Button
           onClick={() => handleQuickAction("add-form")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group px-4 py-2.5 h-auto text-neutral-700 dark:text-neutral-300">
           <FileText className="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2 transition-transform" />
-          <span className="text-gray-900 dark:text-white">Formulare</span>
+          <span className="text-neutral-900 dark:text-white">Formulare</span>
         </Button>
 
         <Button
           onClick={() => handleQuickAction("add-payment")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm hover:border-green-300 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all group px-4 py-2.5 h-auto text-neutral-700 dark:text-neutral-300">
           <CreditCard className="w-4 h-4 text-green-500 dark:text-green-400 mr-2 transition-transform" />
-          <span className="text-gray-900 dark:text-white">Bezahlmethoden</span>
+          <span className="text-neutral-900 dark:text-white">Bezahlmethoden</span>
         </Button>
 
         <Button
           onClick={() => handleQuickAction("view-results")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm hover:border-yellow-300 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition-all group px-4 py-2.5 h-auto text-neutral-700 dark:text-neutral-300">
           <BarChart3 className="w-4 h-4 text-yellow-500 dark:text-yellow-400 mr-2 transition-transform" />
-          <span className="text-gray-900 dark:text-white">Ergebnisse</span>
+          <span className="text-neutral-900 dark:text-white">Ergebnisse</span>
         </Button>
 
         <Button
           onClick={() => handleQuickAction("autopilot")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
+          className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm hover:border-cyan-300 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 transition-all group px-4 py-2.5 h-auto text-neutral-700 dark:text-neutral-300">
           <Play className="w-4 h-4 text-cyan-500 dark:text-cyan-400 mr-2 transition-transform" />
-          <span className="text-gray-900 dark:text-white">Autopilot</span>
+          <span className="text-neutral-900 dark:text-white">Autopilot</span>
         </Button>
 
         <Button
           onClick={() => handleQuickAction("settings")}
           variant="outline"
           size="sm"
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group px-4 py-2.5 h-auto text-gray-700 dark:text-gray-300">
-          <Settings className="w-4 h-4 text-gray-500 dark:text-gray-400 mr-2 transition-transform" />
-          <span className="text-gray-900 dark:text-white">Einstellungen</span>
+          className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm hover:border-neutral-400 dark:hover:border-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-all group px-4 py-2.5 h-auto text-neutral-700 dark:text-neutral-300">
+          <Settings className="w-4 h-4 text-neutral-500 dark:text-neutral-400 mr-2 transition-transform" />
+          <span className="text-neutral-900 dark:text-white">Einstellungen</span>
         </Button>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 p-6 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div>
-            <p className="text-gray-500 dark:text-gray-400">Gesamt Tests</p>
+            <p className="text-neutral-500 dark:text-neutral-400">Gesamt Tests</p>
             <p
-              className="text-2xl font-semibold text-gray-900 dark:text-white mt-2"
+              className="text-2xl font-semibold text-neutral-900 dark:text-white mt-2"
               style={{ fontStretch: "125%" }}>
               {stats.totalTestRuns}
             </p>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 p-6 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div>
-            <p className="text-gray-500 dark:text-gray-400">Bezahlmethoden</p>
+            <p className="text-neutral-500 dark:text-neutral-400">Bezahlmethoden</p>
             <p
-              className="text-2xl font-semibold text-gray-900 dark:text-white mt-2"
+              className="text-2xl font-semibold text-neutral-900 dark:text-white mt-2"
               style={{ fontStretch: "125%" }}>
               {stats.totalPaymentMethods}
             </p>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 p-6 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div>
-            <p className="text-gray-500 dark:text-gray-400">Erfolgreich</p>
+            <p className="text-neutral-500 dark:text-neutral-400">Erfolgreich</p>
             <p
               className="text-2xl font-semibold text-green-600 dark:text-green-400 mt-2"
               style={{ fontStretch: "125%" }}>
@@ -575,9 +575,9 @@ const Dashboard: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm">
+        <div className="bg-white dark:bg-neutral-800 p-6 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Erfolgsrate</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">Erfolgsrate</p>
             <p
               className={`text-2xl font-semibold mt-2 ${
                 stats.successRate >= 90 
@@ -589,7 +589,7 @@ const Dashboard: React.FC = () => {
               style={{ fontStretch: "125%" }}>
               {isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{stats.failedTests} fehlgeschlagen</p>
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">{stats.failedTests} fehlgeschlagen</p>
           </div>
         </div>
       </div>
@@ -598,8 +598,8 @@ const Dashboard: React.FC = () => {
       {testRuns.length > 0 && (
         <div className="space-y-6 mb-8">
           {/* Timeline Chart */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Test-Verlauf (Gesamter Zeitraum)</h3>
+          <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+            <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Test-Verlauf (Gesamter Zeitraum)</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>
@@ -653,8 +653,8 @@ const Dashboard: React.FC = () => {
 
           {/* Success Rate Pie Chart and Stats */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Erfolgsrate Übersicht</h3>
+            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+              <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Erfolgsrate Übersicht</h3>
               <ResponsiveContainer
                 width="100%"
                 height={250}>
@@ -697,8 +697,8 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Payment Method Performance */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-              <h3 className="text-lg text-gray-900 dark:text-white mb-4">Bezahlmethoden Performance</h3>
+            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+              <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Bezahlmethoden Performance</h3>
               <ResponsiveContainer
                 width="100%"
                 height={250}>
@@ -742,8 +742,8 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Form Performance */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Formular Performance</h3>
+          <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+            <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Formular Performance</h3>
             <ResponsiveContainer
               width="100%"
               height={300}>
@@ -791,8 +791,8 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Success Rate Trend (Last 7 Days) */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-gray-900 dark:text-white mb-4">Erfolgsrate (Gesamter Zeitraum)</h3>
+          <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+            <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Erfolgsrate (Gesamter Zeitraum)</h3>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={prepareSuccessRateTrend()}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
@@ -813,10 +813,10 @@ const Dashboard: React.FC = () => {
                   content={({ active, payload, label }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-3 rounded-md shadow-lg">
-                          <p className="text-gray-900 dark:text-white mb-1">{label}</p>
+                        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-3 rounded-md shadow-lg">
+                          <p className="text-neutral-900 dark:text-white mb-1">{label}</p>
                           <p className="text-sm text-green-600">{payload[0].value}% Erfolgsrate</p>
-                          <p className="text-xs text-gray-500">{(payload[0].payload as any).total} Tests</p>
+                          <p className="text-xs text-neutral-500">{(payload[0].payload as any).total} Tests</p>
                         </div>
                       );
                     }
@@ -838,9 +838,9 @@ const Dashboard: React.FC = () => {
           {/* Reliability Metrics */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Form Reliability */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
+            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700">
+                <h3 className="text-sm font-medium text-neutral-900 dark:text-white flex items-center gap-2">
                   <FileText size={16} className="text-blue-500" />
                   Formular Zuverlässigkeit
                 </h3>
@@ -849,7 +849,7 @@ const Dashboard: React.FC = () => {
                 {prepareFormReliability().length > 0 ? (
                   <Table dividers={false}>
                     <TableHeader>
-                      <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                      <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
                         <TableHead className="text-[11px]">Formular</TableHead>
                         <TableHead className="text-[11px] text-center w-16">Tests</TableHead>
                         <TableHead className="text-[11px] text-center w-20">Ergebnis</TableHead>
@@ -859,10 +859,10 @@ const Dashboard: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                       {prepareFormReliability().map((form, idx) => (
-                        <TableRow key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        <TableRow key={idx} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
                           <TableCell className="py-2">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[140px]">{form.name}</span>
+                              <span className="text-sm font-medium text-neutral-900 dark:text-white truncate max-w-[140px]">{form.name}</span>
                               {form.trend !== 0 && (
                                 <span className={`flex items-center text-[11px] ${form.trend > 0 ? "text-green-600" : "text-red-600"}`}>
                                   {form.trend > 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
@@ -871,7 +871,7 @@ const Dashboard: React.FC = () => {
                             </div>
                           </TableCell>
                           <TableCell className="py-2 text-center">
-                            <span className="text-xs font-mono text-gray-600 dark:text-gray-400">{form.total}</span>
+                            <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400">{form.total}</span>
                           </TableCell>
                           <TableCell className="py-2">
                             <div className="font-mono flex items-center justify-center gap-3">
@@ -886,11 +886,11 @@ const Dashboard: React.FC = () => {
                             </div>
                           </TableCell>
                           <TableCell className="py-2 text-center">
-                            <span className="text-[11px] font-mono text-gray-500">{form.avgDuration}s</span>
+                            <span className="text-[11px] font-mono text-neutral-500">{form.avgDuration}s</span>
                           </TableCell>
                           <TableCell className="py-2 text-right">
                             <div className="flex items-center justify-end gap-2">
-                              <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                              <div className="w-12 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
                                 <div
                                   className={`h-full rounded-full ${form.rate >= 80 ? "bg-green-500" : form.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
                                   style={{ width: `${form.rate}%` }}
@@ -906,15 +906,15 @@ const Dashboard: React.FC = () => {
                     </TableBody>
                   </Table>
                 ) : (
-                  <p className="text-sm text-gray-500 text-center py-8">Keine Testdaten verfügbar</p>
+                  <p className="text-sm text-neutral-500 text-center py-8">Keine Testdaten verfügbar</p>
                 )}
               </div>
             </div>
 
             {/* Payment Method Reliability */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm overflow-hidden">
-              <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
+            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700">
+                <h3 className="text-sm font-medium text-neutral-900 dark:text-white flex items-center gap-2">
                   <CreditCard size={16} className="text-purple-500" />
                   Bezahlmethoden Zuverlässigkeit
                 </h3>
@@ -923,7 +923,7 @@ const Dashboard: React.FC = () => {
                 {preparePaymentMethodReliability().length > 0 ? (
                   <Table dividers={false}>
                     <TableHeader>
-                      <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                      <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
                         <TableHead className="text-[11px]">Methode</TableHead>
                         <TableHead className="text-[11px] w-20">Typ</TableHead>
                         <TableHead className="text-[11px] text-center w-16">Tests</TableHead>
@@ -933,10 +933,10 @@ const Dashboard: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                       {preparePaymentMethodReliability().map((pm, idx) => (
-                        <TableRow key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        <TableRow key={idx} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
                           <TableCell className="py-2">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">{pm.name}</span>
+                              <span className="text-sm font-medium text-neutral-900 dark:text-white truncate max-w-[120px]">{pm.name}</span>
                               {pm.trend !== 0 && (
                                 <span className={`flex items-center text-[11px] ${pm.trend > 0 ? "text-green-600" : "text-red-600"}`}>
                                   {pm.trend > 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
@@ -945,10 +945,10 @@ const Dashboard: React.FC = () => {
                             </div>
                           </TableCell>
                           <TableCell className="py-2">
-                            <span className="text-[11px] font-mono uppercase text-gray-500 dark:text-gray-400">{pm.type}</span>
+                            <span className="text-[11px] font-mono uppercase text-neutral-500 dark:text-neutral-400">{pm.type}</span>
                           </TableCell>
                           <TableCell className="py-2 text-center">
-                            <span className="text-xs font-mono text-gray-600 dark:text-gray-400">{pm.total}</span>
+                            <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400">{pm.total}</span>
                           </TableCell>
                           <TableCell className="py-2">
                             <div className="font-mono  flex items-center justify-center gap-3">
@@ -964,7 +964,7 @@ const Dashboard: React.FC = () => {
                           </TableCell>
                           <TableCell className="py-2 text-right">
                             <div className="flex items-center justify-end gap-2">
-                              <div className="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                              <div className="w-12 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
                                 <div
                                   className={`h-full rounded-full ${pm.rate >= 80 ? "bg-green-500" : pm.rate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
                                   style={{ width: `${pm.rate}%` }}
@@ -980,7 +980,7 @@ const Dashboard: React.FC = () => {
                     </TableBody>
                   </Table>
                 ) : (
-                  <p className="text-sm text-gray-500 text-center py-8">Keine Testdaten verfügbar</p>
+                  <p className="text-sm text-neutral-500 text-center py-8">Keine Testdaten verfügbar</p>
                 )}
               </div>
             </div>

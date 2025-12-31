@@ -63,19 +63,19 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
   };
 
   return (
-    <div className={`rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden ${className}`}>
+    <div className={`rounded-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden ${className}`}>
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="w-full flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-800/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
       >
         <div className="flex items-center gap-3">
           <div className={`p-1.5 rounded-md ${scoreBgColor}`}>
             <Accessibility size={14} className={scoreColor} />
           </div>
           <div className="text-left">
-            <div className="text-sm font-medium text-gray-900 dark:text-white">Barrierefreiheit (WCAG 2.1 AA)</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="text-sm font-medium text-neutral-900 dark:text-white">Barrierefreiheit (WCAG 2.1 AA)</div>
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">
               {criticalCount > 0 && <span className="text-red-500">{criticalCount} Kritisch</span>}
               {criticalCount > 0 && seriousCount > 0 && <span className="mx-1">·</span>}
               {seriousCount > 0 && <span className="text-orange-500">{seriousCount} Schwerwiegend</span>}
@@ -90,26 +90,26 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
         <div className="flex items-center gap-3">
           <div className={`px-2.5 py-1 rounded-md ${scoreBgColor}`}>
             <span className={`text-lg font-bold ${scoreColor}`}>{results.score}</span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">/100</span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">/100</span>
           </div>
           {isExpanded ? (
-            <ChevronUp size={16} className="text-gray-400" />
+            <ChevronUp size={16} className="text-neutral-400" />
           ) : (
-            <ChevronDown size={16} className="text-gray-400" />
+            <ChevronDown size={16} className="text-neutral-400" />
           )}
         </div>
       </button>
 
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="p-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+        <div className="p-3 border-t border-neutral-200 dark:border-neutral-700 space-y-3">
           {/* Score Level & Stats */}
           <div className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-gray-500 dark:text-gray-400">Bewertung:</span>
+              <span className="text-neutral-500 dark:text-neutral-400">Bewertung:</span>
               <span className={`font-medium ${scoreColor}`}>{getScoreLevelLabel(scoreLevel)}</span>
             </div>
-            <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
               <span>{results.passes} bestanden</span>
               <span>·</span>
               <span>{results.violations.length} Verstöße</span>
@@ -125,39 +125,39 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
           {/* Violations */}
           {results.violations.length > 0 && (
             <div className="space-y-1.5">
-              <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Verstöße</div>
+              <div className="text-xs font-medium text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">Verstöße</div>
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {results.violations.map((violation) => (
                   <div
                     key={violation.id}
-                    className="border border-gray-200 dark:border-gray-700 rounded overflow-hidden"
+                    className="border border-neutral-200 dark:border-neutral-700 rounded overflow-hidden"
                   >
                     <button
                       onClick={() => setExpandedViolation(expandedViolation === violation.id ? null : violation.id)}
-                      className="w-full flex items-start gap-2 p-2 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
+                      className="w-full flex items-start gap-2 p-2 bg-neutral-50 dark:bg-neutral-800/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-left"
                     >
                       {getImpactIcon(violation.impact)}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-700 dark:text-gray-300 font-medium">{violation.help}</span>
+                          <span className="text-xs text-neutral-700 dark:text-neutral-300 font-medium">{violation.help}</span>
                           <span className={`text-[10px] px-1.5 py-0.5 rounded ${getImpactColor(violation.impact)}`}>
                             {getImpactLabel(violation.impact)}
                           </span>
                         </div>
-                        <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                        <div className="text-[10px] text-neutral-500 dark:text-neutral-400 mt-0.5">
                           {violation.nodes.length} Element{violation.nodes.length !== 1 ? 'e' : ''} betroffen
                         </div>
                       </div>
                       {expandedViolation === violation.id ? (
-                        <ChevronUp size={14} className="text-gray-400 flex-shrink-0" />
+                        <ChevronUp size={14} className="text-neutral-400 flex-shrink-0" />
                       ) : (
-                        <ChevronDown size={14} className="text-gray-400 flex-shrink-0" />
+                        <ChevronDown size={14} className="text-neutral-400 flex-shrink-0" />
                       )}
                     </button>
                     
                     {expandedViolation === violation.id && (
-                      <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-2">
-                        <p className="text-xs text-gray-600 dark:text-gray-400">{violation.description}</p>
+                      <div className="p-2 border-t border-neutral-200 dark:border-neutral-700 space-y-2">
+                        <p className="text-xs text-neutral-600 dark:text-neutral-400">{violation.description}</p>
                         
                         {violation.helpUrl && (
                           <a
@@ -173,11 +173,11 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
                         
                         {violation.nodes.length > 0 && (
                           <div className="space-y-1">
-                            <div className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase">Betroffene Elemente</div>
+                            <div className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400 uppercase">Betroffene Elemente</div>
                             <div className="space-y-1 max-h-32 overflow-y-auto">
                               {violation.nodes.slice(0, 5).map((node, index) => (
-                                <div key={index} className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded">
-                                  <code className="text-[10px] text-gray-600 dark:text-gray-400 break-all">
+                                <div key={index} className="p-1.5 bg-neutral-100 dark:bg-neutral-800 rounded">
+                                  <code className="text-[10px] text-neutral-600 dark:text-neutral-400 break-all">
                                     {node.html.substring(0, 150)}{node.html.length > 150 ? '...' : ''}
                                   </code>
                                   {node.failureSummary && (
@@ -186,7 +186,7 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
                                 </div>
                               ))}
                               {violation.nodes.length > 5 && (
-                                <div className="text-[10px] text-gray-400 text-center py-1">
+                                <div className="text-[10px] text-neutral-400 text-center py-1">
                                   +{violation.nodes.length - 5} weitere Elemente
                                 </div>
                               )}
@@ -208,7 +208,7 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
                 <Accessibility size={20} className="text-green-600 dark:text-green-400" />
               </div>
               <p className="text-sm text-green-600 dark:text-green-400 font-medium">Keine Barrierefreiheits-Verstöße gefunden!</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                 {results.passes} Prüfungen bestanden
               </p>
             </div>

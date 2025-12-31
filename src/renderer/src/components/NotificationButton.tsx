@@ -57,7 +57,7 @@ const NotificationButton: React.FC = () => {
           <Tooltip.Trigger asChild>
             <DropdownMenu.Trigger asChild>
               <button
-                className="relative p-1.5 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
+                className="relative p-1.5 rounded-md border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-neutral-600 dark:text-neutral-400"
                 aria-label="Benachrichtigungen">
                 <Bell size={14} />
                 {unreadCount > 0 && (
@@ -70,27 +70,27 @@ const NotificationButton: React.FC = () => {
           </Tooltip.Trigger>
           <Tooltip.Portal>
             <Tooltip.Content
-              className="bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
+              className="bg-neutral-900 dark:bg-neutral-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
               sideOffset={5}>
               Benachrichtigungen
-              <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+              <Tooltip.Arrow className="fill-neutral-900 dark:fill-neutral-700" />
             </Tooltip.Content>
           </Tooltip.Portal>
         </Tooltip.Root>
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[100] overflow-hidden animate-in fade-in-0 zoom-in-95"
+          className="w-72 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-xl z-[100] overflow-hidden animate-in fade-in-0 zoom-in-95"
           sideOffset={8}
           align="end">
           {/* Header */}
-          <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-            <h3 className="text-xs font-medium text-gray-900 dark:text-white">Benachrichtigungen</h3>
+          <div className="flex items-center justify-between px-3 py-2 border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900">
+            <h3 className="text-xs font-medium text-neutral-900 dark:text-white">Benachrichtigungen</h3>
             <div className="flex items-center gap-1">
               {unreadCount > 0 && (
                 <button
                   onClick={(e) => { e.preventDefault(); markAllAsRead(); }}
-                  className="p-1 text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="p-1 text-neutral-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   title="Alle als gelesen markieren">
                   <CheckCheck size={14} />
                 </button>
@@ -98,7 +98,7 @@ const NotificationButton: React.FC = () => {
               {notifications.length > 0 && (
                 <button
                   onClick={(e) => { e.preventDefault(); deleteAll(); }}
-                  className="p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                  className="p-1 text-neutral-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                   title="Alle löschen">
                   <Trash2 size={14} />
                 </button>
@@ -109,14 +109,14 @@ const NotificationButton: React.FC = () => {
           {/* Notifications List */}
           <div className="max-h-64 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="px-3 py-6 text-center text-xs text-gray-500 dark:text-gray-400">
+              <div className="px-3 py-6 text-center text-xs text-neutral-500 dark:text-neutral-400">
                 Keine Benachrichtigungen
               </div>
             ) : (
               notifications.slice(0, 10).map((notification) => (
                 <DropdownMenu.Item
                   key={notification.id}
-                  className={`flex items-start gap-2 px-3 py-2 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors outline-none ${
+                  className={`flex items-start gap-2 px-3 py-2 border-b border-neutral-100 dark:border-neutral-700 last:border-b-0 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors outline-none ${
                     !notification.isRead ? "bg-blue-50/50 dark:bg-blue-900/10" : ""
                   }`}
                   onSelect={() => handleNotificationClick(notification)}>
@@ -125,7 +125,7 @@ const NotificationButton: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-1">
-                      <p className={`text-[13px] font-normal leading-tight block ${!notification.isRead ? "" : ""} text-gray-900 dark:text-white truncate`}>
+                      <p className={`text-[13px] font-normal leading-tight block ${!notification.isRead ? "" : ""} text-neutral-900 dark:text-white truncate`}>
                         {notification.title}
                       </p>
                       <button
@@ -134,16 +134,16 @@ const NotificationButton: React.FC = () => {
                           e.preventDefault();
                           deleteNotification(notification.id);
                         }}
-                        className="flex-shrink-0 p-0.5 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+                        className="flex-shrink-0 p-0.5 text-neutral-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
                         <X size={10} />
                       </button>
                     </div>
                     {notification.message && (
-                      <p className="text-[10px] text-gray-500 dark:text-gray-400 line-clamp-1">
+                      <p className="text-[10px] text-neutral-500 dark:text-neutral-400 line-clamp-1">
                         {notification.message}
                       </p>
                     )}
-                    <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5">
+                    <p className="text-[9px] text-neutral-400 dark:text-neutral-500 mt-0.5">
                       {formatDateTime(notification.createdAt)}
                     </p>
                   </div>
@@ -157,7 +157,7 @@ const NotificationButton: React.FC = () => {
 
           {/* Footer */}
           {notifications.length > 0 && (
-            <div className="px-3 py-1.5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+            <div className="px-3 py-1.5 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900">
               <DropdownMenu.Item
                 className="w-full text-center text-[10px] text-blue-600 dark:text-blue-400 hover:underline cursor-pointer outline-none"
                 onSelect={() => navigate("/test-results")}>
