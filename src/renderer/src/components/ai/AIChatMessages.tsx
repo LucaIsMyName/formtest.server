@@ -334,7 +334,7 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
 };
 
 // Render structured AI response
-const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (suggestion: string) => void }> = ({ content, onSuggestionClick }) => {
+const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (suggestion: string) => void; showSuggestions?: boolean }> = ({ content, onSuggestionClick, showSuggestions = false }) => {
   const blocks = parseAIResponse(content);
   
   // Extract suggestions block if present
@@ -349,7 +349,7 @@ const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (sugge
           block={block}
         />
       ))}
-      {suggestionsBlock && suggestionsBlock.items.length > 0 && (
+      {showSuggestions && suggestionsBlock && suggestionsBlock.items.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-600">
           {suggestionsBlock.items.map((suggestion, i) => (
             <button
@@ -436,7 +436,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
 
             {/* Message Content */}
             <div className={`flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
-              <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={isLastAIMessage ? onSuggestionClick : undefined} />}</div>
+              <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={onSuggestionClick} showSuggestions={isLastAIMessage} />}</div>
               <p className="text-xs text-neutral-400 mt-1">
                 {new Date(message.createdAt).toLocaleTimeString("de-DE", {
                   hour: "2-digit",
