@@ -8,6 +8,7 @@ import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, B
 import { useSettingsStore } from "../store/useSettingsStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { cn } from "@/utils/cn";
+import { useTestRunsStore } from "../store/useTestRunsStore";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,6 +19,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const mainContentRef = useRef<HTMLDivElement>(null);
   const [showTestDialog, setShowTestDialog] = useState(false);
+  const [testsRunning, setTestsRunning] = useState(false);
+  const { testRuns } = useTestRunsStore();
+
+  // Check if any tests are running or queued
+  useEffect(() => {
+    const checkTestStatus = async () => {
+      try {
+        const status = await window.api.testQueue.getStatus();
+        setTestsRunning(status.isProcessing || status.queueLength > 0);
+      } catch (error) {
+        setTestsRunning(false);
+      }
+    };
+
+    checkTestStatus();
+    const interval = setInterval(checkTestStatus, 1000);
+    return () => clearInterval(interval);
+  }, [testRuns]);
   const [preselectAll, setPreselectAll] = useState(false);
   const [preselectedFormIds, setPreselectedFormIds] = useState<number[]>([]);
   const [preselectedPaymentMethodIds, setPreselectedPaymentMethodIds] = useState<number[]>([]);
@@ -126,6 +145,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="space-y-0">
               {primaryNavigation.map((item) => {
                 const IconComponent = item.icon;
+                const isTestsItem = item.href === "/test-results";
                 return (
                   <Button
                     key={item.name}
@@ -139,8 +159,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     />
                     <span
                       style={{ fontStretch: "115%" }}
-                      className={`transition-all text-[clamp(0.8rem,1.075vw,0.9rem)]`}>
+                      className={`transition-all text-[clamp(0.8rem,1.075vw,0.9rem)] w-full block flex items-center justify-between gap-2`}>
                       {item.name}
+                      {isTestsItem && (
+                        <span
+                          className={cn(
+                            "w-2 h-2 rounded-full transition-all",
+                            testsRunning
+                              ? "bg-blue-500"
+                              : "border border-neutral-400 dark:border-neutral-500 bg-transparent"
+                          )}
+                        />
+                      )}
                     </span>
                   </Button>
                 );
