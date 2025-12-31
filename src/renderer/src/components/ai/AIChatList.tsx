@@ -68,7 +68,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
             <div className="flex-1 min-w-0 relative">
               {/* Always render the text to maintain height */}
               <p style={{ fontStretch: "115%" }} className={`text-[clamp(0.8rem,1.075vw,0.9rem)] truncate ${editingId === chat.id ? 'invisible' : ''}`}>{chat.title}</p>
-              <p className={`text-[10px] font-mono text-neutral-400 dark:text-neutral-500 mt-0.5 ${editingId === chat.id ? 'invisible' : ''}`}>
+              <p className={`text-[10px] truncate font-mono text-neutral-400 dark:text-neutral-500 mt-0.5 ${editingId === chat.id ? 'invisible' : ''}`}>
                 {new Date(chat.updatedAt).toLocaleDateString('de-DE', {
                   day: '2-digit',
                   month: '2-digit',
@@ -103,7 +103,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       e.stopPropagation();
                       handleSaveEdit(chat.id);
                     }}
-                    className="p-1.5 hover:bg-green-100 dark:hover:bg-green-900/30 rounded text-green-600"
+                    className="p-1.5 text-green-600"
                   >
                     <Check size={14} />
                   </button>
@@ -112,7 +112,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       e.stopPropagation();
                       handleCancelEdit();
                     }}
-                    className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-red-600"
+                    className="p-1.5 text-red-600"
                   >
                     <X size={14} />
                   </button>
@@ -124,7 +124,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       e.stopPropagation();
                       handleStartEdit(chat);
                     }}
-                    className="p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded text-neutral-500"
+                    className="p-1.5 rounded text-neutral-500"
                     title="Umbenennen"
                   >
                     <Edit2 size={14} />
@@ -134,7 +134,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       e.stopPropagation();
                       onDelete(chat.id);
                     }}
-                    className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-red-500"
+                    className="p-1.5 text-red-500"
                     title="Löschen"
                   >
                     <Trash2 size={14} />

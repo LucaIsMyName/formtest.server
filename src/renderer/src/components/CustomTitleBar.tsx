@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import TrafficLights from "./TrafficLights";
 import NotificationButton from "./NotificationButton";
 import Button from "./ui/Button";
-import { Terminal, Search, Sun, Moon, Monitor, Settings, ChevronLeft, ChevronRight, Bot } from "lucide-react";
+import { Terminal, Search, Sun, Moon, Monitor, Settings, ChevronLeft, ChevronRight, MessagesSquare } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useAIStore } from "../store/useAIStore";
 
@@ -247,7 +247,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                       onClick={() => navigate("/ai-chat")}
                       className="p-1.5 !px-1.5 !py-1.5"
                       aria-label="AI Assistent">
-                      <Bot size={14} />
+                      <MessagesSquare size={14} />
                     </Button>
                   </Tooltip.Trigger>
                   <Tooltip.Portal>

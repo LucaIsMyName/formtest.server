@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Plus, Trash2, Settings, Bot } from "lucide-react";
+import { Plus, Trash2, Settings, MessagesSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAIStore } from "../store/useAIStore";
 import AIChatMessages from "../components/ai/AIChatMessages";
@@ -50,7 +50,7 @@ const AIChat: React.FC = () => {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8">
         <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-6">
-          <Bot
+          <MessagesSquare
             size={40}
             className="text-blue-500"
           />
@@ -75,7 +75,7 @@ const AIChat: React.FC = () => {
         <div className="border-b border-neutral-200 dark:border-neutral-800 flex-shrink-0">
           <Button
             onClick={handleNewChat}
-            className="w-full gap-3 px-6 py-4 !px-6 !py-4 rounded-none"
+            className="w-full gap-3 !px-6 !py-[23.5px] rounded-none"
             variant="primary">
             <Plus size={18} />
             <span style={{ fontStretch: "115%" }} className="text-[clamp(0.8rem,1.075vw,0.9rem)]">Neuer Chat</span>

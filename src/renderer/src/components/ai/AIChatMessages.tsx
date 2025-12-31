@@ -1,15 +1,15 @@
-import React, { useRef, useEffect } from 'react';
-import { Bot, User, Loader2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import type { AIMessage } from '../../../../common/types';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/Table';
-import { StatusBadge } from '../ui/Badge';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useRef, useEffect } from "react";
+import { MessagesSquare, User, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import type { AIMessage } from "../../../../common/types";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
+import { StatusBadge } from "../ui/Badge";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 // Chart colors
-const CHART_COLORS = ['#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'];
+const CHART_COLORS = ["#22c55e", "#ef4444", "#3b82f6", "#f59e0b", "#8b5cf6", "#ec4899"];
 
 // Helper to render markdown links [text](url) as clickable anchors
 const renderWithLinks = (text: string): React.ReactNode => {
@@ -24,13 +24,13 @@ const renderWithLinks = (text: string): React.ReactNode => {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
-    
+
     const linkText = match[1];
     const url = match[2];
-    
+
     // Check if it's an internal or external link
-    const isExternal = url.startsWith('http://') || url.startsWith('https://');
-    
+    const isExternal = url.startsWith("http://") || url.startsWith("https://");
+
     if (isExternal) {
       parts.push(
         <a
@@ -38,8 +38,7 @@ const renderWithLinks = (text: string): React.ReactNode => {
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 dark:text-blue-400 hover:underline"
-        >
+          className="text-blue-600 dark:text-blue-400 hover:underline">
           {linkText}
         </a>
       );
@@ -48,65 +47,69 @@ const renderWithLinks = (text: string): React.ReactNode => {
         <Link
           key={key++}
           to={url}
-          className="text-blue-600 dark:text-blue-400 hover:underline"
-        >
+          className="text-blue-600 dark:text-blue-400 hover:underline">
           {linkText}
         </Link>
       );
     }
-    
+
     lastIndex = match.index + match[0].length;
   }
-  
+
   // Add remaining text
   if (lastIndex < text.length) {
     parts.push(text.slice(lastIndex));
   }
-  
+
   return parts.length > 0 ? parts : text;
 };
 
 // Types for structured AI response blocks
 interface TextBlock {
-  type: 'text';
+  type: "text";
   content: string;
 }
 
 interface HeadingBlock {
-  type: 'heading';
+  type: "heading";
   level: 1 | 2 | 3;
   content: string;
 }
 
 interface TableBlock {
-  type: 'table';
+  type: "table";
   headers: string[];
   rows: string[][];
 }
 
 interface ListBlock {
-  type: 'list';
+  type: "list";
   items: string[];
   ordered?: boolean;
 }
 
 interface ChartBlock {
-  type: 'chart';
-  chartType: 'pie' | 'bar';
+  type: "chart";
+  chartType: "pie" | "bar";
   data: { name: string; value: number }[];
   title?: string;
 }
 
-type ContentBlock = TextBlock | HeadingBlock | TableBlock | ListBlock | ChartBlock;
+interface SuggestionsBlock {
+  type: "suggestions";
+  items: string[];
+}
+
+type ContentBlock = TextBlock | HeadingBlock | TableBlock | ListBlock | ChartBlock | SuggestionsBlock;
 
 // Parse AI response to extract structured blocks
 function parseAIResponse(content: string): ContentBlock[] {
   // Try to parse as JSON array of blocks
   try {
     const trimmed = content.trim();
-    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+    if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
       const parsed = JSON.parse(trimmed);
-      if (Array.isArray(parsed) && parsed.every(b => b.type)) {
+      if (Array.isArray(parsed) && parsed.every((b) => b.type)) {
         return parsed as ContentBlock[];
       }
     }
@@ -116,22 +119,22 @@ function parseAIResponse(content: string): ContentBlock[] {
 
   // Fallback: convert markdown to blocks
   const blocks: ContentBlock[] = [];
-  const lines = content.split('\n');
-  let currentText = '';
+  const lines = content.split("\n");
+  let currentText = "";
   let inTable = false;
   let tableHeaders: string[] = [];
   let tableRows: string[][] = [];
 
   const flushText = () => {
     if (currentText.trim()) {
-      blocks.push({ type: 'text', content: currentText.trim() });
-      currentText = '';
+      blocks.push({ type: "text", content: currentText.trim() });
+      currentText = "";
     }
   };
 
   const flushTable = () => {
     if (tableHeaders.length > 0 || tableRows.length > 0) {
-      blocks.push({ type: 'table', headers: tableHeaders, rows: tableRows });
+      blocks.push({ type: "table", headers: tableHeaders, rows: tableRows });
       tableHeaders = [];
       tableRows = [];
       inTable = false;
@@ -140,31 +143,34 @@ function parseAIResponse(content: string): ContentBlock[] {
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    
+
     // Check for headings
     const h1Match = line.match(/^#\s+(.+)$/);
     const h2Match = line.match(/^##\s+(.+)$/);
     const h3Match = line.match(/^###\s+(.+)$/);
-    
+
     if (h1Match || h2Match || h3Match) {
       flushText();
       flushTable();
       const level = h1Match ? 1 : h2Match ? 2 : 3;
       const content = (h1Match || h2Match || h3Match)![1];
-      blocks.push({ type: 'heading', level: level as 1 | 2 | 3, content });
+      blocks.push({ type: "heading", level: level as 1 | 2 | 3, content });
       continue;
     }
 
     // Check for table row
-    if (line.includes('|') && line.trim().startsWith('|')) {
+    if (line.includes("|") && line.trim().startsWith("|")) {
       flushText();
-      const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
-      
+      const cells = line
+        .split("|")
+        .filter((c) => c.trim())
+        .map((c) => c.trim());
+
       // Skip separator row
-      if (cells.every(c => /^[-:]+$/.test(c))) {
+      if (cells.every((c) => /^[-:]+$/.test(c))) {
         continue;
       }
-      
+
       if (!inTable) {
         inTable = true;
         tableHeaders = cells;
@@ -177,7 +183,7 @@ function parseAIResponse(content: string): ContentBlock[] {
     }
 
     // Regular text
-    currentText += line + '\n';
+    currentText += line + "\n";
   }
 
   flushText();
@@ -189,72 +195,60 @@ function parseAIResponse(content: string): ContentBlock[] {
 // Render a single content block
 const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
   switch (block.type) {
-    case 'heading':
-      const HeadingTag = `h${block.level}` as 'h1' | 'h2' | 'h3';
+    case "heading":
+      const HeadingTag = `h${block.level}` as "h1" | "h2" | "h3";
       const headingClasses = {
-        1: 'text-lg font-semibold text-neutral-900 dark:text-neutral-100',
-        2: 'text-base font-semibold text-neutral-900 dark:text-neutral-100',
-        3: 'text-sm font-medium text-neutral-800 dark:text-neutral-200',
+        1: "text-lg font-semibold text-neutral-900 dark:text-neutral-100",
+        2: "text-base font-semibold text-neutral-900 dark:text-neutral-100",
+        3: "text-sm font-medium text-neutral-800 dark:text-neutral-200",
       };
       return <HeadingTag className={headingClasses[block.level]}>{block.content}</HeadingTag>;
 
-    case 'table':
-      // Check if this is a test results table (has columns like Formular, Ergebnis, etc.)
-      const isTestTable = block.headers.some(h => 
-        h.toLowerCase().includes('formular') || 
-        h.toLowerCase().includes('ergebnis') ||
-        h.toLowerCase().includes('status')
-      );
-      
+    case "table":
       // Helper to check if cell is a status value
       const isStatusCell = (cell: string, header: string) => {
-        const statusValues = ['success', 'failure', 'running', 'pending', 'stopped', 'queued', 'active', 'inactive'];
-        return statusValues.includes(cell.toLowerCase()) || 
-               header.toLowerCase().includes('ergebnis') ||
-               header.toLowerCase().includes('status');
+        const statusValues = ["success", "failure", "running", "pending", "stopped", "queued", "active", "inactive"];
+        return statusValues.includes(cell.toLowerCase()) || header.toLowerCase().includes("ergebnis") || header.toLowerCase().includes("status");
       };
-      
+
       // Helper to check if cell looks like a date/time
       const isDateCell = (cell: string, header: string) => {
-        return header.toLowerCase().includes('datum') ||
-               header.toLowerCase().includes('zeit') ||
-               header.toLowerCase().includes('uhrzeit') ||
-               header.toLowerCase().includes('date') ||
-               /^\d{4}-\d{2}-\d{2}/.test(cell) ||
-               /^\d{2}\.\d{2}\.\d{4}/.test(cell);
+        return header.toLowerCase().includes("datum") || header.toLowerCase().includes("zeit") || header.toLowerCase().includes("uhrzeit") || header.toLowerCase().includes("date") || /^\d{4}-\d{2}-\d{2}/.test(cell) || /^\d{2}\.\d{2}\.\d{4}/.test(cell);
       };
-      
+
       return (
         <div className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-600">
           <Table dividers={false}>
             <TableHeader>
               <TableRow>
                 {block.headers.map((header, i) => (
-                  <TableHead key={i} className="text-[10px] py-2 px-3">{header}</TableHead>
+                  <TableHead
+                    key={i}
+                    className="text-[10px] py-2 px-3">
+                    {header}
+                  </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
               {block.rows.map((row, i) => (
-                <TableRow key={i} className="hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
+                <TableRow
+                  key={i}
+                  className="hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
                   {row.map((cell, j) => {
-                    const header = block.headers[j] || '';
-                    const isFirstCol = j === 0;
-                    const shouldLink = isTestTable && isFirstCol;
+                    const header = block.headers[j] || "";
                     const isStatus = isStatusCell(cell, header);
                     const isDate = isDateCell(cell, header);
-                    
+
                     return (
-                      <TableCell key={j} className={`text-sm py-2 px-3 ${isDate ? 'font-mono text-xs' : ''}`}>
-                        {shouldLink ? (
-                          <Link 
-                            to="/test-results" 
-                            className="text-blue-600 dark:text-blue-400 hover:underline"
-                          >
-                            {cell}
-                          </Link>
-                        ) : isStatus ? (
-                          <StatusBadge status={cell.toUpperCase()} size="sm" />
+                      <TableCell
+                        key={j}
+                        className={`text-sm py-2 px-3 ${isDate ? "font-mono text-xs" : ""}`}>
+                        {isStatus ? (
+                          <StatusBadge
+                            status={cell.toUpperCase()}
+                            size="sm"
+                          />
                         ) : (
                           renderWithLinks(cell)
                         )}
@@ -268,24 +262,24 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
         </div>
       );
 
-    case 'list':
-      const ListTag = block.ordered ? 'ol' : 'ul';
+    case "list":
+      const ListTag = block.ordered ? "ol" : "ul";
       return (
-        <ListTag className={`${block.ordered ? 'list-decimal' : 'list-disc'} list-inside space-y-1 text-sm`}>
+        <ListTag className={`${block.ordered ? "list-decimal" : "list-disc"} list-inside space-y-1 text-sm`}>
           {block.items.map((item, i) => (
             <li key={i}>{item}</li>
           ))}
         </ListTag>
       );
 
-    case 'chart':
+    case "chart":
       return (
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-600 p-4 bg-white dark:bg-neutral-800">
-          {block.title && (
-            <h4 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-3">{block.title}</h4>
-          )}
-          <ResponsiveContainer width="100%" height={200}>
-            {block.chartType === 'pie' ? (
+          {block.title && <h4 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-3">{block.title}</h4>}
+          <ResponsiveContainer
+            width="100%"
+            height={200}>
+            {block.chartType === "pie" ? (
               <PieChart>
                 <Pie
                   data={block.data}
@@ -296,48 +290,78 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
                   paddingAngle={2}
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
-                  labelLine={false}
-                >
+                  labelLine={false}>
                   {block.data.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={CHART_COLORS[index % CHART_COLORS.length]}
+                    />
                   ))}
                 </Pie>
                 <Tooltip />
               </PieChart>
             ) : (
               <BarChart data={block.data}>
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 11 }}
+                />
                 <YAxis tick={{ fontSize: 11 }} />
                 <Tooltip />
-                <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="value"
+                  fill="#3b82f6"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             )}
           </ResponsiveContainer>
         </div>
       );
 
-    case 'text':
+    case "suggestions":
+      return null; // Suggestions are rendered separately at the message level
+
+    case "text":
     default:
-      if (!('content' in block)) return null;
+      if (!("content" in block)) return null;
       return (
         <div className="text-sm leading-relaxed">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {block.content}
-          </ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.content}</ReactMarkdown>
         </div>
       );
   }
 };
 
 // Render structured AI response
-const StructuredResponse: React.FC<{ content: string }> = ({ content }) => {
+const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (suggestion: string) => void }> = ({ content, onSuggestionClick }) => {
   const blocks = parseAIResponse(content);
   
+  // Extract suggestions block if present
+  const suggestionsBlock = blocks.find((b): b is SuggestionsBlock => b.type === "suggestions");
+  const contentBlocks = blocks.filter((b) => b.type !== "suggestions");
+
   return (
     <div className="space-y-4">
-      {blocks.map((block, i) => (
-        <ContentBlockRenderer key={i} block={block} />
+      {contentBlocks.map((block, i) => (
+        <ContentBlockRenderer
+          key={i}
+          block={block}
+        />
       ))}
+      {suggestionsBlock && suggestionsBlock.items.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-600">
+          {suggestionsBlock.items.map((suggestion, i) => (
+            <button
+              key={i}
+              onClick={() => onSuggestionClick?.(suggestion)}
+              className="text-xs px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -348,44 +372,33 @@ interface AIChatMessagesProps {
   onSuggestionClick?: (suggestion: string) => void;
 }
 
-const SUGGESTIONS = [
-  'Fehlgeschlagene Tests',
-  'Erfolgsrate der Formulare',
-  'Letzte Testergebnisse',
-  'Aktive Formulare',
-  'Bezahlmethoden Status',
-  'Test-Statistiken',
-  'Probleme identifizieren',
-  'Zeitplan-Übersicht',
-];
+const SUGGESTIONS = ["Fehlgeschlagene Tests", "Erfolgsrate der Formulare", "Letzte Testergebnisse", "Aktive Formulare", "Bezahlmethoden Status", "Test-Statistiken", "Probleme identifizieren", "Zeitplan-Übersicht"];
 
 const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, onSuggestionClick }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to MessagesSquaretom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
   if (messages.length === 0 && !isLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-8 text-center h-full">
         <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-          <Bot size={24} className="text-blue-500" />
+          <MessagesSquare
+            size={24}
+            className="text-blue-500"
+          />
         </div>
-        <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100 mb-1">
-          Wie kann ich helfen?
-        </h3>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-6">
-          Frag mich nach Formularen, Bezahlmethoden, Testergebnissen oder lass mich deine Daten analysieren.
-        </p>
+        <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100 mb-1">Wie kann ich helfen?</h3>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-6">Frag mich nach Formularen, Bezahlmethoden, Testergebnissen oder lass mich deine Daten analysieren.</p>
         <div className="flex flex-wrap justify-center gap-2 max-w-lg">
           {SUGGESTIONS.map((suggestion, i) => (
             <button
               key={i}
               onClick={() => onSuggestionClick?.(suggestion)}
-              className="text-xs px-3 py-1.5 rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
+              className="text-xs px-3 py-1.5 rounded-full border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               {suggestion}
             </button>
           ))}
@@ -399,46 +412,29 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
       {messages.map((message) => (
         <div
           key={message.id}
-          className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
-        >
+          className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}>
           {/* Avatar */}
-          <div
-            className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-              message.role === 'user'
-                ? 'bg-blue-100 dark:bg-blue-900/30'
-                : 'bg-neutral-200 dark:bg-neutral-700'
-            }`}
-          >
-            {message.role === 'user' ? (
-              <User size={16} className="text-blue-600 dark:text-blue-400" />
+          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${message.role === "user" ? "bg-blue-100 dark:bg-blue-900/30" : "bg-neutral-200 dark:bg-neutral-700"}`}>
+            {message.role === "user" ? (
+              <User
+                size={16}
+                className="text-blue-600 dark:text-blue-400"
+              />
             ) : (
-              <Bot size={16} className="text-neutral-600 dark:text-neutral-400" />
+              <MessagesSquare
+                size={16}
+                className="text-neutral-600 dark:text-neutral-400"
+              />
             )}
           </div>
 
           {/* Message Content */}
-          <div
-            className={`flex-1 max-w-[85%] ${
-              message.role === 'user' ? 'text-right' : ''
-            }`}
-          >
-            <div
-              className={`inline-block max-w-full ${
-                message.role === 'user'
-                  ? 'px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md'
-                  : 'text-neutral-900 dark:text-neutral-100'
-              }`}
-            >
-              {message.role === 'user' ? (
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-              ) : (
-                <StructuredResponse content={message.content} />
-              )}
-            </div>
+          <div className={`flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
+            <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={onSuggestionClick} />}</div>
             <p className="text-xs text-neutral-400 mt-1">
-              {new Date(message.createdAt).toLocaleTimeString('de-DE', {
-                hour: '2-digit',
-                minute: '2-digit',
+              {new Date(message.createdAt).toLocaleTimeString("de-DE", {
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </p>
           </div>
@@ -449,12 +445,18 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
       {isLoading && (
         <div className="flex gap-3">
           <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
-            <Bot size={16} className="text-neutral-600 dark:text-neutral-400" />
+            <MessagesSquare
+              size={16}
+              className="text-neutral-600 dark:text-neutral-400"
+            />
           </div>
           <div className="flex-1">
             <div className="inline-block px-4 py-3 rounded-2xl rounded-bl-md bg-neutral-100 dark:bg-neutral-700">
               <div className="flex items-center gap-2">
-                <Loader2 size={14} className="animate-spin text-blue-500" />
+                <Loader2
+                  size={14}
+                  className="animate-spin text-blue-500"
+                />
                 <span className="text-sm text-neutral-500">Denke nach...</span>
               </div>
             </div>

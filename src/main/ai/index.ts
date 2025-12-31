@@ -44,13 +44,19 @@ VERFÜGBARE BLOCK-TYPEN:
 5. Liste:
 {"type": "list", "items": ["Item 1", "Item 2"], "ordered": false}
 
+6. Follow-up Vorschläge (IMMER am Ende hinzufügen!):
+{"type": "suggestions", "items": ["Vorschlag 1", "Vorschlag 2", "Vorschlag 3"]}
+- Füge IMMER 2-3 relevante Follow-up Fragen am Ende hinzu
+- Die Vorschläge sollten zum Kontext der Antwort passen
+
 BEISPIEL-ANTWORT für "Analysiere die Testergebnisse":
 [
   {"type": "heading", "level": 2, "content": "Testergebnisse Analyse"},
   {"type": "chart", "chartType": "pie", "title": "Erfolgsrate", "data": [{"name": "Erfolgreich", "value": 208}, {"name": "Fehlgeschlagen", "value": 29}]},
   {"type": "table", "headers": ["Kategorie", "Anzahl", "Prozent"], "rows": [["Erfolgreich", "208", "88%"], ["Fehlgeschlagen", "29", "12%"]]},
   {"type": "heading", "level": 3, "content": "Fazit"},
-  {"type": "text", "content": "Die Erfolgsrate von 88% ist gut. Die fehlgeschlagenen Tests sollten untersucht werden."}
+  {"type": "text", "content": "Die Erfolgsrate von 88% ist gut. Die fehlgeschlagenen Tests sollten untersucht werden."},
+  {"type": "suggestions", "items": ["Zeige fehlgeschlagene Tests", "Welches Formular hat die meisten Fehler?", "Teste alle Formulare erneut"]}
 ]
 
 LINKS:
