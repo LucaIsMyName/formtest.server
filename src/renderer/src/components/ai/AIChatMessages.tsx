@@ -3,6 +3,191 @@ import { Bot, User, Loader2 } from 'lucide-react';
 import type { AIMessage } from '../../../../common/types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../ui/Table';
+
+// Types for structured AI response blocks
+interface TextBlock {
+  type: 'text';
+  content: string;
+}
+
+interface HeadingBlock {
+  type: 'heading';
+  level: 1 | 2 | 3;
+  content: string;
+}
+
+interface TableBlock {
+  type: 'table';
+  headers: string[];
+  rows: string[][];
+}
+
+interface ListBlock {
+  type: 'list';
+  items: string[];
+  ordered?: boolean;
+}
+
+type ContentBlock = TextBlock | HeadingBlock | TableBlock | ListBlock;
+
+// Parse AI response to extract structured blocks
+function parseAIResponse(content: string): ContentBlock[] {
+  // Try to parse as JSON array of blocks
+  try {
+    const trimmed = content.trim();
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed) && parsed.every(b => b.type)) {
+        return parsed as ContentBlock[];
+      }
+    }
+  } catch {
+    // Not JSON, fall through to markdown parsing
+  }
+
+  // Fallback: convert markdown to blocks
+  const blocks: ContentBlock[] = [];
+  const lines = content.split('\n');
+  let currentText = '';
+  let inTable = false;
+  let tableHeaders: string[] = [];
+  let tableRows: string[][] = [];
+
+  const flushText = () => {
+    if (currentText.trim()) {
+      blocks.push({ type: 'text', content: currentText.trim() });
+      currentText = '';
+    }
+  };
+
+  const flushTable = () => {
+    if (tableHeaders.length > 0 || tableRows.length > 0) {
+      blocks.push({ type: 'table', headers: tableHeaders, rows: tableRows });
+      tableHeaders = [];
+      tableRows = [];
+      inTable = false;
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    
+    // Check for headings
+    const h1Match = line.match(/^#\s+(.+)$/);
+    const h2Match = line.match(/^##\s+(.+)$/);
+    const h3Match = line.match(/^###\s+(.+)$/);
+    
+    if (h1Match || h2Match || h3Match) {
+      flushText();
+      flushTable();
+      const level = h1Match ? 1 : h2Match ? 2 : 3;
+      const content = (h1Match || h2Match || h3Match)![1];
+      blocks.push({ type: 'heading', level: level as 1 | 2 | 3, content });
+      continue;
+    }
+
+    // Check for table row
+    if (line.includes('|') && line.trim().startsWith('|')) {
+      flushText();
+      const cells = line.split('|').filter(c => c.trim()).map(c => c.trim());
+      
+      // Skip separator row
+      if (cells.every(c => /^[-:]+$/.test(c))) {
+        continue;
+      }
+      
+      if (!inTable) {
+        inTable = true;
+        tableHeaders = cells;
+      } else {
+        tableRows.push(cells);
+      }
+      continue;
+    } else if (inTable) {
+      flushTable();
+    }
+
+    // Regular text
+    currentText += line + '\n';
+  }
+
+  flushText();
+  flushTable();
+
+  return blocks;
+}
+
+// Render a single content block
+const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
+  switch (block.type) {
+    case 'heading':
+      const HeadingTag = `h${block.level}` as 'h1' | 'h2' | 'h3';
+      const headingClasses = {
+        1: 'text-lg font-semibold text-neutral-900 dark:text-neutral-100',
+        2: 'text-base font-semibold text-neutral-900 dark:text-neutral-100',
+        3: 'text-sm font-medium text-neutral-800 dark:text-neutral-200',
+      };
+      return <HeadingTag className={headingClasses[block.level]}>{block.content}</HeadingTag>;
+
+    case 'table':
+      return (
+        <div className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-600">
+          <Table dividers={false}>
+            <TableHeader>
+              <TableRow>
+                {block.headers.map((header, i) => (
+                  <TableHead key={i}>{header}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {block.rows.map((row, i) => (
+                <TableRow key={i}>
+                  {row.map((cell, j) => (
+                    <TableCell key={j}>{cell}</TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      );
+
+    case 'list':
+      const ListTag = block.ordered ? 'ol' : 'ul';
+      return (
+        <ListTag className={`${block.ordered ? 'list-decimal' : 'list-disc'} list-inside space-y-1 text-sm`}>
+          {block.items.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ListTag>
+      );
+
+    case 'text':
+    default:
+      return (
+        <div className="text-sm leading-relaxed">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {block.content}
+          </ReactMarkdown>
+        </div>
+      );
+  }
+};
+
+// Render structured AI response
+const StructuredResponse: React.FC<{ content: string }> = ({ content }) => {
+  const blocks = parseAIResponse(content);
+  
+  return (
+    <div className="space-y-4">
+      {blocks.map((block, i) => (
+        <ContentBlockRenderer key={i} block={block} />
+      ))}
+    </div>
+  );
+};
 
 interface AIChatMessagesProps {
   messages: AIMessage[];
@@ -89,11 +274,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
               {message.role === 'user' ? (
                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               ) : (
-                <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-pre:my-2 prose-table:my-2">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {message.content}
-                  </ReactMarkdown>
-                </div>
+                <StructuredResponse content={message.content} />
               )}
             </div>
             <p className="text-xs text-neutral-400 mt-1">

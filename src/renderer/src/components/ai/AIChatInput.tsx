@@ -36,7 +36,7 @@ const AIChatInput: React.FC<AIChatInputProps> = ({ onSend, disabled, isSending }
 
   return (
     <form onSubmit={handleSubmit} className="p-4">
-      <div className="flex items-end gap-3">
+      <div className="flex items-center gap-3">
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
