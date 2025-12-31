@@ -208,11 +208,13 @@ export const useAIStore = create<AIState>((set, get) => ({
 
   // Message actions
   sendMessage: async (content) => {
-    const { activeChat } = get();
+    const { activeChat, messages } = get();
     
     // Create a new chat if none is active
     let chatId = activeChat?.id;
     let isNewChat = false;
+    let shouldRenameChat = false;
+    
     if (!chatId) {
       // Create chat with initial prompt as title (truncated)
       const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
@@ -220,20 +222,30 @@ export const useAIStore = create<AIState>((set, get) => ({
       if (!newChat) return;
       chatId = newChat.id;
       isNewChat = true;
+    } else if (messages.length === 0 && activeChat?.title === 'Neuer Chat') {
+      // Existing chat but no messages yet AND still has default title - rename it based on first input
+      // Don't rename if user has explicitly set a custom title
+      shouldRenameChat = true;
     }
 
     set({ isSending: true, error: null });
     try {
+      // Rename chat if this is the first message in an existing chat
+      if (shouldRenameChat && chatId) {
+        const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+        await window.api.ai.chats.updateTitle(chatId, title);
+      }
+      
       await window.api.ai.messages.send(chatId, content);
       
       // Update messages
-      const messages = await window.api.ai.messages.getByChatId(chatId);
+      const updatedMessages = await window.api.ai.messages.getByChatId(chatId);
       const chats = await window.api.ai.chats.getAll();
       
-      // Update activeChat if it was just created
-      const updatedActiveChat = isNewChat ? chats.find(c => c.id === chatId) || get().activeChat : get().activeChat;
+      // Update activeChat if it was just created or renamed
+      const updatedActiveChat = (isNewChat || shouldRenameChat) ? chats.find(c => c.id === chatId) || get().activeChat : get().activeChat;
       
-      set({ messages, chats, activeChat: updatedActiveChat, isSending: false });
+      set({ messages: updatedMessages, chats, activeChat: updatedActiveChat, isSending: false });
     } catch (error) {
       console.error('Failed to send message:', error);
       set({ 

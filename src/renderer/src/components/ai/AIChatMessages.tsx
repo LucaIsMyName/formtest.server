@@ -407,39 +407,46 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
     );
   }
 
+  // Find the last AI message index
+  const lastAIMessageIndex = messages.map((m, i) => ({ role: m.role, index: i })).filter(m => m.role === 'assistant').pop()?.index;
+
   return (
     <div className="p-4 space-y-4">
-      {messages.map((message) => (
-        <div
-          key={message.id}
-          className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}>
-          {/* Avatar */}
-          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${message.role === "user" ? "bg-blue-100 dark:bg-blue-900/30" : "bg-neutral-200 dark:bg-neutral-700"}`}>
-            {message.role === "user" ? (
-              <User
-                size={16}
-                className="text-blue-600 dark:text-blue-400"
-              />
-            ) : (
-              <MessagesSquare
-                size={16}
-                className="text-neutral-600 dark:text-neutral-400"
-              />
-            )}
-          </div>
+      {messages.map((message, index) => {
+        const isLastAIMessage = message.role === 'assistant' && index === lastAIMessageIndex;
+        
+        return (
+          <div
+            key={message.id}
+            className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}>
+            {/* Avatar */}
+            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${message.role === "user" ? "bg-blue-100 dark:bg-blue-900/30" : "bg-neutral-200 dark:bg-neutral-700"}`}>
+              {message.role === "user" ? (
+                <User
+                  size={16}
+                  className="text-blue-600 dark:text-blue-400"
+                />
+              ) : (
+                <MessagesSquare
+                  size={16}
+                  className="text-neutral-600 dark:text-neutral-400"
+                />
+              )}
+            </div>
 
-          {/* Message Content */}
-          <div className={`flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
-            <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={onSuggestionClick} />}</div>
-            <p className="text-xs text-neutral-400 mt-1">
-              {new Date(message.createdAt).toLocaleTimeString("de-DE", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
+            {/* Message Content */}
+            <div className={`flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
+              <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={isLastAIMessage ? onSuggestionClick : undefined} />}</div>
+              <p className="text-xs text-neutral-400 mt-1">
+                {new Date(message.createdAt).toLocaleTimeString("de-DE", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {/* Loading indicator */}
       {isLoading && (
