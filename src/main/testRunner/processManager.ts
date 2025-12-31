@@ -1,6 +1,7 @@
 import { spawn, ChildProcess } from "child_process";
 import { join } from "path";
 import { EventEmitter } from "events";
+import { app } from "electron";
 import type { Form, PaymentMethod, TestStep, GlobalFieldDefaults, QualityTestOptions, SeoTestResult, AccessibilityTestResult } from "../../common/types";
 import { getMergedSelectorConfig, settingsQueries } from "../database";
 import type { SelectorConfig } from "../../common/selectors.config";
@@ -17,6 +18,7 @@ export interface TestMessage {
     selectorConfig?: SelectorConfig;
     globalFieldDefaults?: GlobalFieldDefaults;
     qualityTestOptions?: QualityTestOptions;
+    basePath?: string;
     success?: boolean;
     result?: any;
     error?: string;
@@ -219,6 +221,10 @@ export class TestProcessManager extends EventEmitter {
       const globalFieldDefaults = settingsQueries.getFieldDefaults();
       console.log('ProcessManager: Global field defaults:', JSON.stringify(globalFieldDefaults));
 
+      // Get consistent base path for screenshots
+      const appPath = app.getAppPath();
+      const basePath = appPath.includes('.asar') ? join(appPath, '..', '..') : appPath;
+
       const message: TestMessage = {
         id: this.generateMessageId(),
         type: "START_TEST",
@@ -230,6 +236,7 @@ export class TestProcessManager extends EventEmitter {
           selectorConfig,
           globalFieldDefaults,
           qualityTestOptions,
+          basePath,
         },
       };
 

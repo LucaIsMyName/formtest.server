@@ -2470,6 +2470,8 @@ class TestProcessManager extends events.EventEmitter {
       const selectorConfig = getMergedSelectorConfig();
       const globalFieldDefaults = settingsQueries.getFieldDefaults();
       console.log("ProcessManager: Global field defaults:", JSON.stringify(globalFieldDefaults));
+      const appPath = electron.app.getAppPath();
+      const basePath = appPath.includes(".asar") ? path.join(appPath, "..", "..") : appPath;
       const message = {
         id: this.generateMessageId(),
         type: "START_TEST",
@@ -2480,7 +2482,8 @@ class TestProcessManager extends events.EventEmitter {
           settings,
           selectorConfig,
           globalFieldDefaults,
-          qualityTestOptions
+          qualityTestOptions,
+          basePath
         }
       };
       const response = await this.sendMessage(message, testTimeout + 3e4);
@@ -4118,14 +4121,19 @@ electron.app.whenReady().then(() => {
   utils.electronApp.setAppUserModelId("com.formtest.server");
   electron.protocol.handle("local-file", (request) => {
     const url = request.url;
-    let filePath = decodeURIComponent(url.replace("local-file://", ""));
+    console.log(`[local-file protocol] Raw URL: ${url}`);
+    const parsedUrl = new URL(url);
+    let filePath = decodeURIComponent(parsedUrl.pathname);
     if (process.platform === "win32" && filePath.startsWith("/")) {
       filePath = filePath.substring(1);
     }
     console.log(`[local-file protocol] Serving: ${filePath}`);
-    const screenshotsDir = path.join(process.cwd(), "screenshots");
-    if (!filePath.startsWith(screenshotsDir)) {
-      console.error(`[local-file protocol] Access denied: ${filePath} is not in screenshots directory`);
+    const appPath = electron.app.getAppPath();
+    const basePath = appPath.includes(".asar") ? path.join(appPath, "..", "..") : appPath;
+    const screenshotsDir = path.join(basePath, "screenshots");
+    const isInScreenshotsDir = filePath.startsWith(screenshotsDir) || filePath.includes("/screenshots/") && fs.existsSync(filePath);
+    if (!isInScreenshotsDir) {
+      console.error(`[local-file protocol] Access denied: ${filePath} is not in screenshots directory (expected: ${screenshotsDir})`);
       return new Response("Access denied", { status: 403 });
     }
     if (!fs.existsSync(filePath)) {

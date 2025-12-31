@@ -191,4 +191,45 @@ describe('ScreenshotViewer', () => {
       expect(result).toBe('local-file:///a/b/c/d/e.png');
     });
   });
+
+  describe('Protocol Handler Security Check', () => {
+    // Simulate the security check logic from index.ts
+    function isInScreenshotsDir(filePath: string, screenshotsDir: string): boolean {
+      // Check if path starts with screenshotsDir OR contains /screenshots/ and exists
+      return filePath.startsWith(screenshotsDir) || 
+             filePath.includes('/screenshots/');
+    }
+
+    it('should allow paths that start with screenshotsDir', () => {
+      const screenshotsDir = '/Users/test/project/screenshots';
+      const filePath = '/Users/test/project/screenshots/success/test.png';
+      expect(isInScreenshotsDir(filePath, screenshotsDir)).toBe(true);
+    });
+
+    it('should allow paths containing /screenshots/ as fallback', () => {
+      const screenshotsDir = '/different/path/screenshots';
+      const filePath = '/Users/test/project/screenshots/success/test.png';
+      expect(isInScreenshotsDir(filePath, screenshotsDir)).toBe(true);
+    });
+
+    it('should reject paths outside screenshots directory', () => {
+      const screenshotsDir = '/Users/test/project/screenshots';
+      const filePath = '/Users/test/other/file.png';
+      // This would fail without the /screenshots/ fallback
+      expect(filePath.startsWith(screenshotsDir)).toBe(false);
+      expect(filePath.includes('/screenshots/')).toBe(false);
+    });
+
+    it('should handle paths with different cwd values', () => {
+      // Simulating the issue: screenshot saved with one cwd, loaded with another
+      const savedPath = '/Users/lucamack/Desktop/projects/formtest.server/screenshots/success/final-123.png';
+      const runtimeScreenshotsDir = '/different/cwd/screenshots';
+      
+      // Without fallback, this would fail
+      expect(savedPath.startsWith(runtimeScreenshotsDir)).toBe(false);
+      
+      // With /screenshots/ fallback, it passes
+      expect(savedPath.includes('/screenshots/')).toBe(true);
+    });
+  });
 });

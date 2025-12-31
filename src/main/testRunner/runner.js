@@ -227,7 +227,11 @@ class TestRunner {
 
   async startTest(message) {
     const { id, payload } = message
-    const { testRunId, form, paymentMethod, settings, selectorConfig, globalFieldDefaults, qualityTestOptions } = payload
+    const { testRunId, form, paymentMethod, settings, selectorConfig, globalFieldDefaults, qualityTestOptions, basePath } = payload
+
+    // Store base path for screenshots (from Electron app)
+    this.basePath = basePath || process.cwd()
+    this.log(`Using base path for screenshots: ${this.basePath}`)
 
     // IMPORTANT: Reset logs and steps for each new test run
     // This prevents accumulation from previous test runs
@@ -2942,7 +2946,9 @@ class TestRunner {
     try {
       const timestamp = Date.now()
       const filename = `${type}-${timestamp}.png`
-      const screenshotPath = path.join(process.cwd(), 'screenshots', type === 'final' ? 'success' : 'temp', filename)
+      // Use basePath from Electron app for consistent path resolution
+      const baseDir = this.basePath || process.cwd()
+      const screenshotPath = path.join(baseDir, 'screenshots', type === 'final' || type === 'final_skipped' ? 'success' : 'temp', filename)
 
       // Use mainPage for screenshots to capture the full page including iframe
       const screenshotTarget = this.mainPage || this.page

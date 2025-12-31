@@ -58,7 +58,11 @@ app.whenReady().then(() => {
   protocol.handle('local-file', (request) => {
     // URL format: local-file:///absolute/path/to/file.png
     const url = request.url;
-    let filePath = decodeURIComponent(url.replace('local-file://', ''));
+    console.log(`[local-file protocol] Raw URL: ${url}`);
+    
+    // The URL class properly parses the protocol URL
+    const parsedUrl = new URL(url);
+    let filePath = decodeURIComponent(parsedUrl.pathname);
     
     // Handle Windows paths that might have an extra slash
     if (process.platform === 'win32' && filePath.startsWith('/')) {
@@ -68,9 +72,18 @@ app.whenReady().then(() => {
     console.log(`[local-file protocol] Serving: ${filePath}`);
     
     // Security check: only allow files from screenshots directory
-    const screenshotsDir = join(process.cwd(), 'screenshots');
-    if (!filePath.startsWith(screenshotsDir)) {
-      console.error(`[local-file protocol] Access denied: ${filePath} is not in screenshots directory`);
+    // Use app.getAppPath() for consistent path resolution across dev and production
+    const appPath = app.getAppPath();
+    // In production, app.getAppPath() returns the asar path, so we need to use the parent directory
+    const basePath = appPath.includes('.asar') ? join(appPath, '..', '..') : appPath;
+    const screenshotsDir = join(basePath, 'screenshots');
+    
+    // Also check if the path contains /screenshots/ as a fallback for absolute paths
+    const isInScreenshotsDir = filePath.startsWith(screenshotsDir) || 
+                               (filePath.includes('/screenshots/') && existsSync(filePath));
+    
+    if (!isInScreenshotsDir) {
+      console.error(`[local-file protocol] Access denied: ${filePath} is not in screenshots directory (expected: ${screenshotsDir})`);
       return new Response('Access denied', { status: 403 });
     }
     

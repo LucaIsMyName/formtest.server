@@ -1,13 +1,13 @@
 {
   "name": "formtest-server",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "description": "Donation form testing application with Electron, Vite, TypeScript, and Playwright",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "npm run generate-docs && electron-vite dev",
     "build": "npm run generate-docs && electron-vite build && npm run copy-runner",
     "generate-docs": "node scripts/generate-docs.js",
-    "copy-runner": "mkdir -p out/main/testRunner && cp src/main/testRunner/runner.js out/main/testRunner/",
+    "copy-runner": "mkdir -p out/main/testRunner && cp src/main/testRunner/runner.js src/main/testRunner/scriptExecutor.js src/main/testRunner/seoAnalyzer.js src/main/testRunner/accessibilityAnalyzer.js out/main/testRunner/",
     "preview": "electron-vite preview",
     "pack": "electron-builder",
     "dist": "npm run build && electron-builder",
