@@ -20,6 +20,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
     isLoadingChats,
     isLoadingMessages,
     isSending,
+    sendingChatId,
     error,
     loadChats,
     loadSettings,
@@ -134,7 +135,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
           <>
             <AIChatMessages
               messages={messages}
-              isLoading={isSending || isLoadingMessages}
+              isLoading={(isSending && sendingChatId === activeChat?.id) || isLoadingMessages}
             />
             <AIChatInput
               onSend={handleSendMessage}

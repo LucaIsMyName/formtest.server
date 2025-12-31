@@ -11,7 +11,7 @@ import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 
 const AIChat: React.FC = () => {
   const navigate = useNavigate();
-  const { settings, isConfigured, chats, activeChat, messages, isLoadingChats, isLoadingMessages, isSending, error, loadSettings, loadChats, createChat, selectChat, updateChatTitle, deleteChat, deleteAllChats, sendMessage, clearError } = useAIStore();
+  const { settings, isConfigured, chats, activeChat, messages, isLoadingChats, isLoadingMessages, isSending, sendingChatId, error, loadSettings, loadChats, createChat, selectChat, updateChatTitle, deleteChat, deleteAllChats, sendMessage, clearError } = useAIStore();
 
   const [showDeleteAll, setShowDeleteAll] = useState(false);
 
@@ -113,7 +113,7 @@ const AIChat: React.FC = () => {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col h-full relative">
         {/* Chat Header */}
-        <div className="px-6 py-3 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between flex-shrink-0">
+        <div className="px-6 py-3 h-[70px] border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between flex-shrink-0">
           <div>
             <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{activeChat?.title || "Neuer Chat"}</h1>
             {activeChat && (
@@ -163,7 +163,7 @@ const AIChat: React.FC = () => {
         <div className="flex-1 overflow-y-auto pb-24">
           <AIChatMessages
             messages={messages}
-            isLoading={isSending || isLoadingMessages}
+            isLoading={(isSending && sendingChatId === activeChat?.id) || isLoadingMessages}
             onSuggestionClick={handleSendMessage}
           />
         </div>

@@ -217,7 +217,7 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
       };
 
       return (
-        <div className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-600">
+        <div className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-600 w-full max-w-auto">
           <Table dividers={false}>
             <TableHeader>
               <TableRow>
@@ -411,7 +411,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
   const lastAIMessageIndex = messages.map((m, i) => ({ role: m.role, index: i })).filter(m => m.role === 'assistant').pop()?.index;
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 ">
       {messages.map((message, index) => {
         const isLastAIMessage = message.role === 'assistant' && index === lastAIMessageIndex;
         
@@ -435,7 +435,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
             </div>
 
             {/* Message Content */}
-            <div className={`flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
+            <div className={`select-text flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
               <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={onSuggestionClick} showSuggestions={isLastAIMessage} />}</div>
               <p className="text-xs text-neutral-400 mt-1">
                 {new Date(message.createdAt).toLocaleTimeString("de-DE", {

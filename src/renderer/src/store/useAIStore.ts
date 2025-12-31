@@ -14,6 +14,7 @@ interface AIState {
   isLoadingChats: boolean;
   isLoadingMessages: boolean;
   isSending: boolean;
+  sendingChatId: number | null; // Track which chat is currently receiving a response
 
   // Panel state
   isPanelOpen: boolean;
@@ -63,6 +64,7 @@ export const useAIStore = create<AIState>((set, get) => ({
   isLoadingChats: false,
   isLoadingMessages: false,
   isSending: false,
+  sendingChatId: null,
   isPanelOpen: false,
   isFullPage: false,
   error: null,
@@ -228,7 +230,17 @@ export const useAIStore = create<AIState>((set, get) => ({
       shouldRenameChat = true;
     }
 
-    set({ isSending: true, error: null });
+    // Optimistic UI: Show user message immediately
+    const optimisticUserMessage = {
+      id: Date.now(), // Temporary ID
+      chatId: chatId,
+      role: 'user' as const,
+      content: content,
+      createdAt: new Date().toISOString(),
+    };
+    
+    set({ isSending: true, sendingChatId: chatId, error: null, messages: [...get().messages, optimisticUserMessage] });
+    
     try {
       // Rename chat if this is the first message in an existing chat
       if (shouldRenameChat && chatId) {
@@ -238,19 +250,20 @@ export const useAIStore = create<AIState>((set, get) => ({
       
       await window.api.ai.messages.send(chatId, content);
       
-      // Update messages
+      // Update messages with real data from server
       const updatedMessages = await window.api.ai.messages.getByChatId(chatId);
       const chats = await window.api.ai.chats.getAll();
       
       // Update activeChat if it was just created or renamed
       const updatedActiveChat = (isNewChat || shouldRenameChat) ? chats.find(c => c.id === chatId) || get().activeChat : get().activeChat;
       
-      set({ messages: updatedMessages, chats, activeChat: updatedActiveChat, isSending: false });
+      set({ messages: updatedMessages, chats, activeChat: updatedActiveChat, isSending: false, sendingChatId: null });
     } catch (error) {
       console.error('Failed to send message:', error);
       set({ 
         error: error instanceof Error ? error.message : 'Failed to send message',
-        isSending: false 
+        isSending: false,
+        sendingChatId: null 
       });
     }
   },
