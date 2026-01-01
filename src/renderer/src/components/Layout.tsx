@@ -140,9 +140,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div
           className="select-none bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col select-none"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
-          <nav className="flex-1 flex flex-col">
+          <nav className="flex-1 flex flex-col" aria-label="Hauptnavigation">
             {/* Primary Navigation */}
-            <div className="space-y-0">
+            <div className="space-y-0" role="list">
               {primaryNavigation.map((item) => {
                 const IconComponent = item.icon;
                 const isTestsItem = item.href === "/test-results";
@@ -181,7 +181,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <hr className="my-0 border-neutral-200 dark:border-neutral-800" />
 
             {/* Secondary Navigation */}
-            <div className="space-y-0">
+            <div className="space-y-0" role="list" aria-label="Sekundäre Navigation">
               {secondaryNavigation.map((item) => {
                 const IconComponent = item.icon;
                 return (

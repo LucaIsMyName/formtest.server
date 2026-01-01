@@ -142,8 +142,8 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
             {/* Error message */}
             {error && (
-              <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
-                <AlertCircle size={14} />
+              <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400" role="alert" aria-live="polite">
+                <AlertCircle size={14} aria-hidden="true" />
                 <span>{error}</span>
               </div>
             )}

@@ -399,14 +399,15 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                       <button
                         type="button"
                         onClick={() => removeFieldMapping(mapping.id)}
-                        className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
+                        aria-label={`Mapping ${index + 1} entfernen`}
+                        className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
                         <Trash2 size={14} />
                       </button>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <label className="text-xs text-neutral-500 dark:text-neutral-400">Feldtyp</label>
+                        <Label htmlFor={`fieldType-${mapping.id}`} className="text-xs text-neutral-500 dark:text-neutral-400">Feldtyp</Label>
                         <Select
                           value={mapping.fieldType}
                           onValueChange={(value) => updateFieldMapping(mapping.id, { fieldType: value as FieldMappingType })}
@@ -426,7 +427,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                         </Select>
                       </div>
                       <div className="space-y-1">
-                        <label className="text-xs text-neutral-500 dark:text-neutral-400">Aktion</label>
+                        <Label htmlFor={`action-${mapping.id}`} className="text-xs text-neutral-500 dark:text-neutral-400">Aktion</Label>
                         <Select
                           value={mapping.action}
                           onValueChange={(value) => updateFieldMapping(mapping.id, { action: value as FieldMappingAction })}
@@ -448,19 +449,22 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     </div>
 
                     <div>
-                      <label className="text-xs text-neutral-500 dark:text-neutral-400">CSS Selektor *</label>
+                      <Label htmlFor={`selector-${mapping.id}`} className="text-xs text-neutral-500 dark:text-neutral-400">CSS Selektor *</Label>
                       <Input
+                        id={`selector-${mapping.id}`}
                         value={mapping.selector}
                         onChange={(e) => updateFieldMapping(mapping.id, { selector: e.target.value })}
                         placeholder="#payment_first_name"
                         className="h-8 text-sm"
                         disabled={isLoading}
+                        aria-required="true"
                       />
                     </div>
 
                     <div>
-                      <label className="text-xs text-neutral-500 dark:text-neutral-400">Wert (optional)</label>
+                      <Label htmlFor={`value-${mapping.id}`} className="text-xs text-neutral-500 dark:text-neutral-400">Wert (optional)</Label>
                       <Input
+                        id={`value-${mapping.id}`}
                         value={mapping.value || ""}
                         onChange={(e) => updateFieldMapping(mapping.id, { value: e.target.value })}
                         placeholder="Leer = automatisch generiert"
@@ -470,8 +474,9 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                     </div>
 
                     <div>
-                      <label className="text-xs text-neutral-500 dark:text-neutral-400">Beschreibung (optional)</label>
+                      <Label htmlFor={`description-${mapping.id}`} className="text-xs text-neutral-500 dark:text-neutral-400">Beschreibung (optional)</Label>
                       <Input
+                        id={`description-${mapping.id}`}
                         value={mapping.description || ""}
                         onChange={(e) => updateFieldMapping(mapping.id, { description: e.target.value })}
                         placeholder="z.B. Vorname-Feld"
@@ -487,8 +492,9 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                   type="button"
                   onClick={addFieldMapping}
                   disabled={isLoading}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 border border-dashed border-blue-300 dark:border-blue-700 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50">
-                  <Plus size={16} />
+                  aria-label="Neues Feld-Mapping hinzufügen"
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-blue-600 dark:text-blue-400 border border-dashed border-blue-300 dark:border-blue-700 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                  <Plus size={16} aria-hidden="true" />
                   Neues Mapping hinzufügen
                 </button>
               </div>

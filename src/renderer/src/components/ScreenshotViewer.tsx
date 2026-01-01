@@ -141,13 +141,15 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
         <label className="block text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-2">
           Screenshot
         </label>
-        <div 
-          className="relative border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition-colors"
+        <button 
+          type="button"
+          className="relative w-full border border-neutral-200 dark:border-neutral-700 rounded-md overflow-hidden cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           onClick={() => setIsLightboxOpen(true)}
+          aria-label={`Screenshot vergrößern: ${testName}`}
         >
           {!imageLoaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 dark:bg-neutral-800">
-              <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" aria-label="Lade Screenshot" />
             </div>
           )}
           <img
@@ -161,12 +163,12 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
             }}
           />
           {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center" aria-hidden="true">
             <div className="opacity-0 group-hover:opacity-100 transition-opacity">
               <Maximize2 className="w-8 h-8 text-white drop-shadow-lg" />
             </div>
           </div>
-        </div>
+        </button>
         <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
           Klicken zum Vergrößern
         </p>
@@ -177,6 +179,9 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
         <div 
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
           onClick={() => setIsLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Screenshot Vollbild: ${testName}`}
         >
           {/* Controls */}
           <div 
@@ -242,11 +247,12 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
           </div>
 
           {/* Keyboard hints */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 text-xs">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 text-xs" aria-hidden="true">
             <span className="mr-4">ESC: Schließen</span>
             <span className="mr-4">+/-: Zoom</span>
             <span>0: Reset</span>
           </div>
+          <span className="sr-only">Drücke Escape zum Schließen, Plus oder Minus zum Zoomen, 0 zum Zurücksetzen</span>
         </div>
       )}
     </>

@@ -64,6 +64,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(({ clas
   return (
     <th
       ref={ref}
+      scope="col"
       className={cn("px-4 py-3 text-left text-[10px] font-mono font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider", showDivider && "border-r border-neutral-200 dark:border-neutral-700 last:border-r-0", className)}
       {...props}
     />
@@ -146,8 +147,8 @@ const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPag
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          className={cn("p-1.5 rounded-md transition-colors", currentPage <= 1 ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}
-          title="Vorherige Seite">
+          aria-label="Vorherige Seite"
+          className={cn("p-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", currentPage <= 1 ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}>
           <ChevronLeft size={14} />
         </button>
 
@@ -160,7 +161,8 @@ const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPag
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onBlur={handleInputBlur}
-            className={cn("w-10 px-1 py-1 text-center text-[10px] font-mono rounded border", "bg-white dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600", "text-neutral-700 dark:text-neutral-200", "focus:bg-neutral-200 dark:focus:bg-neutral-800 focus:ring-0")}
+            aria-label="Aktuelle Seite"
+            className={cn("w-10 px-1 py-1 text-center text-[10px] font-mono rounded border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", "bg-white dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600", "text-neutral-700 dark:text-neutral-200")}
           />
           <span>von {totalPages}</span>
         </div>
@@ -169,8 +171,8 @@ const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPag
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          className={cn("p-1.5 rounded-md transition-colors", currentPage >= totalPages ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}
-          title="Nächste Seite">
+          aria-label="Nächste Seite"
+          className={cn("p-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", currentPage >= totalPages ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}>
           <ChevronRight size={14} />
         </button>
       </div>

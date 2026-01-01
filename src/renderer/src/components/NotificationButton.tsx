@@ -63,8 +63,11 @@ const NotificationButton: React.FC = () => {
                 aria-label="Benachrichtigungen">
                 <Bell size={14} />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                    {unreadCount > 9 ? "9+" : unreadCount}
+                  <span 
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+                    aria-label={`${unreadCount} ungelesene Benachrichtigungen`}
+                  >
+                    <span aria-hidden="true">{unreadCount > 9 ? "9+" : unreadCount}</span>
                   </span>
                 )}
               </Button>
@@ -136,7 +139,8 @@ const NotificationButton: React.FC = () => {
                           e.preventDefault();
                           deleteNotification(notification.id);
                         }}
-                        className="flex-shrink-0 p-0.5 text-neutral-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+                        aria-label="Benachrichtigung löschen"
+                        className="flex-shrink-0 p-0.5 text-neutral-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-500 rounded">
                         <X size={10} />
                       </button>
                     </div>

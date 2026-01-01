@@ -80,10 +80,16 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center pt-[20vh]">
+    <div 
+      className="fixed inset-0 z-[9999] bg-black/50 flex items-start justify-center pt-[20vh]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Globale Suche"
+    >
       <Command
         className="w-full max-w-2xl bg-white dark:bg-neutral-800 rounded-lg shadow-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden"
-        shouldFilter={true}>
+        shouldFilter={true}
+        label="Suche">
         <div className="flex items-center border-b border-neutral-200 dark:border-neutral-700 px-4">
           <Search className="w-5 h-5 text-neutral-400 mr-2" />
           <Command.Input
@@ -95,8 +101,8 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
           />
         </div>
 
-        <Command.List className="max-h-[400px] overflow-y-auto p-2">
-          <Command.Empty className="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">Keine Ergebnisse gefunden.</Command.Empty>
+        <Command.List className="max-h-[400px] overflow-y-auto p-2" aria-label="Suchergebnisse">
+          <Command.Empty className="py-6 text-center text-sm text-neutral-500 dark:text-neutral-400" role="status">Keine Ergebnisse gefunden.</Command.Empty>
 
           {/* Dashboard */}
           <Command.Group

@@ -172,7 +172,7 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
 
         <div className="flex-1 overflow-y-auto">
           {error && (
-            <div className="mx-4 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+            <div className="mx-4 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md" role="alert" aria-live="polite">
               <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
             </div>
           )}

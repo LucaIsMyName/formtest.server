@@ -62,16 +62,17 @@ const IconPicker: React.FC<IconPickerProps> = ({ value, onChange, onClose }) => 
               <button
                 key={iconName}
                 onClick={() => handleSelect(iconName)}
-                className={`flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:bg-neutral-50 dark:hover:bg-neutral-700 ${
+                className={`flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:bg-neutral-50 dark:hover:bg-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
                   value === iconName
                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                     : 'border-neutral-200 dark:border-neutral-600'
                 }`}
-                title={iconName}>
-                <div className="text-neutral-700 dark:text-neutral-300">
+                aria-label={`Icon ${iconName} auswählen`}
+                aria-pressed={value === iconName}>
+                <div className="text-neutral-700 dark:text-neutral-300" aria-hidden="true">
                   {renderIcon(iconName, 24)}
                 </div>
-                <div className="text-[9px] text-neutral-500 dark:text-neutral-400 mt-1 truncate w-full text-center">
+                <div className="text-[9px] text-neutral-500 dark:text-neutral-400 mt-1 truncate w-full text-center" aria-hidden="true">
                   {iconName}
                 </div>
               </button>
