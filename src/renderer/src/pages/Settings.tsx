@@ -999,7 +999,7 @@ const Settings: React.FC = () => {
     return (
       <div>
         <h1 className={CONFIG.style.title.className}>Einstellungen</h1>
-        <p className="text-neutral-500 dark:text-neutral-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
+        <p className="sr-only text-neutral-500 dark:text-neutral-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
         <SettingsSkeleton />
       </div>
     );
@@ -1007,8 +1007,8 @@ const Settings: React.FC = () => {
 
   return (
     <div>
-      <h1 className={CONFIG.style.title.className}>Einstellungen</h1>
-      <p className="text-neutral-500 dark:text-neutral-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
+      <h1 className={`${CONFIG.style.title.className} mb-6`}>Einstellungen</h1>
+      <p className="sr-only text-neutral-500 dark:text-neutral-400 mb-6">Globale Optionen für Formular-Tests konfigurieren</p>
 
       {error && <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800 text-sm">{error}</div>}
 
@@ -1072,7 +1072,9 @@ const Settings: React.FC = () => {
                       </TableRow>
                     </React.Fragment>
                   ) : (
-                    <TableRow key={item.id} className={getCategoryBgColor(item.category)}>
+                    <TableRow
+                      key={item.id}
+                      className={getCategoryBgColor(item.category)}>
                       <TableCell>
                         <div className="flex items-center gap-1.5">
                           {getCategoryIcon(item.category)}
