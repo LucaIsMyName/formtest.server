@@ -1238,8 +1238,8 @@ const TestResults: React.FC = () => {
                         role="button"
                         aria-selected={isRowSelected}
                         className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${comparisonMode && isCompSelected
-                            ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset"
-                            : getStatusRowBg(testRun.status, isRowSelected, isChecked)
+                          ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset"
+                          : getStatusRowBg(testRun.status, isRowSelected, isChecked)
                           }`}
                         onClick={() => comparisonMode ? handleComparisonSelect(testRun.id) : handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
