@@ -275,6 +275,7 @@ const Dashboard: React.FC = () => {
     }
     
     const trendData: { date: string; rate: number; total: number }[] = [];
+    let lastKnownRate: number | null = null;
     
     // Group data by the determined interval
     let currentDate = new Date(earliestDate);
@@ -292,13 +293,38 @@ const Dashboard: React.FC = () => {
       
       const successful = periodRuns.filter((r) => r.status === "SUCCESS").length;
       const total = periodRuns.length;
-      const rate = total > 0 ? (successful / total) * 100 : 0;
+      let rate: number;
       
-      const dateStr = groupByDays === 1 
-        ? currentDate.toLocaleDateString("de-DE")
-        : groupByDays === 7
-          ? `KW ${Math.ceil((currentDate.getTime() - new Date(currentDate.getFullYear(), 0, 1).getTime()) / (7 * 24 * 60 * 60 * 1000))}`
-          : currentDate.toLocaleDateString("de-DE", { month: '2-digit', year: '2-digit' });
+      if (total > 0) {
+        // Calculate actual rate for this period
+        rate = (successful / total) * 100;
+        lastKnownRate = rate; // Update last known rate
+      } else {
+        // No tests in this period - use last known rate
+        rate = lastKnownRate !== null ? lastKnownRate : 0;
+      }
+      
+      // Format date string consistently
+      let dateStr: string;
+      if (groupByDays === 1) {
+        // Daily: format as DD.MM
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        dateStr = `${day}.${month}`;
+      } else if (groupByDays === 2) {
+        // Every 2 days: format as DD.MM
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        dateStr = `${day}.${month}`;
+      } else if (groupByDays === 7) {
+        // Weekly: show week number
+        dateStr = `KW ${Math.ceil((currentDate.getTime() - new Date(currentDate.getFullYear(), 0, 1).getTime()) / (7 * 24 * 60 * 60 * 1000))}`;
+      } else {
+        // Monthly: format as MM.YY
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const year = String(currentDate.getFullYear()).slice(-2);
+        dateStr = `${month}.${year}`;
+      }
       
       trendData.push({ date: dateStr, rate: Math.round(rate), total });
       

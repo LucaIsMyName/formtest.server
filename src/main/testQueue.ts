@@ -32,6 +32,17 @@ class TestQueue {
   private currentTest: QueuedTest | null = null;
 
   /**
+   * Reset queue state without marking tests as STOPPED
+   * Used when app closes - keeps tests in RUNNING/QUEUED state for recovery dialog
+   */
+  resetState(): void {
+    this.queue = [];
+    this.currentTest = null;
+    this.isProcessing = false;
+    console.log("[TestQueue] State reset (tests remain in RUNNING/QUEUED state in database)");
+  }
+
+  /**
    * Add a test to the queue
    */
   enqueue(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, qualityTestOptions?: QualityTestOptions): void {

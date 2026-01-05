@@ -1,8 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState, Suspense, lazy } from "react";
 import { useSettingsStore } from "./store/useSettingsStore";
+import { useTestRunsStore } from "./store/useTestRunsStore";
 import Layout from "./components/Layout";
 import LockScreen from "./components/LockScreen";
+import InterruptedTestsDialog from "./components/InterruptedTestsDialog";
 
 // Lazy load page components
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -18,7 +20,10 @@ const AIChat = lazy(() => import("./pages/AIChat"));
 
 function App() {
   const { settings, loadSettings } = useSettingsStore();
+  const { loadTestRuns } = useTestRunsStore();
   const [isLocked, setIsLocked] = useState<boolean | null>(null); // null = checking
+  const [interruptedTests, setInterruptedTests] = useState<Array<{ id: number; formId: number; paymentMethodId: number; formName: string; paymentMethodName: string; status: 'RUNNING' | 'QUEUED'; runAt: Date }>>([]);
+  const [showInterruptedDialog, setShowInterruptedDialog] = useState(false);
 
   // Check if password protection is enabled and session is locked
   useEffect(() => {
@@ -45,6 +50,59 @@ function App() {
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
+
+  // Check for interrupted tests on app startup (after lock check)
+  useEffect(() => {
+    if (isLocked === false) {
+      const checkInterruptedTests = async () => {
+        try {
+          const tests = await window.api.testRuns.getInterrupted();
+          if (tests && tests.length > 0) {
+            setInterruptedTests(tests);
+            setShowInterruptedDialog(true);
+          }
+        } catch (error) {
+          console.error("Failed to check for interrupted tests:", error);
+        }
+      };
+      checkInterruptedTests();
+    }
+  }, [isLocked]);
+
+  const handleRetryInterrupted = async (selectedIds: number[]) => {
+    try {
+      const result = await window.api.testRuns.retryInterrupted(selectedIds);
+      if (result.success) {
+        await loadTestRuns();
+        setShowInterruptedDialog(false);
+        setInterruptedTests([]);
+      } else {
+        console.error("Failed to retry tests:", result.message);
+      }
+    } catch (error) {
+      console.error("Error retrying interrupted tests:", error);
+    }
+  };
+
+  const handleDismissInterrupted = async (selectedIds: number[]) => {
+    try {
+      const result = await window.api.testRuns.dismissInterrupted(selectedIds);
+      if (result.success) {
+        await loadTestRuns();
+        setShowInterruptedDialog(false);
+        setInterruptedTests([]);
+      } else {
+        console.error("Failed to dismiss tests");
+      }
+    } catch (error) {
+      console.error("Error dismissing interrupted tests:", error);
+    }
+  };
+
+  const handleCloseInterruptedDialog = async () => {
+    // Close dialog - all tests will be deleted
+    await handleDismissInterrupted(interruptedTests.map(t => t.id));
+  };
 
   // Apply theme whenever settings change
   useEffect(() => {
@@ -135,6 +193,14 @@ function App() {
           </Routes>
         </Suspense>
       </Layout>
+
+      <InterruptedTestsDialog
+        isOpen={showInterruptedDialog}
+        onClose={handleCloseInterruptedDialog}
+        interruptedTests={interruptedTests}
+        onRetry={handleRetryInterrupted}
+        onDismiss={handleDismissInterrupted}
+      />
     </>
   );
 }

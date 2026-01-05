@@ -602,8 +602,8 @@ function migrateTestRunStoppedStatus() {
           CREATE TABLE test_runs_new (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             uuid TEXT,
-            formId INTEGER NOT NULL,
-            paymentMethodId INTEGER NOT NULL,
+            formId INTEGER,
+            paymentMethodId INTEGER,
             status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
             errorMessage TEXT,
             screenshotPath TEXT,
@@ -613,8 +613,8 @@ function migrateTestRunStoppedStatus() {
             isScheduled INTEGER DEFAULT 0,
             notes TEXT DEFAULT '',
             runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
-            FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+            FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE SET NULL,
+            FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE SET NULL
           );
         `);
         db.exec(`
@@ -913,19 +913,6 @@ function initDatabase() {
     console.error("Database: Failed to create SQLite connection:", dbError);
     throw dbError;
   }
-  try {
-    const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get();
-    if (tableInfo && !tableInfo.sql.includes("ON DELETE CASCADE")) {
-      console.log("Database: Migrating test_runs table to add CASCADE DELETE...");
-      db.exec(`
-        CREATE TABLE test_runs_backup AS SELECT * FROM test_runs;
-        DROP TABLE test_runs;
-      `);
-      console.log("Database: Backed up and dropped old test_runs table");
-    }
-  } catch (error) {
-    console.log("Database: No existing test_runs table found, will create new one");
-  }
   db.exec(`
     CREATE TABLE IF NOT EXISTS forms (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -958,16 +945,16 @@ function initDatabase() {
     CREATE TABLE IF NOT EXISTS test_runs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       uuid TEXT,
-      formId INTEGER NOT NULL,
-      paymentMethodId INTEGER NOT NULL,
+      formId INTEGER,
+      paymentMethodId INTEGER,
       status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
       errorMessage TEXT,
       screenshotPath TEXT,
       logDetails TEXT,
       durationMs INTEGER,
       runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
-      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+      FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE SET NULL,
+      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE SET NULL
     );
 
     CREATE TABLE IF NOT EXISTS test_schedules (
@@ -1071,29 +1058,75 @@ function initDatabase() {
   migratePaymentMethodEncryption().catch((error) => {
     console.error("Database: Failed to migrate payment methods:", error);
   });
-  cleanupOrphanedTests();
+  migrateTestRunsToAllowOrphaned();
   cleanupOldTestRuns();
   console.log("Database: Initialization complete");
 }
-function cleanupOrphanedTests() {
+function migrateTestRunsToAllowOrphaned() {
+  console.log("Database: Checking for test_runs orphaned support migration...");
   try {
-    const orphanedTests = db.prepare(
-      "SELECT id, status FROM test_runs WHERE status IN ('RUNNING', 'QUEUED')"
-    ).all();
-    if (orphanedTests.length > 0) {
-      console.log(`Database: Found ${orphanedTests.length} orphaned tests from previous session`);
-      const updateStmt = db.prepare(
-        "UPDATE test_runs SET status = 'STOPPED', errorMessage = ? WHERE id = ?"
-      );
-      db.transaction(() => {
-        for (const test of orphanedTests) {
-          updateStmt.run("Test interrupted by app restart", test.id);
-        }
-      })();
-      console.log(`Database: Marked ${orphanedTests.length} orphaned tests as STOPPED`);
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const formIdColumn = columns.find((col) => col.name === "formId");
+    const paymentMethodIdColumn = columns.find((col) => col.name === "paymentMethodId");
+    const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get();
+    const hasSetNull = tableInfo?.sql.includes("ON DELETE SET NULL");
+    const hasCascade = tableInfo?.sql.includes("ON DELETE CASCADE");
+    const needsMigration = hasCascade || !hasSetNull || formIdColumn?.notnull === 1 || paymentMethodIdColumn?.notnull === 1;
+    if (needsMigration) {
+      console.log("Database: Migrating test_runs table to allow orphaned tests (SET NULL)...");
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS test_runs_backup_orphaned AS SELECT * FROM test_runs;
+      `);
+      db.exec(`
+        CREATE TABLE test_runs_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          uuid TEXT,
+          formId INTEGER,
+          paymentMethodId INTEGER,
+          status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
+          errorMessage TEXT,
+          screenshotPath TEXT,
+          logDetails TEXT,
+          steps TEXT DEFAULT '[]',
+          durationMs INTEGER,
+          isScheduled INTEGER DEFAULT 0,
+          notes TEXT DEFAULT '',
+          runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          amount TEXT,
+          interval TEXT,
+          seoResults TEXT,
+          accessibilityResults TEXT,
+          FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE SET NULL,
+          FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE SET NULL
+        );
+      `);
+      db.exec(`
+        INSERT INTO test_runs_new (
+          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, 
+          steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
+        )
+        SELECT 
+          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails,
+          steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
+        FROM test_runs;
+      `);
+      db.exec(`
+        DROP TABLE test_runs;
+        ALTER TABLE test_runs_new RENAME TO test_runs;
+      `);
+      db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
+        CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
+        CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid);
+      `);
+      db.exec(`DROP TABLE IF EXISTS test_runs_backup_orphaned;`);
+      console.log("Database: Successfully migrated test_runs to support orphaned tests");
+    } else {
+      console.log("Database: test_runs already supports orphaned tests");
     }
   } catch (error) {
-    console.error("Database: Error cleaning up orphaned tests:", error);
+    console.error("Database: Error migrating test_runs for orphaned support:", error);
   }
 }
 function cleanupOldTestRuns() {
@@ -1244,14 +1277,14 @@ const formQueries = {
     return stmt.run(...values);
   },
   delete: (id) => {
-    console.log("Database: Deleting form with CASCADE DELETE for id:", id);
+    console.log("Database: Deleting form with SET NULL for id:", id);
     try {
       const checkTestRuns = db.prepare("SELECT COUNT(*) as count FROM test_runs WHERE formId = ?");
       const testRunCount = checkTestRuns.get(id);
-      console.log("Database: Found", testRunCount.count, "test runs for form", id, "(will be auto-deleted)");
+      console.log("Database: Found", testRunCount.count, "test runs for form", id, "(will be orphaned for archive)");
       const deleteForm = db.prepare("DELETE FROM forms WHERE id = ?");
       const result = deleteForm.run(id);
-      console.log("Database: Deleted form", id, "and cascaded test runs, result:", result);
+      console.log("Database: Deleted form", id, "and orphaned test runs, result:", result);
       return result;
     } catch (error) {
       console.error("Database: Error deleting form", id, ":", error);
@@ -1406,14 +1439,14 @@ const paymentMethodQueries = {
     return stmt.run(...values);
   },
   delete: (id) => {
-    console.log("Database: Deleting payment method with CASCADE DELETE for id:", id);
+    console.log("Database: Deleting payment method with SET NULL for id:", id);
     try {
       const checkTestRuns = db.prepare("SELECT COUNT(*) as count FROM test_runs WHERE paymentMethodId = ?");
       const testRunCount = checkTestRuns.get(id);
-      console.log("Database: Found", testRunCount.count, "test runs for payment method", id, "(will be auto-deleted)");
+      console.log("Database: Found", testRunCount.count, "test runs for payment method", id, "(will be orphaned for archive)");
       const deletePaymentMethod = db.prepare("DELETE FROM payment_methods WHERE id = ?");
       const result = deletePaymentMethod.run(id);
-      console.log("Database: Deleted payment method", id, "and cascaded test runs, result:", result);
+      console.log("Database: Deleted payment method", id, "and orphaned test runs, result:", result);
       return result;
     } catch (error) {
       console.error("Database: Error deleting payment method", id, ":", error);
@@ -1613,30 +1646,64 @@ const testRunQueries = {
   },
   deleteAll: () => {
     return db.prepare("DELETE FROM test_runs").run();
+  },
+  deleteTestRuns: (ids) => {
+    if (ids.length === 0) return { changes: 0 };
+    const placeholders = ids.map(() => "?").join(",");
+    const stmt = db.prepare(`DELETE FROM test_runs WHERE id IN (${placeholders})`);
+    return stmt.run(...ids);
+  },
+  getInterruptedTestsWithDetails: () => {
+    const rows = db.prepare(`
+      SELECT 
+        tr.id,
+        tr.formId,
+        tr.paymentMethodId,
+        tr.status,
+        tr.runAt,
+        f.name as formName,
+        pm.name as paymentMethodName
+      FROM test_runs tr
+      LEFT JOIN forms f ON tr.formId = f.id
+      LEFT JOIN payment_methods pm ON tr.paymentMethodId = pm.id
+      WHERE tr.status IN ('RUNNING', 'QUEUED')
+        AND tr.formId IS NOT NULL
+        AND tr.paymentMethodId IS NOT NULL
+      ORDER BY tr.runAt DESC
+    `).all();
+    return rows.map((row) => ({
+      id: row.id,
+      formId: row.formId,
+      paymentMethodId: row.paymentMethodId,
+      formName: row.formName || `Form #${row.formId}`,
+      paymentMethodName: row.paymentMethodName || `PM #${row.paymentMethodId}`,
+      status: row.status,
+      runAt: new Date(row.runAt)
+    }));
   }
 };
 const testScheduleQueries = {
   getAll: () => {
     const schedules = db.prepare("SELECT * FROM test_schedules ORDER BY createdAt DESC").all();
-    return schedules.map((s2) => ({
-      ...s2,
-      isActive: Boolean(s2.isActive),
-      enableSeoTest: Boolean(s2.enableSeoTest),
-      enableAccessibilityTest: Boolean(s2.enableAccessibilityTest),
-      lastRun: s2.lastRun ? new Date(s2.lastRun) : void 0,
-      createdAt: new Date(s2.createdAt)
+    return schedules.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      enableSeoTest: Boolean(s.enableSeoTest),
+      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
+      lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
+      createdAt: new Date(s.createdAt)
     }));
   },
   getById: (id) => {
-    const s2 = db.prepare("SELECT * FROM test_schedules WHERE id = ?").get(id);
-    if (!s2) return void 0;
+    const s = db.prepare("SELECT * FROM test_schedules WHERE id = ?").get(id);
+    if (!s) return void 0;
     return {
-      ...s2,
-      isActive: Boolean(s2.isActive),
-      enableSeoTest: Boolean(s2.enableSeoTest),
-      enableAccessibilityTest: Boolean(s2.enableAccessibilityTest),
-      lastRun: s2.lastRun ? new Date(s2.lastRun) : void 0,
-      createdAt: new Date(s2.createdAt)
+      ...s,
+      isActive: Boolean(s.isActive),
+      enableSeoTest: Boolean(s.enableSeoTest),
+      enableAccessibilityTest: Boolean(s.enableAccessibilityTest),
+      lastRun: s.lastRun ? new Date(s.lastRun) : void 0,
+      createdAt: new Date(s.createdAt)
     };
   },
   create: (schedule) => {
@@ -1984,7 +2051,7 @@ const importQueries = {
           try {
             const newFormId = idMap.forms.get(schedule.formId) || schedule.formId;
             const newPaymentMethodId = idMap.paymentMethods.get(schedule.paymentMethodId) || schedule.paymentMethodId;
-            const existing = existingSchedules.find((s2) => s2.name === schedule.name);
+            const existing = existingSchedules.find((s) => s.name === schedule.name);
             if (existing) {
               testScheduleQueries.update(existing.id, {
                 formId: newFormId,
@@ -2197,13 +2264,13 @@ function getBaseSelectorConfig() {
 const customScriptQueries = {
   getAll: () => {
     const scripts = db.prepare("SELECT * FROM custom_scripts ORDER BY name").all();
-    return scripts.map((s2) => ({
-      ...s2,
-      isActive: Boolean(s2.isActive),
-      isGlobal: Boolean(s2.isGlobal),
-      stopOnError: Boolean(s2.stopOnError),
-      createdAt: new Date(s2.createdAt),
-      updatedAt: new Date(s2.updatedAt)
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
     }));
   },
   getById: (id) => {
@@ -2222,26 +2289,26 @@ const customScriptQueries = {
     const scripts = db.prepare(
       "SELECT * FROM custom_scripts WHERE hookPoint = ? AND isActive = 1 ORDER BY name"
     ).all(hookPoint);
-    return scripts.map((s2) => ({
-      ...s2,
-      isActive: Boolean(s2.isActive),
-      isGlobal: Boolean(s2.isGlobal),
-      stopOnError: Boolean(s2.stopOnError),
-      createdAt: new Date(s2.createdAt),
-      updatedAt: new Date(s2.updatedAt)
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
     }));
   },
   getGlobalScripts: () => {
     const scripts = db.prepare(
       "SELECT * FROM custom_scripts WHERE isGlobal = 1 AND isActive = 1 ORDER BY hookPoint, name"
     ).all();
-    return scripts.map((s2) => ({
-      ...s2,
-      isActive: Boolean(s2.isActive),
-      isGlobal: Boolean(s2.isGlobal),
-      stopOnError: Boolean(s2.stopOnError),
-      createdAt: new Date(s2.createdAt),
-      updatedAt: new Date(s2.updatedAt)
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
     }));
   },
   getByFormId: (formId) => {
@@ -2252,13 +2319,13 @@ const customScriptQueries = {
       WHERE fs.formId = ? AND cs.isActive = 1
       ORDER BY cs.hookPoint, fs.executionOrder, cs.name
     `).all(formId);
-    return scripts.map((s2) => ({
-      ...s2,
-      isActive: Boolean(s2.isActive),
-      isGlobal: Boolean(s2.isGlobal),
-      stopOnError: Boolean(s2.stopOnError),
-      createdAt: new Date(s2.createdAt),
-      updatedAt: new Date(s2.updatedAt)
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
     }));
   },
   getScriptsForTest: (formId) => {
@@ -2269,13 +2336,13 @@ const customScriptQueries = {
       WHERE cs.isActive = 1 AND (cs.isGlobal = 1 OR fs.formId IS NOT NULL)
       ORDER BY cs.hookPoint, executionOrder, cs.name
     `).all(formId);
-    return scripts.map((s2) => ({
-      ...s2,
-      isActive: Boolean(s2.isActive),
-      isGlobal: Boolean(s2.isGlobal),
-      stopOnError: Boolean(s2.stopOnError),
-      createdAt: new Date(s2.createdAt),
-      updatedAt: new Date(s2.updatedAt)
+    return scripts.map((s) => ({
+      ...s,
+      isActive: Boolean(s.isActive),
+      isGlobal: Boolean(s.isGlobal),
+      stopOnError: Boolean(s.stopOnError),
+      createdAt: new Date(s.createdAt),
+      updatedAt: new Date(s.updatedAt)
     }));
   },
   create: (script) => {
@@ -3053,6 +3120,16 @@ class TestQueue {
     this.currentTest = null;
   }
   /**
+   * Reset queue state without marking tests as STOPPED
+   * Used when app closes - keeps tests in RUNNING/QUEUED state for recovery dialog
+   */
+  resetState() {
+    this.queue = [];
+    this.currentTest = null;
+    this.isProcessing = false;
+    console.log("[TestQueue] State reset (tests remain in RUNNING/QUEUED state in database)");
+  }
+  /**
    * Add a test to the queue
    */
   enqueue(testRunId, form, paymentMethod, settings, qualityTestOptions) {
@@ -3402,14 +3479,14 @@ async function handleRequest(req, res) {
       sendJson(res, 200, {
         success: true,
         count: schedules.length,
-        data: schedules.map((s2) => ({
-          id: s2.id,
-          name: s2.name,
-          formId: s2.formId,
-          paymentMethodId: s2.paymentMethodId,
-          cronExpression: s2.cronExpression,
-          isActive: s2.isActive,
-          lastRun: s2.lastRun
+        data: schedules.map((s) => ({
+          id: s.id,
+          name: s.name,
+          formId: s.formId,
+          paymentMethodId: s.paymentMethodId,
+          cronExpression: s.cronExpression,
+          isActive: s.isActive,
+          lastRun: s.lastRun
         }))
       });
       return;
@@ -3438,8 +3515,8 @@ async function handleRequest(req, res) {
       }
       const allSettings = settingsQueries.getAll();
       const settingsMap = {};
-      allSettings.forEach((s2) => {
-        settingsMap[s2.key] = s2.value;
+      allSettings.forEach((s) => {
+        settingsMap[s.key] = s.value;
       });
       const testIds = [];
       const testUuids = [];
@@ -4427,11 +4504,11 @@ class AIService {
       failed: allTests.filter((t) => t.status === "FAILURE").length,
       successRate: allTests.length > 0 ? Math.round(allTests.filter((t) => t.status === "SUCCESS").length / allTests.length * 100) : 0
     };
-    const schedules = testScheduleQueries.getAll().map((s2) => ({
-      id: s2.id,
-      name: s2.name,
-      isActive: s2.isActive,
-      cronExpression: s2.cronExpression
+    const schedules = testScheduleQueries.getAll().map((s) => ({
+      id: s.id,
+      name: s.name,
+      isActive: s.isActive,
+      cronExpression: s.cronExpression
     }));
     return { forms, paymentMethods, recentTests, schedules };
   }
@@ -4522,7 +4599,7 @@ LETZTE 10 TESTS:
 ${detailedTests.slice(0, 10).map((t) => `- ${t.formName}: ${t.status} (${t.runAt})`).join("\n") || "- Keine Tests vorhanden"}
 
 ZEITPLÄNE (${data.schedules.length}):
-${data.schedules.map((s2) => `- ${s2.name}: ${s2.cronExpression} (${s2.isActive ? "aktiv" : "inaktiv"})`).join("\n") || "- Keine Zeitpläne vorhanden"}
+${data.schedules.map((s) => `- ${s.name}: ${s.cronExpression} (${s.isActive ? "aktiv" : "inaktiv"})`).join("\n") || "- Keine Zeitpläne vorhanden"}
 `;
   }
   /**
@@ -4579,7 +4656,6 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("forms:create", async (_, form) => {
     try {
       return formQueries.create(form);
-      s;
     } catch (error) {
       console.error("IPC Error - forms:create:", error);
       throw error;
@@ -4678,6 +4754,90 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:cleanup", () => {
     const deleted = cleanupOldTestRuns();
     return { success: true, deleted };
+  });
+  electron.ipcMain.handle("testRuns:getInterrupted", () => {
+    try {
+      return testRunQueries.getInterruptedTestsWithDetails();
+    } catch (error) {
+      console.error("IPC Error - testRuns:getInterrupted:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("testRuns:retryInterrupted", async (_, testIds) => {
+    try {
+      if (!testIds || testIds.length === 0) {
+        return { success: false, message: "No test IDs provided" };
+      }
+      const testQueue = getTestQueue();
+      const settings = settingsQueries.getAll();
+      const settingsMap = settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {});
+      let retriedCount = 0;
+      const errors = [];
+      for (const testId of testIds) {
+        try {
+          const testRun = testRunQueries.getById(testId);
+          if (!testRun) {
+            errors.push(`Test ${testId} not found`);
+            continue;
+          }
+          if (!testRun.formId || !testRun.paymentMethodId) {
+            errors.push(`Test ${testId} is orphaned (form/pm deleted)`);
+            continue;
+          }
+          const form = formQueries.getById(testRun.formId);
+          const paymentMethod = await paymentMethodQueries.getById(testRun.paymentMethodId);
+          if (!form || !paymentMethod) {
+            errors.push(`Test ${testId}: form or payment method not found`);
+            continue;
+          }
+          const customScripts = customScriptQueries.getScriptsForTest(form.id);
+          const settingsWithScripts = { ...settingsMap, customScripts };
+          const newTestRun = testRunQueries.create({
+            uuid: crypto.randomUUID(),
+            formId: form.id,
+            paymentMethodId: paymentMethod.id,
+            status: "QUEUED",
+            logDetails: JSON.stringify([`Retried test for ${form.name} with ${paymentMethod.name}`]),
+            screenshotPath: void 0,
+            errorMessage: void 0,
+            durationMs: void 0,
+            isScheduled: testRun.isScheduled || false,
+            amount: testRun.amount || settingsMap["default_donation_amount"] || "5",
+            interval: testRun.interval || settingsMap["default_donation_interval"] || settingsMap["default_interval"] || "0"
+          });
+          const newTestRunId = newTestRun.lastInsertRowid;
+          testQueue.enqueue(newTestRunId, form, paymentMethod, settingsWithScripts);
+          testRunQueries.delete(testId);
+          retriedCount++;
+        } catch (error) {
+          errors.push(`Test ${testId}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+      return {
+        success: retriedCount > 0,
+        message: retriedCount > 0 ? `Retried ${retriedCount} test${retriedCount > 1 ? "s" : ""}${errors.length > 0 ? `, ${errors.length} failed` : ""}` : `Failed to retry tests: ${errors.join(", ")}`,
+        retried: retriedCount,
+        errors: errors.length > 0 ? errors : void 0
+      };
+    } catch (error) {
+      console.error("IPC Error - testRuns:retryInterrupted:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("testRuns:dismissInterrupted", (_, testIds) => {
+    try {
+      if (!testIds || testIds.length === 0) {
+        return { success: false, deleted: 0 };
+      }
+      const result = testRunQueries.deleteTestRuns(testIds);
+      return { success: true, deleted: result.changes };
+    } catch (error) {
+      console.error("IPC Error - testRuns:dismissInterrupted:", error);
+      throw error;
+    }
   });
   electron.ipcMain.handle("toast:show", (event, type, message, description) => {
     event.sender.send("toast:display", { type, message, description });
@@ -5336,6 +5496,28 @@ electron.app.whenReady().then(() => {
 electron.app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     electron.app.quit();
+  }
+});
+electron.app.on("before-quit", async (event) => {
+  try {
+    const interruptedTests = testRunQueries.getInterruptedTestsWithDetails();
+    if (interruptedTests.length > 0) {
+      console.log(`[App] Found ${interruptedTests.length} interrupted tests on app close - will be shown in recovery dialog on next startup`);
+      const processManager2 = getTestProcessManager();
+      try {
+        await processManager2.stopProcess();
+      } catch (error) {
+        console.error("[App] Error stopping test process:", error);
+      }
+      const testQueue = getTestQueue();
+      try {
+        testQueue.resetState();
+      } catch (error) {
+        console.error("[App] Error resetting test queue:", error);
+      }
+    }
+  } catch (error) {
+    console.error("[App] Error in before-quit handler:", error);
   }
 });
 electron.ipcMain.handle("window-minimize", () => {

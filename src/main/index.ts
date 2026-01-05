@@ -2,9 +2,11 @@ import { app, shell, BrowserWindow, ipcMain, protocol, net } from "electron";
 import { join } from "path";
 import { existsSync } from "fs";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
-import { initDatabase } from "./database";
+import { initDatabase, testRunQueries } from "./database";
 import { setupIpcHandlers } from "./ipcHandlers";
 import { scheduler } from "./schedulerService";
+import { getTestQueue } from "./testQueue";
+import { getTestProcessManager } from "./testRunner/processManager";
 
 let mainWindow: BrowserWindow;
 
@@ -120,6 +122,38 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
+  }
+});
+
+// Handle app close - stop test processes but keep tests in RUNNING/QUEUED state for recovery dialog
+app.on("before-quit", async (event) => {
+  try {
+    // Check if there are any RUNNING or QUEUED tests
+    const interruptedTests = testRunQueries.getInterruptedTestsWithDetails();
+    
+    if (interruptedTests.length > 0) {
+      console.log(`[App] Found ${interruptedTests.length} interrupted tests on app close - will be shown in recovery dialog on next startup`);
+      
+      // Stop the test process manager to clean up browser processes
+      // This kills the browser but does NOT mark tests as STOPPED
+      const processManager = getTestProcessManager();
+      try {
+        await processManager.stopProcess();
+      } catch (error) {
+        console.error("[App] Error stopping test process:", error);
+      }
+      
+      // Reset queue state without marking tests as STOPPED
+      // We need to clear the in-memory queue but keep database tests in RUNNING/QUEUED state
+      const testQueue = getTestQueue();
+      try {
+        testQueue.resetState();
+      } catch (error) {
+        console.error("[App] Error resetting test queue:", error);
+      }
+    }
+  } catch (error) {
+    console.error("[App] Error in before-quit handler:", error);
   }
 });
 

@@ -101,8 +101,8 @@ export interface TestStep {
 export interface TestRun {
   id: number;
   uuid: string;
-  formId: number;
-  paymentMethodId: number;
+  formId: number | null;  // Can be null if form was deleted (orphaned test for archive)
+  paymentMethodId: number | null;  // Can be null if payment method was deleted (orphaned test for archive)
   status: "SUCCESS" | "FAILURE" | "SKIPPED" | "RUNNING" | "STOPPED" | "QUEUED";
   errorMessage?: string;
   screenshotPath?: string;

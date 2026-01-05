@@ -38,6 +38,9 @@ declare global {
         updateNotes: (id: number, notes: string) => Promise<void>
         stop: (id: number) => Promise<void>
         cleanup: () => Promise<{ success: boolean; deleted: number }>
+        getInterrupted: () => Promise<Array<{ id: number; formId: number; paymentMethodId: number; formName: string; paymentMethodName: string; status: 'RUNNING' | 'QUEUED'; runAt: Date }>>
+        retryInterrupted: (testIds: number[]) => Promise<{ success: boolean; message: string; retried?: number; errors?: string[] }>
+        dismissInterrupted: (testIds: number[]) => Promise<{ success: boolean; deleted: number }>
       }
       testSchedules: {
         getAll: () => Promise<TestSchedule[]>

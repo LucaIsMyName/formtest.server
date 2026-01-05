@@ -138,13 +138,13 @@ function migrateTestRunStoppedStatus(): void {
       console.log("Database: Migrating test_runs table to add STOPPED/QUEUED status...");
       
       db.transaction(() => {
-        // Create new table with updated CHECK constraint including QUEUED
+        // Create new table with updated CHECK constraint including QUEUED and SET NULL for orphaned tests
         db.exec(`
           CREATE TABLE test_runs_new (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             uuid TEXT,
-            formId INTEGER NOT NULL,
-            paymentMethodId INTEGER NOT NULL,
+            formId INTEGER,
+            paymentMethodId INTEGER,
             status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
             errorMessage TEXT,
             screenshotPath TEXT,
@@ -154,8 +154,8 @@ function migrateTestRunStoppedStatus(): void {
             isScheduled INTEGER DEFAULT 0,
             notes TEXT DEFAULT '',
             runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
-            FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+            FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE SET NULL,
+            FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE SET NULL
           );
         `);
         
@@ -558,22 +558,7 @@ export function initDatabase(): void {
     throw dbError;
   }
 
-  // Check if we need to migrate the test_runs table for CASCADE DELETE
-  try {
-    const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get() as { sql: string } | undefined;
-    if (tableInfo && !tableInfo.sql.includes("ON DELETE CASCADE")) {
-      console.log("Database: Migrating test_runs table to add CASCADE DELETE...");
-
-      // Backup existing data
-      db.exec(`
-        CREATE TABLE test_runs_backup AS SELECT * FROM test_runs;
-        DROP TABLE test_runs;
-      `);
-      console.log("Database: Backed up and dropped old test_runs table");
-    }
-  } catch (error) {
-    console.log("Database: No existing test_runs table found, will create new one");
-  }
+  // Note: Migration to SET NULL is handled by migrateTestRunsToAllowOrphaned() below
 
   // Create tables
   db.exec(`
@@ -608,16 +593,16 @@ export function initDatabase(): void {
     CREATE TABLE IF NOT EXISTS test_runs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       uuid TEXT,
-      formId INTEGER NOT NULL,
-      paymentMethodId INTEGER NOT NULL,
+      formId INTEGER,
+      paymentMethodId INTEGER,
       status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
       errorMessage TEXT,
       screenshotPath TEXT,
       logDetails TEXT,
       durationMs INTEGER,
       runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE CASCADE,
-      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE CASCADE
+      FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE SET NULL,
+      FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE SET NULL
     );
 
     CREATE TABLE IF NOT EXISTS test_schedules (
@@ -760,8 +745,12 @@ export function initDatabase(): void {
     console.error("Database: Failed to migrate payment methods:", error);
   });
   
+  // Migrate test_runs to allow NULL formId/paymentMethodId (for orphaned tests)
+  migrateTestRunsToAllowOrphaned();
+  
   // Clean up orphaned tests (RUNNING/QUEUED from previous session)
-  cleanupOrphanedTests();
+  // NOTE: This is now disabled - tests remain in RUNNING/QUEUED state for recovery dialog
+  // cleanupOrphanedTests();
   
   // Clean up old test runs based on retention policy
   cleanupOldTestRuns();
@@ -770,33 +759,107 @@ export function initDatabase(): void {
 }
 
 /**
- * Clean up tests that were left in RUNNING or QUEUED state from a previous session
- * These tests were interrupted by app crash/restart and should be marked as STOPPED
+ * Migrate test_runs table to allow NULL formId and paymentMethodId
+ * Changes foreign key constraints from CASCADE DELETE to SET NULL
+ * This allows tests to be kept for archive purposes when form/pm is deleted
  */
-function cleanupOrphanedTests(): void {
+function migrateTestRunsToAllowOrphaned(): void {
+  console.log("Database: Checking for test_runs orphaned support migration...");
+  
   try {
-    const orphanedTests = db.prepare(
-      "SELECT id, status FROM test_runs WHERE status IN ('RUNNING', 'QUEUED')"
-    ).all() as Array<{ id: number; status: string }>;
+    // Check if columns already allow NULL
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string; notnull: number}>;
+    const formIdColumn = columns.find(col => col.name === 'formId');
+    const paymentMethodIdColumn = columns.find(col => col.name === 'paymentMethodId');
     
-    if (orphanedTests.length > 0) {
-      console.log(`Database: Found ${orphanedTests.length} orphaned tests from previous session`);
+    // Check if foreign keys use SET NULL (not CASCADE)
+    const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get() as { sql: string } | undefined;
+    const hasSetNull = tableInfo?.sql.includes("ON DELETE SET NULL");
+    const hasCascade = tableInfo?.sql.includes("ON DELETE CASCADE");
+    
+    // Need migration if: has CASCADE, or columns are NOT NULL, or doesn't have SET NULL
+    const needsMigration = hasCascade || !hasSetNull || (formIdColumn?.notnull === 1) || (paymentMethodIdColumn?.notnull === 1);
+    
+    if (needsMigration) {
+      console.log("Database: Migrating test_runs table to allow orphaned tests (SET NULL)...");
       
-      const updateStmt = db.prepare(
-        "UPDATE test_runs SET status = 'STOPPED', errorMessage = ? WHERE id = ?"
-      );
+      // Backup existing data
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS test_runs_backup_orphaned AS SELECT * FROM test_runs;
+      `);
       
-      db.transaction(() => {
-        for (const test of orphanedTests) {
-          updateStmt.run("Test interrupted by app restart", test.id);
-        }
-      })();
+      // Create new table with NULL-allowing columns and SET NULL foreign keys
+      db.exec(`
+        CREATE TABLE test_runs_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          uuid TEXT,
+          formId INTEGER,
+          paymentMethodId INTEGER,
+          status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
+          errorMessage TEXT,
+          screenshotPath TEXT,
+          logDetails TEXT,
+          steps TEXT DEFAULT '[]',
+          durationMs INTEGER,
+          isScheduled INTEGER DEFAULT 0,
+          notes TEXT DEFAULT '',
+          runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          amount TEXT,
+          interval TEXT,
+          seoResults TEXT,
+          accessibilityResults TEXT,
+          FOREIGN KEY (formId) REFERENCES forms (id) ON DELETE SET NULL,
+          FOREIGN KEY (paymentMethodId) REFERENCES payment_methods (id) ON DELETE SET NULL
+        );
+      `);
       
-      console.log(`Database: Marked ${orphanedTests.length} orphaned tests as STOPPED`);
+      // Copy data from old table
+      db.exec(`
+        INSERT INTO test_runs_new (
+          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, 
+          steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
+        )
+        SELECT 
+          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails,
+          steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
+        FROM test_runs;
+      `);
+      
+      // Drop old table and rename new one
+      db.exec(`
+        DROP TABLE test_runs;
+        ALTER TABLE test_runs_new RENAME TO test_runs;
+      `);
+      
+      // Recreate indexes
+      db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
+        CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
+        CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid);
+      `);
+      
+      // Clean up backup
+      db.exec(`DROP TABLE IF EXISTS test_runs_backup_orphaned;`);
+      
+      console.log("Database: Successfully migrated test_runs to support orphaned tests");
+    } else {
+      console.log("Database: test_runs already supports orphaned tests");
     }
   } catch (error) {
-    console.error("Database: Error cleaning up orphaned tests:", error);
+    console.error("Database: Error migrating test_runs for orphaned support:", error);
   }
+}
+
+/**
+ * Clean up tests that were left in RUNNING or QUEUED state from a previous session
+ * NOTE: This function is now disabled - tests remain in RUNNING/QUEUED state
+ * so they can be shown in the recovery dialog on next app startup
+ */
+function cleanupOrphanedTests(): void {
+  // Disabled - tests remain in RUNNING/QUEUED state for recovery dialog
+  // The dialog will handle marking them as STOPPED or deleting them
+  console.log("Database: Skipping orphaned tests cleanup - will be handled by recovery dialog");
 }
 
 /**
@@ -989,18 +1052,18 @@ export const formQueries = {
     return stmt.run(...values);
   },
   delete: (id: number) => {
-    console.log("Database: Deleting form with CASCADE DELETE for id:", id);
+    console.log("Database: Deleting form with SET NULL for id:", id);
 
     try {
       // Check if there are any test runs for this form (for logging)
       const checkTestRuns = db.prepare("SELECT COUNT(*) as count FROM test_runs WHERE formId = ?");
       const testRunCount = checkTestRuns.get(id) as { count: number };
-      console.log("Database: Found", testRunCount.count, "test runs for form", id, "(will be auto-deleted)");
+      console.log("Database: Found", testRunCount.count, "test runs for form", id, "(will be orphaned for archive)");
 
-      // Delete the form - CASCADE DELETE will automatically delete related test runs
+      // Delete the form - SET NULL will automatically set formId to NULL in related test runs (kept for archive)
       const deleteForm = db.prepare("DELETE FROM forms WHERE id = ?");
       const result = deleteForm.run(id);
-      console.log("Database: Deleted form", id, "and cascaded test runs, result:", result);
+      console.log("Database: Deleted form", id, "and orphaned test runs, result:", result);
 
       return result;
     } catch (error) {
@@ -1010,7 +1073,7 @@ export const formQueries = {
   },
   deleteAll: () => {
     console.log("Database: Deleting all forms");
-    // This will cascade delete test runs and schedules
+    // This will orphan test runs (SET NULL) and cascade delete schedules
     return db.prepare("DELETE FROM forms").run();
   },
 };
@@ -1186,18 +1249,18 @@ export const paymentMethodQueries = {
     return stmt.run(...values);
   },
   delete: (id: number) => {
-    console.log("Database: Deleting payment method with CASCADE DELETE for id:", id);
+    console.log("Database: Deleting payment method with SET NULL for id:", id);
 
     try {
       // Check if there are any test runs for this payment method (for logging)
       const checkTestRuns = db.prepare("SELECT COUNT(*) as count FROM test_runs WHERE paymentMethodId = ?");
       const testRunCount = checkTestRuns.get(id) as { count: number };
-      console.log("Database: Found", testRunCount.count, "test runs for payment method", id, "(will be auto-deleted)");
+      console.log("Database: Found", testRunCount.count, "test runs for payment method", id, "(will be orphaned for archive)");
 
-      // Delete the payment method - CASCADE DELETE will automatically delete related test runs
+      // Delete the payment method - SET NULL will automatically set paymentMethodId to NULL in related test runs (kept for archive)
       const deletePaymentMethod = db.prepare("DELETE FROM payment_methods WHERE id = ?");
       const result = deletePaymentMethod.run(id);
-      console.log("Database: Deleted payment method", id, "and cascaded test runs, result:", result);
+      console.log("Database: Deleted payment method", id, "and orphaned test runs, result:", result);
 
       return result;
     } catch (error) {
@@ -1207,7 +1270,7 @@ export const paymentMethodQueries = {
   },
   deleteAll: () => {
     console.log("Database: Deleting all payment methods");
-    // This will cascade delete test runs and schedules
+    // This will orphan test runs (SET NULL) and cascade delete schedules
     return db.prepare("DELETE FROM payment_methods").run();
   },
 };
@@ -1426,6 +1489,51 @@ export const testRunQueries = {
   },
   deleteAll: () => {
     return db.prepare("DELETE FROM test_runs").run();
+  },
+  deleteTestRuns: (ids: number[]) => {
+    if (ids.length === 0) return { changes: 0 };
+    const placeholders = ids.map(() => '?').join(',');
+    const stmt = db.prepare(`DELETE FROM test_runs WHERE id IN (${placeholders})`);
+    return stmt.run(...ids);
+  },
+  getInterruptedTestsWithDetails: () => {
+    // Get interrupted tests (RUNNING/QUEUED) with form and payment method names
+    // Only return tests where both formId AND paymentMethodId are NOT NULL (exclude orphaned)
+    const rows = db.prepare(`
+      SELECT 
+        tr.id,
+        tr.formId,
+        tr.paymentMethodId,
+        tr.status,
+        tr.runAt,
+        f.name as formName,
+        pm.name as paymentMethodName
+      FROM test_runs tr
+      LEFT JOIN forms f ON tr.formId = f.id
+      LEFT JOIN payment_methods pm ON tr.paymentMethodId = pm.id
+      WHERE tr.status IN ('RUNNING', 'QUEUED')
+        AND tr.formId IS NOT NULL
+        AND tr.paymentMethodId IS NOT NULL
+      ORDER BY tr.runAt DESC
+    `).all() as Array<{
+      id: number;
+      formId: number;
+      paymentMethodId: number;
+      status: string;
+      runAt: string;
+      formName: string | null;
+      paymentMethodName: string | null;
+    }>;
+    
+    return rows.map(row => ({
+      id: row.id,
+      formId: row.formId,
+      paymentMethodId: row.paymentMethodId,
+      formName: row.formName || `Form #${row.formId}`,
+      paymentMethodName: row.paymentMethodName || `PM #${row.paymentMethodId}`,
+      status: row.status as "RUNNING" | "QUEUED",
+      runAt: new Date(row.runAt),
+    }));
   },
 };
 

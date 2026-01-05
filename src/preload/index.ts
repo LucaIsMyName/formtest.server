@@ -46,7 +46,13 @@ const api = {
     deleteAll: () => ipcRenderer.invoke('testRuns:deleteAll'),
     updateNotes: (id: number, notes: string) => ipcRenderer.invoke('testRuns:updateNotes', id, notes),
     stop: (id: number) => ipcRenderer.invoke('testRuns:stop', id),
-    cleanup: (): Promise<{ success: boolean; deleted: number }> => ipcRenderer.invoke('testRuns:cleanup')
+    cleanup: (): Promise<{ success: boolean; deleted: number }> => ipcRenderer.invoke('testRuns:cleanup'),
+    getInterrupted: (): Promise<Array<{ id: number; formId: number; paymentMethodId: number; formName: string; paymentMethodName: string; status: 'RUNNING' | 'QUEUED'; runAt: Date }>> => 
+      ipcRenderer.invoke('testRuns:getInterrupted'),
+    retryInterrupted: (testIds: number[]): Promise<{ success: boolean; message: string; retried?: number; errors?: string[] }> => 
+      ipcRenderer.invoke('testRuns:retryInterrupted', testIds),
+    dismissInterrupted: (testIds: number[]): Promise<{ success: boolean; deleted: number }> => 
+      ipcRenderer.invoke('testRuns:dismissInterrupted', testIds)
   },
 
   // Test execution

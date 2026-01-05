@@ -153,6 +153,115 @@ export function setupIpcHandlers(): void {
     return { success: true, deleted };
   });
 
+  // Interrupted tests handlers
+  ipcMain.handle("testRuns:getInterrupted", () => {
+    try {
+      return testRunQueries.getInterruptedTestsWithDetails();
+    } catch (error) {
+      console.error("IPC Error - testRuns:getInterrupted:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("testRuns:retryInterrupted", async (_, testIds: number[]) => {
+    try {
+      if (!testIds || testIds.length === 0) {
+        return { success: false, message: "No test IDs provided" };
+      }
+
+      const testQueue = getTestQueue();
+      const settings = settingsQueries.getAll();
+      const settingsMap = settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {} as Record<string, string>);
+
+      let retriedCount = 0;
+      const errors: string[] = [];
+
+      for (const testId of testIds) {
+        try {
+          // Get the interrupted test
+          const testRun = testRunQueries.getById(testId);
+          if (!testRun) {
+            errors.push(`Test ${testId} not found`);
+            continue;
+          }
+
+          // Verify form and payment method still exist
+          if (!testRun.formId || !testRun.paymentMethodId) {
+            errors.push(`Test ${testId} is orphaned (form/pm deleted)`);
+            continue;
+          }
+
+          const form = formQueries.getById(testRun.formId);
+          const paymentMethod = await paymentMethodQueries.getById(testRun.paymentMethodId);
+
+          if (!form || !paymentMethod) {
+            errors.push(`Test ${testId}: form or payment method not found`);
+            continue;
+          }
+
+          // Fetch custom scripts for this form
+          const customScripts = customScriptQueries.getScriptsForTest(form.id);
+          const settingsWithScripts = { ...settingsMap, customScripts };
+
+          // Create new test run with QUEUED status
+          const newTestRun = testRunQueries.create({
+            uuid: randomUUID(),
+            formId: form.id,
+            paymentMethodId: paymentMethod.id,
+            status: "QUEUED",
+            logDetails: JSON.stringify([`Retried test for ${form.name} with ${paymentMethod.name}`]),
+            screenshotPath: undefined,
+            errorMessage: undefined,
+            durationMs: undefined,
+            isScheduled: testRun.isScheduled || false,
+            amount: testRun.amount || settingsMap['default_donation_amount'] || '5',
+            interval: testRun.interval || settingsMap['default_donation_interval'] || settingsMap['default_interval'] || '0',
+          });
+
+          const newTestRunId = newTestRun.lastInsertRowid as number;
+
+          // Add to queue
+          testQueue.enqueue(newTestRunId, form, paymentMethod, settingsWithScripts);
+
+          // Delete old interrupted test run
+          testRunQueries.delete(testId);
+          retriedCount++;
+        } catch (error) {
+          errors.push(`Test ${testId}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      }
+
+      return {
+        success: retriedCount > 0,
+        message: retriedCount > 0 
+          ? `Retried ${retriedCount} test${retriedCount > 1 ? 's' : ''}${errors.length > 0 ? `, ${errors.length} failed` : ''}`
+          : `Failed to retry tests: ${errors.join(', ')}`,
+        retried: retriedCount,
+        errors: errors.length > 0 ? errors : undefined,
+      };
+    } catch (error) {
+      console.error("IPC Error - testRuns:retryInterrupted:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("testRuns:dismissInterrupted", (_, testIds: number[]) => {
+    try {
+      if (!testIds || testIds.length === 0) {
+        return { success: false, deleted: 0 };
+      }
+
+      const result = testRunQueries.deleteTestRuns(testIds);
+      return { success: true, deleted: result.changes };
+    } catch (error) {
+      console.error("IPC Error - testRuns:dismissInterrupted:", error);
+      throw error;
+    }
+  });
+
   // Toast notification handlers
   ipcMain.handle("toast:show", (event, type: 'success' | 'error' | 'info' | 'warning', message: string, description?: string) => {
     // Send toast notification to renderer

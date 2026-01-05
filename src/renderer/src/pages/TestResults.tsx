@@ -342,8 +342,8 @@ const TestResults: React.FC = () => {
   const testRunsWithNames = useMemo((): TestRunWithComputed[] => {
     return testRuns.map((tr) => ({
       ...tr,
-      formName: forms.find((f) => f.id === tr.formId)?.name || `Form #${tr.formId}`,
-      paymentMethodName: paymentMethods.find((p) => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`,
+      formName: tr.formId ? (forms.find((f) => f.id === tr.formId)?.name || `Form #${tr.formId}`) : "Gelöscht",
+      paymentMethodName: tr.paymentMethodId ? (paymentMethods.find((p) => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`) : "Gelöscht",
     }));
   }, [testRuns, forms, paymentMethods]);
 
@@ -443,7 +443,10 @@ const TestResults: React.FC = () => {
     }
   };
 
-  const getFormName = (formId: number) => {
+  const getFormName = (formId: number | null | undefined) => {
+    if (!formId) {
+      return "Gelöscht";
+    }
     const form = forms.find((f) => f.id === formId);
     return form ? form.name : `Form #${formId}`;
   };
@@ -453,7 +456,10 @@ const TestResults: React.FC = () => {
     return form?.icon || "FileText";
   };
 
-  const getPaymentMethodName = (pmId: number) => {
+  const getPaymentMethodName = (pmId: number | null | undefined) => {
+    if (!pmId) {
+      return "Gelöscht";
+    }
     const pm = paymentMethods.find((p) => p.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
