@@ -11,7 +11,7 @@ import SelectionActionBar from "../components/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
-import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock, GitCompare } from "lucide-react";
+import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock, GitCompare, ChevronDown, ChevronUp } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
@@ -136,6 +136,19 @@ const TestDetailsSkeleton = () => (
 );
 
 const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: string }> = ({ steps: structuredSteps, status }) => {
+  const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set());
+  
+  const toggleStep = (stepId: string) => {
+    setExpandedSteps(prev => {
+      const next = new Set(prev);
+      if (next.has(stepId)) {
+        next.delete(stepId);
+      } else {
+        next.add(stepId);
+      }
+      return next;
+    });
+  };
   const getStepIcon = (stepStatus: string) => {
     switch (stepStatus) {
       case "success":
@@ -193,22 +206,40 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
     if (metadata.redirectUrl && typeof metadata.redirectUrl === 'string') parts.push(metadata.redirectUrl);
     if (metadata.paymentProvider && metadata.paymentProvider !== "Unknown" && typeof metadata.paymentProvider === 'string') parts.push(metadata.paymentProvider);
     
+    // Enhanced metadata fields
+    if (metadata.selector && typeof metadata.selector === 'string' && metadata.selector !== 'auto-detected' && metadata.selector !== 'not-found') {
+      const selectorText = metadata.selector.length > 30 ? `${metadata.selector.substring(0, 30)}...` : metadata.selector
+      parts.push(`Selector: ${selectorText}`)
+    }
+    if (metadata.waitTime && metadata.waitTime > 0) parts.push(`Wait: ${metadata.waitTime}ms`)
+    if (metadata.timeout && metadata.timeout > 0) parts.push(`Timeout: ${metadata.timeout}ms`)
+    if (metadata.networkRequests && metadata.networkRequests > 0) parts.push(`${metadata.networkRequests} Requests`)
+    if (metadata.consoleErrors && metadata.consoleErrors > 0) parts.push(`${metadata.consoleErrors} Console Errors`)
+    if (metadata.loadTime && metadata.loadTime > 0) parts.push(`Load: ${metadata.loadTime}ms`)
+    if (metadata.strategy && typeof metadata.strategy === 'string') parts.push(`Strategy: ${metadata.strategy}`)
+    
     // Explicitly ignore: interval, isValid, validationRules, successType, finalUrl, screenshotPath, screenshotType
     // These are internal fields that shouldn't be displayed to the user
     
     return parts.length > 0 ? parts.join(" · ") : null;
   };
 
+  // Filter steps for stopped tests - only show test-stopped step
+  let filteredSteps = structuredSteps || []
+  if (status === "STOPPED") {
+    filteredSteps = structuredSteps?.filter(step => step.id === 'test-stopped') || []
+  }
+
   // Add final status step
   const finalStep: TestStep = {
     id: "final",
-    name: status === "SUCCESS" ? "Test erfolgreich abgeschlossen" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : "Test läuft",
-    status: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "skipped" : "running",
+    name: status === "SUCCESS" ? "Test erfolgreich abgeschlossen" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : status === "STOPPED" ? "Test gestoppt" : "Test läuft",
+    status: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "skipped" : status === "STOPPED" ? "stopped" : "running",
     startTime: new Date().toISOString(),
     message: status === "SUCCESS" ? "Alle Schritte erfolgreich durchgeführt" : status === "FAILURE" ? "Test mit Fehlern beendet" : undefined,
   };
 
-  const allSteps = structuredSteps?.length ? [...structuredSteps, finalStep] : [finalStep];
+  const allSteps = filteredSteps.length > 0 ? [...filteredSteps, finalStep] : [finalStep];
 
   return (
     <div className="mb-6 pb-6 border-b dark:border-neutral-700">
@@ -260,6 +291,89 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                       {step.error}
                     </p>
+                  )}
+                  
+                  {/* Expandable detailed information */}
+                  {(step.stackTrace || step.consoleLogs?.length || step.networkRequests?.length || step.metadata?.fields?.length) && (
+                    <div className="mt-2">
+                      <button
+                        onClick={() => toggleStep(step.id || `step-${index}`)}
+                        className="flex items-center gap-1 text-[10px] text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
+                      >
+                        {expandedSteps.has(step.id || `step-${index}`) ? (
+                          <>
+                            <ChevronUp size={12} />
+                            Details ausblenden
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown size={12} />
+                            Details anzeigen
+                          </>
+                        )}
+                      </button>
+                      
+                      {expandedSteps.has(step.id || `step-${index}`) && (
+                        <div className="mt-2 space-y-2 pl-2 border-l-2 border-neutral-200 dark:border-neutral-700">
+                          {/* Stack Trace */}
+                          {step.stackTrace && (
+                            <div>
+                              <p className="text-[10px] font-medium text-neutral-600 dark:text-neutral-400 mb-1">Stack Trace:</p>
+                              <pre className="text-[9px] text-neutral-500 dark:text-neutral-400 font-mono bg-neutral-50 dark:bg-neutral-800 p-2 rounded overflow-x-auto max-h-40 overflow-y-auto">
+                                {step.stackTrace}
+                              </pre>
+                            </div>
+                          )}
+                          
+                          {/* Console Logs */}
+                          {step.consoleLogs && step.consoleLogs.length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-medium text-neutral-600 dark:text-neutral-400 mb-1">Console Logs ({step.consoleLogs.length}):</p>
+                              <div className="text-[9px] text-neutral-500 dark:text-neutral-400 font-mono bg-neutral-50 dark:bg-neutral-800 p-2 rounded max-h-40 overflow-y-auto space-y-1">
+                                {step.consoleLogs.slice(0, 20).map((log, i) => (
+                                  <div key={i} className="truncate">{log}</div>
+                                ))}
+                                {step.consoleLogs.length > 20 && (
+                                  <div className="text-neutral-400">... und {step.consoleLogs.length - 20} weitere</div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Network Requests */}
+                          {step.networkRequests && step.networkRequests.length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-medium text-neutral-600 dark:text-neutral-400 mb-1">Network Requests ({step.networkRequests.length}):</p>
+                              <div className="text-[9px] text-neutral-500 dark:text-neutral-400 font-mono bg-neutral-50 dark:bg-neutral-800 p-2 rounded max-h-40 overflow-y-auto space-y-1">
+                                {step.networkRequests.slice(0, 10).map((req, i) => (
+                                  <div key={i} className="truncate">
+                                    {req.method} {req.status || 'pending'} - {req.url.length > 60 ? `${req.url.substring(0, 60)}...` : req.url}
+                                    {req.responseTime && ` (${req.responseTime}ms)`}
+                                  </div>
+                                ))}
+                                {step.networkRequests.length > 10 && (
+                                  <div className="text-neutral-400">... und {step.networkRequests.length - 10} weitere</div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Form Field Values */}
+                          {step.metadata?.fields && Array.isArray(step.metadata.fields) && step.metadata.fields.length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-medium text-neutral-600 dark:text-neutral-400 mb-1">Form Fields ({step.metadata.fields.length}):</p>
+                              <div className="text-[9px] text-neutral-500 dark:text-neutral-400 font-mono bg-neutral-50 dark:bg-neutral-800 p-2 rounded max-h-40 overflow-y-auto space-y-1">
+                                {step.metadata.fields.map((field: any, i: number) => (
+                                  <div key={i} className="truncate">
+                                    {field.name || field.selector}: {field.type} = {field.value || '(empty)'}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
 

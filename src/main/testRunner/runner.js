@@ -38,6 +38,13 @@ class TestRunner {
     this.buffer = ''
     this.isTestRunning = false
     this.lastActivityTime = Date.now()
+    
+    // Enhanced logging: console and network capture
+    this.consoleLogs = [] // Store browser console messages (max 100)
+    this.networkRequests = [] // Store network requests (max 50)
+    this.maxConsoleLogs = 100
+    this.maxNetworkRequests = 50
+    this.lastSubmitSelector = null // Store last submit selector for metadata
 
     // Set up process communication
     process.stdin.setEncoding('utf8')
@@ -114,9 +121,30 @@ class TestRunner {
   failStep(stepId, error, metadata = {}) {
     const step = this.steps.find(s => s.id === stepId)
     if (step) {
-      step.error = error
+      // Handle both string errors and Error objects
+      const errorMessage = error instanceof Error ? error.message : error
+      const stackTrace = error instanceof Error ? error.stack : (error.stack || null)
+      
+      step.error = errorMessage
+      step.stackTrace = stackTrace
+      
+      // Add stack trace to metadata if available
+      if (stackTrace) {
+        metadata.stackTrace = stackTrace
+      }
+      
+      // Include recent console errors in metadata
+      const recentConsoleErrors = this.consoleLogs
+        .filter(log => log.type === 'error')
+        .slice(-5) // Last 5 console errors
+        .map(log => log.text)
+      
+      if (recentConsoleErrors.length > 0) {
+        metadata.consoleErrors = recentConsoleErrors
+      }
     }
-    this.completeStep(stepId, 'error', error, metadata)
+    const errorMessage = error instanceof Error ? error.message : error
+    this.completeStep(stepId, 'error', errorMessage, metadata)
   }
 
   /**
@@ -238,6 +266,8 @@ class TestRunner {
     this.logs = []
     this.steps = []
     this.currentStep = null
+    this.consoleLogs = [] // Reset console logs
+    this.networkRequests = [] // Reset network requests
     
     // Store quality test options (default to disabled)
     this.qualityTestOptions = qualityTestOptions || { enableSeoTest: false, enableAccessibilityTest: false }
@@ -411,6 +441,12 @@ class TestRunner {
       this.page = await this.context.newPage()
       this.mainPage = this.page  // Store reference to main page
       this.page.setDefaultTimeout(this.config.timeout)
+      
+      // Set up console message capture
+      this.setupConsoleCapture()
+      
+      // Set up network request/response capture
+      this.setupNetworkCapture()
     } catch (error) {
       this.log(`Page creation failed: ${error.message}`)
       this.failStep('browser-init', `Seite konnte nicht erstellt werden: ${error.message}`)
@@ -421,6 +457,139 @@ class TestRunner {
 
     this.completeStep('browser-init', 'success', 'Browser erfolgreich gestartet')
     this.log('Browser initialized successfully')
+  }
+  
+  /**
+   * Set up browser console message capture
+   */
+  setupConsoleCapture() {
+    if (!this.page) return
+    
+    this.consoleLogs = [] // Reset for new test
+    
+    this.page.on('console', (msg) => {
+      const type = msg.type()
+      const text = msg.text()
+      const timestamp = new Date().toISOString()
+      
+      // Only capture errors, warnings, and logs (ignore debug/info)
+      if (['error', 'warning', 'log'].includes(type)) {
+        if (this.consoleLogs.length >= this.maxConsoleLogs) {
+          this.consoleLogs.shift() // Remove oldest
+        }
+        
+        this.consoleLogs.push({
+          type,
+          text,
+          timestamp
+        })
+        
+        // Also log to main logs for debugging
+        this.log(`[CONSOLE ${type.toUpperCase()}] ${text}`)
+      }
+    })
+  }
+  
+  /**
+   * Set up network request/response capture
+   */
+  setupNetworkCapture() {
+    if (!this.page) return
+    
+    this.networkRequests = [] // Reset for new test
+    const requestMap = new Map() // Track request start times
+    
+    // Filter out static assets
+    const staticAssetExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot', '.css', '.js']
+    const isStaticAsset = (url) => {
+      try {
+        const urlObj = new URL(url)
+        const pathname = urlObj.pathname.toLowerCase()
+        return staticAssetExtensions.some(ext => pathname.endsWith(ext))
+      } catch {
+        return false
+      }
+    }
+    
+    this.page.on('request', (request) => {
+      const url = request.url()
+      const method = request.method()
+      
+      // Skip static assets
+      if (isStaticAsset(url)) return
+      
+      // Skip data URLs and blob URLs
+      if (url.startsWith('data:') || url.startsWith('blob:')) return
+      
+      const timestamp = new Date().toISOString()
+      requestMap.set(request, { timestamp, method, url })
+    })
+    
+    this.page.on('response', (response) => {
+      const request = response.request()
+      const requestInfo = requestMap.get(request)
+      
+      if (!requestInfo) return
+      
+      const status = response.status()
+      const url = response.url()
+      const method = requestInfo.method
+      const responseTime = Date.now() - new Date(requestInfo.timestamp).getTime()
+      
+      if (this.networkRequests.length >= this.maxNetworkRequests) {
+        this.networkRequests.shift() // Remove oldest
+      }
+      
+      this.networkRequests.push({
+        url,
+        method,
+        status,
+        responseTime,
+        timestamp: requestInfo.timestamp
+      })
+      
+      requestMap.delete(request) // Clean up
+    })
+  }
+  
+  /**
+   * Sanitize sensitive form field values
+   * @param {string} fieldName - Name of the field
+   * @param {string} value - Field value to sanitize
+   * @returns {string} Sanitized value
+   */
+  sanitizeFieldValue(fieldName, value) {
+    if (!value || typeof value !== 'string') return value
+    
+    const fieldNameLower = fieldName.toLowerCase()
+    
+    // Credit card numbers - show last 4 digits
+    if (fieldNameLower.includes('card') || fieldNameLower.includes('credit') || fieldNameLower.includes('number')) {
+      const digitsOnly = value.replace(/\D/g, '')
+      if (digitsOnly.length >= 13) {
+        return `****${digitsOnly.slice(-4)}`
+      }
+    }
+    
+    // Email addresses - show first 3 chars + domain
+    if (fieldNameLower.includes('email') || fieldNameLower.includes('mail')) {
+      const emailMatch = value.match(/^(.{1,3})(.*)@(.+)$/)
+      if (emailMatch) {
+        return `${emailMatch[1]}***@${emailMatch[3]}`
+      }
+    }
+    
+    // Passwords - mask completely
+    if (fieldNameLower.includes('password') || fieldNameLower.includes('pass') || fieldNameLower.includes('pwd')) {
+      return '***'
+    }
+    
+    // CVV/CVC - mask completely
+    if (fieldNameLower.includes('cvv') || fieldNameLower.includes('cvc') || fieldNameLower.includes('security')) {
+      return '***'
+    }
+    
+    return value
   }
 
   /**
@@ -562,9 +731,24 @@ class TestRunner {
       await this.page.waitForTimeout(2000)
 
       const loadTime = Date.now() - navStartTime
+      
+      // Get network requests during navigation
+      const navNetworkRequests = this.networkRequests
+        .filter(req => new Date(req.timestamp) >= new Date(navStartTime))
+        .slice(-10) // Last 10 requests
+      
+      // Get console errors during navigation
+      const navConsoleErrors = this.consoleLogs
+        .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(navStartTime))
+      
       this.completeStep('page-navigation', 'success', `Seite in ${loadTime}ms geladen`, {
         loadTime,
-        strategy: 'domcontentloaded'
+        strategy: 'domcontentloaded',
+        timeout: 30000,
+        waitTime: 2000,
+        networkRequests: navNetworkRequests.length,
+        consoleErrors: navConsoleErrors.length,
+        url: targetUrl
       })
 
     } catch (error) {
@@ -579,9 +763,23 @@ class TestRunner {
         this.log('Page loaded with load event')
         
         const loadTime = Date.now() - navStartTime
+        
+        // Get network requests during navigation
+        const navNetworkRequests = this.networkRequests
+          .filter(req => new Date(req.timestamp) >= new Date(navStartTime))
+          .slice(-10) // Last 10 requests
+        
+        // Get console errors during navigation
+        const navConsoleErrors = this.consoleLogs
+          .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(navStartTime))
+        
         this.completeStep('page-navigation', 'success', `Seite in ${loadTime}ms geladen (Fallback)`, {
           loadTime,
-          strategy: 'load'
+          strategy: 'load',
+          timeout: 20000,
+          networkRequests: navNetworkRequests.length,
+          consoleErrors: navConsoleErrors.length,
+          url: targetUrl
         })
       } catch (fallbackError) {
         this.log(`Navigation with load failed: ${fallbackError.message}`)
@@ -615,12 +813,29 @@ class TestRunner {
 
     // Step 4: Form Analysis & Fill
     const analysisStep = this.startStep('form-analysis', 'Formular analysieren und ausfüllen')
+    const analysisStartTime = Date.now()
     let formAnalysis
     try {
       formAnalysis = await this.analyzeAndFillForm()
+      
+      // Capture form field details with sanitized values
+      const fieldDetails = (formAnalysis.fields || []).map(field => ({
+        selector: field.selector || field.name,
+        name: field.name || field.selector,
+        type: field.type || 'text',
+        value: this.sanitizeFieldValue(field.name || field.selector || '', field.value || '')
+      }))
+      
+      // Get console errors during form analysis
+      const analysisConsoleErrors = this.consoleLogs
+        .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(analysisStartTime))
+      
       this.completeStep('form-analysis', 'success', `${formAnalysis.fields?.length || 0} Formularfelder analysiert und ausgefüllt`, {
         fieldsFound: formAnalysis.fields?.length || 0,
-        formType: 'donation'
+        formType: 'donation',
+        fields: fieldDetails.slice(0, 20), // Limit to first 20 fields
+        waitTime: 500,
+        consoleErrors: analysisConsoleErrors.length
       })
     } catch (error) {
       this.failStep('form-analysis', `Formularanalyse fehlgeschlagen: ${error.message}`)
@@ -675,12 +890,47 @@ class TestRunner {
     await this.runScriptsAtHook('before_payment', form, paymentMethod, testRunInfo)
 
     // Step 5: Payment Method Selection
+    const paymentStartTime = Date.now()
     const paymentStep = this.startStep('payment-selection', 'Zahlungsmethode auswählen', {
       paymentMethod: paymentMethod.type
     })
+    
+    // Capture payment selector before handling
+    let paymentSelector = null
+    try {
+      // Try to find payment method selector (this will be set in handlePaymentMethod)
+      const paymentSelectors = [
+        `input[value*="${paymentMethod.type}" i]`,
+        `input[name*="payment" i][value*="${paymentMethod.type}" i]`,
+        `button[data-payment="${paymentMethod.type}"]`,
+        `[data-payment-method="${paymentMethod.type}"]`
+      ]
+      
+      for (const selector of paymentSelectors) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            paymentSelector = selector
+            break
+          }
+        } catch (e) {
+          // Continue
+        }
+      }
+    } catch (e) {
+      // Ignore
+    }
+    
     await this.handlePaymentMethod(paymentMethod, formAnalysis)
+    
+    // Get console errors during payment selection
+    const paymentConsoleErrors = this.consoleLogs
+      .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(paymentStartTime))
+    
     this.completeStep('payment-selection', 'success', `Zahlungsmethode ausgewählt: ${paymentMethod.type}`, {
-      paymentMethod: paymentMethod.type
+      paymentMethod: paymentMethod.type,
+      selector: paymentSelector || 'auto-detected',
+      consoleErrors: paymentConsoleErrors.length
     })
 
     // HOOK: after_payment
@@ -739,10 +989,42 @@ class TestRunner {
     await this.runScriptsAtHook('before_submit', form, paymentMethod, testRunInfo)
 
     // Step 7: Form Submission
+    const submissionStartTime = Date.now()
     const submissionStep = this.startStep('form-submission', 'Formular absenden')
+    
+    // Capture submit selector and network requests before submission
+    const preSubmissionNetworkCount = this.networkRequests.length
+    
     try {
-      await this.submitForm()
-      this.completeStep('form-submission', 'success', 'Formular erfolgreich abgesendet')
+      // Capture selector before submission (will be set in submitForm)
+      let submitSelector = 'auto-detected'
+      try {
+        await this.submitForm()
+        // Get the selector from the submitForm method's usedSelector variable
+        // We'll capture it from metadata after submission
+        submitSelector = this.lastSubmitSelector || 'auto-detected'
+      } catch (submitError) {
+        throw submitError
+      }
+      
+      const submissionDuration = Date.now() - submissionStartTime
+      
+      // Get network requests during submission
+      const submissionNetworkRequests = this.networkRequests
+        .filter(req => new Date(req.timestamp) >= new Date(submissionStartTime))
+        .slice(-5) // Last 5 requests
+      
+      // Get console errors during submission
+      const submissionConsoleErrors = this.consoleLogs
+        .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(submissionStartTime))
+      
+      this.completeStep('form-submission', 'success', 'Formular erfolgreich abgesendet', {
+        selector: submitSelector,
+        waitTime: 1000,
+        duration: submissionDuration,
+        networkRequests: submissionNetworkRequests.length,
+        consoleErrors: submissionConsoleErrors.length
+      })
     } catch (error) {
       this.failStep('form-submission', `Formular-Absendung fehlgeschlagen: ${error.message}`)
       // HOOK: on_error
@@ -754,14 +1036,31 @@ class TestRunner {
     await this.runScriptsAtHook('after_submit', form, paymentMethod, testRunInfo)
 
     // Step 8: Success Detection (payment-method-specific)
+    const redirectStartTime = Date.now()
     const successStep = this.startStep('redirect-detection', 'Zahlungs-Weiterleitung erkennen')
     try {
       const successResult = await this.waitForSuccessRedirect(paymentMethod.type)
+      const redirectStartTime = Date.now()
+      const redirectDuration = Date.now() - redirectStartTime
+      
+      // Get network requests during redirect detection
+      const redirectNetworkRequests = this.networkRequests
+        .filter(req => new Date(req.timestamp) >= new Date(redirectStartTime))
+        .slice(-5)
+      
+      // Get console errors during redirect
+      const redirectConsoleErrors = this.consoleLogs
+        .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(redirectStartTime))
+      
       this.completeStep('redirect-detection', 'success', `${successResult.message || 'Success detected'}`, {
         redirectUrl: successResult.url,
         paymentProvider: successResult.detectedProvider,
         expectedProvider: paymentMethod.type,
-        matchedExpected: successResult.matchedExpected
+        matchedExpected: successResult.matchedExpected,
+        waitTime: 30000,
+        duration: redirectDuration,
+        networkRequests: redirectNetworkRequests.length,
+        consoleErrors: redirectConsoleErrors.length
       })
 
       // HOOK: on_success
@@ -806,9 +1105,19 @@ class TestRunner {
 
   async submitForm() {
     this.log('Submitting form...')
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1106',message:'submitForm entry',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
 
     // Wait a moment for any dynamic content to settle
     await this.page.waitForTimeout(1000)
+    
+    let usedSelector = null // Declare usedSelector variable
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1113',message:'usedSelector declared',data:{usedSelector},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
 
     // Check for validation errors before submitting
     try {
@@ -922,12 +1231,20 @@ class TestRunner {
 
     for (const selector of submitSelectors) {
       try {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1222',message:'Trying selector',data:{selector,selectorIndex:submitSelectors.indexOf(selector),totalSelectors:submitSelectors.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+        // #endregion
+        
         const button = await this.page.$(selector)
         if (button) {
           const isVisible = await button.isVisible()
           const isEnabled = await button.isEnabled()
           
           this.log(`Found submit button: ${selector} (visible: ${isVisible}, enabled: ${isEnabled})`)
+          
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1231',message:'Button found',data:{selector,isVisible,isEnabled},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+          // #endregion
           
           if (isVisible && isEnabled) {
             // Scroll into view if needed
@@ -939,6 +1256,12 @@ class TestRunner {
             // Click the button
             await button.click()
             this.log(`Clicked submit button: ${selector}`)
+            usedSelector = selector
+            this.lastSubmitSelector = selector // Store for metadata
+            
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1246',message:'Button clicked successfully',data:{selector,usedSelector},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+            // #endregion
             
             // Wait for form processing/navigation
             await this.page.waitForTimeout(2000)
@@ -946,18 +1269,34 @@ class TestRunner {
           } else {
             this.log(`Submit button ${selector} not clickable - trying next`)
           }
+        } else {
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1250',message:'Button not found',data:{selector},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+          // #endregion
         }
       } catch (error) {
         this.log(`Submit selector ${selector} error: ${error.message}`)
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1252',message:'Selector error',data:{selector,error:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        // #endregion
         // Continue trying other selectors
       }
     }
     
     // If no button found, try to find any submit element and attempt to click it
     this.log('No standard submit button found, trying fallback detection...')
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1257',message:'All selectors failed, trying fallback',data:{usedSelector},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
+    
     try {
       const allSubmits = await this.page.$$('input[type="submit"], button[type="submit"], button')
       this.log(`Found ${allSubmits.length} potential submit elements on page`)
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1260',message:'Fallback elements found',data:{count:allSubmits.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      // #endregion
       
       for (let i = 0; i < allSubmits.length; i++) {
         const el = allSubmits[i]
@@ -986,6 +1325,13 @@ class TestRunner {
             await this.page.waitForTimeout(500)
             await el.click()
             this.log(`Fallback click successful on element ${i}`)
+            usedSelector = `fallback-element-${i}`
+            this.lastSubmitSelector = usedSelector // Store for metadata
+            
+            // #region agent log
+            fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1278',message:'Fallback click successful',data:{elementIndex:i,usedSelector},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+            // #endregion
+            
             await this.page.waitForTimeout(2000)
             return
           }
@@ -993,7 +1339,14 @@ class TestRunner {
       }
     } catch (e) {
       this.log(`Error in fallback submit detection: ${e.message}`)
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1287',message:'Fallback error',data:{error:e.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+      // #endregion
     }
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/62608c39-eba4-42f5-a840-3bbd96962adc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'runner.js:1290',message:'submitForm failed - no button found',data:{usedSelector},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     
     throw new Error('No submit button found or clickable')
   }
@@ -2968,18 +3321,17 @@ class TestRunner {
   async stopTest(message) {
     this.log('Stopping test...')
     
-    // Mark any running step as stopped
-    if (this.currentStep) {
-      this.completeStep(this.currentStep.id, 'stopped', 'Test wurde manuell gestoppt')
-    }
+    // Clear all previous steps - only keep the stopped step
+    this.steps = []
+    this.currentStep = null
     
-    // Add a final step indicating the test was stopped
+    // Add a single step indicating the test was stopped
     this.startStep('test-stopped', 'Test gestoppt')
     this.completeStep('test-stopped', 'stopped', 'Test wurde vom Benutzer oder System gestoppt')
     
     await this.cleanup()
     
-    // Send stopped result WITH steps for the drawer
+    // Send stopped result with only the test-stopped step
     this.sendMessage({ 
       type: 'TEST_STOPPED', 
       id: message.id,
@@ -2990,7 +3342,7 @@ class TestRunner {
           success: false,
           duration: Date.now() - (this.testStartTime || Date.now()),
           logs: [...this.logs],
-          steps: [...this.steps]
+          steps: [...this.steps] // Only contains the test-stopped step
         }
       }
     })

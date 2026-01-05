@@ -86,6 +86,14 @@ export interface GlobalSetting {
   description: string;
 }
 
+export interface NetworkRequest {
+  url: string;
+  method: string;
+  status?: number;
+  responseTime?: number;
+  timestamp: string;
+}
+
 export interface TestStep {
   id: string;
   name: string;
@@ -96,6 +104,9 @@ export interface TestStep {
   message?: string;
   metadata?: Record<string, any>;
   error?: string;
+  stackTrace?: string; // Full error stack trace
+  consoleLogs?: string[]; // Browser console messages
+  networkRequests?: NetworkRequest[]; // Network activity
 }
 
 export interface TestRun {
