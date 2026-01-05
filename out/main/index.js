@@ -1058,6 +1058,9 @@ function initDatabase() {
   });
   migrateTestRunsToAllowOrphaned();
   migrateRemoveScreenshotColumn();
+  migrateTestRunArchiving();
+  migrateTestRunTags();
+  migrateTagDefinitions();
   cleanupOldTestRuns();
   console.log("Database: Initialization complete");
 }
@@ -1601,12 +1604,18 @@ const passwordQueries = {
   }
 };
 const testRunQueries = {
-  getAll: () => {
-    const rows = db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all();
+  getAll: (includeArchived = false) => {
+    let query = "SELECT * FROM test_runs";
+    if (!includeArchived) {
+      query += " WHERE isArchived = 0 OR isArchived IS NULL";
+    }
+    query += " ORDER BY runAt DESC";
+    const rows = db.prepare(query).all();
     return rows.map((row) => ({
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
+      isArchived: Boolean(row.isArchived),
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     }));
@@ -1618,6 +1627,8 @@ const testRunQueries = {
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
+      isArchived: Boolean(row.isArchived),
+      tags: row.tags ? JSON.parse(row.tags) : [],
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     };
@@ -1628,11 +1639,12 @@ const testRunQueries = {
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
+      isArchived: Boolean(row.isArchived),
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     }));
   },
-  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
+  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults, isArchived, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
     testRun.uuid,
     testRun.formId,
     testRun.paymentMethodId,
@@ -1645,7 +1657,9 @@ const testRunQueries = {
     testRun.amount,
     testRun.interval,
     testRun.seoResults ? JSON.stringify(testRun.seoResults) : null,
-    testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null
+    testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null,
+    testRun.isArchived ? 1 : 0,
+    JSON.stringify(testRun.tags || [])
   ),
   updateStatus: (id, status, errorMessage, durationMs, steps) => {
     const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ? AND status != 'STOPPED'");
@@ -1662,6 +1676,30 @@ const testRunQueries = {
   updateNotes: (id, notes) => {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
     return stmt.run(notes, id);
+  },
+  archive: (id) => {
+    const stmt = db.prepare("UPDATE test_runs SET isArchived = 1 WHERE id = ?");
+    return stmt.run(id);
+  },
+  unarchive: (id) => {
+    const stmt = db.prepare("UPDATE test_runs SET isArchived = 0 WHERE id = ?");
+    return stmt.run(id);
+  },
+  archiveBulk: (ids) => {
+    if (ids.length === 0) return { changes: 0 };
+    const placeholders = ids.map(() => "?").join(",");
+    const stmt = db.prepare(`UPDATE test_runs SET isArchived = 1 WHERE id IN (${placeholders})`);
+    return stmt.run(...ids);
+  },
+  unarchiveBulk: (ids) => {
+    if (ids.length === 0) return { changes: 0 };
+    const placeholders = ids.map(() => "?").join(",");
+    const stmt = db.prepare(`UPDATE test_runs SET isArchived = 0 WHERE id IN (${placeholders})`);
+    return stmt.run(...ids);
+  },
+  updateTags: (id, tags) => {
+    const stmt = db.prepare("UPDATE test_runs SET tags = ? WHERE id = ?");
+    return stmt.run(JSON.stringify(tags), id);
   },
   stop: (id) => {
     const testRun = db.prepare("SELECT runAt, status FROM test_runs WHERE id = ?").get(id);
@@ -2147,6 +2185,37 @@ const importQueries = {
     return result;
   }
 };
+const tagQueries = {
+  getAll: () => {
+    const rows = db.prepare("SELECT * FROM tag_definitions ORDER BY name ASC").all();
+    return rows.map((row) => ({
+      ...row,
+      createdAt: new Date(row.createdAt)
+    }));
+  },
+  getById: (id) => {
+    const row = db.prepare("SELECT * FROM tag_definitions WHERE id = ?").get(id);
+    if (!row) return void 0;
+    return {
+      ...row,
+      createdAt: new Date(row.createdAt)
+    };
+  },
+  create: (name, color = "#3B82F6") => {
+    const stmt = db.prepare("INSERT INTO tag_definitions (name, color) VALUES (?, ?)");
+    const result = stmt.run(name, color);
+    return tagQueries.getById(result.lastInsertRowid);
+  },
+  update: (id, name, color) => {
+    const stmt = db.prepare("UPDATE tag_definitions SET name = ?, color = ? WHERE id = ?");
+    stmt.run(name, color, id);
+    return tagQueries.getById(id);
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM tag_definitions WHERE id = ?");
+    return stmt.run(id);
+  }
+};
 const notificationQueries = {
   getAll: () => {
     const notifications = db.prepare("SELECT * FROM notifications ORDER BY createdAt DESC").all();
@@ -2587,6 +2656,7 @@ const database = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProp
   paymentMethodQueries,
   selectorOverrideQueries,
   settingsQueries,
+  tagQueries,
   testRunQueries,
   testScheduleQueries
 }, Symbol.toStringTag, { value: "Module" }));
@@ -4889,7 +4959,7 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("settings:set", (_, key, value, description) => settingsQueries.set(key, value, description));
   electron.ipcMain.handle("settings:getFieldDefaults", () => settingsQueries.getFieldDefaults());
   electron.ipcMain.handle("settings:setFieldDefaults", (_, defaults) => settingsQueries.setFieldDefaults(defaults));
-  electron.ipcMain.handle("testRuns:getAll", () => testRunQueries.getAll());
+  electron.ipcMain.handle("testRuns:getAll", (_, includeArchived) => testRunQueries.getAll(includeArchived));
   electron.ipcMain.handle("testRuns:getById", (_, id) => testRunQueries.getById(id));
   electron.ipcMain.handle("testRuns:getByForm", (_, formId) => testRunQueries.getByForm(formId));
   electron.ipcMain.handle("testRuns:create", (_, testRun) => testRunQueries.create({ ...testRun, uuid: testRun.uuid || crypto.randomUUID() }));
@@ -4897,6 +4967,16 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("testRuns:delete", (_, id) => testRunQueries.delete(id));
   electron.ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
   electron.ipcMain.handle("testRuns:updateNotes", (_, id, notes) => testRunQueries.updateNotes(id, notes));
+  electron.ipcMain.handle("testRuns:archive", (_, id) => testRunQueries.archive(id));
+  electron.ipcMain.handle("testRuns:unarchive", (_, id) => testRunQueries.unarchive(id));
+  electron.ipcMain.handle("testRuns:archiveBulk", (_, ids) => testRunQueries.archiveBulk(ids));
+  electron.ipcMain.handle("testRuns:unarchiveBulk", (_, ids) => testRunQueries.unarchiveBulk(ids));
+  electron.ipcMain.handle("testRuns:updateTags", (_, id, tags) => testRunQueries.updateTags(id, tags));
+  electron.ipcMain.handle("tags:getAll", () => tagQueries.getAll());
+  electron.ipcMain.handle("tags:getById", (_, id) => tagQueries.getById(id));
+  electron.ipcMain.handle("tags:create", (_, name, color) => tagQueries.create(name, color));
+  electron.ipcMain.handle("tags:update", (_, id, name, color) => tagQueries.update(id, name, color));
+  electron.ipcMain.handle("tags:delete", (_, id) => tagQueries.delete(id));
   electron.ipcMain.handle("testRuns:stop", (_, id) => {
     const testQueue = getTestQueue();
     testQueue.removeFromQueue(id);

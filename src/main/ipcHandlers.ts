@@ -1,7 +1,7 @@
 import { ipcMain, dialog } from "electron";
 import { writeFileSync, readFileSync } from "fs";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries, customScriptQueries, formScriptQueries, cleanupOldTestRuns, aiChatQueries, aiMessageQueries } from "./database";
+import { formQueries, paymentMethodQueries, settingsQueries, testRunQueries, exportQueries, importQueries, testScheduleQueries, notificationQueries, selectorOverrideQueries, getMergedSelectorConfig, getBaseSelectorConfig, passwordQueries, customScriptQueries, formScriptQueries, cleanupOldTestRuns, aiChatQueries, aiMessageQueries, tagQueries, filterPresetQueries } from "./database";
 import type { Form, PaymentMethod, TestRun, ImportOptions, ExportData, TestSchedule, GlobalFieldDefaults, CustomScript, ScriptHookPoint, AIProvider } from "../common/types";
 import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
@@ -131,7 +131,7 @@ export function setupIpcHandlers(): void {
   ipcMain.handle("settings:setFieldDefaults", (_, defaults: GlobalFieldDefaults) => settingsQueries.setFieldDefaults(defaults));
 
   // Test run handlers
-  ipcMain.handle("testRuns:getAll", () => testRunQueries.getAll());
+  ipcMain.handle("testRuns:getAll", (_, includeArchived?: boolean) => testRunQueries.getAll(includeArchived));
   ipcMain.handle("testRuns:getById", (_, id: number) => testRunQueries.getById(id));
   ipcMain.handle("testRuns:getByForm", (_, formId: number) => testRunQueries.getByForm(formId));
   ipcMain.handle("testRuns:create", (_, testRun: Omit<TestRun, "id" | "runAt">) => testRunQueries.create({ ...testRun, uuid: testRun.uuid || randomUUID() }));
@@ -139,6 +139,25 @@ export function setupIpcHandlers(): void {
   ipcMain.handle("testRuns:delete", (_, id: number) => testRunQueries.delete(id));
   ipcMain.handle("testRuns:deleteAll", () => testRunQueries.deleteAll());
   ipcMain.handle("testRuns:updateNotes", (_, id: number, notes: string) => testRunQueries.updateNotes(id, notes));
+  ipcMain.handle("testRuns:archive", (_, id: number) => testRunQueries.archive(id));
+  ipcMain.handle("testRuns:unarchive", (_, id: number) => testRunQueries.unarchive(id));
+  ipcMain.handle("testRuns:archiveBulk", (_, ids: number[]) => testRunQueries.archiveBulk(ids));
+  ipcMain.handle("testRuns:unarchiveBulk", (_, ids: number[]) => testRunQueries.unarchiveBulk(ids));
+  ipcMain.handle("testRuns:updateTags", (_, id: number, tags: string[]) => testRunQueries.updateTags(id, tags));
+  
+  // Tag handlers
+  ipcMain.handle("tags:getAll", () => tagQueries.getAll());
+  ipcMain.handle("tags:getById", (_, id: number) => tagQueries.getById(id));
+  ipcMain.handle("tags:create", (_, name: string, color?: string) => tagQueries.create(name, color));
+  ipcMain.handle("tags:update", (_, id: number, name: string, color: string) => tagQueries.update(id, name, color));
+  ipcMain.handle("tags:delete", (_, id: number) => tagQueries.delete(id));
+  
+  // Filter preset handlers
+  ipcMain.handle("filterPresets:getAll", () => filterPresetQueries.getAll());
+  ipcMain.handle("filterPresets:getById", (_, id: number) => filterPresetQueries.getById(id));
+  ipcMain.handle("filterPresets:create", (_, name: string, filterConfig: any) => filterPresetQueries.create(name, filterConfig));
+  ipcMain.handle("filterPresets:update", (_, id: number, name: string, filterConfig: any) => filterPresetQueries.update(id, name, filterConfig));
+  ipcMain.handle("filterPresets:delete", (_, id: number) => filterPresetQueries.delete(id));
   ipcMain.handle("testRuns:stop", (_, id: number) => {
     // Remove from queue if it's a queued test
     const testQueue = getTestQueue();

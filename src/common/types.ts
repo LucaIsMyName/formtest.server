@@ -126,6 +126,8 @@ export interface TestRun {
   steps?: TestStep[];
   durationMs?: number;
   isScheduled?: boolean;
+  isArchived?: boolean;
+  tags?: string[];
   notes?: string;
   amount?: string;    // Test amount in EUR
   interval?: string;  // Test interval (0=one-time, 1=monthly, etc.)

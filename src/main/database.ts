@@ -747,6 +747,16 @@ export function initDatabase(): void {
   migrateTestRunsToAllowOrphaned();
   migrateRemoveScreenshotColumn();
   
+  // Migrate test_runs to support archiving
+  migrateTestRunArchiving();
+  
+  // Migrate test_runs to support tags
+  migrateTestRunTags();
+  migrateTagDefinitions();
+  
+  // Migrate filter presets
+  migrateFilterPresets();
+  
   // Clean up orphaned tests (RUNNING/QUEUED from previous session)
   // NOTE: This is now disabled - tests remain in RUNNING/QUEUED state for recovery dialog
   // cleanupOrphanedTests();
@@ -912,6 +922,111 @@ function migrateRemoveScreenshotColumn(): void {
     }
   } catch (error) {
     console.error("Database: Error removing screenshotPath column:", error);
+  }
+}
+
+/**
+ * Migrate test_runs table to add isArchived column
+ */
+function migrateTestRunArchiving(): void {
+  console.log("Database: Checking for test_runs isArchived column...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasIsArchived = columns.some(col => col.name === 'isArchived');
+    
+    if (!hasIsArchived) {
+      console.log("Database: Adding isArchived column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN isArchived INTEGER DEFAULT 0");
+      
+      // Initialize existing records with isArchived = 0
+      const updateStmt = db.prepare("UPDATE test_runs SET isArchived = 0 WHERE isArchived IS NULL");
+      const result = updateStmt.run();
+      
+      console.log(`Database: Initialized isArchived column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run archiving migration error:", error);
+  }
+}
+
+/**
+ * Migrate test_runs table to add tags column
+ */
+function migrateTestRunTags(): void {
+  console.log("Database: Checking for test_runs tags column...");
+  
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasTags = columns.some(col => col.name === 'tags');
+    
+    if (!hasTags) {
+      console.log("Database: Adding tags column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN tags TEXT DEFAULT '[]'");
+      
+      // Initialize existing records with empty tags array
+      const updateStmt = db.prepare("UPDATE test_runs SET tags = '[]' WHERE tags IS NULL");
+      const result = updateStmt.run();
+      
+      console.log(`Database: Initialized tags column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run tags migration error:", error);
+  }
+}
+
+/**
+ * Migrate to create tag_definitions table
+ */
+function migrateTagDefinitions(): void {
+  console.log("Database: Checking for tag_definitions table...");
+  
+  try {
+    const tableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='tag_definitions'").get();
+    
+    if (!tableExists) {
+      console.log("Database: Creating tag_definitions table...");
+      db.exec(`
+        CREATE TABLE tag_definitions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL UNIQUE,
+          color TEXT DEFAULT '#3B82F6',
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      
+      console.log("Database: Created tag_definitions table");
+    }
+  } catch (error) {
+    console.error("Database: Tag definitions migration error:", error);
+  }
+}
+
+/**
+ * Migrate to create filter_presets table
+ */
+function migrateFilterPresets(): void {
+  console.log("Database: Checking for filter_presets table...");
+  
+  try {
+    const tableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='filter_presets'").get();
+    
+    if (!tableExists) {
+      console.log("Database: Creating filter_presets table...");
+      db.exec(`
+        CREATE TABLE filter_presets (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          filterConfig TEXT NOT NULL,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      
+      console.log("Database: Created filter_presets table");
+    }
+  } catch (error) {
+    console.error("Database: Filter presets migration error:", error);
   }
 }
 
@@ -1461,12 +1576,19 @@ export const passwordQueries = {
 };
 
 export const testRunQueries = {
-  getAll: () => {
-    const rows = db.prepare("SELECT * FROM test_runs ORDER BY runAt DESC").all() as any[];
+  getAll: (includeArchived: boolean = false) => {
+    let query = "SELECT * FROM test_runs";
+    if (!includeArchived) {
+      query += " WHERE isArchived = 0 OR isArchived IS NULL";
+    }
+    query += " ORDER BY runAt DESC";
+    const rows = db.prepare(query).all() as any[];
     return rows.map(row => ({
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
+      isArchived: Boolean(row.isArchived),
+      tags: row.tags ? JSON.parse(row.tags) : [],
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : undefined,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : undefined,
     })) as TestRun[];
@@ -1478,6 +1600,8 @@ export const testRunQueries = {
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
+      isArchived: Boolean(row.isArchived),
+      tags: row.tags ? JSON.parse(row.tags) : [],
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : undefined,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : undefined,
     } as TestRun;
@@ -1488,11 +1612,13 @@ export const testRunQueries = {
       ...row,
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
+      isArchived: Boolean(row.isArchived),
+      tags: row.tags ? JSON.parse(row.tags) : [],
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : undefined,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : undefined,
     })) as TestRun[];
   },
-  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
+  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults, isArchived, tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
     testRun.uuid, 
     testRun.formId, 
     testRun.paymentMethodId, 
@@ -1505,7 +1631,9 @@ export const testRunQueries = {
     testRun.amount, 
     testRun.interval,
     testRun.seoResults ? JSON.stringify(testRun.seoResults) : null,
-    testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null
+    testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null,
+    testRun.isArchived ? 1 : 0,
+    JSON.stringify(testRun.tags || [])
   ),
   updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"]) => {
     // Don't overwrite STOPPED status - if a test was manually stopped, keep that status
@@ -1524,6 +1652,30 @@ export const testRunQueries = {
   updateNotes: (id: number, notes: string) => {
     const stmt = db.prepare("UPDATE test_runs SET notes = ? WHERE id = ?");
     return stmt.run(notes, id);
+  },
+  archive: (id: number) => {
+    const stmt = db.prepare("UPDATE test_runs SET isArchived = 1 WHERE id = ?");
+    return stmt.run(id);
+  },
+  unarchive: (id: number) => {
+    const stmt = db.prepare("UPDATE test_runs SET isArchived = 0 WHERE id = ?");
+    return stmt.run(id);
+  },
+  archiveBulk: (ids: number[]) => {
+    if (ids.length === 0) return { changes: 0 };
+    const placeholders = ids.map(() => '?').join(',');
+    const stmt = db.prepare(`UPDATE test_runs SET isArchived = 1 WHERE id IN (${placeholders})`);
+    return stmt.run(...ids);
+  },
+  unarchiveBulk: (ids: number[]) => {
+    if (ids.length === 0) return { changes: 0 };
+    const placeholders = ids.map(() => '?').join(',');
+    const stmt = db.prepare(`UPDATE test_runs SET isArchived = 0 WHERE id IN (${placeholders})`);
+    return stmt.run(...ids);
+  },
+  updateTags: (id: number, tags: string[]) => {
+    const stmt = db.prepare("UPDATE test_runs SET tags = ? WHERE id = ?");
+    return stmt.run(JSON.stringify(tags), id);
   },
   stop: (id: number) => {
     // Get the test run to calculate duration and check status
@@ -2086,6 +2238,91 @@ export interface Notification {
   isRead: boolean;
   createdAt: Date;
 }
+
+// Tag definition operations
+export interface TagDefinition {
+  id: number;
+  name: string;
+  color: string;
+  createdAt: Date;
+}
+
+export const tagQueries = {
+  getAll: () => {
+    const rows = db.prepare("SELECT * FROM tag_definitions ORDER BY name ASC").all() as any[];
+    return rows.map(row => ({
+      ...row,
+      createdAt: new Date(row.createdAt),
+    })) as TagDefinition[];
+  },
+  getById: (id: number) => {
+    const row = db.prepare("SELECT * FROM tag_definitions WHERE id = ?").get(id) as any;
+    if (!row) return undefined;
+    return {
+      ...row,
+      createdAt: new Date(row.createdAt),
+    } as TagDefinition;
+  },
+  create: (name: string, color: string = '#3B82F6') => {
+    const stmt = db.prepare("INSERT INTO tag_definitions (name, color) VALUES (?, ?)");
+    const result = stmt.run(name, color);
+    return tagQueries.getById(result.lastInsertRowid as number);
+  },
+  update: (id: number, name: string, color: string) => {
+    const stmt = db.prepare("UPDATE tag_definitions SET name = ?, color = ? WHERE id = ?");
+    stmt.run(name, color, id);
+    return tagQueries.getById(id);
+  },
+  delete: (id: number) => {
+    const stmt = db.prepare("DELETE FROM tag_definitions WHERE id = ?");
+    return stmt.run(id);
+  },
+};
+
+// Filter preset operations
+export interface FilterPreset {
+  id: number;
+  name: string;
+  filterConfig: any; // JSON object
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const filterPresetQueries = {
+  getAll: () => {
+    const rows = db.prepare("SELECT * FROM filter_presets ORDER BY name ASC").all() as any[];
+    return rows.map(row => ({
+      ...row,
+      filterConfig: JSON.parse(row.filterConfig),
+      createdAt: new Date(row.createdAt),
+      updatedAt: new Date(row.updatedAt),
+    })) as FilterPreset[];
+  },
+  getById: (id: number) => {
+    const row = db.prepare("SELECT * FROM filter_presets WHERE id = ?").get(id) as any;
+    if (!row) return undefined;
+    return {
+      ...row,
+      filterConfig: JSON.parse(row.filterConfig),
+      createdAt: new Date(row.createdAt),
+      updatedAt: new Date(row.updatedAt),
+    } as FilterPreset;
+  },
+  create: (name: string, filterConfig: any) => {
+    const stmt = db.prepare("INSERT INTO filter_presets (name, filterConfig) VALUES (?, ?)");
+    const result = stmt.run(name, JSON.stringify(filterConfig));
+    return filterPresetQueries.getById(result.lastInsertRowid as number);
+  },
+  update: (id: number, name: string, filterConfig: any) => {
+    const stmt = db.prepare("UPDATE filter_presets SET name = ?, filterConfig = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?");
+    stmt.run(name, JSON.stringify(filterConfig), id);
+    return filterPresetQueries.getById(id);
+  },
+  delete: (id: number) => {
+    const stmt = db.prepare("DELETE FROM filter_presets WHERE id = ?");
+    return stmt.run(id);
+  },
+};
 
 // Notification operations
 export const notificationQueries = {

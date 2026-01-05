@@ -15,7 +15,7 @@ interface TestRunsState {
   isRunning: boolean;
 
   // Actions
-  loadTestRuns: () => Promise<void>;
+  loadTestRuns: (includeArchived?: boolean) => Promise<void>;
   getTestRunsByForm: (formId: number) => Promise<TestRun[]>;
   runTests: (formIds: number[], paymentMethodIds: number[], options?: TestRunOptions) => Promise<void>;
   getTestRunById: (id: number) => Promise<TestRun | undefined>;
@@ -27,13 +27,13 @@ export const useTestRunsStore = create<TestRunsState>((set, get) => ({
   error: null,
   isRunning: false,
 
-  loadTestRuns: async () => {
+  loadTestRuns: async (includeArchived: boolean = false) => {
     set({ isLoading: true, error: null });
     try {
       if (!window.api) {
         throw new Error("API not available - make sure you are running in Electron");
       }
-      const testRuns = await window.api.testRuns.getAll();
+      const testRuns = await window.api.testRuns.getAll(includeArchived);
       set({ testRuns, isLoading: false });
     } catch (error) {
       console.error("Failed to load test runs:", error);

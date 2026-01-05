@@ -14,6 +14,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { TableFilter } from "../components/ui/TableFilter";
+import { useTagsStore } from "../store/useTagsStore";
+import { Badge } from "../components/ui/Badge";
+import { Tag, Plus, Edit2, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/Dialog";
 
 // Setting item interface
 interface SettingItem {
@@ -46,6 +50,11 @@ const SettingsSkeleton = () => (
 
 const Settings: React.FC = () => {
   const { settings, isLoading, error, loadSettings, updateSetting } = useSettingsStore();
+  const { tags, loadTags, createTag, updateTag, deleteTag } = useTagsStore();
+  const [showTagDialog, setShowTagDialog] = useState(false);
+  const [editingTag, setEditingTag] = useState<{ id: number; name: string; color: string } | null>(null);
+  const [tagName, setTagName] = useState("");
+  const [tagColor, setTagColor] = useState("#3B82F6");
 
   // Local state for immediate updates
   const [donationAmount, setDonationAmount] = useState("5");
@@ -132,7 +141,45 @@ const Settings: React.FC = () => {
 
   useEffect(() => {
     loadSettings();
-  }, [loadSettings]);
+    loadTags();
+  }, [loadSettings, loadTags]);
+
+  const handleCreateTag = async () => {
+    if (!tagName.trim()) return;
+    await createTag(tagName.trim(), tagColor);
+    setTagName("");
+    setTagColor("#3B82F6");
+    setShowTagDialog(false);
+  };
+
+  const handleEditTag = async () => {
+    if (!editingTag || !tagName.trim()) return;
+    await updateTag(editingTag.id, tagName.trim(), tagColor);
+    setEditingTag(null);
+    setTagName("");
+    setTagColor("#3B82F6");
+    setShowTagDialog(false);
+  };
+
+  const handleDeleteTag = async (id: number) => {
+    if (confirm("Möchten Sie diesen Tag wirklich löschen? Tests mit diesem Tag behalten den Tag, aber er wird nicht mehr in der Liste angezeigt.")) {
+      await deleteTag(id);
+    }
+  };
+
+  const openEditDialog = (tag: { id: number; name: string; color: string }) => {
+    setEditingTag(tag);
+    setTagName(tag.name);
+    setTagColor(tag.color);
+    setShowTagDialog(true);
+  };
+
+  const openCreateDialog = () => {
+    setEditingTag(null);
+    setTagName("");
+    setTagColor("#3B82F6");
+    setShowTagDialog(true);
+  };
 
   // Load API server status on mount
   useEffect(() => {
@@ -1147,7 +1194,123 @@ const Settings: React.FC = () => {
         {/* Export/Import Result Messages */}
         {exportMessage && <div className="p-3 rounded-md border text-xs bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700">{exportMessage}</div>}
         {importResult && <div className={`p-3 rounded-md border text-xs ${importResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`}>{importResult.success ? `Importiert: ${importResult.imported.forms} Formulare, ${importResult.imported.paymentMethods} Bezahlmethoden` : importResult.errors.join(", ")}</div>}
+
+        {/* Tags Management Section */}
+        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Tag size={18} className="text-neutral-600 dark:text-neutral-400" />
+                <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Tags</h2>
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={openCreateDialog}
+                className="gap-2">
+                <Plus size={14} />
+                Tag erstellen
+              </Button>
+            </div>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Verwalten Sie Tags für Test-Ergebnisse</p>
+          </div>
+          <div className="p-4">
+            {tags.length === 0 ? (
+              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400 text-sm">
+                Noch keine Tags erstellt. Erstellen Sie einen Tag, um Test-Ergebnisse zu kategorisieren.
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {tags.map((tag) => (
+                  <div
+                    key={tag.id}
+                    className="flex items-center justify-between p-3 border border-neutral-200 dark:border-neutral-700 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <Badge
+                        style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
+                        className="border">
+                        {tag.name}
+                      </Badge>
+                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                        {new Date(tag.createdAt).toLocaleDateString('de-DE')}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditDialog(tag)}
+                        className="h-7 w-7 p-0">
+                        <Edit2 size={14} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteTag(tag.id)}
+                        className="h-7 w-7 p-0 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Tag Dialog */}
+      <Dialog open={showTagDialog} onOpenChange={setShowTagDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingTag ? "Tag bearbeiten" : "Neuen Tag erstellen"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                Name
+              </label>
+              <Input
+                value={tagName}
+                onChange={(e) => setTagName(e.target.value)}
+                placeholder="Tag-Name"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                Farbe
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="color"
+                  value={tagColor}
+                  onChange={(e) => setTagColor(e.target.value)}
+                  className="h-10 w-20 rounded border border-neutral-300 dark:border-neutral-600 cursor-pointer"
+                />
+                <Badge
+                  style={{ backgroundColor: tagColor + '20', color: tagColor, borderColor: tagColor }}
+                  className="border">
+                  {tagName || "Vorschau"}
+                </Badge>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setShowTagDialog(false)}>
+              Abbrechen
+            </Button>
+            <Button
+              variant="primary"
+              onClick={editingTag ? handleEditTag : handleCreateTag}
+              disabled={!tagName.trim()}>
+              {editingTag ? "Speichern" : "Erstellen"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmDialog

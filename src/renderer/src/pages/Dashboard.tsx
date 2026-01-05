@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { CONFIG } from "../app.config";
 import { useFormsStore } from "../store/useFormsStore";
@@ -7,7 +7,9 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/ui/Button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
-import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, TrendingUp, TrendingDown } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
+import Button from "../components/ui/Button";
+import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, TrendingUp, TrendingDown, Calendar, X } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -87,13 +89,43 @@ const Dashboard: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [showTestDialog, setShowTestDialog] = useState(false);
+  const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null }>(() => {
+    try {
+      const stored = localStorage.getItem('dashboard_dateRange');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return {
+          start: parsed.start ? new Date(parsed.start) : null,
+          end: parsed.end ? new Date(parsed.end) : null,
+        };
+      }
+    } catch {
+      // Ignore parse errors
+    }
+    return { start: null, end: null };
+  });
+
+  // Filter test runs by date range
+  const filteredTestRuns = useMemo(() => {
+    if (!dateRange.start && !dateRange.end) return testRuns;
+    return testRuns.filter(run => {
+      const runDate = new Date(run.runAt);
+      if (dateRange.start && runDate < dateRange.start) return false;
+      if (dateRange.end) {
+        const endDate = new Date(dateRange.end);
+        endDate.setHours(23, 59, 59, 999); // Include entire end date
+        if (runDate > endDate) return false;
+      }
+      return true;
+    });
+  }, [testRuns, dateRange]);
 
   // Prepare chart data - grouped by dynamic intervals for all-time data
   const prepareTimelineData = () => {
-    if (testRuns.length === 0) return [];
+    if (filteredTestRuns.length === 0) return [];
     
     // Filter out running/queued tests
-    const completedRuns = testRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
+    const completedRuns = filteredTestRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
     if (completedRuns.length === 0) return [];
     
     // Find earliest and latest test dates
@@ -203,7 +235,7 @@ const Dashboard: React.FC = () => {
   };
 
   const preparePaymentMethodData = () => {
-    const grouped = testRuns.reduce((acc, run) => {
+    const grouped = filteredTestRuns.reduce((acc, run) => {
       const pm = paymentMethods.find((p) => p.id === run.paymentMethodId);
       const name = pm?.name || "Unknown";
       if (!acc[name]) {
@@ -218,7 +250,7 @@ const Dashboard: React.FC = () => {
   };
 
   const prepareFormData = () => {
-    const grouped = testRuns.reduce((acc, run) => {
+    const grouped = filteredTestRuns.reduce((acc, run) => {
       const form = forms.find((f) => f.id === run.formId);
       const name = form?.name || "Unknown";
       if (!acc[name]) {
@@ -233,9 +265,9 @@ const Dashboard: React.FC = () => {
   };
 
   const prepareSuccessRateData = () => {
-    const successful = testRuns.filter((r) => r.status === "SUCCESS").length;
-    const failed = testRuns.filter((r) => r.status === "FAILURE").length;
-    const stopped = testRuns.filter((r) => r.status === "STOPPED").length;
+    const successful = filteredTestRuns.filter((r) => r.status === "SUCCESS").length;
+    const failed = filteredTestRuns.filter((r) => r.status === "FAILURE").length;
+    const stopped = filteredTestRuns.filter((r) => r.status === "STOPPED").length;
     const data = [
       { name: "Erfolgreich", value: successful, color: "#10b981" },
       { name: "Fehlgeschlagen", value: failed, color: "#ef4444" },
@@ -442,10 +474,10 @@ const Dashboard: React.FC = () => {
     const activeForms = forms.filter((form) => form.isActive).length;
     const activePaymentMethods = paymentMethods.filter((pm) => pm.isActive).length;
 
-    // Calculate test run statistics
-    const successfulTests = testRuns.filter((run) => run.status === "SUCCESS").length;
-    const failedTests = testRuns.filter((run) => run.status === "FAILURE").length;
-    const totalTestRuns = testRuns.length;
+    // Calculate test run statistics (using filtered test runs)
+    const successfulTests = filteredTestRuns.filter((run) => run.status === "SUCCESS").length;
+    const failedTests = filteredTestRuns.filter((run) => run.status === "FAILURE").length;
+    const totalTestRuns = filteredTestRuns.length;
     const successRate = totalTestRuns > 0 ? (successfulTests / totalTestRuns) * 100 : 0;
 
     setStats({
@@ -458,7 +490,65 @@ const Dashboard: React.FC = () => {
       failedTests,
       successRate,
     });
-  }, [forms, paymentMethods, testRuns]);
+  }, [forms, paymentMethods, filteredTestRuns]);
+
+  // Persist date range preference
+  useEffect(() => {
+    try {
+      localStorage.setItem('dashboard_dateRange', JSON.stringify({
+        start: dateRange.start?.toISOString() || null,
+        end: dateRange.end?.toISOString() || null,
+      }));
+    } catch (e) {
+      console.warn('Failed to save date range preference:', e);
+    }
+  }, [dateRange]);
+
+  // Date range preset handlers
+  const handleDateRangePreset = (preset: string) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    switch (preset) {
+      case 'last7days':
+        setDateRange({
+          start: new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000),
+          end: today,
+        });
+        break;
+      case 'last30days':
+        setDateRange({
+          start: new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000),
+          end: today,
+        });
+        break;
+      case 'last90days':
+        setDateRange({
+          start: new Date(today.getTime() - 90 * 24 * 60 * 60 * 1000),
+          end: today,
+        });
+        break;
+      case 'thismonth':
+        setDateRange({
+          start: new Date(now.getFullYear(), now.getMonth(), 1),
+          end: today,
+        });
+        break;
+      case 'thisyear':
+        setDateRange({
+          start: new Date(now.getFullYear(), 0, 1),
+          end: today,
+        });
+        break;
+      case 'alltime':
+        setDateRange({ start: null, end: null });
+        break;
+    }
+  };
+
+  const clearDateRange = () => {
+    setDateRange({ start: null, end: null });
+  };
 
   const handleQuickAction = (action: string) => {
     switch (action) {
@@ -509,7 +599,49 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <h1 className={CONFIG.style.title.className}>Dashboard</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className={CONFIG.style.title.className}>Dashboard</h1>
+        <div className="flex items-center gap-3">
+          <Select
+            value={dateRange.start || dateRange.end ? 'custom' : 'alltime'}
+            onValueChange={handleDateRangePreset}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Zeitraum wählen">
+                {dateRange.start || dateRange.end ? (
+                  <span className="flex items-center gap-2">
+                    <Calendar size={14} />
+                    {dateRange.start && dateRange.end
+                      ? `${dateRange.start.toLocaleDateString('de-DE')} - ${dateRange.end.toLocaleDateString('de-DE')}`
+                      : dateRange.start
+                      ? `Ab ${dateRange.start.toLocaleDateString('de-DE')}`
+                      : `Bis ${dateRange.end?.toLocaleDateString('de-DE')}`}
+                  </span>
+                ) : (
+                  'Alle Zeit'
+                )}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="alltime">Alle Zeit</SelectItem>
+              <SelectItem value="last7days">Letzte 7 Tage</SelectItem>
+              <SelectItem value="last30days">Letzte 30 Tage</SelectItem>
+              <SelectItem value="last90days">Letzte 90 Tage</SelectItem>
+              <SelectItem value="thismonth">Dieser Monat</SelectItem>
+              <SelectItem value="thisyear">Dieses Jahr</SelectItem>
+            </SelectContent>
+          </Select>
+          {(dateRange.start || dateRange.end) && (
+            <Button
+              onClick={clearDateRange}
+              variant="ghost"
+              size="sm"
+              className="gap-2">
+              <X size={14} />
+              Zurücksetzen
+            </Button>
+          )}
+        </div>
+      </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-4 mb-8">
         <Button

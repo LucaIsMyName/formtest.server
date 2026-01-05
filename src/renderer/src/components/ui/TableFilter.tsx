@@ -3,6 +3,7 @@ import { Search, X } from "lucide-react";
 import { Input } from "./Input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./Select";
 import { Badge, StatusBadge } from "./Badge";
+import { Checkbox } from "./Checkbox";
 
 interface StatusOption {
   value: string;
@@ -20,10 +21,17 @@ interface TableFilterProps {
   onClear?: () => void;
   /** Optional content to render on the right side (e.g., selection actions) */
   rightContent?: React.ReactNode;
+  /** Show archived toggle */
+  showArchived?: boolean;
+  onShowArchivedChange?: (value: boolean) => void;
+  /** Tag filter */
+  tags?: Array<{ id: number; name: string; color: string }>;
+  selectedTagIds?: number[];
+  onTagFilterChange?: (tagIds: number[]) => void;
 }
 
-export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchChange, placeholder = "Suchen...", statusFilter, onStatusFilterChange, statusOptions, statusLabel = "Status", onClear, rightContent }) => {
-  const hasFilters = searchTerm.trim() !== "" || (statusFilter && statusFilter !== "all");
+export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchChange, placeholder = "Suchen...", statusFilter, onStatusFilterChange, statusOptions, statusLabel = "Status", onClear, rightContent, showArchived, onShowArchivedChange, tags, selectedTagIds = [], onTagFilterChange }) => {
+  const hasFilters = searchTerm.trim() !== "" || (statusFilter && statusFilter !== "all") || (selectedTagIds && selectedTagIds.length > 0);
 
   // Map status value to badge variant
   const getVariantForStatus = (status: string): "success" | "error" | "stopped" | "running" | "queued" | "active" | "inactive" | "default" => {
@@ -100,6 +108,68 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
             ))}
           </SelectContent>
         </Select>
+      )}
+
+      {tags && tags.length > 0 && onTagFilterChange && (
+        <Select
+          value={selectedTagIds.length > 0 ? "filtered" : "all"}
+          onValueChange={(value) => {
+            if (value === "all") {
+              onTagFilterChange([]);
+            }
+          }}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue>
+              {selectedTagIds.length > 0 ? (
+                <span className="flex items-center gap-2">
+                  <Tag size={14} />
+                  {selectedTagIds.length} Tag{selectedTagIds.length !== 1 ? 's' : ''}
+                </span>
+              ) : (
+                "Alle Tags"
+              )}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Alle Tags</SelectItem>
+            {tags.map((tag) => (
+              <SelectItem
+                key={tag.id}
+                value={tag.id.toString()}
+                onSelect={() => {
+                  if (selectedTagIds.includes(tag.id)) {
+                    onTagFilterChange(selectedTagIds.filter(id => id !== tag.id));
+                  } else {
+                    onTagFilterChange([...selectedTagIds, tag.id]);
+                  }
+                }}>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
+                    className="border text-xs">
+                    {tag.name}
+                  </Badge>
+                  {selectedTagIds.includes(tag.id) && <span className="text-xs">✓</span>}
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      {onShowArchivedChange !== undefined && (
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="show-archived"
+            checked={showArchived || false}
+            onCheckedChange={(checked) => onShowArchivedChange(checked === true)}
+          />
+          <label
+            htmlFor="show-archived"
+            className="text-sm text-neutral-600 dark:text-neutral-400 cursor-pointer">
+            Archivierte anzeigen
+          </label>
+        </div>
       )}
 
       {hasFilters && onClear && (

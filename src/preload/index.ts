@@ -36,7 +36,7 @@ const api = {
 
   // Test run operations
   testRuns: {
-    getAll: () => ipcRenderer.invoke('testRuns:getAll'),
+    getAll: (includeArchived?: boolean) => ipcRenderer.invoke('testRuns:getAll', includeArchived),
     getById: (id: number) => ipcRenderer.invoke('testRuns:getById', id),
     getByForm: (formId: number) => ipcRenderer.invoke('testRuns:getByForm', formId),
     create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => ipcRenderer.invoke('testRuns:create', testRun),
@@ -45,6 +45,11 @@ const api = {
     delete: (id: number) => ipcRenderer.invoke('testRuns:delete', id),
     deleteAll: () => ipcRenderer.invoke('testRuns:deleteAll'),
     updateNotes: (id: number, notes: string) => ipcRenderer.invoke('testRuns:updateNotes', id, notes),
+    archive: (id: number) => ipcRenderer.invoke('testRuns:archive', id),
+    unarchive: (id: number) => ipcRenderer.invoke('testRuns:unarchive', id),
+    archiveBulk: (ids: number[]) => ipcRenderer.invoke('testRuns:archiveBulk', ids),
+    unarchiveBulk: (ids: number[]) => ipcRenderer.invoke('testRuns:unarchiveBulk', ids),
+    updateTags: (id: number, tags: string[]) => ipcRenderer.invoke('testRuns:updateTags', id, tags),
     stop: (id: number) => ipcRenderer.invoke('testRuns:stop', id),
     cleanup: (): Promise<{ success: boolean; deleted: number }> => ipcRenderer.invoke('testRuns:cleanup'),
     getInterrupted: (): Promise<Array<{ id: number; formId: number; paymentMethodId: number; formName: string; paymentMethodName: string; status: 'RUNNING' | 'QUEUED'; runAt: Date }>> => 
@@ -262,6 +267,24 @@ const api = {
       getData: (): Promise<AIContextData> => 
         ipcRenderer.invoke('ai:context:getData')
     }
+  },
+
+  // Tag operations
+  tags: {
+    getAll: () => ipcRenderer.invoke('tags:getAll'),
+    getById: (id: number) => ipcRenderer.invoke('tags:getById', id),
+    create: (name: string, color?: string) => ipcRenderer.invoke('tags:create', name, color),
+    update: (id: number, name: string, color: string) => ipcRenderer.invoke('tags:update', id, name, color),
+    delete: (id: number) => ipcRenderer.invoke('tags:delete', id)
+  },
+
+  // Filter preset operations
+  filterPresets: {
+    getAll: () => ipcRenderer.invoke('filterPresets:getAll'),
+    getById: (id: number) => ipcRenderer.invoke('filterPresets:getById', id),
+    create: (name: string, filterConfig: any) => ipcRenderer.invoke('filterPresets:create', name, filterConfig),
+    update: (id: number, name: string, filterConfig: any) => ipcRenderer.invoke('filterPresets:update', id, name, filterConfig),
+    delete: (id: number) => ipcRenderer.invoke('filterPresets:delete', id)
   }
 }
 

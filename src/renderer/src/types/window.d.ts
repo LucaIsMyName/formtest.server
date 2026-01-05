@@ -28,7 +28,7 @@ declare global {
         setFieldDefaults: (defaults: GlobalFieldDefaults) => Promise<void>
       }
       testRuns: {
-        getAll: () => Promise<TestRun[]>
+        getAll: (includeArchived?: boolean) => Promise<TestRun[]>
         getById: (id: number) => Promise<TestRun | undefined>
         getByForm: (formId: number) => Promise<TestRun[]>
         create: (testRun: Omit<TestRun, 'id' | 'runAt'>) => Promise<TestRun>
@@ -36,11 +36,30 @@ declare global {
         delete: (id: number) => Promise<void>
         deleteAll: () => Promise<void>
         updateNotes: (id: number, notes: string) => Promise<void>
+        archive: (id: number) => Promise<void>
+        unarchive: (id: number) => Promise<void>
+        archiveBulk: (ids: number[]) => Promise<void>
+        unarchiveBulk: (ids: number[]) => Promise<void>
+        updateTags: (id: number, tags: string[]) => Promise<void>
         stop: (id: number) => Promise<void>
         cleanup: () => Promise<{ success: boolean; deleted: number }>
         getInterrupted: () => Promise<Array<{ id: number; formId: number; paymentMethodId: number; formName: string; paymentMethodName: string; status: 'RUNNING' | 'QUEUED'; runAt: Date }>>
         retryInterrupted: (testIds: number[]) => Promise<{ success: boolean; message: string; retried?: number; errors?: string[] }>
         dismissInterrupted: (testIds: number[]) => Promise<{ success: boolean; deleted: number }>
+      }
+      tags: {
+        getAll: () => Promise<Array<{ id: number; name: string; color: string; createdAt: Date }>>
+        getById: (id: number) => Promise<{ id: number; name: string; color: string; createdAt: Date } | undefined>
+        create: (name: string, color?: string) => Promise<{ id: number; name: string; color: string; createdAt: Date }>
+        update: (id: number, name: string, color: string) => Promise<{ id: number; name: string; color: string; createdAt: Date }>
+        delete: (id: number) => Promise<void>
+      }
+      filterPresets: {
+        getAll: () => Promise<Array<{ id: number; name: string; filterConfig: any; createdAt: Date; updatedAt: Date }>>
+        getById: (id: number) => Promise<{ id: number; name: string; filterConfig: any; createdAt: Date; updatedAt: Date } | undefined>
+        create: (name: string, filterConfig: any) => Promise<{ id: number; name: string; filterConfig: any; createdAt: Date; updatedAt: Date }>
+        update: (id: number, name: string, filterConfig: any) => Promise<{ id: number; name: string; filterConfig: any; createdAt: Date; updatedAt: Date }>
+        delete: (id: number) => Promise<void>
       }
       testSchedules: {
         getAll: () => Promise<TestSchedule[]>

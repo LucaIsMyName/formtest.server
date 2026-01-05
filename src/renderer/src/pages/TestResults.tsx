@@ -9,9 +9,9 @@ import TestQueueStatus from "../components/TestQueueStatus";
 import SelectionActionBar from "../components/SelectionActionBar";
 // TestRunDialog is handled by Layout component via global events
 import Button from "../components/ui/Button";
-import { StatusBadge } from "../components/ui/Badge";
+import { StatusBadge, Badge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
-import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, CheckCircle, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock, GitCompare, ChevronDown, ChevronUp } from "lucide-react";
+import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock, GitCompare, ChevronDown, ChevronUp, Archive, Printer } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
@@ -27,6 +27,14 @@ import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } fro
 import SeoResultsCard from "../components/SeoResultsCard";
 import AccessibilityResultsCard from "../components/AccessibilityResultsCard";
 import TestRunComparison from "../components/TestRunComparison";
+import { useTagsStore } from "../store/useTagsStore";
+import { useFilterPresetsStore } from "../store/useFilterPresetsStore";
+import TagSelector from "../components/TagSelector";
+import ExportDialog from "../components/ExportDialog";
+import type { ExportColumn } from "../components/ExportDialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/Dialog";
+import { Input } from "../components/ui/Input";
 
 // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
 const getStartTime = (runAt: Date | string): number => {
@@ -429,6 +437,18 @@ const TestResults: React.FC = () => {
   const { testRuns, loadTestRuns, isLoading, error, runTests } = useTestRunsStore();
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
+  const { tags, loadTags } = useTagsStore();
+  const { presets, loadPresets, createPreset, deletePreset } = useFilterPresetsStore();
+  const [selectedPresetId, setSelectedPresetId] = useState<number | null>(() => {
+    try {
+      const stored = localStorage.getItem('testResults_selectedPreset');
+      return stored ? parseInt(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [showPresetDialog, setShowPresetDialog] = useState(false);
+  const [presetName, setPresetName] = useState("");
   const [selectedTestRun, setSelectedTestRun] = useState<number | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
@@ -436,6 +456,27 @@ const TestResults: React.FC = () => {
   const [isBulkRunning, setIsBulkRunning] = useState(false);
   const [notes, setNotes] = useState<string>("");
   const [isSavingNotes, setIsSavingNotes] = useState(false);
+  const [showArchived, setShowArchived] = useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem('testResults_showArchived');
+      return stored === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [isBulkArchiving, setIsBulkArchiving] = useState(false);
+  const [isBulkUnarchiving, setIsBulkUnarchiving] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [exportFormat, setExportFormat] = useState<"csv" | "json" | null>(null);
+  const [groupBy, setGroupBy] = useState<('form' | 'paymentMethod' | 'date' | null)[]>(() => {
+    try {
+      const stored = localStorage.getItem('testResults_groupBy');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
   // Comparison mode state
   const [comparisonMode, setComparisonMode] = useState(false);
@@ -454,10 +495,12 @@ const TestResults: React.FC = () => {
   } = useTableSelection<TestRunWithComputed>();
 
   useEffect(() => {
-    loadTestRuns();
+    loadTestRuns(showArchived);
     loadForms();
     loadPaymentMethods();
-  }, [loadTestRuns, loadForms, loadPaymentMethods]);
+    loadTags();
+    loadPresets();
+  }, [loadTestRuns, loadForms, loadPaymentMethods, loadTags, loadPresets, showArchived]);
 
   // Compute form/payment names for sorting
   const testRunsWithNames = useMemo((): TestRunWithComputed[] => {
@@ -472,22 +515,48 @@ const TestResults: React.FC = () => {
   const runningTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status === "RUNNING"), [testRunsWithNames]);
   const queuedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status === "QUEUED"), [testRunsWithNames]);
   const activeTests = useMemo(() => [...runningTests, ...queuedTests], [runningTests, queuedTests]);
-  const finishedTests = useMemo(() => testRunsWithNames.filter((tr) => tr.status !== "RUNNING" && tr.status !== "QUEUED"), [testRunsWithNames]);
+  const finishedTests = useMemo(() => {
+    const finished = testRunsWithNames.filter((tr) => tr.status !== "RUNNING" && tr.status !== "QUEUED");
+    // Filter out archived tests by default unless showArchived is true
+    if (!showArchived) {
+      return finished.filter((tr) => !tr.isArchived);
+    }
+    return finished;
+  }, [testRunsWithNames, showArchived]);
 
   // Auto-refresh when tests are running or queued - poll every 2 seconds
   useEffect(() => {
     if (activeTests.length === 0) return;
 
     const refreshInterval = setInterval(() => {
-      loadTestRuns();
+      loadTestRuns(showArchived);
     }, 2000);
 
     return () => clearInterval(refreshInterval);
-  }, [activeTests.length, loadTestRuns]);
+  }, [activeTests.length, loadTestRuns, showArchived]);
+
+  // Persist showArchived preference
+  useEffect(() => {
+    try {
+      localStorage.setItem('testResults_showArchived', String(showArchived));
+    } catch (e) {
+      console.warn('Failed to save showArchived preference:', e);
+    }
+  }, [showArchived]);
+
+  // Tag filter state
+  const [tagFilter, setTagFilter] = useState<number[]>(() => {
+    try {
+      const stored = localStorage.getItem('testResults_tagFilter');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Filtering for finished tests (with localStorage persistence)
   const {
-    filteredItems: filteredFinishedTests,
+    filteredItems: baseFilteredFinishedTests,
     filterConfig,
     setSearchTerm,
     setStatusFilter,
@@ -498,6 +567,74 @@ const TestResults: React.FC = () => {
     { searchTerm: "", statusFilter: undefined },
     "testResults" // localStorage key
   );
+
+  // Apply tag filter
+  const filteredFinishedTests = useMemo(() => {
+    if (tagFilter.length === 0) return baseFilteredFinishedTests;
+    const tagNames = tagFilter.map(id => tags.find(t => t.id === id)?.name).filter(Boolean) as string[];
+    return baseFilteredFinishedTests.filter(test => {
+      if (!test.tags || test.tags.length === 0) return false;
+      return tagNames.some(tagName => test.tags?.includes(tagName));
+    });
+  }, [baseFilteredFinishedTests, tagFilter, tags]);
+
+  // Persist tag filter
+  useEffect(() => {
+    try {
+      localStorage.setItem('testResults_tagFilter', JSON.stringify(tagFilter));
+    } catch (e) {
+      console.warn('Failed to save tag filter:', e);
+    }
+  }, [tagFilter]);
+
+  // Group test runs
+  const groupTestRuns = (tests: TestRunWithComputed[]): Record<string, TestRunWithComputed[]> => {
+    if (groupBy.length === 0) {
+      return { 'all': tests };
+    }
+
+    const grouped: Record<string, TestRunWithComputed[]> = {};
+
+    tests.forEach(test => {
+      const keys: string[] = [];
+      
+      groupBy.forEach(groupKey => {
+        switch (groupKey) {
+          case 'form':
+            keys.push(`form:${test.formName || 'Unbekannt'}`);
+            break;
+          case 'paymentMethod':
+            keys.push(`pm:${test.paymentMethodName || 'Unbekannt'}`);
+            break;
+          case 'date':
+            const date = new Date(test.runAt);
+            const dateKey = date.toLocaleDateString('de-DE', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            keys.push(`date:${dateKey}`);
+            break;
+        }
+      });
+
+      const groupKey = keys.join(' > ');
+      if (!grouped[groupKey]) {
+        grouped[groupKey] = [];
+      }
+      grouped[groupKey].push(test);
+    });
+
+    return grouped;
+  };
+
+  const toggleGroup = (groupKey: string) => {
+    setExpandedGroups(prev => {
+      const next = new Set(prev);
+      if (next.has(groupKey)) {
+        next.delete(groupKey);
+      } else {
+        next.add(groupKey);
+      }
+      return next;
+    });
+  };
 
   // Sorting for finished tests (with localStorage persistence)
   const {
@@ -510,6 +647,80 @@ const TestResults: React.FC = () => {
     { key: "runAt", direction: "desc" }, // Default: newest first
     "testResults" // localStorage key
   );
+
+  // Group sorted tests
+  const groupedTests = useMemo(() => {
+    return groupTestRuns(allSortedFinishedTests);
+  }, [allSortedFinishedTests, groupBy]);
+
+  // Persist grouping preference
+  useEffect(() => {
+    try {
+      localStorage.setItem('testResults_groupBy', JSON.stringify(groupBy));
+    } catch (e) {
+      console.warn('Failed to save grouping preference:', e);
+    }
+  }, [groupBy]);
+
+  // Persist selected preset
+  useEffect(() => {
+    try {
+      if (selectedPresetId) {
+        localStorage.setItem('testResults_selectedPreset', String(selectedPresetId));
+      } else {
+        localStorage.removeItem('testResults_selectedPreset');
+      }
+    } catch (e) {
+      console.warn('Failed to save selected preset:', e);
+    }
+  }, [selectedPresetId]);
+
+  // Apply preset when selected
+  useEffect(() => {
+    if (selectedPresetId) {
+      const preset = presets.find(p => p.id === selectedPresetId);
+      if (preset && preset.filterConfig) {
+        if (preset.filterConfig.searchTerm !== undefined) {
+          setSearchTerm(preset.filterConfig.searchTerm || "");
+        }
+        if (preset.filterConfig.statusFilter !== undefined) {
+          setStatusFilter(preset.filterConfig.statusFilter || undefined);
+        }
+        if (preset.filterConfig.tagFilter !== undefined) {
+          setTagFilter(preset.filterConfig.tagFilter || []);
+        }
+        if (preset.filterConfig.showArchived !== undefined) {
+          setShowArchived(preset.filterConfig.showArchived || false);
+        }
+        if (preset.filterConfig.groupBy !== undefined) {
+          setGroupBy(preset.filterConfig.groupBy || []);
+        }
+      }
+    }
+  }, [selectedPresetId, presets]);
+
+  // Save current filters as preset
+  const handleSavePreset = async () => {
+    if (!presetName.trim()) return;
+    const currentFilterConfig = {
+      searchTerm: filterConfig.searchTerm || "",
+      statusFilter: filterConfig.statusFilter,
+      tagFilter: tagFilter,
+      showArchived: showArchived,
+      groupBy: groupBy,
+    };
+    await createPreset(presetName.trim(), currentFilterConfig);
+    setPresetName("");
+    setShowPresetDialog(false);
+  };
+
+  // Delete preset
+  const handleDeletePreset = async (id: number) => {
+    await deletePreset(id);
+    if (selectedPresetId === id) {
+      setSelectedPresetId(null);
+    }
+  };
 
   // Pagination for finished tests (only if > 50 items)
   const [currentPage, setCurrentPage] = useState(1);
@@ -572,7 +783,8 @@ const TestResults: React.FC = () => {
     return form ? form.name : `Form #${formId}`;
   };
 
-  const getFormIcon = (formId: number) => {
+  const getFormIcon = (formId: number | null | undefined) => {
+    if (!formId) return "FileText";
     const form = forms.find((f) => f.id === formId);
     return form?.icon || "FileText";
   };
@@ -585,7 +797,8 @@ const TestResults: React.FC = () => {
     return pm ? pm.name : `Payment Method #${pmId}`;
   };
 
-  const getPaymentMethodIcon = (pmId: number) => {
+  const getPaymentMethodIcon = (pmId: number | null | undefined) => {
+    if (!pmId) return getDefaultPaymentIcon("creditcard");
     const pm = paymentMethods.find((p) => p.id === pmId);
     return pm?.icon || getDefaultPaymentIcon(pm?.type || "creditcard");
   };
@@ -727,7 +940,7 @@ const TestResults: React.FC = () => {
       for (const id of ids) {
         await window.api.testRuns.delete(id);
       }
-      await loadTestRuns();
+      await loadTestRuns(showArchived);
       clearSelection();
       setShowBulkDeleteConfirm(false);
 
@@ -746,6 +959,40 @@ const TestResults: React.FC = () => {
     }
   };
 
+  // Bulk archive selected tests
+  const handleBulkArchive = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    setIsBulkArchiving(true);
+    try {
+      await window.api.testRuns.archiveBulk(ids);
+      await loadTestRuns(showArchived);
+      clearSelection();
+    } catch (error) {
+      console.error("Failed to bulk archive test runs:", error);
+    } finally {
+      setIsBulkArchiving(false);
+    }
+  };
+
+  // Bulk unarchive selected tests
+  const handleBulkUnarchive = async () => {
+    const ids = getSelectedIds();
+    if (ids.length === 0) return;
+
+    setIsBulkUnarchiving(true);
+    try {
+      await window.api.testRuns.unarchiveBulk(ids);
+      await loadTestRuns(showArchived);
+      clearSelection();
+    } catch (error) {
+      console.error("Failed to bulk unarchive test runs:", error);
+    } finally {
+      setIsBulkUnarchiving(false);
+    }
+  };
+
   // Bulk run selected tests again
   const handleBulkRunAgain = async () => {
     const ids = getSelectedIds();
@@ -754,11 +1001,12 @@ const TestResults: React.FC = () => {
     setIsBulkRunning(true);
     try {
       // Get unique form/payment method/amount/interval combinations from selected tests
-      const selectedTests = finishedTests.filter((tr) => ids.includes(tr.id));
+      const selectedTests = finishedTests.filter((tr) => ids.includes(tr.id) && tr.formId && tr.paymentMethodId);
 
       // Group by form, payment method, amount, and interval to preserve original test parameters
       const combinations = new Map<string, { formId: number; paymentMethodId: number; amount?: string; interval?: string }>();
       for (const test of selectedTests) {
+        if (!test.formId || !test.paymentMethodId) continue;
         const key = `${test.formId}-${test.paymentMethodId}-${test.amount ?? 'default'}-${test.interval ?? 'default'}`;
         if (!combinations.has(key)) {
           combinations.set(key, {
@@ -778,7 +1026,7 @@ const TestResults: React.FC = () => {
         });
       }
 
-      await loadTestRuns();
+      await loadTestRuns(showArchived);
       clearSelection();
     } catch (error) {
       console.error("Failed to bulk run tests:", error);
@@ -793,15 +1041,21 @@ const TestResults: React.FC = () => {
   };
 
   const selectedTestRunData = selectedTestRun ? testRuns.find((tr) => tr.id === selectedTestRun) : null;
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
 
-  // Sync notes when selected test run changes
+  // Sync notes and tags when selected test run changes
   useEffect(() => {
     if (selectedTestRunData) {
       setNotes(selectedTestRunData.notes || "");
+      setSelectedTagIds(selectedTestRunData.tags?.map(tagName => {
+        const tag = tags.find(t => t.name === tagName);
+        return tag?.id || 0;
+      }).filter(id => id > 0) || []);
     } else {
       setNotes("");
+      setSelectedTagIds([]);
     }
-  }, [selectedTestRunData?.id, selectedTestRunData?.notes]);
+  }, [selectedTestRunData?.id, selectedTestRunData?.notes, selectedTestRunData?.tags, tags]);
 
   // Debounced save notes
   const handleNotesChange = async (value: string) => {
@@ -813,7 +1067,7 @@ const TestResults: React.FC = () => {
     try {
       await window.api.testRuns.updateNotes(selectedTestRunData.id, value);
       // Refresh to sync state so notes persist when drawer reopens
-      await loadTestRuns();
+      await loadTestRuns(showArchived);
     } catch (error) {
       console.error("Failed to save notes:", error);
     } finally {
@@ -821,7 +1075,24 @@ const TestResults: React.FC = () => {
     }
   };
 
-  const handleExportJson = () => {
+  // Save tags
+  const handleTagsChange = async (tagIds: number[]) => {
+    setSelectedTagIds(tagIds);
+    if (!selectedTestRunData) return;
+
+    try {
+      const tagNames = tagIds.map(id => {
+        const tag = tags.find(t => t.id === id);
+        return tag?.name || '';
+      }).filter(name => name !== '');
+      await window.api.testRuns.updateTags(selectedTestRunData.id, tagNames);
+      await loadTestRuns(showArchived);
+    } catch (error) {
+      console.error("Failed to save tags:", error);
+    }
+  };
+
+  const handleExportSingleJson = () => {
     if (!selectedTestRunData) return;
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(selectedTestRunData, null, 2));
     const downloadAnchorNode = document.createElement("a");
@@ -832,26 +1103,64 @@ const TestResults: React.FC = () => {
     downloadAnchorNode.remove();
   };
 
-  // Export all test results as JSON
-  const handleExportAllJson = () => {
+  // Export columns configuration
+  const exportColumns: ExportColumn[] = [
+    { key: "id", label: "ID", defaultSelected: true },
+    { key: "uuid", label: "UUID", defaultSelected: true },
+    { key: "form", label: "Formular", defaultSelected: true },
+    { key: "paymentMethod", label: "Bezahlmethode", defaultSelected: true },
+    { key: "status", label: "Status", defaultSelected: true },
+    { key: "duration", label: "Dauer", defaultSelected: true },
+    { key: "error", label: "Fehler", defaultSelected: true },
+    { key: "scheduled", label: "Geplant", defaultSelected: true },
+    { key: "notes", label: "Notizen", defaultSelected: false },
+    { key: "date", label: "Datum", defaultSelected: true },
+    { key: "amount", label: "Betrag", defaultSelected: false },
+    { key: "interval", label: "Intervall", defaultSelected: false },
+  ];
+
+  // Handle export with column selection and scope
+  const handleExportWithOptions = (columns: string[], scope: "all" | "selected", selectedIds?: number[]) => {
+    const testsToExport = scope === "selected" && selectedIds
+      ? finishedTests.filter(tr => selectedIds.includes(tr.id))
+      : finishedTests;
+
+    if (exportFormat === "json") {
+      handleExportJson(testsToExport, columns);
+    } else if (exportFormat === "csv") {
+      handleExportCsv(testsToExport, columns);
+    }
+  };
+
+  // Export test results as JSON
+  const handleExportJson = (tests: TestRunWithComputed[], selectedColumns: string[]) => {
+    const columnMap: Record<string, (tr: TestRunWithComputed) => any> = {
+      id: (tr) => tr.id,
+      uuid: (tr) => tr.uuid,
+      form: (tr) => ({ id: tr.formId, name: tr.formName }),
+      paymentMethod: (tr) => ({ id: tr.paymentMethodId, name: tr.paymentMethodName }),
+      status: (tr) => tr.status,
+      duration: (tr) => tr.durationMs,
+      error: (tr) => tr.errorMessage,
+      scheduled: (tr) => tr.isScheduled,
+      notes: (tr) => tr.notes,
+      date: (tr) => tr.runAt,
+      amount: (tr) => tr.amount,
+      interval: (tr) => tr.interval,
+    };
+
     const exportData = {
       exportedAt: new Date().toISOString(),
-      totalResults: finishedTests.length,
-      results: finishedTests.map((tr) => ({
-        id: tr.id,
-        uuid: tr.uuid,
-        formName: tr.formName,
-        formId: tr.formId,
-        paymentMethodName: tr.paymentMethodName,
-        paymentMethodId: tr.paymentMethodId,
-        status: tr.status,
-        durationMs: tr.durationMs,
-        errorMessage: tr.errorMessage,
-        isScheduled: tr.isScheduled,
-        notes: tr.notes,
-        runAt: tr.runAt,
-        steps: tr.steps,
-      })),
+      totalResults: tests.length,
+      results: tests.map((tr) => {
+        const result: any = {};
+        selectedColumns.forEach(col => {
+          if (columnMap[col]) {
+            result[col] = columnMap[col](tr);
+          }
+        });
+        return result;
+      }),
     };
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
     const downloadAnchorNode = document.createElement("a");
@@ -862,32 +1171,36 @@ const TestResults: React.FC = () => {
     downloadAnchorNode.remove();
   };
 
-  // Export all test results as CSV
-  const handleExportCsv = () => {
-    // CSV header
-    const headers = ["ID", "UUID", "Form", "Bezahlmethode", "Status", "Dauer (ms)", "Fehler", "Geplant", "Notizen", "Datum"];
+  // Export test results as CSV
+  const handleExportCsv = (tests: TestRunWithComputed[], selectedColumns: string[]) => {
+    const columnMap: Record<string, { header: string; value: (tr: TestRunWithComputed) => string }> = {
+      id: { header: "ID", value: (tr) => String(tr.id) },
+      uuid: { header: "UUID", value: (tr) => tr.uuid || "" },
+      form: { header: "Formular", value: (tr) => tr.formName || "" },
+      paymentMethod: { header: "Bezahlmethode", value: (tr) => tr.paymentMethodName || "" },
+      status: { header: "Status", value: (tr) => tr.status },
+      duration: { header: "Dauer (ms)", value: (tr) => String(tr.durationMs || "") },
+      error: { header: "Fehler", value: (tr) => (tr.errorMessage || "").replace(/"/g, '""') },
+      scheduled: { header: "Geplant", value: (tr) => tr.isScheduled ? "Ja" : "Nein" },
+      notes: { header: "Notizen", value: (tr) => (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " ") },
+      date: { header: "Datum", value: (tr) => new Date(tr.runAt).toLocaleString("de-DE") },
+      amount: { header: "Betrag", value: (tr) => tr.amount ? `${tr.amount} €` : "" },
+      interval: { header: "Intervall", value: (tr) => formatInterval(tr.interval) },
+    };
 
-    // CSV rows
-    const rows = finishedTests.map((tr) => [
-      tr.id,
-      tr.uuid || "",
-      tr.formName || "",
-      tr.paymentMethodName || "",
-      tr.status,
-      tr.durationMs || "",
-      (tr.errorMessage || "").replace(/"/g, '""'), // Escape quotes
-      tr.isScheduled ? "Ja" : "Nein",
-      (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " "), // Escape quotes and newlines
-      new Date(tr.runAt).toLocaleString("de-DE"),
-    ]);
+    const headers = selectedColumns.map(col => columnMap[col]?.header || col);
+    const rows = tests.map((tr) =>
+      selectedColumns.map(col => {
+        const value = columnMap[col]?.value(tr) || "";
+        return `"${value}"`;
+      })
+    );
 
-    // Build CSV content
     const csvContent = [
       headers.join(";"),
-      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(";")),
+      ...rows.map((row) => row.join(";")),
     ].join("\n");
 
-    // Add BOM for Excel compatibility with German characters
     const bom = "\uFEFF";
     const dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(bom + csvContent);
     const downloadAnchorNode = document.createElement("a");
@@ -939,7 +1252,10 @@ const TestResults: React.FC = () => {
                 </Button>
               )}
               <Button
-                onClick={handleExportCsv}
+                onClick={() => {
+                  setExportFormat("csv");
+                  setShowExportDialog(true);
+                }}
                 variant="ghost"
                 size="sm"
                 className="gap-2 font-mono text-[10px]">
@@ -947,7 +1263,10 @@ const TestResults: React.FC = () => {
                 CSV
               </Button>
               <Button
-                onClick={handleExportAllJson}
+                onClick={() => {
+                  setExportFormat("json");
+                  setShowExportDialog(true);
+                }}
                 variant="ghost"
                 size="sm"
                 className="gap-2 font-mono text-[10px]">
@@ -1116,6 +1435,83 @@ const TestResults: React.FC = () => {
           </h2>
         </div>
 
+        {/* Filter Preset Selector and Grouping */}
+        <div className="flex items-center gap-2 mb-4">
+          <Select
+            value={selectedPresetId ? String(selectedPresetId) : "none"}
+            onValueChange={(value) => {
+              if (value === "none") {
+                setSelectedPresetId(null);
+              } else if (value === "save") {
+                setShowPresetDialog(true);
+              } else {
+                setSelectedPresetId(parseInt(value));
+              }
+            }}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Filter-Vorlage">
+                {selectedPresetId
+                  ? presets.find(p => p.id === selectedPresetId)?.name || "Vorlage"
+                  : "Keine Vorlage"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Keine Vorlage</SelectItem>
+              {presets.map(preset => (
+                <SelectItem key={preset.id} value={String(preset.id)}>
+                  {preset.name}
+                </SelectItem>
+              ))}
+              <SelectItem value="save">+ Aktuelle Filter speichern</SelectItem>
+            </SelectContent>
+          </Select>
+          {selectedPresetId && (
+            <Button
+              onClick={() => handleDeletePreset(selectedPresetId)}
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-red-600 dark:text-red-400">
+              <Trash2 size={14} />
+              Vorlage löschen
+            </Button>
+          )}
+          <Select
+            value={groupBy.length === 0 ? "none" : groupBy.join(",")}
+            onValueChange={(value) => {
+              if (value === "none") {
+                setGroupBy([]);
+              } else {
+                const groups = value.split(",").filter(Boolean) as ('form' | 'paymentMethod' | 'date')[];
+                setGroupBy(groups);
+              }
+            }}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Gruppierung">
+                {groupBy.length === 0
+                  ? "Keine Gruppierung"
+                  : groupBy.map(g => {
+                      switch (g) {
+                        case 'form': return 'Formular';
+                        case 'paymentMethod': return 'Bezahlmethode';
+                        case 'date': return 'Datum';
+                        default: return '';
+                      }
+                    }).join(' > ')}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Keine Gruppierung</SelectItem>
+              <SelectItem value="form">Nach Formular</SelectItem>
+              <SelectItem value="paymentMethod">Nach Bezahlmethode</SelectItem>
+              <SelectItem value="date">Nach Datum</SelectItem>
+              <SelectItem value="form,paymentMethod">Formular {'>'} Bezahlmethode</SelectItem>
+              <SelectItem value="form,date">Formular {'>'} Datum</SelectItem>
+              <SelectItem value="paymentMethod,date">Bezahlmethode {'>'} Datum</SelectItem>
+              <SelectItem value="form,paymentMethod,date">Formular {'>'} Bezahlmethode {'>'} Datum</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Filter Bar with Selection Actions */}
         <TableFilter
           searchTerm={filterConfig.searchTerm}
@@ -1124,7 +1520,15 @@ const TestResults: React.FC = () => {
           statusFilter={filterConfig.statusFilter}
           onStatusFilterChange={setStatusFilter}
           statusOptions={statusOptions}
-          onClear={clearFilters}
+          onClear={() => {
+            clearFilters();
+            setTagFilter([]);
+          }}
+          showArchived={showArchived}
+          onShowArchivedChange={setShowArchived}
+          tags={tags}
+          selectedTagIds={tagFilter}
+          onTagFilterChange={setTagFilter}
           rightContent={
             selectedCount > 0 ? (
               <SelectionActionBar
@@ -1139,6 +1543,25 @@ const TestResults: React.FC = () => {
                     variant: "secondary",
                     loading: isBulkRunning,
                   },
+                  ...(showArchived
+                    ? [
+                        {
+                          label: "Entarchivieren",
+                          icon: <Archive size={14} />,
+                          onClick: handleBulkUnarchive,
+                          variant: "secondary" as const,
+                          loading: isBulkUnarchiving,
+                        },
+                      ]
+                    : [
+                        {
+                          label: "Archivieren",
+                          icon: <Archive size={14} />,
+                          onClick: handleBulkArchive,
+                          variant: "secondary" as const,
+                          loading: isBulkArchiving,
+                        },
+                      ]),
                   {
                     label: "Löschen",
                     icon: <Trash2 size={14} />,
@@ -1223,6 +1646,7 @@ const TestResults: React.FC = () => {
                       onSort={() => requestSort("status")}>
                       Status
                     </SortableTableHead>
+                    <TableHead className="px-4 w-[120px]">Tags</TableHead>
                     <TableHead className="px-4 w-[80px] text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -1306,6 +1730,31 @@ const TestResults: React.FC = () => {
                         <TableCell className="px-4">
                           <StatusBadge status={testRun.status} />
                         </TableCell>
+                        <TableCell className="px-4">
+                          <div className="flex flex-wrap gap-1">
+                            {testRun.tags && testRun.tags.length > 0 ? (
+                              testRun.tags.slice(0, 2).map((tagName, idx) => {
+                                const tag = tags.find(t => t.name === tagName);
+                                if (!tag) return null;
+                                return (
+                                  <Badge
+                                    key={idx}
+                                    style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
+                                    className="border text-[10px] px-1.5 py-0.5">
+                                    {tag.name}
+                                  </Badge>
+                                );
+                              })
+                            ) : (
+                              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
+                            )}
+                            {testRun.tags && testRun.tags.length > 2 && (
+                              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">
+                                +{testRun.tags.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell className="px-4 text-right">
                           <div className="flex items-center justify-end gap-1">
                             <Button
@@ -1379,14 +1828,38 @@ const TestResults: React.FC = () => {
                     <Button
                       onClick={async (e) => {
                         e.stopPropagation();
-                        await runTests([selectedTestRunData.formId], [selectedTestRunData.paymentMethodId]);
-                        handleSelectTestRun(null);
+                        if (selectedTestRunData.formId && selectedTestRunData.paymentMethodId) {
+                          await runTests([selectedTestRunData.formId], [selectedTestRunData.paymentMethodId]);
+                          handleSelectTestRun(null);
+                        }
                       }}
                       variant="primary"
                       size="sm"
                       className="gap-1.5">
                       <Play size={14} />
                       Erneut ausführen
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.print();
+                      }}
+                      variant="secondary"
+                      size="sm"
+                      className="gap-1.5">
+                      <Printer size={14} />
+                      Drucken
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.print();
+                      }}
+                      variant="secondary"
+                      size="sm"
+                      className="gap-1.5 print:hidden">
+                      <Printer size={14} />
+                      Drucken
                     </Button>
                     <Button
                       onClick={(e) => {
@@ -1398,7 +1871,7 @@ const TestResults: React.FC = () => {
                       }}
                       variant="danger"
                       size="sm"
-                      className="gap-1.5">
+                      className="gap-1.5 print:hidden">
                       <Trash2 size={14} />
                       Löschen
                     </Button>
@@ -1410,14 +1883,18 @@ const TestResults: React.FC = () => {
               <span className={`${CONFIG.style.title.className} flex items-center gap-3`}>
                 {selectedTestRunData && (
                   <>
-                    <span className="text-neutral-300 dark:text-neutral-700">
-                      {renderIcon(getFormIcon(selectedTestRunData.formId), 48)}
-                    </span>
+                    {selectedTestRunData.formId && (
+                      <span className="text-neutral-300 dark:text-neutral-700">
+                        {renderIcon(getFormIcon(selectedTestRunData.formId), 48)}
+                      </span>
+                    )}
                     {getFormName(selectedTestRunData.formId)}
                     <span className="text-neutral-400 dark:text-neutral-500 font-normal">×</span>
-                    <span className="text-neutral-300 dark:text-neutral-700">
-                      {renderIcon(getPaymentMethodIcon(selectedTestRunData.paymentMethodId), 48)}
-                    </span>
+                    {selectedTestRunData.paymentMethodId && (
+                      <span className="text-neutral-300 dark:text-neutral-700">
+                        {renderIcon(getPaymentMethodIcon(selectedTestRunData.paymentMethodId), 48)}
+                      </span>
+                    )}
                     {getPaymentMethodName(selectedTestRunData.paymentMethodId)}
                   </>
                 )}
@@ -1485,6 +1962,7 @@ const TestResults: React.FC = () => {
 
                 {/* Form Details Table */}
                 {(() => {
+                  if (!selectedTestRunData.formId) return null;
                   const formDetails = getFormDetails(selectedTestRunData.formId);
                   return (
                     formDetails && (
@@ -1530,7 +2008,9 @@ const TestResults: React.FC = () => {
 
                 {/* Payment Method Details Table */}
                 {(() => {
-                  const pmDetails = getPaymentMethodDetails(selectedTestRunData.paymentMethodId);
+                  if (!selectedTestRunData.paymentMethodId) return null;
+                  const paymentMethodId = selectedTestRunData.paymentMethodId;
+                  const pmDetails = getPaymentMethodDetails(paymentMethodId);
                   const getPaymentTypeLabel = (type: string) => {
                     switch (type) {
                       case "paypal":
@@ -1631,6 +2111,18 @@ const TestResults: React.FC = () => {
                 )}
 
 
+                {/* Tags */}
+                <div className="mb-6 pb-6 border-b dark:border-neutral-700">
+                  <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-2">
+                    Tags
+                  </label>
+                  <TagSelector
+                    tags={tags}
+                    selectedTagIds={selectedTagIds}
+                    onSelectionChange={handleTagsChange}
+                  />
+                </div>
+
                 {/* Notes */}
                 <div className="mb-6 pb-6 border-b dark:border-neutral-700">
                   <label className="block text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-2">
@@ -1650,7 +2142,7 @@ const TestResults: React.FC = () => {
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={handleExportJson}
+                    onClick={handleExportSingleJson}
                     className="gap-2">
                     <FileJson size={16} />
                     Export JSON
@@ -1702,6 +2194,64 @@ const TestResults: React.FC = () => {
           )}
         </DrawerContent>
       </Drawer>
+
+      {/* Export Dialog */}
+      {exportFormat && (
+        <ExportDialog
+          open={showExportDialog}
+          onOpenChange={(open) => {
+            setShowExportDialog(open);
+            if (!open) setExportFormat(null);
+          }}
+          onExport={(columns, scope) => handleExportWithOptions(columns, scope, getSelectedIds())}
+          columns={exportColumns}
+          hasSelectedTests={selectedCount > 0}
+          selectedCount={selectedCount}
+          totalTests={finishedTests.length}
+        />
+      )}
+
+      {/* Filter Preset Save Dialog */}
+      <Dialog open={showPresetDialog} onOpenChange={setShowPresetDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Filter-Vorlage speichern</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                Name
+              </label>
+              <Input
+                value={presetName}
+                onChange={(e) => setPresetName(e.target.value)}
+                placeholder="z.B. Fehlgeschlagene Tests letzte Woche"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && presetName.trim()) {
+                    handleSavePreset();
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowPresetDialog(false);
+                setPresetName("");
+              }}>
+              Abbrechen
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSavePreset}
+              disabled={!presetName.trim()}>
+              Speichern
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* TestRunDialog is handled by Layout component via global events */}
     </div>

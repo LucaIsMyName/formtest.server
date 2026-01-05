@@ -30,7 +30,7 @@ const api = {
   },
   // Test run operations
   testRuns: {
-    getAll: () => electron.ipcRenderer.invoke("testRuns:getAll"),
+    getAll: (includeArchived) => electron.ipcRenderer.invoke("testRuns:getAll", includeArchived),
     getById: (id) => electron.ipcRenderer.invoke("testRuns:getById", id),
     getByForm: (formId) => electron.ipcRenderer.invoke("testRuns:getByForm", formId),
     create: (testRun) => electron.ipcRenderer.invoke("testRuns:create", testRun),
@@ -38,6 +38,11 @@ const api = {
     delete: (id) => electron.ipcRenderer.invoke("testRuns:delete", id),
     deleteAll: () => electron.ipcRenderer.invoke("testRuns:deleteAll"),
     updateNotes: (id, notes) => electron.ipcRenderer.invoke("testRuns:updateNotes", id, notes),
+    archive: (id) => electron.ipcRenderer.invoke("testRuns:archive", id),
+    unarchive: (id) => electron.ipcRenderer.invoke("testRuns:unarchive", id),
+    archiveBulk: (ids) => electron.ipcRenderer.invoke("testRuns:archiveBulk", ids),
+    unarchiveBulk: (ids) => electron.ipcRenderer.invoke("testRuns:unarchiveBulk", ids),
+    updateTags: (id, tags) => electron.ipcRenderer.invoke("testRuns:updateTags", id, tags),
     stop: (id) => electron.ipcRenderer.invoke("testRuns:stop", id),
     cleanup: () => electron.ipcRenderer.invoke("testRuns:cleanup"),
     getInterrupted: () => electron.ipcRenderer.invoke("testRuns:getInterrupted"),
