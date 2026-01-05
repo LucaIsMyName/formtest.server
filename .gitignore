@@ -7,3 +7,4 @@ dist
 
 # Auto-generated docs from README.md
 src/renderer/src/generated/
+.DS_Store

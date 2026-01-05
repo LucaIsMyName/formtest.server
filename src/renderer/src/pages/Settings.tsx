@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSettingsStore } from "../store/useSettingsStore";
 import { Sun, Moon, Monitor, AlertCircle, CheckCircle2, Mail, Settings2, Database, Sliders, Code, Globe, Copy, RefreshCw, Lock, Eye, EyeOff, Shield, Bot } from "lucide-react";
 import { CONFIG } from "../app.config";
@@ -115,6 +115,20 @@ const Settings: React.FC = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+
+  // Refs for setTimeout cleanup
+  const cleanupResultTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const apiStatusMessageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const passwordMessageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup all timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (cleanupResultTimeoutRef.current) clearTimeout(cleanupResultTimeoutRef.current);
+      if (apiStatusMessageTimeoutRef.current) clearTimeout(apiStatusMessageTimeoutRef.current);
+      if (passwordMessageTimeoutRef.current) clearTimeout(passwordMessageTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     loadSettings();
@@ -296,7 +310,10 @@ const Settings: React.FC = () => {
       const result = await window.api.testRuns.cleanup();
       if (result.success) {
         setCleanupResult({ deleted: result.deleted });
-        setTimeout(() => setCleanupResult(null), 5000);
+        if (cleanupResultTimeoutRef.current) {
+          clearTimeout(cleanupResultTimeoutRef.current);
+        }
+        cleanupResultTimeoutRef.current = setTimeout(() => setCleanupResult(null), 5000);
       }
     } catch (error) {
       console.error("Cleanup failed:", error);
@@ -316,7 +333,10 @@ const Settings: React.FC = () => {
         setApiKey(newKey);
         await updateSetting("api_key", newKey, "API Key");
         setApiStatusMessage({ type: "success", message: "Neuer API-Key generiert" });
-        setTimeout(() => setApiStatusMessage(null), 3000);
+        if (apiStatusMessageTimeoutRef.current) {
+          clearTimeout(apiStatusMessageTimeoutRef.current);
+        }
+        apiStatusMessageTimeoutRef.current = setTimeout(() => setApiStatusMessage(null), 3000);
       } else {
         setApiStatusMessage({ type: "error", message: "Kein Key generiert" });
       }
@@ -330,7 +350,10 @@ const Settings: React.FC = () => {
     if (apiKey) {
       navigator.clipboard.writeText(apiKey);
       setApiStatusMessage({ type: "success", message: "API-Key kopiert" });
-      setTimeout(() => setApiStatusMessage(null), 2000);
+      if (apiStatusMessageTimeoutRef.current) {
+        clearTimeout(apiStatusMessageTimeoutRef.current);
+      }
+      apiStatusMessageTimeoutRef.current = setTimeout(() => setApiStatusMessage(null), 2000);
     }
   }, [apiKey]);
 
@@ -358,11 +381,14 @@ const Settings: React.FC = () => {
           await updateSetting("api_enabled", "true", "API aktiviert");
           await updateSetting("api_port", String(port), "API Port");
           setApiStatusMessage({ type: "success", message: `API Server gestartet auf Port ${port}` });
-        } else {
-          setApiStatusMessage({ type: "error", message: result.error || "Fehler beim Starten" });
-        }
+      } else {
+        setApiStatusMessage({ type: "error", message: result.error || "Fehler beim Starten" });
       }
-      setTimeout(() => setApiStatusMessage(null), 3000);
+    }
+    if (apiStatusMessageTimeoutRef.current) {
+      clearTimeout(apiStatusMessageTimeoutRef.current);
+    }
+    apiStatusMessageTimeoutRef.current = setTimeout(() => setApiStatusMessage(null), 3000);
     } catch (error) {
       setApiStatusMessage({ type: "error", message: "Unerwarteter Fehler" });
     }
@@ -398,7 +424,10 @@ const Settings: React.FC = () => {
       setPasswordMessage({ type: "error", message: "Unerwarteter Fehler" });
     } finally {
       setIsSettingPassword(false);
-      setTimeout(() => setPasswordMessage(null), 3000);
+      if (passwordMessageTimeoutRef.current) {
+        clearTimeout(passwordMessageTimeoutRef.current);
+      }
+      passwordMessageTimeoutRef.current = setTimeout(() => setPasswordMessage(null), 3000);
     }
   }, [newPassword, confirmPassword]);
 
@@ -422,7 +451,10 @@ const Settings: React.FC = () => {
       setPasswordMessage({ type: "error", message: "Unerwarteter Fehler" });
     } finally {
       setIsSettingPassword(false);
-      setTimeout(() => setPasswordMessage(null), 3000);
+      if (passwordMessageTimeoutRef.current) {
+        clearTimeout(passwordMessageTimeoutRef.current);
+      }
+      passwordMessageTimeoutRef.current = setTimeout(() => setPasswordMessage(null), 3000);
     }
   }, [currentPassword]);
 

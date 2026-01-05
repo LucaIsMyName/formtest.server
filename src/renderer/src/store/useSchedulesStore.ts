@@ -5,17 +5,20 @@ interface SchedulesState {
   schedules: TestSchedule[];
   isLoading: boolean;
   error: string | null;
+  loadSchedulesTimeout: NodeJS.Timeout | null;
   loadSchedules: () => Promise<void>;
   createSchedule: (schedule: { name: string; formId: number; paymentMethodId: number; cronExpression: string; isActive: boolean }) => Promise<void>;
   updateSchedule: (id: number, schedule: Partial<TestSchedule>) => Promise<void>;
   deleteSchedule: (id: number) => Promise<void>;
   runScheduleNow: (id: number) => Promise<void>;
+  clearLoadSchedulesTimeout: () => void;
 }
 
 export const useSchedulesStore = create<SchedulesState>((set, get) => ({
   schedules: [],
   isLoading: false,
   error: null,
+  loadSchedulesTimeout: null,
 
   loadSchedules: async () => {
     set({ isLoading: true, error: null });
@@ -65,14 +68,29 @@ export const useSchedulesStore = create<SchedulesState>((set, get) => ({
     // The user might want to continue interacting with the UI
     try {
       await window.api.testSchedules.runNow(id);
+      // Clear any existing timeout before setting a new one
+      const currentTimeout = get().loadSchedulesTimeout;
+      if (currentTimeout) {
+        clearTimeout(currentTimeout);
+      }
       // Optionally reload schedules to update "last run" time, but give it a moment
       // for the backend to update the DB
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         get().loadSchedules();
+        set({ loadSchedulesTimeout: null });
       }, 500);
+      set({ loadSchedulesTimeout: timeoutId });
     } catch (error) {
       console.error("Failed to run schedule now:", error);
       throw error;
+    }
+  },
+
+  clearLoadSchedulesTimeout: () => {
+    const currentTimeout = get().loadSchedulesTimeout;
+    if (currentTimeout) {
+      clearTimeout(currentTimeout);
+      set({ loadSchedulesTimeout: null });
     }
   },
 }));

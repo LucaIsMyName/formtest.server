@@ -32,7 +32,7 @@ export function setupIpcHandlers(): void {
 
   ipcMain.handle("forms:create", async (_, form: Omit<Form, "id" | "createdAt" | "updatedAt">) => {
     try {
-      return formQueries.create(form);s
+      return formQueries.create(form);
     } catch (error) {
       console.error("IPC Error - forms:create:", error);
       throw error;

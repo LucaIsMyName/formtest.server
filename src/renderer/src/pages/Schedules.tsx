@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Plus, Edit2, Trash2, Play, Loader2 } from "lucide-react";
 import { useSchedulesStore } from "../store/useSchedulesStore";
 import { useFormsStore } from "../store/useFormsStore";
@@ -47,7 +47,7 @@ const ScheduleSparkline: React.FC<{
 };
 
 const Schedules: React.FC = () => {
-  const { schedules, loadSchedules, createSchedule, updateSchedule, deleteSchedule, runScheduleNow, isLoading, error } = useSchedulesStore();
+  const { schedules, loadSchedules, createSchedule, updateSchedule, deleteSchedule, runScheduleNow, isLoading, error, clearLoadSchedulesTimeout } = useSchedulesStore();
   const { forms, loadForms } = useFormsStore();
   const { paymentMethods, loadPaymentMethods } = usePaymentMethodsStore();
   const { testRuns, loadTestRuns } = useTestRunsStore();
@@ -60,6 +60,19 @@ const Schedules: React.FC = () => {
   const itemsPerPage = 50;
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  // Ref for setTimeout cleanup
+  const runScheduleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (runScheduleTimeoutRef.current) {
+        clearTimeout(runScheduleTimeoutRef.current);
+      }
+      clearLoadSchedulesTimeout();
+    };
+  }, [clearLoadSchedulesTimeout]);
 
   // Table selection
   const {
@@ -143,7 +156,10 @@ const Schedules: React.FC = () => {
       console.error("Failed to run schedule:", error);
     } finally {
       // Keep showing loading state for a bit longer to indicate action
-      setTimeout(() => {
+      if (runScheduleTimeoutRef.current) {
+        clearTimeout(runScheduleTimeoutRef.current);
+      }
+      runScheduleTimeoutRef.current = setTimeout(() => {
         setRunningSchedules((prev) => {
           const next = new Set(prev);
           next.delete(id);

@@ -16,7 +16,7 @@
     "dist:linux": "npm run build && electron-builder --linux",
     "dist:all": "npm run build && electron-builder --mac --win --linux",
     "generate-icons": "electron-icon-builder --input=./build/icons/logo.jpg --output=./build/icons --flatten && mv build/icons/icons/icon.icns build/icons/ 2>/dev/null || true && mv build/icons/icons/icon.ico build/icons/ 2>/dev/null || true && cp build/icons/icons/512x512.png build/icons/icon.png 2>/dev/null || true",
-    "postinstall": "electron-builder install-app-deps && npm run rebuild:sqlite",
+    "postinstall": "electron-builder install-app-deps && npm run rebuild:sqlite && npx playwright install chromium",
     "test": "npm rebuild better-sqlite3 && vitest run && npm run rebuild:sqlite",
     "test:quick": "vitest run",
     "test:watch": "vitest",
@@ -61,7 +61,7 @@
     "electron-vite": "^2.0.0",
     "eslint": "^8.54.0",
     "jsdom": "^27.2.0",
-    "playwright": "^1.56.1",
+    "playwright": "^1.57.0",
     "postcss": "^8.4.32",
     "react-scan": "^0.4.3",
     "tailwindcss": "^3.3.6",
@@ -103,7 +103,7 @@
   "build": {
     "appId": "com.formtest.server",
     "productName": "FormTest Server",
-    "copyright": "Copyright © 2026 Luca",
+    "copyright": "Copyright © 2026 LucaIsMyName",
     "directories": {
       "output": "dist-electron",
       "buildResources": "build"
