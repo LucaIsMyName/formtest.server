@@ -182,7 +182,6 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise
             paymentMethodId: pm.id,
             status: "QUEUED",
             errorMessage: undefined,
-            screenshotPath: undefined,
             logDetails: undefined,
             steps: [],
             durationMs: undefined,

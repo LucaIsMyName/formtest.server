@@ -20,7 +20,7 @@ class TestRunner {
     this.browser = null
     this.context = null
     this.page = null
-    this.mainPage = null  // Keep reference to main page for screenshots
+    this.mainPage = null  // Keep reference to main page
     this.config = {}
     this.logs = []
     this.steps = []
@@ -257,9 +257,8 @@ class TestRunner {
     const { id, payload } = message
     const { testRunId, form, paymentMethod, settings, selectorConfig, globalFieldDefaults, qualityTestOptions, basePath } = payload
 
-    // Store base path for screenshots (from Electron app)
+    // Store base path (from Electron app)
     this.basePath = basePath || process.cwd()
-    this.log(`Using base path for screenshots: ${this.basePath}`)
 
     // IMPORTANT: Reset logs and steps for each new test run
     // This prevents accumulation from previous test runs
@@ -324,14 +323,6 @@ class TestRunner {
     } catch (error) {
       this.log(`Test ${testRunId} failed: ${error.message}`)
 
-      // Take error screenshot before cleanup
-      let errorScreenshot = null
-      try {
-        errorScreenshot = await this.takeScreenshot('error')
-      } catch (screenshotError) {
-        this.log(`Failed to take error screenshot: ${screenshotError.message}`)
-      }
-
       // Send error result WITH steps and quality results (important for debugging!)
       this.sendMessage({
         type: 'TEST_COMPLETE',
@@ -346,7 +337,6 @@ class TestRunner {
             duration: Date.now() - (this.testStartTime || Date.now()),
             logs: [...this.logs],
             steps: [...this.steps],
-            screenshot: errorScreenshot,
             error: error.message,
             // Include quality test results even on failure - they run before submission
             seoResults: this.qualityResults?.seoResults || null,
@@ -805,9 +795,6 @@ class TestRunner {
     // Step 3.5: Switch to iframe if form is embedded
     await this.switchToFormFrame()
 
-    // Take initial screenshot
-    const screenshotPath = await this.takeScreenshot('initial')
-
     // HOOK: before_form_fill
     await this.runScriptsAtHook('before_form_fill', form, paymentMethod, testRunInfo)
 
@@ -953,14 +940,6 @@ class TestRunner {
         paymentMethod: paymentMethod.type
       })
 
-      // Step 7: Screenshot Capture (skipped)
-      const screenshotStep = this.startStep('screenshot-capture', 'Screenshot aufnehmen')
-      const finalScreenshotPath = await this.takeScreenshot('final_skipped')
-      this.completeStep('screenshot-capture', 'success', 'Screenshot aufgenommen (Test übersprungen)', {
-        screenshotPath: finalScreenshotPath,
-        screenshotType: 'final_skipped'
-      })
-
       const duration = Date.now() - startTime
 
       return {
@@ -968,7 +947,6 @@ class TestRunner {
         duration,
         logs: [...this.logs],
         steps: [...this.steps],
-        screenshot: finalScreenshotPath,
         formAnalysis,
         skippedSubmission: true,
         reason: 'Invalid payment method for recurring donation',
@@ -1073,14 +1051,6 @@ class TestRunner {
         finalUrl: successResult.url
       })
 
-      // Step 10: Screenshot Capture
-      const screenshotStep = this.startStep('screenshot-capture', 'Screenshot aufnehmen')
-      const finalScreenshotPath = await this.takeScreenshot('final')
-      this.completeStep('screenshot-capture', 'success', 'Finaler Screenshot aufgenommen', {
-        screenshotPath: finalScreenshotPath,
-        screenshotType: 'final'
-      })
-
       const duration = Date.now() - startTime
 
       return {
@@ -1088,7 +1058,6 @@ class TestRunner {
         duration,
         logs: [...this.logs],
         steps: [...this.steps],
-        screenshot: finalScreenshotPath,
         formAnalysis,
         redirectUrl: successResult.url,
         // Include quality test results
@@ -3295,28 +3264,6 @@ class TestRunner {
     return false
   }
 
-  async takeScreenshot(type) {
-    try {
-      const timestamp = Date.now()
-      const filename = `${type}-${timestamp}.png`
-      // Use basePath from Electron app for consistent path resolution
-      const baseDir = this.basePath || process.cwd()
-      const screenshotPath = path.join(baseDir, 'screenshots', type === 'final' || type === 'final_skipped' ? 'success' : 'temp', filename)
-
-      // Use mainPage for screenshots to capture the full page including iframe
-      const screenshotTarget = this.mainPage || this.page
-      await screenshotTarget.screenshot({
-        path: screenshotPath,
-        fullPage: true
-      })
-
-      this.log(`Screenshot saved: ${screenshotPath}`)
-      return screenshotPath
-    } catch (error) {
-      this.log(`Failed to take screenshot: ${error.message}`)
-      return null
-    }
-  }
 
   async stopTest(message) {
     this.log('Stopping test...')

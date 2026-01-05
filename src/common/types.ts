@@ -116,7 +116,6 @@ export interface TestRun {
   paymentMethodId: number | null;  // Can be null if payment method was deleted (orphaned test for archive)
   status: "SUCCESS" | "FAILURE" | "SKIPPED" | "RUNNING" | "STOPPED" | "QUEUED";
   errorMessage?: string;
-  screenshotPath?: string;
   logDetails?: string;
   steps?: TestStep[];
   durationMs?: number;

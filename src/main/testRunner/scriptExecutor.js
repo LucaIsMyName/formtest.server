@@ -224,12 +224,6 @@ class ScriptExecutor {
         runner.log(`[SCRIPT] ${logMessage}`);
       },
 
-      screenshot: async (name) => {
-        const safeName = String(name).replace(/[^a-zA-Z0-9_-]/g, '_');
-        const path = await runner.takeScreenshot(`script_${safeName}`);
-        logs.push(`Screenshot taken: ${safeName}`);
-        return path;
-      },
 
       wait: async (ms) => {
         const safeMs = Math.min(Math.max(0, ms), 10000); // 0-10 seconds
@@ -303,7 +297,7 @@ class ScriptExecutor {
         const { 
           page, click, dblclick, fill, type, clear, select, check, uncheck,
           hover, focus, press, scrollTo, evaluate, evaluateHandle,
-          form, paymentMethod, testRun, log, screenshot, wait, now, random
+          form, paymentMethod, testRun, log, wait, now, random
         } = ctx;
         ${script.code}
       `;

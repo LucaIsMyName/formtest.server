@@ -147,7 +147,6 @@ function migrateTestRunStoppedStatus(): void {
             paymentMethodId INTEGER,
             status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
             errorMessage TEXT,
-            screenshotPath TEXT,
             logDetails TEXT,
             steps TEXT DEFAULT '[]',
             durationMs INTEGER,
@@ -161,8 +160,8 @@ function migrateTestRunStoppedStatus(): void {
         
         // Copy data from old table
         db.exec(`
-          INSERT INTO test_runs_new (id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt)
-          SELECT id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt
+          INSERT INTO test_runs_new (id, uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, notes, runAt)
+          SELECT id, uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, notes, runAt
           FROM test_runs;
         `);
         
@@ -597,7 +596,6 @@ export function initDatabase(): void {
       paymentMethodId INTEGER,
       status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
       errorMessage TEXT,
-      screenshotPath TEXT,
       logDetails TEXT,
       durationMs INTEGER,
       runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -667,8 +665,8 @@ export function initDatabase(): void {
       } else {
         // Restore without uuid, migration will handle it
         db.exec(`
-          INSERT INTO test_runs (id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt)
-          SELECT id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt 
+          INSERT INTO test_runs (id, formId, paymentMethodId, status, errorMessage, logDetails, durationMs, runAt)
+          SELECT id, formId, paymentMethodId, status, errorMessage, logDetails, durationMs, runAt 
           FROM test_runs_backup;
           DROP TABLE test_runs_backup;
         `);
@@ -747,6 +745,7 @@ export function initDatabase(): void {
   
   // Migrate test_runs to allow NULL formId/paymentMethodId (for orphaned tests)
   migrateTestRunsToAllowOrphaned();
+  migrateRemoveScreenshotColumn();
   
   // Clean up orphaned tests (RUNNING/QUEUED from previous session)
   // NOTE: This is now disabled - tests remain in RUNNING/QUEUED state for recovery dialog
@@ -797,7 +796,6 @@ function migrateTestRunsToAllowOrphaned(): void {
           paymentMethodId INTEGER,
           status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
           errorMessage TEXT,
-          screenshotPath TEXT,
           logDetails TEXT,
           steps TEXT DEFAULT '[]',
           durationMs INTEGER,
@@ -816,11 +814,11 @@ function migrateTestRunsToAllowOrphaned(): void {
       // Copy data from old table
       db.exec(`
         INSERT INTO test_runs_new (
-          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, 
+          id, uuid, formId, paymentMethodId, status, errorMessage, logDetails, 
           steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
         )
         SELECT 
-          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails,
+          id, uuid, formId, paymentMethodId, status, errorMessage, logDetails,
           steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
         FROM test_runs;
       `);
@@ -848,6 +846,72 @@ function migrateTestRunsToAllowOrphaned(): void {
     }
   } catch (error) {
     console.error("Database: Error migrating test_runs for orphaned support:", error);
+  }
+}
+
+/**
+ * Migrate test_runs table to remove screenshotPath column
+ */
+function migrateRemoveScreenshotColumn(): void {
+  console.log("Database: Checking for screenshotPath column removal...");
+  
+  try {
+    // Check if screenshotPath column exists
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all() as Array<{name: string}>;
+    const hasScreenshotPath = columns.some(col => col.name === 'screenshotPath');
+    
+    if (hasScreenshotPath) {
+      console.log("Database: Migrating test_runs table to remove screenshotPath column...");
+      
+      // Backup existing data
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS test_runs_backup_screenshot AS SELECT * FROM test_runs;
+      `);
+      
+      // Get all column names except screenshotPath
+      const allColumns = columns.map(col => col.name).filter(name => name !== 'screenshotPath');
+      const columnList = allColumns.join(', ');
+      
+      // Create new table without screenshotPath
+      const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get() as { sql: string } | undefined;
+      if (tableInfo) {
+        // Create new table by modifying the SQL (remove screenshotPath TEXT)
+        let newTableSql = tableInfo.sql.replace(/screenshotPath\s+TEXT,?\s*/gi, '');
+        newTableSql = newTableSql.replace(/CREATE TABLE\s+"?test_runs"?/i, 'CREATE TABLE test_runs_new');
+        
+        db.exec(newTableSql);
+        
+        // Copy data from old table (excluding screenshotPath)
+        db.exec(`
+          INSERT INTO test_runs_new (${columnList})
+          SELECT ${columnList}
+          FROM test_runs;
+        `);
+        
+        // Drop old table and rename new one
+        db.exec(`
+          DROP TABLE test_runs;
+          ALTER TABLE test_runs_new RENAME TO test_runs;
+        `);
+        
+        // Recreate indexes
+        db.exec(`
+          CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
+          CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
+          CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid);
+        `);
+        
+        // Clean up backup
+        db.exec(`DROP TABLE IF EXISTS test_runs_backup_screenshot;`);
+        
+        console.log("Database: Successfully removed screenshotPath column from test_runs");
+      }
+    } else {
+      console.log("Database: screenshotPath column already removed");
+    }
+  } catch (error) {
+    console.error("Database: Error removing screenshotPath column:", error);
   }
 }
 
@@ -1428,13 +1492,12 @@ export const testRunQueries = {
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : undefined,
     })) as TestRun[];
   },
-  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
+  create: (testRun: Omit<TestRun, "id" | "runAt">) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
     testRun.uuid, 
     testRun.formId, 
     testRun.paymentMethodId, 
     testRun.status, 
     testRun.errorMessage, 
-    testRun.screenshotPath, 
     testRun.logDetails, 
     JSON.stringify(testRun.steps || []), 
     testRun.durationMs, 
@@ -1444,11 +1507,11 @@ export const testRunQueries = {
     testRun.seoResults ? JSON.stringify(testRun.seoResults) : null,
     testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null
   ),
-  updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"], screenshotPath?: string) => {
+  updateStatus: (id: number, status: TestRun["status"], errorMessage?: string, durationMs?: number, steps?: TestRun["steps"]) => {
     // Don't overwrite STOPPED status - if a test was manually stopped, keep that status
     // This prevents the runner from changing STOPPED to FAILURE when it eventually completes
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ?, screenshotPath = ? WHERE id = ? AND status != 'STOPPED'");
-    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), screenshotPath || null, id);
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ? AND status != 'STOPPED'");
+    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
   },
   updateQualityResults: (id: number, seoResults?: any, accessibilityResults?: any) => {
     const stmt = db.prepare("UPDATE test_runs SET seoResults = ?, accessibilityResults = ? WHERE id = ?");
@@ -1739,7 +1802,6 @@ export const importQueries = {
               paymentMethodId: tr.paymentMethodId,
               status: tr.status,
               errorMessage: tr.errorMessage,
-              screenshotPath: tr.screenshotPath,
               logDetails: tr.logDetails,
               durationMs: tr.durationMs
             });
@@ -1923,7 +1985,6 @@ export const importQueries = {
                 paymentMethodId: newPaymentMethodId,
                 status: tr.status,
                 errorMessage: tr.errorMessage,
-                screenshotPath: tr.screenshotPath,
                 logDetails: tr.logDetails,
                 durationMs: tr.durationMs
               });

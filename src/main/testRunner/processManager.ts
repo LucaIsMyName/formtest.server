@@ -32,7 +32,6 @@ export interface TestResult {
   duration: number;
   logs: string[];
   steps?: TestStep[];
-  screenshot?: string;
   formAnalysis?: any;
   seoResults?: SeoTestResult;
   accessibilityResults?: AccessibilityTestResult;
@@ -221,7 +220,7 @@ export class TestProcessManager extends EventEmitter {
       const globalFieldDefaults = settingsQueries.getFieldDefaults();
       console.log('ProcessManager: Global field defaults:', JSON.stringify(globalFieldDefaults));
 
-      // Get consistent base path for screenshots
+      // Get consistent base path
       const appPath = app.getAppPath();
       const basePath = appPath.includes('.asar') ? join(appPath, '..', '..') : appPath;
 
@@ -251,7 +250,6 @@ export class TestProcessManager extends EventEmitter {
           duration: response.payload.result?.duration || 0,
           logs: response.payload.result?.logs || [],
           steps: response.payload.result?.steps || [],
-          screenshot: response.payload.result?.screenshot,
           formAnalysis: response.payload.result?.formAnalysis,
           seoResults: response.payload.result?.seoResults,
           accessibilityResults: response.payload.result?.accessibilityResults,
@@ -264,7 +262,6 @@ export class TestProcessManager extends EventEmitter {
           duration: response.payload?.result?.duration || 0,
           logs: response.payload?.result?.logs || response.payload?.logs || [],
           steps: response.payload?.result?.steps || [],
-          screenshot: response.payload?.result?.screenshot,
           seoResults: response.payload?.result?.seoResults,
           accessibilityResults: response.payload?.result?.accessibilityResults,
         };

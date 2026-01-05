@@ -17,8 +17,8 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
     const processManager = getTestProcessManager();
     const result = await processManager.runTest(testRunId, form, paymentMethod, settings, qualityTestOptions);
 
-    // Update test run with results including steps and screenshot
-    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps, result.screenshot);
+    // Update test run with results including steps
+    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps);
     
     // Update quality test results if present
     if (result.seoResults || result.accessibilityResults) {
@@ -26,7 +26,7 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
       console.log(`Test ${testRunId} quality results: SEO=${result.seoResults?.score ?? 'N/A'}, A11y=${result.accessibilityResults?.score ?? 'N/A'}`);
     }
 
-    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps, screenshot: ${result.screenshot || 'none'}`);
+    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps`);
 
     // Create notification for scheduled test completion
     if (isScheduled) {
@@ -125,7 +125,6 @@ export async function createAndRunTest(formId: number, paymentMethodId: number, 
       paymentMethodId: paymentMethod.id,
       status: "QUEUED",
       logDetails: JSON.stringify([`Autopilot test queued for ${form.name} with ${paymentMethod.name}`]),
-      screenshotPath: undefined,
       errorMessage: undefined,
       durationMs: undefined,
       isScheduled: true,

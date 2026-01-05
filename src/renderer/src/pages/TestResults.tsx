@@ -11,7 +11,7 @@ import SelectionActionBar from "../components/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
-import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock, GitCompare, ChevronDown, ChevronUp } from "lucide-react";
+import { FileJson, Copy, Trash2, AlertCircle, Play, CheckCircle2, CheckCircle, Bot, User, XCircle, Square, Download, FileSpreadsheet, Clock, GitCompare, ChevronDown, ChevronUp } from "lucide-react";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { Link } from "react-router-dom";
 import type { TestStep, TestRun } from "../../../common/types";
@@ -24,7 +24,6 @@ import { formatDateTime, formatDuration } from "../utils/formatters";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
-import ScreenshotViewer from "../components/ScreenshotViewer";
 import SeoResultsCard from "../components/SeoResultsCard";
 import AccessibilityResultsCard from "../components/AccessibilityResultsCard";
 import TestRunComparison from "../components/TestRunComparison";
@@ -149,9 +148,13 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
       return next;
     });
   };
-  const getStepIcon = (stepStatus: string) => {
+  const getStepIcon = (stepStatus: string, isFinalStep: boolean = false) => {
     switch (stepStatus) {
       case "success":
+        // Use filled checkmark for final step, outline for others
+        if (isFinalStep) {
+          return <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 fill-current" />;
+        }
         return <CheckCircle2 className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />;
       case "error":
         return <XCircle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />;
@@ -252,11 +255,15 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
           {allSteps.map((step, index) => {
             const metadataText = formatMetadataInline(step.metadata);
             
+            const isFinalStep = step.id === "final" && step.status === "success";
+            
             return (
               <div key={step.id || index} className="relative flex items-start gap-3">
                 {/* Timeline dot */}
                 <div className="relative z-10 flex-shrink-0 -ml-4 mt-0.5">
-                  {getStepIcon(step.status)}
+                  <div className="bg-white dark:bg-neutral-800 rounded-full p-0.5">
+                    {getStepIcon(step.status, isFinalStep)}
+                  </div>
                 </div>
 
                 {/* Content */}
@@ -1624,11 +1631,6 @@ const TestResults: React.FC = () => {
                   />
                 )}
 
-                {/* Screenshot Gallery */}
-                <ScreenshotViewer
-                  screenshotPath={selectedTestRunData.screenshotPath}
-                  testName={`${getFormName(selectedTestRunData.formId)} × ${getPaymentMethodName(selectedTestRunData.paymentMethodId)}`}
-                />
 
                 {/* Notes */}
                 <div className="mb-6 pb-6 border-b dark:border-neutral-700">
