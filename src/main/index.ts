@@ -1,4 +1,5 @@
 import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { initDatabase, testRunQueries } from "./database";
 import { setupIpcHandlers } from "./ipcHandlers";

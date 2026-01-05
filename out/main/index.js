@@ -1,11 +1,11 @@
 "use strict";
 const electron = require("electron");
 const path = require("path");
-const fs = require("fs");
 const utils = require("@electron-toolkit/utils");
 const Database = require("better-sqlite3");
 const crypto = require("crypto");
 const keytar = require("keytar");
+const fs = require("fs");
 const child_process = require("child_process");
 const events = require("events");
 const nodemailer = require("nodemailer");
@@ -606,7 +606,6 @@ function migrateTestRunStoppedStatus() {
             paymentMethodId INTEGER,
             status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
             errorMessage TEXT,
-            screenshotPath TEXT,
             logDetails TEXT,
             steps TEXT DEFAULT '[]',
             durationMs INTEGER,
@@ -618,8 +617,8 @@ function migrateTestRunStoppedStatus() {
           );
         `);
         db.exec(`
-          INSERT INTO test_runs_new (id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt)
-          SELECT id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, notes, runAt
+          INSERT INTO test_runs_new (id, uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, notes, runAt)
+          SELECT id, uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, notes, runAt
           FROM test_runs;
         `);
         db.exec(`
@@ -949,7 +948,6 @@ function initDatabase() {
       paymentMethodId INTEGER,
       status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
       errorMessage TEXT,
-      screenshotPath TEXT,
       logDetails TEXT,
       durationMs INTEGER,
       runAt DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -1014,8 +1012,8 @@ function initDatabase() {
         `);
       } else {
         db.exec(`
-          INSERT INTO test_runs (id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt)
-          SELECT id, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, durationMs, runAt 
+          INSERT INTO test_runs (id, formId, paymentMethodId, status, errorMessage, logDetails, durationMs, runAt)
+          SELECT id, formId, paymentMethodId, status, errorMessage, logDetails, durationMs, runAt 
           FROM test_runs_backup;
           DROP TABLE test_runs_backup;
         `);
@@ -1059,6 +1057,7 @@ function initDatabase() {
     console.error("Database: Failed to migrate payment methods:", error);
   });
   migrateTestRunsToAllowOrphaned();
+  migrateRemoveScreenshotColumn();
   cleanupOldTestRuns();
   console.log("Database: Initialization complete");
 }
@@ -1085,7 +1084,6 @@ function migrateTestRunsToAllowOrphaned() {
           paymentMethodId INTEGER,
           status TEXT NOT NULL CHECK (status IN ('SUCCESS', 'FAILURE', 'SKIPPED', 'RUNNING', 'STOPPED', 'QUEUED')),
           errorMessage TEXT,
-          screenshotPath TEXT,
           logDetails TEXT,
           steps TEXT DEFAULT '[]',
           durationMs INTEGER,
@@ -1102,11 +1100,11 @@ function migrateTestRunsToAllowOrphaned() {
       `);
       db.exec(`
         INSERT INTO test_runs_new (
-          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, 
+          id, uuid, formId, paymentMethodId, status, errorMessage, logDetails, 
           steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
         )
         SELECT 
-          id, uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails,
+          id, uuid, formId, paymentMethodId, status, errorMessage, logDetails,
           steps, durationMs, isScheduled, notes, runAt, amount, interval, seoResults, accessibilityResults
         FROM test_runs;
       `);
@@ -1127,6 +1125,48 @@ function migrateTestRunsToAllowOrphaned() {
     }
   } catch (error) {
     console.error("Database: Error migrating test_runs for orphaned support:", error);
+  }
+}
+function migrateRemoveScreenshotColumn() {
+  console.log("Database: Checking for screenshotPath column removal...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasScreenshotPath = columns.some((col) => col.name === "screenshotPath");
+    if (hasScreenshotPath) {
+      console.log("Database: Migrating test_runs table to remove screenshotPath column...");
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS test_runs_backup_screenshot AS SELECT * FROM test_runs;
+      `);
+      const allColumns = columns.map((col) => col.name).filter((name) => name !== "screenshotPath");
+      const columnList = allColumns.join(", ");
+      const tableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='test_runs'").get();
+      if (tableInfo) {
+        let newTableSql = tableInfo.sql.replace(/screenshotPath\s+TEXT,?\s*/gi, "");
+        newTableSql = newTableSql.replace(/CREATE TABLE\s+"?test_runs"?/i, "CREATE TABLE test_runs_new");
+        db.exec(newTableSql);
+        db.exec(`
+          INSERT INTO test_runs_new (${columnList})
+          SELECT ${columnList}
+          FROM test_runs;
+        `);
+        db.exec(`
+          DROP TABLE test_runs;
+          ALTER TABLE test_runs_new RENAME TO test_runs;
+        `);
+        db.exec(`
+          CREATE INDEX IF NOT EXISTS idx_test_runs_form ON test_runs(formId);
+          CREATE INDEX IF NOT EXISTS idx_test_runs_payment ON test_runs(paymentMethodId);
+          CREATE INDEX IF NOT EXISTS idx_test_runs_status ON test_runs(status);
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_test_runs_uuid ON test_runs(uuid);
+        `);
+        db.exec(`DROP TABLE IF EXISTS test_runs_backup_screenshot;`);
+        console.log("Database: Successfully removed screenshotPath column from test_runs");
+      }
+    } else {
+      console.log("Database: screenshotPath column already removed");
+    }
+  } catch (error) {
+    console.error("Database: Error removing screenshotPath column:", error);
   }
 }
 function cleanupOldTestRuns() {
@@ -1592,13 +1632,12 @@ const testRunQueries = {
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     }));
   },
-  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, screenshotPath, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
+  create: (testRun) => db.prepare("INSERT INTO test_runs (uuid, formId, paymentMethodId, status, errorMessage, logDetails, steps, durationMs, isScheduled, amount, interval, seoResults, accessibilityResults) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").run(
     testRun.uuid,
     testRun.formId,
     testRun.paymentMethodId,
     testRun.status,
     testRun.errorMessage,
-    testRun.screenshotPath,
     testRun.logDetails,
     JSON.stringify(testRun.steps || []),
     testRun.durationMs,
@@ -1608,9 +1647,9 @@ const testRunQueries = {
     testRun.seoResults ? JSON.stringify(testRun.seoResults) : null,
     testRun.accessibilityResults ? JSON.stringify(testRun.accessibilityResults) : null
   ),
-  updateStatus: (id, status, errorMessage, durationMs, steps, screenshotPath) => {
-    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ?, screenshotPath = ? WHERE id = ? AND status != 'STOPPED'");
-    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), screenshotPath || null, id);
+  updateStatus: (id, status, errorMessage, durationMs, steps) => {
+    const stmt = db.prepare("UPDATE test_runs SET status = ?, errorMessage = ?, durationMs = ?, steps = ? WHERE id = ? AND status != 'STOPPED'");
+    return stmt.run(status, errorMessage, durationMs, JSON.stringify(steps || []), id);
   },
   updateQualityResults: (id, seoResults, accessibilityResults) => {
     const stmt = db.prepare("UPDATE test_runs SET seoResults = ?, accessibilityResults = ? WHERE id = ?");
@@ -1882,7 +1921,6 @@ const importQueries = {
               paymentMethodId: tr.paymentMethodId,
               status: tr.status,
               errorMessage: tr.errorMessage,
-              screenshotPath: tr.screenshotPath,
               logDetails: tr.logDetails,
               durationMs: tr.durationMs
             });
@@ -2032,7 +2070,6 @@ const importQueries = {
                 paymentMethodId: newPaymentMethodId,
                 status: tr.status,
                 errorMessage: tr.errorMessage,
-                screenshotPath: tr.screenshotPath,
                 logDetails: tr.logDetails,
                 durationMs: tr.durationMs
               });
@@ -2688,7 +2725,6 @@ class TestProcessManager extends events.EventEmitter {
           duration: response.payload.result?.duration || 0,
           logs: response.payload.result?.logs || [],
           steps: response.payload.result?.steps || [],
-          screenshot: response.payload.result?.screenshot,
           formAnalysis: response.payload.result?.formAnalysis,
           seoResults: response.payload.result?.seoResults,
           accessibilityResults: response.payload.result?.accessibilityResults
@@ -2700,7 +2736,6 @@ class TestProcessManager extends events.EventEmitter {
           duration: response.payload?.result?.duration || 0,
           logs: response.payload?.result?.logs || response.payload?.logs || [],
           steps: response.payload?.result?.steps || [],
-          screenshot: response.payload?.result?.screenshot,
           seoResults: response.payload?.result?.seoResults,
           accessibilityResults: response.payload?.result?.accessibilityResults
         };
@@ -3014,12 +3049,12 @@ async function runSingleTest(testRunId, form, paymentMethod, settings, qualityTe
   try {
     const processManager2 = getTestProcessManager();
     const result = await processManager2.runTest(testRunId, form, paymentMethod, settings, qualityTestOptions);
-    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps, result.screenshot);
+    await testRunQueries.updateStatus(testRunId, result.success ? "SUCCESS" : "FAILURE", result.error, result.duration, result.steps);
     if (result.seoResults || result.accessibilityResults) {
       testRunQueries.updateQualityResults(testRunId, result.seoResults, result.accessibilityResults);
       console.log(`Test ${testRunId} quality results: SEO=${result.seoResults?.score ?? "N/A"}, A11y=${result.accessibilityResults?.score ?? "N/A"}`);
     }
-    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps, screenshot: ${result.screenshot || "none"}`);
+    console.log(`Test ${testRunId} completed: ${result.success ? "SUCCESS" : "FAILURE"} with ${result.steps?.length || 0} steps`);
     if (isScheduled) {
       notificationQueries.create({
         type: result.success ? "test_complete" : "test_failed",
@@ -3096,7 +3131,6 @@ async function createAndRunTest(formId, paymentMethodId, qualityTestOptions) {
       paymentMethodId: paymentMethod.id,
       status: "QUEUED",
       logDetails: JSON.stringify([`Autopilot test queued for ${form.name} with ${paymentMethod.name}`]),
-      screenshotPath: void 0,
       errorMessage: void 0,
       durationMs: void 0,
       isScheduled: true,
@@ -3529,7 +3563,6 @@ async function handleRequest(req, res) {
             paymentMethodId: pm.id,
             status: "QUEUED",
             errorMessage: void 0,
-            screenshotPath: void 0,
             logDetails: void 0,
             steps: [],
             durationMs: void 0,
@@ -4801,7 +4834,6 @@ function setupIpcHandlers() {
             paymentMethodId: paymentMethod.id,
             status: "QUEUED",
             logDetails: JSON.stringify([`Retried test for ${form.name} with ${paymentMethod.name}`]),
-            screenshotPath: void 0,
             errorMessage: void 0,
             durationMs: void 0,
             isScheduled: testRun.isScheduled || false,
@@ -4872,7 +4904,6 @@ function setupIpcHandlers() {
             paymentMethodId: paymentMethod.id,
             status: "QUEUED",
             logDetails: JSON.stringify([`Test queued for ${form.name} with ${paymentMethod.name}`]),
-            screenshotPath: void 0,
             errorMessage: void 0,
             durationMs: void 0,
             isScheduled: false,
@@ -5454,34 +5485,8 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 }
-electron.protocol.registerSchemesAsPrivileged([
-  { scheme: "local-file", privileges: { secure: true, standard: true, supportFetchAPI: true, stream: true } }
-]);
 electron.app.whenReady().then(() => {
   utils.electronApp.setAppUserModelId("com.formtest.server");
-  electron.protocol.handle("local-file", (request) => {
-    const url = request.url;
-    console.log(`[local-file protocol] Raw URL: ${url}`);
-    const parsedUrl = new URL(url);
-    let filePath = decodeURIComponent(parsedUrl.pathname);
-    if (process.platform === "win32" && filePath.startsWith("/")) {
-      filePath = filePath.substring(1);
-    }
-    console.log(`[local-file protocol] Serving: ${filePath}`);
-    const appPath = electron.app.getAppPath();
-    const basePath = appPath.includes(".asar") ? path.join(appPath, "..", "..") : appPath;
-    const screenshotsDir = path.join(basePath, "screenshots");
-    const isInScreenshotsDir = filePath.startsWith(screenshotsDir) || filePath.includes("/screenshots/") && fs.existsSync(filePath);
-    if (!isInScreenshotsDir) {
-      console.error(`[local-file protocol] Access denied: ${filePath} is not in screenshots directory (expected: ${screenshotsDir})`);
-      return new Response("Access denied", { status: 403 });
-    }
-    if (!fs.existsSync(filePath)) {
-      console.error(`[local-file protocol] File not found: ${filePath}`);
-      return new Response("File not found", { status: 404 });
-    }
-    return electron.net.fetch(`file://${filePath}`);
-  });
   electron.app.on("browser-window-created", (_, window) => {
     utils.optimizer.watchWindowShortcuts(window);
   });

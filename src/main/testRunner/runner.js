@@ -257,6 +257,9 @@ class TestRunner {
     const { id, payload } = message
     const { testRunId, form, paymentMethod, settings, selectorConfig, globalFieldDefaults, qualityTestOptions, basePath } = payload
 
+    // Store form reference for multi-step config access
+    this.form = form
+
     // Store base path (from Electron app)
     this.basePath = basePath || process.cwd()
 
@@ -799,34 +802,103 @@ class TestRunner {
     await this.runScriptsAtHook('before_form_fill', form, paymentMethod, testRunInfo)
 
     // Step 4: Form Analysis & Fill
-    const analysisStep = this.startStep('form-analysis', 'Formular analysieren und ausfüllen')
-    const analysisStartTime = Date.now()
+    // Detect form structure (non-blocking)
+    const formStructure = await this.detectFormStructure()
+    this.log(`Detected form structure: ${formStructure}`)
+    
     let formAnalysis
-    try {
-      formAnalysis = await this.analyzeAndFillForm()
-      
-      // Capture form field details with sanitized values
-      const fieldDetails = (formAnalysis.fields || []).map(field => ({
-        selector: field.selector || field.name,
-        name: field.name || field.selector,
-        type: field.type || 'text',
-        value: this.sanitizeFieldValue(field.name || field.selector || '', field.value || '')
-      }))
-      
-      // Get console errors during form analysis
-      const analysisConsoleErrors = this.consoleLogs
-        .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(analysisStartTime))
-      
-      this.completeStep('form-analysis', 'success', `${formAnalysis.fields?.length || 0} Formularfelder analysiert und ausgefüllt`, {
-        fieldsFound: formAnalysis.fields?.length || 0,
-        formType: 'donation',
-        fields: fieldDetails.slice(0, 20), // Limit to first 20 fields
-        waitTime: 500,
-        consoleErrors: analysisConsoleErrors.length
-      })
-    } catch (error) {
-      this.failStep('form-analysis', `Formularanalyse fehlgeschlagen: ${error.message}`)
-      throw error
+    if (formStructure !== 'single-page' && formStructure !== 'unknown') {
+      // Multi-step form detected - use new flow
+      try {
+        formAnalysis = await this.runMultiStepFormTest(form, paymentMethod)
+        
+        // Create summary step for multi-step form
+        const analysisStep = this.startStep('form-analysis', 'Formular analysieren und ausfüllen')
+        const analysisStartTime = Date.now()
+        
+        // Capture form field details with sanitized values
+        const fieldDetails = (formAnalysis.fields || []).map(field => ({
+          selector: field.selector || field.name,
+          name: field.name || field.selector,
+          type: field.type || 'text',
+          value: this.sanitizeFieldValue(field.name || field.selector || '', field.value || '')
+        }))
+        
+        // Get console errors during form analysis
+        const analysisConsoleErrors = this.consoleLogs
+          .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(analysisStartTime))
+        
+        this.completeStep('form-analysis', 'success', `${formAnalysis.fields?.length || 0} Formularfelder analysiert und ausgefüllt (${formAnalysis.steps?.length || 0} Schritte)`, {
+          fieldsFound: formAnalysis.fields?.length || 0,
+          stepsCompleted: formAnalysis.steps?.length || 0,
+          formType: 'donation',
+          formStructure: formStructure,
+          fields: fieldDetails.slice(0, 20), // Limit to first 20 fields
+          waitTime: 500,
+          consoleErrors: analysisConsoleErrors.length
+        })
+      } catch (multiStepError) {
+        // Fallback to single-step if multi-step fails
+        this.log(`Multi-step flow failed, falling back to single-step: ${multiStepError.message}`)
+        const analysisStep = this.startStep('form-analysis', 'Formular analysieren und ausfüllen')
+        const analysisStartTime = Date.now()
+        try {
+          formAnalysis = await this.analyzeAndFillForm()
+          
+          // Capture form field details with sanitized values
+          const fieldDetails = (formAnalysis.fields || []).map(field => ({
+            selector: field.selector || field.name,
+            name: field.name || field.selector,
+            type: field.type || 'text',
+            value: this.sanitizeFieldValue(field.name || field.selector || '', field.value || '')
+          }))
+          
+          // Get console errors during form analysis
+          const analysisConsoleErrors = this.consoleLogs
+            .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(analysisStartTime))
+          
+          this.completeStep('form-analysis', 'success', `${formAnalysis.fields?.length || 0} Formularfelder analysiert und ausgefüllt`, {
+            fieldsFound: formAnalysis.fields?.length || 0,
+            formType: 'donation',
+            fields: fieldDetails.slice(0, 20), // Limit to first 20 fields
+            waitTime: 500,
+            consoleErrors: analysisConsoleErrors.length
+          })
+        } catch (error) {
+          this.failStep('form-analysis', `Formularanalyse fehlgeschlagen: ${error.message}`)
+          throw error
+        }
+      }
+    } else {
+      // Single-step form (existing behavior)
+      const analysisStep = this.startStep('form-analysis', 'Formular analysieren und ausfüllen')
+      const analysisStartTime = Date.now()
+      try {
+        formAnalysis = await this.analyzeAndFillForm()
+        
+        // Capture form field details with sanitized values
+        const fieldDetails = (formAnalysis.fields || []).map(field => ({
+          selector: field.selector || field.name,
+          name: field.name || field.selector,
+          type: field.type || 'text',
+          value: this.sanitizeFieldValue(field.name || field.selector || '', field.value || '')
+        }))
+        
+        // Get console errors during form analysis
+        const analysisConsoleErrors = this.consoleLogs
+          .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(analysisStartTime))
+        
+        this.completeStep('form-analysis', 'success', `${formAnalysis.fields?.length || 0} Formularfelder analysiert und ausgefüllt`, {
+          fieldsFound: formAnalysis.fields?.length || 0,
+          formType: 'donation',
+          fields: fieldDetails.slice(0, 20), // Limit to first 20 fields
+          waitTime: 500,
+          consoleErrors: analysisConsoleErrors.length
+        })
+      } catch (error) {
+        this.failStep('form-analysis', `Formularanalyse fehlgeschlagen: ${error.message}`)
+        throw error
+      }
     }
 
     // HOOK: after_form_fill
@@ -1674,6 +1746,425 @@ class TestRunner {
   }
 
   /**
+   * Run multi-step form test - iteratively fill form across multiple steps
+   * @param {Object} form - Form configuration
+   * @param {Object} paymentMethod - Payment method configuration
+   * @returns {Promise<Object>} Form analysis with aggregated fields from all steps
+   */
+  async runMultiStepFormTest(form, paymentMethod) {
+    const maxSteps = this.form?.multiStepConfig?.maxSteps || 10 // Safety limit
+    let currentStep = 1
+    let formAnalysis = { fields: [], steps: [] }
+    
+    this.log(`Starting multi-step form test (max ${maxSteps} steps)`)
+    
+    while (currentStep <= maxSteps) {
+      const stepInfo = await this.detectFormSteps()
+      this.log(`Processing step ${currentStep} of ${stepInfo.totalSteps || '?'}`)
+      
+      // Start step tracking
+      const stepStart = this.startStep(`form-step-${currentStep}`, `Formular-Schritt ${currentStep}`, {
+        stepNumber: currentStep,
+        totalSteps: stepInfo.totalSteps,
+        stepType: stepInfo.stepType
+      })
+      
+      try {
+        // Wait for step to be visible/active
+        await this.page.waitForTimeout(500) // Give time for step to render
+        
+        // Check if this is the payment step
+        const isPayment = await this.isPaymentStep(currentStep)
+        if (isPayment) {
+          this.log(`Step ${currentStep} is payment step, will handle payment selection later`)
+        }
+        
+        // Apply user-defined field mappings FIRST (highest priority)
+        if (this.fieldMappings && this.fieldMappings.length > 0 && currentStep === 1) {
+          this.log(`Applying ${this.fieldMappings.length} custom field mappings...`)
+          await this.applyFieldMappings()
+        }
+        
+        // Handle FundraisingBox-specific elements (only on first step)
+        if (currentStep === 1) {
+          await this.handleFundraisingBoxForm()
+        }
+        
+        // Analyze and fill fields for THIS step only
+        const stepFields = await this.detectFormFields({ 
+          scope: 'current-step',
+          stepNumber: currentStep 
+        })
+        
+        this.log(`Found ${stepFields.length} fields in step ${currentStep}`)
+        
+        // Fill form fields for this step
+        await this.fillFormFields(stepFields)
+        
+        formAnalysis.fields.push(...stepFields)
+        formAnalysis.steps.push({
+          stepNumber: currentStep,
+          fields: stepFields,
+          timestamp: new Date().toISOString()
+        })
+        
+        // Wait for any dynamic validation
+        await this.page.waitForTimeout(500)
+        
+        // Check if this is the final step
+        const isLastStep = await this.isLastStep(currentStep, stepInfo)
+        
+        if (isLastStep) {
+          // Final step - proceed to payment selection
+          this.completeStep(`form-step-${currentStep}`, 'success', 
+            `Schritt ${currentStep} abgeschlossen (letzter Schritt)`, {
+              isLastStep: true,
+              fieldsFilled: stepFields.length
+            })
+          break
+        }
+        
+        // Find and click "Next" button
+        const nextButton = await this.findNextButton(currentStep)
+        if (!nextButton) {
+          // If no next button found, assume this is the last step
+          this.log(`No next button found in step ${currentStep}, assuming last step`)
+          this.completeStep(`form-step-${currentStep}`, 'success', 
+            `Schritt ${currentStep} abgeschlossen (kein Weiter-Button gefunden)`, {
+              isLastStep: true,
+              fieldsFilled: stepFields.length
+            })
+          break
+        }
+        
+        await nextButton.scrollIntoViewIfNeeded()
+        await this.page.waitForTimeout(300)
+        await nextButton.click()
+        
+        // Wait for step transition
+        await this.waitForStepTransition(currentStep, currentStep + 1)
+        
+        this.completeStep(`form-step-${currentStep}`, 'success', 
+          `Schritt ${currentStep} abgeschlossen, weiter zu Schritt ${currentStep + 1}`, {
+            fieldsFilled: stepFields.length,
+            nextStep: currentStep + 1
+          })
+        
+        currentStep++
+        
+      } catch (error) {
+        // Try error recovery
+        const recovered = await this.handleStepError(currentStep, error)
+        if (recovered) {
+          this.log(`Error recovery successful for step ${currentStep}, retrying...`)
+          // Retry current step
+          continue
+        }
+        
+        this.failStep(`form-step-${currentStep}`, 
+          `Fehler in Schritt ${currentStep}: ${error.message}`)
+        throw error
+      }
+    }
+    
+    if (currentStep > maxSteps) {
+      this.log(`Reached maximum step limit (${maxSteps}), proceeding with payment selection`)
+    }
+    
+    this.log(`Multi-step form filling completed: ${formAnalysis.steps.length} steps, ${formAnalysis.fields.length} total fields`)
+    return formAnalysis
+  }
+
+  /**
+   * Check if current step is the last step
+   * @param {number} currentStep - Current step number
+   * @param {Object} stepInfo - Step information from detectFormSteps()
+   * @returns {Promise<boolean>} True if this is the last step
+   */
+  async isLastStep(currentStep, stepInfo) {
+    // If we know total steps, check if current is last
+    if (stepInfo.totalSteps && currentStep >= stepInfo.totalSteps) {
+      return true
+    }
+    
+    // Check for "Submit" or "Complete" buttons instead of "Next"
+    const submitIndicators = [
+      'button:has-text("Absenden")',
+      'button:has-text("Submit")',
+      'button:has-text("Spenden")',
+      'button:has-text("Donate")',
+      'input[type="submit"]',
+      '.submit-button',
+      '.final-step'
+    ]
+    
+    for (const selector of submitIndicators) {
+      try {
+        const element = await this.page.$(selector)
+        if (element) {
+          const isVisible = await element.isVisible().catch(() => false)
+          if (isVisible) {
+            return true
+          }
+        }
+      } catch (e) {
+        continue
+      }
+    }
+    
+    return false
+  }
+
+  /**
+   * Detect form structure type (single-page, wizard, tabs, accordion, etc.)
+   * Non-blocking detection that returns 'unknown' if detection fails
+   * @returns {Promise<string>} Form structure type
+   */
+  async detectFormStructure() {
+    try {
+      this.log('Detecting form structure...')
+      
+      // Check for wizard patterns
+      const wizardSelectors = [
+        '.wizard',
+        '[role="wizard"]',
+        '.form-wizard',
+        '.step-wizard',
+        '.multi-step-form',
+        '[class*="wizard"]'
+      ]
+      
+      for (const selector of wizardSelectors) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            const isVisible = await element.isVisible().catch(() => false)
+            if (isVisible) {
+              this.log(`Detected wizard structure: ${selector}`)
+              return 'wizard'
+            }
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      
+      // Check for tab-based multi-step
+      const tabSelectors = [
+        '.nav-tabs',
+        '[role="tablist"]',
+        '.tab-navigation',
+        '.step-tabs',
+        '[class*="tab"][class*="nav"]'
+      ]
+      
+      for (const selector of tabSelectors) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            const isVisible = await element.isVisible().catch(() => false)
+            if (isVisible) {
+              this.log(`Detected tab structure: ${selector}`)
+              return 'tabs'
+            }
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      
+      // Check for accordion-style multi-step
+      const accordionSelectors = [
+        '.accordion',
+        '[role="tabpanel"]',
+        '.collapsible',
+        '.step-accordion',
+        '[class*="accordion"]'
+      ]
+      
+      for (const selector of accordionSelectors) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            const isVisible = await element.isVisible().catch(() => false)
+            if (isVisible) {
+              this.log(`Detected accordion structure: ${selector}`)
+              return 'accordion'
+            }
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      
+      // Check for progress bar / step indicators
+      const progressSelectors = [
+        '.progress-bar',
+        '.step-indicator',
+        '.step-progress',
+        '[data-step]',
+        '[class*="step-indicator"]',
+        '[class*="progress"]'
+      ]
+      
+      for (const selector of progressSelectors) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            const isVisible = await element.isVisible().catch(() => false)
+            if (isVisible) {
+              // Check if it shows multiple steps
+              const text = await element.textContent().catch(() => '')
+              const stepMatch = text.match(/(\d+)\s*\/\s*(\d+)/) || text.match(/step\s*(\d+)/i)
+              if (stepMatch) {
+                this.log(`Detected progress-steps structure: ${selector}`)
+                return 'progress-steps'
+              }
+            }
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      
+      // Check for step number indicators in class names or data attributes
+      const stepNumberSelectors = [
+        '.step-1',
+        '.step-2',
+        '[data-step="1"]',
+        '[data-step="2"]',
+        '[class*="step-1"]',
+        '[class*="step-2"]'
+      ]
+      
+      let stepCount = 0
+      for (const selector of stepNumberSelectors) {
+        try {
+          const elements = await this.page.$$(selector)
+          if (elements.length > 0) {
+            stepCount++
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      
+      if (stepCount >= 2) {
+        this.log('Detected multi-step structure via step number indicators')
+        return 'progress-steps'
+      }
+      
+      // Default to single-page if no multi-step indicators found
+      this.log('No multi-step indicators found, assuming single-page form')
+      return 'single-page'
+      
+    } catch (error) {
+      this.log(`Error detecting form structure: ${error.message}, defaulting to single-page`)
+      return 'unknown'
+    }
+  }
+
+  /**
+   * Detect current step number and total steps
+   * @returns {Promise<Object>} { currentStep: number, totalSteps: number | null, stepType: string }
+   */
+  async detectFormSteps() {
+    try {
+      // Try to detect current step from various indicators
+      const stepIndicators = [
+        '.step-indicator .active',
+        '.wizard-step.active',
+        '.step.active',
+        '[data-step].active',
+        '[aria-current="step"]',
+        '.progress-bar [aria-current="step"]',
+        '.step-number.active',
+        '[class*="step"][class*="active"]'
+      ]
+      
+      let currentStep = null
+      for (const selector of stepIndicators) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            const text = await element.textContent().catch(() => '')
+            const stepMatch = text.match(/(\d+)/)
+            if (stepMatch) {
+              currentStep = parseInt(stepMatch[1])
+              break
+            }
+            
+            // Check data-step attribute
+            const dataStep = await element.getAttribute('data-step')
+            if (dataStep) {
+              currentStep = parseInt(dataStep)
+              break
+            }
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      
+      // Try to detect total steps
+      let totalSteps = null
+      const totalStepSelectors = [
+        '.step-indicator',
+        '.progress-bar',
+        '.wizard-steps',
+        '[data-total-steps]'
+      ]
+      
+      for (const selector of totalStepSelectors) {
+        try {
+          const element = await this.page.$(selector)
+          if (element) {
+            const text = await element.textContent().catch(() => '')
+            const totalMatch = text.match(/(\d+)\s*\/\s*(\d+)/)
+            if (totalMatch) {
+              totalSteps = parseInt(totalMatch[2])
+              break
+            }
+            
+            // Check data attribute
+            const dataTotal = await element.getAttribute('data-total-steps')
+            if (dataTotal) {
+              totalSteps = parseInt(dataTotal)
+              break
+            }
+            
+            // Count step elements
+            const stepElements = await element.$$('.step, [data-step], [class*="step-"]')
+            if (stepElements.length > 0) {
+              totalSteps = stepElements.length
+              break
+            }
+          }
+        } catch (e) {
+          continue
+        }
+      }
+      
+      // Determine step type
+      const formStructure = await this.detectFormStructure()
+      
+      return {
+        currentStep: currentStep || 1,
+        totalSteps: totalSteps,
+        stepType: formStructure
+      }
+      
+    } catch (error) {
+      this.log(`Error detecting form steps: ${error.message}`)
+      return {
+        currentStep: 1,
+        totalSteps: null,
+        stepType: 'unknown'
+      }
+    }
+  }
+
+  /**
    * Apply user-defined field mappings from form configuration
    * These take priority over automatic field detection
    */
@@ -2248,11 +2739,42 @@ class TestRunner {
     }
   }
 
-  async detectFormFields() {
+  async detectFormFields(options = {}) {
+    const { scope = 'all', stepNumber = null } = options
+    
+    // If scope is 'current-step', only detect fields in active step container
+    let container = this.page
+    if (scope === 'current-step' && stepNumber) {
+      const containerSelectors = [
+        `.step-${stepNumber}`,
+        `[data-step="${stepNumber}"]`,
+        `.wizard-step.active`,
+        '.tab-pane.active',
+        '[role="tabpanel"][aria-hidden="false"]',
+        `.step-content[data-step="${stepNumber}"]`
+      ]
+      
+      for (const selector of containerSelectors) {
+        try {
+          const containerElement = await this.page.$(selector)
+          if (containerElement) {
+            const isVisible = await containerElement.isVisible().catch(() => false)
+            if (isVisible) {
+              container = containerElement
+              this.log(`Scoping field detection to step ${stepNumber} container: ${selector}`)
+              break
+            }
+          }
+        } catch (e) {
+          continue
+        }
+      }
+    }
+    
     const fields = []
 
     // Detect input fields
-    const inputs = await this.page.$$('input')
+    const inputs = await container.$$('input')
     for (const input of inputs) {
       try {
         const type = await input.getAttribute('type') || 'text'
@@ -2276,7 +2798,7 @@ class TestRunner {
     }
 
     // Detect select fields
-    const selects = await this.page.$$('select')
+    const selects = await container.$$('select')
     for (const select of selects) {
       try {
         const name = await select.getAttribute('name')

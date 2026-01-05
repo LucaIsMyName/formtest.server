@@ -43,6 +43,12 @@ export interface Form {
   icon?: string;
   isActive: boolean;
   fieldMappings?: FormFieldMapping[]; // Custom field mappings for this form
+  multiStepConfig?: {
+    enabled?: boolean;  // Force enable/disable multi-step detection
+    maxSteps?: number;  // Maximum steps to process (default: 10)
+    stepSelectors?: string[];  // Custom step indicator selectors
+    nextButtonSelectors?: string[];  // Custom next button selectors
+  };
   createdAt: Date;
   updatedAt: Date;
 }
