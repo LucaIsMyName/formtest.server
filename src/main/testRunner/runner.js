@@ -1001,39 +1001,26 @@ class TestRunner {
     const isRecurring = interval > 0
     const isSepa = paymentMethod.type.toLowerCase() === 'sepa'
 
+    // Log validation check but don't skip submission - let the form validate
     if (isRecurring && !isSepa) {
       this.log(`VALIDATION: Recurring payment (interval=${interval}) requires SEPA. Found: ${paymentMethod.type}`)
-      this.log('Skipping submission as this combination should not be submitted.')
+      this.log('Attempting submission to test form validation - expected to fail.')
       
-      this.completeStep('validation-check', 'success', 'Ungültige Kombination für wiederkehrende Zahlung erkannt', {
+      this.completeStep('validation-check', 'success', 'Ungültige Kombination erkannt - Teste Formularvalidierung', {
         isValid: false,
+        validationRules: ['recurring_requires_sepa'],
+        interval,
+        paymentMethod: paymentMethod.type,
+        willTestValidation: true
+      })
+    } else {
+      this.completeStep('validation-check', 'success', 'Formulardaten-Validierung bestanden', {
+        isValid: true,
         validationRules: ['recurring_requires_sepa'],
         interval,
         paymentMethod: paymentMethod.type
       })
-
-      const duration = Date.now() - startTime
-
-      return {
-        success: true,
-        duration,
-        logs: [...this.logs],
-        steps: [...this.steps],
-        formAnalysis,
-        skippedSubmission: true,
-        reason: 'Invalid payment method for recurring donation',
-        // Include quality test results
-        seoResults: this.qualityResults?.seoResults || null,
-        accessibilityResults: this.qualityResults?.accessibilityResults || null
-      }
     }
-
-    this.completeStep('validation-check', 'success', 'Formulardaten-Validierung bestanden', {
-      isValid: true,
-      validationRules: ['recurring_requires_sepa'],
-      interval,
-      paymentMethod: paymentMethod.type
-    })
 
     // HOOK: before_submit
     await this.runScriptsAtHook('before_submit', form, paymentMethod, testRunInfo)
