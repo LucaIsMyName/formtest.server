@@ -366,6 +366,12 @@ export function setupIpcHandlers(): void {
     return { success: true, ...result };
   });
 
+  ipcMain.handle("testQueue:triggerProcessing", async () => {
+    const testQueue = getTestQueue();
+    await testQueue.triggerProcessing();
+    return { success: true };
+  });
+
   // Export/Import handlers
   ipcMain.handle("database:export", async (_event, options: ImportOptions) => {
     try {

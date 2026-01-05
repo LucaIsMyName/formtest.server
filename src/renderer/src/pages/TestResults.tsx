@@ -70,7 +70,7 @@ const RunningTimer: React.FC<{ runAt: Date | string; isRunning: boolean }> = mem
 
   useEffect(() => {
     if (!isRunning) return;
-    
+
     const interval = setInterval(() => {
       const startTime = getStartTime(runAt);
       setElapsed(Math.max(0, Math.floor((Date.now() - startTime) / 1000)));
@@ -136,7 +136,7 @@ const TestDetailsSkeleton = () => (
 
 const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: string }> = ({ steps: structuredSteps, status }) => {
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set());
-  
+
   const toggleStep = (stepId: string) => {
     setExpandedSteps(prev => {
       const next = new Set(prev);
@@ -151,10 +151,10 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   const getStepIcon = (stepStatus: string, isFinalStep: boolean = false) => {
     switch (stepStatus) {
       case "success":
-        // Use filled checkmark for final step, outline for others
         if (isFinalStep) {
-          return <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 fill-current" />;
+          return <CheckCircle2 className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />;
         }
+        // Use filled checkmark for final step, outline for others
         return <CheckCircle2 className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />;
       case "error":
         return <XCircle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />;
@@ -198,7 +198,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   // Format metadata inline - only show specific useful fields
   const formatMetadataInline = (metadata?: Record<string, any>): string | null => {
     if (!metadata || Object.keys(metadata).length === 0) return null;
-    
+
     const parts: string[] = [];
     // Only include specific fields we want to display, ignore numeric 0 values and internal fields
     if (metadata.fieldsFound && metadata.fieldsFound > 0) parts.push(`${metadata.fieldsFound} Felder`);
@@ -208,7 +208,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
     if (metadata.cookieBannerFound !== undefined) parts.push(metadata.cookieBannerFound ? "Cookie-Banner" : "Kein Cookie-Banner");
     if (metadata.redirectUrl && typeof metadata.redirectUrl === 'string') parts.push(metadata.redirectUrl);
     if (metadata.paymentProvider && metadata.paymentProvider !== "Unknown" && typeof metadata.paymentProvider === 'string') parts.push(metadata.paymentProvider);
-    
+
     // Enhanced metadata fields
     if (metadata.selector && typeof metadata.selector === 'string' && metadata.selector !== 'auto-detected' && metadata.selector !== 'not-found') {
       const selectorText = metadata.selector.length > 30 ? `${metadata.selector.substring(0, 30)}...` : metadata.selector
@@ -220,10 +220,10 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
     if (metadata.consoleErrors && metadata.consoleErrors > 0) parts.push(`${metadata.consoleErrors} Console Errors`)
     if (metadata.loadTime && metadata.loadTime > 0) parts.push(`Load: ${metadata.loadTime}ms`)
     if (metadata.strategy && typeof metadata.strategy === 'string') parts.push(`Strategy: ${metadata.strategy}`)
-    
+
     // Explicitly ignore: interval, isValid, validationRules, successType, finalUrl, screenshotPath, screenshotType
     // These are internal fields that shouldn't be displayed to the user
-    
+
     return parts.length > 0 ? parts.join(" · ") : null;
   };
 
@@ -250,13 +250,13 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
       <div className="relative pl-4">
         {/* Vertical timeline line */}
         <div className="absolute left-[7px] top-2 bottom-2 w-px bg-neutral-200 dark:bg-neutral-700" />
-        
+
         <div className="space-y-3">
           {allSteps.map((step, index) => {
             const metadataText = formatMetadataInline(step.metadata);
-            
+
             const isFinalStep = step.id === "final" && step.status === "success";
-            
+
             return (
               <div key={step.id || index} className="relative flex items-start gap-3">
                 {/* Timeline dot */}
@@ -278,28 +278,28 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                       </span>
                     )}
                   </div>
-                  
+
                   {/* Message - only show if different from name AND error */}
                   {step.message && step.message !== step.name && step.message !== step.error && (
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                       {step.message}
                     </p>
                   )}
-                  
+
                   {/* Inline metadata */}
                   {metadataText && (
                     <p className="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono mt-0.5">
                       {metadataText}
                     </p>
                   )}
-                  
+
                   {/* Error - shown in gray like other messages */}
                   {step.error && typeof step.error === 'string' && step.error.length > 0 && (
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                       {step.error}
                     </p>
                   )}
-                  
+
                   {/* Expandable detailed information */}
                   {(step.stackTrace || step.consoleLogs?.length || step.networkRequests?.length || step.metadata?.fields?.length) && (
                     <div className="mt-2">
@@ -319,7 +319,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                           </>
                         )}
                       </button>
-                      
+
                       {expandedSteps.has(step.id || `step-${index}`) && (
                         <div className="mt-2 space-y-2 pl-2 border-l-2 border-neutral-200 dark:border-neutral-700">
                           {/* Stack Trace */}
@@ -331,7 +331,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                               </pre>
                             </div>
                           )}
-                          
+
                           {/* Console Logs */}
                           {step.consoleLogs && step.consoleLogs.length > 0 && (
                             <div>
@@ -346,7 +346,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                               </div>
                             </div>
                           )}
-                          
+
                           {/* Network Requests */}
                           {step.networkRequests && step.networkRequests.length > 0 && (
                             <div>
@@ -364,7 +364,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                               </div>
                             </div>
                           )}
-                          
+
                           {/* Form Field Values */}
                           {step.metadata?.fields && Array.isArray(step.metadata.fields) && step.metadata.fields.length > 0 && (
                             <div>
@@ -409,7 +409,7 @@ interface TestRunWithComputed extends TestRun {
 const getStatusRowBg = (status: string, isSelected: boolean, isChecked: boolean): string => {
   if (isChecked) return "bg-blue-50 dark:bg-blue-900/30";
   if (isSelected) return "bg-neutral-100 dark:bg-neutral-700/50";
-  
+
   switch (status) {
     case "SUCCESS":
       return "bg-green-50 dark:bg-green-950/30";
@@ -436,12 +436,12 @@ const TestResults: React.FC = () => {
   const [isBulkRunning, setIsBulkRunning] = useState(false);
   const [notes, setNotes] = useState<string>("");
   const [isSavingNotes, setIsSavingNotes] = useState(false);
-  
+
   // Comparison mode state
   const [comparisonMode, setComparisonMode] = useState(false);
   const [comparisonIds, setComparisonIds] = useState<[number | null, number | null]>([null, null]);
   const [showComparison, setShowComparison] = useState(false);
-  
+
   // Table selection
   const {
     selectedIds,
@@ -616,9 +616,9 @@ const TestResults: React.FC = () => {
 
   const handleComparisonSelect = (id: number) => {
     if (!comparisonMode) return;
-    
+
     const [first, second] = comparisonIds;
-    
+
     if (first === id) {
       // Deselect first
       setComparisonIds([second, null]);
@@ -755,14 +755,14 @@ const TestResults: React.FC = () => {
     try {
       // Get unique form/payment method/amount/interval combinations from selected tests
       const selectedTests = finishedTests.filter((tr) => ids.includes(tr.id));
-      
+
       // Group by form, payment method, amount, and interval to preserve original test parameters
       const combinations = new Map<string, { formId: number; paymentMethodId: number; amount?: string; interval?: string }>();
       for (const test of selectedTests) {
         const key = `${test.formId}-${test.paymentMethodId}-${test.amount ?? 'default'}-${test.interval ?? 'default'}`;
         if (!combinations.has(key)) {
-          combinations.set(key, { 
-            formId: test.formId, 
+          combinations.set(key, {
+            formId: test.formId,
             paymentMethodId: test.paymentMethodId,
             amount: test.amount,
             interval: test.interval
@@ -866,7 +866,7 @@ const TestResults: React.FC = () => {
   const handleExportCsv = () => {
     // CSV header
     const headers = ["ID", "UUID", "Form", "Bezahlmethode", "Status", "Dauer (ms)", "Fehler", "Geplant", "Notizen", "Datum"];
-    
+
     // CSV rows
     const rows = finishedTests.map((tr) => [
       tr.id,
@@ -950,7 +950,7 @@ const TestResults: React.FC = () => {
                 onClick={handleExportAllJson}
                 variant="ghost"
                 size="sm"
-                 className="gap-2 font-mono text-[10px]">
+                className="gap-2 font-mono text-[10px]">
                 <Download size={12} />
                 JSON
               </Button>
@@ -1237,11 +1237,10 @@ const TestResults: React.FC = () => {
                         tabIndex={0}
                         role="button"
                         aria-selected={isRowSelected}
-                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
-                          comparisonMode && isCompSelected 
-                            ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset" 
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${comparisonMode && isCompSelected
+                            ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset"
                             : getStatusRowBg(testRun.status, isRowSelected, isChecked)
-                        }`}
+                          }`}
                         onClick={() => comparisonMode ? handleComparisonSelect(testRun.id) : handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
@@ -1359,7 +1358,7 @@ const TestResults: React.FC = () => {
         <DrawerContent className="w-full">
           {/* Top Title Bar with Action Buttons */}
           <div className="items-center justify-between gap-4 pb-4 border-b border-neutral-200 dark:border-neutral-700 flex-shrink-0">
-           
+
             {/* Action buttons */}
             {selectedTestRunData && (
               <div className="mb-4 flex items-center gap-2 flex-shrink-0">
@@ -1407,7 +1406,7 @@ const TestResults: React.FC = () => {
                 )}
               </div>
             )}
-             <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0">
               <span className={`${CONFIG.style.title.className} flex items-center gap-3`}>
                 {selectedTestRunData && (
                   <>

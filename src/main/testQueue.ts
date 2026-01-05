@@ -87,6 +87,19 @@ class TestQueue {
     console.log(`[TestQueue] Starting test ${testRunId} (waited ${waitTime}ms in queue). Remaining in queue: ${this.queue.length}`);
 
     try {
+      // Verify test is still QUEUED in database before starting
+      const dbTest = testRunQueries.getById(testRunId);
+      if (!dbTest || dbTest.status !== 'QUEUED') {
+        console.log(`[TestQueue] Test ${testRunId} is no longer QUEUED in database (status: ${dbTest?.status || 'missing'}), skipping`);
+        this.currentTest = null;
+        this.isProcessing = false;
+        // Continue processing next test
+        if (this.queue.length > 0) {
+          this.processNext();
+        }
+        return;
+      }
+
       // Update status from QUEUED to RUNNING when test actually starts
       testRunQueries.updateStatus(testRunId, "RUNNING");
       
@@ -95,6 +108,11 @@ class TestQueue {
       console.log(`[TestQueue] Test ${testRunId} completed`);
     } catch (error) {
       console.error(`[TestQueue] Test ${testRunId} failed with error:`, error);
+      // Ensure test is marked as FAILURE if it failed
+      const dbTest = testRunQueries.getById(testRunId);
+      if (dbTest && dbTest.status === 'RUNNING') {
+        testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error));
+      }
     } finally {
       this.currentTest = null;
       this.isProcessing = false;
@@ -102,10 +120,97 @@ class TestQueue {
       // Small delay between tests to ensure clean state
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Process next test if any
+      // ALWAYS process next test if any - ensures queue never gets stuck
       if (this.queue.length > 0) {
         this.processNext();
+      } else {
+        // Check database for any QUEUED tests that might not be in memory queue
+        this.recoverStuckTests();
       }
+    }
+  }
+
+  /**
+   * Recover tests that are QUEUED in database but not in memory queue
+   * This can happen if the app restarts or queue gets out of sync
+   */
+  private async recoverStuckTests(): Promise<void> {
+    // Check if we're already processing
+    if (this.isProcessing) {
+      return;
+    }
+
+    // Get all QUEUED tests from database
+    const allTests = testRunQueries.getAll();
+    const queuedTests = allTests.filter(t => t.status === 'QUEUED');
+    
+    if (queuedTests.length === 0) {
+      return;
+    }
+
+    console.log(`[TestQueue] Found ${queuedTests.length} QUEUED test(s) in database that are not in memory queue - recovering...`);
+
+    // Get forms and payment methods for queued tests
+    const { formQueries, paymentMethodQueries } = await import('./database');
+    const { settingsQueries } = await import('./database');
+    const { customScriptQueries } = await import('./database');
+    
+    for (const test of queuedTests) {
+      // Skip if already in queue
+      if (this.queue.some(q => q.testRunId === test.id)) {
+        continue;
+      }
+
+      const form = formQueries.getById(test.formId || 0);
+      const paymentMethod = await paymentMethodQueries.getById(test.paymentMethodId || 0);
+
+      // Skip orphaned tests (form or payment method deleted)
+      if (!form || !paymentMethod) {
+        console.log(`[TestQueue] Skipping orphaned test ${test.id} (form or payment method missing)`);
+        continue;
+      }
+
+      // Get settings
+      const settings = settingsQueries.getAll();
+      const settingsMap = settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {} as Record<string, string>);
+
+      // Get custom scripts
+      const customScripts = customScriptQueries.getScriptsForTest(form.id);
+      const settingsWithScripts = { ...settingsMap, customScripts };
+
+      // Re-enqueue the test
+      console.log(`[TestQueue] Re-enqueuing test ${test.id} (${form.name} × ${paymentMethod.name})`);
+      this.queue.push({
+        testRunId: test.id,
+        form,
+        paymentMethod,
+        settings: settingsWithScripts,
+        qualityTestOptions: undefined,
+        addedAt: Date.now()
+      });
+    }
+
+    // Start processing if we added tests
+    if (this.queue.length > 0 && !this.isProcessing) {
+      console.log(`[TestQueue] Starting recovery processing for ${this.queue.length} test(s)`);
+      this.processNext();
+    }
+  }
+
+  /**
+   * Manually trigger queue processing
+   * Useful when user wants to start processing queued tests
+   */
+  async triggerProcessing(): Promise<void> {
+    // First recover any stuck tests
+    await this.recoverStuckTests();
+    
+    // Then start processing if not already
+    if (!this.isProcessing && this.queue.length > 0) {
+      this.processNext();
     }
   }
 
@@ -129,6 +234,12 @@ class TestQueue {
         console.log(`[TestQueue] Sync fix: currentTest ${this.currentTest.testRunId} is ${dbTest?.status || 'missing'} in DB, resetting queue state`);
         this.currentTest = null;
         this.isProcessing = false;
+        
+        // Try to recover and continue processing
+        if (this.queue.length > 0) {
+          console.log(`[TestQueue] Attempting to continue processing after sync fix`);
+          this.processNext();
+        }
       }
     }
     
@@ -144,6 +255,12 @@ class TestQueue {
     
     if (validQueue.length !== this.queue.length) {
       this.queue = validQueue;
+    }
+
+    // If not processing but queue has items, try to start processing
+    if (!this.isProcessing && this.queue.length > 0) {
+      console.log(`[TestQueue] Queue has ${this.queue.length} items but not processing - starting processing`);
+      this.processNext();
     }
 
     return {

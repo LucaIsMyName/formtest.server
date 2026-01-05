@@ -366,13 +366,104 @@ const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (sugge
   );
 };
 
+// Helper function to check if message has AI-generated suggestions (exported for use in parent)
+export function hasAISuggestions(content: string): boolean {
+  const blocks = parseAIResponse(content);
+  return blocks.some((b): b is SuggestionsBlock => b.type === "suggestions");
+}
+
 interface AIChatMessagesProps {
   messages: AIMessage[];
   isLoading: boolean;
   onSuggestionClick?: (suggestion: string) => void;
 }
 
-const SUGGESTIONS = ["Fehlgeschlagene Tests", "Erfolgsrate der Formulare", "Letzte Testergebnisse", "Aktive Formulare", "Bezahlmethoden Status", "Test-Statistiken", "Probleme identifizieren", "Zeitplan-Übersicht"];
+// Default suggestions for empty chat
+const DEFAULT_SUGGESTIONS = [
+  "Analysiere fehlgeschlagene Tests",
+  "Zeige Erfolgsrate der Formulare",
+  "Vergleiche Test-Ergebnisse der letzten 7 Tage",
+  "Welche Formular+Bezahlmethode Kombinationen funktionieren am besten?",
+  "Analysiere Trends der letzten 30 Tage",
+  "Warum sind bestimmte Tests fehlgeschlagen?",
+  "Zeige Statistiken zu aktiven Formularen",
+  "Vergleiche Erfolgsraten zwischen Bezahlmethoden"
+];
+
+// Generate context-aware suggestions based on message content
+function generateAutoSuggestions(messageContent: string): string[] {
+  const content = messageContent.toLowerCase();
+  const suggestions: string[] = [];
+  
+  // If message mentions failures/errors
+  if (content.includes('fehlgeschlagen') || content.includes('fehler') || content.includes('failure') || content.includes('error')) {
+    suggestions.push("Analysiere fehlgeschlagene Tests im Detail");
+    suggestions.push("Warum sind diese Tests fehlgeschlagen?");
+    suggestions.push("Zeige Fehlerursachen der letzten Tests");
+  }
+  
+  // If message mentions success rate
+  if (content.includes('erfolgsrate') || content.includes('success rate') || content.includes('erfolgreich')) {
+    suggestions.push("Vergleiche Erfolgsraten zwischen Formularen");
+    suggestions.push("Zeige Erfolgsrate Trend der letzten 30 Tage");
+    suggestions.push("Welche Kombinationen haben die beste Erfolgsrate?");
+  }
+  
+  // If message mentions forms
+  if (content.includes('formular') || content.includes('form')) {
+    suggestions.push("Vergleiche alle Formulare");
+    suggestions.push("Zeige Statistiken zu jedem Formular");
+    suggestions.push("Welches Formular hat die meisten Tests?");
+  }
+  
+  // If message mentions payment methods
+  if (content.includes('bezahlmethode') || content.includes('payment') || content.includes('zahlung')) {
+    suggestions.push("Vergleiche Erfolgsraten zwischen Bezahlmethoden");
+    suggestions.push("Welche Bezahlmethode funktioniert am besten?");
+    suggestions.push("Zeige Statistiken zu allen Bezahlmethoden");
+  }
+  
+  // If message mentions time/trends
+  if (content.includes('trend') || content.includes('zeit') || content.includes('tagen') || content.includes('woche') || content.includes('monat')) {
+    suggestions.push("Analysiere Trends der letzten 7 Tage");
+    suggestions.push("Vergleiche verschiedene Zeiträume");
+    suggestions.push("Zeige Entwicklung der Erfolgsrate über Zeit");
+  }
+  
+  // If message mentions statistics/stats
+  if (content.includes('statistik') || content.includes('statistiken') || content.includes('statistics') || content.includes('daten')) {
+    suggestions.push("Zeige detaillierte Test-Statistiken");
+    suggestions.push("Analysiere Daten aus verschiedenen Zeiträumen");
+    suggestions.push("Vergleiche aggregierte Daten");
+  }
+  
+  // If message mentions combinations
+  if (content.includes('kombination') || content.includes('combination')) {
+    suggestions.push("Zeige beste und schlechteste Kombinationen");
+    suggestions.push("Analysiere alle Formular+Bezahlmethode Kombinationen");
+    suggestions.push("Welche Kombinationen sollten vermieden werden?");
+  }
+  
+  // Fill remaining slots with general suggestions if needed
+  const generalSuggestions = [
+    "Analysiere fehlgeschlagene Tests",
+    "Zeige Erfolgsrate der letzten 7 Tage",
+    "Vergleiche Test-Ergebnisse zwischen Formularen",
+    "Welche Formular+Bezahlmethode Kombinationen funktionieren am besten?",
+    "Analysiere Trends der letzten 30 Tage",
+    "Warum sind bestimmte Tests fehlgeschlagen?"
+  ];
+  
+  // Add general suggestions until we have 3-4 total
+  while (suggestions.length < 3) {
+    const randomSuggestion = generalSuggestions[Math.floor(Math.random() * generalSuggestions.length)];
+    if (!suggestions.includes(randomSuggestion)) {
+      suggestions.push(randomSuggestion);
+    }
+  }
+  
+  return suggestions.slice(0, 4); // Return max 4 suggestions
+}
 
 const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, onSuggestionClick }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -394,7 +485,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
         <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100 mb-1">Wie kann ich helfen?</h3>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-6 text-left">Frag mich nach Formularen, Bezahlmethoden, Testergebnissen oder lass mich deine Daten analysieren.</p>
         <div className="flex flex-wrap justify-start gap-2 max-w-lg">
-          {SUGGESTIONS.map((suggestion, i) => (
+          {DEFAULT_SUGGESTIONS.slice(0, 6).map((suggestion, i) => (
             <button
               key={i}
               onClick={() => onSuggestionClick?.(suggestion)}
@@ -437,6 +528,24 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
             {/* Message Content */}
             <div className={`select-text flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
               <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={onSuggestionClick} showSuggestions={isLastAIMessage} />}</div>
+              
+              {/* Auto-suggestions for AI messages - only show if AI didn't provide suggestions in its response */}
+              {message.role === "assistant" && isLastAIMessage && !hasAISuggestions(message.content) && (
+                <div className="mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700">
+                  <div className="flex flex-wrap gap-2">
+                    {generateAutoSuggestions(message.content).map((suggestion, i) => (
+                      <button
+                        key={i}
+                        onClick={() => onSuggestionClick?.(suggestion)}
+                        className="text-xs px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
               <p className="text-xs text-neutral-400 mt-1">
                 {new Date(message.createdAt).toLocaleTimeString("de-DE", {
                   hour: "2-digit",

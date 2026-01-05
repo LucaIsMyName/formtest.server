@@ -2569,6 +2569,27 @@ const aiMessageQueries = {
     return stmt.run(chatId);
   }
 };
+const database = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  aiChatQueries,
+  aiMessageQueries,
+  cleanupOldTestRuns,
+  customScriptQueries,
+  exportQueries,
+  formQueries,
+  formScriptQueries,
+  getBaseSelectorConfig,
+  getMergedSelectorConfig,
+  importQueries,
+  initDatabase,
+  notificationQueries,
+  passwordQueries,
+  paymentMethodQueries,
+  selectorOverrideQueries,
+  settingsQueries,
+  testRunQueries,
+  testScheduleQueries
+}, Symbol.toStringTag, { value: "Module" }));
 class TestProcessManager extends events.EventEmitter {
   constructor() {
     super();
@@ -3199,18 +3220,93 @@ class TestQueue {
     const waitTime = Date.now() - this.currentTest.addedAt;
     console.log(`[TestQueue] Starting test ${testRunId} (waited ${waitTime}ms in queue). Remaining in queue: ${this.queue.length}`);
     try {
+      const dbTest = testRunQueries.getById(testRunId);
+      if (!dbTest || dbTest.status !== "QUEUED") {
+        console.log(`[TestQueue] Test ${testRunId} is no longer QUEUED in database (status: ${dbTest?.status || "missing"}), skipping`);
+        this.currentTest = null;
+        this.isProcessing = false;
+        if (this.queue.length > 0) {
+          this.processNext();
+        }
+        return;
+      }
       testRunQueries.updateStatus(testRunId, "RUNNING");
       await runSingleTest(testRunId, form, paymentMethod, settings, qualityTestOptions);
       console.log(`[TestQueue] Test ${testRunId} completed`);
     } catch (error) {
       console.error(`[TestQueue] Test ${testRunId} failed with error:`, error);
+      const dbTest = testRunQueries.getById(testRunId);
+      if (dbTest && dbTest.status === "RUNNING") {
+        testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error));
+      }
     } finally {
       this.currentTest = null;
       this.isProcessing = false;
       await new Promise((resolve) => setTimeout(resolve, 500));
       if (this.queue.length > 0) {
         this.processNext();
+      } else {
+        this.recoverStuckTests();
       }
+    }
+  }
+  /**
+   * Recover tests that are QUEUED in database but not in memory queue
+   * This can happen if the app restarts or queue gets out of sync
+   */
+  async recoverStuckTests() {
+    if (this.isProcessing) {
+      return;
+    }
+    const allTests = testRunQueries.getAll();
+    const queuedTests = allTests.filter((t) => t.status === "QUEUED");
+    if (queuedTests.length === 0) {
+      return;
+    }
+    console.log(`[TestQueue] Found ${queuedTests.length} QUEUED test(s) in database that are not in memory queue - recovering...`);
+    const { formQueries: formQueries2, paymentMethodQueries: paymentMethodQueries2 } = await Promise.resolve().then(() => database);
+    const { settingsQueries: settingsQueries2 } = await Promise.resolve().then(() => database);
+    const { customScriptQueries: customScriptQueries2 } = await Promise.resolve().then(() => database);
+    for (const test of queuedTests) {
+      if (this.queue.some((q) => q.testRunId === test.id)) {
+        continue;
+      }
+      const form = formQueries2.getById(test.formId || 0);
+      const paymentMethod = await paymentMethodQueries2.getById(test.paymentMethodId || 0);
+      if (!form || !paymentMethod) {
+        console.log(`[TestQueue] Skipping orphaned test ${test.id} (form or payment method missing)`);
+        continue;
+      }
+      const settings = settingsQueries2.getAll();
+      const settingsMap = settings.reduce((acc, setting) => {
+        acc[setting.key] = setting.value;
+        return acc;
+      }, {});
+      const customScripts = customScriptQueries2.getScriptsForTest(form.id);
+      const settingsWithScripts = { ...settingsMap, customScripts };
+      console.log(`[TestQueue] Re-enqueuing test ${test.id} (${form.name} × ${paymentMethod.name})`);
+      this.queue.push({
+        testRunId: test.id,
+        form,
+        paymentMethod,
+        settings: settingsWithScripts,
+        qualityTestOptions: void 0,
+        addedAt: Date.now()
+      });
+    }
+    if (this.queue.length > 0 && !this.isProcessing) {
+      console.log(`[TestQueue] Starting recovery processing for ${this.queue.length} test(s)`);
+      this.processNext();
+    }
+  }
+  /**
+   * Manually trigger queue processing
+   * Useful when user wants to start processing queued tests
+   */
+  async triggerProcessing() {
+    await this.recoverStuckTests();
+    if (!this.isProcessing && this.queue.length > 0) {
+      this.processNext();
     }
   }
   /**
@@ -3224,6 +3320,10 @@ class TestQueue {
         console.log(`[TestQueue] Sync fix: currentTest ${this.currentTest.testRunId} is ${dbTest?.status || "missing"} in DB, resetting queue state`);
         this.currentTest = null;
         this.isProcessing = false;
+        if (this.queue.length > 0) {
+          console.log(`[TestQueue] Attempting to continue processing after sync fix`);
+          this.processNext();
+        }
       }
     }
     const validQueue = this.queue.filter((t) => {
@@ -3236,6 +3336,10 @@ class TestQueue {
     });
     if (validQueue.length !== this.queue.length) {
       this.queue = validQueue;
+    }
+    if (!this.isProcessing && this.queue.length > 0) {
+      console.log(`[TestQueue] Queue has ${this.queue.length} items but not processing - starting processing`);
+      this.processNext();
     }
     return {
       queueLength: this.queue.length,
@@ -4275,18 +4379,31 @@ class OllamaProvider extends BaseAIProvider {
 }
 const SYSTEM_PROMPT = `Du bist ein hilfreicher Assistent für die FormTest Server Anwendung - eine Desktop-App zum automatisierten Testen von Spendenformularen.
 
-DEINE FÄHIGKEITEN:
-- Formulare, Bezahlmethoden, Tests und Zeitpläne suchen und analysieren
-- Testdaten zusammenfassen und Trends erkennen
-- Probleme identifizieren und Lösungen vorschlagen
-- Fragen zur Anwendung beantworten
-- Formular-Analyse mit Empfehlungen zur Verbesserung der Erfolgsrate
-- Beste und schlechteste Formular+Bezahlmethode Kombinationen analysieren
+WICHTIG - DEINE BESCHRÄNKUNGEN:
+Du kannst NUR Daten aus der App abrufen, analysieren und präsentieren. Du kannst KEINE Aktionen ausführen wie:
+- ❌ Tests starten oder ausführen
+- ❌ Formulare oder Bezahlmethoden erstellen/bearbeiten
+- ❌ Zeitpläne erstellen oder ändern
+- ❌ Einstellungen ändern
+- ❌ Irgendwelche Systemänderungen vornehmen
+
+DEINE FÄHIGKEITEN (NUR DATENANALYSE):
+✅ Formulare, Bezahlmethoden, Tests und Zeitpläne suchen und analysieren
+✅ Testdaten zusammenfassen und Trends erkennen
+✅ Probleme identifizieren und analysieren (warum Tests fehlgeschlagen sind)
+✅ Statistiken und Daten in aggregierter und kuratierter Form präsentieren
+✅ Daten aus verschiedenen Tests und Zeiträumen kombinieren und vergleichen
+✅ Fragen zur Anwendung beantworten
+✅ Formular-Analyse mit Empfehlungen zur Verbesserung der Erfolgsrate
+✅ Beste und schlechteste Formular+Bezahlmethode Kombinationen analysieren
+✅ Zeitreihen-Analysen (Trends über Zeit)
+✅ Fehleranalyse (warum bestimmte Tests fehlgeschlagen sind)
 
 SPEZIELLE ANALYSEN:
 - Du hast Zugriff auf Statistiken zu Formular+Bezahlmethode Kombinationen
 - Nutze diese für Empfehlungen welche Kombinationen gut/schlecht funktionieren
-- Bei Formular-Analysen: Gib konkrete Handlungsempfehlungen
+- Bei Formular-Analysen: Gib konkrete Handlungsempfehlungen basierend auf Daten
+- Analysiere Fehlermeldungen und Test-Logs um Ursachen zu identifizieren
 
 AUSGABEFORMAT - SEHR WICHTIG:
 Du MUSST deine Antwort als JSON-Array von Blöcken formatieren. Jeder Block hat einen "type" und weitere Felder.
@@ -4315,6 +4432,7 @@ VERFÜGBARE BLOCK-TYPEN:
 {"type": "suggestions", "items": ["Vorschlag 1", "Vorschlag 2", "Vorschlag 3"]}
 - Füge IMMER 2-3 relevante Follow-up Fragen am Ende hinzu
 - Die Vorschläge sollten zum Kontext der Antwort passen
+- WICHTIG: Vorschläge müssen NUR für Datenanalyse sein (keine Aktionen wie "Test starten")
 
 BEISPIEL-ANTWORT für "Analysiere die Testergebnisse":
 [
@@ -4323,7 +4441,7 @@ BEISPIEL-ANTWORT für "Analysiere die Testergebnisse":
   {"type": "table", "headers": ["Kategorie", "Anzahl", "Prozent"], "rows": [["Erfolgreich", "208", "88%"], ["Fehlgeschlagen", "29", "12%"]]},
   {"type": "heading", "level": 3, "content": "Fazit"},
   {"type": "text", "content": "Die Erfolgsrate von 88% ist gut. Die fehlgeschlagenen Tests sollten untersucht werden."},
-  {"type": "suggestions", "items": ["Zeige fehlgeschlagene Tests", "Welches Formular hat die meisten Fehler?", "Teste alle Formulare erneut"]}
+  {"type": "suggestions", "items": ["Analysiere fehlgeschlagene Tests im Detail", "Welches Formular hat die meisten Fehler?", "Zeige Erfolgsrate der letzten 7 Tage"]}
 ]
 
 LINKS:
@@ -4944,6 +5062,11 @@ function setupIpcHandlers() {
     const result = await testQueue.stopAll();
     return { success: true, ...result };
   });
+  electron.ipcMain.handle("testQueue:triggerProcessing", async () => {
+    const testQueue = getTestQueue();
+    await testQueue.triggerProcessing();
+    return { success: true };
+  });
   electron.ipcMain.handle("database:export", async (_event, options) => {
     try {
       console.log("IPC: Exporting database with options:", options);
@@ -5493,6 +5616,10 @@ electron.app.whenReady().then(() => {
   initDatabase();
   setupIpcHandlers();
   scheduler.init();
+  const testQueue = getTestQueue();
+  setTimeout(() => {
+    testQueue.getStatus();
+  }, 2e3);
   createWindow();
   electron.app.on("activate", function() {
     if (electron.BrowserWindow.getAllWindows().length === 0) createWindow();

@@ -62,6 +62,12 @@ app.whenReady().then(() => {
   // Initialize scheduler
   scheduler.init();
 
+  // Recover any stuck QUEUED tests on startup
+  const testQueue = getTestQueue();
+  setTimeout(() => {
+    testQueue.getStatus(); // This will trigger recovery if needed
+  }, 2000); // Wait 2 seconds for database to be fully initialized
+
   createWindow();
 
   app.on("activate", function () {

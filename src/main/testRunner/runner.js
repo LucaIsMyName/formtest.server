@@ -980,17 +980,28 @@ class TestRunner {
       // Ignore
     }
     
-    await this.handlePaymentMethod(paymentMethod, formAnalysis)
-    
-    // Get console errors during payment selection
-    const paymentConsoleErrors = this.consoleLogs
-      .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(paymentStartTime))
-    
-    this.completeStep('payment-selection', 'success', `Zahlungsmethode ausgewählt: ${paymentMethod.type}`, {
-      paymentMethod: paymentMethod.type,
-      selector: paymentSelector || 'auto-detected',
-      consoleErrors: paymentConsoleErrors.length
-    })
+    try {
+      await this.handlePaymentMethod(paymentMethod, formAnalysis)
+      
+      // Get console errors during payment selection
+      const paymentConsoleErrors = this.consoleLogs
+        .filter(log => log.type === 'error' && new Date(log.timestamp) >= new Date(paymentStartTime))
+      
+      this.completeStep('payment-selection', 'success', `Zahlungsmethode ausgewählt: ${paymentMethod.type}`, {
+        paymentMethod: paymentMethod.type,
+        selector: paymentSelector || 'auto-detected',
+        consoleErrors: paymentConsoleErrors.length
+      })
+    } catch (paymentError) {
+      // Payment method selection failed - mark as failure
+      this.log(`Payment method selection failed: ${paymentError.message}`)
+      this.failStep('payment-selection', `Zahlungsmethode konnte nicht ausgewählt werden: ${paymentError.message}`, {
+        paymentMethod: paymentMethod.type,
+        error: paymentError.message,
+        stackTrace: paymentError.stack
+      })
+      throw paymentError // Re-throw to fail the test
+    }
 
     // HOOK: after_payment
     await this.runScriptsAtHook('after_payment', form, paymentMethod, testRunInfo)
@@ -3314,12 +3325,34 @@ class TestRunner {
     }
 
     if (!paymentMethodSelected) {
+      // Check if this is PayPal + recurring (expected to fail)
+      const interval = parseInt(this.config.defaultInterval || '0')
+      const isRecurring = interval > 0
+      const isPayPal = paymentMethod.type.toLowerCase() === 'paypal'
+      
+      if (isPayPal && isRecurring) {
+        // PayPal doesn't support recurring - this is expected to fail
+        this.log(`⚠ PayPal does not support recurring donations - payment method selector not available (expected behavior)`)
+        throw new Error('PayPal does not support recurring donations. Payment method selector not available.')
+      }
+      
       this.log(`⚠ Could not find payment method selector for: ${paymentMethod.type}`)
-      return
+      throw new Error(`Payment method selector not found for ${paymentMethod.type}`)
     }
 
     // IMPORTANT: Wait for the payment form to become visible
-    await this.waitForPaymentFormVisibility(paymentMethod.type)
+    // For PayPal + recurring, this will fail (expected)
+    const formVisible = await this.waitForPaymentFormVisibility(paymentMethod.type)
+    
+    // Check if PayPal + recurring combination (form won't be visible)
+    const interval = parseInt(this.config.defaultInterval || '0')
+    const isRecurring = interval > 0
+    const isPayPal = paymentMethod.type.toLowerCase() === 'paypal'
+    
+    if (isPayPal && isRecurring && !formVisible) {
+      this.log(`⚠ PayPal form not visible for recurring donation - this combination is not supported`)
+      throw new Error('PayPal does not support recurring donations. Form cannot be filled.')
+    }
     
     // Log state after selection
     await this.logPaymentFormState()
