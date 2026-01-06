@@ -8,7 +8,6 @@ import TestRunDialog from "../components/TestRunDialog";
 import Button from "../components/ui/Button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
-import Button from "../components/ui/Button";
 import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, TrendingUp, TrendingDown, Calendar, X } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";

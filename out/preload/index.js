@@ -183,6 +183,22 @@ const api = {
     context: {
       getData: () => electron.ipcRenderer.invoke("ai:context:getData")
     }
+  },
+  // Tag operations
+  tags: {
+    getAll: () => electron.ipcRenderer.invoke("tags:getAll"),
+    getById: (id) => electron.ipcRenderer.invoke("tags:getById", id),
+    create: (name, color) => electron.ipcRenderer.invoke("tags:create", name, color),
+    update: (id, name, color) => electron.ipcRenderer.invoke("tags:update", id, name, color),
+    delete: (id) => electron.ipcRenderer.invoke("tags:delete", id)
+  },
+  // Filter preset operations
+  filterPresets: {
+    getAll: () => electron.ipcRenderer.invoke("filterPresets:getAll"),
+    getById: (id) => electron.ipcRenderer.invoke("filterPresets:getById", id),
+    create: (name, filterConfig) => electron.ipcRenderer.invoke("filterPresets:create", name, filterConfig),
+    update: (id, name, filterConfig) => electron.ipcRenderer.invoke("filterPresets:update", id, name, filterConfig),
+    delete: (id) => electron.ipcRenderer.invoke("filterPresets:delete", id)
   }
 };
 if (process.contextIsolated) {

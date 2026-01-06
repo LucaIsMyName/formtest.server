@@ -1061,6 +1061,7 @@ function initDatabase() {
   migrateTestRunArchiving();
   migrateTestRunTags();
   migrateTagDefinitions();
+  migrateFilterPresets();
   cleanupOldTestRuns();
   console.log("Database: Initialization complete");
 }
@@ -1170,6 +1171,79 @@ function migrateRemoveScreenshotColumn() {
     }
   } catch (error) {
     console.error("Database: Error removing screenshotPath column:", error);
+  }
+}
+function migrateTestRunArchiving() {
+  console.log("Database: Checking for test_runs isArchived column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasIsArchived = columns.some((col) => col.name === "isArchived");
+    if (!hasIsArchived) {
+      console.log("Database: Adding isArchived column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN isArchived INTEGER DEFAULT 0");
+      const updateStmt = db.prepare("UPDATE test_runs SET isArchived = 0 WHERE isArchived IS NULL");
+      const result = updateStmt.run();
+      console.log(`Database: Initialized isArchived column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run archiving migration error:", error);
+  }
+}
+function migrateTestRunTags() {
+  console.log("Database: Checking for test_runs tags column...");
+  try {
+    const columns = db.prepare("PRAGMA table_info(test_runs)").all();
+    const hasTags = columns.some((col) => col.name === "tags");
+    if (!hasTags) {
+      console.log("Database: Adding tags column to test_runs...");
+      db.exec("ALTER TABLE test_runs ADD COLUMN tags TEXT DEFAULT '[]'");
+      const updateStmt = db.prepare("UPDATE test_runs SET tags = '[]' WHERE tags IS NULL");
+      const result = updateStmt.run();
+      console.log(`Database: Initialized tags column for ${result.changes} existing test runs`);
+    }
+  } catch (error) {
+    console.error("Database: Test run tags migration error:", error);
+  }
+}
+function migrateTagDefinitions() {
+  console.log("Database: Checking for tag_definitions table...");
+  try {
+    const tableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='tag_definitions'").get();
+    if (!tableExists) {
+      console.log("Database: Creating tag_definitions table...");
+      db.exec(`
+        CREATE TABLE tag_definitions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL UNIQUE,
+          color TEXT DEFAULT '#3B82F6',
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      console.log("Database: Created tag_definitions table");
+    }
+  } catch (error) {
+    console.error("Database: Tag definitions migration error:", error);
+  }
+}
+function migrateFilterPresets() {
+  console.log("Database: Checking for filter_presets table...");
+  try {
+    const tableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='filter_presets'").get();
+    if (!tableExists) {
+      console.log("Database: Creating filter_presets table...");
+      db.exec(`
+        CREATE TABLE filter_presets (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          filterConfig TEXT NOT NULL,
+          createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      console.log("Database: Created filter_presets table");
+    }
+  } catch (error) {
+    console.error("Database: Filter presets migration error:", error);
   }
 }
 function cleanupOldTestRuns() {
@@ -1616,6 +1690,7 @@ const testRunQueries = {
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
       isArchived: Boolean(row.isArchived),
+      tags: row.tags ? JSON.parse(row.tags) : [],
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     }));
@@ -1640,6 +1715,7 @@ const testRunQueries = {
       steps: row.steps ? JSON.parse(row.steps) : [],
       isScheduled: Boolean(row.isScheduled),
       isArchived: Boolean(row.isArchived),
+      tags: row.tags ? JSON.parse(row.tags) : [],
       seoResults: row.seoResults ? JSON.parse(row.seoResults) : void 0,
       accessibilityResults: row.accessibilityResults ? JSON.parse(row.accessibilityResults) : void 0
     }));
@@ -2216,6 +2292,41 @@ const tagQueries = {
     return stmt.run(id);
   }
 };
+const filterPresetQueries = {
+  getAll: () => {
+    const rows = db.prepare("SELECT * FROM filter_presets ORDER BY name ASC").all();
+    return rows.map((row) => ({
+      ...row,
+      filterConfig: JSON.parse(row.filterConfig),
+      createdAt: new Date(row.createdAt),
+      updatedAt: new Date(row.updatedAt)
+    }));
+  },
+  getById: (id) => {
+    const row = db.prepare("SELECT * FROM filter_presets WHERE id = ?").get(id);
+    if (!row) return void 0;
+    return {
+      ...row,
+      filterConfig: JSON.parse(row.filterConfig),
+      createdAt: new Date(row.createdAt),
+      updatedAt: new Date(row.updatedAt)
+    };
+  },
+  create: (name, filterConfig) => {
+    const stmt = db.prepare("INSERT INTO filter_presets (name, filterConfig) VALUES (?, ?)");
+    const result = stmt.run(name, JSON.stringify(filterConfig));
+    return filterPresetQueries.getById(result.lastInsertRowid);
+  },
+  update: (id, name, filterConfig) => {
+    const stmt = db.prepare("UPDATE filter_presets SET name = ?, filterConfig = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?");
+    stmt.run(name, JSON.stringify(filterConfig), id);
+    return filterPresetQueries.getById(id);
+  },
+  delete: (id) => {
+    const stmt = db.prepare("DELETE FROM filter_presets WHERE id = ?");
+    return stmt.run(id);
+  }
+};
 const notificationQueries = {
   getAll: () => {
     const notifications = db.prepare("SELECT * FROM notifications ORDER BY createdAt DESC").all();
@@ -2645,6 +2756,7 @@ const database = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProp
   cleanupOldTestRuns,
   customScriptQueries,
   exportQueries,
+  filterPresetQueries,
   formQueries,
   formScriptQueries,
   getBaseSelectorConfig,
@@ -4977,6 +5089,11 @@ function setupIpcHandlers() {
   electron.ipcMain.handle("tags:create", (_, name, color) => tagQueries.create(name, color));
   electron.ipcMain.handle("tags:update", (_, id, name, color) => tagQueries.update(id, name, color));
   electron.ipcMain.handle("tags:delete", (_, id) => tagQueries.delete(id));
+  electron.ipcMain.handle("filterPresets:getAll", () => filterPresetQueries.getAll());
+  electron.ipcMain.handle("filterPresets:getById", (_, id) => filterPresetQueries.getById(id));
+  electron.ipcMain.handle("filterPresets:create", (_, name, filterConfig) => filterPresetQueries.create(name, filterConfig));
+  electron.ipcMain.handle("filterPresets:update", (_, id, name, filterConfig) => filterPresetQueries.update(id, name, filterConfig));
+  electron.ipcMain.handle("filterPresets:delete", (_, id) => filterPresetQueries.delete(id));
   electron.ipcMain.handle("testRuns:stop", (_, id) => {
     const testQueue = getTestQueue();
     testQueue.removeFromQueue(id);

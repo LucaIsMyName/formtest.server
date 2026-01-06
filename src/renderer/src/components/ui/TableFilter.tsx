@@ -1,7 +1,7 @@
 import React from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, Tag } from "lucide-react";
 import { Input } from "./Input";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "./Select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./Select";
 import { Badge, StatusBadge } from "./Badge";
 import { Checkbox } from "./Checkbox";
 
