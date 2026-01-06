@@ -1363,21 +1363,29 @@ const TestResults: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="px-4 w-[80px]">UUID</TableHead>
+                    <TableHead className="px-4 w-[40px]"></TableHead>
+                    <TableHead className="px-4 w-[100px]">Aktionen</TableHead>
+                    <TableHead className="px-4 min-w-[180px] max-w-[200px]">Formular</TableHead>
+                    <TableHead className="px-4 min-w-[200px] max-w-[220px]">Bezahlmethode</TableHead>
+                    <TableHead className="px-4 w-[90px]">Status</TableHead>
                     <TableHead className="px-4 w-[70px] text-left"><Bot size={14} className="inline" /></TableHead>
-                    <TableHead className="px-4 min-w-[160px]">Formular</TableHead>
-                    <TableHead className="px-4 min-w-[160px]">Bezahlmethode</TableHead>
                     <TableHead className="px-4 w-[80px]">Betrag</TableHead>
                     <TableHead className="px-4 w-[100px]">Intervall</TableHead>
-                    <TableHead className="px-4 w-[150px]">Gestartet</TableHead>
                     <TableHead className="px-4 w-[70px]">Dauer</TableHead>
-                    <TableHead className="px-4 w-[90px]">Status</TableHead>
-                    <TableHead className="px-4 w-[80px] text-right">Aktionen</TableHead>
+                    <SortableTableHead
+                      className="px-4 w-[150px]"
+                      sortDirection={getSortDirection("runAt")}
+                      onSort={() => requestSort("runAt")}>
+                      Datum
+                    </SortableTableHead>
+                    <TableHead className="px-4 w-[120px]">Tags</TableHead>
+                    <TableHead className="px-4 w-[80px]">UUID</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {activeTests.map((testRun) => {
-                    const isSelected = selectedTestRun === testRun.id;
+                    const isRowSelected = selectedTestRun === testRun.id;
+                    const isChecked = isSelected(testRun.id);
                     const isQueued = testRun.status === "QUEUED";
                     const isRunning = testRun.status === "RUNNING";
                     return (
@@ -1385,8 +1393,8 @@ const TestResults: React.FC = () => {
                         key={testRun.id}
                         tabIndex={0}
                         role="button"
-                        aria-selected={isSelected}
-                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isSelected ? "bg-neutral-100 dark:bg-neutral-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-neutral-50/50 dark:bg-neutral-800/50" : "bg-white dark:bg-neutral-800"}`}
+                        aria-selected={isRowSelected}
+                        className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${isRowSelected ? "bg-neutral-100 dark:bg-neutral-700" : isRunning ? "animate-blink-running" : isQueued ? "bg-neutral-50/50 dark:bg-neutral-800/50" : "bg-white dark:bg-neutral-800"}`}
                         onClick={() => handleSelectTestRun(testRun.id)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" || e.key === " ") {
@@ -1394,25 +1402,41 @@ const TestResults: React.FC = () => {
                             handleSelectTestRun(testRun.id);
                           }
                         }}>
-                        <TableCell className="px-4">
-                          <div className="flex items-center gap-1 group">
-                            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
-                            {testRun.uuid && (
-                              <button
-                                onClick={(e) => handleCopyUuid(e, testRun.uuid)}
-                                className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                title="ID kopieren">
-                                <Copy size={10} />
-                              </button>
-                            )}
-                          </div>
+                        <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={isChecked}
+                            onCheckedChange={() => toggleItem(testRun.id)}
+                            aria-label={`${testRun.formName} auswählen`}
+                          />
                         </TableCell>
-                        <TableCell className="px-4 text-left">
-                          {testRun.isScheduled ? (
-                            <Bot size={16} className="inline text-blue-500" />
-                          ) : (
-                            <User size={16} className="inline text-green-500" />
-                          )}
+                        <TableCell className="px-4">
+                          <div className="flex items-center justify-start gap-1">
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRunAgain(testRun);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                              title="Test erneut ausführen">
+                              <Play size={16} />
+                            </Button>
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleStopTest(testRun);
+                              }}
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-600 dark:text-red-400"
+                              title="Test stoppen">
+                              <Square
+                                size={14}
+                                fill="currentColor"
+                              />
+                            </Button>
+                          </div>
                         </TableCell>
                         <TableCell className="px-4 max-w-[200px]">
                           <div className="flex items-center gap-1.5 min-w-0">
@@ -1434,35 +1458,61 @@ const TestResults: React.FC = () => {
                             </div>
                           </div>
                         </TableCell>
+                        <TableCell className="px-4">
+                          <StatusBadge status={testRun.status} />
+                        </TableCell>
+                        <TableCell className="px-4 text-left">
+                          {testRun.isScheduled ? (
+                            <Bot size={16} className="inline text-blue-500" />
+                          ) : (
+                            <User size={16} className="inline text-green-500" />
+                          )}
+                        </TableCell>
                         <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
                           {testRun.amount ? `${testRun.amount} €` : "-"}
                         </TableCell>
                         <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
                           {formatInterval(testRun.interval)}
                         </TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
                         <TableCell className="px-4">
                           <RunningTimer runAt={testRun.runAt} isRunning={isRunning} />
                         </TableCell>
-                        <TableCell className="px-4">
-                          <StatusBadge status={testRun.status} />
+                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
+                          {formatDateTime(testRun.runAt)}
                         </TableCell>
-                        <TableCell className="px-4 text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleStopTest(testRun);
-                              }}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600 dark:text-red-400"
-                              title="Test stoppen">
-                              <Square
-                                size={14}
-                                fill="currentColor"
-                              />
-                            </Button>
+                        <TableCell className="px-4 max-w-[200px]">
+                          <div className="flex items-center gap-1 overflow-hidden h-full">
+                            {testRun.tags && testRun.tags.length > 0 ? (
+                              <div className="flex items-center gap-1 overflow-x-auto overflow-y-hidden flex-1 min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                                {testRun.tags.map((tagName, idx) => {
+                                  const tag = tags.find(t => t.name === tagName);
+                                  if (!tag) return null;
+                                  return (
+                                    <Badge
+                                      key={idx}
+                                      style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
+                                      className="border text-[10px] px-1.5 py-0.5 flex-shrink-0 whitespace-nowrap">
+                                      {tag.name}
+                                    </Badge>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-1 group">
+                            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                            {testRun.uuid && (
+                              <button
+                                onClick={(e) => handleCopyUuid(e, testRun.uuid)}
+                                className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="ID kopieren">
+                                <Copy size={10} />
+                              </button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -1903,13 +1953,7 @@ const TestResults: React.FC = () => {
                         aria-label="Alle auswählen"
                       />
                     </TableHead>
-                    <SortableTableHead className="px-4 w-[80px]">UUID</SortableTableHead>
-                    <SortableTableHead
-                      className="px-4 w-[70px] text-left justify-left"
-                      sortDirection={getSortDirection("isScheduled")}
-                      onSort={() => requestSort("isScheduled")}>
-                      <Bot size={14} className="inline" />
-                    </SortableTableHead>
+                    <TableHead className="px-4 w-[100px]">Aktionen</TableHead>
                     <SortableTableHead
                       className="px-4 min-w-[180px] max-w-[200px]"
                       sortDirection={getSortDirection("formName")}
@@ -1921,6 +1965,18 @@ const TestResults: React.FC = () => {
                       sortDirection={getSortDirection("paymentMethodName")}
                       onSort={() => requestSort("paymentMethodName")}>
                       Bezahlmethode
+                    </SortableTableHead>
+                    <SortableTableHead
+                      className="px-4 w-[90px]"
+                      sortDirection={getSortDirection("status")}
+                      onSort={() => requestSort("status")}>
+                      Status
+                    </SortableTableHead>
+                    <SortableTableHead
+                      className="px-4 w-[70px] text-left justify-left"
+                      sortDirection={getSortDirection("isScheduled")}
+                      onSort={() => requestSort("isScheduled")}>
+                      <Bot size={14} className="inline" />
                     </SortableTableHead>
                     <SortableTableHead
                       className="px-4 w-[80px]"
@@ -1935,25 +1991,19 @@ const TestResults: React.FC = () => {
                       Intervall
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4 w-[150px]"
-                      sortDirection={getSortDirection("runAt")}
-                      onSort={() => requestSort("runAt")}>
-                      Datum
-                    </SortableTableHead>
-                    <SortableTableHead
                       className="px-4 w-[70px]"
                       sortDirection={getSortDirection("durationMs")}
                       onSort={() => requestSort("durationMs")}>
                       Dauer
                     </SortableTableHead>
                     <SortableTableHead
-                      className="px-4 w-[90px]"
-                      sortDirection={getSortDirection("status")}
-                      onSort={() => requestSort("status")}>
-                      Status
+                      className="px-4 w-[150px]"
+                      sortDirection={getSortDirection("runAt")}
+                      onSort={() => requestSort("runAt")}>
+                      Datum
                     </SortableTableHead>
                     <TableHead className="px-4 w-[120px]">Tags</TableHead>
-                    <TableHead className="px-4 w-[80px] text-right">Aktionen</TableHead>
+                    <SortableTableHead className="px-4 w-[80px]">UUID</SortableTableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -2014,81 +2064,8 @@ const TestResults: React.FC = () => {
                             aria-label={`${testRun.formName} auswählen`}
                           />
                         </TableCell>
-                        <TableCell className="px-4">
-                          <div className="flex items-center gap-1 group">
-                            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
-                            {testRun.uuid && (
-                              <button
-                                onClick={(e) => handleCopyUuid(e, testRun.uuid)}
-                                className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                title="ID kopieren">
-                                <Copy size={10} />
-                              </button>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4 text-left">
-                          {testRun.isScheduled ? (
-                            <Bot size={16} className="inline text-blue-500" />
-                          ) : (
-                            <User size={16} className="inline text-green-500" />
-                          )}
-                        </TableCell>
-                        <TableCell className="px-4 max-w-[200px]">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
-                              {renderIcon(getFormIcon(testRun.formId), 14)}
-                            </span>
-                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
-                              {testRun.formName}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4 max-w-[220px]">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
-                              {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
-                            </span>
-                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
-                              {testRun.paymentMethodName}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
-                          {testRun.amount ? `${testRun.amount} €` : "-"}
-                        </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
-                          {formatInterval(testRun.interval)}
-                        </TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDuration(testRun.durationMs)}</TableCell>
-                        <TableCell className="px-4">
-                          <StatusBadge status={testRun.status} />
-                        </TableCell>
-                        <TableCell className="px-4 max-w-[200px]">
-                          <div className="flex items-center gap-1 overflow-hidden h-full">
-                            {testRun.tags && testRun.tags.length > 0 ? (
-                              <div className="flex items-center gap-1 overflow-x-auto overflow-y-hidden flex-1 min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                                {testRun.tags.map((tagName, idx) => {
-                                  const tag = tags.find(t => t.name === tagName);
-                                  if (!tag) return null;
-                                  return (
-                                    <Badge
-                                      key={idx}
-                                      style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
-                                      className="border text-[10px] px-1.5 py-0.5 flex-shrink-0 whitespace-nowrap">
-                                      {tag.name}
-                                    </Badge>
-                                  );
-                                })}
-                              </div>
-                            ) : (
-                              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4 text-right">
-                          <div className="flex items-center justify-end gap-1">
+                        <TableCell className="px-4 ">
+                          <div className="flex items-center justify-start gap-1">
                             <Button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -2111,6 +2088,79 @@ const TestResults: React.FC = () => {
                               title="Löschen">
                               <Trash2 size={16} />
                             </Button>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4 max-w-[200px]">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
+                              {renderIcon(getFormIcon(testRun.formId), 14)}
+                            </span>
+                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
+                              {testRun.formName}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4 max-w-[220px]">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
+                              {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
+                            </span>
+                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
+                              {testRun.paymentMethodName}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4">
+                          <StatusBadge status={testRun.status} />
+                        </TableCell>
+                        <TableCell className="px-4 text-left">
+                          {testRun.isScheduled ? (
+                            <Bot size={16} className="inline text-blue-500" />
+                          ) : (
+                            <User size={16} className="inline text-green-500" />
+                          )}
+                        </TableCell>
+                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
+                          {testRun.amount ? `${testRun.amount} €` : "-"}
+                        </TableCell>
+                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
+                          {formatInterval(testRun.interval)}
+                        </TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDuration(testRun.durationMs)}</TableCell>
+                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                        <TableCell className="px-4 max-w-[200px]">
+                          <div className="flex items-center gap-1 overflow-hidden h-full">
+                            {testRun.tags && testRun.tags.length > 0 ? (
+                              <div className="flex items-center gap-1 overflow-x-auto overflow-y-hidden flex-1 min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                                {testRun.tags.map((tagName, idx) => {
+                                  const tag = tags.find(t => t.name === tagName);
+                                  if (!tag) return null;
+                                  return (
+                                    <Badge
+                                      key={idx}
+                                      style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
+                                      className="border text-[10px] px-1.5 py-0.5 flex-shrink-0 whitespace-nowrap">
+                                      {tag.name}
+                                    </Badge>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="px-4">
+                          <div className="flex items-center gap-1 group">
+                            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                            {testRun.uuid && (
+                              <button
+                                onClick={(e) => handleCopyUuid(e, testRun.uuid)}
+                                className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="ID kopieren">
+                                <Copy size={10} />
+                              </button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -2149,81 +2199,8 @@ const TestResults: React.FC = () => {
                               aria-label={`${testRun.formName} auswählen`}
                             />
                           </TableCell>
-                          <TableCell className="px-4">
-                            <div className="flex items-center gap-1 group">
-                              <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
-                              {testRun.uuid && (
-                                <button
-                                  onClick={(e) => handleCopyUuid(e, testRun.uuid)}
-                                  className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  title="ID kopieren">
-                                  <Copy size={10} />
-                                </button>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-4 text-left">
-                            {testRun.isScheduled ? (
-                              <Bot size={16} className="inline text-blue-500" />
-                            ) : (
-                              <User size={16} className="inline text-green-500" />
-                            )}
-                          </TableCell>
-                          <TableCell className="px-4 max-w-[200px]">
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
-                                {renderIcon(getFormIcon(testRun.formId), 14)}
-                              </span>
-                              <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
-                                {testRun.formName}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-4 max-w-[220px]">
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
-                                {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
-                              </span>
-                              <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
-                                {testRun.paymentMethodName}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
-                            {testRun.amount ? `${testRun.amount} €` : "-"}
-                          </TableCell>
-                          <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
-                            {formatInterval(testRun.interval)}
-                          </TableCell>
-                          <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
-                          <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDuration(testRun.durationMs)}</TableCell>
-                          <TableCell className="px-4">
-                            <StatusBadge status={testRun.status} />
-                          </TableCell>
-                          <TableCell className="px-4 max-w-[200px]">
-                            <div className="flex items-center gap-1 overflow-hidden h-full">
-                              {testRun.tags && testRun.tags.length > 0 ? (
-                                <div className="flex items-center gap-1 overflow-x-auto overflow-y-hidden flex-1 min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                                  {testRun.tags.map((tagName, idx) => {
-                                    const tag = tags.find(t => t.name === tagName);
-                                    if (!tag) return null;
-                                    return (
-                                      <Badge
-                                        key={idx}
-                                        style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
-                                        className="border text-[10px] px-1.5 py-0.5 flex-shrink-0 whitespace-nowrap">
-                                        {tag.name}
-                                      </Badge>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="px-4 text-right">
-                            <div className="flex items-center justify-end gap-1">
+                          <TableCell className="px-4 ">
+                            <div className="flex items-center justify-start gap-1">
                               <Button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -2246,6 +2223,79 @@ const TestResults: React.FC = () => {
                                 title="Löschen">
                                 <Trash2 size={16} />
                               </Button>
+                            </div>
+                          </TableCell>
+                          <TableCell className="px-4 max-w-[200px]">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
+                                {renderIcon(getFormIcon(testRun.formId), 14)}
+                              </span>
+                              <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
+                                {testRun.formName}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="px-4 max-w-[220px]">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
+                                {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
+                              </span>
+                              <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
+                                {testRun.paymentMethodName}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="px-4">
+                            <StatusBadge status={testRun.status} />
+                          </TableCell>
+                          <TableCell className="px-4 text-left">
+                            {testRun.isScheduled ? (
+                              <Bot size={16} className="inline text-blue-500" />
+                            ) : (
+                              <User size={16} className="inline text-green-500" />
+                            )}
+                          </TableCell>
+                          <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
+                            {testRun.amount ? `${testRun.amount} €` : "-"}
+                          </TableCell>
+                          <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
+                            {formatInterval(testRun.interval)}
+                          </TableCell>
+                          <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDuration(testRun.durationMs)}</TableCell>
+                          <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                          <TableCell className="px-4 max-w-[200px]">
+                            <div className="flex items-center gap-1 overflow-hidden h-full">
+                              {testRun.tags && testRun.tags.length > 0 ? (
+                                <div className="flex items-center gap-1 overflow-x-auto overflow-y-hidden flex-1 min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                                  {testRun.tags.map((tagName, idx) => {
+                                    const tag = tags.find(t => t.name === tagName);
+                                    if (!tag) return null;
+                                    return (
+                                      <Badge
+                                        key={idx}
+                                        style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
+                                        className="border text-[10px] px-1.5 py-0.5 flex-shrink-0 whitespace-nowrap">
+                                        {tag.name}
+                                      </Badge>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="px-4">
+                            <div className="flex items-center gap-1 group">
+                              <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                              {testRun.uuid && (
+                                <button
+                                  onClick={(e) => handleCopyUuid(e, testRun.uuid)}
+                                  className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  title="ID kopieren">
+                                  <Copy size={10} />
+                                </button>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>
