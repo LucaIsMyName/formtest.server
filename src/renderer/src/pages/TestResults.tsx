@@ -2307,17 +2307,7 @@ const TestResults: React.FC = () => {
                       <Play size={14} />
                       Erneut ausführen
                     </Button>
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.print();
-                      }}
-                      variant="secondary"
-                      size="sm"
-                      className="gap-1.5">
-                      <Printer size={14} />
-                      Drucken
-                    </Button>
+                    
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();
