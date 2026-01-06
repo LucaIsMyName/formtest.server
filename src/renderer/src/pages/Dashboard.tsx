@@ -604,19 +604,29 @@ const Dashboard: React.FC = () => {
       <div className="flex items-center justify-between mb-8">
         <h1 className={CONFIG.style.title.className}>Dashboard</h1>
         <div className="flex items-center gap-3">
+          <Button
+            onClick={clearDateRange}
+            variant="ghost"
+            size="sm"
+            className={`gap-2 ${dateRange.start || dateRange.end ? '' : 'opacity-0 pointer-events-none'}`}>
+            <X size={14} />
+            Zurücksetzen
+          </Button>
           <Select
             value={dateRange.start || dateRange.end ? 'custom' : 'alltime'}
             onValueChange={handleDateRangePreset}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[220px]">
               <SelectValue placeholder="Zeitraum wählen">
                 {dateRange.start || dateRange.end ? (
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 truncate">
                     <Calendar size={14} />
-                    {dateRange.start && dateRange.end
-                      ? `${dateRange.start.toLocaleDateString('de-DE')} - ${dateRange.end.toLocaleDateString('de-DE')}`
-                      : dateRange.start
-                      ? `Ab ${dateRange.start.toLocaleDateString('de-DE')}`
-                      : `Bis ${dateRange.end?.toLocaleDateString('de-DE')}`}
+                    <span className="truncate max-w-[160px]">
+                      {dateRange.start && dateRange.end
+                        ? `${dateRange.start.toLocaleDateString('de-DE')} - ${dateRange.end.toLocaleDateString('de-DE')}`
+                        : dateRange.start
+                        ? `Ab ${dateRange.start.toLocaleDateString('de-DE')}`
+                        : `Bis ${dateRange.end?.toLocaleDateString('de-DE')}`}
+                    </span>
                   </span>
                 ) : (
                   'Alle Zeit'
@@ -632,16 +642,6 @@ const Dashboard: React.FC = () => {
               <SelectItem value="thisyear">Dieses Jahr</SelectItem>
             </SelectContent>
           </Select>
-          {(dateRange.start || dateRange.end) && (
-            <Button
-              onClick={clearDateRange}
-              variant="ghost"
-              size="sm"
-              className="gap-2">
-              <X size={14} />
-              Zurücksetzen
-            </Button>
-          )}
         </div>
       </div>
 

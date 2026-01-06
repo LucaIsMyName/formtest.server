@@ -118,3 +118,28 @@
 {"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1767682065226,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
 {"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1767682065240,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
 {"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1767682065787,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1767683471233,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1767683472287,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1767683472349,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1767683472397,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1767683473032,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1767683489015,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1767683490442,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1767683490503,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1767683490530,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1767683491125,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1767683513634,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1767683514719,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1767683514737,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1767683514759,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1767683515336,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1767683535888,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1767683537055,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1767683537105,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1767683537138,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1767683537730,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1767684396287,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1767684397345,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1767684397363,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1767684397370,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1767684397918,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}

@@ -743,19 +743,15 @@ const TestResults: React.FC = () => {
   // Group sorted tests
   const groupedTests = useMemo(() => {
     return groupTestRuns(allSortedFinishedTests);
-  }, [allSortedFinishedTests, groupBy.length]);
+  }, [allSortedFinishedTests, groupBy]);
 
   // Auto-expand all groups when grouping changes (only when groupBy changes, not when groupedTests updates)
   const [lastGroupBy, setLastGroupBy] = useState<string>('');
   useEffect(() => {
     const currentGroupBy = groupBy.join(',');
     if (currentGroupBy !== lastGroupBy) {
-      if (groupBy.length > 0) {
-        const allGroupKeys = Object.keys(groupedTests);
-        setExpandedGroups(new Set(allGroupKeys));
-      } else {
-        setExpandedGroups(new Set());
-      }
+      // When grouping changes, start collapsed
+      setExpandedGroups(new Set());
       setLastGroupBy(currentGroupBy);
     }
   }, [groupBy, groupedTests, lastGroupBy]);
@@ -765,9 +761,9 @@ const TestResults: React.FC = () => {
     if (groupBy.length === 0) {
       return allSortedFinishedTests;
     }
-    // When grouped, flatten all groups for pagination
+    // When grouped, flatten all groups (no pagination applied)
     return Object.values(groupedTests).flat();
-  }, [groupBy.length, allSortedFinishedTests, groupedTests]);
+  }, [groupBy, allSortedFinishedTests, groupedTests]);
 
   // Pagination for finished tests (only if > 50 items)
   const [currentPage, setCurrentPage] = useState(1);
@@ -2258,7 +2254,7 @@ const TestResults: React.FC = () => {
                   )}
                 </TableBody>
               </Table>
-              {showPagination && (
+              {showPagination && groupBy.length === 0 && (
                 <TablePagination
                   currentPage={currentPage}
                   totalPages={totalPages}
