@@ -1274,6 +1274,9 @@ function cleanupOldTestRuns() {
     return 0;
   }
 }
+function getDatabase() {
+  return db;
+}
 const formQueries = {
   getAll: () => {
     const forms = db.prepare("SELECT * FROM forms ORDER BY name").all();
@@ -1579,6 +1582,38 @@ const settingsQueries = {
   getAll: () => db.prepare("SELECT * FROM global_settings ORDER BY key").all(),
   get: (key) => db.prepare("SELECT * FROM global_settings WHERE key = ?").get(key),
   set: (key, value, description) => db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(key, value, description),
+  getApiKey: async () => {
+    const encrypted = settingsQueries.get("api_key_encrypted");
+    if (!encrypted || !encrypted.value) {
+      const legacy = settingsQueries.get("api_key");
+      if (legacy && legacy.value && !isEncrypted(legacy.value)) {
+        try {
+          const encryptedKey = await encrypt(legacy.value);
+          settingsQueries.set("api_key_encrypted", encryptedKey, "Encrypted API key");
+          settingsQueries.set("api_key", "", "Legacy - use api_key_encrypted");
+          return legacy.value;
+        } catch (error) {
+          console.error("Failed to migrate API key:", error);
+          return null;
+        }
+      }
+      return null;
+    }
+    try {
+      return await decrypt(encrypted.value);
+    } catch (error) {
+      console.error("Failed to decrypt API key:", error);
+      return null;
+    }
+  },
+  setApiKey: async (key) => {
+    const encrypted = await encrypt(key);
+    settingsQueries.set("api_key_encrypted", encrypted, "Encrypted API key");
+    const legacy = settingsQueries.get("api_key");
+    if (legacy && legacy.value && !isEncrypted(legacy.value)) {
+      settingsQueries.set("api_key", "", "Legacy - use api_key_encrypted");
+    }
+  },
   // Global field defaults - stored as JSON in a single setting
   getFieldDefaults: () => {
     const setting = db.prepare("SELECT value FROM global_settings WHERE key = 'global_field_defaults'").get();
@@ -1616,7 +1651,8 @@ function verifyPassword(password, storedHash) {
     return false;
   }
 }
-let sessionUnlocked = false;
+const SESSION_TIMEOUT_MS = 24 * 60 * 60 * 1e3;
+let sessionUnlockedAt = null;
 const passwordQueries = {
   /** Check if master password is enabled */
   isEnabled: () => {
@@ -1640,7 +1676,7 @@ const passwordQueries = {
     if (!storedHash) return false;
     const isValid = verifyPassword(password, storedHash);
     if (isValid) {
-      sessionUnlocked = true;
+      sessionUnlockedAt = Date.now();
     }
     return isValid;
   },
@@ -1662,19 +1698,33 @@ const passwordQueries = {
     settingsQueries.set("master_password_hash", hash, "Hashed master password");
     return true;
   },
-  /** Check if session is unlocked */
+  /** Check if session is unlocked and not expired */
   isSessionUnlocked: () => {
-    return sessionUnlocked;
+    if (sessionUnlockedAt === null) return false;
+    const now = Date.now();
+    const elapsed = now - sessionUnlockedAt;
+    if (elapsed >= SESSION_TIMEOUT_MS) {
+      sessionUnlockedAt = null;
+      return false;
+    }
+    return true;
+  },
+  /** Check if session has expired (without locking it) */
+  checkSessionExpiry: () => {
+    if (sessionUnlockedAt === null) return false;
+    const now = Date.now();
+    const elapsed = now - sessionUnlockedAt;
+    return elapsed < SESSION_TIMEOUT_MS;
   },
   /** Reset session (for testing or manual lock) */
   lockSession: () => {
-    sessionUnlocked = false;
+    sessionUnlockedAt = null;
   },
   /** Unlock session without password (emergency reset - hold Shift on startup) */
   emergencyReset: () => {
     settingsQueries.set("master_password_enabled", "false", "Master password protection disabled");
     settingsQueries.set("master_password_hash", "", "Cleared password hash");
-    sessionUnlocked = true;
+    sessionUnlockedAt = Date.now();
   }
 };
 const testRunQueries = {
@@ -2760,6 +2810,7 @@ const database = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProp
   formQueries,
   formScriptQueries,
   getBaseSelectorConfig,
+  getDatabase,
   getMergedSelectorConfig,
   importQueries,
   initDatabase,
@@ -2772,6 +2823,60 @@ const database = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProp
   testRunQueries,
   testScheduleQueries
 }, Symbol.toStringTag, { value: "Module" }));
+function sanitizeError(error) {
+  console.error("Error details (server-side only):", error);
+  if (error instanceof Error) {
+    const message = error.message;
+    if (message.includes("SQLITE") || message.includes("database")) {
+      return {
+        message: "Ein Datenbankfehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+        code: "DATABASE_ERROR"
+      };
+    }
+    if (message.includes("encrypt") || message.includes("decrypt") || message.includes("keychain")) {
+      return {
+        message: "Ein Verschlüsselungsfehler ist aufgetreten. Bitte überprüfen Sie Ihre Systemeinstellungen.",
+        code: "ENCRYPTION_ERROR"
+      };
+    }
+    if (message.includes("ECONNREFUSED") || message.includes("ENOTFOUND") || message.includes("timeout")) {
+      return {
+        message: "Netzwerkfehler: Verbindung konnte nicht hergestellt werden.",
+        code: "NETWORK_ERROR"
+      };
+    }
+    if (message.includes("ENOENT") || message.includes("EACCES") || message.includes("permission")) {
+      return {
+        message: "Dateisystemfehler: Datei oder Verzeichnis nicht gefunden oder keine Berechtigung.",
+        code: "FILE_ERROR"
+      };
+    }
+    let sanitizedMessage = message.replace(/\/[^\s]+/g, "[path]").replace(/\\[^\s]+/g, "[path]").replace(/at\s+[^\s]+\s+\([^)]+\)/g, "").replace(/node_modules[^\s]*/g, "[module]").replace(/src\/[^\s]*/g, "[source]").trim();
+    if (!sanitizedMessage || sanitizedMessage.length === 0) {
+      sanitizedMessage = "Ein unerwarteter Fehler ist aufgetreten.";
+    }
+    return {
+      message: sanitizedMessage,
+      code: error.name || "UNKNOWN_ERROR"
+    };
+  }
+  if (typeof error === "string") {
+    return {
+      message: error,
+      code: "STRING_ERROR"
+    };
+  }
+  if (error && typeof error === "object" && "message" in error) {
+    const objError = error;
+    if (typeof objError.message === "string") {
+      return sanitizeError(new Error(objError.message));
+    }
+  }
+  return {
+    message: "Ein unerwarteter Fehler ist aufgetreten.",
+    code: "UNKNOWN_ERROR"
+  };
+}
 class TestProcessManager extends events.EventEmitter {
   constructor() {
     super();
@@ -2965,11 +3070,12 @@ class TestProcessManager extends events.EventEmitter {
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
         return this.runTest(testRunId, form, paymentMethod, settings, qualityTestOptions, retryCount + 1);
       }
+      const sanitized = sanitizeError(error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: sanitized.message,
         duration: 0,
-        logs: [`Failed after ${maxRetries + 1} attempts: ${error}`]
+        logs: [`Failed after ${maxRetries + 1} attempts: ${sanitized.message}`]
       };
     }
   }
@@ -3281,6 +3387,7 @@ async function runSingleTest(testRunId, form, paymentMethod, settings, qualityTe
     }
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
+    const sanitized = sanitizeError(error);
     const errorSteps = [
       {
         id: "test-error",
@@ -3289,11 +3396,11 @@ async function runSingleTest(testRunId, form, paymentMethod, settings, qualityTe
         startTime: (/* @__PURE__ */ new Date()).toISOString(),
         endTime: (/* @__PURE__ */ new Date()).toISOString(),
         duration: 0,
-        message: error instanceof Error ? error.message : String(error),
-        error: error instanceof Error ? error.message : String(error)
+        message: sanitized.message,
+        error: sanitized.message
       }
     ];
-    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0, errorSteps);
+    await testRunQueries.updateStatus(testRunId, "FAILURE", sanitized.message, 0, errorSteps);
     if (isScheduled) {
       notificationQueries.create({
         type: "test_failed",
@@ -3310,7 +3417,7 @@ async function runSingleTest(testRunId, form, paymentMethod, settings, qualityTe
         formName: form.name,
         paymentMethodName: paymentMethod.name,
         status: "FAILURE",
-        errorMessage: error instanceof Error ? error.message : String(error),
+        errorMessage: sanitized.message,
         runAt: /* @__PURE__ */ new Date()
       }).catch((err) => console.error("Failed to send email notification:", err));
     }
@@ -3840,27 +3947,34 @@ async function handleRequest(req, res) {
       });
       const testIds = [];
       const testUuids = [];
-      for (const form of forms) {
-        for (const pm of filteredMethods) {
-          const uuid = crypto.randomUUID();
-          const result = testRunQueries.create({
-            uuid,
-            formId: form.id,
-            paymentMethodId: pm.id,
-            status: "QUEUED",
-            errorMessage: void 0,
-            logDetails: void 0,
-            steps: [],
-            durationMs: void 0,
-            isScheduled: false,
-            amount: settingsMap["default_donation_amount"] || "5",
-            interval: settingsMap["default_interval"] || "0"
-          });
-          const testId = result.lastInsertRowid;
-          testIds.push(testId);
-          testUuids.push(uuid);
-          getTestQueue().enqueue(testId, form, pm, settingsMap);
+      const queuedTests = [];
+      const db2 = getDatabase();
+      db2.transaction(() => {
+        for (const form of forms) {
+          for (const pm of filteredMethods) {
+            const uuid = crypto.randomUUID();
+            const result = testRunQueries.create({
+              uuid,
+              formId: form.id,
+              paymentMethodId: pm.id,
+              status: "QUEUED",
+              errorMessage: void 0,
+              logDetails: void 0,
+              steps: [],
+              durationMs: void 0,
+              isScheduled: false,
+              amount: settingsMap["default_donation_amount"] || "5",
+              interval: settingsMap["default_interval"] || "0"
+            });
+            const testId = result.lastInsertRowid;
+            testIds.push(testId);
+            testUuids.push(uuid);
+            queuedTests.push({ testId, uuid, form, pm });
+          }
         }
+      })();
+      for (const { testId, form, pm } of queuedTests) {
+        getTestQueue().enqueue(testId, form, pm, settingsMap);
       }
       sendJson(res, 200, {
         success: true,
@@ -3975,20 +4089,28 @@ async function handleRequest(req, res) {
     sendJson(res, 404, { error: "Not Found", message: `Unknown endpoint: ${method} ${path2}` });
   } catch (error) {
     console.error("[API] Error handling request:", error);
+    const sanitized = sanitizeError(error);
     sendJson(res, 500, {
       error: "Internal Server Error",
-      message: error instanceof Error ? error.message : "Unknown error"
+      message: sanitized.message
     });
   }
 }
-function startApiServer(port, key) {
-  return new Promise((resolve, reject) => {
+async function startApiServer(port, key) {
+  return new Promise(async (resolve, reject) => {
     if (server) {
       console.log("[API] Server already running");
       resolve();
       return;
     }
-    apiKey = key;
+    try {
+      await settingsQueries.setApiKey(key);
+      apiKey = key;
+    } catch (error) {
+      console.error("[API] Failed to encrypt API key:", error);
+      reject(new Error("Failed to store API key"));
+      return;
+    }
     server = http.createServer((req, res) => {
       handleRequest(req, res).catch((error) => {
         console.error("[API] Unhandled error:", error);
@@ -4969,53 +5091,52 @@ ${contextString}`;
   }
 }
 const aiService = new AIService();
+function handleError(error, context) {
+  console.error(`IPC Error - ${context}:`, error);
+  const sanitized = sanitizeError(error);
+  throw new Error(sanitized.message);
+}
 function setupIpcHandlers() {
   electron.ipcMain.handle("forms:getAll", async () => {
     try {
       return formQueries.getAll();
     } catch (error) {
-      console.error("IPC Error - forms:getAll:", error);
-      throw error;
+      handleError(error, "forms:getAll");
     }
   });
   electron.ipcMain.handle("forms:getById", async (_, id) => {
     try {
       return formQueries.getById(id);
     } catch (error) {
-      console.error("IPC Error - forms:getById:", error);
-      throw error;
+      handleError(error, "forms:getById");
     }
   });
   electron.ipcMain.handle("forms:create", async (_, form) => {
     try {
       return formQueries.create(form);
     } catch (error) {
-      console.error("IPC Error - forms:create:", error);
-      throw error;
+      handleError(error, "forms:create");
     }
   });
   electron.ipcMain.handle("forms:update", async (_, id, form) => {
     try {
       return formQueries.update(id, form);
     } catch (error) {
-      console.error("IPC Error - forms:update:", error);
-      throw error;
+      handleError(error, "forms:update");
     }
   });
   electron.ipcMain.handle("forms:delete", async (_, id) => {
     try {
       return formQueries.delete(id);
     } catch (error) {
-      console.error("IPC Error - forms:delete:", error);
-      throw error;
+      handleError(error, "forms:delete");
     }
   });
   electron.ipcMain.handle("forms:deleteAll", async () => {
     try {
       return formQueries.deleteAll();
     } catch (error) {
-      console.error("IPC Error - forms:deleteAll:", error);
-      throw error;
+      handleError(error, "forms:deleteAll");
     }
   });
   electron.ipcMain.handle("paymentMethods:getAll", async () => {
@@ -5488,7 +5609,8 @@ function setupIpcHandlers() {
       return { success: true };
     } catch (error) {
       console.error("IPC Error - password:set:", error);
-      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+      const sanitized = sanitizeError(error);
+      return { success: false, error: sanitized.message };
     }
   });
   electron.ipcMain.handle("password:change", (_, currentPassword, newPassword) => {
@@ -5497,7 +5619,8 @@ function setupIpcHandlers() {
       return { success, error: success ? void 0 : "Aktuelles Passwort ist falsch" };
     } catch (error) {
       console.error("IPC Error - password:change:", error);
-      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+      const sanitized = sanitizeError(error);
+      return { success: false, error: sanitized.message };
     }
   });
   electron.ipcMain.handle("password:disable", (_, currentPassword) => {
@@ -5506,7 +5629,8 @@ function setupIpcHandlers() {
       return { success, error: success ? void 0 : "Passwort ist falsch" };
     } catch (error) {
       console.error("IPC Error - password:disable:", error);
-      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+      const sanitized = sanitizeError(error);
+      return { success: false, error: sanitized.message };
     }
   });
   electron.ipcMain.handle("password:emergencyReset", () => {

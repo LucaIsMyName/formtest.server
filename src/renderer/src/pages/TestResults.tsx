@@ -1598,7 +1598,7 @@ const TestResults: React.FC = () => {
                             setStatusFilter(option.value);
                             setShowStatusPopover(false);
                           }}
-                          className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 flex items-center gap-2 ${filterConfig.statusFilter === option.value ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
+                          className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700 flex items-center gap-2 ${filterConfig.statusFilter === option.value ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
                           <StatusBadge status={option.value} className="text-[10px]">{option.label}</StatusBadge>
                         </button>
                       ))}
@@ -1741,13 +1741,13 @@ const TestResults: React.FC = () => {
                         setSelectedPresetId(null);
                         setShowPresetPopover(false);
                       }}
-                      className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${!selectedPresetId ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Keine Vorlage
+                      className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:text-neutral-300/50 dark:hover:bg-neutral-700 ${!selectedPresetId ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
+                      <X className="w-3 h-3" />Keine Vorlage
                     </button>
                     {presets.map(preset => (
                       <div
                         key={preset.id}
-                        className={`group w-full px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 flex items-center justify-between ${selectedPresetId === preset.id ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
+                        className={`group w-full px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700 flex items-center justify-between ${selectedPresetId === preset.id ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
                         <button
                           onClick={() => {
                             setSelectedPresetId(preset.id);
