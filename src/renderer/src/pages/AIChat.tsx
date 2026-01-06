@@ -174,7 +174,7 @@ const AIChat: React.FC = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col h-full relative">
+      <div className="flex-1 flex-[0_0_100%] flex-grow-0 flex-shrink-1 flex flex-col h-full relative">
         {/* Chat Header */}
         <div className="px-6 py-3 h-[70px] border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between flex-shrink-0">
           <div>
@@ -283,7 +283,7 @@ const AIChat: React.FC = () => {
         )}
 
         {/* Messages - scrollable area with padding for input */}
-        <div className="flex-1 overflow-y-auto pb-24">
+        <div className="flex-0 max-w-4xl overflow-y-auto pb-24">
           <AIChatMessages
             messages={messages}
             isLoading={(isSending && sendingChatId === activeChat?.id) || isLoadingMessages}
