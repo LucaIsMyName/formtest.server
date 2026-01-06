@@ -14,10 +14,10 @@ const PaymentMethodStatistics: React.FC<PaymentMethodStatisticsProps> = ({ payme
   const { testRuns } = useTestRunsStore();
   const { forms } = useFormsStore();
 
-  // Filter test runs for this specific payment method
+  // Filter test runs for this specific payment method (exclude archived)
   const pmTestRuns = useMemo(() => {
     return testRuns.filter(
-      (run) => run.paymentMethodId === paymentMethodId && run.status !== "RUNNING" && run.status !== "QUEUED"
+      (run) => run.paymentMethodId === paymentMethodId && run.status !== "RUNNING" && run.status !== "QUEUED" && !run.isArchived
     );
   }, [testRuns, paymentMethodId]);
 

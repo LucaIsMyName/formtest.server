@@ -104,10 +104,13 @@ const Dashboard: React.FC = () => {
     return { start: null, end: null };
   });
 
-  // Filter test runs by date range
+  // Filter test runs by date range and exclude archived tests
   const filteredTestRuns = useMemo(() => {
-    if (!dateRange.start && !dateRange.end) return testRuns;
-    return testRuns.filter(run => {
+    // First filter out archived tests
+    const activeTestRuns = testRuns.filter(run => !run.isArchived);
+    
+    if (!dateRange.start && !dateRange.end) return activeTestRuns;
+    return activeTestRuns.filter(run => {
       const runDate = new Date(run.runAt);
       if (dateRange.start && runDate < dateRange.start) return false;
       if (dateRange.end) {
@@ -281,8 +284,8 @@ const Dashboard: React.FC = () => {
   const prepareSuccessRateTrend = () => {
     if (testRuns.length === 0) return [];
     
-    // Filter out running/queued tests
-    const completedRuns = testRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
+    // Filter out running/queued tests and archived tests
+    const completedRuns = testRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED" && !run.isArchived);
     if (completedRuns.length === 0) return [];
     
     // Find earliest and latest test dates
@@ -369,7 +372,7 @@ const Dashboard: React.FC = () => {
   const prepareFormReliability = () => {
     const formStats = forms.map((form) => {
       const formRuns = testRuns.filter(
-        (r) => r.formId === form.id && r.status !== "RUNNING" && r.status !== "QUEUED"
+        (r) => r.formId === form.id && r.status !== "RUNNING" && r.status !== "QUEUED" && !r.isArchived
       );
       const successful = formRuns.filter((r) => r.status === "SUCCESS").length;
       const failed = formRuns.filter((r) => r.status === "FAILURE").length;
@@ -412,7 +415,7 @@ const Dashboard: React.FC = () => {
   const preparePaymentMethodReliability = () => {
     const pmStats = paymentMethods.map((pm) => {
       const pmRuns = testRuns.filter(
-        (r) => r.paymentMethodId === pm.id && r.status !== "RUNNING" && r.status !== "QUEUED"
+        (r) => r.paymentMethodId === pm.id && r.status !== "RUNNING" && r.status !== "QUEUED" && !r.isArchived
       );
       const successful = pmRuns.filter((r) => r.status === "SUCCESS").length;
       const failed = pmRuns.filter((r) => r.status === "FAILURE").length;

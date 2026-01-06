@@ -120,13 +120,13 @@ export function useSparklineData(
     startDate.setDate(startDate.getDate() - DAYS);
     startDate.setHours(0, 0, 0, 0);
 
-    // Filter runs for this entity in the last 14 days
+    // Filter runs for this entity in the last 14 days (exclude archived)
     const entityRuns = testRuns.filter((run) => {
       const runDate = new Date(run.runAt);
       if (runDate < startDate) return false;
       
-      // Skip running/queued tests
-      if (run.status === "RUNNING" || run.status === "QUEUED") return false;
+      // Skip running/queued tests and archived tests
+      if (run.status === "RUNNING" || run.status === "QUEUED" || run.isArchived) return false;
 
       switch (entityType) {
         case "form":

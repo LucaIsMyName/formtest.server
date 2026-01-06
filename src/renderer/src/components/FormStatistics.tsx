@@ -15,10 +15,10 @@ const FormStatistics: React.FC<FormStatisticsProps> = ({ formId, formName }) => 
   const { testRuns } = useTestRunsStore();
   const { paymentMethods } = usePaymentMethodsStore();
 
-  // Filter test runs for this specific form
+  // Filter test runs for this specific form (exclude archived)
   const formTestRuns = useMemo(() => {
     return testRuns.filter(
-      (run) => run.formId === formId && run.status !== "RUNNING" && run.status !== "QUEUED"
+      (run) => run.formId === formId && run.status !== "RUNNING" && run.status !== "QUEUED" && !run.isArchived
     );
   }, [testRuns, formId]);
 
