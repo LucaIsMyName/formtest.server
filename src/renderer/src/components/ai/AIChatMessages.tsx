@@ -8,7 +8,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from ".
 import { StatusBadge } from "../ui/Badge";
 import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import Button from "../ui/Button";
-import { formatTokenUsage } from "../../utils/tokenCostCalculator";
+import { formatTokenUsage, calculateTokenCost } from "../../utils/tokenCostCalculator";
 
 // Code blocks will use syntax highlighting if react-syntax-highlighter is installed
 // Otherwise, they will fall back to plain text with copy functionality
@@ -751,6 +751,42 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, is
                 )}
               </div>
               
+              {/* Token Usage - Display underneath AI messages */}
+              {message.role === 'assistant' && message.metadata && (() => {
+                try {
+                  const metadata = JSON.parse(message.metadata);
+                  if (metadata.usage) {
+                    const usage = metadata.usage;
+                    const totalTokens = usage.promptTokens + usage.completionTokens;
+                    const cost = aiProvider && aiModel ? calculateTokenCost(usage, aiProvider as any, aiModel) : null;
+                    
+                    return (
+                      <div className="mt-2 pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                        <div className="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
+                          <span className="font-mono">
+                            Prompt: <span className="text-neutral-600 dark:text-neutral-300 font-semibold">{usage.promptTokens.toLocaleString()}</span>
+                          </span>
+                          <span className="font-mono">
+                            Completion: <span className="text-neutral-600 dark:text-neutral-300 font-semibold">{usage.completionTokens.toLocaleString()}</span>
+                          </span>
+                          <span className="font-mono">
+                            Total: <span className="text-neutral-600 dark:text-neutral-300 font-semibold">{totalTokens.toLocaleString()}</span>
+                          </span>
+                          {cost !== null && cost > 0 && (
+                            <span className="font-mono text-neutral-400 dark:text-neutral-500">
+                              • ~${cost.toFixed(4)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+                } catch {
+                  // Invalid metadata, ignore
+                }
+                return null;
+              })()}
+              
               {/* Auto-suggestions for AI messages - only show if AI didn't provide suggestions in its response */}
               {message.role === "assistant" && isLastAIMessage && !hasAISuggestions(message.content) && (
                 <div className="mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700">
@@ -775,28 +811,6 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, is
                     minute: "2-digit",
                   })}
                 </p>
-                {message.role === 'assistant' && message.metadata && (() => {
-                  try {
-                    const metadata = JSON.parse(message.metadata);
-                    if (metadata.usage) {
-                      const usageText = formatTokenUsage(
-                        metadata.usage,
-                        aiProvider as any,
-                        aiModel
-                      );
-                      if (usageText) {
-                        return (
-                          <span className="text-xs text-neutral-500 dark:text-neutral-400 font-mono">
-                            {usageText}
-                          </span>
-                        );
-                      }
-                    }
-                  } catch {
-                    // Invalid metadata, ignore
-                  }
-                  return null;
-                })()}
               </div>
             </div>
           </div>
