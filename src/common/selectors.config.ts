@@ -138,7 +138,12 @@ export const SELECTOR_CONFIG: SelectorConfig = {
       '.cookie-banner',
       '.cookie-consent',
       '#cookiebanner',
-      '[data-testid="cookie-banner"]'
+      '[data-testid="cookie-banner"]',
+      // Usercentrics Consent Management Platform
+      '#uc-center-container',
+      '[data-testid="uc-default-wall"]',
+      '[id*="uc-"]',
+      '[data-testid*="uc-"]'
     ],
     acceptButtons: [
       'button[data-full-consent="true"]',
@@ -152,8 +157,9 @@ export const SELECTOR_CONFIG: SelectorConfig = {
       '#accept-all-cookies',
       '.accept-cookies',
       'button[class*="accept"]',
+      // Usercentrics Consent Management Platform
       '[data-testid="uc-accept-all-button"]',
-
+      'button[data-testid="uc-accept-all-button"]'
     ]
   },
 

@@ -140,7 +140,12 @@ const SELECTOR_CONFIG = {
       ".cookie-banner",
       ".cookie-consent",
       "#cookiebanner",
-      '[data-testid="cookie-banner"]'
+      '[data-testid="cookie-banner"]',
+      // Usercentrics Consent Management Platform
+      "#uc-center-container",
+      '[data-testid="uc-default-wall"]',
+      '[id*="uc-"]',
+      '[data-testid*="uc-"]'
     ],
     acceptButtons: [
       'button[data-full-consent="true"]',
@@ -154,7 +159,9 @@ const SELECTOR_CONFIG = {
       "#accept-all-cookies",
       ".accept-cookies",
       'button[class*="accept"]',
-      '[data-testid="uc-accept-all-button"]'
+      // Usercentrics Consent Management Platform
+      '[data-testid="uc-accept-all-button"]',
+      'button[data-testid="uc-accept-all-button"]'
     ]
   },
   // Iframe detection for embedded forms

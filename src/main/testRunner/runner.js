@@ -2779,6 +2779,7 @@ class TestRunner {
         const name = await input.getAttribute('name')
         const id = await input.getAttribute('id')
         const placeholder = await input.getAttribute('placeholder')
+        const autocomplete = await input.getAttribute('autocomplete')
 
         if (type !== 'hidden' && type !== 'submit' && type !== 'button') {
           fields.push({
@@ -2787,7 +2788,8 @@ class TestRunner {
             inputType: type,
             name,
             id,
-            placeholder
+            placeholder,
+            autocomplete
           })
         }
       } catch (error) {
@@ -2894,7 +2896,10 @@ class TestRunner {
       case 'city':
         return defaults.city || faker.location.city()
       case 'zipCode':
-        return defaults.zip || faker.location.zipCode()
+        // Generate ZIP code and ensure it's numeric-only
+        const zipCode = defaults.zip || faker.location.zipCode()
+        // Remove any non-numeric characters (letters, spaces, dashes, etc.)
+        return zipCode.replace(/\D/g, '')
       case 'amount':
         return this.config.defaultAmount
       case 'country':
@@ -2925,6 +2930,11 @@ class TestRunner {
       field.placeholder?.toLowerCase()
     ].filter(Boolean).join(' ')
 
+    // Check autocomplete attribute for ZIP/postal code (highest priority)
+    if (field.autocomplete && /postal-code|postal|postcode/.test(field.autocomplete.toLowerCase())) {
+      return { purpose: 'zipCode', confidence: 0.95 }
+    }
+
     if (/email|e-mail|mail/.test(indicators)) {
       return { purpose: 'email', confidence: 0.9 }
     }
@@ -2944,7 +2954,7 @@ class TestRunner {
     if (/city|stadt|ort/.test(indicators)) {
       return { purpose: 'city', confidence: 0.8 }
     }
-    if (/zip|plz|postal/.test(indicators)) {
+    if (/zip|plz|postal|postcode/.test(indicators)) {
       return { purpose: 'zipCode', confidence: 0.8 }
     }
     if (/amount|betrag|summe|spende/.test(indicators)) {
@@ -2992,14 +3002,25 @@ class TestRunner {
         return
       }
 
-      if (field.type === 'select') {
-        await element.selectOption(value)
-      } else {
-        // Use a short timeout to avoid getting stuck
-        await element.fill(value, { timeout: 5000 })
+      // Sanitize value for ZIP code fields - ensure only numbers
+      let sanitizedValue = value
+      const fieldInfo = this.analyzeFieldPurpose(field)
+      if (fieldInfo.purpose === 'zipCode') {
+        // Remove any non-numeric characters
+        sanitizedValue = String(value).replace(/\D/g, '')
+        if (sanitizedValue !== String(value)) {
+          this.log(`Sanitized ZIP code value: "${value}" -> "${sanitizedValue}" (removed non-numeric characters)`)
+        }
       }
 
-      this.log(`Filled ${field.selector} with: ${value}`)
+      if (field.type === 'select') {
+        await element.selectOption(sanitizedValue)
+      } else {
+        // Use a short timeout to avoid getting stuck
+        await element.fill(sanitizedValue, { timeout: 5000 })
+      }
+
+      this.log(`Filled ${field.selector} with: ${sanitizedValue}`)
     } catch (error) {
       this.log(`Failed to fill ${field.selector}: ${error.message}`)
     }
@@ -3085,6 +3106,12 @@ class TestRunner {
     this.log('Checking for cookie consent banner...')
 
     try {
+      // First, try to handle shadow DOM banners (Usercentrics)
+      const shadowBannerHandled = await this.handleShadowDOMCookieBanner()
+      if (shadowBannerHandled) {
+        return
+      }
+
       // Get cookie banner selectors from config
       const bannerSelectors = this.getSelectors('cookieConsent', 'banners')
       const bannerSelector = bannerSelectors.length > 0 
@@ -3116,24 +3143,47 @@ class TestRunner {
           try {
             const acceptButton = await this.page.$(selector)
             if (acceptButton) {
-              await acceptButton.click()
-              this.log(`Clicked accept button: ${selector}`)
+              const isVisible = await acceptButton.isVisible()
+              if (isVisible) {
+                await acceptButton.click()
+                this.log(`Clicked accept button: ${selector}`)
 
-              // Wait for banner to disappear
-              await this.page.waitForSelector('#ccm-widget', {
-                state: 'hidden',
-                timeout: 3000
-              }).catch(() => {
-                // Banner might just become invisible, not removed
-                this.log('Cookie banner handling completed')
-              })
+                // Wait for banner to disappear - try the banner selector that was found
+                try {
+                  // Try waiting for the banner selector to become hidden
+                  await this.page.waitForSelector(bannerSelector, {
+                    state: 'hidden',
+                    timeout: 3000
+                  })
+                } catch {
+                  // If that fails, try individual selectors
+                  const individualSelectors = bannerSelector.split(',').map(s => s.trim())
+                  let bannerHidden = false
+                  for (const bannerSel of individualSelectors) {
+                    try {
+                      await this.page.waitForSelector(bannerSel, {
+                        state: 'hidden',
+                        timeout: 2000
+                      })
+                      bannerHidden = true
+                      break
+                    } catch {
+                      // Continue trying other selectors
+                    }
+                  }
+                  if (!bannerHidden) {
+                    // Banner might just become invisible, not removed - that's okay
+                    this.log('Cookie banner handling completed (banner may still be in DOM)')
+                  }
+                }
 
-              this.completeStep('cookie-handling', 'success', 'Cookie-Banner akzeptiert', {
-                cookieBannerFound: true,
-                action: 'accepted',
-                buttonSelector: selector
-              })
-              return
+                this.completeStep('cookie-handling', 'success', 'Cookie-Banner akzeptiert', {
+                  cookieBannerFound: true,
+                  action: 'accepted',
+                  buttonSelector: selector
+                })
+                return
+              }
             }
           } catch (error) {
             // Continue trying other selectors
@@ -3152,6 +3202,140 @@ class TestRunner {
         cookieBannerFound: false,
         action: 'none'
       })
+    }
+  }
+
+  /**
+   * Handle cookie banners inside shadow DOM (e.g., Usercentrics)
+   * @returns {Promise<boolean>} True if banner was found and handled, false otherwise
+   */
+  async handleShadowDOMCookieBanner() {
+    try {
+      // Wait for shadow host container (Usercentrics) - try multiple selectors
+      const shadowHostSelectors = [
+        '[data-testid="uc-app-container"]',
+        '[data-nosnippet="1"][data-testid="uc-app-container"]',
+        'div[data-testid="uc-app-container"]'
+      ]
+
+      let shadowHost = null
+      for (const selector of shadowHostSelectors) {
+        try {
+          shadowHost = await this.page.waitForSelector(selector, {
+            timeout: 3000
+          }).catch(() => null)
+          if (shadowHost) break
+        } catch (e) {
+          continue
+        }
+      }
+
+      if (!shadowHost) {
+        return false
+      }
+
+      this.log('Shadow DOM cookie banner detected (Usercentrics), attempting to accept...')
+
+      // Wait a bit for shadow root to be fully initialized
+      await this.page.waitForTimeout(500)
+
+      // Use page.evaluate to access shadow DOM
+      const result = await this.page.evaluate(() => {
+        // Find the shadow host
+        const host = document.querySelector('[data-testid="uc-app-container"]') || 
+                     document.querySelector('[data-nosnippet="1"][data-testid="uc-app-container"]')
+        if (!host) return { success: false, reason: 'host not found' }
+
+        // Access shadow root
+        const shadowRoot = host.shadowRoot
+        if (!shadowRoot) {
+          // Try waiting a bit more - shadow root might not be ready
+          return { success: false, reason: 'shadow root not found' }
+        }
+
+        // Try multiple selectors for the accept button
+        const acceptButtonSelectors = [
+          'button[data-testid="uc-accept-all-button"]',
+          '[data-testid="uc-accept-all-button"]',
+          'button.sc-gsFSXq.bpyxOU', // Class-based selector as fallback
+          'button[role="button"][data-testid="uc-accept-all-button"]'
+        ]
+
+        // First try direct selectors
+        for (const selector of acceptButtonSelectors) {
+          try {
+            const button = shadowRoot.querySelector(selector)
+            if (button) {
+              // Check if button is visible
+              const rect = button.getBoundingClientRect()
+              const isVisible = rect.width > 0 && rect.height > 0 && 
+                               window.getComputedStyle(button).display !== 'none' &&
+                               window.getComputedStyle(button).visibility !== 'hidden'
+              
+              if (isVisible) {
+                button.click()
+                return { success: true, selector: selector }
+              }
+            }
+          } catch (e) {
+            // Continue trying other selectors
+          }
+        }
+
+        // Fallback: find button by text content
+        const buttons = shadowRoot.querySelectorAll('button')
+        for (const btn of buttons) {
+          const text = btn.textContent?.trim() || ''
+          if (text === 'Alle akzeptieren' || text === 'Alles annehmen' || text === 'Accept All') {
+            const rect = btn.getBoundingClientRect()
+            const isVisible = rect.width > 0 && rect.height > 0
+            if (isVisible) {
+              btn.click()
+              return { success: true, selector: 'text-content' }
+            }
+          }
+        }
+
+        return { success: false, reason: 'button not found or not visible' }
+      })
+
+      if (result.success) {
+        this.log(`Successfully clicked accept button in shadow DOM using: ${result.selector}`)
+        
+        // Wait for the banner to disappear
+        await this.page.waitForTimeout(1500)
+        
+        // Verify banner is gone
+        const bannerGone = await this.page.evaluate(() => {
+          const host = document.querySelector('[data-testid="uc-app-container"]')
+          if (!host || !host.shadowRoot) return true
+          
+          const banner = host.shadowRoot.querySelector('[data-testid="uc-default-wall"]')
+          if (!banner) return true
+          
+          // Check if banner is hidden
+          const style = window.getComputedStyle(banner)
+          const rect = banner.getBoundingClientRect()
+          return style.display === 'none' || 
+                 style.visibility === 'hidden' || 
+                 style.opacity === '0' ||
+                 rect.width === 0 ||
+                 rect.height === 0
+        })
+
+        this.completeStep('cookie-handling', 'success', 'Cookie-Banner akzeptiert (Shadow DOM)', {
+          cookieBannerFound: true,
+          action: 'accepted',
+          buttonSelector: `shadow-dom:${result.selector}`
+        })
+        return true
+      } else {
+        this.log(`Could not click accept button in shadow DOM: ${result.reason}`)
+        return false
+      }
+    } catch (error) {
+      this.log(`Shadow DOM cookie banner handling error: ${error.message}`)
+      return false
     }
   }
 
