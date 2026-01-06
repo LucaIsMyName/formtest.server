@@ -1652,6 +1652,24 @@ const TestResults: React.FC = () => {
           {/* Divider */}
           <div className="w-px h-5 bg-neutral-300 dark:bg-neutral-600 flex-shrink-0" />
 
+          {/* Clear Filters */}
+          {(filterConfig.searchTerm || filterConfig.statusFilter || tagFilter.length > 0) && (
+            <Button
+              onClick={() => {
+                clearFilters();
+                setTagFilter([]);
+              }}
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs gap-1 flex-shrink-0">
+              <X size={12} />
+              Zurücksetzen
+            </Button>
+          )}
+
+          {/* Spacer to push right-side items */}
+          <div className="flex-1" />
+
           {/* Preset Selector */}
           <div className="relative">
             <Button
@@ -1670,7 +1688,7 @@ const TestResults: React.FC = () => {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowPresetPopover(false)}
                 />
-                <div className="absolute top-full left-0 mt-1 z-50 w-56 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
+                <div className="absolute top-full right-0 mt-1 z-50 w-56 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
                   <div className="space-y-0.5">
                     <button
                       onClick={() => {
@@ -1681,28 +1699,29 @@ const TestResults: React.FC = () => {
                       Keine Vorlage
                     </button>
                     {presets.map(preset => (
-                      <button
+                      <div
                         key={preset.id}
-                        onClick={() => {
-                          setSelectedPresetId(preset.id);
-                          setShowPresetPopover(false);
-                        }}
-                        className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 flex items-center justify-between ${selectedPresetId === preset.id ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                        <span>{preset.name}</span>
-                        {selectedPresetId === preset.id && (
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeletePreset(preset.id);
-                              setShowPresetPopover(false);
-                            }}
-                            variant="ghost"
-                            size="sm"
-                            className="h-5 w-5 p-0 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
-                            <Trash2 size={10} />
-                          </Button>
-                        )}
-                      </button>
+                        className={`group w-full px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 flex items-center justify-between ${selectedPresetId === preset.id ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
+                        <button
+                          onClick={() => {
+                            setSelectedPresetId(preset.id);
+                            setShowPresetPopover(false);
+                          }}
+                          className="flex-1 text-left">
+                          <span>{preset.name}</span>
+                        </button>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePreset(preset.id);
+                            setShowPresetPopover(false);
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="h-3 w-3 !p-0 text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Trash2 size={12} />
+                        </Button>
+                      </div>
                     ))}
                     <div className="border-t border-neutral-200 dark:border-neutral-700 my-1" />
                     <button
@@ -1745,7 +1764,7 @@ const TestResults: React.FC = () => {
                   className="fixed inset-0 z-40"
                   onClick={() => setShowGroupPopover(false)}
                 />
-                <div className="absolute top-full left-0 mt-1 z-50 w-56 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
+                <div className="absolute top-full right-0 mt-1 z-50 w-56 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
                   <div className="space-y-0.5">
                     <button
                       onClick={() => {
@@ -1818,24 +1837,9 @@ const TestResults: React.FC = () => {
             )}
           </div>
 
-          {/* Clear Filters */}
-          {(filterConfig.searchTerm || filterConfig.statusFilter || tagFilter.length > 0) && (
-            <Button
-              onClick={() => {
-                clearFilters();
-                setTagFilter([]);
-              }}
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-xs gap-1 flex-shrink-0">
-              <X size={12} />
-              Zurücksetzen
-            </Button>
-          )}
-
           {/* Selection Actions */}
           {selectedCount > 0 && (
-            <div className="ml-auto flex items-center flex-shrink-0">
+            <div className="flex items-center flex-shrink-0">
               <SelectionActionBar
                 selectedCount={selectedCount}
                 onClear={clearSelection}
