@@ -16,7 +16,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from ".
 import { TableFilter } from "../components/ui/TableFilter";
 import { useTagsStore } from "../store/useTagsStore";
 import { Badge } from "../components/ui/Badge";
-import { Tag, Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/Dialog";
 
 // Setting item interface
@@ -52,9 +52,16 @@ const Settings: React.FC = () => {
   const { settings, isLoading, error, loadSettings, updateSetting } = useSettingsStore();
   const { tags, loadTags, createTag, updateTag, deleteTag } = useTagsStore();
   const [showTagDialog, setShowTagDialog] = useState(false);
+  const [showTagCreateEditDialog, setShowTagCreateEditDialog] = useState(false);
   const [editingTag, setEditingTag] = useState<{ id: number; name: string; color: string } | null>(null);
   const [tagName, setTagName] = useState("");
   const [tagColor, setTagColor] = useState("#3B82F6");
+  
+  // Dialog states for component settings
+  const [showSelectorDialog, setShowSelectorDialog] = useState(false);
+  const [showGlobalDefaultsDialog, setShowGlobalDefaultsDialog] = useState(false);
+  const [showAISettingsDialog, setShowAISettingsDialog] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
 
   // Local state for immediate updates
   const [donationAmount, setDonationAmount] = useState("5");
@@ -149,7 +156,7 @@ const Settings: React.FC = () => {
     await createTag(tagName.trim(), tagColor);
     setTagName("");
     setTagColor("#3B82F6");
-    setShowTagDialog(false);
+    setShowTagCreateEditDialog(false);
   };
 
   const handleEditTag = async () => {
@@ -158,7 +165,7 @@ const Settings: React.FC = () => {
     setEditingTag(null);
     setTagName("");
     setTagColor("#3B82F6");
-    setShowTagDialog(false);
+    setShowTagCreateEditDialog(false);
   };
 
   const handleDeleteTag = async (id: number) => {
@@ -171,14 +178,14 @@ const Settings: React.FC = () => {
     setEditingTag(tag);
     setTagName(tag.name);
     setTagColor(tag.color);
-    setShowTagDialog(true);
+    setShowTagCreateEditDialog(true);
   };
 
   const openCreateDialog = () => {
     setEditingTag(null);
     setTagName("");
     setTagColor("#3B82F6");
-    setShowTagDialog(true);
+    setShowTagCreateEditDialog(true);
   };
 
   // Load API server status on mount
@@ -582,15 +589,17 @@ const Settings: React.FC = () => {
       { id: "delete_schedules", category: "data", name: "Zeitpläne löschen", description: "Alle Zeitpläne löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "schedules", title: "Alle Zeitpläne löschen", message: "Alle Zeitpläne werden gelöscht." }), actionVariant: "danger" },
       { id: "delete_all", category: "data", name: "Alle Daten löschen", description: "ALLE Daten unwiderruflich löschen", type: "action", value: "", actionLabel: "Alles löschen", action: () => setDeleteConfirmation({ type: "all", title: "Alle Daten löschen", message: "ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) werden gelöscht!" }), actionVariant: "danger" },
       // Selectors
-      { id: "selectors", category: "selectors", name: "Selektor-Konfiguration", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: true },
+      { id: "selectors", category: "selectors", name: "CSS Selektoren", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: false },
       // Global Defaults
-      { id: "global_defaults", category: "selectors", name: "Globale Standardwerte", description: "Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.", type: "component", value: "", fullWidth: true },
+      { id: "global_defaults", category: "selectors", name: "Globale Standardwerte", description: "Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.", type: "component", value: "", fullWidth: false },
       // Security
-      { id: "master_password", category: "security", name: "Master-Passwort", description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen", type: "password", value: "", fullWidth: true },
+      { id: "master_password", category: "security", name: "Master-Passwort", description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen", type: "password", value: "", fullWidth: false },
       // AI
-      { id: "ai_settings", category: "ai", name: "AI-Assistent", description: "Konfiguriere den AI-Assistenten für Chat und Analyse-Funktionen.", type: "component", value: "", fullWidth: true },
+      { id: "ai_settings", category: "ai", name: "AI-Assistent", description: "Konfiguriere den AI-Assistenten für Chat und Analyse-Funktionen.", type: "component", value: "", fullWidth: false },
+      // Tags
+      { id: "tags", category: "data", name: "Tags", description: "Verwalten Sie Tags für Test-Ergebnisse", type: "action", value: "", actionLabel: `${tags.length} Tag${tags.length !== 1 ? 's' : ''}`, action: () => setShowTagDialog(true), actionVariant: "secondary" },
     ],
-    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled, retentionDays, isCleaningUp, cleanupResult, handleCleanupOldTests]
+    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled, retentionDays, isCleaningUp, cleanupResult, handleCleanupOldTests, tags.length]
   );
 
   // Filter settings
@@ -958,115 +967,54 @@ const Settings: React.FC = () => {
         );
       case "component":
         if (item.id === "selectors") {
-          return <SelectorEditor />;
+          return (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowSelectorDialog(true)}
+              className="text-xs h-7">
+              Konfigurieren
+            </Button>
+          );
         }
         if (item.id === "global_defaults") {
-          return <GlobalDefaultsEditor />;
+          return (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowGlobalDefaultsDialog(true)}
+              className="text-xs h-7">
+              Konfigurieren
+            </Button>
+          );
         }
         if (item.id === "ai_settings") {
-          return <AISettingsSection />;
+          return (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowAISettingsDialog(true)}
+              className="text-xs h-7">
+              Konfigurieren
+            </Button>
+          );
         }
         return null;
 
       case "password":
         return (
-          <div className="space-y-4 p-4">
-            {/* Status indicator */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-neutral-400"}`} />
-              <span className="text-sm text-neutral-600 dark:text-neutral-400">{passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}</span>
-            </div>
-
-            {passwordEnabled ? (
-              // Disable password form
-              <div className="space-y-3 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700">
-                <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  <Lock size={14} />
-                  Passwortschutz deaktivieren
-                </div>
-                <div className="relative">
-                  <Input
-                    type={showCurrentPassword ? "text" : "password"}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Aktuelles Passwort"
-                    className="h-9 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
-                    {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={handleDisablePassword}
-                  disabled={isSettingPassword || !currentPassword}
-                  isLoading={isSettingPassword}
-                  className="w-full justify-center">
-                  Deaktivieren
-                </Button>
-              </div>
-            ) : (
-              // Set password form
-              <div className="space-y-3 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700">
-                <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
-                  <Shield size={14} />
-                  Passwortschutz aktivieren
-                </div>
-                <div className="relative">
-                  <Input
-                    type={showNewPassword ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Neues Passwort (min. 4 Zeichen)"
-                    className="h-9 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
-                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-                <div className="relative">
-                  <Input
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Passwort bestätigen"
-                    className="h-9 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
-                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={handleSetPassword}
-                  disabled={isSettingPassword || !newPassword || !confirmPassword}
-                  isLoading={isSettingPassword}
-                  className="w-full justify-center">
-                  Aktivieren
-                </Button>
-              </div>
-            )}
-
-            {/* Status message */}
-            {passwordMessage && (
-              <div className={`flex items-center gap-2 text-sm ${passwordMessage.type === "success" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
-                {passwordMessage.type === "success" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
-                {passwordMessage.message}
-              </div>
-            )}
-
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset</p>
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-neutral-400"}`} />
+            <span className="text-xs text-neutral-600 dark:text-neutral-400 flex-1">
+              {passwordEnabled ? "Aktiviert" : "Deaktiviert"}
+            </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowPasswordDialog(true)}
+              className="text-xs h-7">
+              {passwordEnabled ? "Ändern" : "Aktivieren"}
+            </Button>
           </div>
         );
       default:
@@ -1194,15 +1142,194 @@ const Settings: React.FC = () => {
         {/* Export/Import Result Messages */}
         {exportMessage && <div className="p-3 rounded-md border text-xs bg-neutral-50 dark:bg-neutral-900/20 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700">{exportMessage}</div>}
         {importResult && <div className={`p-3 rounded-md border text-xs ${importResult.success ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800"}`}>{importResult.success ? `Importiert: ${importResult.imported.forms} Formulare, ${importResult.imported.paymentMethods} Bezahlmethoden` : importResult.errors.join(", ")}</div>}
+      </div>
 
-        {/* Tags Management Section */}
-        <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Tag size={18} className="text-neutral-600 dark:text-neutral-400" />
-                <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">Tags</h2>
+      {/* Selector Editor Dialog */}
+      <Dialog open={showSelectorDialog} onOpenChange={setShowSelectorDialog}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>CSS Selektoren Konfiguration</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <SelectorEditor />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setShowSelectorDialog(false)}>
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Global Defaults Dialog */}
+      <Dialog open={showGlobalDefaultsDialog} onOpenChange={setShowGlobalDefaultsDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Globale Standardwerte</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <GlobalDefaultsEditor />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setShowGlobalDefaultsDialog(false)}>
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* AI Settings Dialog */}
+      <Dialog open={showAISettingsDialog} onOpenChange={setShowAISettingsDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>AI-Assistent Konfiguration</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <AISettingsSection />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setShowAISettingsDialog(false)}>
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Password Dialog */}
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Master-Passwort</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {/* Status indicator */}
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-neutral-400"}`} />
+              <span className="text-sm text-neutral-600 dark:text-neutral-400">{passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}</span>
+            </div>
+
+            {passwordEnabled ? (
+              // Disable password form
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  <Lock size={14} />
+                  Passwortschutz deaktivieren
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showCurrentPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Aktuelles Passwort"
+                    className="h-9 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
+                    {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={async () => {
+                    await handleDisablePassword();
+                    setShowPasswordDialog(false);
+                  }}
+                  disabled={isSettingPassword || !currentPassword}
+                  isLoading={isSettingPassword}
+                  className="w-full justify-center">
+                  Deaktivieren
+                </Button>
               </div>
+            ) : (
+              // Set password form
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  <Shield size={14} />
+                  Passwortschutz aktivieren
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Neues Passwort (min. 4 Zeichen)"
+                    className="h-9 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
+                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Passwort bestätigen"
+                    className="h-9 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={async () => {
+                    await handleSetPassword();
+                    setShowPasswordDialog(false);
+                  }}
+                  disabled={isSettingPassword || !newPassword || !confirmPassword}
+                  isLoading={isSettingPassword}
+                  className="w-full justify-center">
+                  Aktivieren
+                </Button>
+              </div>
+            )}
+
+            {/* Status message */}
+            {passwordMessage && (
+              <div className={`flex items-center gap-2 text-sm ${passwordMessage.type === "success" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+                {passwordMessage.type === "success" ? <CheckCircle2 size={14} /> : <AlertCircle size={14} />}
+                {passwordMessage.message}
+              </div>
+            )}
+
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">Tipp: Halte beim App-Start Shift gedrückt für Notfall-Reset</p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setShowPasswordDialog(false)}>
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Tags Management Dialog */}
+      <Dialog open={showTagDialog} onOpenChange={setShowTagDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Tags verwalten</DialogTitle>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">Verwalten Sie Tags für Test-Ergebnisse</p>
               <Button
                 variant="secondary"
                 size="sm"
@@ -1212,9 +1339,6 @@ const Settings: React.FC = () => {
                 Tag erstellen
               </Button>
             </div>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Verwalten Sie Tags für Test-Ergebnisse</p>
-          </div>
-          <div className="p-4">
             {tags.length === 0 ? (
               <div className="text-center py-8 text-neutral-500 dark:text-neutral-400 text-sm">
                 Noch keine Tags erstellt. Erstellen Sie einen Tag, um Test-Ergebnisse zu kategorisieren.
@@ -1256,11 +1380,25 @@ const Settings: React.FC = () => {
               </div>
             )}
           </div>
-        </div>
-      </div>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => setShowTagDialog(false)}>
+              Schließen
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {/* Tag Dialog */}
-      <Dialog open={showTagDialog} onOpenChange={setShowTagDialog}>
+      {/* Tag Create/Edit Dialog */}
+      <Dialog open={showTagCreateEditDialog} onOpenChange={(open) => {
+        if (!open) {
+          setEditingTag(null);
+          setTagName("");
+          setTagColor("#3B82F6");
+          setShowTagCreateEditDialog(false);
+        }
+      }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{editingTag ? "Tag bearbeiten" : "Neuen Tag erstellen"}</DialogTitle>
