@@ -4,7 +4,7 @@ import { CONFIG } from "../app.config";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
-import TestRunDialog from "../components/TestRunDialog";
+import TestRunDrawer from "../components/TestRunDrawer";
 import Button from "../components/ui/Button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
@@ -1149,7 +1149,7 @@ const Dashboard: React.FC = () => {
       )}
 
       {/* Test Run Dialog */}
-      <TestRunDialog
+      <TestRunDrawer
         isOpen={showTestDialog}
         onClose={() => setShowTestDialog(false)}
       />

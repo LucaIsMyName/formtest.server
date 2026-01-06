@@ -58,7 +58,7 @@ vi.mock('../src/renderer/src/store/useTestRunsStore', () => ({
 }));
 
 // Mock the components that might cause issues
-vi.mock('../src/renderer/src/components/TestRunDialog', () => ({
+vi.mock('../src/renderer/src/components/TestRunDrawer', () => ({
   default: () => <div data-testid="test-run-dialog">Test Run Dialog</div>
 }));
 

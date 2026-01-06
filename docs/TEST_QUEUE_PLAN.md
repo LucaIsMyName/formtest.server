@@ -66,7 +66,7 @@ class TestQueueManager {
 - `tests:getQueueStatus` - Returns queue length, active tests, position
 - `tests:cancelQueue` - Cancel all pending tests
 
-#### 4. Update UI (TestRunDialog)
+#### 4. Update UI (TestRunDrawer)
 - Show queue status when multiple tests selected
 - Display "X tests queued, Y running"
 - Add "Cancel Queue" button

@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Checkbox } from "./ui/Checkbox";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 
-interface TestRunDialogProps {
+interface TestRunDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   preselectAll?: boolean;
@@ -21,7 +21,7 @@ interface TestRunDialogProps {
   preselectedPaymentMethodIds?: number[];
 }
 
-const TestRunDialog: React.FC<TestRunDialogProps> = ({ 
+const TestRunDrawer: React.FC<TestRunDrawerProps> = ({ 
   isOpen, 
   onClose, 
   preselectAll = false,
@@ -474,4 +474,4 @@ const TestRunDialog: React.FC<TestRunDialogProps> = ({
   );
 };
 
-export default TestRunDialog;
+export default TestRunDrawer;

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
 import Button from "./ui/Button";
-import TestRunDialog from "./TestRunDialog";
+import TestRunDrawer from "./TestRunDrawer";
 import GlobalSearch from "./GlobalSearch";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot, Scale, Code } from "lucide-react";
 import { useSettingsStore } from "../store/useSettingsStore";
@@ -218,7 +218,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
 
       {/* Test Run Dialog */}
-      <TestRunDialog
+      <TestRunDrawer
         isOpen={showTestDialog}
         onClose={() => {
           setShowTestDialog(false);

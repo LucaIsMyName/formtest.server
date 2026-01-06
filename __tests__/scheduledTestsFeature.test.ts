@@ -193,7 +193,7 @@ describe('Scheduled Tests Feature', () => {
 
   describe('Test Execution Context', () => {
     it('should differentiate between manual and scheduled execution', () => {
-      // Manual test execution (from TestRunDialog)
+      // Manual test execution (from TestRunDrawer)
       const manualTestConfig = {
         formId: 1,
         paymentMethodId: 1,

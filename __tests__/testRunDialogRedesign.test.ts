@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-describe("TestRunDialog Redesign", () => {
+describe("TestRunDrawer Redesign", () => {
   describe("Runner settings key fix", () => {
     it("should use default_donation_interval key instead of default_interval", () => {
       // Simulating the runner config creation

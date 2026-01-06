@@ -104,7 +104,7 @@ src/
 │       │   ├── FormDrawer.tsx
 │       │   ├── PaymentMethodDrawer.tsx
 │       │   ├── ScheduleDrawer.tsx
-│       │   ├── TestRunDialog.tsx
+│       │   ├── TestRunDrawer.tsx
 │       │   ├── SelectorEditor.tsx
 │       │   └── ...
 │       ├── pages/            # Main application views
