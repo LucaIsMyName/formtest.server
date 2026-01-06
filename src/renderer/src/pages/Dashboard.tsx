@@ -8,9 +8,9 @@ import TestRunDrawer from "../components/TestRunDrawer";
 import Button from "../components/ui/Button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";
-import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, TrendingUp, TrendingDown, Calendar, X } from "lucide-react";
+import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, TrendingUp, TrendingDown, Calendar, X, AlertTriangle } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from "recharts";
 
 interface DashboardStats {
   totalForms: number;
@@ -266,6 +266,69 @@ const Dashboard: React.FC = () => {
     return Object.values(grouped);
   };
 
+  // Prepare form x payment method scatter plot data
+  const prepareFormPaymentScatterData = () => {
+    const combinationMap = new Map<string, {
+      formId: number;
+      formName: string;
+      formIndex: number;
+      paymentMethodId: number;
+      paymentMethodName: string;
+      paymentMethodIndex: number;
+      total: number;
+      success: number;
+      failure: number;
+      successRate: number;
+    }>();
+    
+    filteredTestRuns.forEach(run => {
+      if (run.status === "RUNNING" || run.status === "QUEUED") return;
+      
+      const form = forms.find(f => f.id === run.formId);
+      const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
+      
+      if (!form || !pm) return;
+      
+      const key = `${run.formId}-${run.paymentMethodId}`;
+      
+      if (!combinationMap.has(key)) {
+        combinationMap.set(key, {
+          formId: form.id,
+          formName: form.name,
+          formIndex: 0, // Will be set later
+          paymentMethodId: pm.id,
+          paymentMethodName: pm.name,
+          paymentMethodIndex: 0, // Will be set later
+          total: 0,
+          success: 0,
+          failure: 0,
+          successRate: 0
+        });
+      }
+      
+      const combo = combinationMap.get(key)!;
+      combo.total++;
+      if (run.status === "SUCCESS") combo.success++;
+      if (run.status === "FAILURE") combo.failure++;
+    });
+    
+    // Calculate success rates and assign indices
+    const uniqueForms = Array.from(new Set(Array.from(combinationMap.values()).map(c => c.formName))).sort();
+    const uniquePaymentMethods = Array.from(new Set(Array.from(combinationMap.values()).map(c => c.paymentMethodName))).sort();
+    
+    combinationMap.forEach((combo) => {
+      combo.formIndex = uniqueForms.indexOf(combo.formName);
+      combo.paymentMethodIndex = uniquePaymentMethods.indexOf(combo.paymentMethodName);
+      combo.successRate = combo.total > 0 ? Math.round((combo.success / combo.total) * 100) : 0;
+    });
+    
+    return {
+      data: Array.from(combinationMap.values()).filter(c => c.total >= 3), // Only show combinations with at least 3 tests
+      formLabels: uniqueForms,
+      paymentMethodLabels: uniquePaymentMethods
+    };
+  };
+
   // Prepare form success rate trend over time
   const prepareFormSuccessRateTrend = () => {
     if (filteredTestRuns.length === 0) return [];
@@ -285,7 +348,7 @@ const Dashboard: React.FC = () => {
     else if (timeSpanDays <= 90) groupByDays = 7;
     else groupByDays = 30;
     
-    const formMap = new Map<string, { name: string; data: Map<string, { success: number; total: number }> }>();
+    const formMap = new Map<string, { name: string; data: Map<string, { success: number; total: number; hasTests: boolean; lastRate: number | null }> }>();
     
     // Initialize forms
     forms.forEach(form => {
@@ -297,8 +360,28 @@ const Dashboard: React.FC = () => {
       }
     });
     
-    // Group runs by date and form
+    // Generate all date keys first
+    const allDateKeys: string[] = [];
     let currentDate = new Date(earliestDate);
+    currentDate.setHours(0, 0, 0, 0);
+    
+    while (currentDate <= latestDate) {
+      const dateKey = currentDate.toISOString().split('T')[0];
+      allDateKeys.push(dateKey);
+      currentDate.setDate(currentDate.getDate() + groupByDays);
+    }
+    
+    // Initialize all dates for all forms
+    allDateKeys.forEach(dateKey => {
+      formMap.forEach((formData) => {
+        if (!formData.data.has(dateKey)) {
+          formData.data.set(dateKey, { success: 0, total: 0, hasTests: false, lastRate: null });
+        }
+      });
+    });
+    
+    // Fill in actual data
+    currentDate = new Date(earliestDate);
     currentDate.setHours(0, 0, 0, 0);
     
     while (currentDate <= latestDate) {
@@ -309,10 +392,6 @@ const Dashboard: React.FC = () => {
       const dateKey = currentDate.toISOString().split('T')[0];
       
       formMap.forEach((formData, formId) => {
-        if (!formData.data.has(dateKey)) {
-          formData.data.set(dateKey, { success: 0, total: 0 });
-        }
-        
         const periodRuns = completedRuns.filter(r => {
           const runDate = new Date(r.runAt);
           return r.formId === parseInt(formId) && runDate >= currentDate && runDate <= endDate;
@@ -323,26 +402,41 @@ const Dashboard: React.FC = () => {
         
         if (total > 0) {
           const existing = formData.data.get(dateKey)!;
-          existing.success += success;
-          existing.total += total;
+          existing.success = success;
+          existing.total = total;
+          existing.hasTests = true;
+          existing.lastRate = Math.round((success / total) * 100);
         }
       });
       
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
     
-    // Convert to chart data format
-    const allDates = Array.from(new Set(
-      Array.from(formMap.values()).flatMap(form => Array.from(form.data.keys()))
-    )).sort();
-    
-    return allDates.map(date => {
-      const dataPoint: any = { date };
-      formMap.forEach((formData) => {
-        const stats = formData.data.get(date);
-        if (stats && stats.total > 0) {
-          dataPoint[formData.name] = Math.round((stats.success / stats.total) * 100);
+    // Fill in missing dates with last known value - ensure continuous lines
+    formMap.forEach((formData) => {
+      let lastKnownRate: number | null = null;
+      allDateKeys.forEach(dateKey => {
+        const stats = formData.data.get(dateKey)!;
+        if (stats.hasTests && stats.total > 0) {
+          // Update last known rate when we have actual test data
+          lastKnownRate = stats.lastRate;
+        } else if (lastKnownRate !== null) {
+          // Use last known rate for days without tests - ensures continuous line
+          stats.lastRate = lastKnownRate;
         }
+      });
+    });
+    
+    // Convert to chart data format - always include value if we have a lastRate
+    return allDateKeys.map(date => {
+      const dataPoint: any = { date, _hasTests: {} };
+      formMap.forEach((formData) => {
+        const stats = formData.data.get(date)!;
+        // Always set the value if we have a lastRate (either from tests or carried forward)
+        if (stats.lastRate !== null) {
+          dataPoint[formData.name] = stats.lastRate;
+        }
+        dataPoint._hasTests[formData.name] = stats.hasTests;
       });
       return dataPoint;
     });
@@ -379,6 +473,43 @@ const Dashboard: React.FC = () => {
     }).filter((item): item is { name: string; avgDuration: number } => item !== null);
     
     return durationStats.sort((a, b) => b.avgDuration - a.avgDuration);
+  };
+
+  // Prepare most common failure errors
+  const prepareFailureErrors = () => {
+    const failureRuns = filteredTestRuns.filter(run => run.status === "FAILURE" && run.errorMessage);
+    
+    const errorCounts = new Map<string, { count: number; lastOccurrence: Date }>();
+    
+    failureRuns.forEach(run => {
+      if (!run.errorMessage) return;
+      
+      // Normalize error message (take first line, limit length)
+      const normalizedError = run.errorMessage.split('\n')[0].trim().substring(0, 200);
+      
+      if (!errorCounts.has(normalizedError)) {
+        errorCounts.set(normalizedError, {
+          count: 0,
+          lastOccurrence: new Date(run.runAt)
+        });
+      }
+      
+      const errorData = errorCounts.get(normalizedError)!;
+      errorData.count++;
+      const runDate = new Date(run.runAt);
+      if (runDate > errorData.lastOccurrence) {
+        errorData.lastOccurrence = runDate;
+      }
+    });
+    
+    return Array.from(errorCounts.entries())
+      .map(([error, data]) => ({
+        error,
+        count: data.count,
+        lastOccurrence: data.lastOccurrence
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 20); // Top 20 errors
   };
 
   // Prepare combination statistics (form + payment method)
@@ -489,7 +620,7 @@ const Dashboard: React.FC = () => {
       groupByDays = 30; // Monthly
     }
     
-    const trendData: { date: string; rate: number; total: number }[] = [];
+    const trendData: { date: string; rate: number; total: number; hasTests: boolean }[] = [];
     let lastKnownRate: number | null = null;
     
     // Group data by the determined interval
@@ -509,6 +640,7 @@ const Dashboard: React.FC = () => {
       const successful = periodRuns.filter((r) => r.status === "SUCCESS").length;
       const total = periodRuns.length;
       let rate: number;
+      const hasTests = total > 0;
       
       if (total > 0) {
         // Calculate actual rate for this period
@@ -541,7 +673,7 @@ const Dashboard: React.FC = () => {
         dateStr = `${month}.${year}`;
       }
       
-      trendData.push({ date: dateStr, rate: Math.round(rate), total });
+      trendData.push({ date: dateStr, rate: Math.round(rate), total, hasTests });
       
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
@@ -655,7 +787,7 @@ const Dashboard: React.FC = () => {
     else if (timeSpanDays <= 90) groupByDays = 7;
     else groupByDays = 30;
     
-    const paymentMethodMap = new Map<string, { name: string; data: Map<string, { success: number; total: number }> }>();
+    const paymentMethodMap = new Map<string, { name: string; data: Map<string, { success: number; total: number; hasTests: boolean; lastRate: number | null }> }>();
     
     // Initialize payment methods
     paymentMethods.forEach(pm => {
@@ -667,8 +799,28 @@ const Dashboard: React.FC = () => {
       }
     });
     
-    // Group runs by date and payment method
+    // Generate all date keys first
+    const allDateKeys: string[] = [];
     let currentDate = new Date(earliestDate);
+    currentDate.setHours(0, 0, 0, 0);
+    
+    while (currentDate <= latestDate) {
+      const dateKey = currentDate.toISOString().split('T')[0];
+      allDateKeys.push(dateKey);
+      currentDate.setDate(currentDate.getDate() + groupByDays);
+    }
+    
+    // Initialize all dates for all payment methods
+    allDateKeys.forEach(dateKey => {
+      paymentMethodMap.forEach((pmData) => {
+        if (!pmData.data.has(dateKey)) {
+          pmData.data.set(dateKey, { success: 0, total: 0, hasTests: false, lastRate: null });
+        }
+      });
+    });
+    
+    // Fill in actual data
+    currentDate = new Date(earliestDate);
     currentDate.setHours(0, 0, 0, 0);
     
     while (currentDate <= latestDate) {
@@ -679,10 +831,6 @@ const Dashboard: React.FC = () => {
       const dateKey = currentDate.toISOString().split('T')[0];
       
       paymentMethodMap.forEach((pmData, pmId) => {
-        if (!pmData.data.has(dateKey)) {
-          pmData.data.set(dateKey, { success: 0, total: 0 });
-        }
-        
         const periodRuns = completedRuns.filter(r => {
           const runDate = new Date(r.runAt);
           return r.paymentMethodId === parseInt(pmId) && runDate >= currentDate && runDate <= endDate;
@@ -693,26 +841,41 @@ const Dashboard: React.FC = () => {
         
         if (total > 0) {
           const existing = pmData.data.get(dateKey)!;
-          existing.success += success;
-          existing.total += total;
+          existing.success = success;
+          existing.total = total;
+          existing.hasTests = true;
+          existing.lastRate = Math.round((success / total) * 100);
         }
       });
       
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
     
-    // Convert to chart data format
-    const allDates = Array.from(new Set(
-      Array.from(paymentMethodMap.values()).flatMap(pm => Array.from(pm.data.keys()))
-    )).sort();
-    
-    return allDates.map(date => {
-      const dataPoint: any = { date };
-      paymentMethodMap.forEach((pmData) => {
-        const stats = pmData.data.get(date);
-        if (stats && stats.total > 0) {
-          dataPoint[pmData.name] = Math.round((stats.success / stats.total) * 100);
+    // Fill in missing dates with last known value - ensure continuous lines
+    paymentMethodMap.forEach((pmData) => {
+      let lastKnownRate: number | null = null;
+      allDateKeys.forEach(dateKey => {
+        const stats = pmData.data.get(dateKey)!;
+        if (stats.hasTests && stats.total > 0) {
+          // Update last known rate when we have actual test data
+          lastKnownRate = stats.lastRate;
+        } else if (lastKnownRate !== null) {
+          // Use last known rate for days without tests - ensures continuous line
+          stats.lastRate = lastKnownRate;
         }
+      });
+    });
+    
+    // Convert to chart data format - always include value if we have a lastRate
+    return allDateKeys.map(date => {
+      const dataPoint: any = { date, _hasTests: {} };
+      paymentMethodMap.forEach((pmData) => {
+        const stats = pmData.data.get(date)!;
+        // Always set the value if we have a lastRate (either from tests or carried forward)
+        if (stats.lastRate !== null) {
+          dataPoint[pmData.name] = stats.lastRate;
+        }
+        dataPoint._hasTests[pmData.name] = stats.hasTests;
       });
       return dataPoint;
     });
@@ -1243,7 +1406,28 @@ const Dashboard: React.FC = () => {
                       tickLine={{ stroke: "#d1d5db" }}
                       tickFormatter={(value) => `${value}%`}
                     />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (active && payload && payload.length) {
+                          const data = payload[0].payload as any;
+                          return (
+                            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-3 rounded-md shadow-lg">
+                              <p className="text-neutral-900 dark:text-white mb-2 font-medium">{label}</p>
+                              {payload.map((entry: any, idx: number) => {
+                                const hasTests = data._hasTests?.[entry.dataKey] !== false;
+                                return (
+                                  <p key={idx} className="text-sm" style={{ color: entry.color }}>
+                                    {entry.name}: {entry.value}%
+                                    {!hasTests && <span className="text-xs text-neutral-500 ml-2">(0 Tests)</span>}
+                                  </p>
+                                );
+                              })}
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Legend />
                     {paymentMethods.filter(pm => filteredTestRuns.some(r => r.paymentMethodId === pm.id)).map((pm, idx) => {
                       const colors = ["#0070ba", "#10b981", "#ef4444", "#a855f7", "#f59e0b", "#8b5cf6"];
@@ -1341,56 +1525,126 @@ const Dashboard: React.FC = () => {
               <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">Formular Analyse</h2>
             </div>
 
-            {/* Form Performance */}
-            {prepareFormData().length > 0 && (
-              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
-                <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Formular Performance</h3>
-                <ResponsiveContainer
-                  width="100%"
-                  height={300}>
-                  <BarChart
-                    data={prepareFormData()}
-                    layout="horizontal">
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke="#e5e7eb"
-                      strokeOpacity={0.5}
-                    />
-                    <XAxis
-                      type="number"
-                      stroke="#9ca3af"
-                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
-                      tickLine={{ stroke: "#d1d5db" }}
-                    />
-                    <YAxis
-                      dataKey="name"
-                      type="category"
-                      stroke="#9ca3af"
-                      width={150}
-                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
-                      tickLine={{ stroke: "#d1d5db" }}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                    <Bar
-                      dataKey="success"
-                      fill="#10b981"
-                      name="Erfolgreich"
-                    />
-                    <Bar
-                      dataKey="failure"
-                      fill="#ef4444"
-                      name="Fehlgeschlagen"
-                    />
-                    <Bar
-                      dataKey="stopped"
-                      fill="#a855f7"
-                      name="Gestoppt"
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
+            {/* Form x Payment Method Performance Scatter Plot */}
+            {(() => {
+              const scatterData = prepareFormPaymentScatterData();
+              if (scatterData.data.length === 0) return null;
+              
+              return (
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                  <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Formular × Bezahlmethode Performance</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <ScatterChart
+                      margin={{ top: 20, right: 20, bottom: 60, left: 80 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                      <XAxis
+                        type="number"
+                        dataKey="formIndex"
+                        name="Formular"
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                        domain={[-0.5, scatterData.formLabels.length - 0.5]}
+                        ticks={scatterData.formLabels.map((_, i) => i)}
+                        tickFormatter={(value) => {
+                          const label = scatterData.formLabels[value];
+                          return label ? label.substring(0, 12) : '';
+                        }}
+                        label={{ value: 'Formular', position: 'insideBottom', offset: -10, style: { textAnchor: 'middle', fill: '#9ca3af', fontSize: 12 } }}
+                      />
+                      <YAxis
+                        type="number"
+                        dataKey="paymentMethodIndex"
+                        name="Bezahlmethode"
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                        domain={[-0.5, scatterData.paymentMethodLabels.length - 0.5]}
+                        ticks={scatterData.paymentMethodLabels.map((_, i) => i)}
+                        tickFormatter={(value) => {
+                          const label = scatterData.paymentMethodLabels[value];
+                          return label ? label.substring(0, 15) : '';
+                        }}
+                        label={{ value: 'Bezahlmethode', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#9ca3af', fontSize: 12 } }}
+                      />
+                      <ZAxis
+                        type="number"
+                        dataKey="successRate"
+                        range={[50, 400]}
+                        name="Erfolgsrate"
+                      />
+                      <Tooltip
+                        cursor={{ strokeDasharray: '3 3' }}
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0].payload as any;
+                            return (
+                              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-3 rounded-md shadow-lg">
+                                <p className="font-semibold text-neutral-900 dark:text-white mb-2">
+                                  {data.formName} × {data.paymentMethodName}
+                                </p>
+                                <p className="text-sm text-green-600 dark:text-green-400">
+                                  Erfolgsrate: {data.successRate}%
+                                </p>
+                                <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                                  {data.success} erfolgreich / {data.failure} fehlgeschlagen
+                                </p>
+                                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                                  Gesamt: {data.total} Tests
+                                </p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Scatter
+                        name="Kombinationen"
+                        data={scatterData.data}
+                        fill="#3b82f6"
+                        shape={(props: any) => {
+                          const { cx, cy, payload } = props;
+                          const size = Math.max(30, Math.min(100, payload.total * 2));
+                          const color = payload.successRate >= 80 
+                            ? "#10b981" 
+                            : payload.successRate >= 50 
+                            ? "#f59e0b" 
+                            : "#ef4444";
+                          return (
+                            <circle
+                              cx={cx}
+                              cy={cy}
+                              r={size / 2}
+                              fill={color}
+                              fillOpacity={0.7}
+                              stroke={color}
+                              strokeWidth={2}
+                            />
+                          );
+                        }}
+                      />
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                  <div className="mt-4 flex items-center justify-center gap-6 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <span className="text-neutral-600 dark:text-neutral-400">≥80% Erfolgsrate</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <span className="text-neutral-600 dark:text-neutral-400">50-79% Erfolgsrate</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <span className="text-neutral-600 dark:text-neutral-400">&lt;50% Erfolgsrate</span>
+                    </div>
+                    <div className="text-neutral-500 dark:text-neutral-400">
+                      Größe = Anzahl Tests
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Form Success Rate Over Time and Test Volume */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1859,6 +2113,46 @@ const Dashboard: React.FC = () => {
                     </Table>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Most Common Failure Errors */}
+          {prepareFailureErrors().length > 0 && (
+            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700">
+                <h3 className="text-sm font-medium text-neutral-900 dark:text-white flex items-center gap-2">
+                  <AlertTriangle size={16} className="text-red-600" />
+                  Häufigste Fehler
+                </h3>
+              </div>
+              <div className="max-h-[400px] overflow-y-auto">
+                <Table dividers={false}>
+                  <TableHeader>
+                    <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
+                      <TableHead className="text-[11px]">Fehlermeldung</TableHead>
+                      <TableHead className="text-[11px] text-center w-20">Anzahl</TableHead>
+                      <TableHead className="text-[11px] text-right w-32">Letztes Auftreten</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {prepareFailureErrors().map((errorData, idx) => (
+                      <TableRow key={idx} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                        <TableCell className="py-2">
+                          <span className="text-xs font-mono text-neutral-900 dark:text-white break-all">{errorData.error}</span>
+                        </TableCell>
+                        <TableCell className="py-2 text-center">
+                          <span className="text-xs font-mono text-red-600 dark:text-red-400 font-medium">{errorData.count}</span>
+                        </TableCell>
+                        <TableCell className="py-2 text-right">
+                          <span className="text-[10px] text-neutral-500 dark:text-neutral-400">
+                            {errorData.lastOccurrence.toLocaleDateString('de-DE')}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             </div>
           )}

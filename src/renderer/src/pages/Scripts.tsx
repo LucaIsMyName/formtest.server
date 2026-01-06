@@ -162,7 +162,11 @@ const Scripts: React.FC = () => {
               </TableRow>
             ) : (
               scripts.map((script) => (
-                <TableRow key={script.id}>
+                <TableRow 
+                  key={script.id}
+                  className="cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
+                  onClick={() => handleEdit(script)}
+                >
                   <TableCell className="text-sm">
                     <div className="flex items-center gap-2">
                       <Code
@@ -224,7 +228,7 @@ const Scripts: React.FC = () => {
                     </button>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                       <Button
                         size="sm"
                         variant="outline"

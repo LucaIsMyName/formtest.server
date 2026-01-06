@@ -132,79 +132,85 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent className="max-w-2xl">
-        <DrawerHeader>
-          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">
-            {script ? "Script bearbeiten" : "Neues Script erstellen"}
+      <DrawerContent className="max-w-3xl">
+        <DrawerHeader className="pb-4">
+          <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
+            {script ? "Script bearbeiten" : "Neues Script"}
           </h2>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Playwright-Code für erweiterte Test-Automatisierung
-          </p>
         </DrawerHeader>
 
-        <div className=" pt-6 space-y-6 overflow-y-auto max-h-[calc(100vh-200px)]">
-          {/* Name */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Name *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="z.B. Cookie Banner schließen"
-              className={errors.name ? 'border-red-500' : ''}
-            />
-            {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+        <div className="px-6 pb-6 space-y-4 overflow-y-auto max-h-[calc(100vh-180px)]">
+          {/* Top Row: Name, Hook Point, Active */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="name" className="text-xs">Name *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="z.B. Cookie Banner"
+                className={`h-9 text-sm ${errors.name ? 'border-red-500' : ''}`}
+              />
+              {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="hookPoint" className="text-xs">Hook-Punkt *</Label>
+              <Select
+                value={formData.hookPoint}
+                onValueChange={(value) => setFormData({ ...formData, hookPoint: value as ScriptHookPoint })}
+              >
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {HOOK_POINT_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Status</Label>
+              <div className="flex items-center gap-2 h-9">
+                <Checkbox
+                  id="isActive"
+                  checked={formData.isActive}
+                  onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
+                />
+                <Label htmlFor="isActive" className="cursor-pointer text-sm">
+                  Aktiv
+                </Label>
+              </div>
+            </div>
           </div>
 
           {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Beschreibung</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="description" className="text-xs">Beschreibung</Label>
             <Input
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Optionale Beschreibung des Scripts"
+              placeholder="Optionale Beschreibung"
+              className="h-9 text-sm"
             />
           </div>
 
-          {/* Hook Point */}
-          <div className="space-y-2">
-            <Label htmlFor="hookPoint">Hook-Punkt *</Label>
-            <Select
-              value={formData.hookPoint}
-              onValueChange={(value) => setFormData({ ...formData, hookPoint: value as ScriptHookPoint })}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Wähle einen Hook-Punkt" />
-              </SelectTrigger>
-              <SelectContent>
-                {HOOK_POINT_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {selectedHookPoint && (
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 flex items-center gap-1">
-                <Info size={12} />
-                {selectedHookPoint.description}
-              </p>
-            )}
-          </div>
-
-          {/* Code */}
-          <div className="space-y-2">
+          {/* Code Editor */}
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="code">Playwright Code *</Label>
+              <Label htmlFor="code" className="text-xs">Playwright Code *</Label>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 onClick={handleValidate}
                 disabled={isValidating}
+                className="h-7 text-xs"
               >
-                <Code size={14} className="mr-1" />
+                <Code size={12} className="mr-1" />
                 {isValidating ? "Validiere..." : "Validieren"}
               </Button>
             </div>
@@ -215,15 +221,8 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
                 setFormData({ ...formData, code: e.target.value });
                 setValidationResult(null);
               }}
-              placeholder={`// Beispiel: Warte auf ein Element und klicke es
-await click('button.custom-button');
-log('Button geklickt');
-
-// Verfügbare Funktionen:
-// page.url(), page.title(), page.waitForSelector()
-// click(), fill(), type(), select(), check()
-// log(), screenshot(), wait()`}
-              className={`w-full h-48 px-3 py-2 font-mono text-sm border rounded-md resize-none
+              placeholder={`// Beispiel: await click('button.custom-button');`}
+              className={`w-full h-64 px-3 py-2 font-mono text-xs border rounded-md resize-none
                 bg-neutral-50 dark:bg-neutral-900 
                 text-neutral-900 dark:text-neutral-100
                 ${errors.code 
@@ -232,9 +231,9 @@ log('Button geklickt');
                 }
                 focus:outline-none focus:ring-2`}
             />
-            {errors.code && <p className="text-sm text-red-500">{errors.code}</p>}
+            {errors.code && <p className="text-xs text-red-500">{errors.code}</p>}
             {validationResult && (
-              <div className={`p-2 rounded text-sm ${
+              <div className={`p-2 rounded text-xs ${
                 validationResult.valid 
                   ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
                   : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
@@ -255,11 +254,10 @@ log('Button geklickt');
             )}
           </div>
 
-          {/* Options Row */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Timeout */}
-            <div className="space-y-2">
-              <Label htmlFor="timeout">Timeout (Sekunden)</Label>
+          {/* Bottom Row: Options */}
+          <div className="grid grid-cols-3 gap-3 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+            <div className="space-y-1.5">
+              <Label htmlFor="timeout" className="text-xs">Timeout (s)</Label>
               <Input
                 id="timeout"
                 type="number"
@@ -267,71 +265,62 @@ log('Button geklickt');
                 max={300}
                 value={formData.timeout / 1000}
                 onChange={(e) => setFormData({ ...formData, timeout: parseInt(e.target.value) * 1000 || 30000 })}
-                className={errors.timeout ? 'border-red-500' : ''}
+                className={`h-9 text-sm ${errors.timeout ? 'border-red-500' : ''}`}
               />
               {errors.timeout && <p className="text-xs text-red-500">{errors.timeout}</p>}
             </div>
-
-            {/* Global/Form-specific */}
-            <div className="space-y-2">
-              <Label>Geltungsbereich</Label>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Geltungsbereich</Label>
               <Select
                 value={formData.isGlobal ? "global" : "form"}
                 onValueChange={(value) => setFormData({ ...formData, isGlobal: value === "global" })}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-9 text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="global">Global (alle Tests)</SelectItem>
+                  <SelectItem value="global">Global</SelectItem>
                   <SelectItem value="form">Form-spezifisch</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          {/* Checkboxes */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="isActive"
-                checked={formData.isActive}
-                onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked === true })}
-              />
-              <Label htmlFor="isActive" className="cursor-pointer">
-                Script ist aktiv
-              </Label>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="stopOnError"
-                checked={formData.stopOnError}
-                onCheckedChange={(checked) => setFormData({ ...formData, stopOnError: checked === true })}
-              />
-              <Label htmlFor="stopOnError" className="cursor-pointer flex items-center gap-1">
-                <AlertTriangle size={14} className="text-orange-500" />
-                Test bei Script-Fehler abbrechen
-              </Label>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Fehlerbehandlung</Label>
+              <div className="flex items-center gap-2 h-9">
+                <Checkbox
+                  id="stopOnError"
+                  checked={formData.stopOnError}
+                  onCheckedChange={(checked) => setFormData({ ...formData, stopOnError: checked === true })}
+                />
+                <Label htmlFor="stopOnError" className="cursor-pointer text-sm flex items-center gap-1">
+                  <AlertTriangle size={12} className="text-orange-500" />
+                  Bei Fehler stoppen
+                </Label>
+              </div>
             </div>
           </div>
+
+          {/* Info for hook point */}
+          {selectedHookPoint && (
+            <div className="flex items-start gap-2 p-2 bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded text-xs text-blue-700 dark:text-blue-400">
+              <Info size={14} className="mt-0.5 flex-shrink-0" />
+              <span>{selectedHookPoint.description}</span>
+            </div>
+          )}
 
           {/* Warning for non-global scripts */}
           {!formData.isGlobal && (
-            <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
-              <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                <strong>Hinweis:</strong> Form-spezifische Scripts müssen nach dem Erstellen 
-                manuell den gewünschten Formularen zugewiesen werden.
-              </p>
+            <div className="p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded text-xs text-yellow-700 dark:text-yellow-400">
+              <strong>Hinweis:</strong> Form-spezifische Scripts müssen nach dem Erstellen manuell den gewünschten Formularen zugewiesen werden.
             </div>
           )}
         </div>
 
-        <DrawerFooter>
-          <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
+        <DrawerFooter className="pt-4">
+          <Button variant="outline" onClick={onClose} disabled={isSubmitting} size="sm">
             Abbrechen
           </Button>
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
+          <Button onClick={handleSubmit} disabled={isSubmitting} size="sm">
             {isSubmitting ? "Speichern..." : script ? "Speichern" : "Erstellen"}
           </Button>
         </DrawerFooter>
