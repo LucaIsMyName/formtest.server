@@ -175,8 +175,8 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
                     <>
                       {getStepStatusIcon(diff.left.status)}
                       <span className="text-neutral-700 dark:text-neutral-300 truncate flex-1">{diff.left.name}</span>
-                      {diff.left.duration && (
-                        <span className="text-neutral-400 flex-shrink-0">{diff.left.duration}ms</span>
+                      {diff.left.duration !== undefined && diff.left.duration !== null && (
+                        <span className="text-neutral-400 flex-shrink-0">{formatDuration(diff.left.duration)}</span>
                       )}
                     </>
                   ) : (
@@ -197,8 +197,8 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
                     <>
                       {getStepStatusIcon(diff.right.status)}
                       <span className="text-neutral-700 dark:text-neutral-300 truncate flex-1">{diff.right.name}</span>
-                      {diff.right.duration && (
-                        <span className="text-neutral-400 flex-shrink-0">{diff.right.duration}ms</span>
+                      {diff.right.duration !== undefined && diff.right.duration !== null && (
+                        <span className="text-neutral-400 flex-shrink-0">{formatDuration(diff.right.duration)}</span>
                       )}
                     </>
                   ) : (

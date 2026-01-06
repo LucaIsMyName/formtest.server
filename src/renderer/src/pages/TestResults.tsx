@@ -196,7 +196,8 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   };
 
   const formatDurationMs = (ms?: number) => {
-    if (!ms) return null;
+    if (ms === undefined || ms === null) return null;
+    if (ms === 0) return "0ms";
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   };
@@ -278,7 +279,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
                     <span className={`text-sm font-medium ${getTextColor(step.status)}`}>
                       {step.name}
                     </span>
-                    {step.duration && (
+                    {step.duration !== undefined && step.duration !== null && (
                       <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono">
                         {formatDurationMs(step.duration)}
                       </span>
@@ -1741,7 +1742,7 @@ const TestResults: React.FC = () => {
                         setSelectedPresetId(null);
                         setShowPresetPopover(false);
                       }}
-                      className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:text-neutral-300/50 dark:hover:bg-neutral-700 ${!selectedPresetId ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
+                      className={`w-full text-left px-2 py-1.5 text-xs rounded flex items-center gap-2 hover:bg-neutral-100 dark:text-neutral-300/50 dark:hover:bg-neutral-700 ${!selectedPresetId ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
                       <X className="w-3 h-3" />Keine Vorlage
                     </button>
                     {presets.map(preset => (

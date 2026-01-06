@@ -278,6 +278,7 @@ const Dashboard: React.FC = () => {
       total: number;
       success: number;
       failure: number;
+      stopped: number;
       successRate: number;
     }>();
     
@@ -302,6 +303,7 @@ const Dashboard: React.FC = () => {
           total: 0,
           success: 0,
           failure: 0,
+          stopped: 0,
           successRate: 0
         });
       }
@@ -310,6 +312,7 @@ const Dashboard: React.FC = () => {
       combo.total++;
       if (run.status === "SUCCESS") combo.success++;
       if (run.status === "FAILURE") combo.failure++;
+      if (run.status === "STOPPED") combo.stopped++;
     });
     
     // Calculate success rates and assign indices
@@ -322,8 +325,56 @@ const Dashboard: React.FC = () => {
       combo.successRate = combo.total > 0 ? Math.round((combo.success / combo.total) * 100) : 0;
     });
     
+    // Convert to scatter data with separate points for success, failure, and stopped
+    const scatterData: any[] = [];
+    Array.from(combinationMap.values())
+      .filter(c => c.total >= 3)
+      .forEach((combo) => {
+        const baseSize = Math.max(30, Math.min(100, combo.total * 2));
+        
+        // All circles centered at the same position
+        const x = combo.formIndex;
+        const y = combo.paymentMethodIndex;
+        
+        // Success circle
+        if (combo.success > 0) {
+          const successSize = (combo.success / combo.total) * baseSize;
+          scatterData.push({
+            ...combo,
+            type: 'success',
+            size: Math.max(10, successSize),
+            x: x,
+            y: y,
+          });
+        }
+        
+        // Failure circle
+        if (combo.failure > 0) {
+          const failureSize = (combo.failure / combo.total) * baseSize;
+          scatterData.push({
+            ...combo,
+            type: 'failure',
+            size: Math.max(10, failureSize),
+            x: x,
+            y: y,
+          });
+        }
+        
+        // Stopped circle
+        if (combo.stopped > 0) {
+          const stoppedSize = (combo.stopped / combo.total) * baseSize;
+          scatterData.push({
+            ...combo,
+            type: 'stopped',
+            size: Math.max(10, stoppedSize),
+            x: x,
+            y: y,
+          });
+        }
+      });
+    
     return {
-      data: Array.from(combinationMap.values()).filter(c => c.total >= 3), // Only show combinations with at least 3 tests
+      data: scatterData,
       formLabels: uniqueForms,
       paymentMethodLabels: uniquePaymentMethods
     };
@@ -1104,12 +1155,12 @@ const Dashboard: React.FC = () => {
                     </span>
                   </span>
                 ) : (
-                  'Alle Zeit'
+                  'Ganze Zeit'
                 )}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="alltime">Alle Zeit</SelectItem>
+              <SelectItem value="alltime">Ganze Zeit</SelectItem>
               <SelectItem value="last7days">Letzte 7 Tage</SelectItem>
               <SelectItem value="last30days">Letzte 30 Tage</SelectItem>
               <SelectItem value="last90days">Letzte 90 Tage</SelectItem>
@@ -1539,7 +1590,7 @@ const Dashboard: React.FC = () => {
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
                       <XAxis
                         type="number"
-                        dataKey="formIndex"
+                        dataKey="x"
                         name="Formular"
                         stroke="#9ca3af"
                         tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
@@ -1554,7 +1605,7 @@ const Dashboard: React.FC = () => {
                       />
                       <YAxis
                         type="number"
-                        dataKey="paymentMethodIndex"
+                        dataKey="y"
                         name="Bezahlmethode"
                         stroke="#9ca3af"
                         tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
@@ -1588,9 +1639,13 @@ const Dashboard: React.FC = () => {
                                 </p>
                                 <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
                                   {data.success} erfolgreich / {data.failure} fehlgeschlagen
+                                  {data.stopped > 0 && ` / ${data.stopped} gestoppt`}
                                 </p>
                                 <p className="text-xs text-neutral-500 dark:text-neutral-400">
                                   Gesamt: {data.total} Tests
+                                </p>
+                                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
+                                  Typ: {data.type === 'success' ? 'Erfolgreich' : data.type === 'failure' ? 'Fehlgeschlagen' : 'Gestoppt'}
                                 </p>
                               </div>
                             );
@@ -1598,27 +1653,62 @@ const Dashboard: React.FC = () => {
                           return null;
                         }}
                       />
+                      {/* Success circles */}
                       <Scatter
-                        name="Kombinationen"
-                        data={scatterData.data}
-                        fill="#3b82f6"
+                        name="Erfolgreich"
+                        data={scatterData.data.filter((d: any) => d.type === 'success')}
+                        fill="#10b981"
                         shape={(props: any) => {
                           const { cx, cy, payload } = props;
-                          const size = Math.max(30, Math.min(100, payload.total * 2));
-                          const color = payload.successRate >= 80 
-                            ? "#10b981" 
-                            : payload.successRate >= 50 
-                            ? "#f59e0b" 
-                            : "#ef4444";
                           return (
                             <circle
                               cx={cx}
                               cy={cy}
-                              r={size / 2}
-                              fill={color}
+                              r={payload.size / 2}
+                              fill="#10b981"
                               fillOpacity={0.7}
-                              stroke={color}
-                              strokeWidth={2}
+                              stroke="#10b981"
+                              strokeWidth={1.5}
+                            />
+                          );
+                        }}
+                      />
+                      {/* Failure circles */}
+                      <Scatter
+                        name="Fehlgeschlagen"
+                        data={scatterData.data.filter((d: any) => d.type === 'failure')}
+                        fill="#ef4444"
+                        shape={(props: any) => {
+                          const { cx, cy, payload } = props;
+                          return (
+                            <circle
+                              cx={cx}
+                              cy={cy}
+                              r={payload.size / 2}
+                              fill="#ef4444"
+                              fillOpacity={0.7}
+                              stroke="#ef4444"
+                              strokeWidth={1.5}
+                            />
+                          );
+                        }}
+                      />
+                      {/* Stopped circles */}
+                      <Scatter
+                        name="Gestoppt"
+                        data={scatterData.data.filter((d: any) => d.type === 'stopped')}
+                        fill="#a855f7"
+                        shape={(props: any) => {
+                          const { cx, cy, payload } = props;
+                          return (
+                            <circle
+                              cx={cx}
+                              cy={cy}
+                              r={payload.size / 2}
+                              fill="#a855f7"
+                              fillOpacity={0.7}
+                              stroke="#a855f7"
+                              strokeWidth={1.5}
                             />
                           );
                         }}
@@ -1628,18 +1718,18 @@ const Dashboard: React.FC = () => {
                   <div className="mt-4 flex items-center justify-center gap-6 text-xs">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      <span className="text-neutral-600 dark:text-neutral-400">≥80% Erfolgsrate</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                      <span className="text-neutral-600 dark:text-neutral-400">50-79% Erfolgsrate</span>
+                      <span className="text-neutral-600 dark:text-neutral-400">Erfolgreich</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <span className="text-neutral-600 dark:text-neutral-400">&lt;50% Erfolgsrate</span>
+                      <span className="text-neutral-600 dark:text-neutral-400">Fehlgeschlagen</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                      <span className="text-neutral-600 dark:text-neutral-400">Gestoppt</span>
                     </div>
                     <div className="text-neutral-500 dark:text-neutral-400">
-                      Größe = Anzahl Tests
+                      Größe = Anteil an Gesamttests
                     </div>
                   </div>
                 </div>

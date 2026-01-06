@@ -11,9 +11,10 @@ import { Checkbox } from "./ui/Checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
 import { StatusBadge } from "./ui/Badge";
-import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink, Play, BarChart3 } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink, Play, BarChart3, Code, X } from "lucide-react";
 import { CONFIG } from "@/app.config";
 import { formatDate } from "../utils/formatters";
+import { useCustomScriptsStore } from "../store/useCustomScriptsStore";
 
 interface FormDrawerProps {
   isOpen: boolean;
@@ -53,6 +54,7 @@ const ACTION_OPTIONS: { value: FieldMappingAction; label: string }[] = [
 ];
 
 const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, editForm, isLoading = false, onDelete }) => {
+  const { scripts, loadScripts, formScripts, loadFormScripts, attachScriptToForm, detachScriptFromForm } = useCustomScriptsStore();
   const [formData, setFormData] = useState({
     name: "",
     url: "",
@@ -62,6 +64,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
   });
   const [fieldMappings, setFieldMappings] = useState<FormFieldMapping[]>([]);
   const [showFieldMappings, setShowFieldMappings] = useState(false);
+  const [showScripts, setShowScripts] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showIconPicker, setShowIconPicker] = useState(false);
 
@@ -77,6 +80,9 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
       setFieldMappings(editForm.fieldMappings || []);
       // Auto-expand if there are existing mappings
       setShowFieldMappings((editForm.fieldMappings?.length || 0) > 0);
+      // Load scripts and form-specific scripts
+      loadScripts();
+      loadFormScripts(editForm.id);
     } else {
       setFormData({
         name: "",
@@ -89,7 +95,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
       setShowFieldMappings(false);
     }
     setErrors({});
-  }, [editForm, isOpen]);
+  }, [editForm, isOpen, loadScripts, loadFormScripts]);
 
   // Generate unique ID for new mappings
   const generateId = () => crypto.randomUUID();
@@ -500,6 +506,101 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
               </div>
             )}
           </div>
+
+          {/* Scripts Section - only shown when editing */}
+          {editForm && (
+            <div className="mb-6">
+              <button
+                type="button"
+                onClick={() => setShowScripts(!showScripts)}
+                className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-neutral-50 dark:bg-neutral-800/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700 transition-colors">
+                <div className="flex items-center gap-2">
+                  <Code size={14} />
+                  Form-spezifische Scripts
+                  {formScripts.get(editForm.id)?.length > 0 && (
+                    <span className="px-2 py-0.5 text-xs bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded-full">
+                      {formScripts.get(editForm.id)?.length}
+                    </span>
+                  )}
+                </div>
+                {showScripts ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </button>
+              {showScripts && (
+                <div className="mt-3 space-y-2 border border-neutral-200 dark:border-neutral-700 rounded-md p-3 bg-neutral-50 dark:bg-neutral-800/30">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+                    Form-spezifische Scripts werden nur bei Tests für dieses Formular ausgeführt.
+                  </p>
+                  {(() => {
+                    const formSpecificScripts = scripts.filter(s => !s.isGlobal);
+                    const attachedScriptIds = new Set((formScripts.get(editForm.id) || []).map(fs => fs.scriptId));
+                    
+                    if (formSpecificScripts.length === 0) {
+                      return (
+                        <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center py-4">
+                          Keine form-spezifischen Scripts verfügbar. Erstelle zuerst ein Script mit "Form-spezifisch" in den Scripts.
+                        </p>
+                      );
+                    }
+                    
+                    return (
+                      <div className="space-y-2">
+                        {formSpecificScripts.map(script => {
+                          const isAttached = attachedScriptIds.has(script.id);
+                          return (
+                            <div
+                              key={script.id}
+                              className="flex items-center justify-between p-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <Code size={12} className="text-neutral-400 flex-shrink-0" />
+                                  <span className="text-sm font-medium text-neutral-900 dark:text-white truncate">
+                                    {script.name}
+                                  </span>
+                                  {script.isActive && (
+                                    <StatusBadge status="success" size="sm">Aktiv</StatusBadge>
+                                  )}
+                                </div>
+                                {script.description && (
+                                  <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 truncate">
+                                    {script.description}
+                                  </p>
+                                )}
+                              </div>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={isAttached ? "outline" : "primary"}
+                                onClick={async () => {
+                                  if (isAttached) {
+                                    await detachScriptFromForm(editForm.id, script.id);
+                                  } else {
+                                    await attachScriptToForm(editForm.id, script.id);
+                                  }
+                                  await loadFormScripts(editForm.id);
+                                }}
+                                className="ml-2 flex-shrink-0">
+                                {isAttached ? (
+                                  <>
+                                    <X size={12} className="mr-1" />
+                                    Entfernen
+                                  </>
+                                ) : (
+                                  <>
+                                    <Plus size={12} className="mr-1" />
+                                    Hinzufügen
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+          )}
 
           <DrawerFooter className="pt-6">
             <Button
