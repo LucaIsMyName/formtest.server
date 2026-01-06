@@ -9,6 +9,10 @@ import { getTestProcessManager } from "./testRunner/processManager";
 
 let mainWindow: BrowserWindow;
 
+export function getMainWindow(): BrowserWindow | null {
+  return mainWindow || null;
+}
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1200,

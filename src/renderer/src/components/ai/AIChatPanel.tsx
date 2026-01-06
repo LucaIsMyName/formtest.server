@@ -20,8 +20,10 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
     isLoadingChats,
     isLoadingMessages,
     isSending,
+    isStreaming,
     sendingChatId,
     error,
+    settings,
     loadChats,
     loadSettings,
     createChat,
@@ -29,6 +31,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
     updateChatTitle,
     deleteChat,
     sendMessage,
+    sendMessageStreaming,
     clearError,
   } = useAIStore();
 
@@ -53,7 +56,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
   };
 
   const handleSendMessage = async (content: string) => {
-    await sendMessage(content);
+    await sendMessageStreaming(content);
   };
 
   return (
@@ -136,6 +139,9 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
             <AIChatMessages
               messages={messages}
               isLoading={(isSending && sendingChatId === activeChat?.id) || isLoadingMessages}
+              isStreaming={isStreaming && sendingChatId === activeChat?.id}
+              aiProvider={settings?.provider}
+              aiModel={settings?.model}
             />
             <AIChatInput
               onSend={handleSendMessage}

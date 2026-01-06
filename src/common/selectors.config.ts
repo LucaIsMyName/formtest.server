@@ -151,7 +151,9 @@ export const SELECTOR_CONFIG: SelectorConfig = {
       '[data-cy="accept-all"]',
       '#accept-all-cookies',
       '.accept-cookies',
-      'button[class*="accept"]'
+      'button[class*="accept"]',
+      '[data-testid="uc-accept-all-button"]',
+
     ]
   },
 

@@ -10,6 +10,7 @@ import { emailService } from "./emailService";
 import { startApiServer, stopApiServer, isApiServerRunning, generateApiKey, getStoredApiKey } from "./apiServer";
 import { aiService, ChatMessage } from "./ai";
 import { sanitizeError } from "./utils/errorSanitizer";
+import { getMainWindow } from "./index";
 
 /**
  * Helper to sanitize and throw errors in IPC handlers
@@ -1013,8 +1014,12 @@ export function setupIpcHandlers(): void {
       // Get AI response
       const response = await aiService.chat(chatMessages);
       
-      // Save assistant message
-      const assistantMessage = aiMessageQueries.create(chatId, 'assistant', response.content);
+      // Save assistant message with usage metadata
+      let metadata = null;
+      if (response.usage) {
+        metadata = JSON.stringify({ usage: response.usage });
+      }
+      const assistantMessage = aiMessageQueries.create(chatId, 'assistant', response.content, metadata);
       
       return {
         userMessage,
@@ -1023,6 +1028,63 @@ export function setupIpcHandlers(): void {
       };
     } catch (error) {
       console.error("IPC Error - ai:messages:send:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("ai:messages:sendStream", async (event, chatId: number, content: string) => {
+    try {
+      // Save user message
+      const userMessage = aiMessageQueries.create(chatId, 'user', content);
+      const mainWindow = getMainWindow();
+      
+      if (!mainWindow) {
+        throw new Error("Main window not available");
+      }
+
+      // Get all messages for context
+      const allMessages = aiMessageQueries.getByChatId(chatId);
+      const chatMessages: ChatMessage[] = allMessages.map(m => ({
+        role: m.role,
+        content: m.content,
+      }));
+      
+      let fullContent = '';
+
+      // Stream AI response
+      await aiService.streamChat(chatMessages, {
+        onToken: (token: string) => {
+          fullContent += token;
+          mainWindow.webContents.send('ai:stream:token', { chatId, token });
+        },
+        onComplete: async (content: string) => {
+          fullContent = content;
+          // Save assistant message (usage not available in streaming, will be estimated if needed)
+          const assistantMessage = aiMessageQueries.create(chatId, 'assistant', fullContent);
+          mainWindow.webContents.send('ai:stream:complete', { 
+            chatId, 
+            assistantMessage
+          });
+        },
+        onError: (error: Error) => {
+          console.error("Stream error:", error);
+          mainWindow.webContents.send('ai:stream:error', { 
+            chatId, 
+            error: error.message 
+          });
+        }
+      });
+
+      return { userMessage };
+    } catch (error) {
+      console.error("IPC Error - ai:messages:sendStream:", error);
+      const mainWindow = getMainWindow();
+      if (mainWindow) {
+        mainWindow.webContents.send('ai:stream:error', { 
+          chatId, 
+          error: error instanceof Error ? error.message : 'Unknown error' 
+        });
+      }
       throw error;
     }
   });

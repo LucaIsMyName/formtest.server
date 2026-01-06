@@ -1,12 +1,17 @@
-import React, { useRef, useEffect } from "react";
-import { MessagesSquare, User, Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import React, { useRef, useEffect, useState } from "react";
+import { MessagesSquare, User, Loader2, ExternalLink, Copy, Check } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import type { AIMessage } from "../../../../common/types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
 import { StatusBadge } from "../ui/Badge";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import Button from "../ui/Button";
+import { formatTokenUsage } from "../../utils/tokenCostCalculator";
+
+// Code blocks will use syntax highlighting if react-syntax-highlighter is installed
+// Otherwise, they will fall back to plain text with copy functionality
 
 // Chart colors
 const CHART_COLORS = ["#22c55e", "#ef4444", "#3b82f6", "#f59e0b", "#8b5cf6", "#ec4899"];
@@ -90,7 +95,7 @@ interface ListBlock {
 
 interface ChartBlock {
   type: "chart";
-  chartType: "pie" | "bar";
+  chartType: "pie" | "bar" | "line";
   data: { name: string; value: number }[];
   title?: string;
 }
@@ -100,7 +105,27 @@ interface SuggestionsBlock {
   items: string[];
 }
 
-type ContentBlock = TextBlock | HeadingBlock | TableBlock | ListBlock | ChartBlock | SuggestionsBlock;
+interface LinkBlock {
+  type: "link";
+  text: string;
+  url: string;
+  internal?: boolean;
+}
+
+interface CodeBlock {
+  type: "code";
+  language?: string;
+  content: string;
+}
+
+interface ActionBlock {
+  type: "action";
+  label: string;
+  action: string;
+  params?: Record<string, any>;
+}
+
+type ContentBlock = TextBlock | HeadingBlock | TableBlock | ListBlock | ChartBlock | SuggestionsBlock | LinkBlock | CodeBlock | ActionBlock;
 
 // Parse AI response to extract structured blocks
 function parseAIResponse(content: string): ContentBlock[] {
@@ -193,7 +218,7 @@ function parseAIResponse(content: string): ContentBlock[] {
 }
 
 // Render a single content block
-const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
+const ContentBlockRenderer: React.FC<{ block: ContentBlock; onActionClick?: (action: string, params?: Record<string, any>) => void }> = ({ block, onActionClick }) => {
   switch (block.type) {
     case "heading":
       const HeadingTag = `h${block.level}` as "h1" | "h2" | "h3";
@@ -300,6 +325,24 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
                 </Pie>
                 <Tooltip />
               </PieChart>
+            ) : block.chartType === "line" ? (
+              <LineChart data={block.data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 11 }}
+                />
+                <YAxis tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
             ) : (
               <BarChart data={block.data}>
                 <XAxis
@@ -322,6 +365,134 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
     case "suggestions":
       return null; // Suggestions are rendered separately at the message level
 
+    case "link":
+      // Links are handled in StructuredResponse component
+      return null;
+
+    case "code":
+      const CodeBlockComponent: React.FC<{ block: CodeBlock }> = ({ block }) => {
+        const [copied, setCopied] = useState(false);
+        const [highlighter, setHighlighter] = useState<{ SyntaxHighlighter: any; vscDarkPlus: any } | null>(null);
+        const [loading, setLoading] = useState(true);
+
+        useEffect(() => {
+          // Use a more dynamic import approach that Vite won't analyze
+          const loadHighlighter = async () => {
+            try {
+              // Use Function constructor to make import truly dynamic
+              const importFn = new Function('specifier', 'return import(specifier)');
+              const module = await importFn('react-syntax-highlighter');
+              const styleModule = await importFn('react-syntax-highlighter/dist/esm/styles/prism');
+              setHighlighter({
+                SyntaxHighlighter: module.Prism || module.default?.Prism,
+                vscDarkPlus: styleModule.vscDarkPlus || styleModule.default?.vscDarkPlus
+              });
+            } catch (error) {
+              // Package not installed - will use fallback
+              console.warn('react-syntax-highlighter not available, using plain text for code blocks');
+            } finally {
+              setLoading(false);
+            }
+          };
+          loadHighlighter();
+        }, []);
+
+        const handleCopy = async () => {
+          try {
+            await navigator.clipboard.writeText(block.content);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          } catch (error) {
+            console.error('Failed to copy code:', error);
+          }
+        };
+
+        // Show loading state briefly
+        if (loading) {
+          return (
+            <div className="relative rounded-lg border border-neutral-200 dark:border-neutral-600 overflow-hidden bg-neutral-50 dark:bg-neutral-900">
+              <div className="flex items-center justify-between px-4 py-2 bg-neutral-100 dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
+                <span className="text-xs text-neutral-500 dark:text-neutral-400 font-mono">{block.language || 'text'}</span>
+              </div>
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-neutral-900 dark:text-neutral-100">
+                <code>{block.content}</code>
+              </pre>
+            </div>
+          );
+        }
+
+        // Use syntax highlighter if available
+        if (highlighter?.SyntaxHighlighter && block.language) {
+          const { SyntaxHighlighter: SH, vscDarkPlus: style } = highlighter;
+          return (
+            <div className="relative rounded-lg border border-neutral-200 dark:border-neutral-600 overflow-hidden bg-neutral-900">
+              <div className="flex items-center justify-between px-4 py-2 bg-neutral-800 border-b border-neutral-700">
+                <span className="text-xs text-neutral-400 font-mono">{block.language}</span>
+                <button
+                  onClick={handleCopy}
+                  className="p-1.5 rounded hover:bg-neutral-700 text-neutral-400 hover:text-neutral-200 transition-colors"
+                  title="Code kopieren"
+                >
+                  {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+                </button>
+              </div>
+              <SH
+                language={block.language}
+                style={style}
+                customStyle={{
+                  margin: 0,
+                  padding: '1rem',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.5',
+                }}
+                PreTag="div"
+              >
+                {block.content}
+              </SH>
+            </div>
+          );
+        }
+
+        // Fallback to plain text (always works)
+        return (
+          <div className="relative rounded-lg border border-neutral-200 dark:border-neutral-600 overflow-hidden bg-neutral-50 dark:bg-neutral-900">
+            <div className="flex items-center justify-between px-4 py-2 bg-neutral-100 dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
+              <span className="text-xs text-neutral-500 dark:text-neutral-400 font-mono">{block.language || 'text'}</span>
+              <button
+                onClick={handleCopy}
+                className="p-1.5 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+                title="Code kopieren"
+              >
+                {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+              </button>
+            </div>
+            <pre className="p-4 overflow-x-auto text-sm font-mono text-neutral-900 dark:text-neutral-100 whitespace-pre-wrap">
+              <code>{block.content}</code>
+            </pre>
+          </div>
+        );
+      };
+      return <CodeBlockComponent block={block} />;
+
+    case "action":
+      const ActionComponent: React.FC<{ block: ActionBlock }> = ({ block }) => {
+        const handleClick = () => {
+          onActionClick?.(block.action, block.params);
+        };
+
+        return (
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleClick}
+            className="mt-2"
+          >
+            {block.label}
+          </Button>
+        );
+      };
+      return <ActionComponent block={block} />;
+
     case "text":
     default:
       if (!("content" in block)) return null;
@@ -334,7 +505,8 @@ const ContentBlockRenderer: React.FC<{ block: ContentBlock }> = ({ block }) => {
 };
 
 // Render structured AI response
-const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (suggestion: string) => void; showSuggestions?: boolean }> = ({ content, onSuggestionClick, showSuggestions = false }) => {
+const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (suggestion: string) => void; onActionClick?: (action: string, params?: Record<string, any>) => void; showSuggestions?: boolean }> = ({ content, onSuggestionClick, onActionClick, showSuggestions = false }) => {
+  const navigate = useNavigate();
   const blocks = parseAIResponse(content);
   
   // Extract suggestions block if present
@@ -343,12 +515,47 @@ const StructuredResponse: React.FC<{ content: string; onSuggestionClick?: (sugge
 
   return (
     <div className="space-y-4">
-      {contentBlocks.map((block, i) => (
-        <ContentBlockRenderer
-          key={i}
-          block={block}
-        />
-      ))}
+      {contentBlocks.map((block, i) => {
+        // Special handling for link blocks
+        if (block.type === "link") {
+          const linkBlock = block as LinkBlock;
+          if (linkBlock.internal !== false) {
+            return (
+              <Button
+                key={i}
+                variant="outline"
+                size="sm"
+                onClick={() => navigate(linkBlock.url)}
+                className="inline-flex items-center gap-1.5 mt-2"
+              >
+                {linkBlock.text}
+                <ExternalLink size={12} />
+              </Button>
+            );
+          } else {
+            return (
+              <a
+                key={i}
+                href={linkBlock.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:underline mt-2"
+              >
+                {linkBlock.text}
+                <ExternalLink size={12} />
+              </a>
+            );
+          }
+        }
+        // Pass onActionClick to action blocks
+        return (
+          <ContentBlockRenderer
+            key={i}
+            block={block}
+            onActionClick={onActionClick}
+          />
+        );
+      })}
       {showSuggestions && suggestionsBlock && suggestionsBlock.items.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-600">
           {suggestionsBlock.items.map((suggestion, i) => (
@@ -375,7 +582,11 @@ export function hasAISuggestions(content: string): boolean {
 interface AIChatMessagesProps {
   messages: AIMessage[];
   isLoading: boolean;
+  isStreaming?: boolean;
+  aiProvider?: string;
+  aiModel?: string;
   onSuggestionClick?: (suggestion: string) => void;
+  onActionClick?: (action: string, params?: Record<string, any>) => void;
 }
 
 // Default suggestions for empty chat
@@ -465,7 +676,7 @@ function generateAutoSuggestions(messageContent: string): string[] {
   return suggestions.slice(0, 4); // Return max 4 suggestions
 }
 
-const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, onSuggestionClick }) => {
+const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, isStreaming = false, aiProvider, aiModel, onSuggestionClick, onActionClick }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to MessagesSquaretom when new messages arrive
@@ -527,7 +738,18 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
 
             {/* Message Content */}
             <div className={`select-text flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""}`}>
-              <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>{message.role === "user" ? <p className="text-sm whitespace-pre-wrap">{message.content}</p> : <StructuredResponse content={message.content} onSuggestionClick={onSuggestionClick} showSuggestions={isLastAIMessage} />}</div>
+              <div className={`inline-block max-w-full ${message.role === "user" ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md" : "text-neutral-900 dark:text-neutral-100"}`}>
+                {message.role === "user" ? (
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                ) : (
+                  <>
+                    <StructuredResponse content={message.content} onSuggestionClick={onSuggestionClick} onActionClick={onActionClick} showSuggestions={isLastAIMessage && !isStreaming} />
+                    {isLastAIMessage && isStreaming && (
+                      <span className="inline-block w-2 h-4 ml-1 bg-blue-500 animate-pulse" />
+                    )}
+                  </>
+                )}
+              </div>
               
               {/* Auto-suggestions for AI messages - only show if AI didn't provide suggestions in its response */}
               {message.role === "assistant" && isLastAIMessage && !hasAISuggestions(message.content) && (
@@ -546,12 +768,36 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, on
                 </div>
               )}
               
-              <p className="text-xs text-neutral-400 mt-1">
-                {new Date(message.createdAt).toLocaleTimeString("de-DE", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-xs text-neutral-400">
+                  {new Date(message.createdAt).toLocaleTimeString("de-DE", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+                {message.role === 'assistant' && message.metadata && (() => {
+                  try {
+                    const metadata = JSON.parse(message.metadata);
+                    if (metadata.usage) {
+                      const usageText = formatTokenUsage(
+                        metadata.usage,
+                        aiProvider as any,
+                        aiModel
+                      );
+                      if (usageText) {
+                        return (
+                          <span className="text-xs text-neutral-500 dark:text-neutral-400 font-mono">
+                            {usageText}
+                          </span>
+                        );
+                      }
+                    }
+                  } catch {
+                    // Invalid metadata, ignore
+                  }
+                  return null;
+                })()}
+              </div>
             </div>
           </div>
         );

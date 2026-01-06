@@ -12,6 +12,7 @@ import { Label } from "./ui/Label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Checkbox } from "./ui/Checkbox";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
+import { CONFIG } from "../app.config";
 
 interface TestRunDrawerProps {
   isOpen: boolean;
@@ -158,12 +159,10 @@ const TestRunDrawer: React.FC<TestRunDrawerProps> = ({
         {/* Header */}
         <DialogHeader className="relative p-4 pb-4 border-b border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <Play size={18} className="text-white ml-0.5" />
-            </div>
+            
             <div>
-              <DialogTitle className="text-xl font-semibold">Tests ausführen</DialogTitle>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+              <DialogTitle className={`${CONFIG.style.title.className}`}>Tests ausführen</DialogTitle>
+              <p className="sr-only text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                 Wähle Formulare & Bezahlmethoden für den Testlauf
               </p>
             </div>

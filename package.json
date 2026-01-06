@@ -1,6 +1,6 @@
 {
   "name": "formtest-server",
-  "version": "1.0.75",
+  "version": "1.0.76",
   "description": "Donation form testing application with Electron, Vite, TypeScript, and Playwright",
   "main": "out/main/index.js",
   "scripts": {
@@ -81,6 +81,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@types/prismjs": "^1.26.5",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "better-sqlite3": "^9.2.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -95,6 +96,7 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^6.20.0",
+    "react-syntax-highlighter": "^16.1.0",
     "recharts": "^3.5.0",
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.4.0",

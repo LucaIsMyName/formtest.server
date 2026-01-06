@@ -15,6 +15,9 @@ interface AIState {
   isLoadingMessages: boolean;
   isSending: boolean;
   sendingChatId: number | null; // Track which chat is currently receiving a response
+  isStreaming: boolean;
+  streamingContent: string; // Current streaming content
+  streamingMessageId: number | null; // ID of message being streamed
 
   // Panel state
   isPanelOpen: boolean;
@@ -22,6 +25,8 @@ interface AIState {
 
   // Error state
   error: string | null;
+  lastFailedMessage: string | null; // Store last failed message for retry
+  retryCount: number; // Track retry attempts
 
   // Actions - Settings
   loadSettings: () => Promise<void>;
@@ -39,6 +44,8 @@ interface AIState {
 
   // Actions - Messages
   sendMessage: (content: string) => Promise<void>;
+  sendMessageStreaming: (content: string) => Promise<void>;
+  retryLastMessage: () => Promise<void>;
 
   // Actions - Panel
   openPanel: () => void;
@@ -65,9 +72,14 @@ export const useAIStore = create<AIState>((set, get) => ({
   isLoadingMessages: false,
   isSending: false,
   sendingChatId: null,
+  isStreaming: false,
+  streamingContent: '',
+  streamingMessageId: null,
   isPanelOpen: false,
   isFullPage: false,
   error: null,
+  lastFailedMessage: null,
+  retryCount: 0,
 
   // Settings actions
   loadSettings: async () => {
@@ -268,6 +280,141 @@ export const useAIStore = create<AIState>((set, get) => ({
     }
   },
 
+  sendMessageStreaming: async (content) => {
+    const { activeChat, messages } = get();
+    
+    // Create a new chat if none is active
+    let chatId = activeChat?.id;
+    let isNewChat = false;
+    let shouldRenameChat = false;
+    
+    if (!chatId) {
+      const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+      const newChat = await get().createChat(title);
+      if (!newChat) return;
+      chatId = newChat.id;
+      isNewChat = true;
+    } else if (messages.length === 0 && activeChat?.title === 'Neuer Chat') {
+      shouldRenameChat = true;
+    }
+
+    // Optimistic UI: Show user message immediately
+    const optimisticUserMessage = {
+      id: Date.now(),
+      chatId: chatId,
+      role: 'user' as const,
+      content: content,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Create temporary assistant message for streaming
+    const streamingMessageId = Date.now() + 1;
+    const optimisticAssistantMessage = {
+      id: streamingMessageId,
+      chatId: chatId,
+      role: 'assistant' as const,
+      content: '',
+      createdAt: new Date().toISOString(),
+    };
+    
+    set({ 
+      isStreaming: true, 
+      streamingContent: '',
+      streamingMessageId: streamingMessageId,
+      sendingChatId: chatId, 
+      error: null, 
+      messages: [...get().messages, optimisticUserMessage, optimisticAssistantMessage] 
+    });
+    
+    // Setup stream listeners
+    window.api.ai.messages.onStreamToken(({ chatId: streamChatId, token }) => {
+      if (streamChatId === chatId) {
+        const { streamingContent: currentContent } = get();
+        const newContent = currentContent + token;
+        set({ streamingContent: newContent });
+        
+        // Update the streaming message in the messages array
+        const { messages: currentMessages } = get();
+        const updatedMessages = currentMessages.map(msg => 
+          msg.id === streamingMessageId 
+            ? { ...msg, content: newContent }
+            : msg
+        );
+        set({ messages: updatedMessages });
+      }
+    });
+
+    window.api.ai.messages.onStreamComplete(async ({ chatId: streamChatId, assistantMessage }) => {
+      if (streamChatId === chatId) {
+        // Update messages with real data from server
+        const updatedMessages = await window.api.ai.messages.getByChatId(chatId);
+        const chats = await window.api.ai.chats.getAll();
+        const updatedActiveChat = (isNewChat || shouldRenameChat) 
+          ? chats.find(c => c.id === chatId) || get().activeChat 
+          : get().activeChat;
+        
+        set({ 
+          messages: updatedMessages, 
+          chats, 
+          activeChat: updatedActiveChat, 
+          isStreaming: false,
+          streamingContent: '',
+          streamingMessageId: null,
+          sendingChatId: null 
+        });
+      }
+    });
+
+    window.api.ai.messages.onStreamError(({ chatId: streamChatId, error: streamError }) => {
+      if (streamChatId === chatId) {
+        set({ 
+          error: streamError,
+          isStreaming: false,
+          streamingContent: '',
+          streamingMessageId: null,
+          sendingChatId: null 
+        });
+      }
+    });
+    
+    try {
+      if (shouldRenameChat && chatId) {
+        const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+        await window.api.ai.chats.updateTitle(chatId, title);
+      }
+      
+      await window.api.ai.messages.sendStream(chatId, content);
+    } catch (error) {
+      console.error('Failed to send streaming message:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to send message',
+        lastFailedMessage: content,
+        isStreaming: false,
+        streamingContent: '',
+        streamingMessageId: null,
+        sendingChatId: null 
+      });
+    }
+  },
+
+  retryLastMessage: async () => {
+    const { lastFailedMessage, retryCount } = get();
+    if (!lastFailedMessage) return;
+    
+    // Prevent infinite retry loops
+    if (retryCount >= 3) {
+      set({ 
+        error: 'Zu viele Wiederholungsversuche. Bitte versuche es später erneut.',
+        retryCount: 0,
+        lastFailedMessage: null
+      });
+      return;
+    }
+
+    set({ retryCount: retryCount + 1, error: null });
+    await get().sendMessageStreaming(lastFailedMessage);
+  },
+
   // Panel actions
   openPanel: () => set({ isPanelOpen: true }),
   closePanel: () => set({ isPanelOpen: false }),
@@ -285,5 +432,5 @@ export const useAIStore = create<AIState>((set, get) => ({
   },
 
   // Utility actions
-  clearError: () => set({ error: null }),
+  clearError: () => set({ error: null, lastFailedMessage: null, retryCount: 0 }),
 }));

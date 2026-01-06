@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const electron = require("electron");
 const path = require("path");
 const utils = require("@electron-toolkit/utils");
@@ -152,7 +153,8 @@ const SELECTOR_CONFIG = {
       '[data-cy="accept-all"]',
       "#accept-all-cookies",
       ".accept-cookies",
-      'button[class*="accept"]'
+      'button[class*="accept"]',
+      '[data-testid="uc-accept-all-button"]'
     ]
   },
   // Iframe detection for embedded forms
@@ -4725,18 +4727,36 @@ VERFÜGBARE BLOCK-TYPEN:
 
 4. Chart (für visuelle Datenanalyse):
 {"type": "chart", "chartType": "pie", "title": "Titel", "data": [{"name": "Label", "value": 123}]}
-- chartType kann "pie" oder "bar" sein
+- chartType kann "pie", "bar" oder "line" sein
 - Nutze "pie" für Verteilungen (Erfolg/Fehler, Aktiv/Inaktiv)
 - Nutze "bar" für Vergleiche (Tests pro Formular, etc.)
+- Nutze "line" für Zeitreihen (Trends über Zeit, Erfolgsrate über Tage)
 
 5. Liste:
 {"type": "list", "items": ["Item 1", "Item 2"], "ordered": false}
 
-6. Follow-up Vorschläge (IMMER am Ende hinzufügen!):
+6. Code Block (für Code-Snippets):
+{"type": "code", "language": "javascript", "content": "const x = 1;"}
+- language: javascript, typescript, json, python, bash, sql, etc.
+
+7. Link (für Navigation zu Tests, Formularen, etc.):
+{"type": "link", "text": "Test #1234", "url": "/test-results?testId=1234", "internal": true}
+- Nutze Links für Test-IDs, Formular-Namen, Bezahlmethoden
+- "internal": true für App-Navigation, false für externe URLs
+- Interne URLs: /test-results, /forms, /payment-methods, /dashboard
+
+8. Follow-up Vorschläge (IMMER am Ende hinzufügen!):
 {"type": "suggestions", "items": ["Vorschlag 1", "Vorschlag 2", "Vorschlag 3"]}
 - Füge IMMER 2-3 relevante Follow-up Fragen am Ende hinzu
 - Die Vorschläge sollten zum Kontext der Antwort passen
 - WICHTIG: Vorschläge müssen NUR für Datenanalyse sein (keine Aktionen wie "Test starten")
+
+9. Quick Action (für vorgeschlagene Aktionen):
+{"type": "action", "label": "Test starten", "action": "startTest", "params": {"formId": 1, "paymentMethodId": 2}}
+- Nutze Actions um dem Benutzer konkrete Aktionen vorzuschlagen
+- Verfügbare Actions: "startTest", "viewForm", "viewTest", "viewPaymentMethod"
+- params enthalten die notwendigen IDs für die Aktion
+- WICHTIG: Actions sind nur Vorschläge, der Benutzer muss klicken
 
 BEISPIEL-ANTWORT für "Analysiere die Testergebnisse":
 [
@@ -5872,7 +5892,11 @@ function setupIpcHandlers() {
         content: m.content
       }));
       const response = await aiService.chat(chatMessages);
-      const assistantMessage = aiMessageQueries.create(chatId, "assistant", response.content);
+      let metadata = null;
+      if (response.usage) {
+        metadata = JSON.stringify({ usage: response.usage });
+      }
+      const assistantMessage = aiMessageQueries.create(chatId, "assistant", response.content, metadata);
       return {
         userMessage,
         assistantMessage,
@@ -5880,6 +5904,53 @@ function setupIpcHandlers() {
       };
     } catch (error) {
       console.error("IPC Error - ai:messages:send:", error);
+      throw error;
+    }
+  });
+  electron.ipcMain.handle("ai:messages:sendStream", async (event, chatId, content) => {
+    try {
+      const userMessage = aiMessageQueries.create(chatId, "user", content);
+      const mainWindow2 = getMainWindow();
+      if (!mainWindow2) {
+        throw new Error("Main window not available");
+      }
+      const allMessages = aiMessageQueries.getByChatId(chatId);
+      const chatMessages = allMessages.map((m) => ({
+        role: m.role,
+        content: m.content
+      }));
+      let fullContent = "";
+      await aiService.streamChat(chatMessages, {
+        onToken: (token) => {
+          fullContent += token;
+          mainWindow2.webContents.send("ai:stream:token", { chatId, token });
+        },
+        onComplete: async (content2) => {
+          fullContent = content2;
+          const assistantMessage = aiMessageQueries.create(chatId, "assistant", fullContent);
+          mainWindow2.webContents.send("ai:stream:complete", {
+            chatId,
+            assistantMessage
+          });
+        },
+        onError: (error) => {
+          console.error("Stream error:", error);
+          mainWindow2.webContents.send("ai:stream:error", {
+            chatId,
+            error: error.message
+          });
+        }
+      });
+      return { userMessage };
+    } catch (error) {
+      console.error("IPC Error - ai:messages:sendStream:", error);
+      const mainWindow2 = getMainWindow();
+      if (mainWindow2) {
+        mainWindow2.webContents.send("ai:stream:error", {
+          chatId,
+          error: error instanceof Error ? error.message : "Unknown error"
+        });
+      }
       throw error;
     }
   });
@@ -5893,6 +5964,9 @@ function setupIpcHandlers() {
   });
 }
 let mainWindow;
+function getMainWindow() {
+  return mainWindow || null;
+}
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
     width: 1200,
@@ -5995,3 +6069,4 @@ electron.ipcMain.handle("window-close", () => {
 electron.ipcMain.handle("window-is-maximized", () => {
   return mainWindow ? mainWindow.isMaximized() : false;
 });
+exports.getMainWindow = getMainWindow;

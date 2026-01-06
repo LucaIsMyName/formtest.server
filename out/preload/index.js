@@ -177,7 +177,22 @@ const api = {
     // Messages
     messages: {
       getByChatId: (chatId) => electron.ipcRenderer.invoke("ai:messages:getByChatId", chatId),
-      send: (chatId, content) => electron.ipcRenderer.invoke("ai:messages:send", chatId, content)
+      send: (chatId, content) => electron.ipcRenderer.invoke("ai:messages:send", chatId, content),
+      sendStream: (chatId, content) => electron.ipcRenderer.invoke("ai:messages:sendStream", chatId, content),
+      onStreamToken: (callback) => {
+        electron.ipcRenderer.on("ai:stream:token", (_, data) => callback(data));
+      },
+      onStreamComplete: (callback) => {
+        electron.ipcRenderer.on("ai:stream:complete", (_, data) => callback(data));
+      },
+      onStreamError: (callback) => {
+        electron.ipcRenderer.on("ai:stream:error", (_, data) => callback(data));
+      },
+      removeStreamListeners: () => {
+        electron.ipcRenderer.removeAllListeners("ai:stream:token");
+        electron.ipcRenderer.removeAllListeners("ai:stream:complete");
+        electron.ipcRenderer.removeAllListeners("ai:stream:error");
+      }
     },
     // Context
     context: {

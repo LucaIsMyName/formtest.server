@@ -259,7 +259,23 @@ const api = {
       getByChatId: (chatId: number): Promise<AIMessage[]> => 
         ipcRenderer.invoke('ai:messages:getByChatId', chatId),
       send: (chatId: number, content: string): Promise<{ userMessage: AIMessage; assistantMessage: AIMessage; usage?: { promptTokens: number; completionTokens: number } }> => 
-        ipcRenderer.invoke('ai:messages:send', chatId, content)
+        ipcRenderer.invoke('ai:messages:send', chatId, content),
+      sendStream: (chatId: number, content: string): Promise<{ userMessage: AIMessage }> => 
+        ipcRenderer.invoke('ai:messages:sendStream', chatId, content),
+      onStreamToken: (callback: (data: { chatId: number; token: string }) => void) => {
+        ipcRenderer.on('ai:stream:token', (_, data) => callback(data));
+      },
+      onStreamComplete: (callback: (data: { chatId: number; assistantMessage: AIMessage; usage?: { promptTokens: number; completionTokens: number } }) => void) => {
+        ipcRenderer.on('ai:stream:complete', (_, data) => callback(data));
+      },
+      onStreamError: (callback: (data: { chatId: number; error: string }) => void) => {
+        ipcRenderer.on('ai:stream:error', (_, data) => callback(data));
+      },
+      removeStreamListeners: () => {
+        ipcRenderer.removeAllListeners('ai:stream:token');
+        ipcRenderer.removeAllListeners('ai:stream:complete');
+        ipcRenderer.removeAllListeners('ai:stream:error');
+      }
     },
 
     // Context

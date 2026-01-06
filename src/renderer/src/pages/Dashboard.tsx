@@ -251,20 +251,6 @@ const Dashboard: React.FC = () => {
     return Object.values(grouped);
   };
 
-  const prepareFormData = () => {
-    const grouped = filteredTestRuns.reduce((acc, run) => {
-      const form = forms.find((f) => f.id === run.formId);
-      const name = form?.name || "Unknown";
-      if (!acc[name]) {
-        acc[name] = { name, success: 0, failure: 0, stopped: 0 };
-      }
-      if (run.status === "SUCCESS") acc[name].success++;
-      if (run.status === "FAILURE") acc[name].failure++;
-      if (run.status === "STOPPED") acc[name].stopped++;
-      return acc;
-    }, {} as Record<string, { name: string; success: number; failure: number; stopped: number }>);
-    return Object.values(grouped);
-  };
 
   // Prepare form x payment method scatter plot data
   const prepareFormPaymentScatterData = () => {
