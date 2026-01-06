@@ -5,6 +5,7 @@ import type { Form, PaymentMethod, QualityTestOptions } from "../common/types";
 import { randomUUID } from "crypto";
 import { BrowserWindow } from "electron";
 import { emailService } from "./emailService";
+import { sanitizeError } from "./utils/errorSanitizer";
 
 export async function runSingleTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, qualityTestOptions?: QualityTestOptions) {
   console.log(`Running test ${testRunId}: ${form.name} with ${paymentMethod.name}`);
@@ -56,6 +57,7 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
     }
   } catch (error) {
     console.error(`Test ${testRunId} failed with error:`, error);
+    const sanitized = sanitizeError(error);
 
     // Create error steps for the drawer to display
     const errorSteps: import("../common/types").TestStep[] = [
@@ -66,13 +68,13 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
         startTime: new Date().toISOString(),
         endTime: new Date().toISOString(),
         duration: 0,
-        message: error instanceof Error ? error.message : String(error),
-        error: error instanceof Error ? error.message : String(error)
+        message: sanitized.message,
+        error: sanitized.message
       }
     ];
 
     // Update test run with error and steps
-    await testRunQueries.updateStatus(testRunId, "FAILURE", error instanceof Error ? error.message : String(error), 0, errorSteps);
+    await testRunQueries.updateStatus(testRunId, "FAILURE", sanitized.message, 0, errorSteps);
 
     // Create notification for scheduled test failure
     if (isScheduled) {
@@ -95,7 +97,7 @@ export async function runSingleTest(testRunId: number, form: Form, paymentMethod
         formName: form.name,
         paymentMethodName: paymentMethod.name,
         status: "FAILURE",
-        errorMessage: error instanceof Error ? error.message : String(error),
+        errorMessage: sanitized.message,
         runAt: new Date()
       }).catch(err => console.error("Failed to send email notification:", err));
     }

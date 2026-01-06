@@ -6,6 +6,7 @@ import type { Form, PaymentMethod, TestStep, GlobalFieldDefaults, QualityTestOpt
 import { getMergedSelectorConfig, settingsQueries } from "../database";
 import type { SelectorConfig } from "../../common/selectors.config";
 import type { TestSettings } from "../testQueue";
+import { sanitizeError } from "../utils/errorSanitizer";
 
 export interface TestMessage {
   id: string;
@@ -300,11 +301,12 @@ export class TestProcessManager extends EventEmitter {
       }
 
       // Final failure after all retries
+      const sanitized = sanitizeError(error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: sanitized.message,
         duration: 0,
-        logs: [`Failed after ${maxRetries + 1} attempts: ${error}`],
+        logs: [`Failed after ${maxRetries + 1} attempts: ${sanitized.message}`],
       };
     }
   }

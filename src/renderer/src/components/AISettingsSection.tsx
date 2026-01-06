@@ -123,7 +123,7 @@ const AISettingsSection: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div data-fts-component="AISettingsSection" className="p-6 space-y-6" >
       {/* Enable/Disable AI */}
       <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800/50 rounded-xl border border-neutral-200 dark:border-neutral-700">
         <div className="flex items-center gap-4">

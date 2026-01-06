@@ -7,8 +7,18 @@ import { getTestQueue } from "./testQueue";
 import { scheduler } from "./schedulerService";
 import { getConfigurableCategories } from "../common/selectors.config";
 import { emailService } from "./emailService";
-import { startApiServer, stopApiServer, isApiServerRunning, generateApiKey } from "./apiServer";
+import { startApiServer, stopApiServer, isApiServerRunning, generateApiKey, getStoredApiKey } from "./apiServer";
 import { aiService, ChatMessage } from "./ai";
+import { sanitizeError } from "./utils/errorSanitizer";
+
+/**
+ * Helper to sanitize and throw errors in IPC handlers
+ */
+function handleError(error: unknown, context: string): never {
+  console.error(`IPC Error - ${context}:`, error);
+  const sanitized = sanitizeError(error);
+  throw new Error(sanitized.message);
+}
 
 export function setupIpcHandlers(): void {
   // Form handlers with error handling
@@ -16,8 +26,7 @@ export function setupIpcHandlers(): void {
     try {
       return formQueries.getAll();
     } catch (error) {
-      console.error("IPC Error - forms:getAll:", error);
-      throw error;
+      handleError(error, "forms:getAll");
     }
   });
 
@@ -25,8 +34,7 @@ export function setupIpcHandlers(): void {
     try {
       return formQueries.getById(id);
     } catch (error) {
-      console.error("IPC Error - forms:getById:", error);
-      throw error;
+      handleError(error, "forms:getById");
     }
   });
 
@@ -34,8 +42,7 @@ export function setupIpcHandlers(): void {
     try {
       return formQueries.create(form);
     } catch (error) {
-      console.error("IPC Error - forms:create:", error);
-      throw error;
+      handleError(error, "forms:create");
     }
   });
 
@@ -43,8 +50,7 @@ export function setupIpcHandlers(): void {
     try {
       return formQueries.update(id, form);
     } catch (error) {
-      console.error("IPC Error - forms:update:", error);
-      throw error;
+      handleError(error, "forms:update");
     }
   });
 
@@ -52,8 +58,7 @@ export function setupIpcHandlers(): void {
     try {
       return formQueries.delete(id);
     } catch (error) {
-      console.error("IPC Error - forms:delete:", error);
-      throw error;
+      handleError(error, "forms:delete");
     }
   });
 
@@ -61,8 +66,7 @@ export function setupIpcHandlers(): void {
     try {
       return formQueries.deleteAll();
     } catch (error) {
-      console.error("IPC Error - forms:deleteAll:", error);
-      throw error;
+      handleError(error, "forms:deleteAll");
     }
   });
 
@@ -687,7 +691,8 @@ export function setupIpcHandlers(): void {
       return { success: true };
     } catch (error) {
       console.error("IPC Error - password:set:", error);
-      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+      const sanitized = sanitizeError(error);
+      return { success: false, error: sanitized.message };
     }
   });
 
@@ -697,7 +702,8 @@ export function setupIpcHandlers(): void {
       return { success, error: success ? undefined : "Aktuelles Passwort ist falsch" };
     } catch (error) {
       console.error("IPC Error - password:change:", error);
-      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+      const sanitized = sanitizeError(error);
+      return { success: false, error: sanitized.message };
     }
   });
 
@@ -707,7 +713,8 @@ export function setupIpcHandlers(): void {
       return { success, error: success ? undefined : "Passwort ist falsch" };
     } catch (error) {
       console.error("IPC Error - password:disable:", error);
-      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+      const sanitized = sanitizeError(error);
+      return { success: false, error: sanitized.message };
     }
   });
 

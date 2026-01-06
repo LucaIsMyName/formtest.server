@@ -7,9 +7,11 @@
 
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { randomUUID } from "crypto";
-import { formQueries, paymentMethodQueries, testRunQueries, settingsQueries, testScheduleQueries } from "./database";
+import { formQueries, paymentMethodQueries, testRunQueries, settingsQueries, testScheduleQueries, getDatabase } from "./database";
 import { getTestQueue } from "./testQueue";
 import type { Server } from "http";
+import { sanitizeError } from "./utils/errorSanitizer";
+import { encrypt, decrypt, isEncrypted } from "./utils/encryption";
 
 let server: Server | null = null;
 let apiKey: string | null = null;
@@ -169,34 +171,41 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise
       const settingsMap: Record<string, string> = {};
       allSettings.forEach(s => { settingsMap[s.key] = s.value; });
 
-      // Queue tests
+      // Queue tests - wrap in transaction for atomicity
       const testIds: number[] = [];
       const testUuids: string[] = [];
+      const queuedTests: Array<{ testId: number; uuid: string; form: typeof forms[0]; pm: typeof filteredMethods[0] }> = [];
 
-      for (const form of forms) {
-        for (const pm of filteredMethods) {
-          const uuid = randomUUID();
-          const result = testRunQueries.create({
-            uuid,
-            formId: form.id,
-            paymentMethodId: pm.id,
-            status: "QUEUED",
-            errorMessage: undefined,
-            logDetails: undefined,
-            steps: [],
-            durationMs: undefined,
-            isScheduled: false,
-            amount: settingsMap['default_donation_amount'] || '5',
-            interval: settingsMap['default_interval'] || '0',
-          });
+      const db = getDatabase();
+      db.transaction(() => {
+        for (const form of forms) {
+          for (const pm of filteredMethods) {
+            const uuid = randomUUID();
+            const result = testRunQueries.create({
+              uuid,
+              formId: form.id,
+              paymentMethodId: pm.id,
+              status: "QUEUED",
+              errorMessage: undefined,
+              logDetails: undefined,
+              steps: [],
+              durationMs: undefined,
+              isScheduled: false,
+              amount: settingsMap['default_donation_amount'] || '5',
+              interval: settingsMap['default_interval'] || '0',
+            });
 
-          const testId = result.lastInsertRowid as number;
-          testIds.push(testId);
-          testUuids.push(uuid);
-
-          // Add to queue
-          getTestQueue().enqueue(testId, form, pm, settingsMap);
+            const testId = result.lastInsertRowid as number;
+            testIds.push(testId);
+            testUuids.push(uuid);
+            queuedTests.push({ testId, uuid, form, pm });
+          }
         }
+      })();
+
+      // Add to queue after successful transaction
+      for (const { testId, form, pm } of queuedTests) {
+        getTestQueue().enqueue(testId, form, pm, settingsMap);
       }
 
       sendJson(res, 200, { 
@@ -335,25 +344,36 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse): Promise
 
   } catch (error) {
     console.error("[API] Error handling request:", error);
+    const sanitized = sanitizeError(error);
     sendJson(res, 500, { 
       error: "Internal Server Error", 
-      message: error instanceof Error ? error.message : "Unknown error" 
+      message: sanitized.message 
     });
   }
 }
 
 /**
  * Start the API server
+ * @param port - Port to listen on
+ * @param key - API key (will be encrypted and stored if not already encrypted)
  */
-export function startApiServer(port: number, key: string): Promise<void> {
-  return new Promise((resolve, reject) => {
+export async function startApiServer(port: number, key: string): Promise<void> {
+  return new Promise(async (resolve, reject) => {
     if (server) {
       console.log("[API] Server already running");
       resolve();
       return;
     }
 
-    apiKey = key;
+    // Encrypt and store the API key
+    try {
+      await settingsQueries.setApiKey(key);
+      apiKey = key;
+    } catch (error) {
+      console.error("[API] Failed to encrypt API key:", error);
+      reject(new Error("Failed to store API key"));
+      return;
+    }
 
     server = createServer((req, res) => {
       handleRequest(req, res).catch((error) => {
@@ -406,7 +426,16 @@ export function isApiServerRunning(): boolean {
 
 /**
  * Generate a new API key
+ * The key will be encrypted when stored via startApiServer or setApiKey
  */
 export function generateApiKey(): string {
   return randomUUID().replace(/-/g, "") + randomUUID().replace(/-/g, "");
+}
+
+/**
+ * Get the stored API key (decrypted)
+ * Returns null if no key is stored
+ */
+export async function getStoredApiKey(): Promise<string | null> {
+  return await settingsQueries.getApiKey();
 }

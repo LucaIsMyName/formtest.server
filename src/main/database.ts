@@ -1459,6 +1459,41 @@ export const settingsQueries = {
   getAll: () => db.prepare("SELECT * FROM global_settings ORDER BY key").all() as GlobalSetting[],
   get: (key: string) => db.prepare("SELECT * FROM global_settings WHERE key = ?").get(key) as GlobalSetting | undefined,
   set: (key: string, value: string, description?: string) => db.prepare("INSERT OR REPLACE INTO global_settings (key, value, description) VALUES (?, ?, ?)").run(key, value, description),
+  getApiKey: async (): Promise<string | null> => {
+    const encrypted = settingsQueries.get('api_key_encrypted');
+    if (!encrypted || !encrypted.value) {
+      // Check for legacy plain-text key and migrate it
+      const legacy = settingsQueries.get('api_key');
+      if (legacy && legacy.value && !isEncrypted(legacy.value)) {
+        // Migrate plain-text key to encrypted
+        try {
+          const encryptedKey = await encrypt(legacy.value);
+          settingsQueries.set('api_key_encrypted', encryptedKey, 'Encrypted API key');
+          settingsQueries.set('api_key', '', 'Legacy - use api_key_encrypted');
+          return legacy.value; // Return decrypted value for immediate use
+        } catch (error) {
+          console.error('Failed to migrate API key:', error);
+          return null;
+        }
+      }
+      return null;
+    }
+    try {
+      return await decrypt(encrypted.value);
+    } catch (error) {
+      console.error('Failed to decrypt API key:', error);
+      return null;
+    }
+  },
+  setApiKey: async (key: string): Promise<void> => {
+    const encrypted = await encrypt(key);
+    settingsQueries.set('api_key_encrypted', encrypted, 'Encrypted API key');
+    // Clear legacy plain-text key if it exists
+    const legacy = settingsQueries.get('api_key');
+    if (legacy && legacy.value && !isEncrypted(legacy.value)) {
+      settingsQueries.set('api_key', '', 'Legacy - use api_key_encrypted');
+    }
+  },
   
   // Global field defaults - stored as JSON in a single setting
   getFieldDefaults: (): GlobalFieldDefaults => {
@@ -1503,8 +1538,10 @@ function verifyPassword(password: string, storedHash: string): boolean {
   }
 }
 
-// Session state - tracks if password has been verified this session
-let sessionUnlocked = false;
+// Session state - tracks when password was verified (timestamp in milliseconds)
+// Session expires after 24 hours (86400000ms)
+const SESSION_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24 hours
+let sessionUnlockedAt: number | null = null;
 
 export const passwordQueries = {
   /** Check if master password is enabled */
@@ -1532,7 +1569,7 @@ export const passwordQueries = {
     if (!storedHash) return false;
     const isValid = verifyPassword(password, storedHash);
     if (isValid) {
-      sessionUnlocked = true;
+      sessionUnlockedAt = Date.now();
     }
     return isValid;
   },
@@ -1557,21 +1594,37 @@ export const passwordQueries = {
     return true;
   },
   
-  /** Check if session is unlocked */
+  /** Check if session is unlocked and not expired */
   isSessionUnlocked: (): boolean => {
-    return sessionUnlocked;
+    if (sessionUnlockedAt === null) return false;
+    const now = Date.now();
+    const elapsed = now - sessionUnlockedAt;
+    if (elapsed >= SESSION_TIMEOUT_MS) {
+      // Session expired, lock it
+      sessionUnlockedAt = null;
+      return false;
+    }
+    return true;
+  },
+  
+  /** Check if session has expired (without locking it) */
+  checkSessionExpiry: (): boolean => {
+    if (sessionUnlockedAt === null) return false;
+    const now = Date.now();
+    const elapsed = now - sessionUnlockedAt;
+    return elapsed < SESSION_TIMEOUT_MS;
   },
   
   /** Reset session (for testing or manual lock) */
   lockSession: (): void => {
-    sessionUnlocked = false;
+    sessionUnlockedAt = null;
   },
   
   /** Unlock session without password (emergency reset - hold Shift on startup) */
   emergencyReset: (): void => {
     settingsQueries.set('master_password_enabled', 'false', 'Master password protection disabled');
     settingsQueries.set('master_password_hash', '', 'Cleared password hash');
-    sessionUnlocked = true;
+    sessionUnlockedAt = Date.now();
   },
 };
 

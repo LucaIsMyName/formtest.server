@@ -5,6 +5,7 @@ import { useTestRunsStore } from "./store/useTestRunsStore";
 import Layout from "./components/Layout";
 import LockScreen from "./components/LockScreen";
 import InterruptedTestsDialog from "./components/InterruptedTestsDialog";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 // Lazy load page components
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -44,7 +45,27 @@ function App() {
     };
     
     checkLockStatus();
-  }, []);
+    
+    // Check session expiry every 5 minutes
+    const interval = setInterval(async () => {
+      try {
+        const isEnabled = await window.api.password.isEnabled();
+        if (!isEnabled) {
+          return;
+        }
+        
+        const isUnlocked = await window.api.password.isSessionUnlocked();
+        if (!isUnlocked && !isLocked) {
+          // Session expired, lock the app
+          setIsLocked(true);
+        }
+      } catch (error) {
+        console.error("Failed to check session expiry:", error);
+      }
+    }, 5 * 60 * 1000); // Check every 5 minutes
+    
+    return () => clearInterval(interval);
+  }, [isLocked]);
 
   // Load settings on app startup
   useEffect(() => {
@@ -139,7 +160,7 @@ function App() {
   }
 
   return (
-    <>
+    <ErrorBoundary>
       <Layout>
         <Suspense fallback={
           <div className="flex items-center justify-start ">
@@ -201,7 +222,7 @@ function App() {
         onRetry={handleRetryInterrupted}
         onDismiss={handleDismissInterrupted}
       />
-    </>
+    </ErrorBoundary>
   );
 }
 

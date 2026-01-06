@@ -99,6 +99,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
   return (
     <Tooltip.Provider>
       <div
+      data-fts-component="CustomTitleBar"
         className="relative h-14 bg-neutral-50 backdrop-blur-sm dark:bg-neutral-900 flex items-center select-none border-b border-neutral-200 dark:border-neutral-800"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}>
         {/* Left Section - Matches Sidebar Width */}

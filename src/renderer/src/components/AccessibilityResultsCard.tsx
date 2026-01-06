@@ -51,7 +51,7 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
   };
 
   return (
-    <div className={`rounded-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden ${className}`}>
+    <div data-fts-component="AccessibilityResulutCard" className={`rounded-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden ${className}`}>
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
