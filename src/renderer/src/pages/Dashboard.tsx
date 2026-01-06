@@ -266,6 +266,187 @@ const Dashboard: React.FC = () => {
     return Object.values(grouped);
   };
 
+  // Prepare form success rate trend over time
+  const prepareFormSuccessRateTrend = () => {
+    if (filteredTestRuns.length === 0) return [];
+    
+    const completedRuns = filteredTestRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
+    if (completedRuns.length === 0) return [];
+    
+    // Group by form and time period
+    const dates = completedRuns.map(run => new Date(run.runAt));
+    const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
+    
+    let groupByDays = 7;
+    if (timeSpanDays <= 7) groupByDays = 1;
+    else if (timeSpanDays <= 30) groupByDays = 2;
+    else if (timeSpanDays <= 90) groupByDays = 7;
+    else groupByDays = 30;
+    
+    const formMap = new Map<string, { name: string; data: Map<string, { success: number; total: number }> }>();
+    
+    // Initialize forms
+    forms.forEach(form => {
+      if (completedRuns.some(r => r.formId === form.id)) {
+        formMap.set(form.id.toString(), {
+          name: form.name,
+          data: new Map()
+        });
+      }
+    });
+    
+    // Group runs by date and form
+    let currentDate = new Date(earliestDate);
+    currentDate.setHours(0, 0, 0, 0);
+    
+    while (currentDate <= latestDate) {
+      const endDate = new Date(currentDate);
+      endDate.setDate(endDate.getDate() + groupByDays - 1);
+      endDate.setHours(23, 59, 59, 999);
+      
+      const dateKey = currentDate.toISOString().split('T')[0];
+      
+      formMap.forEach((formData, formId) => {
+        if (!formData.data.has(dateKey)) {
+          formData.data.set(dateKey, { success: 0, total: 0 });
+        }
+        
+        const periodRuns = completedRuns.filter(r => {
+          const runDate = new Date(r.runAt);
+          return r.formId === parseInt(formId) && runDate >= currentDate && runDate <= endDate;
+        });
+        
+        const success = periodRuns.filter(r => r.status === "SUCCESS").length;
+        const total = periodRuns.length;
+        
+        if (total > 0) {
+          const existing = formData.data.get(dateKey)!;
+          existing.success += success;
+          existing.total += total;
+        }
+      });
+      
+      currentDate.setDate(currentDate.getDate() + groupByDays);
+    }
+    
+    // Convert to chart data format
+    const allDates = Array.from(new Set(
+      Array.from(formMap.values()).flatMap(form => Array.from(form.data.keys()))
+    )).sort();
+    
+    return allDates.map(date => {
+      const dataPoint: any = { date };
+      formMap.forEach((formData) => {
+        const stats = formData.data.get(date);
+        if (stats && stats.total > 0) {
+          dataPoint[formData.name] = Math.round((stats.success / stats.total) * 100);
+        }
+      });
+      return dataPoint;
+    });
+  };
+
+  // Prepare form test volume
+  const prepareFormTestVolume = () => {
+    const volumeStats = forms.map(form => {
+      const formRuns = filteredTestRuns.filter(r => r.formId === form.id);
+      return {
+        name: form.name,
+        total: formRuns.length
+      };
+    }).filter(f => f.total > 0);
+    
+    return volumeStats.sort((a, b) => b.total - a.total);
+  };
+
+  // Prepare form average duration
+  const prepareFormDuration = () => {
+    const durationStats = forms.map(form => {
+      const formRuns = filteredTestRuns.filter(
+        r => r.formId === form.id && r.durationMs
+      );
+      
+      if (formRuns.length === 0) return null;
+      
+      const avgDuration = formRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / formRuns.length;
+      
+      return {
+        name: form.name,
+        avgDuration: Math.round(avgDuration / 1000) // Convert to seconds
+      };
+    }).filter((item): item is { name: string; avgDuration: number } => item !== null);
+    
+    return durationStats.sort((a, b) => b.avgDuration - a.avgDuration);
+  };
+
+  // Prepare combination statistics (form + payment method)
+  const prepareCombinationStats = () => {
+    const MIN_TEST_COUNT = 3; // Minimum tests required to show in table
+    
+    const combinationMap = new Map<string, {
+      formId: number;
+      formName: string;
+      paymentMethodId: number;
+      paymentMethodName: string;
+      total: number;
+      success: number;
+      failure: number;
+      stopped: number;
+      totalDuration: number;
+      lastRun: Date | null;
+    }>();
+    
+    filteredTestRuns.forEach(run => {
+      if (run.status === "RUNNING" || run.status === "QUEUED") return;
+      
+      const form = forms.find(f => f.id === run.formId);
+      const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
+      
+      if (!form || !pm) return;
+      
+      const key = `${run.formId}-${run.paymentMethodId}`;
+      
+      if (!combinationMap.has(key)) {
+        combinationMap.set(key, {
+          formId: form.id,
+          formName: form.name,
+          paymentMethodId: pm.id,
+          paymentMethodName: pm.name,
+          total: 0,
+          success: 0,
+          failure: 0,
+          stopped: 0,
+          totalDuration: 0,
+          lastRun: null
+        });
+      }
+      
+      const combo = combinationMap.get(key)!;
+      combo.total++;
+      if (run.status === "SUCCESS") combo.success++;
+      if (run.status === "FAILURE") combo.failure++;
+      if (run.status === "STOPPED") combo.stopped++;
+      if (run.durationMs) combo.totalDuration += run.durationMs;
+      
+      const runDate = new Date(run.runAt);
+      if (!combo.lastRun || runDate > combo.lastRun) {
+        combo.lastRun = runDate;
+      }
+    });
+    
+    // Convert to array and calculate metrics
+    return Array.from(combinationMap.values())
+      .filter(combo => combo.total >= MIN_TEST_COUNT)
+      .map(combo => ({
+        ...combo,
+        successRate: combo.total > 0 ? Math.round((combo.success / combo.total) * 100) : 0,
+        avgDuration: combo.total > 0 ? Math.round((combo.totalDuration / combo.total) / 1000) : 0 // in seconds
+      }))
+      .sort((a, b) => b.successRate - a.successRate); // Sort by success rate descending
+  };
+
   const prepareSuccessRateData = () => {
     const successful = filteredTestRuns.filter((r) => r.status === "SUCCESS").length;
     const failed = filteredTestRuns.filter((r) => r.status === "FAILURE").length;
@@ -453,6 +634,137 @@ const Dashboard: React.FC = () => {
     }).filter((p) => p.total > 0).sort((a, b) => b.rate - a.rate);
     
     return pmStats;
+  };
+
+  // Prepare payment method success rate trend over time
+  const preparePaymentMethodSuccessRateTrend = () => {
+    if (filteredTestRuns.length === 0) return [];
+    
+    const completedRuns = filteredTestRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
+    if (completedRuns.length === 0) return [];
+    
+    // Group by payment method and time period
+    const dates = completedRuns.map(run => new Date(run.runAt));
+    const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
+    
+    let groupByDays = 7;
+    if (timeSpanDays <= 7) groupByDays = 1;
+    else if (timeSpanDays <= 30) groupByDays = 2;
+    else if (timeSpanDays <= 90) groupByDays = 7;
+    else groupByDays = 30;
+    
+    const paymentMethodMap = new Map<string, { name: string; data: Map<string, { success: number; total: number }> }>();
+    
+    // Initialize payment methods
+    paymentMethods.forEach(pm => {
+      if (completedRuns.some(r => r.paymentMethodId === pm.id)) {
+        paymentMethodMap.set(pm.id.toString(), {
+          name: pm.name,
+          data: new Map()
+        });
+      }
+    });
+    
+    // Group runs by date and payment method
+    let currentDate = new Date(earliestDate);
+    currentDate.setHours(0, 0, 0, 0);
+    
+    while (currentDate <= latestDate) {
+      const endDate = new Date(currentDate);
+      endDate.setDate(endDate.getDate() + groupByDays - 1);
+      endDate.setHours(23, 59, 59, 999);
+      
+      const dateKey = currentDate.toISOString().split('T')[0];
+      
+      paymentMethodMap.forEach((pmData, pmId) => {
+        if (!pmData.data.has(dateKey)) {
+          pmData.data.set(dateKey, { success: 0, total: 0 });
+        }
+        
+        const periodRuns = completedRuns.filter(r => {
+          const runDate = new Date(r.runAt);
+          return r.paymentMethodId === parseInt(pmId) && runDate >= currentDate && runDate <= endDate;
+        });
+        
+        const success = periodRuns.filter(r => r.status === "SUCCESS").length;
+        const total = periodRuns.length;
+        
+        if (total > 0) {
+          const existing = pmData.data.get(dateKey)!;
+          existing.success += success;
+          existing.total += total;
+        }
+      });
+      
+      currentDate.setDate(currentDate.getDate() + groupByDays);
+    }
+    
+    // Convert to chart data format
+    const allDates = Array.from(new Set(
+      Array.from(paymentMethodMap.values()).flatMap(pm => Array.from(pm.data.keys()))
+    )).sort();
+    
+    return allDates.map(date => {
+      const dataPoint: any = { date };
+      paymentMethodMap.forEach((pmData) => {
+        const stats = pmData.data.get(date);
+        if (stats && stats.total > 0) {
+          dataPoint[pmData.name] = Math.round((stats.success / stats.total) * 100);
+        }
+      });
+      return dataPoint;
+    });
+  };
+
+  // Prepare payment method type distribution
+  const preparePaymentMethodTypeDistribution = () => {
+    const typeStats = filteredTestRuns.reduce((acc, run) => {
+      const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
+      if (!pm) return acc;
+      
+      const type = pm.type || "unknown";
+      if (!acc[type]) {
+        acc[type] = 0;
+      }
+      acc[type]++;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const colors: Record<string, string> = {
+      paypal: "#0070ba",
+      sepa: "#10b981",
+      creditcard: "#ef4444",
+      eps: "#a855f7",
+      unknown: "#6b7280"
+    };
+    
+    return Object.entries(typeStats).map(([type, value]) => ({
+      name: type.toUpperCase(),
+      value,
+      color: colors[type] || colors.unknown
+    }));
+  };
+
+  // Prepare payment method average duration
+  const preparePaymentMethodDuration = () => {
+    const durationStats = paymentMethods.map(pm => {
+      const pmRuns = filteredTestRuns.filter(
+        r => r.paymentMethodId === pm.id && r.durationMs
+      );
+      
+      if (pmRuns.length === 0) return null;
+      
+      const avgDuration = pmRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / pmRuns.length;
+      
+      return {
+        name: pm.name,
+        avgDuration: Math.round(avgDuration / 1000) // Convert to seconds
+      };
+    }).filter((item): item is { name: string; avgDuration: number } => item !== null);
+    
+    return durationStats.sort((a, b) => b.avgDuration - a.avgDuration);
   };
 
   // Separate initial load from stats calculation to fix stale closure issue
@@ -901,53 +1213,312 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Form Performance */}
-          <div className="sr-only bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
-            <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Formular Performance</h3>
-            <ResponsiveContainer
-              width="100%"
-              height={300}>
-              <BarChart
-                data={prepareFormData()}
-                layout="horizontal">
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="#e5e7eb"
-                  strokeOpacity={0.5}
-                />
-                <XAxis
-                  type="number"
-                  stroke="#9ca3af"
-                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
-                  tickLine={{ stroke: "#d1d5db" }}
-                />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  stroke="#9ca3af"
-                  width={150}
-                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
-                  tickLine={{ stroke: "#d1d5db" }}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar
-                  dataKey="success"
-                  fill="#10b981"
-                  name="Erfolgreich"
-                />
-                <Bar
-                  dataKey="failure"
-                  fill="#ef4444"
-                  name="Fehlgeschlagen"
-                />
-                <Bar
-                  dataKey="stopped"
-                  fill="#a855f7"
-                  name="Gestoppt"
-                />
-              </BarChart>
-            </ResponsiveContainer>
+          {/* Payment Method Charts Section */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-2">
+              <CreditCard className="w-5 h-5 text-purple-500" />
+              <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">Bezahlmethoden Analyse</h2>
+            </div>
+
+            {/* Payment Method Success Rate Over Time */}
+            {preparePaymentMethodSuccessRateTrend().length > 0 && (
+              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Erfolgsrate über Zeit (nach Bezahlmethode)</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={preparePaymentMethodSuccessRateTrend()}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                    <XAxis
+                      dataKey="date"
+                      stroke="#9ca3af"
+                      tick={{ fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+                      tickLine={{ stroke: "#d1d5db" }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis
+                      domain={[0, 100]}
+                      stroke="#9ca3af"
+                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tickLine={{ stroke: "#d1d5db" }}
+                      tickFormatter={(value) => `${value}%`}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    {paymentMethods.filter(pm => filteredTestRuns.some(r => r.paymentMethodId === pm.id)).map((pm, idx) => {
+                      const colors = ["#0070ba", "#10b981", "#ef4444", "#a855f7", "#f59e0b", "#8b5cf6"];
+                      return (
+                        <Line
+                          key={pm.id}
+                          type="monotone"
+                          dataKey={pm.name}
+                          stroke={colors[idx % colors.length]}
+                          strokeWidth={2}
+                          dot={false}
+                          name={pm.name}
+                        />
+                      );
+                    })}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Payment Method Type Distribution and Duration */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Payment Method Type Distribution */}
+              {preparePaymentMethodTypeDistribution().length > 0 && (
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                  <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Verteilung nach Typ</h3>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={preparePaymentMethodTypeDistribution()}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value">
+                        {preparePaymentMethodTypeDistribution().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+
+              {/* Payment Method Average Duration */}
+              {preparePaymentMethodDuration().length > 0 && (
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                  <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Durchschnittliche Dauer</h3>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={preparePaymentMethodDuration()}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                      <XAxis
+                        dataKey="name"
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
+                      />
+                      <YAxis
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                        tickFormatter={(value) => `${value}s`}
+                      />
+                      <Tooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-3 rounded-md shadow-lg">
+                                <p className="text-neutral-900 dark:text-white mb-1">{payload[0].payload.name}</p>
+                                <p className="text-sm text-blue-600">{payload[0].value}s Durchschnitt</p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Bar dataKey="avgDuration" fill="#3b82f6" name="Dauer (s)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Form Charts Section */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 mb-2">
+              <FileText className="w-5 h-5 text-blue-500" />
+              <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">Formular Analyse</h2>
+            </div>
+
+            {/* Form Performance */}
+            {prepareFormData().length > 0 && (
+              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Formular Performance</h3>
+                <ResponsiveContainer
+                  width="100%"
+                  height={300}>
+                  <BarChart
+                    data={prepareFormData()}
+                    layout="horizontal">
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="#e5e7eb"
+                      strokeOpacity={0.5}
+                    />
+                    <XAxis
+                      type="number"
+                      stroke="#9ca3af"
+                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tickLine={{ stroke: "#d1d5db" }}
+                    />
+                    <YAxis
+                      dataKey="name"
+                      type="category"
+                      stroke="#9ca3af"
+                      width={150}
+                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tickLine={{ stroke: "#d1d5db" }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar
+                      dataKey="success"
+                      fill="#10b981"
+                      name="Erfolgreich"
+                    />
+                    <Bar
+                      dataKey="failure"
+                      fill="#ef4444"
+                      name="Fehlgeschlagen"
+                    />
+                    <Bar
+                      dataKey="stopped"
+                      fill="#a855f7"
+                      name="Gestoppt"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Form Success Rate Over Time and Test Volume */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Form Success Rate Over Time */}
+              {prepareFormSuccessRateTrend().length > 0 && (
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                  <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Erfolgsrate über Zeit (nach Formular)</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={prepareFormSuccessRateTrend()}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                      <XAxis
+                        dataKey="date"
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
+                      />
+                      <YAxis
+                        domain={[0, 100]}
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                        tickFormatter={(value) => `${value}%`}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend />
+                      {forms.filter(form => filteredTestRuns.some(r => r.formId === form.id)).map((form, idx) => {
+                        const colors = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
+                        return (
+                          <Line
+                            key={form.id}
+                            type="monotone"
+                            dataKey={form.name}
+                            stroke={colors[idx % colors.length]}
+                            strokeWidth={2}
+                            dot={false}
+                            name={form.name}
+                          />
+                        );
+                      })}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+
+              {/* Form Test Volume */}
+              {prepareFormTestVolume().length > 0 && (
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                  <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Test-Volumen nach Formular</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={prepareFormTestVolume()}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                      <XAxis
+                        dataKey="name"
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
+                      />
+                      <YAxis
+                        stroke="#9ca3af"
+                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tickLine={{ stroke: "#d1d5db" }}
+                      />
+                      <Tooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            return (
+                              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-3 rounded-md shadow-lg">
+                                <p className="text-neutral-900 dark:text-white mb-1">{payload[0].payload.name}</p>
+                                <p className="text-sm text-blue-600">{payload[0].value} Tests</p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Bar dataKey="total" fill="#3b82f6" name="Anzahl Tests" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </div>
+
+            {/* Form Average Duration */}
+            {prepareFormDuration().length > 0 && (
+              <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
+                <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Durchschnittliche Dauer nach Formular</h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={prepareFormDuration()}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" strokeOpacity={0.5} />
+                    <XAxis
+                      dataKey="name"
+                      stroke="#9ca3af"
+                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tickLine={{ stroke: "#d1d5db" }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={60}
+                    />
+                    <YAxis
+                      stroke="#9ca3af"
+                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tickLine={{ stroke: "#d1d5db" }}
+                      tickFormatter={(value) => `${value}s`}
+                    />
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-3 rounded-md shadow-lg">
+                              <p className="text-neutral-900 dark:text-white mb-1">{payload[0].payload.name}</p>
+                              <p className="text-sm text-blue-600">{payload[0].value}s Durchschnitt</p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Bar dataKey="avgDuration" fill="#3b82f6" name="Dauer (s)" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
 
           {/* Success Rate Trend (Last 7 Days) */}
@@ -1145,6 +1716,152 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Combination Analysis Section */}
+          {prepareCombinationStats().length > 0 && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 mb-2">
+                <BarChart3 className="w-5 h-5 text-yellow-500" />
+                <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">Kombinations-Analyse</h2>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Best Performing Combinations */}
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
+                  <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700 bg-green-50 dark:bg-green-900/10">
+                    <h3 className="text-sm font-medium text-neutral-900 dark:text-white flex items-center gap-2">
+                      <TrendingUp size={16} className="text-green-600" />
+                      Beste Kombinationen
+                    </h3>
+                  </div>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    <Table dividers={false}>
+                      <TableHeader>
+                        <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
+                          <TableHead className="text-[11px]">Formular</TableHead>
+                          <TableHead className="text-[11px]">Bezahlmethode</TableHead>
+                          <TableHead className="text-[11px] text-center w-16">Tests</TableHead>
+                          <TableHead className="text-[11px] text-center w-20">Ergebnis</TableHead>
+                          <TableHead className="text-[11px] text-center w-14">Dauer</TableHead>
+                          <TableHead className="text-[11px] text-right w-20">Rate</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {prepareCombinationStats().slice(0, 10).map((combo, idx) => (
+                          <TableRow key={idx} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                            <TableCell className="py-2">
+                              <span className="text-xs font-medium text-neutral-900 dark:text-white truncate max-w-[100px] block">{combo.formName}</span>
+                            </TableCell>
+                            <TableCell className="py-2">
+                              <span className="text-xs text-neutral-600 dark:text-neutral-400 truncate max-w-[100px] block">{combo.paymentMethodName}</span>
+                            </TableCell>
+                            <TableCell className="py-2 text-center">
+                              <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400">{combo.total}</span>
+                            </TableCell>
+                            <TableCell className="py-2">
+                              <div className="flex items-center justify-center gap-2">
+                                <span className="flex items-center gap-0.5 text-[10px] text-green-600">
+                                  <CheckCircle2 size={8} />
+                                  {combo.success}
+                                </span>
+                                <span className="flex items-center gap-0.5 text-[10px] text-red-600">
+                                  <XCircle size={8} />
+                                  {combo.failure}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-2 text-center">
+                              <span className="text-[10px] font-mono text-neutral-500">{combo.avgDuration}s</span>
+                            </TableCell>
+                            <TableCell className="py-2 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <div className="w-12 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full ${combo.successRate >= 80 ? "bg-green-500" : combo.successRate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
+                                    style={{ width: `${combo.successRate}%` }}
+                                  />
+                                </div>
+                                <span className={`text-xs font-mono font-medium w-8 text-right ${combo.successRate >= 80 ? "text-green-600" : combo.successRate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
+                                  {combo.successRate}%
+                                </span>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+
+                {/* Worst Performing Combinations */}
+                <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm overflow-hidden">
+                  <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700 bg-red-50 dark:bg-red-900/10">
+                    <h3 className="text-sm font-medium text-neutral-900 dark:text-white flex items-center gap-2">
+                      <TrendingDown size={16} className="text-red-600" />
+                      Schlechteste Kombinationen
+                    </h3>
+                  </div>
+                  <div className="max-h-[400px] overflow-y-auto">
+                    <Table dividers={false}>
+                      <TableHeader>
+                        <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
+                          <TableHead className="text-[11px]">Formular</TableHead>
+                          <TableHead className="text-[11px]">Bezahlmethode</TableHead>
+                          <TableHead className="text-[11px] text-center w-16">Tests</TableHead>
+                          <TableHead className="text-[11px] text-center w-20">Ergebnis</TableHead>
+                          <TableHead className="text-[11px] text-center w-14">Dauer</TableHead>
+                          <TableHead className="text-[11px] text-right w-20">Rate</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {[...prepareCombinationStats()].reverse().slice(0, 10).map((combo, idx) => (
+                          <TableRow key={idx} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+                            <TableCell className="py-2">
+                              <span className="text-xs font-medium text-neutral-900 dark:text-white truncate max-w-[100px] block">{combo.formName}</span>
+                            </TableCell>
+                            <TableCell className="py-2">
+                              <span className="text-xs text-neutral-600 dark:text-neutral-400 truncate max-w-[100px] block">{combo.paymentMethodName}</span>
+                            </TableCell>
+                            <TableCell className="py-2 text-center">
+                              <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400">{combo.total}</span>
+                            </TableCell>
+                            <TableCell className="py-2">
+                              <div className="flex items-center justify-center gap-2">
+                                <span className="flex items-center gap-0.5 text-[10px] text-green-600">
+                                  <CheckCircle2 size={8} />
+                                  {combo.success}
+                                </span>
+                                <span className="flex items-center gap-0.5 text-[10px] text-red-600">
+                                  <XCircle size={8} />
+                                  {combo.failure}
+                                </span>
+                              </div>
+                            </TableCell>
+                            <TableCell className="py-2 text-center">
+                              <span className="text-[10px] font-mono text-neutral-500">{combo.avgDuration}s</span>
+                            </TableCell>
+                            <TableCell className="py-2 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <div className="w-12 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full ${combo.successRate >= 80 ? "bg-green-500" : combo.successRate >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
+                                    style={{ width: `${combo.successRate}%` }}
+                                  />
+                                </div>
+                                <span className={`text-xs font-mono font-medium w-8 text-right ${combo.successRate >= 80 ? "text-green-600" : combo.successRate >= 50 ? "text-yellow-600" : "text-red-600"}`}>
+                                  {combo.successRate}%
+                                </span>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
