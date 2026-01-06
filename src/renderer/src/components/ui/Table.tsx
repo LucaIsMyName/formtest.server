@@ -15,10 +15,10 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 
 const Table = React.forwardRef<HTMLTableElement, TableProps>(({ className, dividers = true, ...props }, ref) => (
   <TableContext.Provider value={{ dividers }}>
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto border border-neutral-300 dark:border-neutral-700 rounded-md">
       <table
         ref={ref}
-        className={cn("w-full divide-y divide-neutral-200 dark:divide-neutral-700", className)}
+        className={cn("w-full divide-y divide-neutral-300 dark:divide-neutral-700", className)}
         {...props}
       />
     </div>
@@ -29,7 +29,7 @@ Table.displayName = "Table";
 const TableHeader = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(({ className, ...props }, ref) => (
   <thead
     ref={ref}
-    className={cn("border-b border-neutral-300 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-800", className)}
+    className={cn("border-b border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800", className)}
     {...props}
   />
 ));
@@ -38,7 +38,7 @@ TableHeader.displayName = "TableHeader";
 const TableBody = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("bg-white dark:bg-neutral-800 divide-y divide-neutral-200 dark:divide-neutral-700", className)}
+    className={cn("bg-white dark:bg-neutral-800 divide-y divide-neutral-300 dark:divide-neutral-700", className)}
     {...props}
   />
 ));
@@ -65,7 +65,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(({ clas
     <th
       ref={ref}
       scope="col"
-      className={cn("px-4 py-3 text-left text-[10px] font-mono font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider", showDivider && "border-r border-neutral-200 dark:border-neutral-700 last:border-r-0", className)}
+      className={cn("px-4 py-3 text-left text-[10px] font-mono font-medium text-neutral-500 dark:text-neutral-300 uppercase tracking-wider", showDivider && "border-r border-neutral-300 dark:border-neutral-700 last:border-r-0", className)}
       {...props}
     />
   );
@@ -83,7 +83,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(({ clas
   return (
     <td
       ref={ref}
-      className={cn(" px-4 py-3 whitespace-nowrap", showDivider && "border-r border-neutral-200 dark:border-neutral-700 last:border-r-0", className)}
+      className={cn(" px-4 py-3 whitespace-nowrap", showDivider && "border-r border-neutral-300 dark:border-neutral-700 last:border-r-0", className)}
       {...props}
     />
   );
@@ -135,7 +135,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPag
   }
 
   return (
-    <div className={cn("flex items-center justify-between px-4 py-1 border-t border-neutral-300 dark:border-neutral-600 bg-neutral-50 dark:bg-neutral-800", className)}>
+    <div className={cn("flex items-center justify-between px-4 py-1 border-t border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800", className)}>
       {/* Left: Item count */}
       <div className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
         {startItem}–{endItem} von {totalItems}

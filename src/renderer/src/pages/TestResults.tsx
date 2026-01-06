@@ -1163,6 +1163,7 @@ const TestResults: React.FC = () => {
     { key: "duration", label: "Dauer", defaultSelected: true },
     { key: "error", label: "Fehler", defaultSelected: true },
     { key: "scheduled", label: "Geplant", defaultSelected: true },
+    { key: "tags", label: "Tags", defaultSelected: true },
     { key: "notes", label: "Notizen", defaultSelected: false },
     { key: "date", label: "Datum", defaultSelected: true },
     { key: "amount", label: "Betrag", defaultSelected: false },
@@ -1193,6 +1194,7 @@ const TestResults: React.FC = () => {
       duration: (tr) => tr.durationMs,
       error: (tr) => tr.errorMessage,
       scheduled: (tr) => tr.isScheduled,
+      tags: (tr) => tr.tags || [],
       notes: (tr) => tr.notes,
       date: (tr) => tr.runAt,
       amount: (tr) => tr.amount,
@@ -1232,6 +1234,7 @@ const TestResults: React.FC = () => {
       duration: { header: "Dauer (ms)", value: (tr) => String(tr.durationMs || "") },
       error: { header: "Fehler", value: (tr) => (tr.errorMessage || "").replace(/"/g, '""') },
       scheduled: { header: "Geplant", value: (tr) => tr.isScheduled ? "Ja" : "Nein" },
+      tags: { header: "Tags", value: (tr) => (tr.tags || []).join(", ").replace(/"/g, '""') },
       notes: { header: "Notizen", value: (tr) => (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " ") },
       date: { header: "Datum", value: (tr) => new Date(tr.runAt).toLocaleString("de-DE") },
       amount: { header: "Betrag", value: (tr) => tr.amount ? `${tr.amount} €` : "" },
@@ -1259,6 +1262,80 @@ const TestResults: React.FC = () => {
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  };
+
+  // Export to Google Sheets - downloads CSV and opens Google Sheets in default browser
+  const handleExportToGoogleSheets = async () => {
+    // Get all filtered tests (not paginated)
+    const testsToExport = testsForPagination;
+
+    if (testsToExport.length === 0) {
+      alert("Keine Tests zum Exportieren gefunden.");
+      return;
+    }
+
+    // Get default columns (all columns with defaultSelected: true)
+    const defaultColumns = exportColumns
+      .filter(col => col.defaultSelected)
+      .map(col => col.key);
+
+    // Generate CSV using the same logic as handleExportCsv
+    const columnMap: Record<string, { header: string; value: (tr: TestRunWithComputed) => string }> = {
+      id: { header: "ID", value: (tr) => String(tr.id) },
+      uuid: { header: "UUID", value: (tr) => tr.uuid || "" },
+      form: { header: "Formular", value: (tr) => tr.formName || "" },
+      paymentMethod: { header: "Bezahlmethode", value: (tr) => tr.paymentMethodName || "" },
+      status: { header: "Status", value: (tr) => tr.status },
+      duration: { header: "Dauer (ms)", value: (tr) => String(tr.durationMs || "") },
+      error: { header: "Fehler", value: (tr) => (tr.errorMessage || "").replace(/"/g, '""') },
+      scheduled: { header: "Geplant", value: (tr) => tr.isScheduled ? "Ja" : "Nein" },
+      tags: { header: "Tags", value: (tr) => (tr.tags || []).join(", ").replace(/"/g, '""') },
+      notes: { header: "Notizen", value: (tr) => (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " ") },
+      date: { header: "Datum", value: (tr) => new Date(tr.runAt).toLocaleString("de-DE") },
+      amount: { header: "Betrag", value: (tr) => tr.amount ? `${tr.amount} €` : "" },
+      interval: { header: "Intervall", value: (tr) => formatInterval(tr.interval) },
+    };
+
+    const headers = defaultColumns.map(col => columnMap[col]?.header || col);
+    const rows = testsToExport.map((tr) =>
+      defaultColumns.map(col => {
+        const value = columnMap[col]?.value(tr) || "";
+        return `"${value}"`;
+      })
+    );
+
+    const csvContent = [
+      headers.join(";"),
+      ...rows.map((row) => row.join(";")),
+    ].join("\n");
+
+    // Add BOM for proper UTF-8 encoding
+    const bom = "\uFEFF";
+    const csvWithBom = bom + csvContent;
+
+    // Download CSV file
+    const filename = `test_results_${new Date().toISOString().split("T")[0]}.csv`;
+    const dataStr = "data:text/csv;charset=utf-8," + encodeURIComponent(csvWithBom);
+    const downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", filename);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    document.body.removeChild(downloadAnchorNode);
+
+    // Open Google Sheets in default browser (Electron will handle this via shell.openExternal)
+    window.open('https://docs.google.com/spreadsheets/d/create', '_blank');
+
+    // Show instructions
+    alert(
+      `CSV-Datei wurde heruntergeladen (${testsToExport.length} Tests).\n\n` +
+      `Google Sheets wurde geöffnet. So importieren Sie die CSV:\n\n` +
+      `1. In Google Sheets: Datei > Importieren\n` +
+      `2. Wählen Sie "Hochladen"\n` +
+      `3. Wählen Sie die heruntergeladene Datei: ${filename}\n` +
+      `4. Wählen Sie "Trennzeichen: Semikolon"\n` +
+      `5. Klicken Sie auf "Daten importieren"`
+    );
   };
 
   return (
@@ -1312,6 +1389,7 @@ const TestResults: React.FC = () => {
                 <FileSpreadsheet size={12} />
                 CSV
               </Button>
+              
               <Button
                 onClick={() => {
                   setExportFormat("json");
@@ -1548,7 +1626,7 @@ const TestResults: React.FC = () => {
               value={filterConfig.searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Suchen..."
-              className="h-7 text-xs pl-8 pr-7"
+              className="h-7 !border-none bg-transparent !focus:ring-none !focus:outline-none focus:bg-transparent text-xs pl-8 pr-7"
             />
             {filterConfig.searchTerm && (
               <button
