@@ -7,7 +7,6 @@ import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
 import TestQueueStatus from "../components/TestQueueStatus";
 import SelectionActionBar from "../components/SelectionActionBar";
-// TestRunDrawer is handled by Layout component via global events
 import Button from "../components/ui/Button";
 import { StatusBadge, Badge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";

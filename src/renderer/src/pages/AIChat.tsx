@@ -131,9 +131,9 @@ const AIChat: React.FC = () => {
   }
 
   return (
-    <div className="flex h-[calc(100vh-theme(spacing.14))] -mx-4 mr-0 -mb-4 -mt-4 overflow-hidden border-r border-neutral-200 dark:border-neutral-700">
-      {/* Sidebar - Chat List - matching main sidebar style */}
-      <div className="w-[calc(clamp(16rem,22.5vw,40rem)/1.33)] border-r border-neutral-200 dark:border-neutral-700 flex flex-col">
+    <div className="flex w-full overflow-hidden -mx-4" style={{ height: 'calc(100vh - 3.5rem)' }}>
+      {/* Sidebar - Chat List - fixed width */}
+      <div className="w-[calc(clamp(16rem,22.5vw,40rem)/1.33)] border-r border-neutral-200 dark:border-neutral-700 flex flex-col flex-shrink-0 h-full">
         {/* Sidebar Header */}
         <div className="border-b border-neutral-200 dark:border-neutral-800 flex-shrink-0">
           <Button
@@ -150,7 +150,7 @@ const AIChat: React.FC = () => {
         </div>
 
         {/* Chat List - scrollable */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-w-0">
           <AIChatList
             chats={chats}
             activeChat={activeChat}
@@ -162,7 +162,7 @@ const AIChat: React.FC = () => {
 
         {/* Sidebar Footer */}
         {chats.length > 0 && (
-          <div className="border-t border-neutral-200 dark:border-neutral-800 flex-shrink-0 flex-grow-1">
+          <div className="border-t border-neutral-200 dark:border-neutral-800 flex-shrink-0">
             <button
               onClick={() => setShowDeleteAll(true)}
               className="w-full !px-6 !py-[31.5px] flex items-center justify-start gap-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
@@ -174,7 +174,7 @@ const AIChat: React.FC = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex-[0_0_100%] flex-grow-0 flex-shrink-1 flex flex-col h-full relative">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Chat Header */}
         <div className="px-6 py-3 h-[70px] border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between flex-shrink-0">
           <div>
@@ -249,7 +249,7 @@ const AIChat: React.FC = () => {
 
         {/* Error Banner */}
         {error && (
-          <div className="px-6 py-3 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
+          <div className="px-6 py-3 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800 flex-shrink-0">
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
                 <p className="text-sm text-red-600 dark:text-red-400 font-medium mb-1">{error}</p>
@@ -283,20 +283,22 @@ const AIChat: React.FC = () => {
         )}
 
         {/* Messages - scrollable area with padding for input */}
-        <div className="flex-0 max-w-4xl overflow-y-auto pb-24">
-          <AIChatMessages
-            messages={messages}
-            isLoading={(isSending && sendingChatId === activeChat?.id) || isLoadingMessages}
-            isStreaming={isStreaming && sendingChatId === activeChat?.id}
-            aiProvider={settings?.provider}
-            aiModel={settings?.model}
-            onSuggestionClick={handleSendMessage}
-            onActionClick={handleActionClick}
-          />
+        <div className="flex-1 overflow-y-auto min-w-0 min-h-0">
+          <div className="max-w-4xl mx-auto px-6 py-6">
+            <AIChatMessages
+              messages={messages}
+              isLoading={(isSending && sendingChatId === activeChat?.id) || isLoadingMessages}
+              isStreaming={isStreaming && sendingChatId === activeChat?.id}
+              aiProvider={settings?.provider}
+              aiModel={settings?.model}
+              onSuggestionClick={handleSendMessage}
+              onActionClick={handleActionClick}
+            />
+          </div>
         </div>
 
         {/* Input - fixed at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700">
+        <div className="flex-shrink-0 border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
           <AIChatInput
             onSend={handleSendMessage}
             disabled={isLoadingChats}
