@@ -3000,7 +3000,7 @@ class TestProcessManager extends events.EventEmitter {
     this.process = null;
   }
   async runTest(testRunId, form, paymentMethod, settings, qualityTestOptions, retryCount = 0) {
-    const maxRetries = 2;
+    const maxRetries = 0;
     const testTimeout = parseInt(settings.test_timeout || "180000");
     try {
       console.log(`Starting test ${testRunId}: ${form.name} with ${paymentMethod.name} (attempt ${retryCount + 1}/${maxRetries + 1})`);

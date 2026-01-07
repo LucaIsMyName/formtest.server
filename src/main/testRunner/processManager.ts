@@ -193,7 +193,7 @@ export class TestProcessManager extends EventEmitter {
   }
 
   async runTest(testRunId: number, form: Form, paymentMethod: PaymentMethod, settings: TestSettings, qualityTestOptions?: QualityTestOptions, retryCount: number = 0): Promise<TestResult> {
-    const maxRetries = 2;
+    const maxRetries = 0; // No retries - single attempt only
     const testTimeout = parseInt(settings.test_timeout || "180000"); // Default 3 minutes
 
     try {
