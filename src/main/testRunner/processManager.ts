@@ -1,5 +1,5 @@
 import { spawn, ChildProcess } from "child_process";
-import { join } from "path";
+import { join, dirname } from "path";
 import { EventEmitter } from "events";
 import { app } from "electron";
 import type { Form, PaymentMethod, TestStep, GlobalFieldDefaults, QualityTestOptions, SeoTestResult, AccessibilityTestResult } from "../../common/types";
@@ -59,27 +59,54 @@ export class TestProcessManager extends EventEmitter {
     console.log("Starting test runner process...");
 
     try {
-      // Try both development and production paths
-      let runnerPath = join(__dirname, "testRunner", "runner.js");
-
-      // Check if file exists, if not try alternative path
       const fs = require("fs");
-      if (!fs.existsSync(runnerPath)) {
-        // Alternative path for development
-        runnerPath = join(process.cwd(), "src", "main", "testRunner", "runner.js");
-        console.log(`Using development runner path: ${runnerPath}`);
-      } else {
-        console.log(`Using production runner path: ${runnerPath}`);
+      let runnerPath: string | null = null;
+
+      // Priority 1: Check extraResources location (for packaged apps)
+      // In packaged Electron apps, extraResources are placed in the Resources folder
+      if (process.resourcesPath) {
+        const extraResourcesPath = join(process.resourcesPath, "testRunner", "runner.js");
+        if (fs.existsSync(extraResourcesPath)) {
+          runnerPath = extraResourcesPath;
+          console.log(`Using packaged app extraResources path: ${runnerPath}`);
+        }
+      }
+
+      // Priority 2: Check __dirname/testRunner (for non-packaged builds)
+      if (!runnerPath) {
+        const buildPath = join(__dirname, "testRunner", "runner.js");
+        if (fs.existsSync(buildPath)) {
+          runnerPath = buildPath;
+          console.log(`Using production build path: ${runnerPath}`);
+        }
+      }
+
+      // Priority 3: Fall back to development path
+      if (!runnerPath) {
+        const devPath = join(process.cwd(), "src", "main", "testRunner", "runner.js");
+        if (fs.existsSync(devPath)) {
+          runnerPath = devPath;
+          console.log(`Using development runner path: ${runnerPath}`);
+        }
       }
 
       // Verify runner file exists before spawning
-      if (!fs.existsSync(runnerPath)) {
-        throw new Error(`Runner script not found at: ${runnerPath}`);
+      if (!runnerPath || !fs.existsSync(runnerPath)) {
+        const attemptedPaths = [
+          process.resourcesPath ? join(process.resourcesPath, "testRunner", "runner.js") : null,
+          join(__dirname, "testRunner", "runner.js"),
+          join(process.cwd(), "src", "main", "testRunner", "runner.js"),
+        ].filter(Boolean);
+        throw new Error(`Runner script not found. Attempted paths:\n${attemptedPaths.map(p => `  - ${p}`).join("\n")}`);
       }
+
+      // Set working directory to the directory containing runner.js
+      // This ensures relative requires (./scriptExecutor, etc.) work correctly
+      const runnerDir = dirname(runnerPath);
 
       this.process = spawn("node", [runnerPath], {
         stdio: ["pipe", "pipe", "pipe"],
-        cwd: process.cwd(),
+        cwd: runnerDir,
         // Increase memory limit for Playwright
         env: { ...process.env, NODE_OPTIONS: "--max-old-space-size=4096" },
       });

@@ -2902,20 +2902,42 @@ class TestProcessManager extends events.EventEmitter {
     }
     console.log("Starting test runner process...");
     try {
-      let runnerPath = path.join(__dirname, "testRunner", "runner.js");
       const fs2 = require("fs");
-      if (!fs2.existsSync(runnerPath)) {
-        runnerPath = path.join(process.cwd(), "src", "main", "testRunner", "runner.js");
-        console.log(`Using development runner path: ${runnerPath}`);
-      } else {
-        console.log(`Using production runner path: ${runnerPath}`);
+      let runnerPath = null;
+      if (process.resourcesPath) {
+        const extraResourcesPath = path.join(process.resourcesPath, "testRunner", "runner.js");
+        if (fs2.existsSync(extraResourcesPath)) {
+          runnerPath = extraResourcesPath;
+          console.log(`Using packaged app extraResources path: ${runnerPath}`);
+        }
       }
-      if (!fs2.existsSync(runnerPath)) {
-        throw new Error(`Runner script not found at: ${runnerPath}`);
+      if (!runnerPath) {
+        const buildPath = path.join(__dirname, "testRunner", "runner.js");
+        if (fs2.existsSync(buildPath)) {
+          runnerPath = buildPath;
+          console.log(`Using production build path: ${runnerPath}`);
+        }
       }
+      if (!runnerPath) {
+        const devPath = path.join(process.cwd(), "src", "main", "testRunner", "runner.js");
+        if (fs2.existsSync(devPath)) {
+          runnerPath = devPath;
+          console.log(`Using development runner path: ${runnerPath}`);
+        }
+      }
+      if (!runnerPath || !fs2.existsSync(runnerPath)) {
+        const attemptedPaths = [
+          process.resourcesPath ? path.join(process.resourcesPath, "testRunner", "runner.js") : null,
+          path.join(__dirname, "testRunner", "runner.js"),
+          path.join(process.cwd(), "src", "main", "testRunner", "runner.js")
+        ].filter(Boolean);
+        throw new Error(`Runner script not found. Attempted paths:
+${attemptedPaths.map((p) => `  - ${p}`).join("\n")}`);
+      }
+      const runnerDir = path.dirname(runnerPath);
       this.process = child_process.spawn("node", [runnerPath], {
         stdio: ["pipe", "pipe", "pipe"],
-        cwd: process.cwd(),
+        cwd: runnerDir,
         // Increase memory limit for Playwright
         env: { ...process.env, NODE_OPTIONS: "--max-old-space-size=4096" }
       });
@@ -5045,44 +5067,140 @@ class AIService {
   /**
    * Build context string for AI prompt
    */
-  async buildContextString() {
+  /**
+   * Analyze user query to determine what context is relevant
+   * Returns an object indicating which data should be included
+   */
+  analyzeQuery(userMessage) {
+    const lowerMessage = userMessage.toLowerCase();
+    const formKeywords = ["formular", "form", "formulare", "spendenformular"];
+    const paymentKeywords = ["bezahlmethode", "payment", "zahlung", "bezahlung", "paypal", "eps", "stripe"];
+    const testKeywords = ["test", "testergebnis", "ergebnis", "erfolg", "fehlgeschlagen", "fehler"];
+    const errorKeywords = ["fehler", "error", "fehlgeschlagen", "failed", "problem", "warum"];
+    const combinationKeywords = ["kombination", "combination", "zusammen", "paar"];
+    const scheduleKeywords = ["zeitplan", "schedule", "cron", "automatisch"];
+    const dateKeywords = ["tag", "tage", "woche", "monat", "letzte", "letzten", "recent", "trend"];
+    const isFormSpecific = formKeywords.some((kw) => lowerMessage.includes(kw));
+    const isPaymentSpecific = paymentKeywords.some((kw) => lowerMessage.includes(kw));
+    const isDateRangeQuery = dateKeywords.some((kw) => lowerMessage.includes(kw));
+    const needsForms = isFormSpecific || lowerMessage.includes("formular");
+    const needsPaymentMethods = isPaymentSpecific || lowerMessage.includes("bezahlmethode") || lowerMessage.includes("payment");
+    const needsTests = testKeywords.some((kw) => lowerMessage.includes(kw)) || needsForms || needsPaymentMethods;
+    const needsErrors = errorKeywords.some((kw) => lowerMessage.includes(kw));
+    const needsCombinations = combinationKeywords.some((kw) => lowerMessage.includes(kw)) || needsForms && needsPaymentMethods;
+    const needsSchedules = scheduleKeywords.some((kw) => lowerMessage.includes(kw));
+    let testLimit = 10;
+    if (needsErrors) {
+      testLimit = 50;
+    } else if (isDateRangeQuery) {
+      testLimit = 100;
+    } else if (needsTests && (isFormSpecific || isPaymentSpecific)) {
+      testLimit = 30;
+    } else if (needsTests) {
+      testLimit = 20;
+    }
+    return {
+      needsForms,
+      needsPaymentMethods,
+      needsTests,
+      needsErrors,
+      needsCombinations,
+      needsSchedules,
+      testLimit,
+      isFormSpecific,
+      isPaymentSpecific,
+      isDateRangeQuery
+    };
+  }
+  async buildContextString(userMessage) {
     const data = await this.buildContextData();
     const detailedTests = this.getDetailedTestResults();
     const failedTests = detailedTests.filter((t) => t.status === "FAILURE");
     const combinationStats = await this.getCombinationStats();
+    const queryAnalysis = userMessage ? this.analyzeQuery(userMessage) : {
+      needsForms: true,
+      needsPaymentMethods: true,
+      needsTests: true,
+      needsErrors: true,
+      needsCombinations: true,
+      needsSchedules: true,
+      testLimit: 10,
+      isFormSpecific: false,
+      isPaymentSpecific: false
+    };
     const sortedByRate = [...combinationStats].filter((c) => c.total >= 3).sort((a, b) => b.successRate - a.successRate);
     const bestCombos = sortedByRate.slice(0, 5);
     const worstCombos = sortedByRate.slice(-5).reverse();
-    return `
-AKTUELLE APP-DATEN:
-
-FORMULARE (${data.forms.length}):
-${data.forms.map((f) => `- ${f.name} (${f.isActive ? "aktiv" : "inaktiv"}): ${f.url}`).join("\n") || "- Keine Formulare vorhanden"}
-
-BEZAHLMETHODEN (${data.paymentMethods.length}):
-${data.paymentMethods.map((pm) => `- ${pm.name} (${pm.type}, ${pm.isActive ? "aktiv" : "inaktiv"})`).join("\n") || "- Keine Bezahlmethoden vorhanden"}
-
-TESTERGEBNISSE ÜBERSICHT:
-- Gesamt: ${data.recentTests.total}
-- Erfolgreich: ${data.recentTests.success}
-- Fehlgeschlagen: ${data.recentTests.failed}
-- Erfolgsrate: ${data.recentTests.successRate}%
-
-BESTE FORMULAR+BEZAHLMETHODE KOMBINATIONEN (mind. 3 Tests):
-${bestCombos.map((c) => `- ${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join("\n") || "- Keine Daten"}
-
-SCHLECHTESTE FORMULAR+BEZAHLMETHODE KOMBINATIONEN (mind. 3 Tests):
-${worstCombos.map((c) => `- ${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join("\n") || "- Keine Daten"}
-
-LETZTE FEHLGESCHLAGENE TESTS (${failedTests.length}):
-${failedTests.slice(0, 10).map((t) => `- ${t.formName}: ${t.error || "Unbekannter Fehler"} (${t.runAt})`).join("\n") || "- Keine fehlgeschlagenen Tests"}
-
-LETZTE 10 TESTS:
-${detailedTests.slice(0, 10).map((t) => `- ${t.formName}: ${t.status} (${t.runAt})`).join("\n") || "- Keine Tests vorhanden"}
-
-ZEITPLÄNE (${data.schedules.length}):
-${data.schedules.map((s) => `- ${s.name}: ${s.cronExpression} (${s.isActive ? "aktiv" : "inaktiv"})`).join("\n") || "- Keine Zeitpläne vorhanden"}
-`;
+    const parts = [];
+    parts.push("AKTUELLE APP-DATEN:");
+    parts.push("");
+    if (queryAnalysis.needsForms) {
+      const activeForms = data.forms.filter((f) => f.isActive);
+      const inactiveForms = data.forms.filter((f) => !f.isActive);
+      if (queryAnalysis.isFormSpecific) {
+        parts.push(`FORMULARE (${data.forms.length}):`);
+        parts.push(`${data.forms.map((f) => `[id:${f.id}] "${f.name}" ${f.isActive ? "✓" : "✗"} ${f.url}`).join("\n") || "- Keine Formulare vorhanden"}`);
+      } else {
+        parts.push(`FORMULARE: ${activeForms.length} aktiv, ${inactiveForms.length} inaktiv`);
+        if (activeForms.length > 0) {
+          parts.push(`Aktiv: ${activeForms.map((f) => f.name).join(", ")}`);
+        }
+      }
+      parts.push("");
+    } else {
+      parts.push(`FORMULARE: ${data.forms.length} (${data.forms.filter((f) => f.isActive).length} aktiv)`);
+      parts.push("");
+    }
+    if (queryAnalysis.needsPaymentMethods) {
+      const activePayments = data.paymentMethods.filter((pm) => pm.isActive);
+      const inactivePayments = data.paymentMethods.filter((pm) => !pm.isActive);
+      if (queryAnalysis.isPaymentSpecific) {
+        parts.push(`BEZAHLMETHODEN (${data.paymentMethods.length}):`);
+        parts.push(`${data.paymentMethods.map((pm) => `[id:${pm.id}] "${pm.name}" (${pm.type}) ${pm.isActive ? "✓" : "✗"}`).join("\n") || "- Keine Bezahlmethoden vorhanden"}`);
+      } else {
+        parts.push(`BEZAHLMETHODEN: ${activePayments.length} aktiv, ${inactivePayments.length} inaktiv`);
+        if (activePayments.length > 0) {
+          parts.push(`Aktiv: ${activePayments.map((pm) => pm.name).join(", ")}`);
+        }
+      }
+      parts.push("");
+    } else {
+      parts.push(`BEZAHLMETHODEN: ${data.paymentMethods.length} (${data.paymentMethods.filter((pm) => pm.isActive).length} aktiv)`);
+      parts.push("");
+    }
+    if (queryAnalysis.needsTests) {
+      parts.push(`TESTERGEBNISSE (letzte 30 Tage):`);
+      parts.push(`Gesamt: ${data.recentTests.total}, Erfolg: ${data.recentTests.success} (${data.recentTests.successRate}%), Fehler: ${data.recentTests.failed}`);
+      const testLimit = queryAnalysis.testLimit;
+      const relevantTests = detailedTests.slice(0, testLimit);
+      if (queryAnalysis.needsErrors && failedTests.length > 0) {
+        parts.push("");
+        parts.push(`FEHLGESCHLAGENE TESTS (${Math.min(failedTests.length, testLimit)}):`);
+        parts.push(failedTests.slice(0, testLimit).map((t) => `[id:${t.id}] ${t.formName} + ${t.paymentMethod}: "${t.error || "Unbekannter Fehler"}" (${t.runAt})`).join("\n"));
+      }
+      if (relevantTests.length > 0) {
+        parts.push("");
+        parts.push(`LETZTE ${relevantTests.length} TESTS:`);
+        parts.push(relevantTests.map((t) => `[id:${t.id}] ${t.formName} + ${t.paymentMethod}: ${t.status} (${t.runAt})`).join("\n"));
+      }
+      parts.push("");
+    } else {
+      parts.push(`TESTERGEBNISSE: ${data.recentTests.total} Tests, ${data.recentTests.successRate}% Erfolgsrate`);
+      parts.push("");
+    }
+    if (queryAnalysis.needsCombinations) {
+      parts.push(`BESTE KOMBINATIONEN (mind. 3 Tests):`);
+      parts.push(bestCombos.map((c) => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join("\n") || "- Keine Daten");
+      parts.push("");
+      parts.push(`SCHLECHTESTE KOMBINATIONEN (mind. 3 Tests):`);
+      parts.push(worstCombos.map((c) => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join("\n") || "- Keine Daten");
+      parts.push("");
+    }
+    if (queryAnalysis.needsSchedules) {
+      parts.push(`ZEITPLÄNE (${data.schedules.length}):`);
+      parts.push(data.schedules.map((s) => `${s.name}: ${s.cronExpression} (${s.isActive ? "aktiv" : "inaktiv"})`).join("\n") || "- Keine Zeitpläne vorhanden");
+    }
+    return parts.join("\n");
   }
   /**
    * Send a chat message and get a response
@@ -5094,7 +5212,8 @@ ${data.schedules.map((s) => `- ${s.name}: ${s.cronExpression} (${s.isActive ? "a
         throw new Error("AI ist nicht konfiguriert. Bitte konfiguriere einen AI-Provider in den Einstellungen.");
       }
     }
-    const contextString = await this.buildContextString();
+    const lastUserMessage = messages.filter((m) => m.role === "user").pop()?.content;
+    const contextString = await this.buildContextString(lastUserMessage);
     const fullSystemPrompt = `${SYSTEM_PROMPT}
 
 ${contextString}`;
@@ -5110,7 +5229,8 @@ ${contextString}`;
         throw new Error("AI ist nicht konfiguriert. Bitte konfiguriere einen AI-Provider in den Einstellungen.");
       }
     }
-    const contextString = await this.buildContextString();
+    const lastUserMessage = messages.filter((m) => m.role === "user").pop()?.content;
+    const contextString = await this.buildContextString(lastUserMessage);
     const fullSystemPrompt = `${SYSTEM_PROMPT}
 
 ${contextString}`;
