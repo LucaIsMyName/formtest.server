@@ -686,7 +686,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, is
 
   if (messages.length === 0 && !isLoading) {
     return (
-      <div className="flex-1 flex flex-col items-start justify-start p-4 text-left h-full">
+      <div className="flex-1 flex flex-col items-start justify-start px-6 py-6 text-left h-full max-w-4xl mx-auto">
         <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
           <MessagesSquare
             size={24}
@@ -713,7 +713,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({ messages, isLoading, is
   const lastAIMessageIndex = messages.map((m, i) => ({ role: m.role, index: i })).filter(m => m.role === 'assistant').pop()?.index;
 
   return (
-    <div className="p-4 space-y-4 ">
+    <div className="px-6 py-6 space-y-4 max-w-4xl mx-auto">
       {messages.map((message, index) => {
         const isLastAIMessage = message.role === 'assistant' && index === lastAIMessageIndex;
         
