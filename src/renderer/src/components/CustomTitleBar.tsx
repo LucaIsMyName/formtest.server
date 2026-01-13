@@ -246,7 +246,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                     <Button
                       variant="secondary"
                       onClick={() => navigate("/ai-chat")}
-                      className="p-1.5 !px-1.5 !py-1.5"
+                      className="p-1.5 !px-1.5 !py-1.5 bg-white dark:bg-neutral-900"
                       aria-label="AI Assistent">
                       <MessagesSquare size={14} />
                     </Button>
@@ -255,7 +255,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                     <Tooltip.Content
                       className="bg-neutral-900 dark:bg-neutral-700 text-white text-xs px-2 py-1 rounded shadow-lg z-50"
                       sideOffset={5}>
-                      AI Assistent
+                      KI Assistent
                       <Tooltip.Arrow className="fill-neutral-900 dark:fill-neutral-700" />
                     </Tooltip.Content>
                   </Tooltip.Portal>

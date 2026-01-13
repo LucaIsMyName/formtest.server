@@ -408,47 +408,192 @@ class AIService {
   /**
    * Build context string for AI prompt
    */
-  private async buildContextString(): Promise<string> {
+  /**
+   * Analyze user query to determine what context is relevant
+   * Returns an object indicating which data should be included
+   */
+  private analyzeQuery(userMessage: string): {
+    needsForms: boolean;
+    needsPaymentMethods: boolean;
+    needsTests: boolean;
+    needsErrors: boolean;
+    needsCombinations: boolean;
+    needsSchedules: boolean;
+    testLimit: number; // How many tests to include
+    isFormSpecific: boolean;
+    isPaymentSpecific: boolean;
+    isDateRangeQuery: boolean;
+  } {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // Detect keywords
+    const formKeywords = ['formular', 'form', 'formulare', 'spendenformular'];
+    const paymentKeywords = ['bezahlmethode', 'payment', 'zahlung', 'bezahlung', 'paypal', 'eps', 'stripe'];
+    const testKeywords = ['test', 'testergebnis', 'ergebnis', 'erfolg', 'fehlgeschlagen', 'fehler'];
+    const errorKeywords = ['fehler', 'error', 'fehlgeschlagen', 'failed', 'problem', 'warum'];
+    const combinationKeywords = ['kombination', 'combination', 'zusammen', 'paar'];
+    const scheduleKeywords = ['zeitplan', 'schedule', 'cron', 'automatisch'];
+    const dateKeywords = ['tag', 'tage', 'woche', 'monat', 'letzte', 'letzten', 'recent', 'trend'];
+    
+    // Check for specific form/payment mentions
+    const isFormSpecific = formKeywords.some(kw => lowerMessage.includes(kw));
+    const isPaymentSpecific = paymentKeywords.some(kw => lowerMessage.includes(kw));
+    const isDateRangeQuery = dateKeywords.some(kw => lowerMessage.includes(kw));
+    
+    // Determine what data is needed
+    const needsForms = isFormSpecific || lowerMessage.includes('formular');
+    const needsPaymentMethods = isPaymentSpecific || lowerMessage.includes('bezahlmethode') || lowerMessage.includes('payment');
+    const needsTests = testKeywords.some(kw => lowerMessage.includes(kw)) || needsForms || needsPaymentMethods;
+    const needsErrors = errorKeywords.some(kw => lowerMessage.includes(kw));
+    const needsCombinations = combinationKeywords.some(kw => lowerMessage.includes(kw)) || (needsForms && needsPaymentMethods);
+    const needsSchedules = scheduleKeywords.some(kw => lowerMessage.includes(kw));
+    
+    // Determine test limit based on query type
+    let testLimit = 10; // Default
+    if (needsErrors) {
+      testLimit = 50; // More tests for error analysis
+    } else if (isDateRangeQuery) {
+      testLimit = 100; // More tests for date range queries
+    } else if (needsTests && (isFormSpecific || isPaymentSpecific)) {
+      testLimit = 30; // More tests for specific form/payment queries
+    } else if (needsTests) {
+      testLimit = 20; // Slightly more for general test queries
+    }
+    
+    return {
+      needsForms,
+      needsPaymentMethods,
+      needsTests,
+      needsErrors,
+      needsCombinations,
+      needsSchedules,
+      testLimit,
+      isFormSpecific,
+      isPaymentSpecific,
+      isDateRangeQuery,
+    };
+  }
+
+  private async buildContextString(userMessage?: string): Promise<string> {
     const data = await this.buildContextData();
     const detailedTests = this.getDetailedTestResults();
     const failedTests = detailedTests.filter(t => t.status === 'FAILURE');
     const combinationStats = await this.getCombinationStats();
+    
+    // Analyze query if provided
+    const queryAnalysis = userMessage ? this.analyzeQuery(userMessage) : {
+      needsForms: true,
+      needsPaymentMethods: true,
+      needsTests: true,
+      needsErrors: true,
+      needsCombinations: true,
+      needsSchedules: true,
+      testLimit: 10,
+      isFormSpecific: false,
+      isPaymentSpecific: false,
+      isDateRangeQuery: false,
+    };
     
     // Best and worst combinations
     const sortedByRate = [...combinationStats].filter(c => c.total >= 3).sort((a, b) => b.successRate - a.successRate);
     const bestCombos = sortedByRate.slice(0, 5);
     const worstCombos = sortedByRate.slice(-5).reverse();
     
-    return `
-AKTUELLE APP-DATEN:
-
-FORMULARE (${data.forms.length}):
-${data.forms.map(f => `- ${f.name} (${f.isActive ? 'aktiv' : 'inaktiv'}): ${f.url}`).join('\n') || '- Keine Formulare vorhanden'}
-
-BEZAHLMETHODEN (${data.paymentMethods.length}):
-${data.paymentMethods.map(pm => `- ${pm.name} (${pm.type}, ${pm.isActive ? 'aktiv' : 'inaktiv'})`).join('\n') || '- Keine Bezahlmethoden vorhanden'}
-
-TESTERGEBNISSE ÜBERSICHT:
-- Gesamt: ${data.recentTests.total}
-- Erfolgreich: ${data.recentTests.success}
-- Fehlgeschlagen: ${data.recentTests.failed}
-- Erfolgsrate: ${data.recentTests.successRate}%
-
-BESTE FORMULAR+BEZAHLMETHODE KOMBINATIONEN (mind. 3 Tests):
-${bestCombos.map(c => `- ${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten'}
-
-SCHLECHTESTE FORMULAR+BEZAHLMETHODE KOMBINATIONEN (mind. 3 Tests):
-${worstCombos.map(c => `- ${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten'}
-
-LETZTE FEHLGESCHLAGENE TESTS (${failedTests.length}):
-${failedTests.slice(0, 10).map(t => `- ${t.formName}: ${t.error || 'Unbekannter Fehler'} (${t.runAt})`).join('\n') || '- Keine fehlgeschlagenen Tests'}
-
-LETZTE 10 TESTS:
-${detailedTests.slice(0, 10).map(t => `- ${t.formName}: ${t.status} (${t.runAt})`).join('\n') || '- Keine Tests vorhanden'}
-
-ZEITPLÄNE (${data.schedules.length}):
-${data.schedules.map(s => `- ${s.name}: ${s.cronExpression} (${s.isActive ? 'aktiv' : 'inaktiv'})`).join('\n') || '- Keine Zeitpläne vorhanden'}
-`;
+    // Build context string based on query analysis
+    const parts: string[] = [];
+    
+    // Always include overview
+    parts.push('AKTUELLE APP-DATEN:');
+    parts.push('');
+    
+    // Forms section
+    if (queryAnalysis.needsForms) {
+      const activeForms = data.forms.filter(f => f.isActive);
+      const inactiveForms = data.forms.filter(f => !f.isActive);
+      if (queryAnalysis.isFormSpecific) {
+        // Detailed form list for form-specific queries
+        parts.push(`FORMULARE (${data.forms.length}):`);
+        parts.push(`${data.forms.map(f => `[id:${f.id}] "${f.name}" ${f.isActive ? '✓' : '✗'} ${f.url}`).join('\n') || '- Keine Formulare vorhanden'}`);
+      } else {
+        // Compact summary for general queries
+        parts.push(`FORMULARE: ${activeForms.length} aktiv, ${inactiveForms.length} inaktiv`);
+        if (activeForms.length > 0) {
+          parts.push(`Aktiv: ${activeForms.map(f => f.name).join(', ')}`);
+        }
+      }
+      parts.push('');
+    } else {
+      // Minimal form info
+      parts.push(`FORMULARE: ${data.forms.length} (${data.forms.filter(f => f.isActive).length} aktiv)`);
+      parts.push('');
+    }
+    
+    // Payment methods section
+    if (queryAnalysis.needsPaymentMethods) {
+      const activePayments = data.paymentMethods.filter(pm => pm.isActive);
+      const inactivePayments = data.paymentMethods.filter(pm => !pm.isActive);
+      if (queryAnalysis.isPaymentSpecific) {
+        // Detailed payment method list
+        parts.push(`BEZAHLMETHODEN (${data.paymentMethods.length}):`);
+        parts.push(`${data.paymentMethods.map(pm => `[id:${pm.id}] "${pm.name}" (${pm.type}) ${pm.isActive ? '✓' : '✗'}`).join('\n') || '- Keine Bezahlmethoden vorhanden'}`);
+      } else {
+        // Compact summary
+        parts.push(`BEZAHLMETHODEN: ${activePayments.length} aktiv, ${inactivePayments.length} inaktiv`);
+        if (activePayments.length > 0) {
+          parts.push(`Aktiv: ${activePayments.map(pm => pm.name).join(', ')}`);
+        }
+      }
+      parts.push('');
+    } else {
+      // Minimal payment info
+      parts.push(`BEZAHLMETHODEN: ${data.paymentMethods.length} (${data.paymentMethods.filter(pm => pm.isActive).length} aktiv)`);
+      parts.push('');
+    }
+    
+    // Test results section
+    if (queryAnalysis.needsTests) {
+      parts.push(`TESTERGEBNISSE (letzte 30 Tage):`);
+      parts.push(`Gesamt: ${data.recentTests.total}, Erfolg: ${data.recentTests.success} (${data.recentTests.successRate}%), Fehler: ${data.recentTests.failed}`);
+      
+      // Include more tests based on query analysis
+      const testLimit = queryAnalysis.testLimit;
+      const relevantTests = detailedTests.slice(0, testLimit);
+      
+      if (queryAnalysis.needsErrors && failedTests.length > 0) {
+        parts.push('');
+        parts.push(`FEHLGESCHLAGENE TESTS (${Math.min(failedTests.length, testLimit)}):`);
+        parts.push(failedTests.slice(0, testLimit).map(t => `[id:${t.id}] ${t.formName} + ${t.paymentMethod}: "${t.error || 'Unbekannter Fehler'}" (${t.runAt})`).join('\n'));
+      }
+      
+      if (relevantTests.length > 0) {
+        parts.push('');
+        parts.push(`LETZTE ${relevantTests.length} TESTS:`);
+        parts.push(relevantTests.map(t => `[id:${t.id}] ${t.formName} + ${t.paymentMethod}: ${t.status} (${t.runAt})`).join('\n'));
+      }
+      parts.push('');
+    } else {
+      // Minimal test overview
+      parts.push(`TESTERGEBNISSE: ${data.recentTests.total} Tests, ${data.recentTests.successRate}% Erfolgsrate`);
+      parts.push('');
+    }
+    
+    // Combination stats
+    if (queryAnalysis.needsCombinations) {
+      parts.push(`BESTE KOMBINATIONEN (mind. 3 Tests):`);
+      parts.push(bestCombos.map(c => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten');
+      parts.push('');
+      parts.push(`SCHLECHTESTE KOMBINATIONEN (mind. 3 Tests):`);
+      parts.push(worstCombos.map(c => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten');
+      parts.push('');
+    }
+    
+    // Schedules
+    if (queryAnalysis.needsSchedules) {
+      parts.push(`ZEITPLÄNE (${data.schedules.length}):`);
+      parts.push(data.schedules.map(s => `${s.name}: ${s.cronExpression} (${s.isActive ? 'aktiv' : 'inaktiv'})`).join('\n') || '- Keine Zeitpläne vorhanden');
+    }
+    
+    return parts.join('\n');
   }
 
   /**
@@ -462,7 +607,9 @@ ${data.schedules.map(s => `- ${s.name}: ${s.cronExpression} (${s.isActive ? 'akt
       }
     }
 
-    const contextString = await this.buildContextString();
+    // Get the latest user message for query analysis
+    const lastUserMessage = messages.filter(m => m.role === 'user').pop()?.content;
+    const contextString = await this.buildContextString(lastUserMessage);
     const fullSystemPrompt = `${SYSTEM_PROMPT}\n\n${contextString}`;
 
     return this.provider.chat(messages, fullSystemPrompt);
@@ -479,7 +626,9 @@ ${data.schedules.map(s => `- ${s.name}: ${s.cronExpression} (${s.isActive ? 'akt
       }
     }
 
-    const contextString = await this.buildContextString();
+    // Get the latest user message for query analysis
+    const lastUserMessage = messages.filter(m => m.role === 'user').pop()?.content;
+    const contextString = await this.buildContextString(lastUserMessage);
     const fullSystemPrompt = `${SYSTEM_PROMPT}\n\n${contextString}`;
 
     return this.provider.streamChat(messages, fullSystemPrompt, callbacks);

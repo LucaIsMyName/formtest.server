@@ -232,7 +232,7 @@ const AIChat: React.FC = () => {
         {/* Chat Header */}
         <div className="px-6 py-3 h-[70px] border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between flex-shrink-0">
           <div>
-            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate line-clamp-1">
               {activeChat?.title || "Neuer Chat"}
             </h1>
             {activeChat && (
