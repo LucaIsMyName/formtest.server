@@ -8,7 +8,9 @@ interface FormsState {
 
   // Actions
   loadForms: () => Promise<void>;
-  addForm: (form: Omit<Form, "id" | "createdAt" | "updatedAt">) => Promise<void>;
+  addForm: (
+    form: Omit<Form, "id" | "createdAt" | "updatedAt">
+  ) => Promise<void>;
   updateForm: (id: number, form: Partial<Form>) => Promise<void>;
   deleteForm: (id: number) => Promise<void>;
   toggleFormActive: (id: number) => Promise<void>;
@@ -23,13 +25,18 @@ export const useFormsStore = create<FormsState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
+        throw new Error(
+          "API not available - make sure you are running in Electron"
+        );
       }
       const forms = await window.api.forms.getAll();
       set({ forms, isLoading: false });
     } catch (error) {
       console.error("Failed to load forms:", error);
-      set({ error: error instanceof Error ? error.message : "Failed to load forms", isLoading: false });
+      set({
+        error: error instanceof Error ? error.message : "Failed to load forms",
+        isLoading: false,
+      });
     }
   },
 
@@ -37,14 +44,19 @@ export const useFormsStore = create<FormsState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
+        throw new Error(
+          "API not available - make sure you are running in Electron"
+        );
       }
       console.log("Creating form:", formData);
       await window.api.forms.create(formData);
       await get().loadForms(); // Reload forms after adding
     } catch (error) {
       console.error("Failed to add form:", error);
-      set({ error: error instanceof Error ? error.message : "Failed to add form", isLoading: false });
+      set({
+        error: error instanceof Error ? error.message : "Failed to add form",
+        isLoading: false,
+      });
     }
   },
 
@@ -54,7 +66,10 @@ export const useFormsStore = create<FormsState>((set, get) => ({
       await window.api.forms.update(id, formData);
       await get().loadForms(); // Reload forms after updating
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : "Failed to update form", isLoading: false });
+      set({
+        error: error instanceof Error ? error.message : "Failed to update form",
+        isLoading: false,
+      });
     }
   },
 
@@ -64,7 +79,10 @@ export const useFormsStore = create<FormsState>((set, get) => ({
       await window.api.forms.delete(id);
       await get().loadForms(); // Reload forms after deleting
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : "Failed to delete form", isLoading: false });
+      set({
+        error: error instanceof Error ? error.message : "Failed to delete form",
+        isLoading: false,
+      });
     }
   },
 

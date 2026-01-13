@@ -15,7 +15,10 @@ interface FilterPresetsState {
 
   // Actions
   loadPresets: () => Promise<void>;
-  createPreset: (name: string, filterConfig: any) => Promise<FilterPreset | null>;
+  createPreset: (
+    name: string,
+    filterConfig: any
+  ) => Promise<FilterPreset | null>;
   updatePreset: (id: number, name: string, filterConfig: any) => Promise<void>;
   deletePreset: (id: number) => Promise<void>;
 }
@@ -29,13 +32,21 @@ export const useFilterPresetsStore = create<FilterPresetsState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       if (!window.api) {
-        throw new Error("API not available - make sure you are running in Electron");
+        throw new Error(
+          "API not available - make sure you are running in Electron"
+        );
       }
       const presets = await window.api.filterPresets.getAll();
       set({ presets, isLoading: false });
     } catch (error) {
       console.error("Failed to load filter presets:", error);
-      set({ error: error instanceof Error ? error.message : "Failed to load filter presets", isLoading: false });
+      set({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load filter presets",
+        isLoading: false,
+      });
     }
   },
 
@@ -44,12 +55,20 @@ export const useFilterPresetsStore = create<FilterPresetsState>((set, get) => ({
       if (!window.api) {
         throw new Error("API not available");
       }
-      const newPreset = await window.api.filterPresets.create(name, filterConfig);
+      const newPreset = await window.api.filterPresets.create(
+        name,
+        filterConfig
+      );
       await get().loadPresets();
       return newPreset;
     } catch (error) {
       console.error("Failed to create filter preset:", error);
-      set({ error: error instanceof Error ? error.message : "Failed to create filter preset" });
+      set({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to create filter preset",
+      });
       return null;
     }
   },
@@ -63,7 +82,12 @@ export const useFilterPresetsStore = create<FilterPresetsState>((set, get) => ({
       await get().loadPresets();
     } catch (error) {
       console.error("Failed to update filter preset:", error);
-      set({ error: error instanceof Error ? error.message : "Failed to update filter preset" });
+      set({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to update filter preset",
+      });
     }
   },
 
@@ -76,10 +100,12 @@ export const useFilterPresetsStore = create<FilterPresetsState>((set, get) => ({
       await get().loadPresets();
     } catch (error) {
       console.error("Failed to delete filter preset:", error);
-      set({ error: error instanceof Error ? error.message : "Failed to delete filter preset" });
+      set({
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete filter preset",
+      });
     }
   },
 }));
-
-
-
