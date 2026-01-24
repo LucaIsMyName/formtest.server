@@ -109,7 +109,7 @@ const Dashboard: React.FC = () => {
   const filteredTestRuns = useMemo(() => {
     // First filter out archived tests
     const activeTestRuns = testRuns.filter(run => !run.isArchived);
-    
+
     if (!dateRange.start && !dateRange.end) return activeTestRuns;
     return activeTestRuns.filter(run => {
       const runDate = new Date(run.runAt);
@@ -126,24 +126,24 @@ const Dashboard: React.FC = () => {
   // Prepare chart data - grouped by dynamic intervals for all-time data
   const prepareTimelineData = () => {
     if (filteredTestRuns.length === 0) return [];
-    
+
     // Filter out running/queued tests
     const completedRuns = filteredTestRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
     if (completedRuns.length === 0) return [];
-    
+
     // Find earliest and latest test dates
     const dates = completedRuns.map(run => new Date(run.runAt));
     const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
-    
+
     // Calculate time span in days
     const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
-    
+
     // Determine appropriate interval based on time span
     let intervalType: 'hour' | 'day' | 'week' | 'month';
     let intervalCount: number;
     let formatOptions: Intl.DateTimeFormatOptions;
-    
+
     if (timeSpanDays <= 2) {
       intervalType = 'hour';
       intervalCount = 6; // 6-hour intervals
@@ -161,13 +161,13 @@ const Dashboard: React.FC = () => {
       intervalCount = 1; // Monthly intervals
       formatOptions = { month: '2-digit', year: '2-digit' };
     }
-    
+
     // Create time slots
     const slots: Record<string, { date: string; success: number; failure: number; stopped: number }> = {};
-    
+
     // Generate slots from earliest to latest date
     let currentDate = new Date(earliestDate);
-    
+
     // Round down to appropriate interval start
     if (intervalType === 'hour') {
       currentDate.setMinutes(0, 0, 0);
@@ -182,13 +182,13 @@ const Dashboard: React.FC = () => {
       currentDate.setDate(1);
       currentDate.setHours(0, 0, 0, 0);
     }
-    
+
     while (currentDate <= latestDate) {
       const slotKey = currentDate.toISOString();
       const label = currentDate.toLocaleDateString("de-DE", formatOptions);
-      
+
       slots[slotKey] = { date: label, success: 0, failure: 0, stopped: 0 };
-      
+
       // Move to next interval
       if (intervalType === 'hour') {
         currentDate.setHours(currentDate.getHours() + intervalCount);
@@ -200,14 +200,14 @@ const Dashboard: React.FC = () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
       }
     }
-    
+
     // Group test runs into slots
     completedRuns.forEach((run) => {
       const runDate = new Date(run.runAt);
-      
+
       // Find the appropriate slot for this run
       let slotTime = new Date(runDate);
-      
+
       if (intervalType === 'hour') {
         slotTime.setMinutes(0, 0, 0);
         slotTime.setHours(Math.floor(slotTime.getHours() / intervalCount) * intervalCount);
@@ -221,16 +221,16 @@ const Dashboard: React.FC = () => {
         slotTime.setDate(1);
         slotTime.setHours(0, 0, 0, 0);
       }
-      
+
       const slotKey = slotTime.toISOString();
-      
+
       if (slots[slotKey]) {
         if (run.status === "SUCCESS") slots[slotKey].success++;
         if (run.status === "FAILURE") slots[slotKey].failure++;
         if (run.status === "STOPPED") slots[slotKey].stopped++;
       }
     });
-    
+
     // Sort by time and return
     return Object.entries(slots)
       .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
@@ -268,17 +268,17 @@ const Dashboard: React.FC = () => {
       stopped: number;
       successRate: number;
     }>();
-    
+
     filteredTestRuns.forEach(run => {
       if (run.status === "RUNNING" || run.status === "QUEUED") return;
-      
+
       const form = forms.find(f => f.id === run.formId);
       const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
-      
+
       if (!form || !pm) return;
-      
+
       const key = `${run.formId}-${run.paymentMethodId}`;
-      
+
       if (!combinationMap.has(key)) {
         combinationMap.set(key, {
           formId: form.id,
@@ -294,35 +294,35 @@ const Dashboard: React.FC = () => {
           successRate: 0
         });
       }
-      
+
       const combo = combinationMap.get(key)!;
       combo.total++;
       if (run.status === "SUCCESS") combo.success++;
       if (run.status === "FAILURE") combo.failure++;
       if (run.status === "STOPPED") combo.stopped++;
     });
-    
+
     // Calculate success rates and assign indices
     const uniqueForms = Array.from(new Set(Array.from(combinationMap.values()).map(c => c.formName))).sort();
     const uniquePaymentMethods = Array.from(new Set(Array.from(combinationMap.values()).map(c => c.paymentMethodName))).sort();
-    
+
     combinationMap.forEach((combo) => {
       combo.formIndex = uniqueForms.indexOf(combo.formName);
       combo.paymentMethodIndex = uniquePaymentMethods.indexOf(combo.paymentMethodName);
       combo.successRate = combo.total > 0 ? Math.round((combo.success / combo.total) * 100) : 0;
     });
-    
+
     // Convert to scatter data with separate points for success, failure, and stopped
     const scatterData: any[] = [];
     Array.from(combinationMap.values())
       .filter(c => c.total >= 3)
       .forEach((combo) => {
         const baseSize = Math.max(30, Math.min(100, combo.total * 2));
-        
+
         // All circles centered at the same position
         const x = combo.formIndex;
         const y = combo.paymentMethodIndex;
-        
+
         // Success circle
         if (combo.success > 0) {
           const successSize = (combo.success / combo.total) * baseSize;
@@ -334,7 +334,7 @@ const Dashboard: React.FC = () => {
             y: y,
           });
         }
-        
+
         // Failure circle
         if (combo.failure > 0) {
           const failureSize = (combo.failure / combo.total) * baseSize;
@@ -346,7 +346,7 @@ const Dashboard: React.FC = () => {
             y: y,
           });
         }
-        
+
         // Stopped circle
         if (combo.stopped > 0) {
           const stoppedSize = (combo.stopped / combo.total) * baseSize;
@@ -359,7 +359,7 @@ const Dashboard: React.FC = () => {
           });
         }
       });
-    
+
     return {
       data: scatterData,
       formLabels: uniqueForms,
@@ -370,24 +370,24 @@ const Dashboard: React.FC = () => {
   // Prepare form success rate trend over time
   const prepareFormSuccessRateTrend = () => {
     if (filteredTestRuns.length === 0) return [];
-    
+
     const completedRuns = filteredTestRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
     if (completedRuns.length === 0) return [];
-    
+
     // Group by form and time period
     const dates = completedRuns.map(run => new Date(run.runAt));
     const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
     const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
-    
+
     let groupByDays = 7;
     if (timeSpanDays <= 7) groupByDays = 1;
     else if (timeSpanDays <= 30) groupByDays = 2;
     else if (timeSpanDays <= 90) groupByDays = 7;
     else groupByDays = 30;
-    
+
     const formMap = new Map<string, { name: string; data: Map<string, { success: number; total: number; hasTests: boolean; lastRate: number | null }> }>();
-    
+
     // Initialize forms
     forms.forEach(form => {
       if (completedRuns.some(r => r.formId === form.id)) {
@@ -397,18 +397,18 @@ const Dashboard: React.FC = () => {
         });
       }
     });
-    
+
     // Generate all date keys first
     const allDateKeys: string[] = [];
     let currentDate = new Date(earliestDate);
     currentDate.setHours(0, 0, 0, 0);
-    
+
     while (currentDate <= latestDate) {
       const dateKey = currentDate.toISOString().split('T')[0];
       allDateKeys.push(dateKey);
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
-    
+
     // Initialize all dates for all forms
     allDateKeys.forEach(dateKey => {
       formMap.forEach((formData) => {
@@ -417,27 +417,27 @@ const Dashboard: React.FC = () => {
         }
       });
     });
-    
+
     // Fill in actual data
     currentDate = new Date(earliestDate);
     currentDate.setHours(0, 0, 0, 0);
-    
+
     while (currentDate <= latestDate) {
       const endDate = new Date(currentDate);
       endDate.setDate(endDate.getDate() + groupByDays - 1);
       endDate.setHours(23, 59, 59, 999);
-      
+
       const dateKey = currentDate.toISOString().split('T')[0];
-      
+
       formMap.forEach((formData, formId) => {
         const periodRuns = completedRuns.filter(r => {
           const runDate = new Date(r.runAt);
           return r.formId === parseInt(formId) && runDate >= currentDate && runDate <= endDate;
         });
-        
+
         const success = periodRuns.filter(r => r.status === "SUCCESS").length;
         const total = periodRuns.length;
-        
+
         if (total > 0) {
           const existing = formData.data.get(dateKey)!;
           existing.success = success;
@@ -446,10 +446,10 @@ const Dashboard: React.FC = () => {
           existing.lastRate = Math.round((success / total) * 100);
         }
       });
-      
+
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
-    
+
     // Fill in missing dates with last known value - ensure continuous lines
     formMap.forEach((formData) => {
       let lastKnownRate: number | null = null;
@@ -464,7 +464,7 @@ const Dashboard: React.FC = () => {
         }
       });
     });
-    
+
     // Convert to chart data format - always include value if we have a lastRate
     return allDateKeys.map(date => {
       const dataPoint: any = { date, _hasTests: {} };
@@ -489,7 +489,7 @@ const Dashboard: React.FC = () => {
         total: formRuns.length
       };
     }).filter(f => f.total > 0);
-    
+
     return volumeStats.sort((a, b) => b.total - a.total);
   };
 
@@ -499,39 +499,39 @@ const Dashboard: React.FC = () => {
       const formRuns = filteredTestRuns.filter(
         r => r.formId === form.id && r.durationMs
       );
-      
+
       if (formRuns.length === 0) return null;
-      
+
       const avgDuration = formRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / formRuns.length;
-      
+
       return {
         name: form.name,
         avgDuration: Math.round(avgDuration / 1000) // Convert to seconds
       };
     }).filter((item): item is { name: string; avgDuration: number } => item !== null);
-    
+
     return durationStats.sort((a, b) => b.avgDuration - a.avgDuration);
   };
 
   // Prepare most common failure errors
   const prepareFailureErrors = () => {
     const failureRuns = filteredTestRuns.filter(run => run.status === "FAILURE" && run.errorMessage);
-    
+
     const errorCounts = new Map<string, { count: number; lastOccurrence: Date }>();
-    
+
     failureRuns.forEach(run => {
       if (!run.errorMessage) return;
-      
+
       // Normalize error message (take first line, limit length)
       const normalizedError = run.errorMessage.split('\n')[0].trim().substring(0, 200);
-      
+
       if (!errorCounts.has(normalizedError)) {
         errorCounts.set(normalizedError, {
           count: 0,
           lastOccurrence: new Date(run.runAt)
         });
       }
-      
+
       const errorData = errorCounts.get(normalizedError)!;
       errorData.count++;
       const runDate = new Date(run.runAt);
@@ -539,7 +539,7 @@ const Dashboard: React.FC = () => {
         errorData.lastOccurrence = runDate;
       }
     });
-    
+
     return Array.from(errorCounts.entries())
       .map(([error, data]) => ({
         error,
@@ -553,7 +553,7 @@ const Dashboard: React.FC = () => {
   // Prepare combination statistics (form + payment method)
   const prepareCombinationStats = () => {
     const MIN_TEST_COUNT = 3; // Minimum tests required to show in table
-    
+
     const combinationMap = new Map<string, {
       formId: number;
       formName: string;
@@ -566,17 +566,17 @@ const Dashboard: React.FC = () => {
       totalDuration: number;
       lastRun: Date | null;
     }>();
-    
+
     filteredTestRuns.forEach(run => {
       if (run.status === "RUNNING" || run.status === "QUEUED") return;
-      
+
       const form = forms.find(f => f.id === run.formId);
       const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
-      
+
       if (!form || !pm) return;
-      
+
       const key = `${run.formId}-${run.paymentMethodId}`;
-      
+
       if (!combinationMap.has(key)) {
         combinationMap.set(key, {
           formId: form.id,
@@ -591,20 +591,20 @@ const Dashboard: React.FC = () => {
           lastRun: null
         });
       }
-      
+
       const combo = combinationMap.get(key)!;
       combo.total++;
       if (run.status === "SUCCESS") combo.success++;
       if (run.status === "FAILURE") combo.failure++;
       if (run.status === "STOPPED") combo.stopped++;
       if (run.durationMs) combo.totalDuration += run.durationMs;
-      
+
       const runDate = new Date(run.runAt);
       if (!combo.lastRun || runDate > combo.lastRun) {
         combo.lastRun = runDate;
       }
     });
-    
+
     // Convert to array and calculate metrics
     return Array.from(combinationMap.values())
       .filter(combo => combo.total >= MIN_TEST_COUNT)
@@ -633,19 +633,19 @@ const Dashboard: React.FC = () => {
   // Prepare success rate trend over time (all-time data)
   const prepareSuccessRateTrend = () => {
     if (testRuns.length === 0) return [];
-    
+
     // Filter out running/queued tests and archived tests
     const completedRuns = testRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED" && !run.isArchived);
     if (completedRuns.length === 0) return [];
-    
+
     // Find earliest and latest test dates
     const dates = completedRuns.map(run => new Date(run.runAt));
     const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
-    
+
     // Calculate time span in days
     const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
-    
+
     // Determine appropriate grouping
     let groupByDays: number;
     if (timeSpanDays <= 7) {
@@ -657,29 +657,29 @@ const Dashboard: React.FC = () => {
     } else {
       groupByDays = 30; // Monthly
     }
-    
+
     const trendData: { date: string; rate: number; total: number; hasTests: boolean }[] = [];
     let lastKnownRate: number | null = null;
-    
+
     // Group data by the determined interval
     let currentDate = new Date(earliestDate);
     currentDate.setHours(0, 0, 0, 0);
-    
+
     while (currentDate <= latestDate) {
       const endDate = new Date(currentDate);
       endDate.setDate(endDate.getDate() + groupByDays - 1);
       endDate.setHours(23, 59, 59, 999);
-      
+
       const periodRuns = completedRuns.filter((r) => {
         const runDate = new Date(r.runAt);
         return runDate >= currentDate && runDate <= endDate;
       });
-      
+
       const successful = periodRuns.filter((r) => r.status === "SUCCESS").length;
       const total = periodRuns.length;
       let rate: number;
       const hasTests = total > 0;
-      
+
       if (total > 0) {
         // Calculate actual rate for this period
         rate = (successful / total) * 100;
@@ -688,7 +688,7 @@ const Dashboard: React.FC = () => {
         // No tests in this period - use last known rate
         rate = lastKnownRate !== null ? lastKnownRate : 0;
       }
-      
+
       // Format date string consistently
       let dateStr: string;
       if (groupByDays === 1) {
@@ -710,12 +710,12 @@ const Dashboard: React.FC = () => {
         const year = String(currentDate.getFullYear()).slice(-2);
         dateStr = `${month}.${year}`;
       }
-      
+
       trendData.push({ date: dateStr, rate: Math.round(rate), total, hasTests });
-      
+
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
-    
+
     return trendData;
   };
 
@@ -733,7 +733,7 @@ const Dashboard: React.FC = () => {
       const avgDuration = formRuns.length > 0
         ? formRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / formRuns.length
         : 0;
-      
+
       // Calculate trend based on recent vs overall performance
       const sortedRuns = formRuns.sort((a, b) => new Date(a.runAt).getTime() - new Date(b.runAt).getTime());
       const halfPoint = Math.floor(sortedRuns.length / 2);
@@ -741,10 +741,10 @@ const Dashboard: React.FC = () => {
       const recentSuccessful = recentRuns.filter((r) => r.status === "SUCCESS").length;
       const recentRate = recentRuns.length > 0 ? (recentSuccessful / recentRuns.length) * 100 : 0;
       const trend = recentRuns.length > 0 ? Math.round(recentRate) - Math.round(rate) : 0;
-      
+
       // Get last test date
       const lastRun = formRuns.sort((a, b) => new Date(b.runAt).getTime() - new Date(a.runAt).getTime())[0];
-      
+
       return {
         name: form.name,
         rate: Math.round(rate),
@@ -758,7 +758,7 @@ const Dashboard: React.FC = () => {
         lastRun: lastRun ? new Date(lastRun.runAt) : null,
       };
     }).filter((f) => f.total > 0).sort((a, b) => b.rate - a.rate);
-    
+
     return formStats;
   };
 
@@ -776,7 +776,7 @@ const Dashboard: React.FC = () => {
       const avgDuration = pmRuns.length > 0
         ? pmRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / pmRuns.length
         : 0;
-      
+
       // Calculate trend based on recent vs overall performance
       const sortedRuns = pmRuns.sort((a, b) => new Date(a.runAt).getTime() - new Date(b.runAt).getTime());
       const halfPoint = Math.floor(sortedRuns.length / 2);
@@ -784,10 +784,10 @@ const Dashboard: React.FC = () => {
       const recentSuccessful = recentRuns.filter((r) => r.status === "SUCCESS").length;
       const recentRate = recentRuns.length > 0 ? (recentSuccessful / recentRuns.length) * 100 : 0;
       const trend = recentRuns.length > 0 ? Math.round(recentRate) - Math.round(rate) : 0;
-      
+
       // Get last test date
       const lastRun = pmRuns.sort((a, b) => new Date(b.runAt).getTime() - new Date(a.runAt).getTime())[0];
-      
+
       return {
         name: pm.name,
         type: pm.type,
@@ -802,31 +802,31 @@ const Dashboard: React.FC = () => {
         lastRun: lastRun ? new Date(lastRun.runAt) : null,
       };
     }).filter((p) => p.total > 0).sort((a, b) => b.rate - a.rate);
-    
+
     return pmStats;
   };
 
   // Prepare payment method success rate trend over time
   const preparePaymentMethodSuccessRateTrend = () => {
     if (filteredTestRuns.length === 0) return [];
-    
+
     const completedRuns = filteredTestRuns.filter(run => run.status !== "RUNNING" && run.status !== "QUEUED");
     if (completedRuns.length === 0) return [];
-    
+
     // Group by payment method and time period
     const dates = completedRuns.map(run => new Date(run.runAt));
     const earliestDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const latestDate = new Date(Math.max(...dates.map(d => d.getTime())));
     const timeSpanDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
-    
+
     let groupByDays = 7;
     if (timeSpanDays <= 7) groupByDays = 1;
     else if (timeSpanDays <= 30) groupByDays = 2;
     else if (timeSpanDays <= 90) groupByDays = 7;
     else groupByDays = 30;
-    
+
     const paymentMethodMap = new Map<string, { name: string; data: Map<string, { success: number; total: number; hasTests: boolean; lastRate: number | null }> }>();
-    
+
     // Initialize payment methods
     paymentMethods.forEach(pm => {
       if (completedRuns.some(r => r.paymentMethodId === pm.id)) {
@@ -836,18 +836,18 @@ const Dashboard: React.FC = () => {
         });
       }
     });
-    
+
     // Generate all date keys first
     const allDateKeys: string[] = [];
     let currentDate = new Date(earliestDate);
     currentDate.setHours(0, 0, 0, 0);
-    
+
     while (currentDate <= latestDate) {
       const dateKey = currentDate.toISOString().split('T')[0];
       allDateKeys.push(dateKey);
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
-    
+
     // Initialize all dates for all payment methods
     allDateKeys.forEach(dateKey => {
       paymentMethodMap.forEach((pmData) => {
@@ -856,27 +856,27 @@ const Dashboard: React.FC = () => {
         }
       });
     });
-    
+
     // Fill in actual data
     currentDate = new Date(earliestDate);
     currentDate.setHours(0, 0, 0, 0);
-    
+
     while (currentDate <= latestDate) {
       const endDate = new Date(currentDate);
       endDate.setDate(endDate.getDate() + groupByDays - 1);
       endDate.setHours(23, 59, 59, 999);
-      
+
       const dateKey = currentDate.toISOString().split('T')[0];
-      
+
       paymentMethodMap.forEach((pmData, pmId) => {
         const periodRuns = completedRuns.filter(r => {
           const runDate = new Date(r.runAt);
           return r.paymentMethodId === parseInt(pmId) && runDate >= currentDate && runDate <= endDate;
         });
-        
+
         const success = periodRuns.filter(r => r.status === "SUCCESS").length;
         const total = periodRuns.length;
-        
+
         if (total > 0) {
           const existing = pmData.data.get(dateKey)!;
           existing.success = success;
@@ -885,10 +885,10 @@ const Dashboard: React.FC = () => {
           existing.lastRate = Math.round((success / total) * 100);
         }
       });
-      
+
       currentDate.setDate(currentDate.getDate() + groupByDays);
     }
-    
+
     // Fill in missing dates with last known value - ensure continuous lines
     paymentMethodMap.forEach((pmData) => {
       let lastKnownRate: number | null = null;
@@ -903,7 +903,7 @@ const Dashboard: React.FC = () => {
         }
       });
     });
-    
+
     // Convert to chart data format - always include value if we have a lastRate
     return allDateKeys.map(date => {
       const dataPoint: any = { date, _hasTests: {} };
@@ -924,7 +924,7 @@ const Dashboard: React.FC = () => {
     const typeStats = filteredTestRuns.reduce((acc, run) => {
       const pm = paymentMethods.find(p => p.id === run.paymentMethodId);
       if (!pm) return acc;
-      
+
       const type = pm.type || "unknown";
       if (!acc[type]) {
         acc[type] = 0;
@@ -932,7 +932,7 @@ const Dashboard: React.FC = () => {
       acc[type]++;
       return acc;
     }, {} as Record<string, number>);
-    
+
     const colors: Record<string, string> = {
       paypal: "#0070ba",
       sepa: "#10b981",
@@ -940,7 +940,7 @@ const Dashboard: React.FC = () => {
       eps: "#a855f7",
       unknown: "#6b7280"
     };
-    
+
     return Object.entries(typeStats).map(([type, value]) => ({
       name: type.toUpperCase(),
       value,
@@ -954,17 +954,17 @@ const Dashboard: React.FC = () => {
       const pmRuns = filteredTestRuns.filter(
         r => r.paymentMethodId === pm.id && r.durationMs
       );
-      
+
       if (pmRuns.length === 0) return null;
-      
+
       const avgDuration = pmRuns.reduce((sum, r) => sum + (r.durationMs || 0), 0) / pmRuns.length;
-      
+
       return {
         name: pm.name,
         avgDuration: Math.round(avgDuration / 1000) // Convert to seconds
       };
     }).filter((item): item is { name: string; avgDuration: number } => item !== null);
-    
+
     return durationStats.sort((a, b) => b.avgDuration - a.avgDuration);
   };
 
@@ -1023,7 +1023,7 @@ const Dashboard: React.FC = () => {
   const handleDateRangePreset = (preset: string) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
+
     switch (preset) {
       case 'last7days':
         setDateRange({
@@ -1137,8 +1137,8 @@ const Dashboard: React.FC = () => {
                       {dateRange.start && dateRange.end
                         ? `${dateRange.start.toLocaleDateString('de-DE')} - ${dateRange.end.toLocaleDateString('de-DE')}`
                         : dateRange.start
-                        ? `Ab ${dateRange.start.toLocaleDateString('de-DE')}`
-                        : `Bis ${dateRange.end?.toLocaleDateString('de-DE')}`}
+                          ? `Ab ${dateRange.start.toLocaleDateString('de-DE')}`
+                          : `Bis ${dateRange.end?.toLocaleDateString('de-DE')}`}
                     </span>
                   </span>
                 ) : (
@@ -1252,13 +1252,12 @@ const Dashboard: React.FC = () => {
           <div>
             <p className="text-sm text-neutral-500 dark:text-neutral-400">Erfolgsrate</p>
             <p
-              className={`text-2xl font-semibold mt-2 ${
-                stats.successRate >= 90 
-                  ? "text-green-600 dark:text-green-400" 
-                  : stats.successRate >= 80 
-                    ? "text-orange-500 dark:text-orange-400" 
+              className={`text-2xl font-semibold mt-2 ${stats.successRate >= 90
+                  ? "text-green-600 dark:text-green-400"
+                  : stats.successRate >= 80
+                    ? "text-orange-500 dark:text-orange-400"
                     : "text-red-600 dark:text-red-400"
-              }`}
+                }`}
               style={{ fontStretch: "125%" }}>
               {isLoading ? "..." : `${stats.successRate.toFixed(1)}%`}
             </p>
@@ -1567,7 +1566,7 @@ const Dashboard: React.FC = () => {
             {(() => {
               const scatterData = prepareFormPaymentScatterData();
               if (scatterData.data.length === 0) return null;
-              
+
               return (
                 <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm p-6">
                   <h3 className="text-lg text-neutral-900 dark:text-white mb-4">Formular × Bezahlmethode Performance</h3>

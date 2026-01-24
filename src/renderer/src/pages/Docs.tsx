@@ -20,7 +20,7 @@ const Docs: React.FC = () => {
   return (
     <div className="max-w-4xl select-text">
       {/* README Content - Auto-generated from README.md on build */}
-      <article 
+      <article
         className="readme-content dark:text-neutral-100"
         dangerouslySetInnerHTML={{ __html: readmeHtml }}
       />

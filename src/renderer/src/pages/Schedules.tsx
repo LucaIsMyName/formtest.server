@@ -31,16 +31,16 @@ interface ScheduleWithComputed extends TestSchedule {
 }
 
 // Wrapper component for sparkline that uses the hook
-const ScheduleSparkline: React.FC<{ 
-  scheduleId: number; 
-  formId: number; 
-  paymentMethodId: number; 
-  testRuns: any[] 
+const ScheduleSparkline: React.FC<{
+  scheduleId: number;
+  formId: number;
+  paymentMethodId: number;
+  testRuns: any[]
 }> = ({ scheduleId, formId, paymentMethodId, testRuns }) => {
   const sparklineData = useSparklineData(
-    testRuns, 
-    "schedule", 
-    scheduleId, 
+    testRuns,
+    "schedule",
+    scheduleId,
     { formId, paymentMethodId }
   );
   return <MiniSparkline data={sparklineData} />;
@@ -311,113 +311,113 @@ const Schedules: React.FC = () => {
                 {displayedSchedules.map((schedule) => {
                   const isChecked = isSelected(schedule.id);
                   return (
-                  <TableRow
-                    key={schedule.id}
-                    tabIndex={0}
-                    role="button"
-                    className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
-                    onClick={() => setEditingSchedule(schedule)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setEditingSchedule(schedule);
-                      }
-                    }}>
-                    <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={isChecked}
-                        onCheckedChange={() => toggleItem(schedule.id)}
-                        aria-label={`${schedule.name} auswählen`}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {renderIcon(schedule.icon || "Play", 16, "text-neutral-600 dark:text-neutral-400")}
-                        <span className="font-medium text-sm text-neutral-900 dark:text-white">{schedule.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-xs text-neutral-600 dark:text-neutral-300">
-                        {getFormName(schedule.formId)}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-xs text-neutral-600 dark:text-neutral-300">
-                        {getPaymentMethodName(schedule.paymentMethodId)}
-                      </div>
-                    </TableCell>
-                    <TableCell className="min-w-[160px]">
-                      <div className="flex items-center gap-2">
-                        <code className="w-full px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-700 rounded text-[10px] font-mono text-neutral-800 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-600">{schedule.cronExpression}</code>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDateTime(schedule.lastRun)}</div>
-                    </TableCell>
-                    <TableCell className="w-[120px]">
-                      <StatusBadge status={schedule.isActive ? "active" : "inactive"}>{schedule.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
-                    </TableCell>
-                    <TableCell className="text-left">
-                      <ScheduleSparkline 
-                        scheduleId={schedule.id} 
-                        formId={schedule.formId} 
-                        paymentMethodId={schedule.paymentMethodId} 
-                        testRuns={testRuns} 
-                      />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRunNow(schedule.id);
-                          }}
-                          disabled={runningSchedules.has(schedule.id)}
-                          title="Jetzt ausführen">
-                          {runningSchedules.has(schedule.id) ? (
-                            <Loader2
+                    <TableRow
+                      key={schedule.id}
+                      tabIndex={0}
+                      role="button"
+                      className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 align-middle focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                      onClick={() => setEditingSchedule(schedule)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setEditingSchedule(schedule);
+                        }
+                      }}>
+                      <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                          checked={isChecked}
+                          onCheckedChange={() => toggleItem(schedule.id)}
+                          aria-label={`${schedule.name} auswählen`}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {renderIcon(schedule.icon || "Play", 16, "text-neutral-600 dark:text-neutral-400")}
+                          <span className="font-medium text-sm text-neutral-900 dark:text-white">{schedule.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-xs text-neutral-600 dark:text-neutral-300">
+                          {getFormName(schedule.formId)}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-xs text-neutral-600 dark:text-neutral-300">
+                          {getPaymentMethodName(schedule.paymentMethodId)}
+                        </div>
+                      </TableCell>
+                      <TableCell className="min-w-[160px]">
+                        <div className="flex items-center gap-2">
+                          <code className="w-full px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-700 rounded text-[10px] font-mono text-neutral-800 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-600">{schedule.cronExpression}</code>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDateTime(schedule.lastRun)}</div>
+                      </TableCell>
+                      <TableCell className="w-[120px]">
+                        <StatusBadge status={schedule.isActive ? "active" : "inactive"}>{schedule.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
+                      </TableCell>
+                      <TableCell className="text-left">
+                        <ScheduleSparkline
+                          scheduleId={schedule.id}
+                          formId={schedule.formId}
+                          paymentMethodId={schedule.paymentMethodId}
+                          testRuns={testRuns}
+                        />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRunNow(schedule.id);
+                            }}
+                            disabled={runningSchedules.has(schedule.id)}
+                            title="Jetzt ausführen">
+                            {runningSchedules.has(schedule.id) ? (
+                              <Loader2
+                                size={16}
+                                className="text-green-600 dark:text-green-400 animate-spin"
+                              />
+                            ) : (
+                              <Play
+                                size={16}
+                                className="text-green-600 dark:text-green-400"
+                              />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingSchedule(schedule);
+                            }}
+                            title="Bearbeiten">
+                            <Edit2
                               size={16}
-                              className="text-green-600 dark:text-green-400 animate-spin"
+                              className="text-blue-600 dark:text-blue-400"
                             />
-                          ) : (
-                            <Play
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeletingSchedule(schedule);
+                            }}
+                            title="Löschen">
+                            <Trash2
                               size={16}
-                              className="text-green-600 dark:text-green-400"
+                              className="text-red-600 dark:text-red-400"
                             />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingSchedule(schedule);
-                          }}
-                          title="Bearbeiten">
-                          <Edit2
-                            size={16}
-                            className="text-blue-600 dark:text-blue-400"
-                          />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeletingSchedule(schedule);
-                          }}
-                          title="Löschen">
-                          <Trash2
-                            size={16}
-                            className="text-red-600 dark:text-red-400"
-                          />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
                 })}
               </TableBody>
             </Table>

@@ -367,13 +367,13 @@ const SelectorEditor: React.FC = () => {
     categories.length > 0
       ? categories
       : [
-          { category: "formFields", keys: ["amount", "customAmount", "interval", "salutation", "firstName", "lastName", "email", "country", "privacy", "newsletter", "phone", "address", "city", "zipCode"], label: "Formularfelder" },
-          { category: "paymentMethods", keys: ["sepa", "creditcard", "paypal", "eps"], label: "Zahlungsmethoden" },
-          { category: "paymentFields", keys: ["iban", "accountHolder", "cardNumber", "cardHolder", "expiryDate", "cvv", "bankSelect"], label: "Zahlungsfelder" },
-          { category: "cookieConsent", keys: ["banners", "acceptButtons"], label: "Cookie-Zustimmung" },
-          { category: "successPatterns", keys: ["redirectUrls", "successMessages", "successSelectors"], label: "Erfolgs-Erkennung" },
-          { category: "formDetection", keys: ["fundraisingBox", "genericForm"], label: "Formular-Erkennung" },
-        ];
+        { category: "formFields", keys: ["amount", "customAmount", "interval", "salutation", "firstName", "lastName", "email", "country", "privacy", "newsletter", "phone", "address", "city", "zipCode"], label: "Formularfelder" },
+        { category: "paymentMethods", keys: ["sepa", "creditcard", "paypal", "eps"], label: "Zahlungsmethoden" },
+        { category: "paymentFields", keys: ["iban", "accountHolder", "cardNumber", "cardHolder", "expiryDate", "cvv", "bankSelect"], label: "Zahlungsfelder" },
+        { category: "cookieConsent", keys: ["banners", "acceptButtons"], label: "Cookie-Zustimmung" },
+        { category: "successPatterns", keys: ["redirectUrls", "successMessages", "successSelectors"], label: "Erfolgs-Erkennung" },
+        { category: "formDetection", keys: ["fundraisingBox", "genericForm"], label: "Formular-Erkennung" },
+      ];
 
   return (
     <div className="space-y-0 p-4">

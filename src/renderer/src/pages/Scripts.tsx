@@ -163,7 +163,7 @@ const Scripts: React.FC = () => {
               </TableRow>
             ) : (
               scripts.map((script) => (
-                <TableRow 
+                <TableRow
                   key={script.id}
                   className="cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
                   onClick={() => handleEdit(script)}

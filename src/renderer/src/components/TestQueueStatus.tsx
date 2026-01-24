@@ -31,7 +31,7 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
   // Poll for status updates every second when there are pending tests
   useEffect(() => {
     fetchStatus();
-    
+
     const interval = setInterval(() => {
       fetchStatus();
     }, 1000);
@@ -41,7 +41,7 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
 
   const handleStopAll = async () => {
     if (!status || status.totalPending === 0) return;
-    
+
     setIsClearing(true);
     try {
       await window.api?.testQueue?.stopAll();

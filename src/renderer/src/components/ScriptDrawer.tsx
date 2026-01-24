@@ -35,7 +35,7 @@ const getHookPointOptions = (): { value: ScriptHookPoint; label: string; descrip
 
 const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, forms }) => {
   const { createScript, updateScript, validateScript } = useCustomScriptsStore();
-  
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -84,7 +84,7 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
       setValidationResult({ valid: false, errors: [t("script.codeEmpty")] });
       return;
     }
-    
+
     setIsValidating(true);
     try {
       const result = await validateScript(formData.code);
@@ -227,19 +227,18 @@ const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, fo
               className={`w-full h-64 px-3 py-2 font-mono text-xs border rounded-md resize-none
                 bg-neutral-50 dark:bg-neutral-900 
                 text-neutral-900 dark:text-neutral-100
-                ${errors.code 
-                  ? "border-red-500 focus:ring-red-500" 
+                ${errors.code
+                  ? "border-red-500 focus:ring-red-500"
                   : "border-neutral-300 dark:border-neutral-600 focus:ring-blue-500"
                 }
                 focus:outline-none focus:ring-2`}
             />
             {errors.code && <p className="text-xs text-red-500">{errors.code}</p>}
             {validationResult && (
-              <div className={`p-2 rounded text-xs ${
-                validationResult.valid 
+              <div className={`p-2 rounded text-xs ${validationResult.valid
                   ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
                   : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
-              }`}>
+                }`}>
                 {validationResult.valid ? (
                   t("script.syntaxValid")
                 ) : (

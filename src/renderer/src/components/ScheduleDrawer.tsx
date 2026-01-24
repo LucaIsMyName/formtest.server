@@ -105,7 +105,7 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Quality test options
   const [enableSeoTest, setEnableSeoTest] = useState(false);
   const [enableAccessibilityTest, setEnableAccessibilityTest] = useState(false);
@@ -232,8 +232,8 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
               disabled={isSubmitting}
             />
           </div>
-          
-          
+
+
         </div>
 
         <DrawerHeader className="pt-6"></DrawerHeader>

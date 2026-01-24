@@ -157,8 +157,8 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
       {/* Steps Comparison */}
       <div className="flex-1 overflow-auto py-4">
         <h3 className="text-sm font-medium text-neutral-900 dark:text-white mb-3">Schritt-Vergleich</h3>
-        
-{stepDiffs.length === 0 ? (
+
+        {stepDiffs.length === 0 ? (
           <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
             t("noStepsToCompare")
           </div>

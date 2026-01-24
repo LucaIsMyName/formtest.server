@@ -96,7 +96,7 @@ const PaymentMethods: React.FC = () => {
         default: return type;
       }
     };
-    
+
     // Get sortable details string (decrypted data is already available)
     const getDetailsSummary = (method: PaymentMethod): string => {
       switch (method.type) {
@@ -113,7 +113,7 @@ const PaymentMethods: React.FC = () => {
           return '';
       }
     };
-    
+
     return paymentMethods.map(pm => ({
       ...pm,
       typeLabel: getTypeLabel(pm.type),
@@ -122,12 +122,12 @@ const PaymentMethods: React.FC = () => {
   }, [paymentMethods]);
 
   // Filtering (with localStorage persistence)
-  const { 
-    filteredItems: filteredMethods, 
-    filterConfig, 
-    setSearchTerm, 
-    setStatusFilter, 
-    clearFilters 
+  const {
+    filteredItems: filteredMethods,
+    filterConfig,
+    setSearchTerm,
+    setStatusFilter,
+    clearFilters
   } = useFilterableData<PaymentMethodWithComputed>(
     paymentMethodsWithComputed,
     ['name', 'typeLabel', 'type', 'detailsSummary'] as (keyof PaymentMethodWithComputed)[],
@@ -136,11 +136,11 @@ const PaymentMethods: React.FC = () => {
   );
 
   // Sorting (with localStorage persistence)
-  const { 
-    sortedItems: sortedMethods, 
+  const {
+    sortedItems: sortedMethods,
     requestSort,
     sortConfig,
-    getSortDirection 
+    getSortDirection
   } = useSortableData<PaymentMethodWithComputed>(
     filteredMethods,
     { key: 'name', direction: 'asc' },
@@ -156,15 +156,15 @@ const PaymentMethods: React.FC = () => {
   // Custom status filter logic + pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
-  
+
   const displayedMethods = useMemo((): PaymentMethodWithComputed[] => {
     let filtered = sortedMethods;
     if (filterConfig.statusFilter && filterConfig.statusFilter !== 'all') {
-      filtered = sortedMethods.filter(m => 
+      filtered = sortedMethods.filter(m =>
         filterConfig.statusFilter === 'active' ? m.isActive : !m.isActive
       );
     }
-    
+
     // Only paginate if more than 50 items
     if (filtered.length > 50) {
       const start = (currentPage - 1) * itemsPerPage;
@@ -178,14 +178,14 @@ const PaymentMethods: React.FC = () => {
     if (!filterConfig.statusFilter || filterConfig.statusFilter === 'all') {
       return sortedMethods.length;
     }
-    return sortedMethods.filter(m => 
+    return sortedMethods.filter(m =>
       filterConfig.statusFilter === 'active' ? m.isActive : !m.isActive
     ).length;
   }, [sortedMethods, filterConfig.statusFilter]);
-  
+
   const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
   const showPagination = totalFilteredItems > 50;
-  
+
   // Reset page when filter or sort changes
   useEffect(() => {
     setCurrentPage(1);
@@ -422,86 +422,86 @@ const PaymentMethods: React.FC = () => {
               {displayedMethods.map((method) => {
                 const isChecked = isSelected(method.id);
                 return (
-                <TableRow 
-                  key={method.id}
-                  tabIndex={0}
-                  role="button"
-                  className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
-                  onClick={() => handleEditMethod(method)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleEditMethod(method);
-                    }
-                  }}>
-                  <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
-                    <Checkbox
-                      checked={isChecked}
-                      onCheckedChange={() => toggleItem(method.id)}
-                      aria-label={`${method.name} auswählen`}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getPaymentMethodIcon(method)}
-                      <span className="font-medium text-sm text-neutral-900 dark:text-white">{method.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-[10px] font-mono text-neutral-900 dark:text-neutral-300">{method.typeLabel}</span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{maskSensitiveData(method)}</span>
-                  </TableCell>
-                  <TableCell className="w-120px">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); togglePaymentMethodActive(method.id); }}
-                      className="border-none bg-transparent cursor-pointer p-0"
-                      disabled={isLoading}>
-                      <StatusBadge status={method.isActive ? "active" : "inactive"}>
-                        {method.isActive ? t("paymentMethods.active") : t("paymentMethods.inactive")}
-                      </StatusBadge>
-                    </button>
-                  </TableCell>
-                  <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{formatDate(method.createdAt)}</TableCell>
-                  <TableCell className="text-left">
-                    <PaymentMethodSparkline paymentMethodId={method.id} testRuns={testRuns} />
-                  </TableCell>
-                  <TableCell className="text-right text-sm font-medium">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        onClick={(e) => { 
-                          e.stopPropagation(); 
-                          window.dispatchEvent(new CustomEvent("openTestDialog", { 
-                            detail: { paymentMethodIds: [method.id] } 
-                          }));
-                        }}
-                        variant="ghost"
-                        size="sm"
-                        disabled={isLoading}
-                        title="Test starten">
-                        <Play size={16} className="text-green-600 dark:text-green-400" />
-                      </Button>
-                      <Button
-                        onClick={(e) => { e.stopPropagation(); handleEditMethod(method); }}
-                        variant="ghost"
-                        size="sm"
-                        disabled={isLoading}
-                        title={t("paymentMethods.edit")}>
-                        <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
-                      </Button>
-                      <Button
-                        onClick={(e) => { e.stopPropagation(); handleDeleteMethod(method); }}
-                        variant="ghost"
-                        size="sm"
-                        disabled={isLoading}
-                        title={t("button.delete")}>
-                        <Trash2 size={16} className="text-red-600 dark:text-red-400" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
+                  <TableRow
+                    key={method.id}
+                    tabIndex={0}
+                    role="button"
+                    className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                    onClick={() => handleEditMethod(method)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleEditMethod(method);
+                      }
+                    }}>
+                    <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={isChecked}
+                        onCheckedChange={() => toggleItem(method.id)}
+                        aria-label={`${method.name} auswählen`}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {getPaymentMethodIcon(method)}
+                        <span className="font-medium text-sm text-neutral-900 dark:text-white">{method.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-[10px] font-mono text-neutral-900 dark:text-neutral-300">{method.typeLabel}</span>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{maskSensitiveData(method)}</span>
+                    </TableCell>
+                    <TableCell className="w-120px">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); togglePaymentMethodActive(method.id); }}
+                        className="border-none bg-transparent cursor-pointer p-0"
+                        disabled={isLoading}>
+                        <StatusBadge status={method.isActive ? "active" : "inactive"}>
+                          {method.isActive ? t("paymentMethods.active") : t("paymentMethods.inactive")}
+                        </StatusBadge>
+                      </button>
+                    </TableCell>
+                    <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{formatDate(method.createdAt)}</TableCell>
+                    <TableCell className="text-left">
+                      <PaymentMethodSparkline paymentMethodId={method.id} testRuns={testRuns} />
+                    </TableCell>
+                    <TableCell className="text-right text-sm font-medium">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.dispatchEvent(new CustomEvent("openTestDialog", {
+                              detail: { paymentMethodIds: [method.id] }
+                            }));
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          title="Test starten">
+                          <Play size={16} className="text-green-600 dark:text-green-400" />
+                        </Button>
+                        <Button
+                          onClick={(e) => { e.stopPropagation(); handleEditMethod(method); }}
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          title={t("paymentMethods.edit")}>
+                          <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
+                        </Button>
+                        <Button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteMethod(method); }}
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          title={t("button.delete")}>
+                          <Trash2 size={16} className="text-red-600 dark:text-red-400" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
               })}
             </TableBody>
           </Table>

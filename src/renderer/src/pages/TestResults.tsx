@@ -1275,6 +1275,8 @@ const TestResults: React.FC = () => {
       return;
     }
 
+    console.log(handleExportToGoogleSheets().toString())
+
     // Get default columns (all columns with defaultSelected: true)
     const defaultColumns = exportColumns
       .filter(col => col.defaultSelected)

@@ -57,7 +57,7 @@ const Settings: React.FC = () => {
   const [editingTag, setEditingTag] = useState<{ id: number; name: string; color: string } | null>(null);
   const [tagName, setTagName] = useState("");
   const [tagColor, setTagColor] = useState("#3B82F6");
-  
+
   // Dialog states for component settings
   const [showSelectorDialog, setShowSelectorDialog] = useState(false);
   const [showGlobalDefaultsDialog, setShowGlobalDefaultsDialog] = useState(false);
@@ -452,14 +452,14 @@ const Settings: React.FC = () => {
           await updateSetting("api_enabled", "true", "API aktiviert");
           await updateSetting("api_port", String(port), "API Port");
           setApiStatusMessage({ type: "success", message: `${t("settings.apiServerStarted")} ${port}` });
-      } else {
-        setApiStatusMessage({ type: "error", message: result.error || t("settings.errorStarting") });
+        } else {
+          setApiStatusMessage({ type: "error", message: result.error || t("settings.errorStarting") });
+        }
       }
-    }
-    if (apiStatusMessageTimeoutRef.current) {
-      clearTimeout(apiStatusMessageTimeoutRef.current);
-    }
-    apiStatusMessageTimeoutRef.current = setTimeout(() => setApiStatusMessage(null), 3000);
+      if (apiStatusMessageTimeoutRef.current) {
+        clearTimeout(apiStatusMessageTimeoutRef.current);
+      }
+      apiStatusMessageTimeoutRef.current = setTimeout(() => setApiStatusMessage(null), 3000);
     } catch (error) {
       setApiStatusMessage({ type: "error", message: t("settings.unexpectedError") });
     }

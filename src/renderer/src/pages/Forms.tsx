@@ -337,109 +337,109 @@ const Forms: React.FC = () => {
               {displayedForms.map((form) => {
                 const isChecked = isSelected(form.id);
                 return (
-                <TableRow
-                  key={form.id}
-                  tabIndex={0}
-                  role="button"
-                  className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
-                  onClick={() => handleEditForm(form)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleEditForm(form);
-                    }
-                  }}>
-                  <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
-                    <Checkbox
-                      checked={isChecked}
-                      onCheckedChange={() => toggleItem(form.id)}
-                      aria-label={`${form.name} auswählen`}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2.5">
-                      {renderIcon(form.icon || "FileText", 16, "text-neutral-500 dark:text-neutral-400")}
-                      <div className="font-medium text-sm text-neutral-900 dark:text-white">{form.name}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <a
-                      href={form.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate">
-                      {form.url}
-                    </a>
-                  </TableCell>
-                  <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">
-                    {form.hash || "—"}
-                  </TableCell>
-                  <TableCell>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFormActive(form.id);
-                      }}
-                      className="border-none bg-transparent cursor-pointer p-0"
-                      disabled={isLoading}>
-                      <StatusBadge status={form.isActive ? "active" : "inactive"}>{form.isActive ? t("forms.active") : t("forms.inactive")}</StatusBadge>
-                    </button>
-                  </TableCell>
-                  <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{formatDate(form.createdAt)}</TableCell>
-                  <TableCell className="text-left">
-                    <FormSparkline formId={form.id} testRuns={testRuns} />
-                  </TableCell>
-                  <TableCell className="text-right text-sm font-medium">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
+                  <TableRow
+                    key={form.id}
+                    tabIndex={0}
+                    role="button"
+                    className={`cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset ${isChecked ? "bg-blue-50 dark:bg-blue-900/20" : ""}`}
+                    onClick={() => handleEditForm(form)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleEditForm(form);
+                      }
+                    }}>
+                    <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={isChecked}
+                        onCheckedChange={() => toggleItem(form.id)}
+                        aria-label={`${form.name} auswählen`}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2.5">
+                        {renderIcon(form.icon || "FileText", 16, "text-neutral-500 dark:text-neutral-400")}
+                        <div className="font-medium text-sm text-neutral-900 dark:text-white">{form.name}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <a
+                        href={form.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-600 dark:text-blue-400 underline hover:text-blue-900 dark:hover:text-blue-300 text-[10px] font-mono break-all truncate">
+                        {form.url}
+                      </a>
+                    </TableCell>
+                    <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">
+                      {form.hash || "—"}
+                    </TableCell>
+                    <TableCell>
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          window.dispatchEvent(new CustomEvent("openTestDialog", { 
-                            detail: { formIds: [form.id] } 
-                          }));
+                          toggleFormActive(form.id);
                         }}
-                        variant="ghost"
-                        size="sm"
-                        disabled={isLoading}
-                        title="Test starten">
-                        <Play
-                          size={16}
-                          className="text-green-600 dark:text-green-400"
-                        />
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditForm(form);
-                        }}
-                        variant="ghost"
-                        size="sm"
-                        disabled={isLoading}
-                        title={t("button.edit")}>
-                        <Edit2
-                          size={16}
-                          className="text-blue-600 dark:text-blue-400"
-                        />
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteForm(form);
-                        }}
-                        variant="ghost"
-                        size="sm"
-                        disabled={isLoading}
-                        title="Löschen">
-                        <Trash2
-                          size={16}
-                          className="text-red-600 dark:text-red-400"
-                        />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
+                        className="border-none bg-transparent cursor-pointer p-0"
+                        disabled={isLoading}>
+                        <StatusBadge status={form.isActive ? "active" : "inactive"}>{form.isActive ? t("forms.active") : t("forms.inactive")}</StatusBadge>
+                      </button>
+                    </TableCell>
+                    <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{formatDate(form.createdAt)}</TableCell>
+                    <TableCell className="text-left">
+                      <FormSparkline formId={form.id} testRuns={testRuns} />
+                    </TableCell>
+                    <TableCell className="text-right text-sm font-medium">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.dispatchEvent(new CustomEvent("openTestDialog", {
+                              detail: { formIds: [form.id] }
+                            }));
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          title="Test starten">
+                          <Play
+                            size={16}
+                            className="text-green-600 dark:text-green-400"
+                          />
+                        </Button>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditForm(form);
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          title={t("button.edit")}>
+                          <Edit2
+                            size={16}
+                            className="text-blue-600 dark:text-blue-400"
+                          />
+                        </Button>
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteForm(form);
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          disabled={isLoading}
+                          title="Löschen">
+                          <Trash2
+                            size={16}
+                            className="text-red-600 dark:text-red-400"
+                          />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
               })}
             </TableBody>
           </Table>
