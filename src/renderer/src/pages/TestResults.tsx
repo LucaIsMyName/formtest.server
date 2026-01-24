@@ -58,11 +58,11 @@ const formatElapsedTime = (seconds: number): string => {
 const formatInterval = (interval: string | undefined): string => {
   if (!interval) return "-";
   switch (interval) {
-    case "0": return "Einmalig";
-    case "1": return "Monatlich";
-    case "3": return "Quartal";
-    case "6": return "Halbjahr";
-    case "12": return "Jährlich";
+    case "0": return t("settings.once");
+    case "1": return t("settings.monthly");
+    case "3": return t("settings.quarterly");
+    case "6": return t("settings.halfYearly");
+    case "12": return t("settings.yearly");
     default: return interval;
   }
 };
@@ -189,7 +189,8 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   const formatTimestamp = (timestamp?: string) => {
     if (!timestamp) return null;
     try {
-      return new Date(timestamp).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      const locale = CONFIG.language === "en" ? "en-US" : "de-DE";
+      return new Date(timestamp).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     } catch {
       return timestamp;
     }
@@ -243,10 +244,10 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
   // Add final status step
   const finalStep: TestStep = {
     id: "final",
-    name: status === "SUCCESS" ? "Test erfolgreich abgeschlossen" : status === "FAILURE" ? "Test fehlgeschlagen" : status === "SKIPPED" ? "Test übersprungen" : status === "STOPPED" ? "Test gestoppt" : "Test läuft",
+    name: status === "SUCCESS" ? t("testResults.success") : status === "FAILURE" ? t("testResults.failure") : status === "SKIPPED" ? t("testResults.skipped") : status === "STOPPED" ? t("testResults.stopped") : t("testResults.running"),
     status: status === "SUCCESS" ? "success" : status === "FAILURE" ? "error" : status === "SKIPPED" ? "skipped" : status === "STOPPED" ? "stopped" : "running",
     startTime: new Date().toISOString(),
-    message: status === "SUCCESS" ? "Alle Schritte erfolgreich durchgeführt" : status === "FAILURE" ? "Test mit Fehlern beendet" : undefined,
+    message: status === "SUCCESS" ? t("testResults.successMessage") : status === "FAILURE" ? t("testResults.failureMessage") : undefined,
   };
 
   const allSteps = filteredSteps.length > 0 ? [...filteredSteps, finalStep] : [finalStep];
@@ -1160,11 +1161,11 @@ const TestResults: React.FC = () => {
     { key: "form", label: "Formular", defaultSelected: true },
     { key: "paymentMethod", label: "Bezahlmethode", defaultSelected: true },
     { key: "status", label: "Status", defaultSelected: true },
-    { key: "duration", label: "Dauer", defaultSelected: true },
-    { key: "error", label: "Fehler", defaultSelected: true },
-    { key: "scheduled", label: "Geplant", defaultSelected: true },
-    { key: "tags", label: "Tags", defaultSelected: true },
-    { key: "notes", label: "Notizen", defaultSelected: false },
+    { key: "duration", label: t("testResults.duration"), defaultSelected: true },
+    { key: "error", label: t("testResults.error"), defaultSelected: true },
+    { key: "scheduled", label: t("testResults.scheduled"), defaultSelected: true },
+    { key: "tags", label: t("testResults.tags"), defaultSelected: true },
+    { key: "notes", label: t("testResults.notesLabel"), defaultSelected: false },
     { key: "date", label: "Datum", defaultSelected: true },
     { key: "amount", label: "Betrag", defaultSelected: false },
     { key: "interval", label: "Intervall", defaultSelected: false },
@@ -1432,8 +1433,8 @@ const TestResults: React.FC = () => {
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-              Laufende Tests ({runningTests.length}
-              {queuedTests.length > 0 ? ` + ${queuedTests.length} ${t(false, "in Queue", "in Warteschlange")}` : ""})
+              {t("testResults.runningTests")} ({runningTests.length}
+              {queuedTests.length > 0 ? ` + ${queuedTests.length} ${t("testResults.inQueue")}` : ""})
             </h2>
             <TestQueueStatus onRefresh={loadTestRuns} />
           </div>
@@ -1446,8 +1447,8 @@ const TestResults: React.FC = () => {
                     <TableHead className="px-4 w-[100px]">{t(false, "Actions", "Aktionen")}</TableHead>
                     <TableHead className="px-4 min-w-[180px] max-w-[200px]">{t(false, "Form", "Formular")}</TableHead>
                     <TableHead className="px-4 min-w-[200px] max-w-[220px]">{t(false, "Payment Method", "Bezahlmethode")}</TableHead>
-                    <TableHead className="px-4 w-[90px]">{t(false, "Status", "Status")}</TableHead>
-                    <TableHead className="px-4 w-[70px] text-left"><span className="sr-only">{t(false, "Scheduled", "Geplant")}</span><Bot size={14} className="inline" /></TableHead>
+                    <TableHead className="px-4 w-[90px]">{t("testResults.status")}</TableHead>
+                    <TableHead className="px-4 w-[70px] text-left"><span className="sr-only">{t("testResults.scheduled")}</span><Bot size={14} className="inline" /></TableHead>
                     <TableHead className="px-4 w-[80px]">{t(false, "Amount", "Betrag")}</TableHead>
                     <TableHead className="px-4 w-[100px]">{t(false, "Interval", "Intervall")}</TableHead>
                     <TableHead className="px-4 w-[70px]">{t(false, "Duration", "Dauer")}</TableHead>
@@ -1485,7 +1486,7 @@ const TestResults: React.FC = () => {
                           <Checkbox
                             checked={isChecked}
                             onCheckedChange={() => toggleItem(testRun.id)}
-                            aria-label={`${testRun.formName} ${t(false, "select", "auswählen")}`}
+                            aria-label={`${testRun.formName} ${t("testResults.select")}`}
                           />
                         </TableCell>
                         <TableCell className="px-4">
@@ -1509,7 +1510,7 @@ const TestResults: React.FC = () => {
                               variant="ghost"
                               size="sm"
                               className="text-red-600 dark:text-red-400"
-                              title={t(false, "Stop Test", "Test stoppen")}>
+                              title={t("testResults.stopTest")}>
                               <Square
                                 size={14}
                                 fill="currentColor"
@@ -1663,7 +1664,7 @@ const TestResults: React.FC = () => {
                   <div className="absolute top-full left-0 mt-1 z-50 w-48 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
                     <div className="space-y-0.5">
                       <button
-                        title={t(false, "All Statuses", "Alle Status")}
+                        title={t("testResults.allStatuses")}
                         onClick={() => {
                           setStatusFilter(undefined);
                           setShowStatusPopover(false);
@@ -1696,7 +1697,7 @@ const TestResults: React.FC = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                title={t(false, "Filter by Tags", "Nach Tags filtern")}
+                title={t("testResults.filterByTags")}
                 onClick={() => setShowTagPopover(!showTagPopover)}
                 className="h-7 px-2.5 text-xs gap-1.5 flex-shrink-0">
                 <Tag size={12} />
@@ -1768,7 +1769,7 @@ const TestResults: React.FC = () => {
           <div className="flex items-center gap-1.5 flex-shrink-0 px-1.5">
             <Checkbox
               id="show-archived"
-              title={t(false, "Show Archived", "Archivierte anzeigen")}
+              title={t("testResults.showArchived")}
               checked={showArchived || false}
               onCheckedChange={(checked) => setShowArchived(checked === true)}
               className="h-3.5 w-3.5"
@@ -1776,7 +1777,7 @@ const TestResults: React.FC = () => {
             <label
               htmlFor="show-archived"
               className="text-xs text-neutral-600 dark:text-neutral-400 cursor-pointer whitespace-nowrap">
-              {t(false, "Archived", "Archiviert")}
+              {t("testResults.archived")}
             </label>
           </div>
 
@@ -1843,7 +1844,7 @@ const TestResults: React.FC = () => {
                           <span>{preset.name}</span>
                         </button>
                         <Button
-                          title={t(false, "Delete Preset", "Vorlage löschen")}
+                          title={t("testResults.deletePreset")}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDeletePreset(preset.id);
@@ -1878,17 +1879,17 @@ const TestResults: React.FC = () => {
             <Button
               variant="ghost"
               size="sm"
-              title={t(false, "Group by", "Gruppieren")}
+              title={t("testResults.groupBy")}
               onClick={() => setShowGroupPopover(!showGroupPopover)}
               className="h-7 px-2.5 text-xs gap-1.5 flex-shrink-0">
               <Layers size={12} />
               {groupBy.length === 0
-                ? "Gruppieren"
+                ? t("testResults.groupByLabel")
                 : groupBy.map(g => {
                   switch (g) {
-                    case 'form': return 'Formular';
-                    case 'paymentMethod': return 'Bezahlmethode';
-                    case 'date': return 'Datum';
+                    case 'form': return t("testResults.formLabel");
+                    case 'paymentMethod': return t("testResults.paymentMethodLabel");
+                    case 'date': return t("testResults.dateLabel");
                     default: return '';
                   }
                 }).join(' > ')}
@@ -1903,7 +1904,7 @@ const TestResults: React.FC = () => {
                 <div className="absolute top-full right-0 mt-1 z-50 w-56 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
                   <div className="space-y-0.5">
                     <button
-                      title={t(false, "No Grouping", "Keine Gruppierung")}
+                      title={t("testResults.noGrouping")}
                       onClick={() => {
                         setGroupBy([]);
                         setShowGroupPopover(false);
@@ -1912,76 +1913,68 @@ const TestResults: React.FC = () => {
                       Keine Gruppierung
                     </button>
                     <button
-                      title={t(false, "Group by Form", "Nach Formular gruppieren")}
+                      title={t("testResults.groupByForm")}
                       onClick={() => {
                         setGroupBy(['form']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      {t(false, "Group by Form", "Nach Formular")}
+                      {t("testResults.groupByForm")}
                     </button>
                     <button
-                      title={t(false, "Group by Payment Method", "Nach Bezahlmethode gruppieren")}
+                      title={t("testResults.groupByPaymentMethod")}
                       onClick={() => {
                         setGroupBy(['paymentMethod']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'paymentMethod' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      t(false, "Group by Payment Method", "Nach Bezahlmethoden")
+                      {t("testResults.groupByPaymentMethod")}
                     </button>
                     <button
-                      title={t(false, "Group by Date", "Nach Datum gruppieren")}
+                      title={t("testResults.groupByDate")}
                       onClick={() => {
                         setGroupBy(['date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      {t(false, "Group by Date", "Nach Datum")}
+                      {t("testResults.groupByDate")}
                     </button>
                     <div className="border-t border-neutral-200 dark:border-neutral-700 my-1" />
                     <button
-                      title={t(false, "Group by Form and Payment Method", "Nach Formular und Bezahlmethode gruppieren")}
+                      title={t("testResults.groupByFormPaymentMethod")}
                       onClick={() => {
                         setGroupBy(['form', 'paymentMethod']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form,paymentMethod' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      {
-                        t(false, "Group by Form > Payment Method", "Nach Formular > Bezahlmethode")
-                      }
+                      {t("testResults.groupByFormPaymentMethod")}
                     </button>
                     <button
-                      title={t(false, "Group by Form > Date", "Nach Formular > Datum gruppieren")}
+                      title={t("testResults.groupByFormDate")}
                       onClick={() => {
                         setGroupBy(['form', 'date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form,date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      {
-                        t(false, "Group by Form > Date", "Nach Formular > Datum")
-                      }
+                      {t("testResults.groupByFormDate")}
                     </button>
                     <button
-                      title={t(false, "Group by Payment Method > Date", "Nach Bezahlmethode > Datum gruppieren")}
+                      title={t("testResults.groupByPaymentMethodDate")}
                       onClick={() => {
                         setGroupBy(['paymentMethod', 'date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'paymentMethod,date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      {
-                        t(false, "Group by Payment Method > Date", "Nach Bezahlmethode > Datum")
-                      }
+                      {t("testResults.groupByPaymentMethodDate")}
                     </button>
                     <button
-                      title={t(false, "Group by Form > Payment Method > Date", "Nach Formular > Bezahlmethode > Datum gruppieren")}
+                      title={t("testResults.groupByFormPaymentMethodDate")}
                       onClick={() => {
                         setGroupBy(['form', 'paymentMethod', 'date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form,paymentMethod,date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      {
-                        t(false, "Group by Form > Payment Method > Date", "Nach Formular > Bezahlmethode > Datum")
-                      }
+                      {t("testResults.groupByFormPaymentMethodDate")}
                     </button>
                   </div>
                 </div>
@@ -2016,7 +2009,7 @@ const TestResults: React.FC = () => {
                     ]
                     : [
                       {
-                        label: t(false, "Archive", "Archivieren"),
+                        label: t("testResults.archive"),
                         icon: <Archive size={14} />,
                         onClick: handleBulkArchive,
                         variant: "secondary" as const,
@@ -2065,24 +2058,24 @@ const TestResults: React.FC = () => {
                       className="px-4 min-w-[180px] max-w-[200px]"
                       sortDirection={getSortDirection("formName")}
                       onSort={() => requestSort("formName")}>
-                      {t(false, "Form", "Formular")}
+                      {t("testResults.form")}
                     </SortableTableHead>
                     <SortableTableHead
-                      aria-label={t(false, "Payment Method", "Bezahlmethode")}
+                      aria-label={t("testResults.paymentMethod")}
                       className="px-4 min-w-[200px] max-w-[220px]"
                       sortDirection={getSortDirection("paymentMethodName")}
                       onSort={() => requestSort("paymentMethodName")}>
-                      {t(false, "Payment Method", "Bezahlmethode")}
+                      {t("testResults.paymentMethod")}
                     </SortableTableHead>
                     <SortableTableHead
-                      aria-label={t(false, "Status", "Status")}
+                      aria-label={t("testResults.status")}
                       className="px-4 w-[90px]"
                       sortDirection={getSortDirection("status")}
                       onSort={() => requestSort("status")}>
-                      Status
+                      {t("testResults.status")}
                     </SortableTableHead>
                     <SortableTableHead
-                      aria-label={t(false, "Scheduled", "Geplant")}
+                      aria-label={t("testResults.scheduled")}
                       className="px-4 w-[70px] text-left justify-left"
                       sortDirection={getSortDirection("isScheduled")}
                       onSort={() => requestSort("isScheduled")}>
@@ -2199,7 +2192,7 @@ const TestResults: React.FC = () => {
                                       variant="ghost"
                                       size="sm"
                                       className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
-                                      title="Löschen">
+                                      title={t("testResults.delete")}>
                                       <Trash2 size={16} />
                                     </Button>
                                   </div>
@@ -2271,7 +2264,7 @@ const TestResults: React.FC = () => {
                                       <button
                                         onClick={(e) => handleCopyUuid(e, testRun.uuid)}
                                         className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        title={t(false, "Copy UUID", "UUID kopieren")}>
+                                        title={t("testResults.copyUuid")}>
                                         <Copy size={10} />
                                       </button>
                                     )}
@@ -2310,7 +2303,7 @@ const TestResults: React.FC = () => {
                             <Checkbox
                               checked={isChecked}
                               onCheckedChange={() => toggleItem(testRun.id)}
-                              aria-label={`${testRun.formName} auswählen`}
+                              aria-label={`${testRun.formName} ${t("testResults.select")}`}
                             />
                           </TableCell>
                           <TableCell className="px-4 ">
@@ -2406,7 +2399,7 @@ const TestResults: React.FC = () => {
                                 <button
                                   onClick={(e) => handleCopyUuid(e, testRun.uuid)}
                                   className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  title="ID kopieren">
+                                  title={t(false, "Copy UUID", "UUID kopieren")}>
                                   <Copy size={10} />
                                 </button>
                               )}
@@ -2453,7 +2446,11 @@ const TestResults: React.FC = () => {
                     size="sm"
                     className="gap-1.5 !bg-purple-600 !text-white hover:!bg-purple-700 !border-purple-600">
                     <Square size={14} />
-                    {selectedTestRunData.status === "QUEUED" ? "Aus Warteschlange entfernen" : "Test stoppen"}
+                    {selectedTestRunData.status === "QUEUED" ? 
+                    t("testResults.removeFromQueue")
+                    : 
+                    t("testResults.stopTest")
+                    }
                   </Button>
                 ) : (
                   <>
@@ -2754,7 +2751,7 @@ const TestResults: React.FC = () => {
                   <textarea
                     value={notes}
                     onChange={(e) => handleNotesChange(e.target.value)}
-                    placeholder="Notizen zu diesen Test hinzufügen"
+                    placeholder={t("testResults.addNotes")}
                     className="w-full h-24 px-3 py-2 text-sm bg-neutral-50 dark:bg-neutral-900 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700 rounded-md resize-none !focus:outline-0 !focus:ring-0 !focus:ring-offset-0 !focus:ring-blue-500 dark:focus:ring-blue-400"
                   />
                 </div>
@@ -2793,9 +2790,9 @@ const TestResults: React.FC = () => {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDelete}
-        title="Tests löschen"
-        message={`Sind Sie sicher, dass Sie ${selectedCount} Test(s) löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.`}
-        itemName={`${selectedCount} ausgewählte Tests`}
+        title={t("testResults.deleteTestsTitle")}
+        message={t("testResults.deleteTestsMessage").replace("{count}", String(selectedCount))}
+        itemName={`${selectedCount} ${t("testResults.selectedTests")}`}
         isLoading={isBulkDeleting}
       />
 
