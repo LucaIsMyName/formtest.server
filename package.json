@@ -1,8 +1,30 @@
 {
   "name": "formtest-server",
-  "version": "1.0.88",
+  "version": "1.0.89",
   "description": "Donation form testing application with Electron, Vite, TypeScript, and Playwright",
   "main": "out/main/index.js",
+  "author": "LucaIsMyName",
+  "github": "https://github.com/LucaIsMyName/FormTest.Server",
+  "homepage": "https://lucamack.at",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LucaIsMyName/formtest.server.git"
+  },
+  "keywords": [
+    "electron",
+    "vite",
+    "typescript",
+    "donation",
+    "form-testing",
+    "playwright",
+    "payment testing",
+    "form testing",
+    "donation form testing"
+  ],
+  "bugs": {
+    "url": "https://github.com/LucaIsMyName/formtest.server/issues"
+  },
+  "license": "MIT",
   "scripts": {
     "dev": "npm run generate-docs && electron-vite dev",
     "build": "npm run generate-docs && electron-vite build && npm run copy-runner",
@@ -28,16 +50,6 @@
     "test:e2e:headed": "npm run build && playwright test --config=e2e/playwright.config.ts --headed",
     "rebuild:sqlite": "electron-rebuild -f -w better-sqlite3"
   },
-  "keywords": [
-    "electron",
-    "vite",
-    "typescript",
-    "donation",
-    "form-testing",
-    "playwright"
-  ],
-  "author": "Luca",
-  "license": "MIT",
   "devDependencies": {
     "@electron/rebuild": "^3.7.2",
     "@faker-js/faker": "^10.1.0",
