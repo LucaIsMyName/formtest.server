@@ -1284,7 +1284,7 @@ const Dashboard: React.FC = () => {
                 <XAxis
                   dataKey="date"
                   stroke="#9ca3af"
-                  tick={{ fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+                  tick={{ fontSize: 9, fontFamily: "Geist Mono, monospace" }}
                   tickLine={{ stroke: "#d1d5db" }}
                   angle={-45}
                   textAnchor="end"
@@ -1293,7 +1293,7 @@ const Dashboard: React.FC = () => {
                 />
                 <YAxis
                   stroke="#9ca3af"
-                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                   tickLine={{ stroke: "#d1d5db" }}
                 />
                 <Tooltip content={<CustomTooltip />} />
@@ -1348,7 +1348,7 @@ const Dashboard: React.FC = () => {
                           fill="#9ca3af"
                           textAnchor={x > Number(cx) ? "start" : "end"}
                           dominantBaseline="central"
-                          style={{ fontSize: "10px", fontFamily: "JetBrains Mono, monospace" }}>
+                          style={{ fontSize: "10px", fontFamily: "Geist Mono, monospace" }}>
                           {`${name}: ${((percent || 0) * 100).toFixed(0)}%`}
                         </text>
                       );
@@ -1383,12 +1383,12 @@ const Dashboard: React.FC = () => {
                   <XAxis
                     dataKey="name"
                     stroke="#9ca3af"
-                    tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                    tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                     tickLine={{ stroke: "#d1d5db" }}
                   />
                   <YAxis
                     stroke="#9ca3af"
-                    tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                    tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                     tickLine={{ stroke: "#d1d5db" }}
                   />
                   <Tooltip content={<CustomTooltip />} />
@@ -1430,7 +1430,7 @@ const Dashboard: React.FC = () => {
                     <XAxis
                       dataKey="date"
                       stroke="#9ca3af"
-                      tick={{ fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+                      tick={{ fontSize: 9, fontFamily: "Geist Mono, monospace" }}
                       tickLine={{ stroke: "#d1d5db" }}
                       angle={-45}
                       textAnchor="end"
@@ -1439,7 +1439,7 @@ const Dashboard: React.FC = () => {
                     <YAxis
                       domain={[0, 100]}
                       stroke="#9ca3af"
-                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                       tickLine={{ stroke: "#d1d5db" }}
                       tickFormatter={(value) => `${value}%`}
                     />
@@ -1522,7 +1522,7 @@ const Dashboard: React.FC = () => {
                       <XAxis
                         dataKey="name"
                         stroke="#9ca3af"
-                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                         angle={-45}
                         textAnchor="end"
@@ -1530,7 +1530,7 @@ const Dashboard: React.FC = () => {
                       />
                       <YAxis
                         stroke="#9ca3af"
-                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                         tickFormatter={(value) => `${value}s`}
                       />
@@ -1579,7 +1579,7 @@ const Dashboard: React.FC = () => {
                         dataKey="x"
                         name={t("dashboard.form")}
                         stroke="#9ca3af"
-                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                         domain={[-0.5, scatterData.formLabels.length - 0.5]}
                         ticks={scatterData.formLabels.map((_, i) => i)}
@@ -1594,7 +1594,7 @@ const Dashboard: React.FC = () => {
                         dataKey="y"
                         name="Bezahlmethode"
                         stroke="#9ca3af"
-                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                         domain={[-0.5, scatterData.paymentMethodLabels.length - 0.5]}
                         ticks={scatterData.paymentMethodLabels.map((_, i) => i)}
@@ -1734,7 +1734,7 @@ const Dashboard: React.FC = () => {
                       <XAxis
                         dataKey="date"
                         stroke="#9ca3af"
-                        tick={{ fontSize: 9, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 9, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                         angle={-45}
                         textAnchor="end"
@@ -1743,7 +1743,7 @@ const Dashboard: React.FC = () => {
                       <YAxis
                         domain={[0, 100]}
                         stroke="#9ca3af"
-                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                         tickFormatter={(value) => `${value}%`}
                       />
@@ -1778,7 +1778,7 @@ const Dashboard: React.FC = () => {
                       <XAxis
                         dataKey="name"
                         stroke="#9ca3af"
-                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                         angle={-45}
                         textAnchor="end"
@@ -1786,7 +1786,7 @@ const Dashboard: React.FC = () => {
                       />
                       <YAxis
                         stroke="#9ca3af"
-                        tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                        tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
                       />
                       <Tooltip
@@ -1819,7 +1819,7 @@ const Dashboard: React.FC = () => {
                     <XAxis
                       dataKey="name"
                       stroke="#9ca3af"
-                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                       tickLine={{ stroke: "#d1d5db" }}
                       angle={-45}
                       textAnchor="end"
@@ -1827,7 +1827,7 @@ const Dashboard: React.FC = () => {
                     />
                     <YAxis
                       stroke="#9ca3af"
-                      tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                      tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                       tickLine={{ stroke: "#d1d5db" }}
                       tickFormatter={(value) => `${value}s`}
                     />
@@ -1860,13 +1860,13 @@ const Dashboard: React.FC = () => {
                 <XAxis
                   dataKey="date"
                   stroke="#9ca3af"
-                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                   tickLine={{ stroke: "#d1d5db" }}
                 />
                 <YAxis
                   domain={[0, 100]}
                   stroke="#9ca3af"
-                  tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+                  tick={{ fontSize: 10, fontFamily: "Geist Mono, monospace" }}
                   tickLine={{ stroke: "#d1d5db" }}
                   tickFormatter={(value) => `${value}%`}
                 />

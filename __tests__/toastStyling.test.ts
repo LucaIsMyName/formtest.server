@@ -172,7 +172,7 @@ describe('Toast Styling and Lazy Loading', () => {
   describe('App Design Integration', () => {
     it('should match app font family', () => {
       const toastFont = 'system-ui, -apple-system, sans-serif';
-      const appFont = 'Google Sans Flex';
+      const appFont = 'Geist';
 
       // Toast uses system font for consistency
       expect(toastFont).toContain('system-ui');
