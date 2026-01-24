@@ -5,22 +5,26 @@ import { Skeleton } from "./ui/Skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
 import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
 import type { GlobalFieldDefaults } from "../../../common/types";
+import { t } from "../data/dictionary";
 
-const FIELD_LABELS: Record<keyof GlobalFieldDefaults, string> = {
-  firstName: "Vorname",
-  lastName: "Nachname",
-  email: "E-Mail",
-  street: "Straße",
-  zip: "PLZ",
-  city: "Stadt",
-  country: "Land (ISO Code)",
-  phone: "Telefon",
-  birthday: "Geburtstag",
-  title: "Titel",
-  company: "Firma",
-  salutation: "Anrede",
-  iban: "IBAN",
-  accountHolder: "Kontoinhaber",
+const getFieldLabel = (field: keyof GlobalFieldDefaults): string => {
+  const labelMap: Record<keyof GlobalFieldDefaults, string> = {
+    firstName: t("field.firstName"),
+    lastName: t("field.lastName"),
+    email: t("field.email"),
+    street: t("field.street"),
+    zip: t("field.zip"),
+    city: t("field.city"),
+    country: t("field.country"),
+    phone: t("field.phone"),
+    birthday: t("field.birthday"),
+    title: t("field.title"),
+    company: t("field.company"),
+    salutation: t("field.salutation"),
+    iban: t("field.iban"),
+    accountHolder: t("field.accountHolder"),
+  };
+  return labelMap[field];
 };
 
 const FIELD_ORDER: (keyof GlobalFieldDefaults)[] = [
@@ -128,13 +132,13 @@ const GlobalDefaultsEditor: React.FC = () => {
           value={value || "__faker__"}
           onValueChange={(v) => updateFieldDefault(field, v === "__faker__" ? "" : v)}>
           <SelectTrigger className="h-7 text-xs w-full">
-            <SelectValue placeholder="Faker.js" />
+            <SelectValue placeholder={t("placeholder.faker")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="__faker__">Faker.js</SelectItem>
-            <SelectItem value="Mr.">Herr</SelectItem>
-            <SelectItem value="Mrs.">Frau</SelectItem>
-            <SelectItem value="Mx.">Divers</SelectItem>
+            <SelectItem value="__faker__">{t("placeholder.faker")}</SelectItem>
+            <SelectItem value="Mr.">{t("salutation.mr")}</SelectItem>
+            <SelectItem value="Mrs.">{t("salutation.mrs")}</SelectItem>
+            <SelectItem value="Mx.">{t("salutation.mx")}</SelectItem>
           </SelectContent>
         </Select>
       );
@@ -146,7 +150,7 @@ const GlobalDefaultsEditor: React.FC = () => {
         <Input
           value={value}
           onChange={(e) => updateFieldDefault(field, e.target.value)}
-          placeholder="z.B. AT89370400440532013000"
+          placeholder={t("placeholder.iban")}
           numberType="IBAN"
           className="h-7 text-xs w-full"
         />
@@ -154,10 +158,10 @@ const GlobalDefaultsEditor: React.FC = () => {
     }
 
     // Default text input
-    const placeholder = field === "country" ? "z.B. AT, DE" 
-      : field === "birthday" ? "z.B. 01.01.1980"
-      : field === "title" ? "z.B. Dr., Mag."
-      : "Faker.js";
+    const placeholder = field === "country" ? t("placeholder.country")
+      : field === "birthday" ? t("placeholder.birthday")
+      : field === "title" ? t("placeholder.title")
+      : t("placeholder.faker");
 
     return (
       <Input
@@ -180,21 +184,21 @@ const GlobalDefaultsEditor: React.FC = () => {
       <div className="flex items-center justify-between">
         <div className="sr-only">
           <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            Globale Standardwerte
+            {t("settings.globalDefaults")}
           </h3>
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0">
-            Diese Werte überschreiben Faker.js, werden aber von Form-spezifischen Mappings überschrieben.
+            {t("settings.globalDefaultsDescription")}
           </p>
         </div>
         {/* Save status indicator */}
         <div className="flex items-center gap-2">
           {saveStatus === "saving" && (
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">Speichern...</span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">{t("button.saving")}</span>
           )}
           {saveStatus === "saved" && (
             <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
               <Check size={12} />
-              Gespeichert
+              {t("button.saved")}
             </span>
           )}
         </div>
@@ -206,7 +210,7 @@ const GlobalDefaultsEditor: React.FC = () => {
           {FIELD_ORDER.map(field => (
             <TableRow key={field}>
               <TableCell className="w-40 !px-4 text-xs text-neutral-600 dark:text-neutral-400 font-medium pl-0">
-                {FIELD_LABELS[field]}
+                {getFieldLabel(field)}
               </TableCell>
               <TableCell>
                 {renderFieldInput(field)}

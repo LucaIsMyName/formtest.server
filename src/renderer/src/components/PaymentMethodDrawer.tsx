@@ -14,6 +14,7 @@ import { StatusBadge } from "./ui/Badge";
 import { Trash2, Play, BarChart3 } from "lucide-react";
 import { CONFIG } from "@/app.config";
 import { formatDate } from "../utils/formatters";
+import { t } from "../data/dictionary";
 
 interface PaymentMethodDrawerProps {
   isOpen: boolean;
@@ -289,7 +290,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               <SelectTrigger
                 id="bankCode"
                 className={errors.bankCode ? "border-red-500 focus:ring-red-500" : ""}>
-                <SelectValue placeholder="Bank auswählen" />
+                <SelectValue placeholder={t("paymentMethods.selectBank")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="BAWAATWW">Bank Austria</SelectItem>
@@ -512,7 +513,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               size="md"
               isLoading={isLoading}
               disabled={isLoading}>
-              {isLoading ? "Speichern..." : editMethod ? "Bezahlmethode aktualisieren" : "Bezahlmethode hinzufügen"}
+              {isLoading ? t("button.saving") : editMethod ? t("paymentMethods.update") : t("paymentMethods.add")}
             </Button>
           </DrawerFooter>
         </form>

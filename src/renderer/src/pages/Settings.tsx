@@ -18,6 +18,7 @@ import { useTagsStore } from "../store/useTagsStore";
 import { Badge } from "../components/ui/Badge";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/Dialog";
+import { t } from "../data/dictionary";
 
 // Setting item interface
 interface SettingItem {
@@ -70,6 +71,7 @@ const Settings: React.FC = () => {
   const [headlessMode, setHeadlessMode] = useState("true");
   const [slowMotion, setSlowMotion] = useState("0");
   const [theme, setTheme] = useState("system");
+  const [language, setLanguage] = useState<"en" | "de">("de");
   const [retentionDays, setRetentionDays] = useState("365");
   const [isCleaningUp, setIsCleaningUp] = useState(false);
   const [cleanupResult, setCleanupResult] = useState<{ deleted: number } | null>(null);
@@ -169,7 +171,7 @@ const Settings: React.FC = () => {
   };
 
   const handleDeleteTag = async (id: number) => {
-    if (confirm("Möchten Sie diesen Tag wirklich löschen? Tests mit diesem Tag behalten den Tag, aber er wird nicht mehr in der Liste angezeigt.")) {
+    if (confirm(t("settings.deleteTagConfirm"))) {
       await deleteTag(id);
     }
   };
@@ -244,6 +246,16 @@ const Settings: React.FC = () => {
     }
   };
 
+  // Load language from settings
+  useEffect(() => {
+    const languageSetting = settings.find(s => s.key === "language");
+    if (languageSetting) {
+      const lang = languageSetting.value === "en" ? "en" : "de";
+      setLanguage(lang);
+      CONFIG.language = lang;
+    }
+  }, [settings]);
+
   // Update local state when settings load
   useEffect(() => {
     settings.forEach((setting) => {
@@ -262,6 +274,11 @@ const Settings: React.FC = () => {
           break;
         case "slow_motion":
           setSlowMotion(setting.value);
+          break;
+        case "language":
+          const lang = setting.value === "en" ? "en" : "de";
+          setLanguage(lang);
+          CONFIG.language = lang;
           break;
         case "theme":
           setTheme(setting.value);
@@ -455,7 +472,7 @@ const Settings: React.FC = () => {
       return;
     }
     if (newPassword.length < 4) {
-      setPasswordMessage({ type: "error", message: "Passwort muss mindestens 4 Zeichen haben" });
+      setPasswordMessage({ type: "error", message: t("settings.passwordMinLength") });
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -487,7 +504,7 @@ const Settings: React.FC = () => {
 
   const handleDisablePassword = useCallback(async () => {
     if (!currentPassword) {
-      setPasswordMessage({ type: "error", message: "Bitte aktuelles Passwort eingeben" });
+      setPasswordMessage({ type: "error", message: t("settings.currentPasswordRequired") });
       return;
     }
 
@@ -497,12 +514,12 @@ const Settings: React.FC = () => {
       if (result.success) {
         setPasswordEnabled(false);
         setCurrentPassword("");
-        setPasswordMessage({ type: "success", message: "Master-Passwort deaktiviert" });
+        setPasswordMessage({ type: "success", message: t("settings.passwordDisabledSuccess") });
       } else {
-        setPasswordMessage({ type: "error", message: result.error || "Falsches Passwort" });
+        setPasswordMessage({ type: "error", message: result.error || t("settings.wrongPassword") });
       }
     } catch (error) {
-      setPasswordMessage({ type: "error", message: "Unerwarteter Fehler" });
+      setPasswordMessage({ type: "error", message: t("error.unexpected") });
     } finally {
       setIsSettingPassword(false);
       if (passwordMessageTimeoutRef.current) {
@@ -516,90 +533,102 @@ const Settings: React.FC = () => {
   const settingsItems: SettingItem[] = useMemo(
     () => [
       // Test Settings
-      { id: "donation_amount", category: "test", name: "Spendenbetrag (EUR)", description: "Standard-Spendenbetrag für Tests", type: "input", value: donationAmount },
+      { id: "donation_amount", category: "test", name: t("settings.donationAmount"), description: t("settings.donationAmountDescription"), type: "input", value: donationAmount },
       {
         id: "donation_interval",
         category: "test",
-        name: "Spendenintervall",
-        description: "Standard-Intervall für Tests",
+        name: t("settings.interval"),
+        description: t("settings.intervalDescription"),
         type: "select",
         value: donationInterval,
         options: [
-          { value: "0", label: "Einmalig" },
-          { value: "1", label: "Monatlich" },
-          { value: "3", label: "Vierteljährlich" },
-          { value: "12", label: "Jährlich" },
+          { value: "0", label: t("settings.once") },
+          { value: "1", label: t("settings.monthly") },
+          { value: "3", label: t("settings.quarterly") },
+          { value: "12", label: t("settings.yearly") },
         ],
       },
       {
         id: "headless_mode",
         category: "test",
-        name: "Headless-Modus",
-        description: "Browser ohne sichtbares Fenster",
+        name: t("settings.headlessMode"),
+        description: t("settings.headlessModeDescription"),
         type: "select",
         value: headlessMode,
         options: [
-          { value: "true", label: "Aktiviert" },
-          { value: "false", label: "Deaktiviert" },
+          { value: "true", label: t("settings.enabled") },
+          { value: "false", label: t("settings.disabled") },
         ],
       },
       {
         id: "slow_motion",
         category: "test",
-        name: "Slow Motion",
-        description: "Verzögerung zwischen Aktionen (Debugging)",
+        name: t("settings.slowMotion"),
+        description: t("settings.slowMotionDescription"),
         type: "select",
         value: slowMotion,
         options: [
-          { value: "0", label: "Aus (Normal)" },
+          { value: "0", label: t("settings.off") },
           { value: "250", label: "250ms" },
           { value: "500", label: "500ms" },
           { value: "1000", label: "1000ms" },
           { value: "2000", label: "2000ms" },
         ],
       },
-      { id: "test_timeout", category: "test", name: "Test-Timeout (ms)", description: "Maximale Wartezeit für Operationen", type: "input", value: testTimeout },
+      { id: "test_timeout", category: "test", name: t("settings.testTimeout"), description: t("settings.testTimeoutDescription"), type: "input", value: testTimeout },
       // UI Settings
-      { id: "theme", category: "ui", name: "Theme", description: "Farbschema der Anwendung", type: "theme", value: theme },
+      {
+        id: "language",
+        category: "ui",
+        name: t("settings.language"),
+        description: t("settings.languageDescription"),
+        type: "select",
+        value: language,
+        options: [
+          { value: "de", label: t("settings.languageGerman") },
+          { value: "en", label: t("settings.languageEnglish") },
+        ],
+      },
+      { id: "theme", category: "ui", name: t("settings.theme"), description: t("settings.themeDescription"), type: "theme", value: theme },
       // Email Settings
-      { id: "email_enabled", category: "email", name: "E-Mail aktiviert", description: "Benachrichtigungen per E-Mail", type: "checkbox", value: String(emailEnabled) },
-      { id: "email_smtp_host", category: "email", name: "SMTP Server", description: "Hostname des SMTP-Servers", type: "input", value: emailSmtpHost, disabled: !emailEnabled },
-      { id: "email_smtp_port", category: "email", name: "SMTP Port", description: "Port des SMTP-Servers", type: "input", value: emailSmtpPort, disabled: !emailEnabled },
-      { id: "email_smtp_secure", category: "email", name: "SSL/TLS", description: "Sichere Verbindung verwenden", type: "checkbox", value: String(emailSmtpSecure), disabled: !emailEnabled },
-      { id: "email_smtp_user", category: "email", name: "SMTP Benutzer", description: "Benutzername für SMTP", type: "input", value: emailSmtpUser, disabled: !emailEnabled },
-      { id: "email_smtp_pass", category: "email", name: "SMTP Passwort", description: "Passwort für SMTP", type: "input", value: emailSmtpPass, disabled: !emailEnabled },
-      { id: "email_from_email", category: "email", name: "Absender E-Mail", description: "E-Mail-Adresse des Absenders", type: "input", value: emailFromEmail, disabled: !emailEnabled },
-      { id: "email_from_name", category: "email", name: "Absender Name", description: "Name des Absenders", type: "input", value: emailFromName, disabled: !emailEnabled },
-      { id: "email_to_email", category: "email", name: "Empfänger E-Mail", description: "E-Mail-Adresse des Empfängers", type: "input", value: emailToEmail, disabled: !emailEnabled },
-      { id: "email_notify_success", category: "email", name: "Bei Erfolg", description: "Bei erfolgreichen Tests benachrichtigen", type: "checkbox", value: String(emailNotifySuccess), disabled: !emailEnabled },
-      { id: "email_notify_failure", category: "email", name: "Bei Fehler", description: "Bei fehlgeschlagenen Tests benachrichtigen", type: "checkbox", value: String(emailNotifyFailure), disabled: !emailEnabled },
-      { id: "email_test", category: "email", name: "Test-E-Mail", description: "Konfiguration testen", type: "action", value: "", actionLabel: isSendingTestEmail ? "Sende..." : "Senden", action: handleSendTestEmail, actionVariant: "secondary", disabled: !emailEnabled || !emailSmtpHost || !emailToEmail },
+      { id: "email_enabled", category: "email", name: t("settings.emailEnabled"), description: t("settings.emailEnabledDescription"), type: "checkbox", value: String(emailEnabled) },
+      { id: "email_smtp_host", category: "email", name: t("settings.smtpHost"), description: t("settings.smtpHostDescription"), type: "input", value: emailSmtpHost, disabled: !emailEnabled },
+      { id: "email_smtp_port", category: "email", name: t("settings.smtpPort"), description: t("settings.smtpPortDescription"), type: "input", value: emailSmtpPort, disabled: !emailEnabled },
+      { id: "email_smtp_secure", category: "email", name: t("settings.smtpSecure"), description: t("settings.smtpSecureDescription"), type: "checkbox", value: String(emailSmtpSecure), disabled: !emailEnabled },
+      { id: "email_smtp_user", category: "email", name: t("settings.smtpUser"), description: t("settings.smtpUserDescription"), type: "input", value: emailSmtpUser, disabled: !emailEnabled },
+      { id: "email_smtp_pass", category: "email", name: t("settings.smtpPassword"), description: t("settings.smtpPasswordDescription"), type: "input", value: emailSmtpPass, disabled: !emailEnabled },
+      { id: "email_from_email", category: "email", name: t("settings.senderEmail"), description: t("settings.senderEmailDescription"), type: "input", value: emailFromEmail, disabled: !emailEnabled },
+      { id: "email_from_name", category: "email", name: t("settings.senderName"), description: t("settings.senderNameDescription"), type: "input", value: emailFromName, disabled: !emailEnabled },
+      { id: "email_to_email", category: "email", name: t("settings.recipientEmail"), description: t("settings.recipientEmailDescription"), type: "input", value: emailToEmail, disabled: !emailEnabled },
+      { id: "email_notify_success", category: "email", name: t("settings.notifyOnSuccess"), description: t("settings.notifyOnSuccessDescription"), type: "checkbox", value: String(emailNotifySuccess), disabled: !emailEnabled },
+      { id: "email_notify_failure", category: "email", name: t("settings.notifyOnFailure"), description: t("settings.notifyOnFailureDescription"), type: "checkbox", value: String(emailNotifyFailure), disabled: !emailEnabled },
+      { id: "email_test", category: "email", name: t("settings.testEmail"), description: t("settings.testEmailDescription"), type: "action", value: "", actionLabel: isSendingTestEmail ? t("settings.sending") : t("settings.send"), action: handleSendTestEmail, actionVariant: "secondary", disabled: !emailEnabled || !emailSmtpHost || !emailToEmail },
       // API Server
-      { id: "api_toggle", category: "api", name: "API Server", description: apiServerRunning ? `Läuft auf Port ${apiPort}` : "Server starten für externe Zugriffe (CI/CD)", type: "action", value: "", actionLabel: apiServerRunning ? "Stoppen" : "Starten", action: handleToggleApiServer, actionVariant: apiServerRunning ? "danger" : "primary" },
-      { id: "api_port", category: "api", name: "Port", description: "Port für den API Server (Standard: 3847)", type: "input", value: apiPort, disabled: apiServerRunning },
-      { id: "api_key", category: "api", name: "API Key", description: "Authentifizierungs-Key für API-Zugriffe", type: "api-key", value: apiKey },
+      { id: "api_toggle", category: "api", name: t("settings.apiServer"), description: apiServerRunning ? `${t("settings.apiServerRunning")} ${apiPort}` : t("settings.apiServerDescription"), type: "action", value: "", actionLabel: apiServerRunning ? t("button.stop") : t("button.start"), action: handleToggleApiServer, actionVariant: apiServerRunning ? "danger" : "primary" },
+      { id: "api_port", category: "api", name: t("settings.apiPort"), description: t("settings.apiPortDescription"), type: "input", value: apiPort, disabled: apiServerRunning },
+      { id: "api_key", category: "api", name: t("settings.apiKey"), description: t("settings.apiKeyDescription"), type: "api-key", value: apiKey },
       // Data Management
-      { id: "retention_days", category: "data", name: "Test-Aufbewahrung (Tage)", description: cleanupResult ? `${cleanupResult.deleted} alte Tests gelöscht` : "Testergebnisse älter als X Tage automatisch löschen (0=nie)", type: "input", value: retentionDays },
-      { id: "cleanup_now", category: "data", name: "Alte Tests bereinigen", description: "Jetzt alte Testergebnisse gemäß Aufbewahrungsfrist löschen", type: "action", value: "", actionLabel: isCleaningUp ? "Bereinige..." : "Jetzt bereinigen", action: handleCleanupOldTests, actionVariant: "secondary" },
-      { id: "data_export", category: "data", name: "Daten exportieren", description: "Formulare, Bezahlmethoden, Tests exportieren", type: "action", value: "", actionLabel: isExporting ? "Exportiere..." : "Exportieren", action: handleExport, actionVariant: "secondary" },
-      { id: "data_import", category: "data", name: "Daten importieren", description: "Daten aus Backup wiederherstellen", type: "action", value: "", actionLabel: isImporting ? "Importiere..." : "Importieren", action: handleImport, actionVariant: "secondary" },
-      { id: "delete_forms", category: "data", name: "Formulare löschen", description: "Alle Formulare und zugehörige Tests löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "forms", title: "Alle Formulare löschen", message: "Alle Formulare und zugehörige Tests werden gelöscht." }), actionVariant: "danger" },
-      { id: "delete_payments", category: "data", name: "Bezahlmethoden löschen", description: "Alle Bezahlmethoden löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "paymentMethods", title: "Alle Bezahlmethoden löschen", message: "Alle Bezahlmethoden werden gelöscht." }), actionVariant: "danger" },
-      { id: "delete_tests", category: "data", name: "Tests löschen", description: "Alle Testergebnisse löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "testRuns", title: "Alle Tests löschen", message: "Alle Testergebnisse werden gelöscht." }), actionVariant: "danger" },
-      { id: "delete_schedules", category: "data", name: "Zeitpläne löschen", description: "Alle Zeitpläne löschen", type: "action", value: "", actionLabel: "Löschen", action: () => setDeleteConfirmation({ type: "schedules", title: "Alle Zeitpläne löschen", message: "Alle Zeitpläne werden gelöscht." }), actionVariant: "danger" },
-      { id: "delete_all", category: "data", name: "Alle Daten löschen", description: "ALLE Daten unwiderruflich löschen", type: "action", value: "", actionLabel: "Alles löschen", action: () => setDeleteConfirmation({ type: "all", title: "Alle Daten löschen", message: "ALLE Daten (Formulare, Bezahlmethoden, Tests, Zeitpläne) werden gelöscht!" }), actionVariant: "danger" },
+      { id: "retention_days", category: "data", name: t("settings.retentionDays"), description: cleanupResult ? t("settings.cleanupResult").replace("{count}", String(cleanupResult.deleted)) : t("settings.retentionDaysDescription"), type: "input", value: retentionDays },
+      { id: "cleanup_now", category: "data", name: t("settings.cleanupNow"), description: t("settings.cleanupNowDescription"), type: "action", value: "", actionLabel: isCleaningUp ? t("button.cleaning") : t("button.cleanup"), action: handleCleanupOldTests, actionVariant: "secondary" },
+      { id: "data_export", category: "data", name: t("settings.dataExport"), description: t("settings.dataExportDescription"), type: "action", value: "", actionLabel: isExporting ? t("settings.exporting") : t("settings.export"), action: handleExport, actionVariant: "secondary" },
+      { id: "data_import", category: "data", name: t("settings.dataImport"), description: t("settings.dataImportDescription"), type: "action", value: "", actionLabel: isImporting ? t("settings.importing") : t("settings.import"), action: handleImport, actionVariant: "secondary" },
+      { id: "delete_forms", category: "data", name: t("settings.deleteForms"), description: t("settings.deleteFormsDescription"), type: "action", value: "", actionLabel: t("button.delete"), action: () => setDeleteConfirmation({ type: "forms", title: t("forms.deleteAllTitle"), message: t("forms.deleteAllMessage") }), actionVariant: "danger" },
+      { id: "delete_payments", category: "data", name: t("settings.deletePayments"), description: t("settings.deletePaymentsDescription"), type: "action", value: "", actionLabel: t("button.delete"), action: () => setDeleteConfirmation({ type: "paymentMethods", title: t("paymentMethods.deleteAllTitle"), message: t("paymentMethods.deleteAllMessage") }), actionVariant: "danger" },
+      { id: "delete_tests", category: "data", name: t("settings.deleteTests"), description: t("settings.deleteTestsDescription"), type: "action", value: "", actionLabel: t("button.delete"), action: () => setDeleteConfirmation({ type: "testRuns", title: t("settings.deleteTestsTitle"), message: t("settings.deleteTestsMessage") }), actionVariant: "danger" },
+      { id: "delete_schedules", category: "data", name: t("settings.deleteSchedules"), description: t("settings.deleteSchedulesDescription"), type: "action", value: "", actionLabel: t("button.delete"), action: () => setDeleteConfirmation({ type: "schedules", title: t("settings.deleteSchedulesTitle"), message: t("settings.deleteSchedulesMessage") }), actionVariant: "danger" },
+      { id: "delete_all", category: "data", name: t("settings.deleteAll"), description: t("settings.deleteAllDescription"), type: "action", value: "", actionLabel: t("settings.deleteAllAction"), action: () => setDeleteConfirmation({ type: "all", title: t("settings.deleteAll"), message: t("settings.deleteAllMessage") }), actionVariant: "danger" },
       // Selectors
-      { id: "selectors", category: "selectors", name: "CSS Selektoren", description: "CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.", type: "component", value: "", fullWidth: false },
+      { id: "selectors", category: "selectors", name: t("settings.selectors"), description: t("settings.selectorsDescription"), type: "component", value: "", fullWidth: false },
       // Global Defaults
-      { id: "global_defaults", category: "selectors", name: "Globale Standardwerte", description: "Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.", type: "component", value: "", fullWidth: false },
+      { id: "global_defaults", category: "selectors", name: t("settings.globalDefaults"), description: t("settings.globalDefaultsDescription"), type: "component", value: "", fullWidth: false },
       // Security
-      { id: "master_password", category: "security", name: "Master-Passwort", description: passwordEnabled ? "Passwortschutz ist aktiviert" : "App beim Start mit Passwort schützen", type: "password", value: "", fullWidth: false },
+      { id: "master_password", category: "security", name: t("settings.masterPassword"), description: passwordEnabled ? t("settings.masterPasswordEnabled") : t("settings.masterPasswordDisabled"), type: "password", value: "", fullWidth: false },
       // AI
-      { id: "ai_settings", category: "ai", name: "AI-Assistent", description: "Konfiguriere den AI-Assistenten für Chat und Analyse-Funktionen.", type: "component", value: "", fullWidth: false },
+      { id: "ai_settings", category: "ai", name: t("settings.aiAssistant"), description: t("settings.aiAssistantDescription"), type: "component", value: "", fullWidth: false },
       // Tags
-      { id: "tags", category: "data", name: "Tags", description: "Verwalten Sie Tags für Test-Ergebnisse", type: "action", value: "", actionLabel: `${tags.length} Tag${tags.length !== 1 ? 's' : ''}`, action: () => setShowTagDialog(true), actionVariant: "secondary" },
+      { id: "tags", category: "data", name: t("settings.tags"), description: t("settings.tagsDescription"), type: "action", value: "", actionLabel: `${tags.length} ${t("settings.tag")}${tags.length !== 1 ? 's' : ''}`, action: () => setShowTagDialog(true), actionVariant: "secondary" },
     ],
-    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled, retentionDays, isCleaningUp, cleanupResult, handleCleanupOldTests, tags.length]
+    [donationAmount, donationInterval, headlessMode, slowMotion, testTimeout, language, theme, emailEnabled, emailSmtpHost, emailSmtpPort, emailSmtpSecure, emailSmtpUser, emailSmtpPass, emailFromEmail, emailFromName, emailToEmail, emailNotifySuccess, emailNotifyFailure, isSendingTestEmail, isExporting, isImporting, handleSendTestEmail, handleExport, handleImport, apiServerRunning, apiPort, apiKey, handleToggleApiServer, passwordEnabled, retentionDays, isCleaningUp, cleanupResult, handleCleanupOldTests, tags.length]
   );
 
   // Filter settings
@@ -631,6 +660,14 @@ const Settings: React.FC = () => {
         break;
       case "test_timeout":
         setTestTimeout(value);
+        break;
+      case "language":
+        const lang = value === "en" ? "en" : "de";
+        setLanguage(lang);
+        CONFIG.language = lang;
+        await updateSetting("language", lang, "Application language");
+        // Trigger re-render by dispatching language change event
+        window.dispatchEvent(new Event("languagechange"));
         break;
       case "theme":
         setTheme(value);
@@ -710,7 +747,7 @@ const Settings: React.FC = () => {
         await updateSetting("email_from_name", emailFromName, "Absender Name");
         break;
       case "email_to_email":
-        await updateSetting("email_to_email", emailToEmail, "Empfänger E-Mail");
+        await updateSetting("email_to_email", emailToEmail, t("settings.recipientEmail"));
         break;
       case "api_port":
         await updateSetting("api_port", apiPort, "API Port");
@@ -912,9 +949,9 @@ const Settings: React.FC = () => {
         return (
           <div className="flex gap-1">
             {[
-              { value: "light", icon: <Sun size={14} />, label: "Hell" },
-              { value: "dark", icon: <Moon size={14} />, label: "Dunkel" },
-              { value: "system", icon: <Monitor size={14} />, label: "System" },
+              { value: "light", icon: <Sun size={14} />, label: t("settings.themeLight") },
+              { value: "dark", icon: <Moon size={14} />, label: t("settings.themeDark") },
+              { value: "system", icon: <Monitor size={14} />, label: t("settings.themeSystem") },
             ].map((t) => (
               <button
                 key={t.value}
@@ -1013,7 +1050,7 @@ const Settings: React.FC = () => {
               size="sm"
               onClick={() => setShowPasswordDialog(true)}
               className="text-xs h-7">
-              {passwordEnabled ? "Ändern" : "Aktivieren"}
+              {passwordEnabled ? t("button.change") : t("button.enable")}
             </Button>
           </div>
         );
@@ -1205,13 +1242,13 @@ const Settings: React.FC = () => {
       <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Master-Passwort</DialogTitle>
+            <DialogTitle>{t("settings.masterPassword")}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             {/* Status indicator */}
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-neutral-400"}`} />
-              <span className="text-sm text-neutral-600 dark:text-neutral-400">{passwordEnabled ? "Passwortschutz aktiv" : "Passwortschutz inaktiv"}</span>
+              <span className="text-sm text-neutral-600 dark:text-neutral-400">{passwordEnabled ? t("settings.passwordActive") : t("settings.passwordInactive")}</span>
             </div>
 
             {passwordEnabled ? (
@@ -1219,14 +1256,14 @@ const Settings: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   <Lock size={14} />
-                  Passwortschutz deaktivieren
+                  {t("settings.disablePassword")}
                 </div>
                 <div className="relative">
                   <Input
                     type={showCurrentPassword ? "text" : "password"}
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Aktuelles Passwort"
+                    placeholder={t("settings.currentPassword")}
                     className="h-9 pr-10"
                   />
                   <button
@@ -1246,7 +1283,7 @@ const Settings: React.FC = () => {
                   disabled={isSettingPassword || !currentPassword}
                   isLoading={isSettingPassword}
                   className="w-full justify-center">
-                  Deaktivieren
+                  {t("button.disable")}
                 </Button>
               </div>
             ) : (
@@ -1254,14 +1291,14 @@ const Settings: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   <Shield size={14} />
-                  Passwortschutz aktivieren
+                  {t("settings.enablePassword")}
                 </div>
                 <div className="relative">
                   <Input
                     type={showNewPassword ? "text" : "password"}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Neues Passwort (min. 4 Zeichen)"
+                    placeholder={t("settings.newPassword")}
                     className="h-9 pr-10"
                   />
                   <button
@@ -1276,7 +1313,7 @@ const Settings: React.FC = () => {
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Passwort bestätigen"
+                    placeholder={t("settings.confirmPassword")}
                     className="h-9 pr-10"
                   />
                   <button
@@ -1296,7 +1333,7 @@ const Settings: React.FC = () => {
                   disabled={isSettingPassword || !newPassword || !confirmPassword}
                   isLoading={isSettingPassword}
                   className="w-full justify-center">
-                  Aktivieren
+                  {t("button.enable")}
                 </Button>
               </div>
             )}

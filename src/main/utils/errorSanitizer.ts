@@ -3,6 +3,8 @@
  * Removes sensitive information from errors before sending to client
  */
 
+import { t } from "./dictionary";
+
 export interface SanitizedError {
   message: string;
   code?: string;
@@ -26,7 +28,7 @@ export function sanitizeError(error: unknown): SanitizedError {
     // Map common database errors
     if (message.includes("SQLITE") || message.includes("database")) {
       return {
-        message: "Ein Datenbankfehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+        message: t("error.database"),
         code: "DATABASE_ERROR"
       };
     }
@@ -34,7 +36,7 @@ export function sanitizeError(error: unknown): SanitizedError {
     // Map encryption/decryption errors
     if (message.includes("encrypt") || message.includes("decrypt") || message.includes("keychain")) {
       return {
-        message: "Ein Verschlüsselungsfehler ist aufgetreten. Bitte überprüfen Sie Ihre Systemeinstellungen.",
+        message: t("error.encryption"),
         code: "ENCRYPTION_ERROR"
       };
     }
@@ -42,7 +44,7 @@ export function sanitizeError(error: unknown): SanitizedError {
     // Map network errors
     if (message.includes("ECONNREFUSED") || message.includes("ENOTFOUND") || message.includes("timeout")) {
       return {
-        message: "Netzwerkfehler: Verbindung konnte nicht hergestellt werden.",
+        message: t("error.network"),
         code: "NETWORK_ERROR"
       };
     }
@@ -50,7 +52,7 @@ export function sanitizeError(error: unknown): SanitizedError {
     // Map file system errors
     if (message.includes("ENOENT") || message.includes("EACCES") || message.includes("permission")) {
       return {
-        message: "Dateisystemfehler: Datei oder Verzeichnis nicht gefunden oder keine Berechtigung.",
+        message: t("error.fileSystem"),
         code: "FILE_ERROR"
       };
     }
@@ -93,7 +95,7 @@ export function sanitizeError(error: unknown): SanitizedError {
 
   // Fallback for unknown error types
   return {
-    message: "Ein unerwarteter Fehler ist aufgetreten.",
+    message: t("error.unexpected"),
     code: "UNKNOWN_ERROR"
   };
 }

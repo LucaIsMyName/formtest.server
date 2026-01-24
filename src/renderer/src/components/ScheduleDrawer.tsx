@@ -15,6 +15,7 @@ import { StatusBadge } from "./ui/Badge";
 import { Trash2, Play, Search, Accessibility } from "lucide-react";
 import { CONFIG } from "@/app.config";
 import { formatDateTime } from "../utils/formatters";
+import { t } from "../data/dictionary";
 
 interface ScheduleDrawerProps {
   isOpen: boolean;
@@ -309,7 +310,7 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                         onValueChange={setFormId}
                         disabled={isSubmitting}>
                         <SelectTrigger id="formId" className="text-sm">
-                          <SelectValue placeholder="Formular auswählen" />
+                          <SelectValue placeholder={t("placeholder.selectForm")} />
                         </SelectTrigger>
                         <SelectContent>
                           {forms.map((form) => (
@@ -353,7 +354,7 @@ const ScheduleDrawer: React.FC<ScheduleDrawerProps> = ({ isOpen, onClose, onSave
                         onValueChange={setFrequency}
                         disabled={isSubmitting}>
                         <SelectTrigger id="frequency" className="text-sm">
-                          <SelectValue placeholder="Häufigkeit auswählen" />
+                          <SelectValue placeholder={t("placeholder.selectFrequency")} />
                         </SelectTrigger>
                         <SelectContent>
                           {FREQUENCY_OPTIONS.map((opt) => (

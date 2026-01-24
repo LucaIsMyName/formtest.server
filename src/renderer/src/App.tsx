@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import LockScreen from "./components/LockScreen";
 import InterruptedTestsDialog from "./components/InterruptedTestsDialog";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { CONFIG } from "./app.config";
 
 // Lazy load page components
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -125,13 +126,32 @@ function App() {
     await handleDismissInterrupted(interruptedTests.map(t => t.id));
   };
 
-  // Apply theme whenever settings change
+  // Apply theme and language whenever settings change
   useEffect(() => {
     const themeSetting = settings.find((s) => s.key === "theme");
     if (themeSetting) {
       applyTheme(themeSetting.value);
     }
+    
+    const languageSetting = settings.find((s) => s.key === "language");
+    if (languageSetting) {
+      const lang = languageSetting.value === "en" ? "en" : "de";
+      CONFIG.language = lang;
+    }
   }, [settings]);
+
+  // Listen for language changes and trigger re-render
+  const [, setLanguageUpdate] = useState(0);
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      // Force re-render by updating state
+      // Components using t() will automatically use the new language from CONFIG
+      setLanguageUpdate(prev => prev + 1);
+    };
+    
+    window.addEventListener("languagechange", handleLanguageChange);
+    return () => window.removeEventListener("languagechange", handleLanguageChange);
+  }, []);
 
   const applyTheme = (themeValue: string) => {
     const root = window.document.documentElement;

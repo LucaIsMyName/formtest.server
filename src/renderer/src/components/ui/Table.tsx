@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { t } from "../../data/dictionary";
 
 // Context for table-wide settings
 interface TableContextValue {
@@ -147,31 +148,31 @@ const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPag
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          aria-label="Vorherige Seite"
+          aria-label={t("table.pagination.previousPage")}
           className={cn("p-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", currentPage <= 1 ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}>
           <ChevronLeft size={14} />
         </button>
 
         {/* Page input */}
         <div className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-          <span>Seite</span>
+          <span>{t("table.pagination.page")}</span>
           <input
             type="text"
             value={inputValue}
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
             onBlur={handleInputBlur}
-            aria-label="Aktuelle Seite"
+            aria-label={t("table.pagination.currentPage")}
             className={cn("w-10 px-1 py-1 text-center text-[10px] font-mono rounded border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", "bg-white dark:bg-neutral-700 border-neutral-300 dark:border-neutral-600", "text-neutral-700 dark:text-neutral-200")}
           />
-          <span>von {totalPages}</span>
+          <span>{t("table.pagination.of")} {totalPages}</span>
         </div>
 
         {/* Next button */}
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          aria-label="Nächste Seite"
+          aria-label={t("table.pagination.nextPage")}
           className={cn("p-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", currentPage >= totalPages ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}>
           <ChevronRight size={14} />
         </button>
@@ -197,7 +198,7 @@ interface PaginatedTableProps<T> {
   emptyMessage?: string;
 }
 
-function PaginatedTable<T>({ data, renderHeader, renderRow, keyExtractor, threshold = DEFAULT_PAGINATION_THRESHOLD, itemsPerPage = DEFAULT_ITEMS_PER_PAGE, className, emptyMessage = "Keine Einträge vorhanden" }: PaginatedTableProps<T>) {
+function PaginatedTable<T>({ data, renderHeader, renderRow, keyExtractor, threshold = DEFAULT_PAGINATION_THRESHOLD, itemsPerPage = DEFAULT_ITEMS_PER_PAGE, className, emptyMessage = t("table.empty") }: PaginatedTableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalItems = data.length;

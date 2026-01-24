@@ -21,6 +21,7 @@ import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
 import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
+import { t } from "../data/dictionary";
 
 const FormsSkeleton = () => (
   <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
@@ -252,7 +253,7 @@ const Forms: React.FC = () => {
                 onClear={clearSelection}
                 actions={[
                   {
-                    label: "Löschen",
+                    label: t("button.delete"),
                     icon: <Trash2 size={14} />,
                     onClick: () => setShowBulkDeleteConfirm(true),
                     variant: "danger",
@@ -270,13 +271,13 @@ const Forms: React.FC = () => {
         <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-neutral-500 dark:text-neutral-400 mb-4">Noch keine Formulare konfiguriert.</div>
+              <div className="text-neutral-500 dark:text-neutral-400 mb-4">{t("forms.noFormsConfigured")}</div>
               <Button
                 onClick={handleAddForm}
                 variant="primary"
                 size="md"
                 disabled={isLoading}>
-                Erstes Formular hinzufügen
+                {t("forms.addFirstForm")}
               </Button>
             </div>
           </div>
@@ -285,8 +286,8 @@ const Forms: React.FC = () => {
         <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-neutral-500 dark:text-neutral-400 mb-4">Keine Formulare gefunden.</div>
-              <p className="text-neutral-500 dark:text-neutral-400">Versuche andere Suchbegriffe oder Filter.</p>
+              <div className="text-neutral-500 dark:text-neutral-400 mb-4">{t("forms.empty")}</div>
+              <p className="text-neutral-500 dark:text-neutral-400">{t("forms.tryOtherFilters")}</p>
             </div>
           </div>
         </div>
@@ -300,7 +301,7 @@ const Forms: React.FC = () => {
                     checked={computeIsAllSelected(displayedForms, selectedIds)}
                     indeterminate={computeIsPartialSelected(displayedForms, selectedIds)}
                     onCheckedChange={() => toggleAll(displayedForms)}
-                    aria-label="Alle auswählen"
+                    aria-label={t("button.selectAll")}
                   />
                 </TableHead>
                 <SortableTableHead
@@ -472,8 +473,8 @@ const Forms: React.FC = () => {
         isOpen={!!deleteConfirm}
         onClose={() => setDeleteConfirm(null)}
         onConfirm={confirmDelete}
-        title="Formular löschen"
-        message="Sind Sie sicher, dass Sie dieses Formular löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t("forms.deleteTitle")}
+        message={t("forms.deleteMessage")}
         itemName={deleteConfirm?.name}
         isLoading={isLoading}
       />
@@ -483,9 +484,9 @@ const Forms: React.FC = () => {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDelete}
-        title="Formulare löschen"
-        message={`Sind Sie sicher, dass Sie ${selectedCount} Formular(e) löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.`}
-        itemName={`${selectedCount} ausgewählte Formulare`}
+        title={t("forms.deleteAllTitle")}
+        message={t("forms.deleteBulkMessage").replace("{count}", String(selectedCount))}
+        itemName={t("forms.selectedForms").replace("{count}", String(selectedCount))}
         isLoading={isBulkDeleting}
       />
     </div>

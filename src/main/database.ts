@@ -685,6 +685,7 @@ export function initDatabase(): void {
     { key: "headless_mode", value: "true", description: "Run tests in headless mode" },
     { key: "slow_motion", value: "0", description: "Slow motion delay in ms (0=off, 500=slow, 1000=very slow)" },
     { key: "theme", value: "system", description: "UI theme preference (system, light, dark)" },
+    { key: "language", value: "de", description: "Application language (en, de)" },
     { key: "test_retention_days", value: "365", description: "Number of days to keep test runs (0=forever)" },
   ];
 

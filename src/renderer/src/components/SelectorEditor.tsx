@@ -5,68 +5,75 @@ import Button from "./ui/Button";
 import { Input } from "./ui/Input";
 import { Skeleton } from "./ui/Skeleton";
 import type { SelectorOverride } from "../../../common/selectors.config";
+import { t } from "../data/dictionary";
 
 interface CategoryLabels {
   [key: string]: string;
 }
 
-const CATEGORY_LABELS: CategoryLabels = {
-  formFields: "Formularfelder",
-  paymentMethods: "Zahlungsmethoden",
-  paymentFields: "Zahlungsfelder",
-  cookieConsent: "Cookie-Zustimmung",
-  successPatterns: "Erfolgs-Erkennung",
-  formDetection: "Formular-Erkennung",
-  submitButtons: "Submit-Buttons",
-  iframeDetection: "Iframe-Erkennung",
+const getCategoryLabel = (category: string): string => {
+  const labelMap: Record<string, string> = {
+    formFields: t("selector.category.formFields"),
+    paymentMethods: t("selector.category.paymentMethods"),
+    paymentFields: t("selector.category.paymentFields"),
+    cookieConsent: t("selector.category.cookieConsent"),
+    successPatterns: t("selector.category.successPatterns"),
+    formDetection: t("selector.category.formDetection"),
+    submitButtons: t("selector.category.submitButtons"),
+    iframeDetection: t("selector.category.iframeDetection"),
+  };
+  return labelMap[category] || category;
 };
 
-const KEY_LABELS: Record<string, Record<string, string>> = {
-  formFields: {
-    amount: "Betrag",
-    customAmount: "Eigener Betrag",
-    interval: "Intervall",
-    salutation: "Anrede",
-    firstName: "Vorname",
-    lastName: "Nachname",
-    email: "E-Mail",
-    country: "Land",
-    privacy: "Datenschutz",
-    newsletter: "Newsletter",
-    birthday: "Geburtstag",
-    phone: "Telefon",
-    address: "Adresse",
-    city: "Stadt",
-    zipCode: "PLZ",
-  },
-  paymentMethods: {
-    sepa: "SEPA",
-    creditcard: "Kreditkarte",
-    paypal: "PayPal",
-    eps: "EPS",
-  },
-  paymentFields: {
-    iban: "IBAN",
-    accountHolder: "Kontoinhaber",
-    cardNumber: "Kartennummer",
-    cardHolder: "Karteninhaber",
-    expiryDate: "Ablaufdatum",
-    cvv: "CVV",
-    bankSelect: "Bank-Auswahl",
-  },
-  cookieConsent: {
-    banners: "Banner-Selektoren",
-    acceptButtons: "Accept-Buttons",
-  },
-  successPatterns: {
-    redirectUrls: "Redirect-URLs",
-    successMessages: "Erfolgsmeldungen",
-    successSelectors: "Erfolgs-Selektoren",
-  },
-  formDetection: {
-    fundraisingBox: "FundraisingBox",
-    genericForm: "Generische Formulare",
-  },
+const getKeyLabel = (category: string, key: string): string => {
+  const keyLabelMap: Record<string, Record<string, string>> = {
+    formFields: {
+      amount: t("field.amount"),
+      customAmount: t("field.customAmount"),
+      interval: t("field.interval"),
+      salutation: t("field.salutation"),
+      firstName: t("field.firstName"),
+      lastName: t("field.lastName"),
+      email: t("field.email"),
+      country: t("field.country"),
+      privacy: t("field.privacy"),
+      newsletter: t("field.newsletter"),
+      birthday: t("field.birthday"),
+      phone: t("field.phone"),
+      address: t("field.address"),
+      city: t("field.city"),
+      zipCode: t("field.zip"),
+    },
+    paymentMethods: {
+      sepa: t("selector.paymentMethod.sepa"),
+      creditcard: t("selector.paymentMethod.creditcard"),
+      paypal: t("selector.paymentMethod.paypal"),
+      eps: t("selector.paymentMethod.eps"),
+    },
+    paymentFields: {
+      iban: t("field.iban"),
+      accountHolder: t("field.accountHolder"),
+      cardNumber: t("field.cardNumber"),
+      cardHolder: t("field.cardHolder"),
+      expiryDate: t("field.expiryDate"),
+      cvv: t("field.cvv"),
+      bankSelect: t("field.bankSelect"),
+    },
+    cookieConsent: {
+      banners: t("selector.cookieConsent.banners"),
+      acceptButtons: t("selector.cookieConsent.acceptButtons"),
+    },
+    successPatterns: {
+      redirectUrls: t("selector.successPatterns.redirectUrls"),
+      successMessages: t("selector.successPatterns.successMessages"),
+      successSelectors: t("selector.successPatterns.successSelectors"),
+    },
+    formDetection: {
+      fundraisingBox: t("selector.formDetection.fundraisingBox"),
+      genericForm: t("selector.formDetection.genericForm"),
+    },
+  };
+  return keyLabelMap[category]?.[key] || key;
 };
 
 const SelectorEditorSkeleton = () => (
@@ -97,14 +104,14 @@ const SelectorItem: React.FC<SelectorItemProps> = ({ selector, isDefault, isActi
   <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-mono ${isDefault ? "bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400" : isActive ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" : "bg-neutral-50 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 line-through"}`}>
     <code className="flex-1 truncate text-xs">{selector}</code>
     {isDefault ? (
-      <span className="text-xs dar  dark:text-neutral-900 whitespace-nowrap">(Standard)</span>
+      <span className="text-xs dar  dark:text-neutral-900 whitespace-nowrap">({t("selector.default")})</span>
     ) : (
       <div className="flex items-center gap-1">
         {onToggle && (
           <button
             onClick={onToggle}
             className="p-1"
-            title={isActive ? "Deaktivieren" : "Aktivieren"}>
+            title={isActive ? t("button.disable") : t("button.enable")}>
             {isActive ? <Eye size={14} /> : <EyeOff size={14} />}
           </button>
         )}
@@ -112,7 +119,7 @@ const SelectorItem: React.FC<SelectorItemProps> = ({ selector, isDefault, isActi
           <button
             onClick={onRemove}
             className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 rounded"
-            title="Entfernen">
+            title={t("selector.remove")}>
             <X size={14} />
           </button>
         )}
@@ -158,8 +165,8 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
     return overrides.find((o) => o.category === category && o.key === key);
   };
 
-  const categoryLabel = CATEGORY_LABELS[category] || category;
-  const keyLabels = KEY_LABELS[category] || {};
+  const categoryLabel = getCategoryLabel(category);
+  const keyLabels: Record<string, string> = {};
   const hasOverrides = overrides.some((o) => o.category === category);
 
   return (
@@ -182,7 +189,6 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
       {isExpanded && (
         <div className="px-4 text-neutral-800 dark:text-neutral-200 space-y-4 ">
           {keys.map((key) => {
-            const keyLabel = keyLabels[key] || key;
             const defaults = defaultSelectors[key] || [];
             const override = getOverrideForKey(key);
             const userSelectors = override?.selectors || [];
@@ -197,10 +203,10 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
                   className="w-full flex items-center justify-between px-3 py-2 transition-colors">
                   <div className="flex items-center gap-2">
                     {isKeyExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                    <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{keyLabel}</span>
+                    <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{getKeyLabel(category, key)}</span>
                     <span className="text-xs text-neutral-400">
-                      {userSelectors.length > 0 && <span className="text-blue-500">+{userSelectors.length} eigene, </span>}
-                      {defaults.length} Standard
+                      {userSelectors.length > 0 && <span className="text-blue-500">+{userSelectors.length} {t("selector.custom")}, </span>}
+                      {defaults.length} {t("selector.default")}
                     </span>
                   </div>
                   <Code
@@ -214,7 +220,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
                     {/* User-defined selectors */}
                     {userSelectors.length > 0 && (
                       <div className="space-y-1">
-                        <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">Eigene Selektoren (Priorität):</p>
+                        <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">{t("selector.customSelectors")}:</p>
                         {userSelectors.map((selector, idx) => (
                           <SelectorItem
                             key={`user-${idx}`}
@@ -230,7 +236,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
 
                     {/* Default selectors */}
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">Standard-Selektoren:</p>
+                      <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mb-1">{t("selector.defaultSelectors")}:</p>
                       {defaults.slice(0, 5).map((selector, idx) => (
                         <SelectorItem
                           key={`default-${idx}`}
@@ -238,13 +244,13 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
                           isDefault={true}
                         />
                       ))}
-                      {defaults.length > 5 && <p className="text-xs text-neutral-400 italic pl-3">... und {defaults.length - 5} weitere</p>}
+                      {defaults.length > 5 && <p className="text-xs text-neutral-400 italic pl-3">... {t("selector.andMore").replace("{count}", String(defaults.length - 5))}</p>}
                     </div>
 
                     {/* Add new selector */}
                     <div className="flex gap-2 pt-2 border-t border-neutral-100 dark:border-neutral-700">
                       <Input
-                        placeholder="Neuen Selektor hinzufügen (z.B. #my-field)"
+                        placeholder={t("selector.addNewSelector")}
                         value={newSelectors[key] || ""}
                         onChange={(e) => setNewSelectors({ ...newSelectors, [key]: e.target.value })}
                         onKeyDown={(e) => {

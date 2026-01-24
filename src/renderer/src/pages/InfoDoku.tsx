@@ -3,6 +3,7 @@ import { CONFIG } from "../app.config";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { KEYBOARD_SHORTCUTS, formatShortcut } from "../hooks/useKeyboardShortcuts";
 import { Keyboard } from "lucide-react";
+import { t } from "../data/dictionary";
 
 const InfoDoku: React.FC = () => {
   // Group shortcuts by category
@@ -17,7 +18,7 @@ const InfoDoku: React.FC = () => {
       <section className="select-auto my-6">
         {/* Impressum Section */}
         <div className="">
-          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Impressum</h2>
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">{t("legal.imprint")}</h2>
           <div className="text-neutral-700 dark:text-neutral-300 space-y-2">
             <p>
               Luca Mack
@@ -33,7 +34,7 @@ const InfoDoku: React.FC = () => {
 
         {/* Legal & License Section */}
         <div className="my-6">
-          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">Lizenz & Rechtliches</h2>
+          <h2 className="text-xl font-semibold text-neutral-900 dark:text-white mb-4">{t("legal.license")}</h2>
           <div className="text-neutral-700 dark:text-neutral-300 space-y-4">
             <div>
               <h3 className="font-semibold text-lg mb-2">MIT License</h3>

@@ -1,5 +1,16 @@
 export const CONFIG = {
-  language: "de",
+  get language(): "en" | "de" {
+    // Try to read from localStorage first (for immediate updates)
+    const stored = localStorage.getItem("app_language");
+    if (stored === "en" || stored === "de") {
+      return stored;
+    }
+    // Fallback to default
+    return "de";
+  },
+  set language(value: "en" | "de") {
+    localStorage.setItem("app_language", value);
+  },
   style: {
     title: {
       className: "flex-1 font-regular w-full leading-[1] text-[clamp(2rem,2.5vw,2rem)] mt-0 font-light text-neutral-600 dark:text-neutral-300 truncate",

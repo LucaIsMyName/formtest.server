@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { FileText, CreditCard, Terminal, BarChart3, Settings, Play, CheckCircle2, XCircle, TrendingUp, TrendingDown, Calendar, X, AlertTriangle } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from "recharts";
+import { t } from "../data/dictionary";
 
 interface DashboardStats {
   totalForms: number;
@@ -1967,7 +1968,7 @@ const Dashboard: React.FC = () => {
                     </TableBody>
                   </Table>
                 ) : (
-                  <p className="text-sm text-neutral-500 text-center py-8">Keine Testdaten verfügbar</p>
+                  <p className="text-sm text-neutral-500 text-center py-8">{t("dashboard.noData")}</p>
                 )}
               </div>
             </div>
@@ -1985,11 +1986,11 @@ const Dashboard: React.FC = () => {
                   <Table dividers={false}>
                     <TableHeader>
                       <TableRow className="bg-neutral-50 dark:bg-neutral-800/50">
-                        <TableHead className="text-[11px]">Methode</TableHead>
-                        <TableHead className="text-[11px] w-20">Typ</TableHead>
-                        <TableHead className="text-[11px] text-center w-16">Tests</TableHead>
-                        <TableHead className="text-[11px] text-center w-20">Ergebnis</TableHead>
-                        <TableHead className="text-[11px] text-right w-20">Rate</TableHead>
+                        <TableHead className="text-[11px]">{t("table.headers.method")}</TableHead>
+                        <TableHead className="text-[11px] w-20">{t("table.headers.type")}</TableHead>
+                        <TableHead className="text-[11px] text-center w-16">{t("table.headers.tests")}</TableHead>
+                        <TableHead className="text-[11px] text-center w-20">{t("table.headers.result")}</TableHead>
+                        <TableHead className="text-[11px] text-right w-20">{t("table.headers.rate")}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -2041,7 +2042,7 @@ const Dashboard: React.FC = () => {
                     </TableBody>
                   </Table>
                 ) : (
-                  <p className="text-sm text-neutral-500 text-center py-8">Keine Testdaten verfügbar</p>
+                  <p className="text-sm text-neutral-500 text-center py-8">{t("dashboard.noData")}</p>
                 )}
               </div>
             </div>
@@ -2061,7 +2062,7 @@ const Dashboard: React.FC = () => {
                   <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700 bg-green-50 dark:bg-green-900/10">
                     <h3 className="text-sm font-medium text-neutral-900 dark:text-white flex items-center gap-2">
                       <TrendingUp size={16} className="text-green-600" />
-                      Beste Kombinationen
+                      {t("dashboard.bestCombinations")}
                     </h3>
                   </div>
                   <div className="max-h-[400px] overflow-y-auto">
@@ -2128,7 +2129,7 @@ const Dashboard: React.FC = () => {
                   <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700 bg-red-50 dark:bg-red-900/10">
                     <h3 className="text-sm font-medium text-neutral-900 dark:text-white flex items-center gap-2">
                       <TrendingDown size={16} className="text-red-600" />
-                      Schlechteste Kombinationen
+                      {t("dashboard.worstCombinations")}
                     </h3>
                   </div>
                   <div className="max-h-[400px] overflow-y-auto">

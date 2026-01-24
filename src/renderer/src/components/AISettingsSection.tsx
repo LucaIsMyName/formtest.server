@@ -6,6 +6,7 @@ import { Checkbox } from "./ui/Checkbox";
 import Button from "./ui/Button";
 import { useAIStore } from "../store/useAIStore";
 import type { AIProvider } from "../../../common/types";
+import { t } from "../data/dictionary";
 
 const PROVIDER_OPTIONS: { value: AIProvider; label: string; description: string }[] = [
   { value: "openai", label: "OpenAI", description: "GPT-4o, GPT-4, GPT-3.5" },
@@ -89,7 +90,7 @@ const AISettingsSection: React.FC = () => {
     try {
       const isValid = await validateKey(provider, apiKey, ollamaUrl);
       if (isValid) {
-        setValidationResult({ success: true, message: "API-Key ist gültig" });
+        setValidationResult({ success: true, message: t("ai.apiKeyValid") });
         // Save the key
         await updateSettings({ apiKey, ollamaBaseUrl: ollamaUrl });
         // Load models
@@ -100,7 +101,7 @@ const AISettingsSection: React.FC = () => {
           await updateSettings({ model: models[0] });
         }
       } else {
-        setValidationResult({ success: false, message: "API-Key ist ungültig" });
+        setValidationResult({ success: false, message: t("ai.apiKeyInvalid") });
       }
     } catch (error) {
       setValidationResult({ success: false, message: "Validierung fehlgeschlagen" });
@@ -154,7 +155,7 @@ const AISettingsSection: React.FC = () => {
               value={provider}
               onValueChange={(v) => handleProviderChange(v as AIProvider)}>
               <SelectTrigger className="w-full h-10 text-left text-sm">
-                <SelectValue placeholder="Provider auswählen" />
+                <SelectValue placeholder={t("placeholder.selectProvider")} />
               </SelectTrigger>
               <SelectContent>
                 {PROVIDER_OPTIONS.map((opt) => (
@@ -251,7 +252,7 @@ const AISettingsSection: React.FC = () => {
                 ))}
               </SelectContent>
             </Select>
-            {availableModels.length === 0 && !isLoadingModels && <p className="text-xs text-neutral-500">{provider === "ollama" ? "Stelle sicher, dass Ollama läuft und Modelle installiert sind" : "Gib einen gültigen API-Key ein, um Modelle zu laden"}</p>}
+            {availableModels.length === 0 && !isLoadingModels && <p className="text-xs text-neutral-500">{provider === "ollama" ? t("ai.ensureOllamaRunning") : t("ai.enterValidApiKey")}</p>}
           </div>
 
           {/* Info Box */}

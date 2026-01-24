@@ -9,6 +9,7 @@ import {
   DialogFooter,
 } from "./ui/Dialog";
 import Button from "./ui/Button";
+import { t } from "../data/dictionary";
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;
@@ -48,7 +49,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({ isOpen, onClo
             variant="secondary"
             size="md"
             disabled={isLoading}>
-            Abbrechen
+            {t("button.cancel")}
           </Button>
           <Button
             onClick={onConfirm}
@@ -56,7 +57,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({ isOpen, onClo
             size="md"
             isLoading={isLoading}
             disabled={isLoading}>
-            {isLoading ? "Löschen..." : "Löschen bestätigen"}
+            {isLoading ? t("button.deleting") : t("button.confirmDelete")}
           </Button>
         </DialogFooter>
       </DialogContent>

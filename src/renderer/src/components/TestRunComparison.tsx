@@ -160,7 +160,7 @@ const TestRunComparison: React.FC<TestRunComparisonProps> = ({
         
 {stepDiffs.length === 0 ? (
           <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
-            Keine Schritte zum Vergleichen vorhanden
+            t("noStepsToCompare")
           </div>
         ) : (
           <div className="space-y-1">

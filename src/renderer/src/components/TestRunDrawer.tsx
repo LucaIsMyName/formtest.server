@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Checkbox } from "./ui/Checkbox";
 import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
 import { CONFIG } from "../app.config";
+import { t } from "../data/dictionary";
 
 interface TestRunDrawerProps {
   isOpen: boolean;
@@ -118,11 +119,11 @@ const TestRunDrawer: React.FC<TestRunDrawerProps> = ({
 
   const handleRunTests = async () => {
     if (selectedFormIds.length === 0) {
-      setError("Bitte wähle mindestens ein Formular aus");
+      setError(t("forms.selectAtLeastOne"));
       return;
     }
     if (selectedPaymentMethodIds.length === 0) {
-      setError("Bitte wähle mindestens eine Bezahlmethode aus");
+      setError(t("paymentMethods.selectAtLeastOne"));
       return;
     }
 

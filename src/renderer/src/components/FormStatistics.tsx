@@ -5,6 +5,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from ".
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { CheckCircle2, XCircle, TrendingUp, TrendingDown, Clock, BarChart3 } from "lucide-react";
 import { Skeleton } from "./ui/Skeleton";
+import { t } from "../data/dictionary";
 
 interface FormStatisticsProps {
   formId: number;
@@ -114,14 +115,14 @@ const FormStatistics: React.FC<FormStatisticsProps> = ({ formId, formName }) => 
   // Prepare pie chart data
   const pieData = useMemo(() => {
     const data = [
-      { name: "Erfolgreich", value: stats.successful, color: "#10b981" },
-      { name: "Fehlgeschlagen", value: stats.failed, color: "#ef4444" },
+      { name: t("testResults.success"), value: stats.successful, color: "#10b981" },
+      { name: t("testResults.failure"), value: stats.failed, color: "#ef4444" },
     ];
     if (stats.stopped > 0) {
-      data.push({ name: "Gestoppt", value: stats.stopped, color: "#a855f7" });
+      data.push({ name: t("testResults.stopped"), value: stats.stopped, color: "#a855f7" });
     }
     if (stats.skipped > 0) {
-      data.push({ name: "Übersprungen", value: stats.skipped, color: "#f59e0b" });
+      data.push({ name: t("testResults.skipped"), value: stats.skipped, color: "#f59e0b" });
     }
     return data.filter((d) => d.value > 0);
   }, [stats]);
@@ -175,11 +176,11 @@ const FormStatistics: React.FC<FormStatisticsProps> = ({ formId, formName }) => 
           </div>
         </div>
         <div className="bg-neutral-50 dark:bg-neutral-800/50 p-3 rounded-md border border-neutral-200 dark:border-neutral-700">
-          <p className="text-[10px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400">Erfolgreich</p>
+          <p className="text-[10px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400">{t("testResults.success")}</p>
           <p className="text-lg font-semibold text-green-600">{stats.successful}</p>
         </div>
         <div className="bg-neutral-50 dark:bg-neutral-800/50 p-3 rounded-md border border-neutral-200 dark:border-neutral-700">
-          <p className="text-[10px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400">Fehlgeschlagen</p>
+          <p className="text-[10px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400">{t("testResults.failure")}</p>
           <p className="text-lg font-semibold text-red-600">{stats.failed}</p>
         </div>
       </div>

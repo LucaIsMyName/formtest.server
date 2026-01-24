@@ -1,6 +1,7 @@
 import React from "react";
 import { X } from "lucide-react";
 import Button from "./ui/Button";
+import { t } from "../data/dictionary";
 
 interface SelectionAction {
   label: string;
@@ -22,7 +23,7 @@ const SelectionActionBar: React.FC<SelectionActionBarProps> = ({
   selectedCount,
   onClear,
   actions,
-  itemLabel = "Einträge",
+  itemLabel = t("selection.items"),
 }) => {
   if (selectedCount === 0) return null;
 
@@ -52,7 +53,7 @@ const SelectionActionBar: React.FC<SelectionActionBarProps> = ({
       <button
         onClick={onClear}
         className="p-1 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-        aria-label="Auswahl aufheben"
+        aria-label={t("selection.clearSelection")}
       >
         <X size={14} />
       </button>

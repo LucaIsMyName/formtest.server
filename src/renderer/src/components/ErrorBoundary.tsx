@@ -1,6 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { AlertCircle, RefreshCw, ChevronDown, ChevronUp, Copy } from "lucide-react";
 import  Button from "./ui/Button";
+import { t } from "../data/dictionary";
 
 interface Props {
   children: ReactNode;
@@ -90,10 +91,10 @@ ${errorInfo?.componentStack || "No component stack available"}
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-                  Etwas ist schiefgelaufen
+                  {t("error.boundary.title")}
                 </h1>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                  Die Anwendung ist auf einen Fehler gestoßen
+                  {t("error.boundary.description")}
                 </p>
               </div>
             </div>
@@ -102,7 +103,7 @@ ${errorInfo?.componentStack || "No component stack available"}
             {error && (
               <div className="mb-4 p-3 bg-neutral-100 dark:bg-neutral-700/50 rounded-md">
                 <p className="text-sm font-mono text-neutral-800 dark:text-neutral-200 break-words">
-                  {error.message || "Ein unbekannter Fehler ist aufgetreten"}
+                  {error.message || t("error.unknown")}
                 </p>
               </div>
             )}
@@ -115,7 +116,7 @@ ${errorInfo?.componentStack || "No component stack available"}
                 className="flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
-                App neu laden
+                {t("button.reload")}
               </Button>
               <Button
                 variant="secondary"
@@ -125,12 +126,12 @@ ${errorInfo?.componentStack || "No component stack available"}
                 {showDetails ? (
                   <>
                     <ChevronUp className="w-4 h-4" />
-                    Details ausblenden
+                    {t("button.hideDetails")}
                   </>
                 ) : (
                   <>
                     <ChevronDown className="w-4 h-4" />
-                    Details anzeigen
+                    {t("button.showDetails")}
                   </>
                 )}
               </Button>
@@ -141,7 +142,7 @@ ${errorInfo?.componentStack || "No component stack available"}
               <div className="mt-4 border-t border-neutral-200 dark:border-neutral-700 pt-4">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                    Fehlerdetails
+                    {t("error.details")}
                   </h2>
                   <button
                     data-copy-stack
@@ -149,7 +150,7 @@ ${errorInfo?.componentStack || "No component stack available"}
                     className="flex items-center gap-1 text-xs text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
                   >
                     <Copy className="w-3 h-3" />
-                    Kopieren
+                    {t("button.copy")}
                   </button>
                 </div>
                 <div className="bg-neutral-900 dark:bg-neutral-950 rounded-md p-4 overflow-auto max-h-96">

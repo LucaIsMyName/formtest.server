@@ -20,6 +20,7 @@ import {
   exportChatToMarkdown,
   downloadFile,
 } from "../utils/chatExporter";
+import { t } from "../data/dictionary";
 
 const AIChat: React.FC = () => {
   const navigate = useNavigate();
@@ -164,11 +165,10 @@ const AIChat: React.FC = () => {
           <MessagesSquare size={40} className="text-blue-500" />
         </div>
         <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
-          AI-Assistent nicht konfiguriert
+          {t("ai.notConfigured")}
         </h2>
         <p className="text-neutral-500 dark:text-neutral-400 text-center max-w-md mb-6">
-          Um den AI-Assistenten zu nutzen, musst du zuerst einen Provider und
-          API-Key in den Einstellungen konfigurieren.
+          {t("ai.configureApiKey")}
         </p>
         <Button onClick={() => navigate("/settings")} className="gap-2">
           <Settings size={16} />
@@ -320,7 +320,7 @@ const AIChat: React.FC = () => {
                 )}
                 {retryCount > 0 && (
                   <p className="text-xs text-red-500 dark:text-red-400/80 mt-1">
-                    Wiederholungsversuch {retryCount} von 3
+                    {t("ai.retryAttempt").replace("{count}", String(retryCount))}
                   </p>
                 )}
               </div>

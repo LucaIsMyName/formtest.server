@@ -25,13 +25,14 @@ import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } fro
 import SeoResultsCard from "../components/SeoResultsCard";
 import AccessibilityResultsCard from "../components/AccessibilityResultsCard";
 import TestRunComparison from "../components/TestRunComparison";
-import { useTagsStore } from "../store/useTagsStore";
+import { TagDefinition, useTagsStore } from "../store/useTagsStore";
 import { useFilterPresetsStore } from "../store/useFilterPresetsStore";
 import TagSelector from "../components/TagSelector";
 import ExportDialog from "../components/ExportDialog";
 import type { ExportColumn } from "../components/ExportDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/Dialog";
 import { Input } from "../components/ui/Input";
+import { t } from "../data/dictionary";
 
 // Helper to get start time - SQLite CURRENT_TIMESTAMP stores UTC
 const getStartTime = (runAt: Date | string): number => {
@@ -415,7 +416,7 @@ interface TestRunWithComputed extends TestRun {
 const getStatusRowBg = (status: string, isSelected: boolean, isChecked: boolean, isArchived?: boolean): string => {
   // Archived tests always have gray background
   if (isArchived) return "bg-neutral-100 dark:bg-neutral-800/70";
-  
+
   if (isChecked) return "bg-blue-50 dark:bg-blue-900/30";
   if (isSelected) return "bg-neutral-100 dark:bg-neutral-700/50";
 
@@ -478,7 +479,7 @@ const TestResults: React.FC = () => {
     }
   });
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-  
+
   // Popover states for toolbar
   const [showStatusPopover, setShowStatusPopover] = useState(false);
   const [showTagPopover, setShowTagPopover] = useState(false);
@@ -578,20 +579,20 @@ const TestResults: React.FC = () => {
   // Apply tag filter
   const filteredFinishedTests = useMemo(() => {
     if (tagFilter.length === 0 || tags.length === 0) return baseFilteredFinishedTests;
-    
+
     const tagNames = tagFilter
       .map(id => {
         const tag = tags.find(t => t.id === id);
         return tag?.name;
       })
       .filter((name): name is string => Boolean(name));
-    
+
     if (tagNames.length === 0) return baseFilteredFinishedTests;
-    
+
     return baseFilteredFinishedTests.filter(test => {
       if (!test.tags || test.tags.length === 0) return false;
       // Check if test has any of the selected tags (case-insensitive comparison)
-      return tagNames.some(tagName => 
+      return tagNames.some(tagName =>
         test.tags?.some(testTag => testTag.toLowerCase() === tagName.toLowerCase())
       );
     });
@@ -616,7 +617,7 @@ const TestResults: React.FC = () => {
 
     tests.forEach(test => {
       const keys: string[] = [];
-      
+
       groupBy.forEach(groupKey => {
         switch (groupKey) {
           case 'form':
@@ -1356,14 +1357,14 @@ const TestResults: React.FC = () => {
                     disabled={!canCompare}
                     className="gap-2 font-mono text-[10px]">
                     <GitCompare size={12} />
-                    Vergleichen
+                    {t("compare")}
                   </Button>
                   <Button
                     onClick={handleToggleComparisonMode}
                     variant="secondary"
                     size="sm"
                     className="gap-2 font-mono text-[10px] border border-neutral-300 dark:border-neutral-600">
-                    Vergleich beenden
+                    {t("endComparison")}
                   </Button>
                 </>
               )}
@@ -1374,7 +1375,7 @@ const TestResults: React.FC = () => {
                   size="sm"
                   className="gap-2 font-mono text-[10px]">
                   <GitCompare size={12} />
-                  Vergleichen
+                  {t("compare")}
                 </Button>
               )}
               <Button
@@ -1388,7 +1389,7 @@ const TestResults: React.FC = () => {
                 <FileSpreadsheet size={12} />
                 CSV
               </Button>
-              
+
               <Button
                 onClick={() => {
                   setExportFormat("json");
@@ -1411,7 +1412,7 @@ const TestResults: React.FC = () => {
             size="md"
             className="gap-2">
             <Play size={16} />
-            Testen
+            {t(false, "Test", "Testen")}
           </Button>
         </div>
       </div>
@@ -1419,7 +1420,7 @@ const TestResults: React.FC = () => {
       {error && (
         <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 mb-6 rounded-md">
           <div className="text-red-800 dark:text-red-200">
-            <strong>Error:</strong> {error}
+            <strong>{t(false, "Error", "Fehler")}:</strong> {error}
           </div>
         </div>
       )}
@@ -1432,7 +1433,7 @@ const TestResults: React.FC = () => {
             <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
               Laufende Tests ({runningTests.length}
-              {queuedTests.length > 0 ? ` + ${queuedTests.length} in Warteschlange` : ""})
+              {queuedTests.length > 0 ? ` + ${queuedTests.length} ${t(false, "in Queue", "in Warteschlange")}` : ""})
             </h2>
             <TestQueueStatus onRefresh={loadTestRuns} />
           </div>
@@ -1442,19 +1443,19 @@ const TestResults: React.FC = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="px-4 w-[40px]"></TableHead>
-                    <TableHead className="px-4 w-[100px]">Aktionen</TableHead>
-                    <TableHead className="px-4 min-w-[180px] max-w-[200px]">Formular</TableHead>
-                    <TableHead className="px-4 min-w-[200px] max-w-[220px]">Bezahlmethode</TableHead>
-                    <TableHead className="px-4 w-[90px]">Status</TableHead>
-                    <TableHead className="px-4 w-[70px] text-left"><Bot size={14} className="inline" /></TableHead>
-                    <TableHead className="px-4 w-[80px]">Betrag</TableHead>
-                    <TableHead className="px-4 w-[100px]">Intervall</TableHead>
-                    <TableHead className="px-4 w-[70px]">Dauer</TableHead>
+                    <TableHead className="px-4 w-[100px]">{t(false, "Actions", "Aktionen")}</TableHead>
+                    <TableHead className="px-4 min-w-[180px] max-w-[200px]">{t(false, "Form", "Formular")}</TableHead>
+                    <TableHead className="px-4 min-w-[200px] max-w-[220px]">{t(false, "Payment Method", "Bezahlmethode")}</TableHead>
+                    <TableHead className="px-4 w-[90px]">{t(false, "Status", "Status")}</TableHead>
+                    <TableHead className="px-4 w-[70px] text-left"><span className="sr-only">{t(false, "Scheduled", "Geplant")}</span><Bot size={14} className="inline" /></TableHead>
+                    <TableHead className="px-4 w-[80px]">{t(false, "Amount", "Betrag")}</TableHead>
+                    <TableHead className="px-4 w-[100px]">{t(false, "Interval", "Intervall")}</TableHead>
+                    <TableHead className="px-4 w-[70px]">{t(false, "Duration", "Dauer")}</TableHead>
                     <SortableTableHead
                       className="px-4 w-[150px]"
                       sortDirection={getSortDirection("runAt")}
                       onSort={() => requestSort("runAt")}>
-                      Datum
+                      {t(false, "Date", "Datum")}
                     </SortableTableHead>
                     <TableHead className="px-4 w-[120px]">Tags</TableHead>
                     <TableHead className="px-4 w-[80px]">UUID</TableHead>
@@ -1484,7 +1485,7 @@ const TestResults: React.FC = () => {
                           <Checkbox
                             checked={isChecked}
                             onCheckedChange={() => toggleItem(testRun.id)}
-                            aria-label={`${testRun.formName} auswählen`}
+                            aria-label={`${testRun.formName} ${t(false, "select", "auswählen")}`}
                           />
                         </TableCell>
                         <TableCell className="px-4">
@@ -1497,7 +1498,7 @@ const TestResults: React.FC = () => {
                               variant="ghost"
                               size="sm"
                               className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
-                              title="Test erneut ausführen">
+                              title={t(false, "Run Again", "Test erneut ausführen")}>
                               <Play size={16} />
                             </Button>
                             <Button
@@ -1508,7 +1509,7 @@ const TestResults: React.FC = () => {
                               variant="ghost"
                               size="sm"
                               className="text-red-600 dark:text-red-400"
-                              title="Test stoppen">
+                              title={t(false, "Stop Test", "Test stoppen")}>
                               <Square
                                 size={14}
                                 fill="currentColor"
@@ -1608,7 +1609,7 @@ const TestResults: React.FC = () => {
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 flex items-center gap-2">
             <CheckCircle2 size={12} className="text-neutral-400 dark:text-neutral-500" />
-            Ausgeführte Tests ({totalFilteredItems})
+            {t(false, "Finished Tests", "Ausgeführte Tests")} ({totalFilteredItems})
           </h2>
         </div>
 
@@ -1662,6 +1663,7 @@ const TestResults: React.FC = () => {
                   <div className="absolute top-full left-0 mt-1 z-50 w-48 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
                     <div className="space-y-0.5">
                       <button
+                        title={t(false, "All Statuses", "Alle Status")}
                         onClick={() => {
                           setStatusFilter(undefined);
                           setShowStatusPopover(false);
@@ -1671,6 +1673,7 @@ const TestResults: React.FC = () => {
                       </button>
                       {statusOptions.map((option) => (
                         <button
+                          title={option.label + t(false, " select", " auswählen")}
                           key={option.value}
                           onClick={() => {
                             setStatusFilter(option.value);
@@ -1693,6 +1696,7 @@ const TestResults: React.FC = () => {
               <Button
                 variant="ghost"
                 size="sm"
+                title={t(false, "Filter by Tags", "Nach Tags filtern")}
                 onClick={() => setShowTagPopover(!showTagPopover)}
                 className="h-7 px-2.5 text-xs gap-1.5 flex-shrink-0">
                 <Tag size={12} />
@@ -1716,6 +1720,7 @@ const TestResults: React.FC = () => {
                         <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">Tags filtern</span>
                         {tagFilter.length > 0 && (
                           <button
+                            title={t(false, "Reset Tags", "Tags zurücksetzen")}
                             onClick={() => {
                               setTagFilter([]);
                               setShowTagPopover(false);
@@ -1733,6 +1738,7 @@ const TestResults: React.FC = () => {
                             className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer"
                             onClick={(e) => e.stopPropagation()}>
                             <Checkbox
+                              title={tag.name + t(false, " select", " auswählen")}
                               checked={isSelected}
                               onCheckedChange={() => {
                                 if (isSelected) {
@@ -1762,6 +1768,7 @@ const TestResults: React.FC = () => {
           <div className="flex items-center gap-1.5 flex-shrink-0 px-1.5">
             <Checkbox
               id="show-archived"
+              title={t(false, "Show Archived", "Archivierte anzeigen")}
               checked={showArchived || false}
               onCheckedChange={(checked) => setShowArchived(checked === true)}
               className="h-3.5 w-3.5"
@@ -1769,7 +1776,7 @@ const TestResults: React.FC = () => {
             <label
               htmlFor="show-archived"
               className="text-xs text-neutral-600 dark:text-neutral-400 cursor-pointer whitespace-nowrap">
-              Archiviert
+              {t(false, "Archived", "Archiviert")}
             </label>
           </div>
 
@@ -1787,7 +1794,7 @@ const TestResults: React.FC = () => {
               size="sm"
               className="h-7 px-2 text-xs gap-1 flex-shrink-0">
               <X size={12} />
-              Zurücksetzen
+              {t(false, "Reset", "Zurücksetzen")}
             </Button>
           )}
 
@@ -1803,8 +1810,8 @@ const TestResults: React.FC = () => {
               className="h-7 px-2.5 text-xs gap-1.5 flex-shrink-0">
               <Bookmark size={12} />
               {selectedPresetId
-                ? (presets.find(p => p.id === selectedPresetId)?.name || "Vorlage").substring(0, 12)
-                : "Vorlage"}
+                ? (presets.find(p => p.id === selectedPresetId)?.name || t("preset")).substring(0, 12)
+                : t("preset")}
             </Button>
             {showPresetPopover && (
               <>
@@ -1827,6 +1834,7 @@ const TestResults: React.FC = () => {
                         key={preset.id}
                         className={`group w-full px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700 flex items-center justify-between ${selectedPresetId === preset.id ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
                         <button
+                          title={preset.name + t(false, " select", " auswählen")}
                           onClick={() => {
                             setSelectedPresetId(preset.id);
                             setShowPresetPopover(false);
@@ -1835,6 +1843,7 @@ const TestResults: React.FC = () => {
                           <span>{preset.name}</span>
                         </button>
                         <Button
+                          title={t(false, "Delete Preset", "Vorlage löschen")}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDeletePreset(preset.id);
@@ -1849,6 +1858,7 @@ const TestResults: React.FC = () => {
                     ))}
                     <div className="border-t border-neutral-200 dark:border-neutral-700 my-1" />
                     <button
+                      title={t(false, "Save Current Filters", "Aktuelle Filter speichern")}
                       onClick={() => {
                         setShowPresetDialog(true);
                         setShowPresetPopover(false);
@@ -1868,29 +1878,32 @@ const TestResults: React.FC = () => {
             <Button
               variant="ghost"
               size="sm"
+              title={t(false, "Group by", "Gruppieren")}
               onClick={() => setShowGroupPopover(!showGroupPopover)}
               className="h-7 px-2.5 text-xs gap-1.5 flex-shrink-0">
               <Layers size={12} />
               {groupBy.length === 0
                 ? "Gruppieren"
                 : groupBy.map(g => {
-                    switch (g) {
-                      case 'form': return 'Formular';
-                      case 'paymentMethod': return 'Bezahlmethode';
-                      case 'date': return 'Datum';
-                      default: return '';
-                    }
-                  }).join(' > ')}
+                  switch (g) {
+                    case 'form': return 'Formular';
+                    case 'paymentMethod': return 'Bezahlmethode';
+                    case 'date': return 'Datum';
+                    default: return '';
+                  }
+                }).join(' > ')}
             </Button>
             {showGroupPopover && (
               <>
                 <div
+                  aria-label={t(false, "Close Grouping Popover", "Gruppierungsmenü schließen")}
                   className="fixed inset-0 z-40"
                   onClick={() => setShowGroupPopover(false)}
                 />
                 <div className="absolute top-full right-0 mt-1 z-50 w-56 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 p-1 shadow-lg">
                   <div className="space-y-0.5">
                     <button
+                      title={t(false, "No Grouping", "Keine Gruppierung")}
                       onClick={() => {
                         setGroupBy([]);
                         setShowGroupPopover(false);
@@ -1899,61 +1912,76 @@ const TestResults: React.FC = () => {
                       Keine Gruppierung
                     </button>
                     <button
+                      title={t(false, "Group by Form", "Nach Formular gruppieren")}
                       onClick={() => {
                         setGroupBy(['form']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Nach Formular
+                      {t(false, "Group by Form", "Nach Formular")}
                     </button>
                     <button
+                      title={t(false, "Group by Payment Method", "Nach Bezahlmethode gruppieren")}
                       onClick={() => {
                         setGroupBy(['paymentMethod']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'paymentMethod' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Nach Bezahlmethode
+                      t(false, "Group by Payment Method", "Nach Bezahlmethoden")
                     </button>
                     <button
+                      title={t(false, "Group by Date", "Nach Datum gruppieren")}
                       onClick={() => {
                         setGroupBy(['date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Nach Datum
+                      {t(false, "Group by Date", "Nach Datum")}
                     </button>
                     <div className="border-t border-neutral-200 dark:border-neutral-700 my-1" />
                     <button
+                      title={t(false, "Group by Form and Payment Method", "Nach Formular und Bezahlmethode gruppieren")}
                       onClick={() => {
                         setGroupBy(['form', 'paymentMethod']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form,paymentMethod' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Formular {'>'} Bezahlmethode
+                      {
+                        t(false, "Group by Form > Payment Method", "Nach Formular > Bezahlmethode")
+                      }
                     </button>
                     <button
+                      title={t(false, "Group by Form > Date", "Nach Formular > Datum gruppieren")}
                       onClick={() => {
                         setGroupBy(['form', 'date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form,date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Formular {'>'} Datum
+                      {
+                        t(false, "Group by Form > Date", "Nach Formular > Datum")
+                      }
                     </button>
                     <button
+                      title={t(false, "Group by Payment Method > Date", "Nach Bezahlmethode > Datum gruppieren")}
                       onClick={() => {
                         setGroupBy(['paymentMethod', 'date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'paymentMethod,date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Bezahlmethode {'>'} Datum
+                      {
+                        t(false, "Group by Payment Method > Date", "Nach Bezahlmethode > Datum")
+                      }
                     </button>
                     <button
+                      title={t(false, "Group by Form > Payment Method > Date", "Nach Formular > Bezahlmethode > Datum gruppieren")}
                       onClick={() => {
                         setGroupBy(['form', 'paymentMethod', 'date']);
                         setShowGroupPopover(false);
                       }}
                       className={`w-full text-left px-2 py-1.5 text-xs rounded hover:bg-neutral-100 dark:hover:bg-neutral-700 ${groupBy.join(',') === 'form,paymentMethod,date' ? "bg-neutral-100 dark:bg-neutral-700" : ""}`}>
-                      Formular {'>'} Bezahlmethode {'>'} Datum
+                      {
+                        t(false, "Group by Form > Payment Method > Date", "Nach Formular > Bezahlmethode > Datum")
+                      }
                     </button>
                   </div>
                 </div>
@@ -1970,7 +1998,7 @@ const TestResults: React.FC = () => {
                 itemLabel="Tests"
                 actions={[
                   {
-                    label: "Erneut testen",
+                    label: t(false, "Run Again", "Erneut testen"),
                     icon: <Play size={14} />,
                     onClick: handleBulkRunAgain,
                     variant: "secondary",
@@ -1978,25 +2006,25 @@ const TestResults: React.FC = () => {
                   },
                   ...(showArchived
                     ? [
-                        {
-                          label: "Entarchivieren",
-                          icon: <Archive size={14} />,
-                          onClick: handleBulkUnarchive,
-                          variant: "secondary" as const,
-                          loading: isBulkUnarchiving,
-                        },
-                      ]
+                      {
+                        label: t(false, "Unarchive", "Entarchivieren"),
+                        icon: <Archive size={14} />,
+                        onClick: handleBulkUnarchive,
+                        variant: "secondary" as const,
+                        loading: isBulkUnarchiving,
+                      },
+                    ]
                     : [
-                        {
-                          label: "Archivieren",
-                          icon: <Archive size={14} />,
-                          onClick: handleBulkArchive,
-                          variant: "secondary" as const,
-                          loading: isBulkArchiving,
-                        },
-                      ]),
+                      {
+                        label: t(false, "Archive", "Archivieren"),
+                        icon: <Archive size={14} />,
+                        onClick: handleBulkArchive,
+                        variant: "secondary" as const,
+                        loading: isBulkArchiving,
+                      },
+                    ]),
                   {
-                    label: "Löschen",
+                    label: t(false, "Delete", "Löschen"),
                     icon: <Trash2 size={14} />,
                     onClick: () => setShowBulkDeleteConfirm(true),
                     variant: "danger",
@@ -2028,57 +2056,65 @@ const TestResults: React.FC = () => {
                         checked={computeIsAllSelected(sortedFinishedTests, selectedIds)}
                         indeterminate={computeIsPartialSelected(sortedFinishedTests, selectedIds)}
                         onCheckedChange={() => toggleAll(sortedFinishedTests)}
-                        aria-label="Alle auswählen"
+                        aria-label={t(false, "Select All", "Alle auswählen")}
                       />
                     </TableHead>
                     <TableHead className="px-4 w-[100px]">Aktionen</TableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Form", "Formular")}
                       className="px-4 min-w-[180px] max-w-[200px]"
                       sortDirection={getSortDirection("formName")}
                       onSort={() => requestSort("formName")}>
-                      Formular
+                      {t(false, "Form", "Formular")}
                     </SortableTableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Payment Method", "Bezahlmethode")}
                       className="px-4 min-w-[200px] max-w-[220px]"
                       sortDirection={getSortDirection("paymentMethodName")}
                       onSort={() => requestSort("paymentMethodName")}>
-                      Bezahlmethode
+                      {t(false, "Payment Method", "Bezahlmethode")}
                     </SortableTableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Status", "Status")}
                       className="px-4 w-[90px]"
                       sortDirection={getSortDirection("status")}
                       onSort={() => requestSort("status")}>
                       Status
                     </SortableTableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Scheduled", "Geplant")}
                       className="px-4 w-[70px] text-left justify-left"
                       sortDirection={getSortDirection("isScheduled")}
                       onSort={() => requestSort("isScheduled")}>
                       <Bot size={14} className="inline" />
                     </SortableTableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Amount", "Betrag")}
                       className="px-4 w-[80px]"
                       sortDirection={getSortDirection("amount")}
                       onSort={() => requestSort("amount")}>
-                      Betrag
+                      {t(false, "Amount", "Betrag")}
                     </SortableTableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Interval", "Intervall")}
                       className="px-4 w-[100px]"
                       sortDirection={getSortDirection("interval")}
                       onSort={() => requestSort("interval")}>
-                      Intervall
+                      {t(false, "Interval", "Intervall")}
                     </SortableTableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Duration", "Dauer")}
                       className="px-4 w-[70px]"
                       sortDirection={getSortDirection("durationMs")}
                       onSort={() => requestSort("durationMs")}>
-                      Dauer
+                      {t(false, "Duration", "Dauer")}
                     </SortableTableHead>
                     <SortableTableHead
+                      aria-label={t(false, "Date", "Datum")}
                       className="px-4 w-[150px]"
                       sortDirection={getSortDirection("runAt")}
                       onSort={() => requestSort("runAt")}>
-                      Datum
+                      {t(false, "Date", "Datum")}
                     </SortableTableHead>
                     <TableHead className="px-4 w-[120px]">Tags</TableHead>
                     <SortableTableHead className="px-4 w-[80px]">UUID</SortableTableHead>
@@ -2090,7 +2126,7 @@ const TestResults: React.FC = () => {
                     Object.entries(groupedTests).map(([groupKey, groupTests]) => {
                       const isGroupExpanded = expandedGroups.has(groupKey);
                       const groupLabel = groupKey.replace(/^(form|pm|date):/g, '').split(' > ').join(' > ');
-                      
+
                       return (
                         <React.Fragment key={groupKey}>
                           {/* Group Header Row */}
@@ -2120,14 +2156,14 @@ const TestResults: React.FC = () => {
                             const isCompSelected = isComparisonSelected(testRun.id);
                             return (
                               <TableRow
-                      key={testRun.id}
-                      tabIndex={0}
-                      role="button"
-                      aria-selected={isRowSelected}
-                      className={`h-[36px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${comparisonMode && isCompSelected
-                        ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset"
-                        : getStatusRowBg(testRun.status, isRowSelected, isChecked, testRun.isArchived)
-                        }`}
+                                key={testRun.id}
+                                tabIndex={0}
+                                role="button"
+                                aria-selected={isRowSelected}
+                                className={`h-[36px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${comparisonMode && isCompSelected
+                                  ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset"
+                                  : getStatusRowBg(testRun.status, isRowSelected, isChecked, testRun.isArchived)
+                                  }`}
                                 onClick={() => comparisonMode ? handleComparisonSelect(testRun.id) : handleSelectTestRun(testRun.id)}
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter" || e.key === " ") {
@@ -2135,113 +2171,113 @@ const TestResults: React.FC = () => {
                                     comparisonMode ? handleComparisonSelect(testRun.id) : handleSelectTestRun(testRun.id);
                                   }
                                 }}>
-                        <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
-                          <Checkbox
-                            checked={isChecked}
-                            onCheckedChange={() => toggleItem(testRun.id)}
-                            aria-label={`${testRun.formName} auswählen`}
-                          />
-                        </TableCell>
-                        <TableCell className="px-4 ">
-                          <div className="flex items-center justify-start gap-1">
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRunAgain(testRun);
-                              }}
-                              variant="ghost"
-                              size="sm"
-                              className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
-                              title="Test erneut ausführen">
-                              <Play size={16} />
-                            </Button>
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteClick(testRun);
-                              }}
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
-                              title="Löschen">
-                              <Trash2 size={16} />
-                            </Button>
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4 max-w-[200px]">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
-                              {renderIcon(getFormIcon(testRun.formId), 14)}
-                            </span>
-                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
-                              {testRun.formName}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4 max-w-[220px]">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
-                              {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
-                            </span>
-                            <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
-                              {testRun.paymentMethodName}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4">
-                          <StatusBadge status={testRun.status} />
-                        </TableCell>
-                        <TableCell className="px-4 text-left">
-                          {testRun.isScheduled ? (
-                            <Bot size={16} className="inline text-blue-500" />
-                          ) : (
-                            <User size={16} className="inline text-green-500" />
-                          )}
-                        </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
-                          {testRun.amount ? `${testRun.amount} €` : "-"}
-                        </TableCell>
-                        <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
-                          {formatInterval(testRun.interval)}
-                        </TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDuration(testRun.durationMs)}</TableCell>
-                        <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
-                        <TableCell className="px-4 max-w-[200px]">
-                          <div className="flex items-center gap-1 overflow-hidden h-full">
-                            {testRun.tags && testRun.tags.length > 0 ? (
-                              <div className="flex items-center gap-1 overflow-x-auto overflow-y-hidden flex-1 min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                                {testRun.tags.map((tagName, idx) => {
-                                  const tag = tags.find(t => t.name === tagName);
-                                  if (!tag) return null;
-                                  return (
-                                    <Badge
-                                      key={idx}
-                                      style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
-                                      className="border text-[10px] px-1.5 py-0.5 flex-shrink-0 whitespace-nowrap">
-                                      {tag.name}
-                                    </Badge>
-                                  );
-                                })}
-                              </div>
-                            ) : (
-                              <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="px-4">
-                          <div className="flex items-center gap-1 group">
-                            <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
-                            {testRun.uuid && (
-                              <button
-                                onClick={(e) => handleCopyUuid(e, testRun.uuid)}
-                                className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
-                                title="ID kopieren">
-                                <Copy size={10} />
-                              </button>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
+                                <TableCell className="px-4" onClick={(e) => e.stopPropagation()}>
+                                  <Checkbox
+                                    checked={isChecked}
+                                    onCheckedChange={() => toggleItem(testRun.id)}
+                                    aria-label={`${testRun.formName} auswählen`}
+                                  />
+                                </TableCell>
+                                <TableCell className="px-4 ">
+                                  <div className="flex items-center justify-start gap-1">
+                                    <Button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRunAgain(testRun);
+                                      }}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                                      title={t(false, `Run ${testRun.uuid.substring(0, 8)} Again`, `Test ${testRun.uuid.substring(0, 8)} erneut ausführen`)}>
+                                      <Play size={16} />
+                                    </Button>
+                                    <Button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteClick(testRun);
+                                      }}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                                      title="Löschen">
+                                      <Trash2 size={16} />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="px-4 max-w-[200px]">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
+                                      {renderIcon(getFormIcon(testRun.formId), 14)}
+                                    </span>
+                                    <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
+                                      {testRun.formName}
+                                    </div>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="px-4 max-w-[220px]">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <span className="flex-shrink-0 text-neutral-500 dark:text-neutral-400">
+                                      {renderIcon(getPaymentMethodIcon(testRun.paymentMethodId), 14)}
+                                    </span>
+                                    <div className="text-xs font-medium text-neutral-900 dark:text-white truncate min-w-0">
+                                      {testRun.paymentMethodName}
+                                    </div>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="px-4">
+                                  <StatusBadge status={testRun.status} />
+                                </TableCell>
+                                <TableCell className="px-4 text-left">
+                                  {testRun.isScheduled ? (
+                                    <Bot size={16} className="inline text-blue-500" />
+                                  ) : (
+                                    <User size={16} className="inline text-green-500" />
+                                  )}
+                                </TableCell>
+                                <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
+                                  {testRun.amount ? `${testRun.amount} €` : "-"}
+                                </TableCell>
+                                <TableCell className="px-4 text-[11px] font-mono text-neutral-600 dark:text-neutral-400">
+                                  {formatInterval(testRun.interval)}
+                                </TableCell>
+                                <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{formatDuration(testRun.durationMs)}</TableCell>
+                                <TableCell className="px-4 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 whitespace-nowrap">{formatDateTime(testRun.runAt)}</TableCell>
+                                <TableCell className="px-4 max-w-[200px]">
+                                  <div className="flex items-center gap-1 overflow-hidden h-full">
+                                    {testRun.tags && testRun.tags.length > 0 ? (
+                                      <div className="flex items-center gap-1 overflow-x-auto overflow-y-hidden flex-1 min-w-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                                        {testRun.tags.map((tagName: string, idx: number) => {
+                                          const tag = tags.find((t: TagDefinition) => t.name === tagName);
+                                          if (!tag) return null;
+                                          return (
+                                            <Badge
+                                              key={idx}
+                                              style={{ backgroundColor: tag.color + '20', color: tag.color, borderColor: tag.color }}
+                                              className="border text-[10px] px-1.5 py-0.5 flex-shrink-0 whitespace-nowrap">
+                                              {tag.name}
+                                            </Badge>
+                                          );
+                                        })}
+                                      </div>
+                                    ) : (
+                                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500">-</span>
+                                    )}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="px-4">
+                                  <div className="flex items-center gap-1 group">
+                                    <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">{testRun.uuid ? testRun.uuid.substring(0, 8) : `ID:${testRun.id}`}</span>
+                                    {testRun.uuid && (
+                                      <button
+                                        onClick={(e) => handleCopyUuid(e, testRun.uuid)}
+                                        className="p-1 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        title={t(false, "Copy UUID", "UUID kopieren")}>
+                                        <Copy size={10} />
+                                      </button>
+                                    )}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
                             );
                           })}
                         </React.Fragment>
@@ -2255,14 +2291,14 @@ const TestResults: React.FC = () => {
                       const isCompSelected = isComparisonSelected(testRun.id);
                       return (
                         <TableRow
-                      key={testRun.id}
-                      tabIndex={0}
-                      role="button"
-                      aria-selected={isRowSelected}
-                      className={`h-[36px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${comparisonMode && isCompSelected
-                        ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset"
-                        : getStatusRowBg(testRun.status, isRowSelected, isChecked, testRun.isArchived)
-                        }`}
+                          key={testRun.id}
+                          tabIndex={0}
+                          role="button"
+                          aria-selected={isRowSelected}
+                          className={`h-[36px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${comparisonMode && isCompSelected
+                            ? "bg-blue-100 dark:bg-blue-900/50 ring-2 ring-blue-500 ring-inset"
+                            : getStatusRowBg(testRun.status, isRowSelected, isChecked, testRun.isArchived)
+                            }`}
                           onClick={() => comparisonMode ? handleComparisonSelect(testRun.id) : handleSelectTestRun(testRun.id)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
@@ -2435,7 +2471,7 @@ const TestResults: React.FC = () => {
                       <Play size={14} />
                       Erneut ausführen
                     </Button>
-                    
+
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();

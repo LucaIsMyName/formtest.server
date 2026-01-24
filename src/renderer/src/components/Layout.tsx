@@ -9,6 +9,7 @@ import { useSettingsStore } from "../store/useSettingsStore";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { cn } from "@/utils/cn";
 import { useTestRunsStore } from "../store/useTestRunsStore";
+import { t } from "../data/dictionary";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -69,7 +70,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const handleToggleTheme = async () => {
     const nextTheme = currentTheme === "system" ? "light" : currentTheme === "light" ? "dark" : "system";
-    await updateSetting("theme", nextTheme, "UI-Theme-Präferenz (system, light, dark)");
+    await updateSetting("theme", nextTheme, t("layout.themePreference"));
   };
 
   const handleOpenSettings = () => {
@@ -111,18 +112,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, []);
 
   const primaryNavigation = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
-    { name: "Formulare", href: "/forms", icon: FileText },
-    { name: "Bezahlmethoden", href: "/payment-methods", icon: CreditCard },
-    { name: "Autopilot", href: "/schedules", icon: Bot },
-    { name: "Tests", href: "/test-results", icon: BarChart3 },
+    { name: t("dashboard.title"), href: "/", icon: LayoutDashboard },
+    { name: t("nav-forms"), href: "/forms", icon: FileText },
+    { name: t("payment-methods"), href: "/payment-methods", icon: CreditCard },
+    { name: t("schedules"), href: "/schedules", icon: Bot },
+    { name: t("tests"), href: "/test-results", icon: BarChart3 },
   ];
 
   const secondaryNavigation = [
-    { name: "Scripts", href: "/scripts", icon: Code },
-    { name: "Einstellungen", href: "/settings", icon: Settings },
-    { name: "Rechtliches", href: "/legal", icon: Scale },
-    { name: "Doku", href: "/docs", icon: BookOpen },
+    { name: t("scripts"), href: "/scripts", icon: Code },
+    { name: t("nav-settings"), href: "/settings", icon: Settings },
+    { name: t("nav-legal"), href: "/legal", icon: Scale },
+    { name: t("docs"), href: "/docs", icon: BookOpen },
   ];
 
   return (
@@ -181,7 +182,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <hr className="my-0 border-neutral-200 dark:border-neutral-800" />
 
             {/* Secondary Navigation */}
-            <div className="space-y-0" role="list" aria-label="Sekundäre Navigation">
+            <div className="space-y-0" role="list" aria-label={t("layout.secondaryNavigation")}>
               {secondaryNavigation.map((item) => {
                 const IconComponent = item.icon;
                 return (

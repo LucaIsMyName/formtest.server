@@ -21,6 +21,7 @@ import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
 import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
+import { t } from "../data/dictionary";
 
 // Extended type for sorting with computed fields
 interface PaymentMethodWithComputed extends PaymentMethod {
@@ -279,7 +280,7 @@ const PaymentMethods: React.FC = () => {
   const maskSensitiveData = (method: PaymentMethod) => {
     switch (method.type) {
       case "paypal":
-        return method.details.email ? `${method.details.email.substring(0, 3)}***@***.com` : "Keine E-Mail";
+        return method.details.email ? `${method.details.email.substring(0, 3)}***@***.com` : t("paymentMethods.noEmail");
       case "sepa":
         // Show account holder and masked IBAN
         const holder = method.details.accountHolder || '';
@@ -287,27 +288,27 @@ const PaymentMethods: React.FC = () => {
         if (holder && maskedIban) return `${holder} (${maskedIban})`;
         if (holder) return holder;
         if (maskedIban) return maskedIban;
-        return "Keine SEPA-Daten";
+        return t("paymentMethods.noSepaData");
       case "creditcard":
-        return method.details.cardNumber ? `****-****-****-${method.details.cardNumber.slice(-4)}` : "Keine Kartennummer";
+        return method.details.cardNumber ? `****-****-****-${method.details.cardNumber.slice(-4)}` : t("paymentMethods.noCardNumber");
       case "eps":
-        return method.details.bankCode ? `Bank: ${method.details.bankCode}` : "Keine Bank ausgewählt";
+        return method.details.bankCode ? `Bank: ${method.details.bankCode}` : t("paymentMethods.noBankSelected");
       default:
-        return "Konfiguriert";
+        return t("paymentMethods.configured");
     }
   };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className={CONFIG.style.title.className}>Bezahlmethoden</h1>
+        <h1 className={CONFIG.style.title.className}>{t("payment-methods")}</h1>
         <Button
           onClick={handleAddMethod}
           variant="primary"
           size="md"
           className="gap-2"
           disabled={isLoading}>
-          <Plus size={16} /> Neue Bezahlmethode
+          <Plus size={16} /> {t("paymentMethods.add")}
         </Button>
       </div>
 
@@ -324,7 +325,7 @@ const PaymentMethods: React.FC = () => {
         <TableFilter
           searchTerm={filterConfig.searchTerm}
           onSearchChange={setSearchTerm}
-          placeholder="Bezahlmethoden durchsuchen..."
+          placeholder={t("paymentMethods.searchPlaceholder")}
           statusFilter={filterConfig.statusFilter}
           onStatusFilterChange={setStatusFilter}
           statusOptions={statusOptions}
@@ -336,7 +337,7 @@ const PaymentMethods: React.FC = () => {
                 onClear={clearSelection}
                 actions={[
                   {
-                    label: "Löschen",
+                    label: t("button.delete"),
                     icon: <Trash2 size={14} />,
                     onClick: () => setShowBulkDeleteConfirm(true),
                     variant: "danger",
@@ -369,8 +370,8 @@ const PaymentMethods: React.FC = () => {
         <div className="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-sm">
           <div className="p-6">
             <div className="text-center py-8">
-              <div className="text-neutral-500 dark:text-neutral-400 mb-4">Keine Bezahlmethoden gefunden.</div>
-              <p className="text-neutral-500 dark:text-neutral-400">Versuche andere Suchbegriffe oder Filter.</p>
+              <div className="text-neutral-500 dark:text-neutral-400 mb-4">{t("paymentMethods.empty")}</div>
+              <p className="text-neutral-500 dark:text-neutral-400">{t("forms.tryOtherFilters")}</p>
             </div>
           </div>
         </div>
@@ -384,7 +385,7 @@ const PaymentMethods: React.FC = () => {
                     checked={computeIsAllSelected(displayedMethods, selectedIds)}
                     indeterminate={computeIsPartialSelected(displayedMethods, selectedIds)}
                     onCheckedChange={() => toggleAll(displayedMethods)}
-                    aria-label="Alle auswählen"
+                    aria-label={t("button.selectAll")}
                   />
                 </TableHead>
                 <SortableTableHead
@@ -494,7 +495,7 @@ const PaymentMethods: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
-                        title="Löschen">
+                        title={t("button.delete")}>
                         <Trash2 size={16} className="text-red-600 dark:text-red-400" />
                       </Button>
                     </div>
@@ -545,9 +546,9 @@ const PaymentMethods: React.FC = () => {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDelete}
-        title="Bezahlmethoden löschen"
-        message={`Sind Sie sicher, dass Sie ${selectedCount} Bezahlmethode(n) löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.`}
-        itemName={`${selectedCount} ausgewählte Bezahlmethoden`}
+        title={t("paymentMethods.deleteAllTitle")}
+        message={t("paymentMethods.deleteBulkMessage").replace("{count}", String(selectedCount))}
+        itemName={t("paymentMethods.selectedPaymentMethods").replace("{count}", String(selectedCount))}
         isLoading={isBulkDeleting}
       />
     </div>

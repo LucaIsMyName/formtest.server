@@ -15,6 +15,7 @@ import { ChevronDown, ChevronUp, Plus, Trash2, ExternalLink, Play, BarChart3, Co
 import { CONFIG } from "@/app.config";
 import { formatDate } from "../utils/formatters";
 import { useCustomScriptsStore } from "../store/useCustomScriptsStore";
+import { t } from "../data/dictionary";
 
 interface FormDrawerProps {
   isOpen: boolean;
@@ -419,7 +420,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                           onValueChange={(value) => updateFieldMapping(mapping.id, { fieldType: value as FieldMappingType })}
                           disabled={isLoading}>
                           <SelectTrigger className="h-8 text-sm">
-                            <SelectValue placeholder="Feldtyp wählen" />
+                            <SelectValue placeholder={t("placeholder.selectFieldType")} />
                           </SelectTrigger>
                           <SelectContent>
                             {FIELD_TYPE_OPTIONS.map((opt) => (
