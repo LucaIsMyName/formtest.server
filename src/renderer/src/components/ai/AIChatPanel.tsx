@@ -31,7 +31,6 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
     selectChat,
     updateChatTitle,
     deleteChat,
-    sendMessage,
     sendMessageStreaming,
     clearError,
   } = useAIStore();

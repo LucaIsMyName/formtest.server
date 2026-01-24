@@ -33,7 +33,7 @@ const getHookPointOptions = (): { value: ScriptHookPoint; label: string; descrip
   { value: "on_error", label: t("script.hookPoint.onError"), description: t("script.hookPoint.onErrorDesc") },
 ];
 
-const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script, forms }) => {
+const ScriptDrawer: React.FC<ScriptDrawerProps> = ({ isOpen, onClose, script }) => {
   const { createScript, updateScript, validateScript } = useCustomScriptsStore();
 
   const [formData, setFormData] = useState({
