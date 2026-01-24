@@ -10,21 +10,22 @@ import type { CustomScript, ScriptHookPoint } from "../../../common/types";
 import { Edit2, Trash2, Plus, Code, Globe, FileCode, AlertTriangle, Clock } from "lucide-react";
 import ScriptDrawer from "../components/ScriptDrawer";
 import { CONFIG } from "../app.config";
-// Hook point labels for display
-const HOOK_POINT_LABELS: Record<ScriptHookPoint, string> = {
-  before_navigation: "Vor Navigation",
-  after_navigation: "Nach Navigation",
-  before_cookie_banner: "Vor Cookie-Banner",
-  after_cookie_banner: "Nach Cookie-Banner",
-  before_form_fill: "Vor Formular-Ausfüllung",
-  after_form_fill: "Nach Formular-Ausfüllung",
-  before_payment: "Vor Zahlung",
-  after_payment: "Nach Zahlung",
-  before_submit: "Vor Absenden",
-  after_submit: "Nach Absenden",
-  on_success: "Bei Erfolg",
-  on_error: "Bei Fehler",
-};
+import { t } from "../data/dictionary";
+// Hook point labels for display - will be translated in component
+const getHookPointLabels = (): Record<ScriptHookPoint, string> => ({
+  before_navigation: t("scripts.hookPointLabels.beforeNavigation"),
+  after_navigation: t("scripts.hookPointLabels.afterNavigation"),
+  before_cookie_banner: t("scripts.hookPointLabels.beforeCookieBanner"),
+  after_cookie_banner: t("scripts.hookPointLabels.afterCookieBanner"),
+  before_form_fill: t("scripts.hookPointLabels.beforeFormFill"),
+  after_form_fill: t("scripts.hookPointLabels.afterFormFill"),
+  before_payment: t("scripts.hookPointLabels.beforePayment"),
+  after_payment: t("scripts.hookPointLabels.afterPayment"),
+  before_submit: t("scripts.hookPointLabels.beforeSubmit"),
+  after_submit: t("scripts.hookPointLabels.afterSubmit"),
+  on_success: t("scripts.hookPointLabels.onSuccess"),
+  on_error: t("scripts.hookPointLabels.onError"),
+});
 
 // Hook point colors for badges
 const HOOK_POINT_COLORS: Record<ScriptHookPoint, "default" | "success" | "warning" | "error" | "info"> = {
@@ -100,7 +101,7 @@ const Scripts: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className={CONFIG.style.title.className}>Skripte</h1>
+          <h1 className={CONFIG.style.title.className}>{t("script.scriptsTitle")}</h1>
         </div>
         <ScriptsSkeleton />
       </div>
@@ -110,11 +111,11 @@ const Scripts: React.FC = () => {
   if (error) {
     return (
       <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg">
-        <p>Fehler beim Laden der Scripts: {error}</p>
+        <p>{t("script.errorLoading")} {error}</p>
         <Button
           onClick={loadScripts}
           className="mt-2">
-          Erneut versuchen
+          {t("script.retry")}
         </Button>
       </div>
     );
@@ -142,13 +143,13 @@ const Scripts: React.FC = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Hook-Punkt</TableHead>
-              <TableHead>Typ</TableHead>
-              <TableHead>Stop bei Fehler</TableHead>
-              <TableHead>Timeout</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Aktionen</TableHead>
+              <TableHead>{t("script.name")}</TableHead>
+              <TableHead>{t("script.hookPoint")}</TableHead>
+              <TableHead>{t("script.type")}</TableHead>
+              <TableHead>{t("script.stopOnError")}</TableHead>
+              <TableHead>{t("script.timeout")}</TableHead>
+              <TableHead>{t("script.status")}</TableHead>
+              <TableHead className="text-right">{t("script.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -157,7 +158,7 @@ const Scripts: React.FC = () => {
                 <TableCell
                   colSpan={7}
                   className="text-left text-sm py-4 text-neutral-500 dark:text-neutral-400">
-                  Noch keine Custom Scripts erstellt. Klicke auf "Neues Script" um zu beginnen.
+                  {t("script.noScriptsCreated") || "No custom scripts created yet. Click \"New Script\" to get started."}
                 </TableCell>
               </TableRow>
             ) : (
@@ -183,7 +184,7 @@ const Scripts: React.FC = () => {
                     <StatusBadge
                       size="sm"
                       status={HOOK_POINT_COLORS[script.hookPoint]}>
-                      {HOOK_POINT_LABELS[script.hookPoint]}
+                      {getHookPointLabels()[script.hookPoint]}
                     </StatusBadge>
                   </TableCell>
                   <TableCell>
@@ -219,11 +220,11 @@ const Scripts: React.FC = () => {
                     <button
                       onClick={() => handleToggleActive(script)}
                       className="focus:outline-none"
-                      title={script.isActive ? "Deaktivieren" : "Aktivieren"}>
+                      title={script.isActive ? t("button.disable") : t("button.enable")}>
                       <StatusBadge
                         size="sm"
                         status={script.isActive ? "success" : "default"}>
-                        {script.isActive ? "Aktiv" : "Inaktiv"}
+                        {script.isActive ? t("script.active") : t("script.inactive")}
                       </StatusBadge>
                     </button>
                   </TableCell>

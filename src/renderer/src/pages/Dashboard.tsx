@@ -621,11 +621,11 @@ const Dashboard: React.FC = () => {
     const failed = filteredTestRuns.filter((r) => r.status === "FAILURE").length;
     const stopped = filteredTestRuns.filter((r) => r.status === "STOPPED").length;
     const data = [
-      { name: "Erfolgreich", value: successful, color: "#10b981" },
-      { name: "Fehlgeschlagen", value: failed, color: "#ef4444" },
+      { name: t("dashboard.successful"), value: successful, color: "#10b981" },
+      { name: t("dashboard.failed"), value: failed, color: "#ef4444" },
     ];
     if (stopped > 0) {
-      data.push({ name: "Gestoppt", value: stopped, color: "#a855f7" });
+      data.push({ name: t("dashboard.stopped"), value: stopped, color: "#a855f7" });
     }
     return data;
   };
@@ -1303,21 +1303,21 @@ const Dashboard: React.FC = () => {
                   type="monotone"
                   dataKey="success"
                   stroke="#10b981"
-                  name="Erfolgreich"
+                  name={t("dashboard.successful")}
                   strokeWidth={2}
                 />
                 <Line
                   type="monotone"
                   dataKey="failure"
                   stroke="#ef4444"
-                  name="Fehlgeschlagen"
+                  name={t("dashboard.failed")}
                   strokeWidth={2}
                 />
                 <Line
                   type="monotone"
                   dataKey="stopped"
                   stroke="#a855f7"
-                  name="Gestoppt"
+                  name={t("dashboard.stopped")}
                   strokeWidth={2}
                 />
               </LineChart>
@@ -1397,17 +1397,17 @@ const Dashboard: React.FC = () => {
                   <Bar
                     dataKey="success"
                     fill="#10b981"
-                    name="Erfolgreich"
+                    name={t("dashboard.successful")}
                   />
                   <Bar
                     dataKey="failure"
                     fill="#ef4444"
-                    name="Fehlgeschlagen"
+                    name={t("dashboard.failed")}
                   />
                   <Bar
                     dataKey="stopped"
                     fill="#a855f7"
-                    name="Gestoppt"
+                    name={t("dashboard.stopped")}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -1578,7 +1578,7 @@ const Dashboard: React.FC = () => {
                       <XAxis
                         type="number"
                         dataKey="x"
-                        name="Formular"
+                        name={t("dashboard.form")}
                         stroke="#9ca3af"
                         tick={{ fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
                         tickLine={{ stroke: "#d1d5db" }}
@@ -1609,7 +1609,7 @@ const Dashboard: React.FC = () => {
                         type="number"
                         dataKey="successRate"
                         range={[50, 400]}
-                        name="Erfolgsrate"
+                        name={t("dashboard.successRate")}
                       />
                       <Tooltip
                         cursor={{ strokeDasharray: '3 3' }}
@@ -1622,17 +1622,17 @@ const Dashboard: React.FC = () => {
                                   {data.formName} × {data.paymentMethodName}
                                 </p>
                                 <p className="text-sm text-green-600 dark:text-green-400">
-                                  Erfolgsrate: {data.successRate}%
+                                  {t("dashboard.successRateLabel")} {data.successRate}%
                                 </p>
                                 <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                                  {data.success} erfolgreich / {data.failure} fehlgeschlagen
-                                  {data.stopped > 0 && ` / ${data.stopped} gestoppt`}
+                                  {data.success} {t("dashboard.successfulLabel")} / {data.failure} {t("dashboard.failedLabel")}
+                                  {data.stopped > 0 && ` / ${data.stopped} ${t("dashboard.stoppedLabel")}`}
                                 </p>
                                 <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                                  Gesamt: {data.total} Tests
+                                  {t("dashboard.totalTests")} {data.total} {t("testResults.tests")}
                                 </p>
                                 <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
-                                  Typ: {data.type === 'success' ? 'Erfolgreich' : data.type === 'failure' ? 'Fehlgeschlagen' : 'Gestoppt'}
+                                  {t("dashboard.type")}: {data.type === 'success' ? t("dashboard.successful") : data.type === 'failure' ? t("dashboard.failed") : t("dashboard.stopped")}
                                 </p>
                               </div>
                             );
@@ -1642,7 +1642,7 @@ const Dashboard: React.FC = () => {
                       />
                       {/* Success circles */}
                       <Scatter
-                        name="Erfolgreich"
+                        name={t("dashboard.successful")}
                         data={scatterData.data.filter((d: any) => d.type === 'success')}
                         fill="#10b981"
                         shape={(props: any) => {
@@ -1662,7 +1662,7 @@ const Dashboard: React.FC = () => {
                       />
                       {/* Failure circles */}
                       <Scatter
-                        name="Fehlgeschlagen"
+                        name={t("dashboard.failed")}
                         data={scatterData.data.filter((d: any) => d.type === 'failure')}
                         fill="#ef4444"
                         shape={(props: any) => {
@@ -1682,7 +1682,7 @@ const Dashboard: React.FC = () => {
                       />
                       {/* Stopped circles */}
                       <Scatter
-                        name="Gestoppt"
+                        name={t("dashboard.stopped")}
                         data={scatterData.data.filter((d: any) => d.type === 'stopped')}
                         fill="#a855f7"
                         shape={(props: any) => {
@@ -1803,7 +1803,7 @@ const Dashboard: React.FC = () => {
                           return null;
                         }}
                       />
-                      <Bar dataKey="total" fill="#3b82f6" name="Anzahl Tests" />
+                      <Bar dataKey="total" fill="#3b82f6" name={t("dashboard.testCount")} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -1891,7 +1891,7 @@ const Dashboard: React.FC = () => {
                   stroke="#10b981"
                   strokeWidth={2}
                   dot={{ fill: "#10b981", strokeWidth: 2 }}
-                  name="Erfolgsrate"
+                  name={t("dashboard.successRate")}
                 />
               </LineChart>
             </ResponsiveContainer>

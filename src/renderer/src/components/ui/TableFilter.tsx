@@ -4,6 +4,7 @@ import { Input } from "./Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./Select";
 import { Badge, StatusBadge } from "./Badge";
 import { Checkbox } from "./Checkbox";
+import { t } from "../../data/dictionary";
 
 interface StatusOption {
   value: string;
@@ -30,7 +31,8 @@ interface TableFilterProps {
   onTagFilterChange?: (tagIds: number[]) => void;
 }
 
-export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchChange, placeholder = "Suchen...", statusFilter, onStatusFilterChange, statusOptions, statusLabel = "Status", onClear, rightContent, showArchived, onShowArchivedChange, tags, selectedTagIds = [], onTagFilterChange }) => {
+export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchChange, placeholder, statusFilter, onStatusFilterChange, statusOptions, statusLabel = t("testResults.status"), onClear, rightContent, showArchived, onShowArchivedChange, tags, selectedTagIds = [], onTagFilterChange }) => {
+  const searchPlaceholder = placeholder || t("tableFilter.searchPlaceholder");
   const hasFilters = searchTerm.trim() !== "" || (statusFilter && statusFilter !== "all") || (selectedTagIds && selectedTagIds.length > 0);
 
   // Map status value to badge variant
@@ -78,7 +80,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
           type="text"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder={placeholder}
+          placeholder={searchPlaceholder}
           className="pl-9 pr-8 max-w-full"
         />
         {searchTerm && (
@@ -97,7 +99,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
           <SelectTrigger className=" max-w-[160px]">{getSelectedStatusDisplay()}</SelectTrigger>
           <SelectContent>
             <SelectItem value="all">
-              <span className="text-neutral-600 dark:text-neutral-400">Alle {statusLabel}</span>
+              <span className="text-neutral-600 dark:text-neutral-400">{t("tableFilter.allStatuses").replace("{status}", statusLabel)}</span>
             </SelectItem>
             {statusOptions.map((option) => (
               <SelectItem
@@ -167,7 +169,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
           <label
             htmlFor="show-archived"
             className="text-sm text-neutral-600 dark:text-neutral-400 cursor-pointer">
-            Archivierte anzeigen
+            {t("tableFilter.showArchived")}
           </label>
         </div>
       )}
@@ -176,7 +178,7 @@ export const TableFilter: React.FC<TableFilterProps> = ({ searchTerm, onSearchCh
         <button
           onClick={onClear}
           className="text-sm text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200">
-          Filter zurücksetzen
+          {t("tableFilter.resetFilters")}
         </button>
       )}
 

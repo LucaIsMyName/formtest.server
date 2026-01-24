@@ -149,8 +149,8 @@ const PaymentMethods: React.FC = () => {
 
   // Status filter options
   const statusOptions = [
-    { value: 'active', label: 'Aktiv' },
-    { value: 'inactive', label: 'Inaktiv' },
+    { value: 'active', label: t("paymentMethods.active") },
+    { value: 'inactive', label: t("paymentMethods.inactive") },
   ];
 
   // Custom status filter logic + pagination
@@ -459,7 +459,7 @@ const PaymentMethods: React.FC = () => {
                       className="border-none bg-transparent cursor-pointer p-0"
                       disabled={isLoading}>
                       <StatusBadge status={method.isActive ? "active" : "inactive"}>
-                        {method.isActive ? "Aktiv" : "Inaktiv"}
+                        {method.isActive ? t("paymentMethods.active") : t("paymentMethods.inactive")}
                       </StatusBadge>
                     </button>
                   </TableCell>
@@ -487,7 +487,7 @@ const PaymentMethods: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
-                        title="Bearbeiten">
+                        title={t("paymentMethods.edit")}>
                         <Edit2 size={16} className="text-blue-600 dark:text-blue-400" />
                       </Button>
                       <Button
@@ -535,8 +535,8 @@ const PaymentMethods: React.FC = () => {
         isOpen={!!deleteConfirm}
         onClose={() => setDeleteConfirm(null)}
         onConfirm={confirmDelete}
-        title="Bezahlmethode löschen"
-        message="Sind Sie sicher, dass Sie diese Bezahlmethode löschen möchten? Alle zugehörigen Test-Ergebnisse werden ebenfalls gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t("paymentMethods.deleteTitle")}
+        message={t("paymentMethods.deleteMessage")}
         itemName={deleteConfirm?.name}
         isLoading={isLoading}
       />

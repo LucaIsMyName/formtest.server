@@ -106,8 +106,8 @@ const Forms: React.FC = () => {
 
   // Status filter options
   const statusOptions = [
-    { value: "active", label: "Aktiv" },
-    { value: "inactive", label: "Inaktiv" },
+    { value: "active", label: t("forms.active") },
+    { value: "inactive", label: t("forms.inactive") },
   ];
 
   // Custom status filter logic + pagination state
@@ -383,7 +383,7 @@ const Forms: React.FC = () => {
                       }}
                       className="border-none bg-transparent cursor-pointer p-0"
                       disabled={isLoading}>
-                      <StatusBadge status={form.isActive ? "active" : "inactive"}>{form.isActive ? "Aktiv" : "Inaktiv"}</StatusBadge>
+                      <StatusBadge status={form.isActive ? "active" : "inactive"}>{form.isActive ? t("forms.active") : t("forms.inactive")}</StatusBadge>
                     </button>
                   </TableCell>
                   <TableCell className="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono">{formatDate(form.createdAt)}</TableCell>
@@ -416,7 +416,7 @@ const Forms: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         disabled={isLoading}
-                        title="Bearbeiten">
+                        title={t("button.edit")}>
                         <Edit2
                           size={16}
                           className="text-blue-600 dark:text-blue-400"

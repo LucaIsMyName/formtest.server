@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { MessageSquare, Trash2, Edit2, Check, X, Search } from 'lucide-react';
 import type { AIChat } from '../../../../common/types';
 import { Input } from '../ui/Input';
+import { t } from '../../data/dictionary';
 
 interface AIChatListProps {
   chats: AIChat[];
@@ -173,7 +174,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       handleStartEdit(chat);
                     }}
                     className="p-1.5 rounded text-neutral-500"
-                    title="Umbenennen"
+                    title={t("ai.rename")}
                   >
                     <Edit2 size={14} />
                   </button>
@@ -183,7 +184,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       onDelete(chat.id);
                     }}
                     className="p-1.5 text-red-500"
-                    title="Löschen"
+                    title={t("ai.delete")}
                   >
                     <Trash2 size={14} />
                   </button>

@@ -64,31 +64,31 @@ const InfoDoku: React.FC = () => {
 
           {/* Managing Forms */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Formulare verwalten</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">{t("info.manageForms")}</h3>
             <ol className="list-decimal list-inside space-y-2 ml-2">
-              <li>Navigieren Sie zur Seite "Formulare"</li>
-              <li>Klicken Sie auf "Neues Formular"</li>
+              <li>{t("info.navigateToForms")}</li>
+              <li>{t("info.clickNewForm")}</li>
               <li>
-                Geben Sie folgende Informationen ein:
+                {t("info.enterInformation")}
                 <ul className="list-disc list-inside ml-6 mt-1 space-y-1">
                   <li>
-                    <strong>Name:</strong> Ein eindeutiger Name für das Formular
+                    <strong>{t("info.nameLabel")}</strong> {t("info.nameDescription")}
                   </li>
                   <li>
-                    <strong>URL:</strong> Die vollständige URL des Spendenformulars
+                    <strong>{t("info.urlLabel")}</strong> {t("info.urlDescription")}
                   </li>
                   <li>
-                    <strong>Beschreibung:</strong> Optionale Beschreibung des Formulars
+                    <strong>{t("info.descriptionLabel")}</strong> {t("info.descriptionDescription")}
                   </li>
                   <li>
-                    <strong>Status:</strong> Aktivieren Sie das Formular für Tests
+                    <strong>{t("info.statusLabel")}</strong> {t("info.statusDescription")}
                   </li>
                 </ul>
               </li>
-              <li>Speichern Sie das Formular</li>
+              <li>{t("info.saveForm")}</li>
             </ol>
             <p className="mt-2 text-sm">
-              <strong>Hinweis:</strong> Nur aktive Formulare werden bei Testläufen berücksichtigt.
+              <strong>{t("info.note")}</strong> {t("info.onlyActiveForms")}
             </p>
           </div>
 
@@ -126,17 +126,17 @@ const InfoDoku: React.FC = () => {
 
           {/* Running Tests */}
           <div>
-            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">Tests durchführen</h3>
+            <h3 className="font-semibold text-lg mb-2 text-neutral-900 dark:text-white">{t("info.runningTests")}</h3>
             <ol className="list-decimal list-inside space-y-2 ml-2">
-              <li>Stellen Sie sicher, dass mindestens ein Formular und eine Zahlungsmethode aktiv sind</li>
-              <li>Klicken Sie auf dem Dashboard auf "Tests starten"</li>
-              <li>Wählen Sie die zu testenden Formulare aus</li>
-              <li>Wählen Sie die zu testenden Zahlungsmethoden aus</li>
-              <li>Klicken Sie auf "Tests starten"</li>
+              <li>{t("info.ensureActive")}</li>
+              <li>{t("info.clickStartTests")}</li>
+              <li>{t("info.selectForms")}</li>
+              <li>{t("info.selectPaymentMethods")}</li>
+              <li>{t("info.clickStartTestsButton")}</li>
             </ol>
-            <p className="mt-2">Die Tests werden im Hintergrund ausgeführt. Sie können den Fortschritt auf der Seite "Test Resultate" verfolgen.</p>
+            <p className="mt-2">{t("info.testsRunBackground")}</p>
             <p className="mt-2 text-sm">
-              <strong>Hinweis:</strong> Während der Testausführung wird ein Browser-Fenster geöffnet, das die automatisierten Aktionen durchführt. Bitte nicht schließen oder unterbrechen.
+              <strong>{t("info.note")}</strong> {t("info.testExecutionNote")}
             </p>
           </div>
 

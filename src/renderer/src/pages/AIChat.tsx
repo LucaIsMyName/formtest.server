@@ -233,7 +233,7 @@ const AIChat: React.FC = () => {
         <div className="px-6 py-3 h-[70px] border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between flex-shrink-0">
           <div>
             <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate line-clamp-1">
-              {activeChat?.title || "Neuer Chat"}
+              {activeChat?.title || t("ai.newChat")}
             </h1>
             {activeChat && (
               <p className="text-xs text-neutral-500">
@@ -375,8 +375,8 @@ const AIChat: React.FC = () => {
         isOpen={showDeleteAll}
         onClose={() => setShowDeleteAll(false)}
         onConfirm={handleDeleteAllChats}
-        title="Alle Chats löschen"
-        message="Möchtest du wirklich alle Chats löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t("ai.deleteAllChats")}
+        message={t("ai.deleteAllChatsMessage")}
       />
 
       {/* Close export menu when clicking outside */}

@@ -213,7 +213,7 @@ const TestTimeline: React.FC<{ steps?: TestStep[]; logDetails?: string; status: 
     if (metadata.fieldsFilled && metadata.fieldsFilled > 0) parts.push(`${metadata.fieldsFilled} ausgefüllt`);
     if (metadata.formType && typeof metadata.formType === 'string') parts.push(metadata.formType);
     if (metadata.paymentMethod && typeof metadata.paymentMethod === 'string') parts.push(metadata.paymentMethod);
-    if (metadata.cookieBannerFound !== undefined) parts.push(metadata.cookieBannerFound ? "Cookie-Banner" : "Kein Cookie-Banner");
+    if (metadata.cookieBannerFound !== undefined) parts.push(metadata.cookieBannerFound ? t("testResults.cookieBanner") : t("testResults.noCookieBanner"));
     if (metadata.redirectUrl && typeof metadata.redirectUrl === 'string') parts.push(metadata.redirectUrl);
     if (metadata.paymentProvider && metadata.paymentProvider !== "Unknown" && typeof metadata.paymentProvider === 'string') parts.push(metadata.paymentProvider);
 
@@ -515,8 +515,8 @@ const TestResults: React.FC = () => {
   const testRunsWithNames = useMemo((): TestRunWithComputed[] => {
     return testRuns.map((tr) => ({
       ...tr,
-      formName: tr.formId ? (forms.find((f) => f.id === tr.formId)?.name || `Form #${tr.formId}`) : "Gelöscht",
-      paymentMethodName: tr.paymentMethodId ? (paymentMethods.find((p) => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`) : "Gelöscht",
+      formName: tr.formId ? (forms.find((f) => f.id === tr.formId)?.name || `Form #${tr.formId}`) : t("testResults.deleted"),
+      paymentMethodName: tr.paymentMethodId ? (paymentMethods.find((p) => p.id === tr.paymentMethodId)?.name || `PM #${tr.paymentMethodId}`) : t("testResults.deleted"),
     }));
   }, [testRuns, forms, paymentMethods]);
 
@@ -795,9 +795,9 @@ const TestResults: React.FC = () => {
 
   // Status filter options
   const statusOptions = [
-    { value: "SUCCESS", label: "Erfolgreich" },
-    { value: "FAILURE", label: "Fehlgeschlagen" },
-    { value: "STOPPED", label: "Gestoppt" },
+    { value: "SUCCESS", label: t("testResults.successLabel") },
+    { value: "FAILURE", label: t("testResults.failureLabel") },
+    { value: "STOPPED", label: t("testResults.stoppedLabel") },
   ];
 
   // Handle URL params and selection
@@ -828,7 +828,7 @@ const TestResults: React.FC = () => {
 
   const getFormName = (formId: number | null | undefined) => {
     if (!formId) {
-      return "Gelöscht";
+      return t("testResults.deleted");
     }
     const form = forms.find((f) => f.id === formId);
     return form ? form.name : `Form #${formId}`;
@@ -842,7 +842,7 @@ const TestResults: React.FC = () => {
 
   const getPaymentMethodName = (pmId: number | null | undefined) => {
     if (!pmId) {
-      return "Gelöscht";
+      return t("testResults.deleted");
     }
     const pm = paymentMethods.find((p) => p.id === pmId);
     return pm ? pm.name : `Payment Method #${pmId}`;
@@ -1158,17 +1158,17 @@ const TestResults: React.FC = () => {
   const exportColumns: ExportColumn[] = [
     { key: "id", label: "ID", defaultSelected: true },
     { key: "uuid", label: "UUID", defaultSelected: true },
-    { key: "form", label: "Formular", defaultSelected: true },
-    { key: "paymentMethod", label: "Bezahlmethode", defaultSelected: true },
-    { key: "status", label: "Status", defaultSelected: true },
+    { key: "form", label: t("testResults.form"), defaultSelected: true },
+    { key: "paymentMethod", label: t("testResults.paymentMethod"), defaultSelected: true },
+    { key: "status", label: t("testResults.status"), defaultSelected: true },
     { key: "duration", label: t("testResults.duration"), defaultSelected: true },
     { key: "error", label: t("testResults.error"), defaultSelected: true },
     { key: "scheduled", label: t("testResults.scheduled"), defaultSelected: true },
     { key: "tags", label: t("testResults.tags"), defaultSelected: true },
     { key: "notes", label: t("testResults.notesLabel"), defaultSelected: false },
-    { key: "date", label: "Datum", defaultSelected: true },
-    { key: "amount", label: "Betrag", defaultSelected: false },
-    { key: "interval", label: "Intervall", defaultSelected: false },
+    { key: "date", label: t("testResults.date"), defaultSelected: true },
+    { key: "amount", label: t("testResults.amount"), defaultSelected: false },
+    { key: "interval", label: t("testResults.interval"), defaultSelected: false },
   ];
 
   // Handle export with column selection and scope
@@ -1229,17 +1229,17 @@ const TestResults: React.FC = () => {
     const columnMap: Record<string, { header: string; value: (tr: TestRunWithComputed) => string }> = {
       id: { header: "ID", value: (tr) => String(tr.id) },
       uuid: { header: "UUID", value: (tr) => tr.uuid || "" },
-      form: { header: "Formular", value: (tr) => tr.formName || "" },
-      paymentMethod: { header: "Bezahlmethode", value: (tr) => tr.paymentMethodName || "" },
-      status: { header: "Status", value: (tr) => tr.status },
-      duration: { header: "Dauer (ms)", value: (tr) => String(tr.durationMs || "") },
-      error: { header: "Fehler", value: (tr) => (tr.errorMessage || "").replace(/"/g, '""') },
-      scheduled: { header: "Geplant", value: (tr) => tr.isScheduled ? "Ja" : "Nein" },
-      tags: { header: "Tags", value: (tr) => (tr.tags || []).join(", ").replace(/"/g, '""') },
-      notes: { header: "Notizen", value: (tr) => (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " ") },
-      date: { header: "Datum", value: (tr) => new Date(tr.runAt).toLocaleString("de-DE") },
-      amount: { header: "Betrag", value: (tr) => tr.amount ? `${tr.amount} €` : "" },
-      interval: { header: "Intervall", value: (tr) => formatInterval(tr.interval) },
+      form: { header: t("testResults.form"), value: (tr) => tr.formName || "" },
+      paymentMethod: { header: t("testResults.paymentMethod"), value: (tr) => tr.paymentMethodName || "" },
+      status: { header: t("testResults.status"), value: (tr) => tr.status },
+      duration: { header: t("testResults.durationMs"), value: (tr) => String(tr.durationMs || "") },
+      error: { header: t("testResults.error"), value: (tr) => (tr.errorMessage || "").replace(/"/g, '""') },
+      scheduled: { header: t("testResults.scheduled"), value: (tr) => tr.isScheduled ? t("testResults.yes") : t("testResults.no") },
+      tags: { header: t("testResults.tags"), value: (tr) => (tr.tags || []).join(", ").replace(/"/g, '""') },
+      notes: { header: t("testResults.notes"), value: (tr) => (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " ") },
+      date: { header: t("testResults.date"), value: (tr) => new Date(tr.runAt).toLocaleString(CONFIG.language === "en" ? "en-US" : "de-DE") },
+      amount: { header: t("testResults.amount"), value: (tr) => tr.amount ? `${tr.amount} €` : "" },
+      interval: { header: t("testResults.interval"), value: (tr) => formatInterval(tr.interval) },
     };
 
     const headers = selectedColumns.map(col => columnMap[col]?.header || col);
@@ -1271,7 +1271,7 @@ const TestResults: React.FC = () => {
     const testsToExport = testsForPagination;
 
     if (testsToExport.length === 0) {
-      alert("Keine Tests zum Exportieren gefunden.");
+      alert(t("testResults.noTestsToExport"));
       return;
     }
 
@@ -1284,17 +1284,17 @@ const TestResults: React.FC = () => {
     const columnMap: Record<string, { header: string; value: (tr: TestRunWithComputed) => string }> = {
       id: { header: "ID", value: (tr) => String(tr.id) },
       uuid: { header: "UUID", value: (tr) => tr.uuid || "" },
-      form: { header: "Formular", value: (tr) => tr.formName || "" },
-      paymentMethod: { header: "Bezahlmethode", value: (tr) => tr.paymentMethodName || "" },
-      status: { header: "Status", value: (tr) => tr.status },
-      duration: { header: "Dauer (ms)", value: (tr) => String(tr.durationMs || "") },
-      error: { header: "Fehler", value: (tr) => (tr.errorMessage || "").replace(/"/g, '""') },
-      scheduled: { header: "Geplant", value: (tr) => tr.isScheduled ? "Ja" : "Nein" },
-      tags: { header: "Tags", value: (tr) => (tr.tags || []).join(", ").replace(/"/g, '""') },
-      notes: { header: "Notizen", value: (tr) => (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " ") },
-      date: { header: "Datum", value: (tr) => new Date(tr.runAt).toLocaleString("de-DE") },
-      amount: { header: "Betrag", value: (tr) => tr.amount ? `${tr.amount} €` : "" },
-      interval: { header: "Intervall", value: (tr) => formatInterval(tr.interval) },
+      form: { header: t("testResults.form"), value: (tr) => tr.formName || "" },
+      paymentMethod: { header: t("testResults.paymentMethod"), value: (tr) => tr.paymentMethodName || "" },
+      status: { header: t("testResults.status"), value: (tr) => tr.status },
+      duration: { header: t("testResults.durationMs"), value: (tr) => String(tr.durationMs || "") },
+      error: { header: t("testResults.error"), value: (tr) => (tr.errorMessage || "").replace(/"/g, '""') },
+      scheduled: { header: t("testResults.scheduled"), value: (tr) => tr.isScheduled ? t("testResults.yes") : t("testResults.no") },
+      tags: { header: t("testResults.tags"), value: (tr) => (tr.tags || []).join(", ").replace(/"/g, '""') },
+      notes: { header: t("testResults.notes"), value: (tr) => (tr.notes || "").replace(/"/g, '""').replace(/\n/g, " ") },
+      date: { header: t("testResults.date"), value: (tr) => new Date(tr.runAt).toLocaleString(CONFIG.language === "en" ? "en-US" : "de-DE") },
+      amount: { header: t("testResults.amount"), value: (tr) => tr.amount ? `${tr.amount} €` : "" },
+      interval: { header: t("testResults.interval"), value: (tr) => formatInterval(tr.interval) },
     };
 
     const headers = defaultColumns.map(col => columnMap[col]?.header || col);
@@ -2035,7 +2035,7 @@ const TestResults: React.FC = () => {
           ) : sortedFinishedTests.length === 0 ? (
             <div className="p-6">
               <div className="text-center py-8">
-                <div className="text-neutral-500 dark:text-neutral-400 mb-4">{finishedTests.length === 0 ? "Noch keine abgeschlossenen Tests." : "Keine Tests gefunden."}</div>
+                <div className="text-neutral-500 dark:text-neutral-400 mb-4">{finishedTests.length === 0 ? t("testResults.noFinishedTests") : t("testResults.noTestsFound")}</div>
                 <p className="text-neutral-500 dark:text-neutral-400">{finishedTests.length === 0 ? "Führe Tests aus, um Ergebnisse hier zu sehen." : "Versuche andere Suchbegriffe oder Filter."}</p>
               </div>
             </div>
@@ -2327,7 +2327,7 @@ const TestResults: React.FC = () => {
                                 variant="ghost"
                                 size="sm"
                                 className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
-                                title="Löschen">
+                                title={t("button.delete")}>
                                 <Trash2 size={16} />
                               </Button>
                             </div>
@@ -2779,8 +2779,8 @@ const TestResults: React.FC = () => {
         isOpen={!!showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(null)}
         onConfirm={confirmDeleteTestRun}
-        title="Test Run löschen"
-        message="Sind Sie sicher, dass Sie diesen Test Run löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden."
+        title={t("testResults.deleteTestRunTitle")}
+        message={t("testResults.deleteTestRunMessage")}
         itemName={showDeleteConfirm?.name}
         isLoading={isLoading}
       />

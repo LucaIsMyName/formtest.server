@@ -11,109 +11,7 @@ import { AnthropicProvider } from './providers/anthropic';
 import { GoogleProvider } from './providers/google';
 import { OllamaProvider } from './providers/ollama';
 import { encrypt, decrypt } from '../utils/encryption';
-
-// System prompt for the AI assistant
-const SYSTEM_PROMPT = `Du bist ein hilfreicher Assistent für die FormTest Server Anwendung - eine Desktop-App zum automatisierten Testen von Spendenformularen.
-
-WICHTIG - DEINE BESCHRÄNKUNGEN:
-Du kannst NUR Daten aus der App abrufen, analysieren und präsentieren. Du kannst KEINE Aktionen ausführen wie:
-- ❌ Tests starten oder ausführen
-- ❌ Formulare oder Bezahlmethoden erstellen/bearbeiten
-- ❌ Zeitpläne erstellen oder ändern
-- ❌ Einstellungen ändern
-- ❌ Irgendwelche Systemänderungen vornehmen
-
-DEINE FÄHIGKEITEN (NUR DATENANALYSE):
-✅ Formulare, Bezahlmethoden, Tests und Zeitpläne suchen und analysieren
-✅ Testdaten zusammenfassen und Trends erkennen
-✅ Probleme identifizieren und analysieren (warum Tests fehlgeschlagen sind)
-✅ Statistiken und Daten in aggregierter und kuratierter Form präsentieren
-✅ Daten aus verschiedenen Tests und Zeiträumen kombinieren und vergleichen
-✅ Fragen zur Anwendung beantworten
-✅ Formular-Analyse mit Empfehlungen zur Verbesserung der Erfolgsrate
-✅ Beste und schlechteste Formular+Bezahlmethode Kombinationen analysieren
-✅ Zeitreihen-Analysen (Trends über Zeit)
-✅ Fehleranalyse (warum bestimmte Tests fehlgeschlagen sind)
-
-SPEZIELLE ANALYSEN:
-- Du hast Zugriff auf Statistiken zu Formular+Bezahlmethode Kombinationen
-- Nutze diese für Empfehlungen welche Kombinationen gut/schlecht funktionieren
-- Bei Formular-Analysen: Gib konkrete Handlungsempfehlungen basierend auf Daten
-- Analysiere Fehlermeldungen und Test-Logs um Ursachen zu identifizieren
-
-AUSGABEFORMAT - SEHR WICHTIG:
-Du MUSST deine Antwort als JSON-Array von Blöcken formatieren. Jeder Block hat einen "type" und weitere Felder.
-
-VERFÜGBARE BLOCK-TYPEN:
-
-1. Überschrift:
-{"type": "heading", "level": 2, "content": "Überschrift Text"}
-
-2. Text (für Erklärungen, Markdown erlaubt):
-{"type": "text", "content": "Dein Text hier mit **Markdown** Formatierung"}
-
-3. Tabelle:
-{"type": "table", "headers": ["Spalte1", "Spalte2"], "rows": [["Wert1", "Wert2"], ["Wert3", "Wert4"]]}
-
-4. Chart (für visuelle Datenanalyse):
-{"type": "chart", "chartType": "pie", "title": "Titel", "data": [{"name": "Label", "value": 123}]}
-- chartType kann "pie", "bar" oder "line" sein
-- Nutze "pie" für Verteilungen (Erfolg/Fehler, Aktiv/Inaktiv)
-- Nutze "bar" für Vergleiche (Tests pro Formular, etc.)
-- Nutze "line" für Zeitreihen (Trends über Zeit, Erfolgsrate über Tage)
-
-5. Liste:
-{"type": "list", "items": ["Item 1", "Item 2"], "ordered": false}
-
-6. Code Block (für Code-Snippets):
-{"type": "code", "language": "javascript", "content": "const x = 1;"}
-- language: javascript, typescript, json, python, bash, sql, etc.
-
-7. Link (für Navigation zu Tests, Formularen, etc.):
-{"type": "link", "text": "Test #1234", "url": "/test-results?testId=1234", "internal": true}
-- Nutze Links für Test-IDs, Formular-Namen, Bezahlmethoden
-- "internal": true für App-Navigation, false für externe URLs
-- Interne URLs: /test-results, /forms, /payment-methods, /dashboard
-
-8. Follow-up Vorschläge (IMMER am Ende hinzufügen!):
-{"type": "suggestions", "items": ["Vorschlag 1", "Vorschlag 2", "Vorschlag 3"]}
-- Füge IMMER 2-3 relevante Follow-up Fragen am Ende hinzu
-- Die Vorschläge sollten zum Kontext der Antwort passen
-- WICHTIG: Vorschläge müssen NUR für Datenanalyse sein (keine Aktionen wie "Test starten")
-
-9. Quick Action (für vorgeschlagene Aktionen):
-{"type": "action", "label": "Test starten", "action": "startTest", "params": {"formId": 1, "paymentMethodId": 2}}
-- Nutze Actions um dem Benutzer konkrete Aktionen vorzuschlagen
-- Verfügbare Actions: "startTest", "viewForm", "viewTest", "viewPaymentMethod"
-- params enthalten die notwendigen IDs für die Aktion
-- WICHTIG: Actions sind nur Vorschläge, der Benutzer muss klicken
-
-BEISPIEL-ANTWORT für "Analysiere die Testergebnisse":
-[
-  {"type": "heading", "level": 2, "content": "Testergebnisse Analyse"},
-  {"type": "chart", "chartType": "pie", "title": "Erfolgsrate", "data": [{"name": "Erfolgreich", "value": 208}, {"name": "Fehlgeschlagen", "value": 29}]},
-  {"type": "table", "headers": ["Kategorie", "Anzahl", "Prozent"], "rows": [["Erfolgreich", "208", "88%"], ["Fehlgeschlagen", "29", "12%"]]},
-  {"type": "heading", "level": 3, "content": "Fazit"},
-  {"type": "text", "content": "Die Erfolgsrate von 88% ist gut. Die fehlgeschlagenen Tests sollten untersucht werden."},
-  {"type": "suggestions", "items": ["Analysiere fehlgeschlagene Tests im Detail", "Welches Formular hat die meisten Fehler?", "Zeige Erfolgsrate der letzten 7 Tage"]}
-]
-
-LINKS:
-- Für URLs in Tabellen und Text nutze Markdown-Links: [Linktext](https://url.com)
-- Formulare haben URLs - zeige diese als klickbare Links
-- Interne App-Links: [Formulare](/forms), [Tests](/test-results), [Bezahlmethoden](/payment-methods)
-
-REGELN:
-- Antworte IMMER als JSON-Array, auch für einfache Antworten
-- KEINE Kommentare im JSON (// oder /* */ sind NICHT erlaubt!)
-- Nutze Charts bei Analysen und Statistiken
-- Nutze Tabellen für detaillierte Daten
-- Zeige URLs immer als klickbare Links
-- Antworte in der Sprache des Nutzers
-- Sei präzise und kompakt
-
-KONTEXT:
-Du hast Zugriff auf aktuelle App-Daten wie Formulare, Bezahlmethoden, Testergebnisse und Zeitpläne.`;
+import { getSystemPrompt, t } from '../utils/dictionary';
 
 class AIService {
   private provider: BaseAIProvider | null = null;
@@ -347,21 +245,24 @@ class AIService {
   /**
    * Get detailed test results for AI context
    */
-  getDetailedTestResults(): { formName: string; paymentMethodId: number; status: string; error?: string; runAt: string }[] {
+  async getDetailedTestResults(): Promise<{ formName: string; paymentMethod: string; status: string; error?: string; runAt: string; id?: number }[]> {
     const allTests = testRunQueries.getAll();
     const forms = formQueries.getAll();
+    const paymentMethods = await paymentMethodQueries.getAll();
     
     // Get last 50 tests with details
     return allTests.slice(0, 50).map(t => {
       const form = forms.find(f => f.id === t.formId);
+      const paymentMethod = paymentMethods.find(pm => pm.id === t.paymentMethodId);
       return {
+        id: t.id,
         formName: form?.name || `Form #${t.formId}`,
-        paymentMethodId: t.paymentMethodId,
+        paymentMethod: paymentMethod?.name || `PM #${t.paymentMethodId}`,
         status: t.status,
         error: t.errorMessage || undefined,
         runAt: t.runAt instanceof Date ? t.runAt.toISOString() : String(t.runAt),
       };
-    });
+    }) 
   }
 
   /**
@@ -476,7 +377,7 @@ class AIService {
 
   private async buildContextString(userMessage?: string): Promise<string> {
     const data = await this.buildContextData();
-    const detailedTests = this.getDetailedTestResults();
+    const detailedTests = await this.getDetailedTestResults();
     const failedTests = detailedTests.filter(t => t.status === 'FAILURE');
     const combinationStats = await this.getCombinationStats();
     
@@ -503,7 +404,7 @@ class AIService {
     const parts: string[] = [];
     
     // Always include overview
-    parts.push('AKTUELLE APP-DATEN:');
+    parts.push(t('ai.context.currentAppData'));
     parts.push('');
     
     // Forms section
@@ -512,19 +413,20 @@ class AIService {
       const inactiveForms = data.forms.filter(f => !f.isActive);
       if (queryAnalysis.isFormSpecific) {
         // Detailed form list for form-specific queries
-        parts.push(`FORMULARE (${data.forms.length}):`);
-        parts.push(`${data.forms.map(f => `[id:${f.id}] "${f.name}" ${f.isActive ? '✓' : '✗'} ${f.url}`).join('\n') || '- Keine Formulare vorhanden'}`);
+        parts.push(`${t('ai.context.forms.title')} (${data.forms.length}):`);
+        const formsList = data.forms.map(f => `[id:${f.id}] "${f.name}" ${f.isActive ? '✓' : '✗'} ${f.url}`).join('\n');
+        parts.push(formsList || t('ai.context.forms.none'));
       } else {
         // Compact summary for general queries
-        parts.push(`FORMULARE: ${activeForms.length} aktiv, ${inactiveForms.length} inaktiv`);
+        parts.push(`${t('ai.context.forms.title')}: ${activeForms.length} ${t('ai.context.forms.active')}, ${inactiveForms.length} ${t('ai.context.forms.inactive')}`);
         if (activeForms.length > 0) {
-          parts.push(`Aktiv: ${activeForms.map(f => f.name).join(', ')}`);
+          parts.push(`${t('ai.context.forms.active')}: ${activeForms.map(f => f.name).join(', ')}`);
         }
       }
       parts.push('');
     } else {
       // Minimal form info
-      parts.push(`FORMULARE: ${data.forms.length} (${data.forms.filter(f => f.isActive).length} aktiv)`);
+      parts.push(`${t('ai.context.forms.title')}: ${data.forms.length} (${data.forms.filter(f => f.isActive).length} ${t('ai.context.forms.active')})`);
       parts.push('');
     }
     
@@ -534,26 +436,27 @@ class AIService {
       const inactivePayments = data.paymentMethods.filter(pm => !pm.isActive);
       if (queryAnalysis.isPaymentSpecific) {
         // Detailed payment method list
-        parts.push(`BEZAHLMETHODEN (${data.paymentMethods.length}):`);
-        parts.push(`${data.paymentMethods.map(pm => `[id:${pm.id}] "${pm.name}" (${pm.type}) ${pm.isActive ? '✓' : '✗'}`).join('\n') || '- Keine Bezahlmethoden vorhanden'}`);
+        parts.push(`${t('ai.context.paymentMethods.title')} (${data.paymentMethods.length}):`);
+        const paymentsList = data.paymentMethods.map(pm => `[id:${pm.id}] "${pm.name}" (${pm.type}) ${pm.isActive ? '✓' : '✗'}`).join('\n');
+        parts.push(paymentsList || t('ai.context.paymentMethods.none'));
       } else {
         // Compact summary
-        parts.push(`BEZAHLMETHODEN: ${activePayments.length} aktiv, ${inactivePayments.length} inaktiv`);
+        parts.push(`${t('ai.context.paymentMethods.title')}: ${activePayments.length} ${t('ai.context.forms.active')}, ${inactivePayments.length} ${t('ai.context.forms.inactive')}`);
         if (activePayments.length > 0) {
-          parts.push(`Aktiv: ${activePayments.map(pm => pm.name).join(', ')}`);
+          parts.push(`${t('ai.context.forms.active')}: ${activePayments.map(pm => pm.name).join(', ')}`);
         }
       }
       parts.push('');
     } else {
       // Minimal payment info
-      parts.push(`BEZAHLMETHODEN: ${data.paymentMethods.length} (${data.paymentMethods.filter(pm => pm.isActive).length} aktiv)`);
+      parts.push(`${t('ai.context.paymentMethods.title')}: ${data.paymentMethods.length} (${data.paymentMethods.filter(pm => pm.isActive).length} ${t('ai.context.forms.active')})`);
       parts.push('');
     }
     
     // Test results section
     if (queryAnalysis.needsTests) {
-      parts.push(`TESTERGEBNISSE (letzte 30 Tage):`);
-      parts.push(`Gesamt: ${data.recentTests.total}, Erfolg: ${data.recentTests.success} (${data.recentTests.successRate}%), Fehler: ${data.recentTests.failed}`);
+      parts.push(t('ai.context.testResults.title'));
+      parts.push(`${t('ai.context.testResults.total')}: ${data.recentTests.total}, ${t('ai.context.testResults.success')}: ${data.recentTests.success} (${data.recentTests.successRate}%), ${t('ai.context.testResults.failed')}: ${data.recentTests.failed}`);
       
       // Include more tests based on query analysis
       const testLimit = queryAnalysis.testLimit;
@@ -561,36 +464,37 @@ class AIService {
       
       if (queryAnalysis.needsErrors && failedTests.length > 0) {
         parts.push('');
-        parts.push(`FEHLGESCHLAGENE TESTS (${Math.min(failedTests.length, testLimit)}):`);
-        parts.push(failedTests.slice(0, testLimit).map(t => `[id:${t.id}] ${t.formName} + ${t.paymentMethod}: "${t.error || 'Unbekannter Fehler'}" (${t.runAt})`).join('\n'));
+        parts.push(`${t('ai.context.testResults.failedTests')} (${Math.min(failedTests.length, testLimit)}):`);
+        parts.push(failedTests.slice(0, testLimit).map(test => `[id:${test.id || '?'}] ${test.formName} + ${test.paymentMethod}: "${test.error || t('ai.context.testResults.unknownError')}" (${test.runAt})`).join('\n'));
       }
       
       if (relevantTests.length > 0) {
         parts.push('');
-        parts.push(`LETZTE ${relevantTests.length} TESTS:`);
-        parts.push(relevantTests.map(t => `[id:${t.id}] ${t.formName} + ${t.paymentMethod}: ${t.status} (${t.runAt})`).join('\n'));
+        parts.push(`${t('ai.context.testResults.lastTests')} ${relevantTests.length} ${t('ai.context.testResults.tests')}`);
+        parts.push(relevantTests.map(test => `[id:${test.id || '?'}] ${test.formName} + ${test.paymentMethod}: ${test.status} (${test.runAt})`).join('\n'));
       }
       parts.push('');
     } else {
       // Minimal test overview
-      parts.push(`TESTERGEBNISSE: ${data.recentTests.total} Tests, ${data.recentTests.successRate}% Erfolgsrate`);
+      parts.push(`${t('ai.context.testResults.title').replace(' (last 30 days):', '')}: ${data.recentTests.total} Tests, ${data.recentTests.successRate}% Success Rate`);
       parts.push('');
     }
     
     // Combination stats
     if (queryAnalysis.needsCombinations) {
-      parts.push(`BESTE KOMBINATIONEN (mind. 3 Tests):`);
-      parts.push(bestCombos.map(c => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten');
+      parts.push(t('ai.context.combinations.best'));
+      parts.push(bestCombos.map(c => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || t('ai.context.combinations.none'));
       parts.push('');
-      parts.push(`SCHLECHTESTE KOMBINATIONEN (mind. 3 Tests):`);
-      parts.push(worstCombos.map(c => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || '- Keine Daten');
+      parts.push(t('ai.context.combinations.worst'));
+      parts.push(worstCombos.map(c => `${c.formName} + ${c.paymentMethod}: ${c.successRate}% (${c.success}/${c.total})`).join('\n') || t('ai.context.combinations.none'));
       parts.push('');
     }
     
     // Schedules
     if (queryAnalysis.needsSchedules) {
-      parts.push(`ZEITPLÄNE (${data.schedules.length}):`);
-      parts.push(data.schedules.map(s => `${s.name}: ${s.cronExpression} (${s.isActive ? 'aktiv' : 'inaktiv'})`).join('\n') || '- Keine Zeitpläne vorhanden');
+      parts.push(`${t('ai.context.schedules.title')} (${data.schedules.length}):`);
+      const schedulesList = data.schedules.map(s => `${s.name}: ${s.cronExpression} (${s.isActive ? t('ai.context.forms.active') : t('ai.context.forms.inactive')})`).join('\n');
+      parts.push(schedulesList || t('ai.context.schedules.none'));
     }
     
     return parts.join('\n');
@@ -603,14 +507,15 @@ class AIService {
     if (!this.provider) {
       await this.loadSettings();
       if (!this.provider) {
-        throw new Error('AI ist nicht konfiguriert. Bitte konfiguriere einen AI-Provider in den Einstellungen.');
+        throw new Error(t('ai.notConfigured'));
       }
     }
 
     // Get the latest user message for query analysis
     const lastUserMessage = messages.filter(m => m.role === 'user').pop()?.content;
     const contextString = await this.buildContextString(lastUserMessage);
-    const fullSystemPrompt = `${SYSTEM_PROMPT}\n\n${contextString}`;
+    const systemPrompt = getSystemPrompt();
+    const fullSystemPrompt = `${systemPrompt}\n\n${contextString}`;
 
     return this.provider.chat(messages, fullSystemPrompt);
   }
@@ -622,14 +527,15 @@ class AIService {
     if (!this.provider) {
       await this.loadSettings();
       if (!this.provider) {
-        throw new Error('AI ist nicht konfiguriert. Bitte konfiguriere einen AI-Provider in den Einstellungen.');
+        throw new Error(t('ai.notConfigured'));
       }
     }
 
     // Get the latest user message for query analysis
     const lastUserMessage = messages.filter(m => m.role === 'user').pop()?.content;
     const contextString = await this.buildContextString(lastUserMessage);
-    const fullSystemPrompt = `${SYSTEM_PROMPT}\n\n${contextString}`;
+    const systemPrompt = getSystemPrompt();
+    const fullSystemPrompt = `${systemPrompt}\n\n${contextString}`;
 
     return this.provider.streamChat(messages, fullSystemPrompt, callbacks);
   }

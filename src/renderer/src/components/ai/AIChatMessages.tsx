@@ -36,6 +36,8 @@ import {
 } from "recharts";
 import Button from "../ui/Button";
 import { calculateTokenCost } from "../../utils/tokenCostCalculator";
+import { t } from "../../data/dictionary";
+import { CONFIG } from "../../app.config";
 
 // Code blocks will use syntax highlighting if react-syntax-highlighter is installed
 // Otherwise, they will fall back to plain text with copy functionality
@@ -961,19 +963,19 @@ interface AIChatMessagesProps {
   onActionClick?: (action: string, params?: Record<string, any>) => void;
 }
 
-// Default suggestions for empty chat
-const DEFAULT_SUGGESTIONS = [
-  "Analysiere fehlgeschlagene Tests",
-  "Zeige Erfolgsrate der Formulare",
-  "Vergleiche Test-Ergebnisse der letzten 7 Tage",
-  "Zeige Statistiken zu allen Formularen",
-  "Welche Formular+Bezahlmethode Kombinationen funktionieren am besten?",
-  "Analysiere Trends der letzten 30 Tage",
-  "Zeige Statistiken zu allen Tests",
-  "Warum sind bestimmte Tests fehlgeschlagen?",
-  "Zeige Statistiken zu aktiven Formularen",
-  "Vergleiche Erfolgsraten zwischen Bezahlmethoden",
-  "Zeige Statistiken zu allen Bezahlmethoden",
+// Default suggestions for empty chat - will be translated in component
+const getDefaultSuggestions = (): string[] => [
+  t("ai.suggestions.analyzeFailedTests"),
+  t("ai.suggestions.showFormSuccessRate"),
+  t("ai.suggestions.compareLast7Days"),
+  t("ai.suggestions.showAllFormStats"),
+  t("ai.suggestions.bestCombinations"),
+  t("ai.suggestions.analyzeLast30Days"),
+  t("ai.suggestions.showAllTestStats"),
+  t("ai.suggestions.whyFailed"),
+  t("ai.suggestions.showActiveFormStats"),
+  t("ai.suggestions.comparePaymentMethods"),
+  t("ai.suggestions.showAllPaymentStats"),
 ];
 
 // Generate context-aware suggestions based on message content
@@ -988,9 +990,9 @@ function generateAutoSuggestions(messageContent: string): string[] {
     content.includes("failure") ||
     content.includes("error")
   ) {
-    suggestions.push("Analysiere fehlgeschlagene Tests im Detail");
-    suggestions.push("Warum sind diese Tests fehlgeschlagen?");
-    suggestions.push("Zeige Fehlerursachen der letzten Tests");
+    suggestions.push(t("ai.suggestions.analyzeFailedDetail"));
+    suggestions.push(t("ai.suggestions.whyFailedDetail"));
+    suggestions.push(t("ai.suggestions.showErrorCauses"));
   }
 
   // If message mentions success rate
@@ -999,16 +1001,16 @@ function generateAutoSuggestions(messageContent: string): string[] {
     content.includes("success rate") ||
     content.includes("erfolgreich")
   ) {
-    suggestions.push("Vergleiche Erfolgsraten zwischen Formularen");
-    suggestions.push("Zeige Erfolgsrate Trend der letzten 30 Tage");
-    suggestions.push("Welche Kombinationen haben die beste Erfolgsrate?");
+    suggestions.push(t("ai.suggestions.compareFormSuccessRates"));
+    suggestions.push(t("ai.suggestions.showSuccessRateTrend"));
+    suggestions.push(t("ai.suggestions.bestSuccessRateCombos"));
   }
 
   // If message mentions forms
   if (content.includes("formular") || content.includes("form")) {
-    suggestions.push("Vergleiche alle Formulare");
-    suggestions.push("Zeige Statistiken zu jedem Formular");
-    suggestions.push("Welches Formular hat die meisten Tests?");
+    suggestions.push(t("ai.suggestions.compareAllForms"));
+    suggestions.push(t("ai.suggestions.showFormStats"));
+    suggestions.push(t("ai.suggestions.mostTestsForm"));
   }
 
   // If message mentions payment methods
@@ -1017,9 +1019,9 @@ function generateAutoSuggestions(messageContent: string): string[] {
     content.includes("payment") ||
     content.includes("zahlung")
   ) {
-    suggestions.push("Vergleiche Erfolgsraten zwischen Bezahlmethoden");
-    suggestions.push("Welche Bezahlmethode funktioniert am besten?");
-    suggestions.push("Zeige Statistiken zu allen Bezahlmethoden");
+    suggestions.push(t("ai.suggestions.comparePaymentMethods"));
+    suggestions.push(t("ai.suggestions.bestPaymentMethod"));
+    suggestions.push(t("ai.suggestions.showAllPaymentStats"));
   }
 
   // If message mentions time/trends
@@ -1030,9 +1032,9 @@ function generateAutoSuggestions(messageContent: string): string[] {
     content.includes("woche") ||
     content.includes("monat")
   ) {
-    suggestions.push("Analysiere Trends der letzten 7 Tage");
-    suggestions.push("Vergleiche verschiedene Zeiträume");
-    suggestions.push("Zeige Entwicklung der Erfolgsrate über Zeit");
+    suggestions.push(t("ai.suggestions.analyzeTrends7Days"));
+    suggestions.push(t("ai.suggestions.compareTimePeriods"));
+    suggestions.push(t("ai.suggestions.showSuccessRateOverTime"));
   }
 
   // If message mentions statistics/stats
@@ -1042,26 +1044,26 @@ function generateAutoSuggestions(messageContent: string): string[] {
     content.includes("statistics") ||
     content.includes("daten")
   ) {
-    suggestions.push("Zeige detaillierte Test-Statistiken");
-    suggestions.push("Analysiere Daten aus verschiedenen Zeiträumen");
-    suggestions.push("Vergleiche aggregierte Daten");
+    suggestions.push(t("ai.suggestions.showDetailedStats"));
+    suggestions.push(t("ai.suggestions.analyzeDifferentPeriods"));
+    suggestions.push(t("ai.suggestions.compareAggregatedData"));
   }
 
   // If message mentions combinations
   if (content.includes("kombination") || content.includes("combination")) {
-    suggestions.push("Zeige beste und schlechteste Kombinationen");
-    suggestions.push("Analysiere alle Formular+Bezahlmethode Kombinationen");
-    suggestions.push("Welche Kombinationen sollten vermieden werden?");
+    suggestions.push(t("ai.suggestions.showBestWorstCombos"));
+    suggestions.push(t("ai.suggestions.analyzeAllCombos"));
+    suggestions.push(t("ai.suggestions.avoidCombos"));
   }
 
   // Fill remaining slots with general suggestions if needed
   const generalSuggestions = [
-    "Analysiere fehlgeschlagene Tests",
-    "Zeige Erfolgsrate der letzten 7 Tage",
-    "Vergleiche Test-Ergebnisse zwischen Formularen",
-    "Welche Formular+Bezahlmethode Kombinationen funktionieren am besten?",
-    "Analysiere Trends der letzten 30 Tage",
-    "Warum sind bestimmte Tests fehlgeschlagen?",
+    t("ai.suggestions.analyzeFailedTests"),
+    t("ai.suggestions.showSuccessRate7Days"),
+    t("ai.suggestions.compareFormResults"),
+    t("ai.suggestions.bestCombinations"),
+    t("ai.suggestions.analyzeLast30Days"),
+    t("ai.suggestions.whyFailed"),
   ];
 
   // Add general suggestions until we have 3-4 total
@@ -1099,14 +1101,13 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({
           <MessagesSquare size={24} className="text-blue-500" />
         </div>
         <h3 className="text-base font-medium text-neutral-900 dark:text-neutral-100 mb-1">
-          Wie kann ich helfen?
+          {t("ai.howCanIHelp") || "How can I help?"}
         </h3>
         <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-md mb-6 text-left">
-          Frag mich nach Formularen, Bezahlmethoden, Testergebnissen oder lass
-          mich deine Daten analysieren.
+          {t("ai.emptyStateDescription") || "Ask me about forms, payment methods, test results or let me analyze your data."}
         </p>
         <div className="flex flex-wrap justify-start gap-2 max-w-lg">
-          {DEFAULT_SUGGESTIONS.slice(0, 6).map((suggestion, i) => (
+          {getDefaultSuggestions().slice(0, 6).map((suggestion, i) => (
             <button
               key={i}
               onClick={() => onSuggestionClick?.(suggestion)}
@@ -1128,7 +1129,7 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({
 
   // Helper function to format date for separator
   const formatDateSeparator = (date: Date): string => {
-    return new Date(date).toLocaleDateString("de-DE", {
+    return new Date(date).toLocaleDateString(CONFIG.language === "en" ? "en-US" : "de-DE", {
       day: "numeric",
       month: "long",
       year: "numeric",

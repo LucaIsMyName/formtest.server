@@ -403,17 +403,17 @@ const Settings: React.FC = () => {
       if (newKey) {
         setApiKey(newKey);
         await updateSetting("api_key", newKey, "API Key");
-        setApiStatusMessage({ type: "success", message: "Neuer API-Key generiert" });
+        setApiStatusMessage({ type: "success", message: t("settings.apiKeyGenerated") });
         if (apiStatusMessageTimeoutRef.current) {
           clearTimeout(apiStatusMessageTimeoutRef.current);
         }
         apiStatusMessageTimeoutRef.current = setTimeout(() => setApiStatusMessage(null), 3000);
       } else {
-        setApiStatusMessage({ type: "error", message: "Kein Key generiert" });
+        setApiStatusMessage({ type: "error", message: t("settings.noKeyGenerated") });
       }
     } catch (error) {
       console.error("Error generating API key:", error);
-      setApiStatusMessage({ type: "error", message: `Fehler: ${error instanceof Error ? error.message : "Unbekannt"}` });
+      setApiStatusMessage({ type: "error", message: `${t("settings.errorPrefix")} ${error instanceof Error ? error.message : t("error.unexpected")}` });
     }
   }, [updateSetting]);
 
@@ -436,13 +436,13 @@ const Settings: React.FC = () => {
         if (result.success) {
           setApiServerRunning(false);
           await updateSetting("api_enabled", "false", "API aktiviert");
-          setApiStatusMessage({ type: "success", message: "API Server gestoppt" });
+          setApiStatusMessage({ type: "success", message: t("settings.apiServerStopped") });
         } else {
-          setApiStatusMessage({ type: "error", message: result.error || "Fehler beim Stoppen" });
+          setApiStatusMessage({ type: "error", message: result.error || t("settings.errorStopping") });
         }
       } else {
         if (!apiKey) {
-          setApiStatusMessage({ type: "error", message: "Bitte zuerst einen API-Key generieren" });
+          setApiStatusMessage({ type: "error", message: t("settings.generateApiKeyFirst") });
           return;
         }
         const port = parseInt(apiPort) || 3847;
@@ -451,9 +451,9 @@ const Settings: React.FC = () => {
           setApiServerRunning(true);
           await updateSetting("api_enabled", "true", "API aktiviert");
           await updateSetting("api_port", String(port), "API Port");
-          setApiStatusMessage({ type: "success", message: `API Server gestartet auf Port ${port}` });
+          setApiStatusMessage({ type: "success", message: `${t("settings.apiServerStarted")} ${port}` });
       } else {
-        setApiStatusMessage({ type: "error", message: result.error || "Fehler beim Starten" });
+        setApiStatusMessage({ type: "error", message: result.error || t("settings.errorStarting") });
       }
     }
     if (apiStatusMessageTimeoutRef.current) {
@@ -461,14 +461,14 @@ const Settings: React.FC = () => {
     }
     apiStatusMessageTimeoutRef.current = setTimeout(() => setApiStatusMessage(null), 3000);
     } catch (error) {
-      setApiStatusMessage({ type: "error", message: "Unerwarteter Fehler" });
+      setApiStatusMessage({ type: "error", message: t("settings.unexpectedError") });
     }
   }, [apiServerRunning, apiKey, apiPort, updateSetting]);
 
   // Password handlers
   const handleSetPassword = useCallback(async () => {
     if (!newPassword) {
-      setPasswordMessage({ type: "error", message: "Bitte Passwort eingeben" });
+      setPasswordMessage({ type: "error", message: t("settings.passwordRequired") });
       return;
     }
     if (newPassword.length < 4) {
@@ -798,15 +798,15 @@ const Settings: React.FC = () => {
       case "ui":
         return "UI";
       case "email":
-        return "E-Mail";
+        return t("settings.email");
       case "data":
-        return "Daten";
+        return t("settings.data");
       case "selectors":
-        return "Selektoren";
+        return t("settings.selectors");
       case "api":
-        return "API";
+        return t("settings.api");
       case "security":
-        return "Sicherheit";
+        return t("settings.security");
       case "ai":
         return "AI";
       default:
@@ -968,7 +968,7 @@ const Settings: React.FC = () => {
           <div className="flex items-center gap-2">
             <Input
               type="text"
-              value={item.value || "Kein Key generiert"}
+              value={item.value || t("settings.noKeyGeneratedPlaceholder")}
               readOnly
               className={`h-7 text-xs font-mono flex-1 ${!item.value ? "text-neutral-400 italic" : ""}`}
             />
@@ -986,7 +986,7 @@ const Settings: React.FC = () => {
               size="sm"
               onClick={handleGenerateApiKey}
               className="text-xs h-7 px-2"
-              title="Neuen Key generieren">
+              title={t("settings.generateNewKey")}>
               <RefreshCw size={12} />
             </Button>
           </div>
@@ -1043,7 +1043,7 @@ const Settings: React.FC = () => {
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${passwordEnabled ? "bg-green-500" : "bg-neutral-400"}`} />
             <span className="text-xs text-neutral-600 dark:text-neutral-400 flex-1">
-              {passwordEnabled ? "Aktiviert" : "Deaktiviert"}
+              {passwordEnabled ? t("settings.enabled") : t("settings.disabled")}
             </span>
             <Button
               variant="secondary"
@@ -1090,14 +1090,14 @@ const Settings: React.FC = () => {
           statusOptions={[
             { value: "test", label: "Test" },
             { value: "ui", label: "UI" },
-            { value: "email", label: "E-Mail" },
-            { value: "data", label: "Daten" },
-            { value: "selectors", label: "Selektoren" },
-            { value: "api", label: "API" },
-            { value: "security", label: "Sicherheit" },
+            { value: "email", label: t("settings.email") },
+            { value: "data", label: t("settings.data") },
+            { value: "selectors", label: t("settings.selectors") },
+            { value: "api", label: t("settings.api") },
+            { value: "security", label: t("settings.security") },
             { value: "ai", label: "AI" },
           ]}
-          statusLabel="Kategorie"
+          statusLabel={t("settings.category")}
           onClear={() => {
             setSearchTerm("");
             setCategoryFilter(undefined);
@@ -1475,13 +1475,13 @@ const Settings: React.FC = () => {
             <Button
               variant="ghost"
               onClick={() => setShowTagDialog(false)}>
-              Abbrechen
+              {t("button.cancel")}
             </Button>
             <Button
               variant="primary"
               onClick={editingTag ? handleEditTag : handleCreateTag}
               disabled={!tagName.trim()}>
-              {editingTag ? "Speichern" : "Erstellen"}
+              {editingTag ? t("settings.save") : t("settings.create")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -361,7 +361,8 @@ export class SmartFormFiller {
         return faker.location.zipCode();
 
       case "country":
-        return "Deutschland";
+        // Use country code instead of translated name for consistency
+        return "DE";
 
       case "amount":
         return "5";
@@ -376,6 +377,10 @@ export class SmartFormFiller {
         return faker.date.past().toISOString().split("T")[0];
 
       case "salutation":
+        // Note: Salutation values should match what forms expect
+        // Forms typically use "Mr.", "Mrs.", "Mx." or "Herr", "Frau", "Divers"
+        // For now, keep German defaults but this could be made language-aware
+        // if form field mappings support it
         return Math.random() > 0.5 ? "Herr" : "Frau";
 
       default:

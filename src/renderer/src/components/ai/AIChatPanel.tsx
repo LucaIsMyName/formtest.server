@@ -5,6 +5,7 @@ import AIChatMessages from './AIChatMessages';
 import AIChatInput from './AIChatInput';
 import AIChatList from './AIChatList';
 import { Drawer, DrawerContent } from '../ui/Drawer';
+import { t } from '../../data/dictionary';
 
 interface AIChatPanelProps {
   isOpen: boolean;
@@ -66,7 +67,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
         <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-700">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-              {showChatList ? 'Chat-Verlauf' : (activeChat?.title || 'AI Assistent')}
+              {showChatList ? t("ai.chatHistory") : (activeChat?.title || t("ai.assistant"))}
             </h2>
           </div>
           <div className="flex items-center gap-1">
@@ -77,14 +78,14 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
                   ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600'
                   : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500'
               }`}
-              title="Chat-Verlauf"
+              title={t("ai.chatHistory")}
             >
               <History size={16} />
             </button>
             <button
               onClick={handleNewChat}
               className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg text-neutral-500 transition-colors"
-              title="Neuer Chat"
+              title={t("ai.newChat")}
             >
               <Plus size={16} />
             </button>
@@ -95,7 +96,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
                   onOpenFullPage();
                 }}
                 className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg text-neutral-500 transition-colors"
-                title="Vollbild"
+                title={t("ai.fullscreen")}
               >
                 <Maximize2 size={16} />
               </button>
@@ -103,7 +104,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
             <button
               onClick={onClose}
               className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg text-neutral-500 transition-colors"
-              title="Schließen"
+              title={t("ai.close")}
             >
               <X size={16} />
             </button>

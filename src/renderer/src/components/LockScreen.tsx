@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { Input } from "./ui/Input";
 import Button from "./ui/Button";
+import { t } from "../data/dictionary";
 
 interface LockScreenProps {
   onUnlock: () => void;
@@ -48,7 +49,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password.trim()) {
-      setError("Bitte Passwort eingeben");
+      setError(t("settings.passwordRequired"));
       return;
     }
 
@@ -60,12 +61,12 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
       if (result.success) {
         onUnlock();
       } else {
-        setError(result.error || "Falsches Passwort");
+        setError(result.error || t("settings.wrongPassword"));
         setPassword("");
         inputRef.current?.focus();
       }
     } catch (err) {
-      setError("Fehler bei der Überprüfung");
+      setError(t("error.unexpected"));
       console.error("Password verification error:", err);
     } finally {
       setIsLoading(false);
@@ -73,7 +74,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
   };
 
   const handleEmergencyReset = async () => {
-    if (!confirm("Passwortschutz wirklich deaktivieren?\n\nDies entfernt das Master-Passwort dauerhaft.")) {
+    if (!confirm(t("settings.disablePassword") + "\n\n" + t("settings.passwordDisabledSuccess"))) {
       return;
     }
 
@@ -82,10 +83,10 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
       if (result.success) {
         onUnlock();
       } else {
-        setError("Reset fehlgeschlagen");
+        setError(t("error.unexpected"));
       }
     } catch (err) {
-      setError("Reset fehlgeschlagen");
+      setError(t("error.unexpected"));
       console.error("Emergency reset error:", err);
     }
   };
@@ -114,7 +115,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
             FormTest Server
           </h1>
           <p className="text-sm text-center text-neutral-500 dark:text-neutral-400 mb-6">
-            Bitte Master-Passwort eingeben
+            {t("settings.currentPassword")}
           </p>
 
           {/* Form */}
@@ -125,7 +126,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Passwort"
+                placeholder={t("settings.currentPassword")}
                 className="pr-10"
                 disabled={isLoading}
                 autoComplete="current-password"
@@ -156,7 +157,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
               isLoading={isLoading}
               disabled={isLoading}
             >
-              Entsperren
+              {t("button.unlock") || "Unlock"}
             </Button>
           </form>
 
@@ -167,7 +168,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
                 onClick={handleEmergencyReset}
                 className="w-full text-xs text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
               >
-                Passwortschutz deaktivieren (Notfall-Reset)
+                {t("settings.disablePassword")} (Emergency Reset)
               </button>
             </div>
           )}
@@ -175,7 +176,7 @@ const LockScreen: React.FC<LockScreenProps> = ({ onUnlock }) => {
 
         {/* Hint */}
         <p className="text-xs text-center text-neutral-400 dark:text-neutral-500 mt-4">
-          Shift gedrückt halten für Notfall-Optionen
+          Hold Shift for emergency options
         </p>
       </div>
     </div>
