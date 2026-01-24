@@ -229,6 +229,8 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Formularname"
               disabled={isLoading}
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
               className={`${CONFIG.style.title.className} h-16` + (errors.name ? "text-red-500" : "")}
             />
           </div>
@@ -236,7 +238,7 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
         </div>
 
         <DrawerHeader className="pt-6">
-          {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+          {errors.name && <p id="name-error" className="text-red-500 text-sm" role="alert">{errors.name}</p>}
         </DrawerHeader>
 
         {/* Details Table - only shown when editing */}
@@ -314,9 +316,11 @@ const FormDrawer: React.FC<FormDrawerProps> = ({ isOpen, onClose, onSubmit, edit
                         onChange={(e) => setFormData({ ...formData, url: e.target.value })}
                         placeholder="https://secure.fundraisingbox.com/..."
                         disabled={isLoading}
+                        aria-invalid={!!errors.url}
+                        aria-describedby={errors.url ? "url-error" : undefined}
                         className={`text-sm ${errors.url ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                       />
-                      {errors.url && <p className="text-red-500 text-xs mt-1">{errors.url}</p>}
+                      {errors.url && <p id="url-error" className="text-red-500 text-xs mt-1" role="alert">{errors.url}</p>}
                     </TableCell>
                   </TableRow>
                   <TableRow>

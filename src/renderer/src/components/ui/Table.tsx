@@ -150,7 +150,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPag
           disabled={currentPage <= 1}
           aria-label={t("table.pagination.previousPage")}
           className={cn("p-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", currentPage <= 1 ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}>
-          <ChevronLeft size={14} />
+          <ChevronLeft size={14} aria-hidden="true" />
         </button>
 
         {/* Page input */}
@@ -174,7 +174,7 @@ const TablePagination: React.FC<TablePaginationProps> = ({ currentPage, totalPag
           disabled={currentPage >= totalPages}
           aria-label={t("table.pagination.nextPage")}
           className={cn("p-1.5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", currentPage >= totalPages ? "text-neutral-300 dark:text-neutral-600 cursor-not-allowed" : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-200")}>
-          <ChevronRight size={14} />
+          <ChevronRight size={14} aria-hidden="true" />
         </button>
       </div>
     </div>

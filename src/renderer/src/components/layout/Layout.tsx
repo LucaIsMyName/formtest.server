@@ -4,6 +4,7 @@ import CustomTitleBar from "./CustomTitleBar";
 import Button from "../ui/Button";
 import TestRunDrawer from "../drawers/TestRunDrawer";
 import GlobalSearch from "../common/GlobalSearch";
+import SkipLink from "../common/SkipLink";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot, Scale, Code } from "lucide-react";
 import { useSettingsStore } from "../../store/useSettingsStore";
 import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
@@ -138,7 +139,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div
+        <aside
           className="select-none bg-neutral-50 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col select-none"
           style={{ width: "clamp(16rem, 22.5vw, 40rem)" }}>
           <nav className="flex-1 flex flex-col" aria-label="Hauptnavigation">
@@ -206,13 +207,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               })}
             </div>
           </nav>
-        </div>
+        </aside>
 
         {/* Main content */}
         <div className="flex-1  flex flex-col overflow-hidden">
           <main
+            id="main-content"
             ref={mainContentRef}
-            className="flex-1  overflow-auto bg-neutral-50 dark:bg-neutral-900 px-4 py-4">
+            tabIndex={-1}
+            className="flex-1  overflow-auto bg-neutral-50 dark:bg-neutral-900 px-4 py-4 focus:outline-none">
             <div className="w-full max-w-[1340px]">{children}</div>
           </main>
         </div>

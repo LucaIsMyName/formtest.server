@@ -78,8 +78,9 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
                   : 'hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500'
               }`}
               title={t("ai.chatHistory")}
-            >
-              <History size={16} />
+              aria-label={t("ai.chatHistory")}
+              aria-expanded={showChatList}>
+              <History size={16} aria-hidden="true" />
             </button>
             <button
               onClick={handleNewChat}
@@ -118,8 +119,8 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({ isOpen, onClose, onOpenFullPa
               <button
                 onClick={clearError}
                 className="text-red-500 hover:text-red-700"
-              >
-                <X size={14} />
+                aria-label={t("ai.close", "Close", "Schließen")}>
+                <X size={14} aria-hidden="true" />
               </button>
             </div>
           </div>

@@ -15,7 +15,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const ButtonLoading = () => {
   return (
     <>
-      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+      <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+      <span className="sr-only">Lädt...</span>
     </>
   );
 };
@@ -77,6 +78,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className = "
       style={{ fontStretch: "115%" }}
       className={`${baseClasses} ${condensedClasses} ${variantClasses} ${sizeClasses} ${className}`}
       disabled={disabled || isLoading}
+      aria-busy={isLoading}
       {...props}>
       {isLoading && <ButtonLoading />}
       {children}

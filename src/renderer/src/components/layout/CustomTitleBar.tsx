@@ -126,6 +126,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                   <ChevronLeft
                     size={14}
                     strokeWidth={2.5}
+                    aria-hidden="true"
                   />
                 </button>
               </Tooltip.Trigger>
@@ -181,6 +182,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                 <Search
                   size={14}
                   className="ml-2 text-neutral-400 group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors"
+                  aria-hidden="true"
                 />
                 <span className="text-[12px] text-neutral-400 group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">Suche...</span>
                 <kbd className="ml-auto font-mono px-1.5 py-0.5 mr-1 text-neutral-400 flex items-center gap-1">
@@ -226,7 +228,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                     className="p-1.5 !px-1.5 !py-1.5"
                     onClick={onOpenSettings}
                     aria-label="Einstellungen öffnen">
-                    <Settings size={14} />
+                    <Settings size={14} aria-hidden="true" />
                   </Button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
@@ -269,7 +271,7 @@ const CustomTitleBar: React.FC<CustomTitleBarProps> = ({ onRunAllTests, onOpenSe
                     variant={"primary"}
                     className="p-1.5 !px-1.5 !py-1.5"
                     aria-label="Alle Tests ausführen">
-                    <Terminal size={14} />
+                    <Terminal size={14} aria-hidden="true" />
                   </Button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>

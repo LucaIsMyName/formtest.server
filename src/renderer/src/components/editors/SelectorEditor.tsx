@@ -164,13 +164,17 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
   const categoryLabel = getCategoryLabel(category);
   const hasOverrides = overrides.some((o) => o.category === category);
 
+  const contentId = `selector-category-${category}`;
+  
   return (
     <div className=" overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
+        aria-controls={contentId}
         className="w-full flex items-center justify-between pb-4 ">
         <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200">
-          {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+          {isExpanded ? <ChevronDown size={18} aria-hidden="true" /> : <ChevronRight size={18} aria-hidden="true" />}
           <span className="font-medium text-neutral-900 dark:text-white">{categoryLabel}</span>
           <span className="text-xs text-neutral-500 dark:text-neutral-400">({keys.length} {t("selector.fields")})</span>
           {hasOverrides && <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">{t("selector.customized")}</span>}
@@ -178,11 +182,12 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
         <Settings2
           size={16}
           className="text-neutral-400"
+          aria-hidden="true"
         />
       </button>
 
       {isExpanded && (
-        <div className="px-4 text-neutral-800 dark:text-neutral-200 space-y-4 ">
+        <div id={contentId} className="px-4 text-neutral-800 dark:text-neutral-200 space-y-4 ">
           {keys.map((key) => {
             const defaults = defaultSelectors[key] || [];
             const override = getOverrideForKey(key);

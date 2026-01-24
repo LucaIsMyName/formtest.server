@@ -171,9 +171,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 onChange={(e) => updateDetails("accountHolder", e.target.value)}
                 placeholder="Max Mustermann"
                 disabled={isLoading}
+                aria-invalid={!!errors.accountHolder}
+                aria-describedby={errors.accountHolder ? "accountHolder-error" : undefined}
                 className={errors.accountHolder ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
-              {errors.accountHolder && <p className="text-red-500 text-xs">{errors.accountHolder}</p>}
+              {errors.accountHolder && <p id="accountHolder-error" className="text-red-500 text-xs" role="alert">{errors.accountHolder}</p>}
             </div>
             <div className="space-y-2">
               <Label
@@ -213,9 +215,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 onChange={(e) => updateDetails("cardNumber", e.target.value)}
                 placeholder="4111 1111 1111 1111"
                 disabled={isLoading}
+                aria-invalid={!!errors.cardNumber}
+                aria-describedby={errors.cardNumber ? "cardNumber-error" : undefined}
                 className={errors.cardNumber ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
-              {errors.cardNumber && <p className="text-red-500 text-xs">{errors.cardNumber}</p>}
+              {errors.cardNumber && <p id="cardNumber-error" className="text-red-500 text-xs" role="alert">{errors.cardNumber}</p>}
             </div>
             <div className="space-y-2">
               <Label
@@ -249,9 +253,11 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                   onChange={(e) => updateDetails("expiryDate", e.target.value)}
                   placeholder="MM/YY"
                   disabled={isLoading}
+                  aria-invalid={!!errors.expiryDate}
+                  aria-describedby={errors.expiryDate ? "expiryDate-error" : undefined}
                   className={errors.expiryDate ? "border-red-500 focus-visible:ring-red-500" : ""}
                 />
-                {errors.expiryDate && <p className="text-red-500 text-xs">{errors.expiryDate}</p>}
+                {errors.expiryDate && <p id="expiryDate-error" className="text-red-500 text-xs" role="alert">{errors.expiryDate}</p>}
               </div>
               <div className="space-y-2">
                 <Label
@@ -289,6 +295,8 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               disabled={isLoading}>
               <SelectTrigger
                 id="bankCode"
+                aria-invalid={!!errors.bankCode}
+                aria-describedby={errors.bankCode ? "bankCode-error" : undefined}
                 className={errors.bankCode ? "border-red-500 focus:ring-red-500" : ""}>
                 <SelectValue placeholder={t("paymentMethods.selectBank")} />
               </SelectTrigger>
@@ -299,7 +307,7 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
                 <SelectItem value="GIBAATWW">Erste Bank</SelectItem>
               </SelectContent>
             </Select>
-            {errors.bankCode && <p className="text-red-500 text-xs">{errors.bankCode}</p>}
+            {errors.bankCode && <p id="bankCode-error" className="text-red-500 text-xs" role="alert">{errors.bankCode}</p>}
           </div>
         );
 
@@ -359,13 +367,15 @@ const PaymentMethodDrawer: React.FC<PaymentMethodDrawerProps> = ({ isOpen, onClo
               onChange={(e) => setMethodData({ ...methodData, name: e.target.value })}
               placeholder="Bezahlmethoden Name"
               disabled={isLoading}
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? "name-error" : undefined}
               className={`${CONFIG.style.title.className} h-16` + (errors.name ? "text-red-500" : "")}
             />
           </div>
           {/* Action buttons */}
         </div>
 
-        <DrawerHeader className="pt-6">{errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}</DrawerHeader>
+        <DrawerHeader className="pt-6">{errors.name && <p id="name-error" className="text-red-500 text-xs" role="alert">{errors.name}</p>}</DrawerHeader>
 
         {/* Details Table - only shown when editing */}
         {editMethod && (

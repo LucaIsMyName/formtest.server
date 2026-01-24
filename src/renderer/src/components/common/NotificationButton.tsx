@@ -51,8 +51,18 @@ const NotificationButton: React.FC = () => {
     }
   };
 
+  // Announce new notifications
+  useEffect(() => {
+    if (unreadCount > 0) {
+      // Announcement will be handled by aria-live region
+    }
+  }, [unreadCount]);
+
   return (
     <Tooltip.Provider>
+      <AriaLiveRegion level="polite" id="notification-announcements">
+        {unreadCount > 0 && `${unreadCount} neue Benachrichtigung${unreadCount !== 1 ? "en" : ""}`}
+      </AriaLiveRegion>
       <DropdownMenu.Root>
         <Tooltip.Root>
           <Tooltip.Trigger asChild>
@@ -61,7 +71,7 @@ const NotificationButton: React.FC = () => {
                    variant="secondary"
                     className="p-1.5 !px-1.5 !py-1.5"
                 aria-label="Benachrichtigungen">
-                <Bell size={14} />
+                <Bell size={14} aria-hidden="true" />
                 {unreadCount > 0 && (
                   <span 
                     className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
@@ -104,8 +114,9 @@ const NotificationButton: React.FC = () => {
                 <button
                   onClick={(e) => { e.preventDefault(); deleteAll(); }}
                   className="p-1 text-neutral-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                  title="Alle löschen">
-                  <Trash2 size={14} />
+                  title="Alle löschen"
+                  aria-label="Alle löschen">
+                  <Trash2 size={14} aria-hidden="true" />
                 </button>
               )}
             </div>

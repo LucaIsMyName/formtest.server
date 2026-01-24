@@ -21,6 +21,7 @@ import {
   downloadFile,
 } from "../utils/chatExporter";
 import { t } from "../data/dictionary";
+import { CONFIG } from "../app.config";
 
 const AIChat: React.FC = () => {
   const navigate = useNavigate();
@@ -183,6 +184,7 @@ const AIChat: React.FC = () => {
       className="flex w-full overflow-hidden -mx-4 -my-4"
       style={{ height: "calc(100vh - 3.5rem)" }}
     >
+      <h1 className="sr-only">{t("ai.assistant", "AI Assistant", "KI Assistent")}</h1>
       {/* Sidebar - Chat List - fixed width */}
       <div className="w-[calc(clamp(16rem,22.5vw,40rem)/1.33)] border-r border-neutral-200 dark:border-neutral-700 flex flex-col flex-shrink-0 h-full">
         {/* Sidebar Header */}

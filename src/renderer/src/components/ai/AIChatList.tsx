@@ -54,7 +54,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
       <div className="flex-1 flex flex-col">
         <div className="px-6 py-3 border-b border-neutral-200 dark:border-neutral-700">
           <div className="relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" aria-hidden="true" />
             <Input
               type="text"
               placeholder="Chats durchsuchen..."
@@ -112,7 +112,7 @@ const AIChatList: React.FC<AIChatListProps> = ({
             }`}
             onClick={() => editingId !== chat.id && onSelect(chat.id)}
           >
-            <MessageSquare size={18} strokeWidth={activeChat?.id === chat.id ? 2 : 1.75} className={`flex-shrink-0 ${activeChat?.id === chat.id ? 'text-neutral-900 dark:text-neutral-100' : 'text-neutral-500 dark:text-neutral-400'}`} />
+            <MessageSquare size={18} strokeWidth={activeChat?.id === chat.id ? 2 : 1.75} className={`flex-shrink-0 ${activeChat?.id === chat.id ? 'text-neutral-900 dark:text-neutral-100' : 'text-neutral-500 dark:text-neutral-400'}`} aria-hidden="true" />
             
             <div className="flex-1 min-w-0 relative">
               {/* Always render the text to maintain height */}
@@ -153,8 +153,8 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       handleSaveEdit(chat.id);
                     }}
                     className="p-1.5 text-green-600"
-                  >
-                    <Check size={14} />
+                    aria-label={t("ai.save", "Save", "Speichern")}>
+                    <Check size={14} aria-hidden="true" />
                   </button>
                   <button
                     onClick={(e) => {
@@ -162,8 +162,8 @@ const AIChatList: React.FC<AIChatListProps> = ({
                       handleCancelEdit();
                     }}
                     className="p-1.5 text-red-600"
-                  >
-                    <X size={14} />
+                    aria-label={t("ai.cancel", "Cancel", "Abbrechen")}>
+                    <X size={14} aria-hidden="true" />
                   </button>
                 </>
               ) : (

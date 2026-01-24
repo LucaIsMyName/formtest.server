@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Command } from "cmdk";
 import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, FileText, CreditCard, TestTube, Settings, BookOpen, Search, ChevronRight, Clock, Code, Scale } from "lucide-react";
@@ -24,12 +24,42 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
+      // Store the previously focused element
+      previousActiveElement.current = document.activeElement as HTMLElement;
+      
       loadForms();
       loadPaymentMethods();
       loadTestRuns();
       loadSchedules();
+      
+      // Focus the input after a short delay to ensure it's rendered
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 100);
+    } else {
+      // Restore focus when closing
+      if (previousActiveElement.current) {
+        previousActiveElement.current.focus();
+        previousActiveElement.current = null;
+      }
     }
   }, [isOpen, loadForms, loadPaymentMethods, loadTestRuns, loadSchedules]);
+
+  // Handle Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
+    }
+  }, [isOpen, onClose]);
 
   // When user types, search across ALL items - not just first 10
   const isSearching = search.trim().length > 0;
@@ -318,6 +348,7 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
       <div
         className="fixed inset-0 -z-10"
         onClick={onClose}
+        aria-hidden="true"
       />
     </div>
   );

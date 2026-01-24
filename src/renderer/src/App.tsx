@@ -137,8 +137,19 @@ function App() {
     if (languageSetting) {
       const lang = languageSetting.value === "en" ? "en" : "de";
       CONFIG.language = lang;
+      // Update HTML lang attribute for accessibility
+      document.documentElement.lang = lang;
+    } else {
+      // Set default language if no setting exists
+      const defaultLang = CONFIG.language;
+      document.documentElement.lang = defaultLang;
     }
   }, [settings]);
+
+  // Set initial HTML lang attribute on mount
+  useEffect(() => {
+    document.documentElement.lang = CONFIG.language;
+  }, []);
 
   // Listen for language changes and trigger re-render
   const [, setLanguageUpdate] = useState(0);
@@ -168,9 +179,12 @@ function App() {
   // Show loading state while checking lock status
   if (isLocked === null) {
     return (
-      <div className="flex items-center justify-center h-screen bg-neutral-100 dark:bg-neutral-900">
-        <div className="w-12 h-12 border-2 border-neutral-300 dark:border-neutral-700 border-t-transparent rounded-full animate-spin" />
-      </div>
+      <>
+        <div className="flex items-center justify-center h-screen bg-neutral-100 dark:bg-neutral-900" aria-busy="true">
+          <div className="w-12 h-12 border-2 border-neutral-300 dark:border-neutral-700 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+        </div>
+        <AriaLiveRegion level="polite">Lade Anwendung...</AriaLiveRegion>
+      </>
     );
   }
 
@@ -183,12 +197,14 @@ function App() {
     <ErrorBoundary>
       <Layout>
         <Suspense fallback={
-          <div className="flex items-center justify-start ">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 border-2 border-neutral-300 dark:border-neutral-700 border-6 border-t-transparent rounded-full animate-spin"></div>
-              <div className="text-sm text-neutral-600 dark:text-neutral-400 sr-only">Loading...</div>
+          <>
+            <div className="flex items-center justify-start " aria-busy="true">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-12 h-12 border-2 border-neutral-300 dark:border-neutral-700 border-6 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+              </div>
             </div>
-          </div>
+            <AriaLiveRegion level="polite">Lade Seite...</AriaLiveRegion>
+          </>
         }>
           <Routes>
             <Route

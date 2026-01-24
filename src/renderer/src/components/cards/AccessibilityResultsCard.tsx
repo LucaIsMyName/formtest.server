@@ -116,11 +116,13 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
             <ChevronUp
               size={16}
               className="text-neutral-400"
+              aria-hidden="true"
             />
           ) : (
             <ChevronDown
               size={16}
               className="text-neutral-400"
+              aria-hidden="true"
             />
           )}
         </div>
@@ -128,7 +130,7 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
 
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="border-t border-neutral-200 dark:border-neutral-700">
+        <div id={contentId} className="border-t border-neutral-200 dark:border-neutral-700">
           {/* Stats Table */}
           <Table dividers={false}>
             <TableBody>
@@ -187,11 +189,13 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
                               <ChevronUp
                                 size={14}
                                 className="text-neutral-400 flex-shrink-0"
+                                aria-hidden="true"
                               />
                             ) : (
                               <ChevronDown
                                 size={14}
                                 className="text-neutral-400 flex-shrink-0"
+                                aria-hidden="true"
                               />
                             )}
                           </div>
@@ -212,7 +216,7 @@ const AccessibilityResultsCard: React.FC<AccessibilityResultsCardProps> = ({ res
                                   rel="noopener noreferrer"
                                   className="inline-flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 transition-colors"
                                   onClick={(e) => e.stopPropagation()}>
-                                  <ExternalLink size={10} />
+                                  <ExternalLink size={10} aria-hidden="true" />
                                   Mehr erfahren
                                 </a>
                               )}

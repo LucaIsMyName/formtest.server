@@ -32,6 +32,7 @@ const Docs: React.FC = () => {
 
   return (
     <div className="max-w-4xl select-text">
+      <h1 className={CONFIG.style.title.className}>Dokumentation</h1>
       {/* README Content - Auto-generated from README.md/README_DE.md on build */}
       <article
         className="readme-content dark:text-neutral-100"
