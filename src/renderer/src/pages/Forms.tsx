@@ -3,9 +3,9 @@ import { useSearchParams } from "react-router-dom";
 import { useFormsStore } from "../store/useFormsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
-import FormDrawer from "../components/FormDrawer";
-import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import SelectionActionBar from "../components/SelectionActionBar";
+import FormDrawer from "../components/drawers/FormDrawer";
+import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog";
+import SelectionActionBar from "../components/common/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
@@ -20,7 +20,7 @@ import { Edit2, Trash2, Plus, Play } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
-import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
+import MiniSparkline, { useSparklineData } from "../components/test-results/MiniSparkline";
 import { t } from "../data/dictionary";
 
 const FormsSkeleton = () => (

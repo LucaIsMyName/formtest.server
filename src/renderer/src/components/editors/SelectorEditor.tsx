@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useSelectorsStore } from "../store/useSelectorsStore";
+import { useSelectorsStore } from "../../store/useSelectorsStore";
 import { ChevronDown, ChevronRight, Plus, X, Check, RotateCcw, Settings2, Code, Eye, EyeOff } from "lucide-react";
-import Button from "./ui/Button";
-import { Input } from "./ui/Input";
-import { Skeleton } from "./ui/Skeleton";
-import type { SelectorOverride } from "../../../common/selectors.config";
-import { t } from "../data/dictionary";
-
-interface CategoryLabels {
-  [key: string]: string;
-}
+import Button from "../ui/Button";
+import { Input } from "../ui/Input";
+import { Skeleton } from "../ui/Skeleton";
+import type { SelectorOverride } from "../../../../common/selectors.config";
+import { t } from "../../data/dictionary";
 
 const getCategoryLabel = (category: string): string => {
   const labelMap: Record<string, string> = {
@@ -166,7 +162,6 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
   };
 
   const categoryLabel = getCategoryLabel(category);
-  const keyLabels: Record<string, string> = {};
   const hasOverrides = overrides.some((o) => o.category === category);
 
   return (
@@ -177,8 +172,8 @@ const CategorySection: React.FC<CategorySectionProps> = ({ category, keys, defau
         <div className="flex items-center gap-2 text-neutral-800 dark:text-neutral-200">
           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
           <span className="font-medium text-neutral-900 dark:text-white">{categoryLabel}</span>
-          <span className="text-xs text-neutral-500 dark:text-neutral-400">({keys.length} Felder)</span>
-          {hasOverrides && <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">Angepasst</span>}
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">({keys.length} {t("selector.fields")})</span>
+          {hasOverrides && <span className="px-2 py-0.5 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">{t("selector.customized")}</span>}
         </div>
         <Settings2
           size={16}
@@ -379,14 +374,14 @@ const SelectorEditor: React.FC = () => {
     <div className="space-y-0 p-4">
       <div className="flex items-center justify-between">
         <div className="sr-only">
-          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Selektor-Konfiguration</h3>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">Eigene CSS-Selektoren haben Priorität vor Standard-Selektoren. Per-Form Mappings überschreiben globale Einstellungen.</p>
+          <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300">{t("selector.selectorConfiguration")}</h3>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{t("selector.selectorConfigurationDescription")}</p>
         </div>
         {hasAnyOverrides && (
           <div className="relative">
             {showResetConfirm ? (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-red-600 dark:text-red-400">Alle zurücksetzen?</span>
+                <span className="text-xs text-red-600 dark:text-red-400">{t("selector.resetAllConfirm")}</span>
                 <Button
                   size="sm"
                   variant="danger"
@@ -410,7 +405,7 @@ const SelectorEditor: React.FC = () => {
                   size={14}
                   className="mr-1"
                 />
-                Zurücksetzen
+                {t("selector.resetAll")}
               </Button>
             )}
           </div>
@@ -435,7 +430,7 @@ const SelectorEditor: React.FC = () => {
       {overrides.length > 0 && (
         <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            <strong>{overrides.length}</strong> eigene Selektor-Überschreibungen aktiv
+            <strong>{overrides.length}</strong> {t("selector.customOverridesActive")}
           </p>
         </div>
       )}

@@ -3,9 +3,9 @@ import { useSearchParams } from "react-router-dom";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
 import { CONFIG } from "../app.config";
-import PaymentMethodDrawer from "../components/PaymentMethodDrawer";
-import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import SelectionActionBar from "../components/SelectionActionBar";
+import PaymentMethodDrawer from "../components/drawers/PaymentMethodDrawer";
+import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog";
+import SelectionActionBar from "../components/common/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
@@ -20,7 +20,7 @@ import { Edit2, Trash2, Plus, Play } from "lucide-react";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
-import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
+import MiniSparkline, { useSparklineData } from "../components/test-results/MiniSparkline";
 import { t } from "../data/dictionary";
 
 // Extended type for sorting with computed fields

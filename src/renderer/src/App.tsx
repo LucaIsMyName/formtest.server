@@ -2,10 +2,10 @@ import { Routes, Route } from "react-router-dom";
 import { useEffect, useState, Suspense, lazy } from "react";
 import { useSettingsStore } from "./store/useSettingsStore";
 import { useTestRunsStore } from "./store/useTestRunsStore";
-import Layout from "./components/Layout";
-import LockScreen from "./components/LockScreen";
-import InterruptedTestsDialog from "./components/InterruptedTestsDialog";
-import { ErrorBoundary } from "./components/ErrorBoundary";
+import Layout from "./components/layout/Layout";
+import LockScreen from "./components/layout/LockScreen";
+import InterruptedTestsDialog from "./components/dialogs/InterruptedTestsDialog";
+import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { CONFIG } from "./app.config";
 
 // Lazy load page components

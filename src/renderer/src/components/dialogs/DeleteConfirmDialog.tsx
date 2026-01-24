@@ -7,9 +7,9 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "./ui/Dialog";
-import Button from "./ui/Button";
-import { t } from "../data/dictionary";
+} from "../ui/Dialog";
+import Button from "../ui/Button";
+import { t } from "../../data/dictionary";
 
 interface DeleteConfirmDialogProps {
   isOpen: boolean;

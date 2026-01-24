@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Loader2, Square } from "lucide-react";
-import Button from "./ui/Button";
+import Button from "../ui/Button";
 
 interface QueueStatus {
   queueLength: number;
@@ -21,7 +21,7 @@ const TestQueueStatus: React.FC<TestQueueStatusProps> = ({ onRefresh }) => {
 
   const fetchStatus = useCallback(async () => {
     try {
-      const queueStatus = await window.api.testQueue?.getStatus();
+      const queueStatus = await window.api?.testQueue?.getStatus();
       setStatus(queueStatus || null);
     } catch (error) {
       console.error("Failed to fetch queue status:", error);

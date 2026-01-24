@@ -573,9 +573,8 @@ const ContentBlockRenderer: React.FC<{
                     return (
                       <TableCell
                         key={j}
-                        className={`text-sm py-2 px-3 ${
-                          isDate ? "font-mono text-xs" : ""
-                        }`}
+                        className={`text-sm py-2 px-3 ${isDate ? "font-mono text-xs" : ""
+                          }`}
                       >
                         {isStatus ? (
                           <StatusBadge status={cell.toUpperCase()} size="sm" />
@@ -596,9 +595,8 @@ const ContentBlockRenderer: React.FC<{
       const ListTag = block.ordered ? "ol" : "ul";
       return (
         <ListTag
-          className={`${
-            block.ordered ? "list-decimal" : "list-disc"
-          } list-inside space-y-1 text-sm`}
+          className={`${block.ordered ? "list-decimal" : "list-disc"
+            } list-inside space-y-1 text-sm`}
         >
           {block.items.map((item, i) => (
             <li key={i}>{item}</li>
@@ -855,97 +853,97 @@ const StructuredResponse: React.FC<{
   showSuggestions = false,
   isStreaming = false,
 }) => {
-  const navigate = useNavigate();
-  // During streaming, use incremental parser to extract only completed blocks
-  // After streaming, use full parser to ensure all blocks are rendered
-  const blocks = isStreaming
-    ? parseIncrementalJSON(content)
-    : parseAIResponse(content);
+    const navigate = useNavigate();
+    // During streaming, use incremental parser to extract only completed blocks
+    // After streaming, use full parser to ensure all blocks are rendered
+    const blocks = isStreaming
+      ? parseIncrementalJSON(content)
+      : parseAIResponse(content);
 
-  // During streaming, if no blocks are parsed yet, don't show anything (avoid showing raw JSON)
-  if (isStreaming && blocks.length === 0) {
-    return null;
-  }
+    // During streaming, if no blocks are parsed yet, don't show anything (avoid showing raw JSON)
+    if (isStreaming && blocks.length === 0) {
+      return null;
+    }
 
-  // Extract suggestions block if present
-  const suggestionsBlock = blocks.find(
-    (b): b is SuggestionsBlock => b.type === "suggestions"
-  );
-  const contentBlocks = blocks.filter((b) => b.type !== "suggestions");
+    // Extract suggestions block if present
+    const suggestionsBlock = blocks.find(
+      (b): b is SuggestionsBlock => b.type === "suggestions"
+    );
+    const contentBlocks = blocks.filter((b) => b.type !== "suggestions");
 
-  // If no content blocks and not streaming, try to show something (fallback to markdown)
-  if (contentBlocks.length === 0 && !isStreaming && content.trim()) {
-    // This shouldn't happen if parseAIResponse works correctly, but as a safety fallback
+    // If no content blocks and not streaming, try to show something (fallback to markdown)
+    if (contentBlocks.length === 0 && !isStreaming && content.trim()) {
+      // This shouldn't happen if parseAIResponse works correctly, but as a safety fallback
+      return (
+        <div className="text-sm leading-relaxed">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        </div>
+      );
+    }
+
     return (
-      <div className="text-sm leading-relaxed">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <div className="space-y-4">
+        {contentBlocks.map((block, i) => {
+          // Special handling for link blocks
+          if (block.type === "link") {
+            const linkBlock = block as LinkBlock;
+            if (linkBlock.internal !== false) {
+              return (
+                <Button
+                  key={i}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(linkBlock.url)}
+                  className="inline-flex items-center gap-1.5 mt-2"
+                >
+                  {linkBlock.text}
+                  <ExternalLink size={12} />
+                </Button>
+              );
+            } else {
+              return (
+                <a
+                  key={i}
+                  href={linkBlock.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:underline mt-2"
+                >
+                  {linkBlock.text}
+                  <ExternalLink size={12} />
+                </a>
+              );
+            }
+          }
+          // Pass onActionClick to action blocks
+          return (
+            <ContentBlockRenderer
+              key={i}
+              block={block}
+              onActionClick={onActionClick}
+            />
+          );
+        })}
+        {/* Only show suggestions when NOT streaming - ensures suggestions appear only when AI is done */}
+        {showSuggestions &&
+          !isStreaming &&
+          suggestionsBlock &&
+          suggestionsBlock.items.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-600">
+              {suggestionsBlock.items.map((suggestion, i) => (
+                <button
+                  key={i}
+                  onClick={() => onSuggestionClick?.(suggestion)}
+                  className="text-xs px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
       </div>
     );
-  }
-
-  return (
-    <div className="space-y-4">
-      {contentBlocks.map((block, i) => {
-        // Special handling for link blocks
-        if (block.type === "link") {
-          const linkBlock = block as LinkBlock;
-          if (linkBlock.internal !== false) {
-            return (
-              <Button
-                key={i}
-                variant="outline"
-                size="sm"
-                onClick={() => navigate(linkBlock.url)}
-                className="inline-flex items-center gap-1.5 mt-2"
-              >
-                {linkBlock.text}
-                <ExternalLink size={12} />
-              </Button>
-            );
-          } else {
-            return (
-              <a
-                key={i}
-                href={linkBlock.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 hover:underline mt-2"
-              >
-                {linkBlock.text}
-                <ExternalLink size={12} />
-              </a>
-            );
-          }
-        }
-        // Pass onActionClick to action blocks
-        return (
-          <ContentBlockRenderer
-            key={i}
-            block={block}
-            onActionClick={onActionClick}
-          />
-        );
-      })}
-      {/* Only show suggestions when NOT streaming - ensures suggestions appear only when AI is done */}
-      {showSuggestions &&
-        !isStreaming &&
-        suggestionsBlock &&
-        suggestionsBlock.items.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-600">
-            {suggestionsBlock.items.map((suggestion, i) => (
-              <button
-                key={i}
-                onClick={() => onSuggestionClick?.(suggestion)}
-                className="text-xs px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        )}
-    </div>
-  );
-};
+  };
 
 // Helper function to check if message has AI-generated suggestions (exported for use in parent)
 export function hasAISuggestions(content: string): boolean {
@@ -1168,17 +1166,15 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({
               </div>
             )}
             <div
-              className={`flex gap-3 ${
-                message.role === "user" ? "flex-row-reverse" : ""
-              }`}
+              className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""
+                }`}
             >
               {/* Avatar */}
               <div
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                  message.role === "user"
+                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${message.role === "user"
                     ? "bg-blue-100 dark:bg-blue-900/30"
                     : "bg-neutral-200 dark:bg-neutral-700"
-                }`}
+                  }`}
               >
                 {message.role === "user" ? (
                   <User
@@ -1195,16 +1191,14 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({
 
               {/* Message Content */}
               <div
-                className={`select-text flex-1 max-w-[85%] ${
-                  message.role === "user" ? "text-right" : ""
-                }`}
+                className={`select-text flex-1 max-w-[85%] ${message.role === "user" ? "text-right" : ""
+                  }`}
               >
                 <div
-                  className={`inline-block max-w-full relative ${
-                    message.role === "user"
+                  className={`inline-block max-w-full relative ${message.role === "user"
                       ? "px-4 py-2 rounded-2xl bg-blue-500 text-white rounded-br-md"
                       : "text-neutral-900 dark:text-neutral-100"
-                  }`}
+                    }`}
                 >
                   {message.role === "user" ? (
                     <>
@@ -1261,10 +1255,10 @@ const AIChatMessages: React.FC<AIChatMessagesProps> = ({
                         const cost =
                           aiProvider && aiModel
                             ? calculateTokenCost(
-                                usage,
-                                aiProvider as any,
-                                aiModel
-                              )
+                              usage,
+                              aiProvider as any,
+                              aiModel
+                            )
                             : null;
 
                         return (

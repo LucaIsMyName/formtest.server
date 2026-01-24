@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { MessagesSquare, Check, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
-import { Input } from "./ui/Input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
-import { Checkbox } from "./ui/Checkbox";
-import Button from "./ui/Button";
-import { useAIStore } from "../store/useAIStore";
-import type { AIProvider } from "../../../common/types";
-import { t } from "../data/dictionary";
+import { Input } from "../ui/Input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/Select";
+import { Checkbox } from "../ui/Checkbox";
+import Button from "../ui/Button";
+import { useAIStore } from "../../store/useAIStore";
+import type { AIProvider } from "../../../../common/types";
+import { t } from "../../data/dictionary";
 
 const PROVIDER_OPTIONS: { value: AIProvider; label: string; description: string }[] = [
   { value: "openai", label: "OpenAI", description: "GPT-4o, GPT-4, GPT-3.5" },
   { value: "anthropic", label: "Anthropic", description: "Claude 3.5, Claude 3" },
   { value: "google", label: "Google", description: "Gemini 1.5, Gemini 2.0" },
-  { value: "ollama", label: "Ollama", description: "Lokale Modelle" },
+  { value: "ollama", label: "Ollama", description: t("ai.localModels") },
 ];
 
 const AISettingsSection: React.FC = () => {
@@ -104,7 +104,7 @@ const AISettingsSection: React.FC = () => {
         setValidationResult({ success: false, message: t("ai.apiKeyInvalid") });
       }
     } catch (error) {
-      setValidationResult({ success: false, message: "Validierung fehlgeschlagen" });
+        setValidationResult({ success: false, message: t("ai.apiKeyInvalid") });
     } finally {
       setIsValidating(false);
     }
@@ -135,8 +135,8 @@ const AISettingsSection: React.FC = () => {
             />
           </div>
           <div>
-            <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">AI-Assistent aktivieren</p>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">Aktiviert den AI-Chat und Analyse-Funktionen</p>
+            <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{t("ai.enableAIAssistant")}</p>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">{t("ai.enableAIAssistantDescription")}</p>
           </div>
         </div>
         <Checkbox
@@ -175,7 +175,7 @@ const AISettingsSection: React.FC = () => {
           {/* Ollama URL (only for Ollama) */}
           {provider === "ollama" && (
             <div className="space-y-2">
-              <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Ollama Server URL</label>
+              <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">{t("ai.ollamaServerUrl")}</label>
               <Input
                 type="text"
                 value={ollamaUrl}
@@ -184,7 +184,7 @@ const AISettingsSection: React.FC = () => {
                 placeholder="http://localhost:11434"
                 className="w-full h-10 text-sm"
               />
-              <p className="text-xs text-neutral-500">Standard: http://localhost:11434</p>
+              <p className="text-xs text-neutral-500">{t("ai.defaultOllamaUrl")}</p>
             </div>
           )}
 
@@ -198,7 +198,7 @@ const AISettingsSection: React.FC = () => {
                     type={showApiKey ? "text" : "password"}
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={`${provider === "openai" ? "sk-..." : provider === "anthropic" ? "sk-ant-..." : "API Key eingeben"}`}
+                    placeholder={`${provider === "openai" ? "sk-..." : provider === "anthropic" ? "sk-ant-..." : t("ai.enterApiKey")}`}
                     className="w-full h-8 pr-10 font-mono text-xs"
                   />
                   <button
@@ -219,7 +219,7 @@ const AISettingsSection: React.FC = () => {
                       className="animate-spin"
                     />
                   ) : (
-                    "Testen"
+                    <>{t("ai.test")}</>
                   )}
                 </Button>
               </div>
@@ -240,7 +240,7 @@ const AISettingsSection: React.FC = () => {
               onValueChange={handleModelChange}
               disabled={isLoadingModels || availableModels.length === 0}>
               <SelectTrigger className="w-full h-8">
-                <SelectValue placeholder={isLoadingModels ? "Lade Modelle..." : "Modell auswählen"} />
+                <SelectValue placeholder={isLoadingModels ? t("ai.loadingModels") : t("ai.selectModel")} />
               </SelectTrigger>
               <SelectContent>
                 {availableModels.map((m) => (
@@ -258,7 +258,7 @@ const AISettingsSection: React.FC = () => {
           {/* Info Box */}
           <div className="p-4 bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-800 rounded-xl mt-4">
             <p className="text-xs text-violet-700 dark:text-violet-300 leading-relaxed">
-              <strong>Hinweis:</strong> Der AI-Assistent kann dir helfen, Tests zu finden, Ergebnisse zu analysieren und Probleme zu identifizieren. Dein API-Key wird verschlüsselt lokal gespeichert und nie an Dritte weitergegeben.
+              <strong>{t("info.note")}</strong> {t("ai.aiAssistantNote")}
             </p>
           </div>
         </div>

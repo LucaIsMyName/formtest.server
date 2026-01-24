@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Accessibility, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
-import type { AccessibilityTestResult, AccessibilityViolation } from "../../../common/types";
-import { Badge, StatusBadge } from "./ui/Badge";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "./ui/Table";
+import type { AccessibilityTestResult, AccessibilityViolation } from "../../../../common/types";
+import { Badge, StatusBadge } from "../ui/Badge";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
 
 interface AccessibilityResultsCardProps {
   results: AccessibilityTestResult;

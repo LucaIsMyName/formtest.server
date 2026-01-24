@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Button from "./ui/Button";
-import IconPicker from "./IconPicker";
-import { renderIcon, getDefaultScheduleIcon } from "../utils/iconHelper";
-import { useFormsStore } from "../store/useFormsStore";
-import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
-import { TestSchedule } from "../../../common/types";
-import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "./ui/Drawer";
-import { Input } from "./ui/Input";
-import { Label } from "./ui/Label";
-import { Checkbox } from "./ui/Checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
-import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
-import { StatusBadge } from "./ui/Badge";
+import Button from "../ui/Button";
+import IconPicker from "../editors/IconPicker";
+import { renderIcon, getDefaultScheduleIcon } from "../../utils/iconHelper";
+import { useFormsStore } from "../../store/useFormsStore";
+import { usePaymentMethodsStore } from "../../store/usePaymentMethodsStore";
+import { TestSchedule } from "../../../../common/types";
+import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "../ui/Drawer";
+import { Input } from "../ui/Input";
+import { Label } from "../ui/Label";
+import { Checkbox } from "../ui/Checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/Select";
+import { Table, TableBody, TableRow, TableCell } from "../ui/Table";
+import { StatusBadge } from "../ui/Badge";
 import { Trash2, Play, Search, Accessibility } from "lucide-react";
 import { CONFIG } from "@/app.config";
-import { formatDateTime } from "../utils/formatters";
-import { t } from "../data/dictionary";
+import { formatDateTime } from "../../utils/formatters";
+import { t } from "../../data/dictionary";
 
 interface ScheduleDrawerProps {
   isOpen: boolean;

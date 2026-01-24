@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
-import Button from "./ui/Button";
-import IconPicker from "./IconPicker";
-import PaymentMethodStatistics from "./PaymentMethodStatistics";
-import { renderIcon, getDefaultPaymentIcon } from "../utils/iconHelper";
-import type { PaymentMethod, PaymentMethodDetails } from "../../../common/types";
-import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "./ui/Drawer";
-import { Input } from "./ui/Input";
-import { Label } from "./ui/Label";
-import { Checkbox } from "./ui/Checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
-import { Table, TableBody, TableRow, TableCell } from "./ui/Table";
-import { StatusBadge } from "./ui/Badge";
+import Button from "../ui/Button";
+import IconPicker from "../editors/IconPicker";
+import PaymentMethodStatistics from "../cards/PaymentMethodStatistics";
+import { renderIcon, getDefaultPaymentIcon } from "../../utils/iconHelper";
+import type { PaymentMethod, PaymentMethodDetails } from "../../../../common/types";
+import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "../ui/Drawer";
+import { Input } from "../ui/Input";
+import { Label } from "../ui/Label";
+import { Checkbox } from "../ui/Checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/Select";
+import { Table, TableBody, TableRow, TableCell } from "../ui/Table";
+import { StatusBadge } from "../ui/Badge";
 import { Trash2, Play, BarChart3 } from "lucide-react";
 import { CONFIG } from "@/app.config";
-import { formatDate } from "../utils/formatters";
-import { t } from "../data/dictionary";
+import { formatDate } from "../../utils/formatters";
+import { t } from "../../data/dictionary";
 
 interface PaymentMethodDrawerProps {
   isOpen: boolean;

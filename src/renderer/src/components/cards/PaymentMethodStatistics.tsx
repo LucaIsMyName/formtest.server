@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
-import { useTestRunsStore } from "../store/useTestRunsStore";
-import { useFormsStore } from "../store/useFormsStore";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "./ui/Table";
+import { useTestRunsStore } from "../../store/useTestRunsStore";
+import { useFormsStore } from "../../store/useFormsStore";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { CheckCircle2, XCircle, TrendingUp, TrendingDown, Clock, BarChart3 } from "lucide-react";
 

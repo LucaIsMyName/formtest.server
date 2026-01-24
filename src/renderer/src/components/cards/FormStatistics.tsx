@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
-import { useTestRunsStore } from "../store/useTestRunsStore";
-import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "./ui/Table";
+import { useTestRunsStore } from "../../store/useTestRunsStore";
+import { usePaymentMethodsStore } from "../../store/usePaymentMethodsStore";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { CheckCircle2, XCircle, TrendingUp, TrendingDown, Clock, BarChart3 } from "lucide-react";
-import { Skeleton } from "./ui/Skeleton";
-import { t } from "../data/dictionary";
+import { Skeleton } from "../ui/Skeleton";
+import { t } from "../../data/dictionary";
 
 interface FormStatisticsProps {
   formId: number;

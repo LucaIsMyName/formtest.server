@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import TrafficLights from "./TrafficLights";
-import NotificationButton from "./NotificationButton";
-import Button from "./ui/Button";
+import NotificationButton from "../common/NotificationButton";
+import Button from "../ui/Button";
 import { Terminal, Search, Sun, Moon, Monitor, Settings, ChevronLeft, ChevronRight, MessagesSquare } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { useAIStore } from "../store/useAIStore";
+import { useAIStore } from "../../store/useAIStore";
 
 interface CustomTitleBarProps {
   onRunAllTests?: () => void;

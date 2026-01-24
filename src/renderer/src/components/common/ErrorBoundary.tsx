@@ -1,7 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { AlertCircle, RefreshCw, ChevronDown, ChevronUp, Copy } from "lucide-react";
-import  Button from "./ui/Button";
-import { t } from "../data/dictionary";
+import  Button from "../ui/Button";
+import { t } from "../../data/dictionary";
 
 interface Props {
   children: ReactNode;

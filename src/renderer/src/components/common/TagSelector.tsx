@@ -1,7 +1,8 @@
 import React from "react";
-import { Checkbox } from "./ui/Checkbox";
-import { Badge } from "./ui/Badge";
-import type { TagDefinition } from "../store/useTagsStore";
+import { Checkbox } from "../ui/Checkbox";
+import { Badge } from "../ui/Badge";
+import type { TagDefinition } from "../../store/useTagsStore";
+import { t } from "../../data/dictionary";
 
 interface TagSelectorProps {
   tags: TagDefinition[];
@@ -27,7 +28,7 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
   if (tags.length === 0) {
     return (
       <div className={`text-sm text-neutral-500 dark:text-neutral-400 ${className}`}>
-        Keine Tags verfügbar
+        {t("tags.noTagsAvailable") || "No tags available"}
       </div>
     );
   }

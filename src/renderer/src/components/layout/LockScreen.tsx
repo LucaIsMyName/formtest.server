@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { Input } from "./ui/Input";
-import Button from "./ui/Button";
-import { t } from "../data/dictionary";
+import { Input } from "../ui/Input";
+import Button from "../ui/Button";
+import { t } from "../../data/dictionary";
 
 interface LockScreenProps {
   onUnlock: () => void;

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "./ui/Dialog";
-import { Checkbox } from "./ui/Checkbox";
-import { RadioGroup, RadioGroupItem } from "./ui/RadioGroup";
-import { Label } from "./ui/Label";
-import Button from "./ui/Button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../ui/Dialog";
+import { Checkbox } from "../ui/Checkbox";
+import { RadioGroup, RadioGroupItem } from "../ui/RadioGroup";
+import { Label } from "../ui/Label";
+import Button from "../ui/Button";
 
 export interface ExportColumn {
   key: string;

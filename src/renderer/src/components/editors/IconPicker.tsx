@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
-import { getAllIconNames, renderIcon } from '../utils/iconHelper';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/Dialog';
+import { getAllIconNames, renderIcon } from '../../utils/iconHelper';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/Dialog';
 
 interface IconPickerProps {
   value?: string;

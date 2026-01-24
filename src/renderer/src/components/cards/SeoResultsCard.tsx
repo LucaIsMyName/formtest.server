@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Search, ChevronDown, ChevronUp, CheckCircle, XCircle } from "lucide-react";
-import type { SeoTestResult, SeoIssue } from "../../../common/types";
-import { Badge, StatusBadge } from "./ui/Badge";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "./ui/Table";
+import type { SeoTestResult, SeoIssue } from "../../../../common/types";
+import { Badge, StatusBadge } from "../ui/Badge";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../ui/Table";
 
 interface SeoResultsCardProps {
   results: SeoTestResult;

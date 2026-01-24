@@ -12,16 +12,16 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TablePag
 import { SortableTableHead } from "../components/ui/SortableTableHead";
 import { TableFilter } from "../components/ui/TableFilter";
 import { Skeleton } from "../components/ui/Skeleton";
-import ScheduleDrawer from "../components/ScheduleDrawer";
-import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import SelectionActionBar from "../components/SelectionActionBar";
+import ScheduleDrawer from "../components/drawers/ScheduleDrawer";
+import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog";
+import SelectionActionBar from "../components/common/SelectionActionBar";
 import { renderIcon } from "../utils/iconHelper";
 import { formatDateTime } from "../utils/formatters";
 import { TestSchedule } from "../../../common/types";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
-import MiniSparkline, { useSparklineData } from "../components/MiniSparkline";
+import MiniSparkline, { useSparklineData } from "../components/test-results/MiniSparkline";
 
 // Extended type with computed fields for sorting/filtering
 interface ScheduleWithComputed extends TestSchedule {

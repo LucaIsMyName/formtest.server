@@ -2,11 +2,11 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Command } from "cmdk";
 import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, FileText, CreditCard, TestTube, Settings, BookOpen, Search, ChevronRight, Clock, Code, Scale } from "lucide-react";
-import { useFormsStore } from "../store/useFormsStore";
-import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
-import { useTestRunsStore } from "../store/useTestRunsStore";
-import { useSchedulesStore } from "../store/useSchedulesStore";
-import { StatusBadge } from "./ui/Badge";
+import { useFormsStore } from "../../store/useFormsStore";
+import { usePaymentMethodsStore } from "../../store/usePaymentMethodsStore";
+import { useTestRunsStore } from "../../store/useTestRunsStore";
+import { useSchedulesStore } from "../../store/useSchedulesStore";
+import { StatusBadge } from "../ui/Badge";
 
 interface GlobalSearchProps {
   isOpen: boolean;

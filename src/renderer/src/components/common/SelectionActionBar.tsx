@@ -1,7 +1,7 @@
 import React from "react";
 import { X } from "lucide-react";
-import Button from "./ui/Button";
-import { t } from "../data/dictionary";
+import Button from "../ui/Button";
+import { t } from "../../data/dictionary";
 
 interface SelectionAction {
   label: string;
@@ -31,7 +31,7 @@ const SelectionActionBar: React.FC<SelectionActionBarProps> = ({
     <div className="flex items-center gap-2">
       {/* Selection count */}
       <span className="text-xs font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap">
-        {selectedCount} ausgewählt
+        {selectedCount} {itemLabel} {t("selection.selected")}
       </span>
 
       {/* Actions */}

@@ -14,7 +14,7 @@ import AIChatInput from "../components/ai/AIChatInput";
 import AIChatList from "../components/ai/AIChatList";
 import Button from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
-import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog";
 import {
   exportChatToJSON,
   exportChatToMarkdown,

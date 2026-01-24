@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomTitleBar from "./CustomTitleBar";
-import Button from "./ui/Button";
-import TestRunDrawer from "./TestRunDrawer";
-import GlobalSearch from "./GlobalSearch";
+import Button from "../ui/Button";
+import TestRunDrawer from "../drawers/TestRunDrawer";
+import GlobalSearch from "../common/GlobalSearch";
 import { LayoutDashboard, FileText, CreditCard, BarChart3, Settings, BookOpen, Bot, Scale, Code } from "lucide-react";
-import { useSettingsStore } from "../store/useSettingsStore";
-import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { useSettingsStore } from "../../store/useSettingsStore";
+import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
 import { cn } from "@/utils/cn";
-import { useTestRunsStore } from "../store/useTestRunsStore";
-import { t } from "../data/dictionary";
+import { useTestRunsStore } from "../../store/useTestRunsStore";
+import { t } from "../../data/dictionary";
 
 interface LayoutProps {
   children: React.ReactNode;

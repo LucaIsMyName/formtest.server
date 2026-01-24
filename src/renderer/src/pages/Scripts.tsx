@@ -5,10 +5,10 @@ import Button from "../components/ui/Button";
 import { StatusBadge } from "../components/ui/Badge";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
-import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
+import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog";
 import type { CustomScript, ScriptHookPoint } from "../../../common/types";
 import { Edit2, Trash2, Plus, Code, Globe, FileCode, AlertTriangle, Clock } from "lucide-react";
-import ScriptDrawer from "../components/ScriptDrawer";
+import ScriptDrawer from "../components/drawers/ScriptDrawer";
 import { CONFIG } from "../app.config";
 import { t } from "../data/dictionary";
 // Hook point labels for display - will be translated in component

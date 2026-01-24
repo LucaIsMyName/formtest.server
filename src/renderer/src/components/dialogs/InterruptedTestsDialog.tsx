@@ -6,11 +6,11 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "./ui/Dialog";
-import Button from "./ui/Button";
-import { Table, TableBody, TableRow, TableCell, TableHeader, TableHead } from "./ui/Table";
-import { StatusBadge } from "./ui/Badge";
-import { formatDateTime } from "../utils/formatters";
+} from "../ui/Dialog";
+import Button from "../ui/Button";
+import { Table, TableBody, TableRow, TableCell, TableHeader, TableHead } from "../ui/Table";
+import { StatusBadge } from "../ui/Badge";
+import { formatDateTime } from "../../utils/formatters";
 
 interface InterruptedTest {
   id: number;

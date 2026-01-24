@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import Button from "./ui/Button";
-import type { CustomScript, ScriptHookPoint, Form } from "../../../common/types";
-import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "./ui/Drawer";
-import { Input } from "./ui/Input";
-import { Label } from "./ui/Label";
-import { Checkbox } from "./ui/Checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
-import { useCustomScriptsStore } from "../store/useCustomScriptsStore";
+import Button from "../ui/Button";
+import type { CustomScript, ScriptHookPoint, Form } from "../../../../common/types";
+import { Drawer, DrawerContent, DrawerHeader, DrawerFooter } from "../ui/Drawer";
+import { Input } from "../ui/Input";
+import { Label } from "../ui/Label";
+import { Checkbox } from "../ui/Checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/Select";
+import { useCustomScriptsStore } from "../../store/useCustomScriptsStore";
 import { AlertTriangle, Code, Info } from "lucide-react";
-import { t } from "../data/dictionary";
+import { t } from "../../data/dictionary";
 
 interface ScriptDrawerProps {
   isOpen: boolean;

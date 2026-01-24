@@ -4,7 +4,7 @@ import { CONFIG } from "../app.config";
 import { useFormsStore } from "../store/useFormsStore";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
 import { useTestRunsStore } from "../store/useTestRunsStore";
-import TestRunDrawer from "../components/TestRunDrawer";
+import TestRunDrawer from "../components/drawers/TestRunDrawer";
 import Button from "../components/ui/Button";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "../components/ui/Table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/Select";

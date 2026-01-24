@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { Clock, CheckCircle2, XCircle, AlertCircle, ArrowRight, Minus, Plus } from "lucide-react";
-import type { TestRun, TestStep } from "../../../common/types";
-import { StatusBadge } from "./ui/Badge";
-import { formatDateTime, formatDuration } from "../utils/formatters";
-import { CONFIG } from "../app.config";
+import type { TestRun, TestStep } from "../../../../common/types";
+import { StatusBadge } from "../ui/Badge";
+import { formatDateTime, formatDuration } from "../../utils/formatters";
+import { CONFIG } from "../../app.config";
 
 interface TestRunComparisonProps {
   leftRun: TestRun;

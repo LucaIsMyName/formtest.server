@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Bell, CheckCircle2, XCircle, Info, X, CheckCheck, Trash2 } from "lucide-react";
-import { useNotificationsStore, Notification } from "../store/useNotificationsStore";
+import { useNotificationsStore, Notification } from "../../store/useNotificationsStore";
 import { useNavigate, useLocation } from "react-router-dom";
-import { formatDateTime } from "../utils/formatters";
+import { formatDateTime } from "../../utils/formatters";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import Button from "./ui/Button";
+import Button from "../ui/Button";
 
 const NotificationButton: React.FC = () => {
   const navigate = useNavigate();

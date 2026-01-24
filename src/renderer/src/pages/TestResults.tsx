@@ -4,9 +4,9 @@ import { useTestRunsStore } from "../store/useTestRunsStore";
 import { useFormsStore } from "../store/useFormsStore";
 import { CONFIG } from "../app.config";
 import { usePaymentMethodsStore } from "../store/usePaymentMethodsStore";
-import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import TestQueueStatus from "../components/TestQueueStatus";
-import SelectionActionBar from "../components/SelectionActionBar";
+import DeleteConfirmDialog from "../components/dialogs/DeleteConfirmDialog";
+import TestQueueStatus from "../components/test-results/TestQueueStatus";
+import SelectionActionBar from "../components/common/SelectionActionBar";
 import Button from "../components/ui/Button";
 import { StatusBadge, Badge } from "../components/ui/Badge";
 import { Checkbox } from "../components/ui/Checkbox";
@@ -22,14 +22,14 @@ import { formatDateTime, formatDuration } from "../utils/formatters";
 import { useSortableData } from "../hooks/useSortableData";
 import { useFilterableData } from "../hooks/useFilterableData";
 import { useTableSelection, computeIsAllSelected, computeIsPartialSelected } from "../hooks/useTableSelection";
-import SeoResultsCard from "../components/SeoResultsCard";
-import AccessibilityResultsCard from "../components/AccessibilityResultsCard";
-import TestRunComparison from "../components/TestRunComparison";
+import SeoResultsCard from "../components/cards/SeoResultsCard";
+import AccessibilityResultsCard from "../components/cards/AccessibilityResultsCard";
+import TestRunComparison from "../components/test-results/TestRunComparison";
 import { TagDefinition, useTagsStore } from "../store/useTagsStore";
 import { useFilterPresetsStore } from "../store/useFilterPresetsStore";
-import TagSelector from "../components/TagSelector";
-import ExportDialog from "../components/ExportDialog";
-import type { ExportColumn } from "../components/ExportDialog";
+import TagSelector from "../components/common/TagSelector";
+import ExportDialog from "../components/dialogs/ExportDialog";
+import type { ExportColumn } from "../components/dialogs/ExportDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "../components/ui/Dialog";
 import { Input } from "../components/ui/Input";
 import { t } from "../data/dictionary";
@@ -2448,10 +2448,10 @@ const TestResults: React.FC = () => {
                     size="sm"
                     className="gap-1.5 !bg-purple-600 !text-white hover:!bg-purple-700 !border-purple-600">
                     <Square size={14} />
-                    {selectedTestRunData.status === "QUEUED" ? 
-                    t("testResults.removeFromQueue")
-                    : 
-                    t("testResults.stopTest")
+                    {selectedTestRunData.status === "QUEUED" ?
+                      t("testResults.removeFromQueue")
+                      :
+                      t("testResults.stopTest")
                     }
                   </Button>
                 ) : (
