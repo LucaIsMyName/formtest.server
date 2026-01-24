@@ -173,7 +173,8 @@ function markdownToHtml(markdown) {
 }
 
 // Main execution
-const readmePath = path.join(__dirname, '..', 'README.md');
+const readmeEnPath = path.join(__dirname, '..', 'README.md');
+const readmeDePath = path.join(__dirname, '..', 'README_DE.md');
 const outputPath = path.join(__dirname, '..', 'src', 'renderer', 'src', 'generated', 'readme-content.ts');
 
 // Ensure output directory exists
@@ -182,20 +183,23 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Read README.md
-const markdown = fs.readFileSync(readmePath, 'utf-8');
+// Read both README files
+const markdownEn = fs.readFileSync(readmeEnPath, 'utf-8');
+const markdownDe = fs.readFileSync(readmeDePath, 'utf-8');
 
 // Convert to HTML
-const html = markdownToHtml(markdown);
+const htmlEn = markdownToHtml(markdownEn);
+const htmlDe = markdownToHtml(markdownDe);
 
-// Generate TypeScript file
-const tsContent = `// Auto-generated from README.md - DO NOT EDIT MANUALLY
+// Generate TypeScript file with both exports
+const tsContent = `// Auto-generated from README.md and README_DE.md - DO NOT EDIT MANUALLY
 // Generated at: ${new Date().toISOString()}
 
-export const readmeHtml = \`${html.replace(/`/g, '\\`').replace(/\${/g, '\\${')}\`;
+export const readmeHtmlEn = \`${htmlEn.replace(/`/g, '\\`').replace(/\${/g, '\\${')}\`;
+export const readmeHtmlDe = \`${htmlDe.replace(/`/g, '\\`').replace(/\${/g, '\\${')}\`;
 `;
 
 // Write output
 fs.writeFileSync(outputPath, tsContent);
 
-console.log('✅ Generated readme-content.ts from README.md');
+console.log('✅ Generated readme-content.ts from README.md and README_DE.md');
