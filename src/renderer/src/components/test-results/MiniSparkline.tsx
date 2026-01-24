@@ -105,6 +105,7 @@ export function useSparklineData(
     formId?: number; 
     paymentMethodId?: number; 
     isScheduled?: boolean;
+    isArchived?: boolean;
     status: string; 
     runAt: Date | string;
   }>,

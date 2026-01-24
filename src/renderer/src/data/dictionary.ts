@@ -1184,7 +1184,7 @@ export const DICTIONARY: Dictionary = {
         license: { en: "License & Legal", de: "Lizenz & Rechtliches" },
     },
 
-        // Info/Docs
+    // Info/Docs
     info: {
         manageForms: { en: "Managing Forms", de: "Formulare verwalten" },
         navigateToForms: { en: "Navigate to the \"Forms\" page", de: "Navigieren Sie zur Seite \"Formulare\"" },
