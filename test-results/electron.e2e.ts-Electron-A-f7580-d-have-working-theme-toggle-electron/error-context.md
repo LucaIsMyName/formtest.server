@@ -1,0 +1,499 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - button "Close window" [ref=e7] [cursor=pointer]
+        - button "Minimize window" [ref=e8] [cursor=pointer]
+        - button "Maximize window" [ref=e9] [cursor=pointer]
+      - generic [ref=e10]:
+        - button "Zurück" [ref=e11] [cursor=pointer]:
+          - img [ref=e12]
+        - button "Vorwärts" [ref=e14] [cursor=pointer]:
+          - img [ref=e15]
+      - generic [ref=e17]: FT.S
+    - generic [ref=e19]:
+      - button "Suche... ⌘ K" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e25]: Suche...
+        - generic [ref=e26]:
+          - generic [ref=e27]: ⌘
+          - generic [ref=e28]: K
+      - generic [ref=e29]:
+        - button "Benachrichtigungen" [ref=e30] [cursor=pointer]:
+          - img [ref=e31]
+        - button "Theme wechseln" [ref=e34] [cursor=pointer]:
+          - img [ref=e35]
+        - button "Einstellungen öffnen" [ref=e37] [cursor=pointer]:
+          - img [ref=e38]
+        - button "Alle Tests ausführen" [ref=e41] [cursor=pointer]:
+          - img [ref=e42]
+  - generic [ref=e44]:
+    - navigation "Hauptnavigation" [ref=e46]:
+      - list [ref=e47]:
+        - link "Dashboard" [ref=e48] [cursor=pointer]:
+          - /url: /
+          - img [ref=e49]
+          - generic [ref=e54]: Dashboard
+        - link "Formulare" [ref=e55] [cursor=pointer]:
+          - /url: /forms
+          - img [ref=e56]
+          - generic [ref=e59]: Formulare
+        - link "Bezahlmethoden" [ref=e60] [cursor=pointer]:
+          - /url: /payment-methods
+          - img [ref=e61]
+          - generic [ref=e63]: Bezahlmethoden
+        - link "Autopilot" [ref=e64] [cursor=pointer]:
+          - /url: /schedules
+          - img [ref=e65]
+          - generic [ref=e68]: Autopilot
+        - link "Tests" [ref=e69] [cursor=pointer]:
+          - /url: /test-results
+          - img [ref=e70]
+          - generic [ref=e72]: Tests
+      - separator [ref=e74]
+      - list "Sekundäre Navigation" [ref=e75]:
+        - link "Scripts" [ref=e76] [cursor=pointer]:
+          - /url: /scripts
+          - img [ref=e77]
+          - generic [ref=e80]: Scripts
+        - link "Einstellungen" [active] [ref=e81] [cursor=pointer]:
+          - /url: /settings
+          - img [ref=e82]
+          - generic [ref=e85]: Einstellungen
+        - link "Rechtliches" [ref=e86] [cursor=pointer]:
+          - /url: /legal
+          - img [ref=e87]
+          - generic [ref=e91]: Rechtliches
+        - link "Doku" [ref=e92] [cursor=pointer]:
+          - /url: /docs
+          - img [ref=e93]
+          - generic [ref=e95]: Doku
+    - main [ref=e97]:
+      - generic [ref=e99]:
+        - heading "Einstellungen" [level=1] [ref=e100]
+        - paragraph [ref=e101]: Globale Optionen für Formular-Tests konfigurieren
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - img [ref=e105]
+              - textbox "Einstellung suchen..." [ref=e108]
+            - combobox [ref=e109] [cursor=pointer]:
+              - generic [ref=e110]: Alle Kategorie
+              - img [ref=e111]
+          - table [ref=e115]:
+            - rowgroup [ref=e116]:
+              - row "Kategorie Einstellung Wert" [ref=e117]:
+                - columnheader "Kategorie" [ref=e118]
+                - columnheader "Einstellung" [ref=e119]
+                - columnheader "Wert" [ref=e120]
+            - rowgroup [ref=e121]:
+              - row "Test Spendenbetrag (EUR) Standard-Spendenbetrag für Tests 5" [ref=e122]:
+                - cell "Test" [ref=e123]:
+                  - generic [ref=e124]:
+                    - img [ref=e125]
+                    - generic [ref=e126]: Test
+                - cell "Spendenbetrag (EUR) Standard-Spendenbetrag für Tests" [ref=e127]:
+                  - generic [ref=e128]:
+                    - generic [ref=e129]: Spendenbetrag (EUR)
+                    - generic [ref=e130]: Standard-Spendenbetrag für Tests
+                - cell "5" [ref=e131]:
+                  - spinbutton [ref=e132]: "5"
+              - row "Test Spendenintervall Standard-Intervall für Tests" [ref=e133]:
+                - cell "Test" [ref=e134]:
+                  - generic [ref=e135]:
+                    - img [ref=e136]
+                    - generic [ref=e137]: Test
+                - cell "Spendenintervall Standard-Intervall für Tests" [ref=e138]:
+                  - generic [ref=e139]:
+                    - generic [ref=e140]: Spendenintervall
+                    - generic [ref=e141]: Standard-Intervall für Tests
+                - cell [ref=e142]:
+                  - combobox [ref=e143] [cursor=pointer]:
+                    - generic: Einmalig
+                    - img [ref=e144]
+              - row "Test Headless-Modus Browser ohne sichtbares Fenster" [ref=e146]:
+                - cell "Test" [ref=e147]:
+                  - generic [ref=e148]:
+                    - img [ref=e149]
+                    - generic [ref=e150]: Test
+                - cell "Headless-Modus Browser ohne sichtbares Fenster" [ref=e151]:
+                  - generic [ref=e152]:
+                    - generic [ref=e153]: Headless-Modus
+                    - generic [ref=e154]: Browser ohne sichtbares Fenster
+                - cell [ref=e155]:
+                  - combobox [ref=e156] [cursor=pointer]:
+                    - generic: Aktiviert
+                    - img [ref=e157]
+              - row "Test Slow Motion Verzögerung zwischen Aktionen (Debugging)" [ref=e159]:
+                - cell "Test" [ref=e160]:
+                  - generic [ref=e161]:
+                    - img [ref=e162]
+                    - generic [ref=e163]: Test
+                - cell "Slow Motion Verzögerung zwischen Aktionen (Debugging)" [ref=e164]:
+                  - generic [ref=e165]:
+                    - generic [ref=e166]: Slow Motion
+                    - generic [ref=e167]: Verzögerung zwischen Aktionen (Debugging)
+                - cell [ref=e168]:
+                  - combobox [ref=e169] [cursor=pointer]:
+                    - generic: Aus (Normal)
+                    - img [ref=e170]
+              - row "Test Test-Timeout (ms) Maximale Wartezeit für Operationen 30000" [ref=e172]:
+                - cell "Test" [ref=e173]:
+                  - generic [ref=e174]:
+                    - img [ref=e175]
+                    - generic [ref=e176]: Test
+                - cell "Test-Timeout (ms) Maximale Wartezeit für Operationen" [ref=e177]:
+                  - generic [ref=e178]:
+                    - generic [ref=e179]: Test-Timeout (ms)
+                    - generic [ref=e180]: Maximale Wartezeit für Operationen
+                - cell "30000" [ref=e181]:
+                  - spinbutton [ref=e182]: "30000"
+              - row "UI Theme Farbschema der Anwendung" [ref=e183]:
+                - cell "UI" [ref=e184]:
+                  - generic [ref=e185]:
+                    - img [ref=e186]
+                    - generic [ref=e192]: UI
+                - cell "Theme Farbschema der Anwendung" [ref=e193]:
+                  - generic [ref=e194]:
+                    - generic [ref=e195]: Theme
+                    - generic [ref=e196]: Farbschema der Anwendung
+                - cell [ref=e197]:
+                  - generic [ref=e198]:
+                    - button [ref=e199] [cursor=pointer]:
+                      - img [ref=e200]
+                    - button [ref=e206] [cursor=pointer]:
+                      - img [ref=e207]
+                    - button [ref=e209] [cursor=pointer]:
+                      - img [ref=e210]
+              - row "E-Mail E-Mail aktiviert Benachrichtigungen per E-Mail" [ref=e212]:
+                - cell "E-Mail" [ref=e213]:
+                  - generic [ref=e214]:
+                    - img [ref=e215]
+                    - generic [ref=e218]: E-Mail
+                - cell "E-Mail aktiviert Benachrichtigungen per E-Mail" [ref=e219]:
+                  - generic [ref=e220]:
+                    - generic [ref=e221]: E-Mail aktiviert
+                    - generic [ref=e222]: Benachrichtigungen per E-Mail
+                - cell [ref=e223]:
+                  - checkbox [ref=e224] [cursor=pointer]
+              - row "E-Mail SMTP Server Hostname des SMTP-Servers" [ref=e225]:
+                - cell "E-Mail" [ref=e226]:
+                  - generic [ref=e227]:
+                    - img [ref=e228]
+                    - generic [ref=e231]: E-Mail
+                - cell "SMTP Server Hostname des SMTP-Servers" [ref=e232]:
+                  - generic [ref=e233]:
+                    - generic [ref=e234]: SMTP Server
+                    - generic [ref=e235]: Hostname des SMTP-Servers
+                - cell [ref=e236]:
+                  - textbox [disabled] [ref=e237]
+              - row "E-Mail SMTP Port Port des SMTP-Servers 587" [ref=e238]:
+                - cell "E-Mail" [ref=e239]:
+                  - generic [ref=e240]:
+                    - img [ref=e241]
+                    - generic [ref=e244]: E-Mail
+                - cell "SMTP Port Port des SMTP-Servers" [ref=e245]:
+                  - generic [ref=e246]:
+                    - generic [ref=e247]: SMTP Port
+                    - generic [ref=e248]: Port des SMTP-Servers
+                - cell "587" [ref=e249]:
+                  - spinbutton [disabled] [ref=e250]: "587"
+              - row "E-Mail SSL/TLS Sichere Verbindung verwenden" [ref=e251]:
+                - cell "E-Mail" [ref=e252]:
+                  - generic [ref=e253]:
+                    - img [ref=e254]
+                    - generic [ref=e257]: E-Mail
+                - cell "SSL/TLS Sichere Verbindung verwenden" [ref=e258]:
+                  - generic [ref=e259]:
+                    - generic [ref=e260]: SSL/TLS
+                    - generic [ref=e261]: Sichere Verbindung verwenden
+                - cell [ref=e262]:
+                  - checkbox [disabled] [ref=e263]
+              - row "E-Mail SMTP Benutzer Benutzername für SMTP" [ref=e264]:
+                - cell "E-Mail" [ref=e265]:
+                  - generic [ref=e266]:
+                    - img [ref=e267]
+                    - generic [ref=e270]: E-Mail
+                - cell "SMTP Benutzer Benutzername für SMTP" [ref=e271]:
+                  - generic [ref=e272]:
+                    - generic [ref=e273]: SMTP Benutzer
+                    - generic [ref=e274]: Benutzername für SMTP
+                - cell [ref=e275]:
+                  - textbox [disabled] [ref=e276]
+              - row "E-Mail SMTP Passwort Passwort für SMTP" [ref=e277]:
+                - cell "E-Mail" [ref=e278]:
+                  - generic [ref=e279]:
+                    - img [ref=e280]
+                    - generic [ref=e283]: E-Mail
+                - cell "SMTP Passwort Passwort für SMTP" [ref=e284]:
+                  - generic [ref=e285]:
+                    - generic [ref=e286]: SMTP Passwort
+                    - generic [ref=e287]: Passwort für SMTP
+                - cell [ref=e288]:
+                  - textbox [disabled] [ref=e289]
+              - row "E-Mail Absender E-Mail E-Mail-Adresse des Absenders" [ref=e290]:
+                - cell "E-Mail" [ref=e291]:
+                  - generic [ref=e292]:
+                    - img [ref=e293]
+                    - generic [ref=e296]: E-Mail
+                - cell "Absender E-Mail E-Mail-Adresse des Absenders" [ref=e297]:
+                  - generic [ref=e298]:
+                    - generic [ref=e299]: Absender E-Mail
+                    - generic [ref=e300]: E-Mail-Adresse des Absenders
+                - cell [ref=e301]:
+                  - textbox [disabled] [ref=e302]
+              - row "E-Mail Absender Name Name des Absenders FormTest Server" [ref=e303]:
+                - cell "E-Mail" [ref=e304]:
+                  - generic [ref=e305]:
+                    - img [ref=e306]
+                    - generic [ref=e309]: E-Mail
+                - cell "Absender Name Name des Absenders" [ref=e310]:
+                  - generic [ref=e311]:
+                    - generic [ref=e312]: Absender Name
+                    - generic [ref=e313]: Name des Absenders
+                - cell "FormTest Server" [ref=e314]:
+                  - textbox [disabled] [ref=e315]: FormTest Server
+              - row "E-Mail Empfänger E-Mail E-Mail-Adresse des Empfängers" [ref=e316]:
+                - cell "E-Mail" [ref=e317]:
+                  - generic [ref=e318]:
+                    - img [ref=e319]
+                    - generic [ref=e322]: E-Mail
+                - cell "Empfänger E-Mail E-Mail-Adresse des Empfängers" [ref=e323]:
+                  - generic [ref=e324]:
+                    - generic [ref=e325]: Empfänger E-Mail
+                    - generic [ref=e326]: E-Mail-Adresse des Empfängers
+                - cell [ref=e327]:
+                  - textbox [disabled] [ref=e328]
+              - row "E-Mail Bei Erfolg Bei erfolgreichen Tests benachrichtigen" [ref=e329]:
+                - cell "E-Mail" [ref=e330]:
+                  - generic [ref=e331]:
+                    - img [ref=e332]
+                    - generic [ref=e335]: E-Mail
+                - cell "Bei Erfolg Bei erfolgreichen Tests benachrichtigen" [ref=e336]:
+                  - generic [ref=e337]:
+                    - generic [ref=e338]: Bei Erfolg
+                    - generic [ref=e339]: Bei erfolgreichen Tests benachrichtigen
+                - cell [ref=e340]:
+                  - checkbox [disabled] [ref=e341]
+              - row "E-Mail Bei Fehler Bei fehlgeschlagenen Tests benachrichtigen" [ref=e342]:
+                - cell "E-Mail" [ref=e343]:
+                  - generic [ref=e344]:
+                    - img [ref=e345]
+                    - generic [ref=e348]: E-Mail
+                - cell "Bei Fehler Bei fehlgeschlagenen Tests benachrichtigen" [ref=e349]:
+                  - generic [ref=e350]:
+                    - generic [ref=e351]: Bei Fehler
+                    - generic [ref=e352]: Bei fehlgeschlagenen Tests benachrichtigen
+                - cell [ref=e353]:
+                  - checkbox [checked] [disabled] [ref=e354]:
+                    - generic:
+                      - img
+              - row "E-Mail Test-E-Mail Konfiguration testen Senden" [ref=e355]:
+                - cell "E-Mail" [ref=e356]:
+                  - generic [ref=e357]:
+                    - img [ref=e358]
+                    - generic [ref=e361]: E-Mail
+                - cell "Test-E-Mail Konfiguration testen" [ref=e362]:
+                  - generic [ref=e363]:
+                    - generic [ref=e364]: Test-E-Mail
+                    - generic [ref=e365]: Konfiguration testen
+                - cell "Senden" [ref=e366]:
+                  - button "Senden" [disabled]
+              - row "API API Server Server starten für externe Zugriffe (CI/CD) Starten" [ref=e367]:
+                - cell "API" [ref=e368]:
+                  - generic [ref=e369]:
+                    - img [ref=e370]
+                    - generic [ref=e373]: API
+                - cell "API Server Server starten für externe Zugriffe (CI/CD)" [ref=e374]:
+                  - generic [ref=e375]:
+                    - generic [ref=e376]: API Server
+                    - generic [ref=e377]: Server starten für externe Zugriffe (CI/CD)
+                - cell "Starten" [ref=e378]:
+                  - button "Starten" [ref=e379] [cursor=pointer]
+              - 'row "API Port Port für den API Server (Standard: 3847) 3847" [ref=e380]':
+                - cell "API" [ref=e381]:
+                  - generic [ref=e382]:
+                    - img [ref=e383]
+                    - generic [ref=e386]: API
+                - 'cell "Port Port für den API Server (Standard: 3847)" [ref=e387]':
+                  - generic [ref=e388]:
+                    - generic [ref=e389]: Port
+                    - generic [ref=e390]: "Port für den API Server (Standard: 3847)"
+                - cell "3847" [ref=e391]:
+                  - spinbutton [ref=e392]: "3847"
+              - row "API API Key Authentifizierungs-Key für API-Zugriffe Kein Key generiert" [ref=e393]:
+                - cell "API" [ref=e394]:
+                  - generic [ref=e395]:
+                    - img [ref=e396]
+                    - generic [ref=e399]: API
+                - cell "API Key Authentifizierungs-Key für API-Zugriffe" [ref=e400]:
+                  - generic [ref=e401]:
+                    - generic [ref=e402]: API Key
+                    - generic [ref=e403]: Authentifizierungs-Key für API-Zugriffe
+                - cell "Kein Key generiert" [ref=e404]:
+                  - generic [ref=e405]:
+                    - textbox [ref=e406]: Kein Key generiert
+                    - button "Kopieren" [disabled]:
+                      - img
+                    - button "Neuen Key generieren" [ref=e407] [cursor=pointer]:
+                      - img [ref=e408]
+              - row "Daten Test-Aufbewahrung (Tage) Testergebnisse älter als X Tage automatisch löschen (0=nie) 365" [ref=e413]:
+                - cell "Daten" [ref=e414]:
+                  - generic [ref=e415]:
+                    - img [ref=e416]
+                    - generic [ref=e420]: Daten
+                - cell "Test-Aufbewahrung (Tage) Testergebnisse älter als X Tage automatisch löschen (0=nie)" [ref=e421]:
+                  - generic [ref=e422]:
+                    - generic [ref=e423]: Test-Aufbewahrung (Tage)
+                    - generic [ref=e424]: Testergebnisse älter als X Tage automatisch löschen (0=nie)
+                - cell "365" [ref=e425]:
+                  - textbox [ref=e426]: "365"
+              - row "Daten Alte Tests bereinigen Jetzt alte Testergebnisse gemäß Aufbewahrungsfrist löschen Jetzt bereinigen" [ref=e427]:
+                - cell "Daten" [ref=e428]:
+                  - generic [ref=e429]:
+                    - img [ref=e430]
+                    - generic [ref=e434]: Daten
+                - cell "Alte Tests bereinigen Jetzt alte Testergebnisse gemäß Aufbewahrungsfrist löschen" [ref=e435]:
+                  - generic [ref=e436]:
+                    - generic [ref=e437]: Alte Tests bereinigen
+                    - generic [ref=e438]: Jetzt alte Testergebnisse gemäß Aufbewahrungsfrist löschen
+                - cell "Jetzt bereinigen" [ref=e439]:
+                  - button "Jetzt bereinigen" [ref=e440] [cursor=pointer]
+              - row "Daten Daten exportieren Formulare, Bezahlmethoden, Tests exportieren Exportieren" [ref=e441]:
+                - cell "Daten" [ref=e442]:
+                  - generic [ref=e443]:
+                    - img [ref=e444]
+                    - generic [ref=e448]: Daten
+                - cell "Daten exportieren Formulare, Bezahlmethoden, Tests exportieren" [ref=e449]:
+                  - generic [ref=e450]:
+                    - generic [ref=e451]: Daten exportieren
+                    - generic [ref=e452]: Formulare, Bezahlmethoden, Tests exportieren
+                - cell "Exportieren" [ref=e453]:
+                  - button "Exportieren" [ref=e454] [cursor=pointer]
+              - row "Daten Daten importieren Daten aus Backup wiederherstellen Importieren" [ref=e455]:
+                - cell "Daten" [ref=e456]:
+                  - generic [ref=e457]:
+                    - img [ref=e458]
+                    - generic [ref=e462]: Daten
+                - cell "Daten importieren Daten aus Backup wiederherstellen" [ref=e463]:
+                  - generic [ref=e464]:
+                    - generic [ref=e465]: Daten importieren
+                    - generic [ref=e466]: Daten aus Backup wiederherstellen
+                - cell "Importieren" [ref=e467]:
+                  - button "Importieren" [ref=e468] [cursor=pointer]
+              - row "Daten Formulare löschen Alle Formulare und zugehörige Tests löschen Löschen" [ref=e469]:
+                - cell "Daten" [ref=e470]:
+                  - generic [ref=e471]:
+                    - img [ref=e472]
+                    - generic [ref=e476]: Daten
+                - cell "Formulare löschen Alle Formulare und zugehörige Tests löschen" [ref=e477]:
+                  - generic [ref=e478]:
+                    - generic [ref=e479]: Formulare löschen
+                    - generic [ref=e480]: Alle Formulare und zugehörige Tests löschen
+                - cell "Löschen" [ref=e481]:
+                  - button "Löschen" [ref=e482] [cursor=pointer]
+              - row "Daten Bezahlmethoden löschen Alle Bezahlmethoden löschen Löschen" [ref=e483]:
+                - cell "Daten" [ref=e484]:
+                  - generic [ref=e485]:
+                    - img [ref=e486]
+                    - generic [ref=e490]: Daten
+                - cell "Bezahlmethoden löschen Alle Bezahlmethoden löschen" [ref=e491]:
+                  - generic [ref=e492]:
+                    - generic [ref=e493]: Bezahlmethoden löschen
+                    - generic [ref=e494]: Alle Bezahlmethoden löschen
+                - cell "Löschen" [ref=e495]:
+                  - button "Löschen" [ref=e496] [cursor=pointer]
+              - row "Daten Tests löschen Alle Testergebnisse löschen Löschen" [ref=e497]:
+                - cell "Daten" [ref=e498]:
+                  - generic [ref=e499]:
+                    - img [ref=e500]
+                    - generic [ref=e504]: Daten
+                - cell "Tests löschen Alle Testergebnisse löschen" [ref=e505]:
+                  - generic [ref=e506]:
+                    - generic [ref=e507]: Tests löschen
+                    - generic [ref=e508]: Alle Testergebnisse löschen
+                - cell "Löschen" [ref=e509]:
+                  - button "Löschen" [ref=e510] [cursor=pointer]
+              - row "Daten Zeitpläne löschen Alle Zeitpläne löschen Löschen" [ref=e511]:
+                - cell "Daten" [ref=e512]:
+                  - generic [ref=e513]:
+                    - img [ref=e514]
+                    - generic [ref=e518]: Daten
+                - cell "Zeitpläne löschen Alle Zeitpläne löschen" [ref=e519]:
+                  - generic [ref=e520]:
+                    - generic [ref=e521]: Zeitpläne löschen
+                    - generic [ref=e522]: Alle Zeitpläne löschen
+                - cell "Löschen" [ref=e523]:
+                  - button "Löschen" [ref=e524] [cursor=pointer]
+              - row "Daten Alle Daten löschen ALLE Daten unwiderruflich löschen Alles löschen" [ref=e525]:
+                - cell "Daten" [ref=e526]:
+                  - generic [ref=e527]:
+                    - img [ref=e528]
+                    - generic [ref=e532]: Daten
+                - cell "Alle Daten löschen ALLE Daten unwiderruflich löschen" [ref=e533]:
+                  - generic [ref=e534]:
+                    - generic [ref=e535]: Alle Daten löschen
+                    - generic [ref=e536]: ALLE Daten unwiderruflich löschen
+                - cell "Alles löschen" [ref=e537]:
+                  - button "Alles löschen" [ref=e538] [cursor=pointer]
+              - row "Selektoren CSS Selektoren CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren. Konfigurieren" [ref=e539]:
+                - cell "Selektoren" [ref=e540]:
+                  - generic [ref=e541]:
+                    - img [ref=e542]
+                    - generic [ref=e545]: Selektoren
+                - cell "CSS Selektoren CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren." [ref=e546]:
+                  - generic [ref=e547]:
+                    - generic [ref=e548]: CSS Selektoren
+                    - generic [ref=e549]: CSS-Selektoren für automatische Formular-Erkennung. Eigene Selektoren haben Priorität vor Standard-Selektoren.
+                - cell "Konfigurieren" [ref=e550]:
+                  - button "Konfigurieren" [ref=e551] [cursor=pointer]
+              - row "Selektoren Globale Standardwerte Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität. Konfigurieren" [ref=e552]:
+                - cell "Selektoren" [ref=e553]:
+                  - generic [ref=e554]:
+                    - img [ref=e555]
+                    - generic [ref=e558]: Selektoren
+                - cell "Globale Standardwerte Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität." [ref=e559]:
+                  - generic [ref=e560]:
+                    - generic [ref=e561]: Globale Standardwerte
+                    - generic [ref=e562]: Standard-Feldwerte die Faker.js überschreiben. Form-Mappings haben höchste Priorität.
+                - cell "Konfigurieren" [ref=e563]:
+                  - button "Konfigurieren" [ref=e564] [cursor=pointer]
+              - row "Sicherheit Master-Passwort App beim Start mit Passwort schützen Deaktiviert Aktivieren" [ref=e565]:
+                - cell "Sicherheit" [ref=e566]:
+                  - generic [ref=e567]:
+                    - img [ref=e568]
+                    - generic [ref=e570]: Sicherheit
+                - cell "Master-Passwort App beim Start mit Passwort schützen" [ref=e571]:
+                  - generic [ref=e572]:
+                    - generic [ref=e573]: Master-Passwort
+                    - generic [ref=e574]: App beim Start mit Passwort schützen
+                - cell "Deaktiviert Aktivieren" [ref=e575]:
+                  - generic [ref=e576]:
+                    - generic [ref=e578]: Deaktiviert
+                    - button "Aktivieren" [ref=e579] [cursor=pointer]
+              - row "AI AI-Assistent Konfiguriere den AI-Assistenten für Chat und Analyse-Funktionen. Konfigurieren" [ref=e580]:
+                - cell "AI" [ref=e581]:
+                  - generic [ref=e582]:
+                    - img [ref=e583]
+                    - generic [ref=e586]: AI
+                - cell "AI-Assistent Konfiguriere den AI-Assistenten für Chat und Analyse-Funktionen." [ref=e587]:
+                  - generic [ref=e588]:
+                    - generic [ref=e589]: AI-Assistent
+                    - generic [ref=e590]: Konfiguriere den AI-Assistenten für Chat und Analyse-Funktionen.
+                - cell "Konfigurieren" [ref=e591]:
+                  - button "Konfigurieren" [ref=e592] [cursor=pointer]
+              - row "Daten Tags Verwalten Sie Tags für Test-Ergebnisse 0 Tags" [ref=e593]:
+                - cell "Daten" [ref=e594]:
+                  - generic [ref=e595]:
+                    - img [ref=e596]
+                    - generic [ref=e600]: Daten
+                - cell "Tags Verwalten Sie Tags für Test-Ergebnisse" [ref=e601]:
+                  - generic [ref=e602]:
+                    - generic [ref=e603]: Tags
+                    - generic [ref=e604]: Verwalten Sie Tags für Test-Ergebnisse
+                - cell "0 Tags" [ref=e605]:
+                  - button "0 Tags" [ref=e606] [cursor=pointer]
+```

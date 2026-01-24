@@ -1,0 +1,436 @@
+import { create } from 'zustand';
+import type { AISettings, AIChat, AIMessage, AIProvider, AIContextData } from '../../../common/types';
+
+interface AIState {
+  // Settings
+  settings: AISettings | null;
+  isConfigured: boolean;
+  isLoadingSettings: boolean;
+
+  // Chat state
+  chats: AIChat[];
+  activeChat: AIChat | null;
+  messages: AIMessage[];
+  isLoadingChats: boolean;
+  isLoadingMessages: boolean;
+  isSending: boolean;
+  sendingChatId: number | null; // Track which chat is currently receiving a response
+  isStreaming: boolean;
+  streamingContent: string; // Current streaming content
+  streamingMessageId: number | null; // ID of message being streamed
+
+  // Panel state
+  isPanelOpen: boolean;
+  isFullPage: boolean;
+
+  // Error state
+  error: string | null;
+  lastFailedMessage: string | null; // Store last failed message for retry
+  retryCount: number; // Track retry attempts
+
+  // Actions - Settings
+  loadSettings: () => Promise<void>;
+  updateSettings: (settings: Partial<AISettings>) => Promise<void>;
+  validateKey: (provider: AIProvider, apiKey: string, ollamaUrl?: string) => Promise<boolean>;
+  getModels: (provider: AIProvider, apiKey?: string, ollamaUrl?: string) => Promise<string[]>;
+
+  // Actions - Chats
+  loadChats: () => Promise<void>;
+  createChat: (title?: string, context?: string) => Promise<AIChat | null>;
+  selectChat: (chatId: number) => Promise<void>;
+  updateChatTitle: (chatId: number, title: string) => Promise<void>;
+  deleteChat: (chatId: number) => Promise<void>;
+  deleteAllChats: () => Promise<void>;
+
+  // Actions - Messages
+  sendMessage: (content: string) => Promise<void>;
+  sendMessageStreaming: (content: string) => Promise<void>;
+  retryLastMessage: () => Promise<void>;
+
+  // Actions - Panel
+  openPanel: () => void;
+  closePanel: () => void;
+  togglePanel: () => void;
+  setFullPage: (isFullPage: boolean) => void;
+
+  // Actions - Context
+  getContextData: () => Promise<AIContextData | null>;
+
+  // Actions - Utility
+  clearError: () => void;
+}
+
+export const useAIStore = create<AIState>((set, get) => ({
+  // Initial state
+  settings: null,
+  isConfigured: false,
+  isLoadingSettings: false,
+  chats: [],
+  activeChat: null,
+  messages: [],
+  isLoadingChats: false,
+  isLoadingMessages: false,
+  isSending: false,
+  sendingChatId: null,
+  isStreaming: false,
+  streamingContent: '',
+  streamingMessageId: null,
+  isPanelOpen: false,
+  isFullPage: false,
+  error: null,
+  lastFailedMessage: null,
+  retryCount: 0,
+
+  // Settings actions
+  loadSettings: async () => {
+    set({ isLoadingSettings: true, error: null });
+    try {
+      const settings = await window.api.ai.getSettings();
+      const isConfigured = await window.api.ai.isConfigured();
+      set({ settings, isConfigured, isLoadingSettings: false });
+    } catch (error) {
+      console.error('Failed to load AI settings:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to load AI settings',
+        isLoadingSettings: false 
+      });
+    }
+  },
+
+  updateSettings: async (updates) => {
+    set({ isLoadingSettings: true, error: null });
+    try {
+      const settings = await window.api.ai.updateSettings(updates);
+      const isConfigured = await window.api.ai.isConfigured();
+      set({ settings, isConfigured, isLoadingSettings: false });
+    } catch (error) {
+      console.error('Failed to update AI settings:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to update AI settings',
+        isLoadingSettings: false 
+      });
+    }
+  },
+
+  validateKey: async (provider, apiKey, ollamaUrl) => {
+    try {
+      return await window.api.ai.validateKey(provider, apiKey, ollamaUrl);
+    } catch (error) {
+      console.error('Failed to validate API key:', error);
+      return false;
+    }
+  },
+
+  getModels: async (provider, apiKey, ollamaUrl) => {
+    try {
+      return await window.api.ai.getModels(provider, apiKey, ollamaUrl);
+    } catch (error) {
+      console.error('Failed to get models:', error);
+      return [];
+    }
+  },
+
+  // Chat actions
+  loadChats: async () => {
+    set({ isLoadingChats: true, error: null });
+    try {
+      const chats = await window.api.ai.chats.getAll();
+      set({ chats, isLoadingChats: false });
+    } catch (error) {
+      console.error('Failed to load chats:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to load chats',
+        isLoadingChats: false 
+      });
+    }
+  },
+
+  createChat: async (title, context) => {
+    set({ error: null });
+    try {
+      const chat = await window.api.ai.chats.create(title, context);
+      const chats = await window.api.ai.chats.getAll();
+      set({ chats, activeChat: chat, messages: [] });
+      return chat;
+    } catch (error) {
+      console.error('Failed to create chat:', error);
+      set({ error: error instanceof Error ? error.message : 'Failed to create chat' });
+      return null;
+    }
+  },
+
+  selectChat: async (chatId) => {
+    set({ isLoadingMessages: true, error: null });
+    try {
+      const chat = await window.api.ai.chats.getById(chatId);
+      if (chat) {
+        const messages = await window.api.ai.messages.getByChatId(chatId);
+        set({ activeChat: chat, messages, isLoadingMessages: false });
+      } else {
+        set({ isLoadingMessages: false });
+      }
+    } catch (error) {
+      console.error('Failed to select chat:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to load chat',
+        isLoadingMessages: false 
+      });
+    }
+  },
+
+  updateChatTitle: async (chatId, title) => {
+    try {
+      await window.api.ai.chats.updateTitle(chatId, title);
+      const chats = await window.api.ai.chats.getAll();
+      const { activeChat } = get();
+      if (activeChat?.id === chatId) {
+        set({ chats, activeChat: { ...activeChat, title } });
+      } else {
+        set({ chats });
+      }
+    } catch (error) {
+      console.error('Failed to update chat title:', error);
+      set({ error: error instanceof Error ? error.message : 'Failed to update chat title' });
+    }
+  },
+
+  deleteChat: async (chatId) => {
+    try {
+      await window.api.ai.chats.delete(chatId);
+      const chats = await window.api.ai.chats.getAll();
+      const { activeChat } = get();
+      if (activeChat?.id === chatId) {
+        set({ chats, activeChat: null, messages: [] });
+      } else {
+        set({ chats });
+      }
+    } catch (error) {
+      console.error('Failed to delete chat:', error);
+      set({ error: error instanceof Error ? error.message : 'Failed to delete chat' });
+    }
+  },
+
+  deleteAllChats: async () => {
+    try {
+      await window.api.ai.chats.deleteAll();
+      set({ chats: [], activeChat: null, messages: [] });
+    } catch (error) {
+      console.error('Failed to delete all chats:', error);
+      set({ error: error instanceof Error ? error.message : 'Failed to delete all chats' });
+    }
+  },
+
+  // Message actions
+  sendMessage: async (content) => {
+    const { activeChat, messages } = get();
+    
+    // Create a new chat if none is active
+    let chatId = activeChat?.id;
+    let isNewChat = false;
+    let shouldRenameChat = false;
+    
+    if (!chatId) {
+      // Create chat with initial prompt as title (truncated)
+      const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+      const newChat = await get().createChat(title);
+      if (!newChat) return;
+      chatId = newChat.id;
+      isNewChat = true;
+    } else if (messages.length === 0 && activeChat?.title === 'Neuer Chat') {
+      // Existing chat but no messages yet AND still has default title - rename it based on first input
+      // Don't rename if user has explicitly set a custom title
+      shouldRenameChat = true;
+    }
+
+    // Optimistic UI: Show user message immediately
+    const optimisticUserMessage = {
+      id: Date.now(), // Temporary ID
+      chatId: chatId,
+      role: 'user' as const,
+      content: content,
+      createdAt: new Date().toISOString(),
+    };
+    
+    set({ isSending: true, sendingChatId: chatId, error: null, messages: [...get().messages, optimisticUserMessage] });
+    
+    try {
+      // Rename chat if this is the first message in an existing chat
+      if (shouldRenameChat && chatId) {
+        const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+        await window.api.ai.chats.updateTitle(chatId, title);
+      }
+      
+      await window.api.ai.messages.send(chatId, content);
+      
+      // Update messages with real data from server
+      const updatedMessages = await window.api.ai.messages.getByChatId(chatId);
+      const chats = await window.api.ai.chats.getAll();
+      
+      // Update activeChat if it was just created or renamed
+      const updatedActiveChat = (isNewChat || shouldRenameChat) ? chats.find(c => c.id === chatId) || get().activeChat : get().activeChat;
+      
+      set({ messages: updatedMessages, chats, activeChat: updatedActiveChat, isSending: false, sendingChatId: null });
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to send message',
+        isSending: false,
+        sendingChatId: null 
+      });
+    }
+  },
+
+  sendMessageStreaming: async (content) => {
+    const { activeChat, messages } = get();
+    
+    // Create a new chat if none is active
+    let chatId = activeChat?.id;
+    let isNewChat = false;
+    let shouldRenameChat = false;
+    
+    if (!chatId) {
+      const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+      const newChat = await get().createChat(title);
+      if (!newChat) return;
+      chatId = newChat.id;
+      isNewChat = true;
+    } else if (messages.length === 0 && activeChat?.title === 'Neuer Chat') {
+      shouldRenameChat = true;
+    }
+
+    // Optimistic UI: Show user message immediately
+    const optimisticUserMessage = {
+      id: Date.now(),
+      chatId: chatId,
+      role: 'user' as const,
+      content: content,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Create temporary assistant message for streaming
+    const streamingMessageId = Date.now() + 1;
+    const optimisticAssistantMessage = {
+      id: streamingMessageId,
+      chatId: chatId,
+      role: 'assistant' as const,
+      content: '',
+      createdAt: new Date().toISOString(),
+    };
+    
+    set({ 
+      isStreaming: true, 
+      streamingContent: '',
+      streamingMessageId: streamingMessageId,
+      sendingChatId: chatId, 
+      error: null, 
+      messages: [...get().messages, optimisticUserMessage, optimisticAssistantMessage] 
+    });
+    
+    // Setup stream listeners
+    window.api.ai.messages.onStreamToken(({ chatId: streamChatId, token }) => {
+      if (streamChatId === chatId) {
+        const { streamingContent: currentContent } = get();
+        const newContent = currentContent + token;
+        set({ streamingContent: newContent });
+        
+        // Update the streaming message in the messages array
+        const { messages: currentMessages } = get();
+        const updatedMessages = currentMessages.map(msg => 
+          msg.id === streamingMessageId 
+            ? { ...msg, content: newContent }
+            : msg
+        );
+        set({ messages: updatedMessages });
+      }
+    });
+
+    window.api.ai.messages.onStreamComplete(async ({ chatId: streamChatId, assistantMessage }) => {
+      if (streamChatId === chatId) {
+        // Update messages with real data from server
+        const updatedMessages = await window.api.ai.messages.getByChatId(chatId);
+        const chats = await window.api.ai.chats.getAll();
+        const updatedActiveChat = (isNewChat || shouldRenameChat) 
+          ? chats.find(c => c.id === chatId) || get().activeChat 
+          : get().activeChat;
+        
+        set({ 
+          messages: updatedMessages, 
+          chats, 
+          activeChat: updatedActiveChat, 
+          isStreaming: false,
+          streamingContent: '',
+          streamingMessageId: null,
+          sendingChatId: null 
+        });
+      }
+    });
+
+    window.api.ai.messages.onStreamError(({ chatId: streamChatId, error: streamError }) => {
+      if (streamChatId === chatId) {
+        set({ 
+          error: streamError,
+          isStreaming: false,
+          streamingContent: '',
+          streamingMessageId: null,
+          sendingChatId: null 
+        });
+      }
+    });
+    
+    try {
+      if (shouldRenameChat && chatId) {
+        const title = content.length > 50 ? content.substring(0, 47) + '...' : content;
+        await window.api.ai.chats.updateTitle(chatId, title);
+      }
+      
+      await window.api.ai.messages.sendStream(chatId, content);
+    } catch (error) {
+      console.error('Failed to send streaming message:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to send message',
+        lastFailedMessage: content,
+        isStreaming: false,
+        streamingContent: '',
+        streamingMessageId: null,
+        sendingChatId: null 
+      });
+    }
+  },
+
+  retryLastMessage: async () => {
+    const { lastFailedMessage, retryCount } = get();
+    if (!lastFailedMessage) return;
+    
+    // Prevent infinite retry loops
+    if (retryCount >= 3) {
+      set({ 
+        error: 'Zu viele Wiederholungsversuche. Bitte versuche es später erneut.',
+        retryCount: 0,
+        lastFailedMessage: null
+      });
+      return;
+    }
+
+    set({ retryCount: retryCount + 1, error: null });
+    await get().sendMessageStreaming(lastFailedMessage);
+  },
+
+  // Panel actions
+  openPanel: () => set({ isPanelOpen: true }),
+  closePanel: () => set({ isPanelOpen: false }),
+  togglePanel: () => set((state) => ({ isPanelOpen: !state.isPanelOpen })),
+  setFullPage: (isFullPage) => set({ isFullPage }),
+
+  // Context actions
+  getContextData: async () => {
+    try {
+      return await window.api.ai.context.getData();
+    } catch (error) {
+      console.error('Failed to get context data:', error);
+      return null;
+    }
+  },
+
+  // Utility actions
+  clearError: () => set({ error: null, lastFailedMessage: null, retryCount: 0 }),
+}));

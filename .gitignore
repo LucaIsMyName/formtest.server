@@ -1,0 +1,10 @@
+node_modules
+dist-electron
+build-electron
+screenshots
+out
+dist
+
+# Auto-generated docs from README.md
+src/renderer/src/generated/
+.DS_Store

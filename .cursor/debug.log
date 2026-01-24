@@ -1,0 +1,40 @@
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768325919846,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768325921196,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768325921323,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768325921352,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768325923043,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768326147182,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768326149252,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768326149301,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768326149333,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768326151309,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768326190709,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768326191767,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768326191777,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768326191784,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768326193356,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768326227235,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768326228298,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768326228311,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768326228319,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768326229898,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768326269009,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768326270068,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768326270081,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768326270090,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768326271636,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768326306222,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768326307311,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768326307330,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768326307341,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768326308907,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768326343703,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768326344759,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768326344770,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768326344782,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768326346397,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1106","message":"submitForm entry","data":{},"timestamp":1768326392670,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1113","message":"usedSelector declared","data":{"usedSelector":null},"timestamp":1768326393737,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"runner.js:1222","message":"Trying selector","data":{"selector":"input#submitForm","selectorIndex":0,"totalSelectors":12},"timestamp":1768326393760,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1231","message":"Button found","data":{"selector":"input#submitForm","isVisible":true,"isEnabled":true},"timestamp":1768326393777,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
+{"location":"runner.js:1246","message":"Button clicked successfully","data":{"selector":"input#submitForm","usedSelector":"input#submitForm"},"timestamp":1768326394354,"sessionId":"debug-session","runId":"run1","hypothesisId":"B"}
