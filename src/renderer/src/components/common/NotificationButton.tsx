@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { formatDateTime } from "../../utils/formatters";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import AriaLiveRegion from "./AriaLiveRegion";
 import Button from "../ui/Button";
 
 const NotificationButton: React.FC = () => {

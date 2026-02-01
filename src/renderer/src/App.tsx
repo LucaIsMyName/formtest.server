@@ -5,6 +5,7 @@ import { useTestRunsStore } from "./store/useTestRunsStore";
 import Layout from "./components/layout/Layout";
 import LockScreen from "./components/layout/LockScreen";
 import InterruptedTestsDialog from "./components/dialogs/InterruptedTestsDialog";
+import AriaLiveRegion from "./components/common/AriaLiveRegion";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { CONFIG } from "./app.config";
 

@@ -22,6 +22,9 @@ const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
   const { testRuns, loadTestRuns } = useTestRunsStore();
   const { schedules, loadSchedules } = useSchedulesStore();
 
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (isOpen) {
       // Store the previously focused element
