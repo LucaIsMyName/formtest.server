@@ -51,7 +51,7 @@
     "rebuild:sqlite": "electron-rebuild -f -w better-sqlite3"
   },
   "devDependencies": {
-    "@electron/rebuild": "^3.7.2",
+    "@electron/rebuild": "^4.0.3",
     "@faker-js/faker": "^10.1.0",
     "@playwright/test": "^1.56.1",
     "@testing-library/react": "^16.3.0",
@@ -68,7 +68,7 @@
     "autoprefixer": "^10.4.16",
     "babel-plugin-react-compiler": "^1.0.0",
     "electron": "^28.3.3",
-    "electron-builder": "^24.13.3",
+    "electron-builder": "^26.7.0",
     "electron-icon-builder": "^2.0.1",
     "electron-vite": "^2.0.0",
     "eslint": "^8.54.0",
